@@ -1,0 +1,148 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+    <!-- params:
+        var
+        lable
+        required
+        readonly
+    -->
+
+    <div style="float:left;">
+        <h:panelGrid columns="2" columnClasses="small_label,small_value">
+
+
+            <a:outputPanel>
+                <h:outputText value="#{lable}"/> <s:span styleClass="required"
+                                                         rendered="#{required}">*</s:span>
+                <rich:tooltip followMouse="false"
+                              showDelay="500" styleClass="tooltip"
+                              rendered="#{not empty var.simpleVarSubscribe.simpleVarDefine.description}">
+				<span style="white-space: nowrap"> <h:outputText
+                        value="#{var.simpleVarSubscribe.simpleVarDefine.description}"></h:outputText> </span>
+                </rich:tooltip>
+            </a:outputPanel>
+
+                <h:selectBooleanCheckbox label="#{lable}" value="#{var.booleanValue}" required="#{required}"
+                                         rendered="#{var.booleanType}" readonly="#{readonly}"/>
+
+                <h:inputText label="#{lable}" value="#{var.strValue}"
+                             rendered="#{var.strType and (not (var.simpleVarSubscribe.simpleVarDefine.length >= 200))}"
+                             readonly="#{readonly}" maxlength="#{var.simpleVarSubscribe.simpleVarDefine.length}"
+                             required="#{required}" size="#{var.simpleVarSubscribe.size}">
+                    <f:validateLength maximum="#{var.simpleVarSubscribe.simpleVarDefine.length}"/>
+                </h:inputText>
+
+                <h:inputTextarea label="#{lable}" value="#{var.strValue}"
+                                 rendered="#{var.strType and (var.simpleVarSubscribe.simpleVarDefine.length >= 200)}"
+                                 readonly="#{readonly}" cols="#{var.simpleVarSubscribe.size}"
+                                 required="#{required}"
+                                 rows="#{var.simpleVarSubscribe.simpleVarDefine.length div var.simpleVarSubscribe.size}">
+                </h:inputTextarea>
+
+                <h:inputText label="#{lable}" value="#{var.floatValue}"
+                             rendered="#{var.floatType}" converter="javax.faces.Float"
+                             readonly="#{readonly}" size="#{var.simpleVarSubscribe.size}"
+                             required="#{required}"
+                             maxlength="#{var.simpleVarSubscribe.simpleVarDefine.length}"
+                             onkeyup="if(isNaN(value))execCommand('undo')"
+                             onafterpaste="if(isNaN(value))execCommand('undo')">
+                </h:inputText>
+
+                <h:inputText label="#{lable}" value="#{var.doubleValue}"
+                             rendered="#{var.doubleType}" converter="javax.faces.Double"
+                             readonly="#{readonly}" size="#{var.simpleVarSubscribe.size}"
+                             required="#{required}"
+                             maxlength="#{var.simpleVarSubscribe.simpleVarDefine.length}"
+                             onkeyup="if(isNaN(value))execCommand('undo')"
+                             onafterpaste="if(isNaN(value))execCommand('undo')">
+                </h:inputText>
+
+                <h:inputText label="#{lable}" value="#{var.areaValue}"
+                             rendered="#{var.areaType}" converter="javax.faces.Double"
+                             maxlength="#{var.simpleVarSubscribe.simpleVarDefine.length}"
+                             readonly="#{readonly}" size="#{var.simpleVarSubscribe.size}"
+                             required="#{required}"
+                             onkeyup="if(isNaN(value))execCommand('undo')"
+                             onafterpaste="if(isNaN(value))execCommand('undo')">
+                </h:inputText>
+
+                <h:inputText label="#{lable}" value="#{var.moneyValue}"
+                             rendered="#{var.moneyType}" converter="javax.faces.Double"
+                             maxlength="#{var.simpleVarSubscribe.simpleVarDefine.length}"
+                             readonly="#{readonly}" size="#{var.simpleVarSubscribe.size}"
+                             required="#{required}"
+                             onkeyup="if(isNaN(value))execCommand('undo')"
+                             onafterpaste="if(isNaN(value))execCommand('undo')">
+                </h:inputText>
+
+                <h:inputText label="#{lable}" value="#{var.shortMoneyValue}"
+                             rendered="#{var.shortMoneyType}" converter="javax.faces.Double"
+                             readonly="#{readonly}" size="#{var.simpleVarSubscribe.size}"
+                             required="#{required}"
+                             maxlength="#{var.simpleVarSubscribe.simpleVarDefine.length}"
+                             onkeyup="if(isNaN(value))execCommand('undo')"
+                             onafterpaste="if(isNaN(value))execCommand('undo')">
+                </h:inputText>
+
+
+                <h:inputText label="#{lable}" value="#{var.intValue}"
+                             rendered="#{var.intType}" converter="javax.faces.Long"
+                             readonly="#{readonly}" size="#{var.simpleVarSubscribe.size}"
+                             required="#{required}"
+                             maxlength="#{var.simpleVarSubscribe.simpleVarDefine.length}"
+                             onkeyup="this.value=this.value.replace(/\D/g,'')"
+                             onafterpaste="this.value=this.value.replace(/\D/g,'')">
+                </h:inputText>
+
+                <rich:calendar defaultLabel="#{lable}" value="#{var.dateValue}" cellWidth="24px"
+                               cellHeight="22px" style="width:200px" datePattern="#{messages.datePattern}"
+                               timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                               showApplyButton="#{calendarBean.showApply}"  popup="#{calendarBean.popup}"
+                               rendered="#{var.dateType and not readonly}" inputStyle="width:80%"
+                               required="#{required}" enableManualInput="true">
+                </rich:calendar>
+
+                <rich:calendar defaultLabel="#{lable}" value="#{var.dateValue}" cellWidth="24px"
+                               cellHeight="22px" style="width:200px" datePattern="#{messages.datetimepattern}"
+                               timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                               showApplyButton="#{calendarBean.showApply}"  popup="#{calendarBean.popup}"
+                               rendered="#{var.datetimeType and not readonly}" inputStyle="width:80%"
+                               required="#{required}" enableManualInput="true">
+                </rich:calendar>
+
+
+                <h:inputText label="#{lable}" value="#{var.dateValue}"
+                             rendered="#{var.dateType and readonly}" readonly="true"
+                             style="width:100%;">
+                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                </h:inputText>
+
+                <h:inputText label="#{lable}" value="#{var.dateValue}"
+                             rendered="#{var.datetimeType and readonly}" readonly="true"
+                             style="width:100%;">
+                    <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+                </h:inputText>
+
+
+                <h:selectOneMenu label="#{lable}" value="#{var.wordValue}"
+                                 rendered="#{var.wordType}"
+                                 readonly="#{readonly}" style="width: 30px;"
+                                 required="#{required}">
+
+                    <f:converter converterId="systemEntityConverter"/>
+                    <s:selectItems value="#{var.simpleVarSubscribe.simpleVarDefine.wordCategory.wordList}" var="_word"
+                                   label="#{_word.value}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                </h:selectOneMenu>
+
+
+        </h:panelGrid>
+    </div>
+
+</ui:composition>

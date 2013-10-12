@@ -1,0 +1,300 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="toolbar">
+
+
+    <ui:include src="/templates/erp/StoreAreaSelectTree.xhtml"/>
+
+    <ui:include src="/templates/erp/ResSelectTree.xhtml"/>
+
+    <h:form id="actions">
+        <rich:toolbar height="26" rendered="#{not empty storeOutAction.selectStore}">
+
+            <rich:toolbarGroup location="right">
+                <a:region>
+                    <h:panelGrid columns="3">
+                        <h:inputText id="storeOrderCodeInput"
+                                     disabled="#{storeOutAction.managed}"
+                                     required="true"
+                                     maxlength="32"
+                                     styleClass="barsearch"
+                                     label="#{messages.storeOut_field_id}"
+                                     value="#{storeOutAction.instance.id}">
+                            <rich:placeholder value="#{messages.storeOut_field_id}"/>
+                        </h:inputText>
+
+                        <a:commandButton value="#{messages.StoreOut}" execute="@region"
+
+                                         render="storeOutItem,inventoryResult,storeOutItems,actions,beginActions">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                        <a:commandButton value="#{messages.cancel}" immediate="true"
+                                         action="#{storeOutAction.clearInstance}"
+                                         execute="@this"
+                                         render="storeOutItem,inventoryResult,storeOutItems,actions,beginActions">
+                            <s:conversationPropagation type="end"/>
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </h:panelGrid>
+                </a:region>
+
+            </rich:toolbarGroup>
+
+        </rich:toolbar>
+    </h:form>
+</ui:define>
+
+
+<ui:define name="body">
+    <h:form id="beginActions">
+        <a:outputPanel rendered="#{empty storeOutAction.selectStore}">
+            <rich:toolbar height="26">
+                <rich:toolbarGroup location="right">
+                    <a:commandButton value="#{messages.beginStoreOut}" action="#{storeOutAction.beginStoreOut}"
+                                     execute="@form"
+                                     render="storeOutItem,inventoryResult,storeOutItems,storeAreaSelectPanel_form,actions,beginActions,resSelectPanel_form">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <s:decorate id="selectStoreField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.Store}</ui:define>
+                <rich:select label="#{messages.Store}" required="true" value="#{storeOutAction.selectStore}">
+                    <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store}"
+                                   label="#{_store.name}"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                </rich:select>
+            </s:decorate>
+
+            <s:decorate id="reasonField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.storeOut_field_reason}</ui:define>
+
+                <h:selectOneMenu label="#{messages.storeOut_field_reason}" value="#{storeOutAction.instance.reason}"
+                                 required="true">
+                    <s:selectItems value="#{dictionary.getWordList('erp.storeOutReason')}" var="_word"
+                                   itemValue="#{_word.id}" label="#{_word.value}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.storeOut_field_dateTime}</ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="20"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datetimepattern}"
+                        defaultTime="#{currentTime}"
+                        defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                        required="true"
+                        label="#{messages.storeIn_field_dateTime}"
+                        value="#{storeOutAction.storeOutDate}"/>
+            </s:decorate>
+
+            <s:decorate id="memoField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+                <h:inputTextarea
+                        cols="80"
+                        rows="2"
+                        label="#{messages.field_memo}"
+                        value="#{storeOutAction.memo}"/>
+            </s:decorate>
+
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
+
+        </a:outputPanel>
+    </h:form>
+
+    <rich:collapsiblePanel header="#{messages.InventorySearch}" switchType="client"
+                           rendered="#{(not empty storeOutAction.selectStore)}">
+        <h:form id="storeOutItem">
+            <h:panelGrid columns="3">
+                <a:region>
+                    <s:decorate template="/layout/edit.xhtml">
+                        <ui:define name="label">#{messages.res_field_code}</ui:define>
+                        <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocateHome.code}"
+                                     required="true">
+                            <rich:placeholder value="#{messages.res_field_code}"/>
+                        </h:inputText>
+
+                    </s:decorate>
+
+                    <a:commandButton value="#{messages.search}" execute="@region"
+                                     render="storeInItem,resSearchForm"
+                                     action="#{resLocateHome.locateByCode}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </a:region>
+
+                <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                 title="#{messages.resSelect}"
+                                 onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </h:panelGrid>
+
+            <h:panelGrid id="storeAreaField" columns="3">
+                <h:outputText value="#{messages.StoreArea}" styleClass="name"/>
+                <h:outputText value="#{storeInAction.selectStore.name}:"/>
+                <a:commandLink
+                        value="#{storeAreaHome.idDefined ? storeAreaHome.storeAreaTitle : messages.pleaseSelectStoreArea}"
+                        immediate="true" execute="@this" styleClass="#{storeAreaHome.idDefined ? '' : 'errors'}"
+                        onclick="if(#{empty storeInAction.selectStore}){alert('#{messages.plaseSelectStore}');}else{#{rich:component('storeAreaSelectPanel')}.show();}return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+            </h:panelGrid>
+
+
+            <a:region>
+                <a:outputPanel id="itemFormats">
+                    <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+                        <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{_format.formatDefine.name}</ui:define>
+                            <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
+                                <ui:param name="format" value="#{_format}"/>
+                                <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
+
+                            </ui:include>
+                        </s:decorate>
+
+                    </a:repeat>
+                </a:outputPanel>
+
+                <a:commandButton execute="@region" value="#{messages.search}" render="inventoryResult" action="#{inventoryList.search}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </a:region>
+        </h:form>
+
+        <h:form id="inventoryResult">
+            <rich:dataTable rendered="#{(not empty storeOutAction.selectStore)}"
+                            value="#{inventoryList.resultList}" var="_inventory">
+                <rich:column>
+                    <f:facet name="header">
+                        <f:facet name="header">
+                            <ui:include src="/layout/a4jSort.xhtml">
+                                <ui:param name="entityList" value="#{inventoryList}"/>
+                                <ui:param name="propertyLabel" value="#{messages.res}"/>
+                                <ui:param name="propertyPath" value="inventory.storeRes.res.name"/>
+                            </ui:include>
+                        </f:facet>
+                    </f:facet>
+                    #{_inventory.storeRes.title}
+
+                </rich:column>
+
+
+                <rich:column>
+                    <f:facet name="header">
+                        <f:facet name="header">
+                            <ui:include src="/layout/a4jSort.xhtml">
+                                <ui:param name="entityList" value="#{inventoryList}"/>
+                                <ui:param name="propertyLabel" value="#{messages.res}"/>
+                                <ui:param name="propertyPath" value="inventory.storeArea.name"/>
+                            </ui:include>
+                        </f:facet>
+                    </f:facet>
+                    #{_inventory.storeArea.title}
+
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        <f:facet name="header">
+                            <ui:include src="/layout/a4jSort.xhtml">
+                                <ui:param name="entityList" value="#{inventoryList}"/>
+                                <ui:param name="propertyLabel" value="#{messages.res}"/>
+                                <ui:param name="propertyPath" value="inventory.count"/>
+                            </ui:include>
+                        </f:facet>
+                    </f:facet>
+                    #{_inventory.count}
+
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.action}
+                    </f:facet>
+                    <a:commandLink value="#{messages.StoreOut}" immediate="true" action="#{storeOutAction.addItem}" execute="@this" render="storeOutItems">
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_inventory.id}" assignTo="#{storeOutAction.selectInventoryId}"/>
+                    </a:commandLink>
+                </rich:column>
+
+                <f:facet name="footer">
+                    <a:outputPanel rendered="#{not empty personList.resultList}">
+                        <ui:include src="/layout/pageA4jNavigation.xhtml">
+                            <ui:param name="entityList" value="#{inventoryList}"/>
+                        </ui:include>
+                    </a:outputPanel>
+                </f:facet>
+            </rich:dataTable>
+        </h:form>
+
+    </rich:collapsiblePanel>
+    <h:form id="storeOutItems">
+        <rich:dataTable value="#{storeOutAction.storeOutItemGroups}" var="_outGroup">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column>
+                        #{messages.res}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.StoreArea}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.InventoryCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.storeOutCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.action}
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+            <rich:column colspan="5">
+                <rich:collapsibleSubTableToggler for="storeOutItems"/>
+                <h:outputText value="#{_outGroup.title} #{_outGroup.totalCount}"/>
+            </rich:column>
+
+            <rich:collapsibleSubTable value="#{_outGroup.items}" var="_item" id="storeOutItems">
+                <rich:column>
+                     #{_item.inventory.storeRes.title}
+                </rich:column>
+                <rich:column>
+                    #{_item.inventory.storeArea.getTitle(false)}
+                </rich:column>
+                <rich:column>
+                    #{_item.inventory.count}
+                </rich:column>
+                <rich:column>
+                    #{_item.count}
+                </rich:column>
+                <rich:column>
+                    <a:commandButton render="storeOutItems" action="#{storeOutAction.removeItem}" title="#{messages.remove}" immediate="true" image="/img/delete.png" execute="@this">
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_item.id}" assignTo="#{storeOutAction.selectInventoryId}"/>
+                    </a:commandButton>
+                </rich:column>
+            </rich:collapsibleSubTable>
+        </rich:dataTable>
+    </h:form>
+
+</ui:define>
+
+</ui:composition>

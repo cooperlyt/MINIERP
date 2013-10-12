@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:s="http://jboss.org/schema/seam/taglib">
+<f:view
+        contentType="text/html">
+
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <!-- meta http-equiv="X-UA-Compatible" content="IE=8"/-->
+        <title>#{messages.mainTitle}</title>
+        <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
+        <h:outputStylesheet name="application.css"/>
+        <h:outputStylesheet name="theme.css"/>
+
+        <ui:insert name="head"/>
+    </h:head>
+    <h:body>
+
+
+        <div id="newTaskToast"
+             style="DISPLAY: none; Z-INDEX: 1; position:absolute; bottom:10px; overflow:hidden; right:15px; width:135px; height:40px; background:#fc0; border:1px solid #f60;">
+            <h:panelGrid columns="2">
+                <h:graphicImage value="/img/message_come_toast.png"/>
+                <s:link propagation="end" value="#{messages.taskComeToast}"
+                        view="/func/system/business/task.xhtml"/>
+            </h:panelGrid>
+
+        </div>
+        <h:form>
+            <a:push id="pushPooledTaskCome" address="pushPooledTaskCome"
+                    ondataavailable="startObjMessage('newTaskToast')"/>
+            <a:push id="pushOwnerTaskCome" address="pushTaskCome" ondataavailable="startObjMessage('newTaskToast')"/>
+        </h:form>
+
+        <div class="wrapper">
+            <div class="page">
+                <a:status id="processWaiting" name="processWaiting"
+                          onstart="#{rich:component('wait')}.show()"
+                          onstop="#{rich:component('wait')}.hide()"/>
+                <rich:popupPanel id="wait" modal="true" autosized="true"
+                                 moveable="false" resizeable="false">
+                    <h:panelGrid columns="3">
+                        <h:graphicImage value="/img/smalBlueWait.gif"/>
+                        &#160;
+                        <h:outputText value="#{messages.wait_please}..."/>
+                    </h:panelGrid>
+                </rich:popupPanel>
+
+
+                <a:queue requestDelay="100" ignoreDupResponses="true"/>
+                <rich:popupPanel id="changePass" resizeable="false" autosized="true">
+                    <script type="text/javascript"
+                            src="${facesContext.externalContext.requestContextPath}/js/usbKey.js"/>
+                    <f:facet name="header">
+                        <h:panelGroup>
+                            <h:outputText value="#{messages.changePassowrd}"/>
+                        </h:panelGroup>
+                    </f:facet>
+                    <f:facet name="controls">
+                        <h:panelGroup>
+                            <a:commandButton title="#{messages.close}" image="/img/close.png" execute="@this"
+                                             bypassUpdates="true" immediate="true"
+                                             onclick="#{rich:component('changePass')}.hide(); return false;"/>
+                        </h:panelGroup>
+                    </f:facet>
+                    <h:panelGrid columns="2">
+                        <h:outputText value="#{messages.old_password}"></h:outputText>
+                        <input name="old_password" type="password" id="old_password"
+                               size="20" maxlength="18"/>
+                        <h:outputText value="#{messages.new_password}"></h:outputText>
+                        <input name="new_password" type="password" id="new_password"
+                               size="20" maxlength="18"/>
+                        <h:outputText value="#{messages.confim_password}"></h:outputText>
+                        <input name="confim_password" type="password" id="confim_password"
+                               size="20" maxlength="18"/>
+                    </h:panelGrid>
+
+
+                </rich:popupPanel>
+
+                <div id="page">
+                    <div id="header">
+                        <a href="#" class="logo">
+                            <img src="#{facesContext.externalContext.requestContextPath}/img/logo.png"
+                                 alt="#{messages.mainTitle}"/>
+                        </a>
+
+                        <div class="right-controls">
+                            <ul class="top-links layout">
+                                <li>
+                                    <s:link id="menuLoginId" view="/login.xhtml" value="#{messages.login}"
+                                            rendered="#{not identity.loggedIn}" propagation="none"/>
+                                    <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout()}"
+                                            value="#{authInfo.loginEmployee.person.name} #{messages.logout}"
+                                            rendered="#{identity.loggedIn}" propagation="none"/>
+                                </li>
+                                <li>
+                                    <h:outputLink id="showchangePasslink" value="#">#{messages.changePassowrd}
+                                        <rich:componentControl for="changePass"
+                                                               attachTo="showchangePasslink" operation="show"
+                                                               event="onclick"/>
+                                    </h:outputLink>
+
+                                </li>
+                                <li class="download-link"><a href="http://jboss.org/richfaces/download/stable.html"
+                                                             target="_blank">#{messages.downloadClinetPlugs}</a></li>
+                                <li class="last"><a
+                                        href="http://anonsvn.jboss.org/repos/richfaces/trunk/examples/richfaces-showcase/"
+                                        target="_blank">GOOGLE GIS</a></li>
+                            </ul>
+                            <ui:include src="/layout/skin-chooser.xhtml"/>
+                        </div>
+                    </div>
+
+
+                    <div id="page-content">
+                        <ui:insert name="pageContent">
+                            <div class="left-menu">
+                                <ui:include src="/layout/navigation.xhtml"/>
+                            </div>
+
+
+                            <div class="content-container">
+                                <ui:insert name="functionTitle">
+                                    <h:panelGrid columns="2" width="100%" columnClasses=",column-right-align">
+                                        <h1>#{currentFunction.name}</h1>
+
+                                        <a:status>
+                                            <f:facet name="start">
+                                                <h:graphicImage value="/img/connect.gif"/>
+                                            </f:facet>
+                                            <f:facet name="stop">
+                                                <h:graphicImage value="/img/connect_idle.gif"/>
+                                            </f:facet>
+                                        </a:status>
+
+                                    </h:panelGrid>
+                                </ui:insert>
+
+
+                                <rich:panel styleClass="func-body">
+                                    <ui:insert name="toolbar"/>
+                                    <rich:messages ajaxRendered="true" globalOnly="true"/>
+                                    <ui:insert name="body">
+                                        Body content missed
+                                    </ui:insert>
+                                </rich:panel>
+                            </div>
+                        </ui:insert>
+
+                        <div class="clear"></div>
+                    </div>
+
+
+                    <div class="footer">
+                        <p>Powered by <a href="http://seamframework.org">Seam</a> #{org.jboss.seam.version} and <a
+                                href="http://www.jboss.org/richfaces">RichFaces</a>. Generated by seam-gen.</p>
+                        <s:fragment rendered="#{init.debug}">
+                            <a:outputPanel ajaxRendered="true">
+                                <a:log hotkey="D" mode="popup"/>
+
+                                <p style="margin-top: -0.5em;">
+                                    Conversation: id = #{conversation.id}, #{conversation.longRunning ? 'long running' : 'temporary'}#{conversation.nested ? ', nested, parent id = '.concat(conversation.parentId) : ''}
+                                    #{' - '}
+                                    Ajax4jsf Log (Ctrl+Shift+D)
+                                    #{' - '}
+                                    <s:link id="debugConsole" view="/debug.xhtml" value="Debug console"
+                                            target="debugConsole"/>
+                                    #{' - '}
+                                    <s:link id="resetSession" view="/home.xhtml"
+                                            action="#{org.jboss.seam.web.session.invalidate()}"
+                                            propagation="none" value="Terminate session"/>
+                                </p>
+                            </a:outputPanel>
+                        </s:fragment>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </h:body>
+
+</f:view>
+</html>

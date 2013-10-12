@@ -1,0 +1,44 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                template="layout/template.xhtml">
+
+    <ui:define name="pageContent">
+
+        <h:messages id="messages" globalOnly="true" styleClass="message"
+                    errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
+                    rendered="#{showGlobalMessages != 'false'}"/>
+
+        <h1>Welcome ! Please login here</h1>
+        <rich:panel>
+            <h:panelGrid columns="2">
+                <h:graphicImage value="/img/seamlogo.png" alt="Seam logo"/>
+                <h:form id="loginForm">
+                    <div class="dialog">
+                        <h:panelGrid columns="2" rowClasses="prop" columnClasses="name,value">
+                            <h:outputLabel for="username">#{messages.login_userName}</h:outputLabel>
+                            <h:inputText id="username"
+                                         value="#{credentials.username}"/>
+                            <h:outputLabel for="password">#{messages.login_password}</h:outputLabel>
+                            <h:inputSecret id="password"
+                                           value="#{credentials.password}"/>
+                            <h:outputLabel for="rememberMe">Remember me</h:outputLabel>
+                            <h:selectBooleanCheckbox id="rememberMe"
+                                                     value="#{rememberMe.enabled}"/>
+                        </h:panelGrid>
+                    </div>
+                    <div class="actionButtons">
+                        <h:commandButton id="submit" value="#{messages.login}" action="#{identity.login}"/>
+                    </div>
+                </h:form>
+            </h:panelGrid>
+        </rich:panel>
+
+
+    </ui:define>
+</ui:composition>

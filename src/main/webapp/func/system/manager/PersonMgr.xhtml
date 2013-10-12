@@ -1,0 +1,286 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="body">
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="personEditPanel"/>
+    <ui:param name="panelTitle"
+              value="#{messages['edit']} #{messages.person}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         oncomplete="#{rich:component(panelId)}.hide(); return false;">
+            <s:conversationPropagation type="end"/>
+            <s:conversationId/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+    <h:panelGrid columns="2">
+    <s:decorate id="credentialsTypeField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.person_field_credentialsType}</ui:define>
+
+        <h:selectOneMenu id="credentialsType" label="#{messages.person_field_credentialsType}"
+                         value="#{personHome.instance.credentialsType}" required="true"
+                         disabled="#{personHome.managed}">
+            <s:selectItems var="_type" value="#{credentialsTypes}" label="#{messages[_type.name()]}"
+                           noSelectionLabel="#{messages.noSelectLabel}"/>
+            <s:convertEnum/>
+            <a:ajax event="valueChange" render="credentialsTypeField"/>
+
+        </h:selectOneMenu>
+
+
+    </s:decorate>
+
+    <s:decorate id="credentialsNumberField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.person_field_credentialsNO}</ui:define>
+        <h:inputText id="credentialsNumber"
+                     label="#{messages.person_field_credentialsNO}"
+                     required="true"
+                     size="25"
+                     maxlength="100"
+                     value="#{personHome.instance.credentialsNumber}" disabled="#{personHome.managed}">
+            <a:ajax event="blur" render="credentialsNumberField"/>
+        </h:inputText>
+    </s:decorate>
+
+    </h:panelGrid>
+    <ui:include src="/templates/system/PersonEdit.xhtml"/>
+
+    <ui:define name="actionButtons">
+        <a:commandButton render="dataListResult" execute="@form" value="#{messages.update}"
+                         action="#{personHome.updateEnd}"
+                         data="#{personHome.lastState}"
+                         oncomplete="if (event.data == 'updated')#{rich:component('personEditPanel')}.hide();">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+        <a:commandButton id="hideEditPanelButton2" immediate="true" execute="@this" value="#{messages.cancel}"
+                         oncomplete="#{rich:component('personEditPanel')}.hide();">
+            <s:conversationPropagation type="end"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+</s:decorate>
+
+
+<h:form styleClass="edit">
+    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.person_field_credentialsNO}</ui:define>
+            <h:inputText value="#{personList.person.credentialsNumber}"/>
+        </s:decorate>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.person_field_name}</ui:define>
+            <h:inputText value="#{personList.person.name}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.search_match}</ui:define>
+            <h:selectOneRadio id="logic" value="#{personList.restrictionLogicOperator}"
+                              styleClass="radio">
+                <f:selectItem itemLabel="#{messages.search_match_and}" itemValue="and"/>
+                <f:selectItem itemLabel="#{messages.search_match_or}" itemValue="or"/>
+            </h:selectOneRadio>
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+    </rich:collapsiblePanel>
+
+    <div class="actionButtons">
+        <a:outputPanel id="searchButton">
+            <a:commandButton value="#{messages.search}"
+                             execute="@form" render="dataListResult" action="#{personList.first}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </a:outputPanel>
+        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+    </div>
+</h:form>
+
+<rich:panel>
+
+    <div class="results" id="personList">
+
+
+        <rich:extendedDataTable clientRows="0" id="dataListResult"
+                                var="_person" frozenColumns="4"
+                                style="width:100%;"
+                                footerClass="page-footer"
+                                selectionMode="none" noDataLabel="#{messages.person} #{messages.emptyResult}"
+                                value="#{personList.resultList}">
+            <f:facet name="header">
+                <h:outputText
+                        value="#{messages.person} (#{empty personList.resultList ? 0 : (personList.paginated ? personList.resultCount : personList.resultList.size)})"/>
+            </f:facet>
+            <f:facet name="footer">
+                <a:outputPanel rendered="#{not empty personList.resultList}">
+                    <ui:include src="/layout/pageA4jNavigation.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                    </ui:include>
+                </a:outputPanel>
+            </f:facet>
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_name}"/>
+                        <ui:param name="propertyPath" value="person.name"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.name}"/>
+            </rich:column>
+
+            <rich:column width="70px">
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_credentialsType}"/>
+                        <ui:param name="propertyPath" value="person.credentialsType"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{messages[_person.credentialsType.name()]}"/>
+            </rich:column>
+
+            <rich:column width="130px">
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_credentialsNO}"/>
+                        <ui:param name="propertyPath" value="person.credentialsNumber"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.credentialsNumber}"/>
+            </rich:column>
+
+            <rich:column styleClass="action"  width="40px">
+                <f:facet name="header">#{messages.action}</f:facet>
+                <a:commandButton image="/img/edit.png" title="#{messages.edit}" id="showEditPanelButton" immediate="true" execute="@this" styleClass="no-decor"
+                               render="personEditPanel_form,personEditPanel_controls"
+                               oncomplete="#{rich:component('personEditPanel')}.show()">
+                    <a:param name="id" value="#{_person.id}" assignTo="#{personHome.id}"/>
+                    <s:conversationPropagation type="begin"/>
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_birth}"/>
+                        <ui:param name="propertyPath" value="person.dateOfBirth"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.dateOfBirth}">
+                    <f:convertDateTime type="both" dateStyle="short" pattern="#{messages.datePattern}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column width="40px">
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_sex}"/>
+                        <ui:param name="propertyPath" value="person.sex"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{messages[_person.sex.label]}"/>
+            </rich:column>
+
+            <rich:column width="200px">
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_address}"/>
+                        <ui:param name="propertyPath" value="person.address"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.address}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_city}"/>
+                        <ui:param name="propertyPath" value="person.city"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.city}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_credentialsorgan}"/>
+                        <ui:param name="propertyPath" value="person.credentialsOrgan"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.credentialsOrgan}"/>
+            </rich:column>
+
+
+            <rich:column width="40px">
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_ethnic}"/>
+                        <ui:param name="propertyPath" value="person.ethnic"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.ethnic}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_nationality}"/>
+                        <ui:param name="propertyPath" value="person.nationality"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.nationality}"/>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header" width="200px">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_nowAddress}"/>
+                        <ui:param name="propertyPath" value="person.nowAddress"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.nowAddress}"/>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{personList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.person_field_phone}"/>
+                        <ui:param name="propertyPath" value="person.phone"/>
+                    </ui:include>
+                </f:facet>
+                <h:outputText value="#{_person.phone}"/>
+            </rich:column>
+
+
+        </rich:extendedDataTable>
+
+    </div>
+
+</rich:panel>
+
+
+</ui:define>
+</ui:composition>

@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                template="message_dialog.xhtml">
+
+    <ui:define name="title">
+        <ui:param name="type" value="warning"/>
+        #{messages.deleteConfirm}
+    </ui:define>
+    <ui:define name="messages">
+        #{messages.deleteConfirm}
+    </ui:define>
+    <ui:define name="actionButtons">
+        <ui:insert/>
+        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                         onclick="#{rich:component(empty panelId ?'messagePopPanel': panelId)}.hide();return false;"/>
+    </ui:define>
+
+</ui:composition>

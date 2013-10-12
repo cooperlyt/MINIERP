@@ -1,0 +1,173 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+
+    <ui:define name="body">
+        <h:outputStylesheet>
+            .leftColumn{
+                vertical-align: top;
+                width: 200px;
+            }
+
+            .rightColumn{
+                vertical-align: top;
+            }
+        </h:outputStylesheet>
+        <h:panelGrid columns="2" columnClasses="leftColumn,rightColumn" style="width: 100%">
+
+            <h:form>
+                <a:outputPanel id="roleList">
+                    <rich:dataTable noDataLabel="#{messages.emptyResult}" value="#{roleList.resultList}" var="_role">
+                        <rich:column>
+                            <f:facet name="header">
+                                #{messages.role_field_type}
+                            </f:facet>
+                            #{fn:substring( messages[_role.roleType.name()], 0, 1)}
+                        </rich:column>
+
+                        <rich:column>
+                            <f:facet name="header">
+                                #{messages.role_field_name}
+                            </f:facet>
+                            <a:commandLink immediate="true" execute="@this" value="#{_role.name}"
+                                           title="#{_role.description}" render="roleDetails,actions">
+                                <a:param value="#{_role.id}" assignTo="#{roleHome.id}"/>
+                                <a:attachQueue requestDelay="0"/>
+                                <s:conversationPropagation type="end"/>
+                            </a:commandLink>
+
+
+                        </rich:column>
+
+
+                    </rich:dataTable>
+                </a:outputPanel>
+            </h:form>
+
+            <h:form id="roleDetails">
+                <rich:toolbar id="actions" height="34" itemSeparator="line">
+
+
+                    <rich:toolbarGroup rendered="#{not roleHome.editing}">
+                        <h:graphicImage value="/img/add.png"/>
+                        <a:commandLink value="#{messages.add}" immediate="true"
+                                       execute="@this"
+                                       action="#{roleHome.edit}" render="roleDetails,actions">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="" assignTo="#{roleHome.id}"/>
+                        </a:commandLink>
+                    </rich:toolbarGroup>
+                    <rich:toolbarGroup rendered="#{not roleHome.editing}">
+                        <h:graphicImage value="/img/edit.png"/>
+                        <a:commandLink value="#{messages.edit}" immediate="true"
+                                       execute="@this"
+                                       action="#{roleHome.edit}" render="roleDetails,actions"
+                                       onclick="if (#{not roleHome.idDefined}) {alert('#{messages.plase_select_role_first}'); return false;}">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{roleHome.instance.id}" assignTo="#{roleHome.id}"/>
+                        </a:commandLink>
+                    </rich:toolbarGroup>
+                    <rich:toolbarGroup rendered="#{not roleHome.editing}">
+                        <h:graphicImage value="/img/delete.png"/>
+                        <a:commandLink value="#{messages.delete}" immediate="true"
+                                       execute="@this"
+                                       action="#{roleHome.removeAndClear}" render="roleDetails,roleList"
+                                       onclick="if (#{not roleHome.idDefined}) {alert('#{messages.plase_select_role_first}'); return false;}">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{roleHome.instance.id}" assignTo="#{roleHome.id}"/>
+                        </a:commandLink>
+                    </rich:toolbarGroup>
+
+
+                    <rich:toolbarGroup rendered="#{roleHome.editing}" location="right">
+                        <a:commandButton value="#{messages.cancel}" render="roleDetails,actions"
+                                         action="#{roleHome.cancel}" immediate="true" execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                        <a:commandButton value="#{messages.save}"
+                                         action="#{roleHome.save}"
+                                         execute="@form" render="roleDetails,roleList,actions">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </rich:toolbarGroup>
+                </rich:toolbar>
+                <rich:panel>
+
+
+                    <rich:panel>
+
+                        <s:decorate id="nameField" template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.role_field_name}</ui:define>
+                            <h:inputText readonly="#{not roleHome.editing}"
+                                         required="true"
+                                         size="20"
+                                         maxlength="20"
+                                         label="#{messages.role_field_name}"
+                                         value="#{roleHome.instance.name}">
+                                <a:ajax disabled="#{not roleHome.editing}" execute="@this" event="blur"
+                                        render="nameField"/>
+                            </h:inputText>
+                        </s:decorate>
+
+                        <s:decorate id="roleTypeField" template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.role_field_type}</ui:define>
+                            <h:selectOneMenu disabled="#{not roleHome.editing}" label="#{messages.role_field_type}"
+                                             required="true"
+                                             value="#{roleHome.instance.roleType}">
+                                <s:selectItems value="#{roleTypes}" noSelectionLabel="#{messages.noSelectLabel}"
+                                               var="_roleType" label="#{messages[_roleType.name()]}"/>
+                                <s:convertEnum/>
+                                <a:ajax disabled="#{not roleHome.editing}" event="blur" render="roleTypeField"/>
+                            </h:selectOneMenu>
+                        </s:decorate>
+
+                        <s:decorate id="descriptionField" template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.description}</ui:define>
+                            <h:inputTextarea label="#{messages.description}"
+                                             cols="45"
+                                             rows="2"
+                                             readonly="#{not roleHome.editing}"
+                                             value="#{roleHome.instance.description}"/>
+                        </s:decorate>
+
+                        <div style="clear:both">
+                            <span class="required">*</span>
+                            #{messages.requiredFields}
+                        </div>
+
+                    </rich:panel>
+
+
+                    <rich:panel>
+                        <f:facet name="header">
+                            #{messages.bussinessCreatePower}
+                        </f:facet>
+
+                        <rich:pickList disabled="#{not roleHome.editing}" value="#{roleHome.selectBusinessList}"
+                                       listHeight="200px" addText="#{messages.pick_add}"
+                                       removeAllText="#{messages.pick_removeAll}"
+                                       addAllText="#{messages.pick_addAll}" removeText="#{messages.pick_remove}">
+                            <s:selectItems value="#{selectBusinessDefineList.resultList}" var="_business"
+                                           itemValue="#{_business}" label="#{_business.name}[#{_business.id}]"/>
+                            <f:converter converterId="systemEntityConverter"/>
+
+                        </rich:pickList>
+
+                    </rich:panel>
+
+                </rich:panel>
+            </h:form>
+        </h:panelGrid>
+
+    </ui:define>
+
+
+</ui:composition>

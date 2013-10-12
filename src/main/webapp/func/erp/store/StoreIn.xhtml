@@ -1,0 +1,255 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="toolbar">
+<h:outputStylesheet>
+    .barsearch {
+        height: 14px;
+        width: 100px;
+    }
+
+
+    .autoCompleteWidth50 {
+        width:80px !important;
+    }
+    .rf-au-lst-scrl {
+        width:80px !important;
+    }
+    .autoCompletePopupHieght {
+        width:80px !important;
+    }
+</h:outputStylesheet>
+
+<ui:include src="/templates/erp/StoreAreaSelectTree.xhtml"/>
+
+<ui:include src="/templates/erp/ResSelectTree.xhtml"/>
+
+<h:form id="actions">
+    <rich:toolbar height="26" rendered="#{not empty storeInAction.selectStore}">
+
+        <rich:toolbarGroup>
+            <a:region>
+                <h:panelGrid id="resSearchForm" columns="3">
+
+                    <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocateHome.code}"
+                                 required="true">
+                        <rich:placeholder value="#{messages.res_field_code}"/>
+                    </h:inputText>
+
+
+                    <a:commandButton value="#{messages.search}" execute="@region"
+                                     render="storeInItem,resSearchForm"
+                                     action="#{resLocateHome.locateByCode}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                     title="#{messages.resSelect}"
+                                     onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </h:panelGrid>
+            </a:region>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup location="right">
+            <a:region>
+                <h:panelGrid columns="3">
+                    <h:inputText id="storeOrderCodeInput"
+                            disabled="#{storeInAction.managed}"
+                            required="true"
+                            maxlength="32"
+                            styleClass="barsearch"
+                            label="#{messages.storeIn_field_id}"
+                            value="#{storeInAction.instance.id}">
+                        <rich:placeholder value="#{messages.storeIn_field_id}"/>
+                    </h:inputText>
+
+                    <a:commandButton value="#{messages.storeIn}" execute="@region"
+                                     action="#{storeInAction.storeIn}"
+                                     render="storeInItem,storeInItems,actions,beginActions">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                    <a:commandButton value="#{messages.cancel}" immediate="true" action="#{storeInAction.clearInstance}"
+                                     execute="@this" render="storeInItem,storeInItems,actions,beginActions">
+                        <s:conversationPropagation type="end"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </h:panelGrid>
+            </a:region>
+
+        </rich:toolbarGroup>
+
+    </rich:toolbar>
+</h:form>
+</ui:define>
+
+<ui:define name="body">
+    <h:form id="beginActions">
+        <a:outputPanel rendered="#{empty storeInAction.selectStore}">
+            <rich:toolbar height="26">
+                <rich:toolbarGroup location="right">
+                    <a:commandButton value="#{messages.beginStoreIn}" action="#{storeInAction.beginStoreIn}" execute="@form"
+                                     render="storeInItem,storeInItems,storeAreaSelectPanel_form,actions,beginActions,resSelectPanel_form">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <s:decorate id="selectStoreField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.Store}</ui:define>
+                <rich:select label="#{messages.Store}" required="true" value="#{storeInAction.selectStore}">
+                    <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store}"
+                                   label="#{_store.name}"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                </rich:select>
+            </s:decorate>
+
+            <s:decorate id="reasonField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.storeIn_field_reason}</ui:define>
+
+                <h:selectOneMenu label="#{messages.storeIn_field_reason}" value="#{storeInAction.instance.reason}"
+                                 required="true">
+                    <s:selectItems value="#{dictionary.getWordList('erp.storeInReason')}" var="_word"
+                                   itemValue="#{_word.id}" label="#{_word.value}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.storeIn_field_dateTime}</ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="20"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datetimepattern}"
+                        defaultTime="#{currentTime}"
+                        defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                        required="true"
+                        label="#{messages.storeIn_field_dateTime}"
+                        value="#{storeInAction.storeInDate}"/>
+            </s:decorate>
+
+            <s:decorate id="memoField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+                <h:inputTextarea
+                        cols="80"
+                        rows="2"
+                        label="#{messages.field_memo}"
+                        value="#{storeInAction.memo}"/>
+            </s:decorate>
+
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
+
+        </a:outputPanel>
+
+    </h:form>
+
+    <h:form id="storeInItem">
+        <rich:panel rendered="#{(not empty storeInAction.selectStore) and (resLocateHome.idDefined)}">
+
+            <h:panelGrid columns="1">
+                <h:outputText value="#{resLocateHome.resTitle}" styleClass="name"/>
+            </h:panelGrid>
+
+            <h:panelGrid id="storeAreaField" columns="3">
+                <h:outputText value="#{messages.StoreArea}" styleClass="name"/>
+                <h:outputText value="#{storeInAction.selectStore.name}:"/>
+                <a:commandLink
+                        value="#{storeAreaHome.idDefined ? storeAreaHome.storeAreaTitle : messages.pleaseSelectStoreArea}"
+                        immediate="true" execute="@this" styleClass="#{storeAreaHome.idDefined ? '' : 'errors'}"
+                        onclick="if(#{empty storeInAction.selectStore}){alert('#{messages.plaseSelectStore}');}else{#{rich:component('storeAreaSelectPanel')}.show();}return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+            </h:panelGrid>
+            <a:outputPanel id="itemFormats">
+                <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+                    <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{_format.formatDefine.name}</ui:define>
+                        <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
+                            <ui:param name="format" value="#{_format}"/>
+                            <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
+
+                        </ui:include>
+                    </s:decorate>
+
+                </a:repeat>
+            </a:outputPanel>
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.storeInCount}(#{storeResFormatFilter.res.unit})</ui:define>
+                <h:panelGrid columns="2">
+                    <rich:inputNumberSpinner enableManualInput="true" required="true"
+                                             value="#{storeInAction.resCount}" minValue="0"
+                                             maxValue="#{maxIntegerValue}"/>
+                    <a:commandButton value="#{messages.addItem}" execute="@form" render="storeInItem,storeInItems"
+                                     action="#{storeInAction.addItem}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </h:panelGrid>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
+
+
+        </rich:panel>
+    </h:form>
+
+    <h:form id="storeInItems">
+        <rich:dataTable style="width: 100%" rendered="#{not empty storeInAction.selectStore}" value="#{storeInItems}"
+                        var="_item">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res}
+                </f:facet>
+                #{_item.res.name}(#{_item.res.code}) #{' '}
+                <a:repeat value="#{_item.formats}" var="_format">
+                    #{' '}
+                    #{_format.formatDefine.name} :
+                    <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
+                                  rendered="#{_format.formatDefine.dataType.name() eq 'WORD'}"/>
+                    <h:outputText value="#{_format.formatValue}"
+                                  rendered="#{not (_format.formatDefine.dataType.name() eq 'WORD')}"/>
+
+                </a:repeat>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.StoreArea}
+                </f:facet>
+                #{_item.storeArea.getTitle(false)}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.storeInCount}
+                </f:facet>
+                #{_item.count}#{(_item.res.unit)}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.action}
+                </f:facet>
+                <a:commandButton title="#{messages.remove}" execute="@form" immediate="true" image="/img/delete.png"
+                                 action="#{storeInAction.removeItem}" render="storeInItems">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </rich:column>
+        </rich:dataTable>
+    </h:form>
+</ui:define>
+</ui:composition>

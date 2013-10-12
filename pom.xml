@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.dgsoft</groupId>
+    <artifactId>MINIERP</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>MINIERP</name>
+    <description>MINIERP Platform</description>
+
+    <repositories>
+        <repository>
+            <id>repository.jboss.org</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <layout>default</layout>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>snapshots.jboss.org</id>
+            <name>JBoss Snapshots Repository</name>
+            <url>http://snapshots.jboss.org/maven2/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>java.net2</id>
+            <name>Repository hosting the jee6 artifacts</name>
+            <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <url>http://download.java.net/maven/2/</url>
+            <id>jsf20</id>
+            <layout>default</layout>
+            <name>Repository for library Library[jsf20]</name>
+        </repository>
+        <repository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Maven Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+    <developers>
+        <developer>
+            <name>lyt</name>
+        </developer>
+    </developers>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repository.jboss.org</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>snapshots.jboss.org</id>
+            <name>JBoss Snapshots Repository</name>
+            <url>http://snapshots.jboss.org/maven2/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+    <properties>
+        <seam.version>2.3.1.Final</seam.version>
+        <richfaces.version>4.3.3.Final</richfaces.version>
+        <version.org.hibernate.search>4.2.0.Final</version.org.hibernate.search>
+
+        <!-- Excluded TestNG groups (ex: slow annotated tests won't run during
+            the test phase) -->
+        <tests.excludedGroups>slow</tests.excludedGroups>
+        <guava.version>12.0</guava.version>
+
+        <slf4j.version>1.6.1</slf4j.version>
+        <version.jbossas7>7.1.1.Final</version.jbossas7>
+
+        <!-- dependencies for functional tests -->
+        <ant.junit.version>1.6.2</ant.junit.version>
+        <ftest.version.discriminator/>
+        <selenium.browser>*firefoxproxy</selenium.browser>
+        <selenium.browser.url>http://localhost:8080</selenium.browser.url>
+        <selenium.browser.cluster.url>http://localhost:8180</selenium.browser.cluster.url>
+        <selenium.server.port>14444</selenium.server.port>
+        <selenium.server.host>localhost</selenium.server.host>
+        <selenium.speed>0</selenium.speed>
+        <selenium.timeout>30000</selenium.timeout>
+        <selenium.debug>false</selenium.debug>
+        <selenium.log.dir>${project.build.directory}/ftest-logs</selenium.log.dir>
+        <selenium.output.dir>${project.build.directory}/ftest-output</selenium.output.dir>
+        <application.deploy.timeout>300</application.deploy.timeout>
+        <browserSessionReuse>true</browserSessionReuse>
+        <ftest.resources.dir>src/test/resources-ftest</ftest.resources.dir>
+        <context.host>localhost</context.host>
+        <example.context.path>/${project.build.finalName}/</example.context.path>
+        <xml.namespace.aware>false</xml.namespace.aware>
+
+        <!-- ************** -->
+        <!-- Build settings -->
+        <!-- ************** -->
+
+        <!-- Cross plugins settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- maven-compiler-plugin -->
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+
+        <!--
+            Options to override the compiler arguments directly on the compiler arument line to separate between what
+            the IDE understands as the source level and what the Maven compiler actually use.
+        -->
+        <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
+        <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
+
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.richfaces</groupId>
+                <artifactId>richfaces-bom</artifactId>
+                <version>${richfaces.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.seam</groupId>
+                <artifactId>bom</artifactId>
+                <version>${seam.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
+            <!-- common provided scope dependencies -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.1.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.richfaces.ui</groupId>
+                <artifactId>richfaces-components-ui</artifactId>
+                <version>${richfaces.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.richfaces.core</groupId>
+                <artifactId>richfaces-core-impl</artifactId>
+                <version>${richfaces.version}</version>
+            </dependency>
+
+            <!-- guava is required by richfaces -->
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+
+            <!--  common test scope dependencies -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+
+            <!-- <dependency>
+                <groupId>org.metawidget</groupId>
+                <artifactId>metawidget-backend</artifactId>
+                <version>0.95</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.metawidget</groupId>
+                <artifactId>metawidget-frontend</artifactId>
+                <version>0.95</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.metawidget</groupId>
+                <artifactId>metawidget</artifactId>
+                <version>0.95</version>
+            </dependency>-->
+
+            <dependency>
+                <groupId>org.apache.myfaces.trinidad</groupId>
+                <artifactId>trinidad-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.myfaces.trinidad</groupId>
+                <artifactId>trinidad-impl</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+
+            <!-- Hibernate search version override due to JBSEAM-4984 -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search</artifactId>
+                <version>${version.org.hibernate.search}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-analyzers</artifactId>
+                <version>${version.org.hibernate.search}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-engine</artifactId>
+                <version>${version.org.hibernate.search}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-infinispan</artifactId>
+                <version>${version.org.hibernate.search}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-orm</artifactId>
+                <version>${version.org.hibernate.search}</version>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>dom4j</artifactId>
+            <groupId>dom4j</groupId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.faces</groupId>
+            <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.15.0-GA</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>servlet-api</artifactId>
+                    <groupId>javax.servlet</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.richfaces.ui</groupId>
+            <artifactId>richfaces-components-ui</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.richfaces.core</groupId>
+            <artifactId>richfaces-core-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-ui</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>testng</artifactId>
+                    <groupId>org.testng</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-remoting</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-ioc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-flex</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-resteasy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-debug</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${version.org.hibernate.search}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jboss-logging</artifactId>
+                    <groupId>org.jboss.logging</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>dom4j</artifactId>
+                    <groupId>dom4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${version.org.hibernate.search}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search</artifactId>
+            <version>${version.org.hibernate.search}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>ejb3-persistence</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>jta</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>hsqldb</groupId>
+                    <artifactId>hsqldb</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jbpm.jbpm3</groupId>
+            <artifactId>jbpm-jpdl</artifactId>
+            <version>3.2.10.SP3_seam2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.jackrabbit</groupId>
+                    <artifactId>jackrabbit-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>hibernate-ehcache</artifactId>
+                    <groupId>org.hibernate</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>dom4j</artifactId>
+                    <groupId>dom4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <defaultGoal>package</defaultGoal>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                    <warName>MINIERP</warName>
+                    <webappDirectory>${project.build.directory}/MINIERP_SNAPSHOT.war/</webappDirectory>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.richfaces.cdk</groupId>
+                <artifactId>maven-richfaces-resources-plugin</artifactId>
+                <version>4.3.1.Final</version>
+                <configuration>
+                    <skins>
+                        <!-- the name of your skin -->
+                        <skin>customBlueSky</skin>
+                        <skin>customClassic</skin>
+                        <skin>customDeepMarine</skin>
+                        <skin>customEmeraldTown</skin>
+                        <skin>customJapanCherry</skin>
+                        <skin>customRuby</skin>
+                        <skin>customWine</skin>
+                    </skins>
+                    <excludedFiles>
+                        <exclude>^\Qorg.richfaces.renderkit.html.images.\E.*</exclude>
+                        <exclude>^\Qorg.richfaces.renderkit.html.iconimages.\E.*</exclude>
+                    </excludedFiles>
+                    <includedContentTypes>
+                        <include>text/css</include>
+                        <include>image/.+</include>
+                    </includedContentTypes>
+                    <fileNameMappings>
+                        <property>
+                            <name>^.*showcase.*/([^/]+\.css)$</name>
+                            <value>org.richfaces.showcase.css/$1</value>
+                        </property>
+                        <property>
+                            <name>^.+/([^/]+\.(png|gif|jpg))$</name>
+                            <value>org.richfaces.images/$1</value>
+                        </property>
+                        <property>
+                            <name>^.+/([^/]+\.css)$</name>
+                            <value>org.richfaces.css/$1</value>
+                        </property>
+                    </fileNameMappings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>process-resources</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <!-- the actual name of this file is not important but it should be inside the META-INF folder -->
+                            <staticResourceMappingFile>
+                                ${project.build.outputDirectory}/META-INF/richfaces/custom-packedcompressed-resource-mappings.properties
+                            </staticResourceMappingFile>
+
+                            <!-- the URL part goes after /META-INF/resources/ -->
+                            <resourcesOutputDir>
+                                ${project.build.outputDirectory}/META-INF/resources/org.richfaces.staticResource/${richfaces.version}/PackedCompressed/
+                            </resourcesOutputDir>
+
+                            <!-- replace completely with the URL part -->
+                            <staticResourcePrefix>org.richfaces.staticResource/${richfaces.version}/PackedCompressed
+                            </staticResourcePrefix>
+
+                            <pack>true</pack>
+                            <compress>true</compress>
+
+                            <excludedFiles>
+                                <exclude>^javax.faces</exclude>
+                                <exclude>^\Qorg.richfaces.renderkit.html.images.\E.*</exclude>
+                                <exclude>^\Qorg.richfaces.renderkit.html.iconimages.\E.*</exclude>
+                                <exclude>^jquery\.js$</exclude>
+                            </excludedFiles>
+
+                        </configuration>
+                    </execution>
+
+                    <!-- If you are in Development stage the compression is ignored, include this execution to generate uncompressed files -->
+
+                    <execution>
+                        <id>process-resources-packed</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <staticResourceMappingFile>
+                                ${project.build.outputDirectory}/META-INF/richfaces/photoalbum-packed-resource-mappings.properties
+                            </staticResourceMappingFile>
+
+                            <!-- the directory is named “Packed”, not “PackedCompressed” as in the previous execution -->
+                            <resourcesOutputDir>
+                                ${project.build.outputDirectory}/META-INF/resources/org.richfaces.staticResource/${richfaces.version}/Packed/
+                            </resourcesOutputDir>
+                            <staticResourcePrefix>org.richfaces.staticResource/${richfaces.version}/Packed
+                            </staticResourcePrefix>
+
+                            <pack>true</pack>
+                            <compress>false</compress>
+                            <!-- do not compress -->
+
+                            <excludedFiles>
+                                <exclude>^javax.faces</exclude>
+                                <exclude>^\Qorg.richfaces.renderkit.html.images.\E.*</exclude>
+                                <exclude>^\Qorg.richfaces.renderkit.html.iconimages.\E.*</exclude>
+                                <exclude>^jquery\.js$</exclude>
+                            </excludedFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <version>${slf4j.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+
+
+    </build>
+
+    <!--
+<properties>
+    <jsf.version>2.1.7</jsf.version>
+    <org.richfaces.bom.version>4.3.1.Final</org.richfaces.bom.version>
+
+    <seam.version>2.3.0.Final</seam.version>
+    <hibernate.version>4.1.0.Final</hibernate.version>
+    <slf4j.version>1.5.8</slf4j.version>
+
+
+    <jdbc.groupId>mysql</jdbc.groupId>
+    <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
+    <jdbc.version>5.1.6</jdbc.version>
+
+    <tests.excludedGroups>slow</tests.excludedGroups>
+</properties>
+    -->
+</project>

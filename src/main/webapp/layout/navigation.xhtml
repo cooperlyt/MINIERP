@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/messagetip.js"/>
+
+
+    <rich:panel rendered="#{identity.loggedIn}">
+        <h:form>
+            <a:push id="pushTask" address="pushPooledTaskChange">
+                <a:ajax event="dataavailable" render="taskOperLink"/>
+            </a:push>
+            <a:push id="pushOwnerTask" address="pushTaskChange">
+                <a:ajax event="dataavailable" render="taskOperLink"/>
+            </a:push>
+        </h:form>
+
+        <li>
+            <s:link propagation="end" value="#{messages.createNewBusiness}"
+                    view="/func/system/business/start.xhtml" disabled="#{authInfo.loginEmployee.id eq 'root'}"/>
+        </li>
+        <li><s:link id="taskOperLink" propagation="end"
+                    view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceList.size}</strong>]#{messages.ownerTask}[<strong>#{taskInstanceList.size}</strong>]</s:link>
+        </li>
+
+        <h:form>
+            <h:selectOneMenu value="#{authInfo.currRoleCategoryId}"
+                             valueChangeListener="#{authInfo.roleCategoryChanged}">
+                <s:selectItems value="#{authInfo.loginEmployee.roleCategoryList}" var="_roleCategory"
+                               label="#{_roleCategory.name}" itemValue="#{_roleCategory.id}"/>
+
+                <a:ajax execute="@form" event="valueChange" render="navigationMenuForm"/>
+
+            </h:selectOneMenu>
+        </h:form>
+    </rich:panel>
+    <br/>
+    <f:subview id="navigation">
+        <h:form id="navigationMenuForm">
+            <rich:panelMenu activeItem="#{currentFunction.id}" rendered="#{identity.loggedIn}"
+                            groupExpandedLeftIcon="triangleUp" groupCollapsedLeftIcon="triangleDown"
+                            topGroupExpandedRightIcon="chevronUp" topGroupCollapsedRightIcon="chevronDown"
+                            itemLeftIcon="disc">
+
+                <a:repeat value="#{authInfo.authenticationFuncCategorys}" var="_category">
+                    <rich:panelMenuGroup label="#{_category.name}"
+                                         expanded="#{currentFunction.funcCategory.id eq _category.id}">
+                        <a:repeat value="#{_category.functionList}" var="_function">
+                            <rich:panelMenuItem execute="@this" label="#{_function.name}"
+                                                action="#{navigation.navigationTo}"
+                                                mode="server" name="#{_function.id}">
+                                <f:param name="functionId" value="#{_function.id}"/>
+                                <a:attachQueue requestDelay="0"/>
+                            </rich:panelMenuItem>
+                        </a:repeat>
+                    </rich:panelMenuGroup>
+                </a:repeat>
+            </rich:panelMenu>
+        </h:form>
+    </f:subview>
+</ui:composition>

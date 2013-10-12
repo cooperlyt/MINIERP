@@ -1,0 +1,137 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:custom="http://www.dgsoft.com/custom"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="body">
+
+        <s:decorate template="/layout/message_dialog.xhtml">
+            <ui:param name="type" value="info"/>
+            <ui:param name="panelId" value="JumpToTaskInfoPanel"/>
+            <ui:define name="messages">
+                <h:outputText id="JumpMessage" value="#{messages.jumptoTaskOperator}"/>
+            </ui:define>
+            <ui:define name="actionButtons">
+                <a:commandButton value="#{messages.notJumpBtn}"
+                                 onclick="#{rich:component('defaultBusinessDataPanel')}.hide();return false;"/>
+                <s:button id="JumpToTaskButton" value="#{messages.jumpToOperatorBtn}" taskInstance="#{businessCreate.operateTask}" action="#{taskOperate.operate}"/>
+
+            </ui:define>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/edit-modalpanel.xhtml">
+            <ui:define name="panelTitle">
+                <h:outputText id="defaultBusinessCreatePanelTitle"
+                              value="#{messages.createBusiness}:#{businessDefineHome.instance.name}"/>
+            </ui:define>
+            <ui:param name="panelId" value="defaultBusinessDataPanel"/>
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.businessDescription}</ui:define>
+                <h:inputText id="value"
+                             name="#{messages.businessDescription}"
+                             size="27"
+                             maxlength="100"
+                             value="#{startData.description}">
+                    <rich:validator event="blur"/>
+                </h:inputText>
+                <rich:message for="value" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+            </s:decorate>
+            <ui:define name="actionButtons">
+
+                <a:commandButton id="createBusinessButton" data="#{businessCreate.ownerTaskName}"
+                                 value="#{messages.createBusiness}" action="#{businessCreate.create}"
+                                 render="JumpMessage,JumpToTaskButton" execute="@form"
+                                 oncomplete="#{rich:component('defaultBusinessDataPanel')}.hide();if (event.data != '')#{rich:component('JumpToTaskInfoPanel')}.show();">
+                    <s:conversationPropagation type="end"/>
+
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+
+                <a:commandButton id="cancelButton" value="#{messages.cancel}" immediate="true" execute="@this"
+
+                                 oncomplete="#{rich:component('defaultBusinessDataPanel')}.hide()">
+                    <s:conversationPropagation type="end"/>
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </ui:define>
+        </s:decorate>
+
+
+        <rich:dataTable noDataLabel="#{messages.businessDefine_empty}" style="width:100%"
+                        value="#{authInfo.authenticationBussinessCategorys}" var="_category">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column colspan="4">
+                        <h:outputText value="#{messages.businessCategory}"/>
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        <h:outputText value="#{messages.businessDefine_field_id}"/>
+                    </rich:column>
+                    <rich:column>
+                        <h:outputText value="#{messages.businessDefine_field_name}"/>
+
+                    </rich:column>
+                    <rich:column>
+                        <h:outputText value="#{messages.version}"/>
+                    </rich:column>
+                    <rich:column>
+                        <h:outputText value="#{messages.action}"/>
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+            <rich:column colspan="4">
+                <rich:collapsibleSubTableToggler for="subTable"/>
+                <h:outputText value="#{_category.name}"/>
+            </rich:column>
+            <rich:collapsibleSubTable value="#{_category.businessDefineList}" var="_bussinessDef" id="subTable"
+                                      expandMode="client" expanded="#{false}">
+                <rich:column>
+                    <h:outputText value="#{_bussinessDef.id}"/>
+                </rich:column>
+                <rich:column>
+                    <a:outputPanel>
+
+                        <h:outputText value="#{_bussinessDef.name}"/>
+                        <rich:tooltip followMouse="false" showDelay="1500" styleClass="tooltip-custom-body"
+                                      layout="block" rendered="#{not empty _bussinessDef.memo}">
+                            <span style="white-space: nowrap">#{_bussinessDef.memo}</span>
+                        </rich:tooltip>
+
+                    </a:outputPanel>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value=" "/>
+                </rich:column>
+                <rich:column>
+                    <s:link action="#{businessCreate.requestCreate}" propagation="begin"
+                            value="#{messages.createBusiness}" rendered="#{not empty _bussinessDef.startPage}"/>
+
+                    <a:commandLink id="createSimpleBussinessButton" value="#{messages.createBusiness}" execute="@this"
+                                   render="defaultBusinessDataPanel_buttons,defaultBusinessDataPanel_inputs,defaultBusinessCreatePanelTitle"
+                                   rendered="#{empty _bussinessDef.startPage}"
+                                   oncomplete="#{rich:component('defaultBusinessDataPanel')}.show()">
+                        <s:conversationPropagation type="begin"/>
+                        <a:param id="bussinessDefineId" name="bussinessDefineId" value="#{_bussinessDef.id}"
+                                 assignTo="#{businessDefineHome.id}"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandLink>
+                </rich:column>
+                <f:facet name="footer">
+                    <h:outputText value="#{_category.name}: #{_category.businessDefines.size}"/>
+                </f:facet>
+            </rich:collapsibleSubTable>
+
+
+        </rich:dataTable>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.org/schema/seam/taglib">
+
+
+    <rich:popupPanel id="#{empty panelId ?'messagePopPanel': panelId}" width="220" modal="true" autosized="true"
+                     moveable="true" minWidth="220" resizeable="false">
+        <f:facet name="header">
+            <ui:insert name="title">
+                <h:outputText value="#{messages.warningMessage}" rendered="#{type =='warning'}"/>
+                <h:outputText value="#{messages.errorMessage}" rendered="#{type=='error'}"/>
+                <h:outputText value="#{messages.infoMessage}" rendered="#{type == 'info'}"/>
+            </ui:insert>
+        </f:facet>
+
+        <f:facet name="controls">
+            <a:commandButton immediate="true" execute="@this" image="/img/close.png"
+                             onclick="#{rich:component(empty panelId ?'messagePopPanel': panelId)}.hide();return false;"/>
+        </f:facet>
+        <rich:panel>
+            <h:panelGrid columns="2">
+                <h:graphicImage value="/img/msg_warning_big.gif" rendered="#{type == 'warning'}"
+                                id="warningImg"/>
+                <h:graphicImage value="/img/msg_error_big.png" rendered="#{type == 'error'}"
+                                id="errorImg"/>
+                <h:graphicImage value="/img/msg_info_big.gif" rendered="#{type == 'info'}"
+                                id="infoImg"/>
+                <ui:insert name="messages">
+                    <h:outputText value="#{msg}"/>
+                </ui:insert>
+            </h:panelGrid>
+        </rich:panel>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="#{panelId}_buttons">
+                <div class="actionButtons">
+                    <ui:insert name="actionButtons">
+                        <a:commandButton value="#{messages.ok}" immediate="true" execute="@this"
+                                         onclick="#{rich:component(empty panelId ?'messagePopPanel': panelId)}.hide();return false;"/>
+                    </ui:insert>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </rich:popupPanel>
+
+</ui:composition>

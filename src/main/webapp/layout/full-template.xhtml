@@ -1,0 +1,38 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:custom="http://www.dgsoft.com/custom"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+    <ui:define name="pageContent">
+
+        <h:panelGrid columns="2" width="100%" columnClasses=",column-right-align">
+            <a:outputPanel>
+                <h1> #{functionTitle}</h1>
+            </a:outputPanel>
+            <a:status>
+                <f:facet name="start">
+                    <h:graphicImage value="/img/connect.gif"/>
+                </f:facet>
+                <f:facet name="stop">
+                    <h:graphicImage value="/img/connect_idle.gif"/>
+                </f:facet>
+            </a:status>
+
+        </h:panelGrid>
+
+
+        <rich:panel styleClass="func-body">
+
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <ui:insert name="body">
+                Body content missed
+            </ui:insert>
+        </rich:panel>
+
+    </ui:define>
+</ui:composition>

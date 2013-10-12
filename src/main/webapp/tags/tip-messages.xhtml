@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.org/schema/seam/taglib">
+    <rich:message for="#{for}" rendered="#{empty rendered?'true':rendered}" showDetail="false">
+        <f:facet name="header">
+            <h:outputText value="Entered Data Status:"></h:outputText>
+        </f:facet>
+        <f:facet name="passedMarker">
+            <h:graphicImage url="/img/passed.gif" />
+        </f:facet>
+        <f:facet name="errorMarker">
+            <a:outputPanel ajaxRendered="false">
+                <h:graphicImage url="/img/error.gif" />
+
+                <rich:tooltip followMouse="false"
+                              showDelay="500" styleClass="tooltip">
+                    <h:graphicImage value="/img/error.gif" />
+                    <rich:message for="#{for}" />
+                </rich:tooltip>
+            </a:outputPanel>
+        </f:facet>
+
+    </rich:message>
+</ui:composition>

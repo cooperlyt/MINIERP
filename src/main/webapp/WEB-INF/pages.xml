@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pages xmlns="http://jboss.org/schema/seam/pages"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd"
+
+       no-conversation-view-id="/home.xhtml"
+       login-view-id="/login.xhtml">
+
+    <page view-id="*">
+        <navigation>
+            <rule if-outcome="home">
+                <redirect view-id="/home.xhtml"/>
+            </rule>
+        </navigation>
+    </page>
+
+    <page view-id="/func/*" login-required="true">
+
+    </page>
+
+    <page view-id="/func/system/config/*" login-required="true">
+        <restrict>#{s:hasRole('system.config')}</restrict>
+    </page>
+
+    <page view-id="/func/system/jbpm/*" login-required="true">
+        <restrict>#{s:hasRole('system.config')}</restrict>
+    </page>
+
+    <page view-id="/func/system/manager/*" login-required="true">
+        <restrict>#{s:hasRole('system.manager')}</restrict>
+    </page>
+
+    <page view-id="/func/erp/data/*" login-required="true">
+        <restrict>#{s:hasRole('erp.data.manager')}</restrict>
+    </page>
+
+    <page view-id="/func/erp/store/*" login-required="true">
+        <restrict>#{s:hasRole('erp.store.manager')}</restrict>
+    </page>
+
+    <exception class="org.jboss.seam.framework.EntityNotFoundException">
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">#{messages['org.jboss.seam.framework.EntityNotFoundException']}</message>
+        </redirect>
+    </exception>
+
+    <exception class="javax.persistence.EntityNotFoundException">
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">#{messages['javax.persistence.EntityNotFoundException']}</message>
+        </redirect>
+    </exception>
+    
+    <exception class="javax.persistence.EntityExistsException">
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">#{messages['javax.persistence.EntityExistsException']}</message>
+        </redirect>
+    </exception>
+    
+    <exception class="javax.persistence.OptimisticLockException">
+        <end-conversation/>
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">#{messages['javax.persistence.OptimisticLockException']}</message>
+        </redirect>
+    </exception>
+    
+    <exception class="org.jboss.seam.security.AuthorizationException">
+        <redirect view-id="/error.xhtml">
+            <message severity="error">#{messages['org.jboss.seam.security.AuthorizationException']}</message>
+        </redirect>
+    </exception>
+    
+    <exception class="org.jboss.seam.security.NotLoggedInException">
+        <redirect view-id="/login.xhtml">
+            <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}</message>
+        </redirect>
+    </exception>
+    
+    <exception class="javax.faces.application.ViewExpiredException">
+        <redirect view-id="/error.xhtml">
+            <message severity="warn">#{messages['javax.faces.application.ViewExpiredException']}</message>
+        </redirect>
+    </exception>
+    
+    <exception class="org.jboss.seam.ConcurrentRequestTimeoutException" log-level="trace">
+      <http-error error-code="503" />
+    </exception>
+     
+    <exception>
+        <redirect view-id="/error.xhtml">
+            <message severity="error">#{messages['UnexpectedError']}</message>
+        </redirect>
+    </exception>
+    <exception class="com.dgsoft.common.exception.InitDataExction">
+        <redirect view-id="/error.xhtml">
+            <message severity="error">#{messages.District_not_city}</message>
+        </redirect>
+    </exception>
+</pages>
