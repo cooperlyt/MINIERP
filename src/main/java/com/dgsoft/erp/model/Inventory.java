@@ -4,8 +4,7 @@ package com.dgsoft.erp.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -99,5 +98,18 @@ public class Inventory implements java.io.Serializable {
 	public void setStoreChangeItems(Set<StoreChangeItem> storeChangeItems) {
 		this.storeChangeItems = storeChangeItems;
 	}
+
+
+    @Transient
+    public List<StoreChangeItem> getStoreChangeItemList(){
+        List<StoreChangeItem> result = new ArrayList<StoreChangeItem>(getStoreChangeItems());
+        Collections.sort(result, new Comparator<StoreChangeItem>() {
+            @Override
+            public int compare(StoreChangeItem storeChangeItem, StoreChangeItem storeChangeItem2) {
+                return storeChangeItem.getStoreChange().getOperDate().compareTo(storeChangeItem2.getStoreChange().getOperDate());
+            }
+        });
+        return result;
+    }
 
 }

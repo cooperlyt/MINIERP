@@ -83,7 +83,12 @@ persistence-unit-name="house_owner"
 
     <bpm:jbpm>
 
+        <bpm:process-definitions>
 
+        </bpm:process-definitions>
+        <bpm:pageflow-definitions>
+            <value>business-config.jpdl.xml</value>
+        </bpm:pageflow-definitions>
 
     </bpm:jbpm>
 

@@ -119,14 +119,14 @@
 
                         <s:decorate id="roleTypeField" template="/layout/seam-edit.xhtml">
                             <ui:define name="label">#{messages.role_field_type}</ui:define>
-                            <h:selectOneMenu disabled="#{not roleHome.editing}" label="#{messages.role_field_type}"
+                            <rich:select disabled="#{not roleHome.editing}" label="#{messages.role_field_type}"
                                              required="true"
                                              value="#{roleHome.instance.roleType}">
                                 <s:selectItems value="#{roleTypes}" noSelectionLabel="#{messages.noSelectLabel}"
                                                var="_roleType" label="#{messages[_roleType.name()]}"/>
                                 <s:convertEnum/>
-                                <a:ajax disabled="#{not roleHome.editing}" event="blur" render="roleTypeField"/>
-                            </h:selectOneMenu>
+                                <a:ajax disabled="#{not roleHome.editing}" event="selectitem" render="roleTypeField"/>
+                            </rich:select>
                         </s:decorate>
 
                         <s:decorate id="descriptionField" template="/layout/seam-edit.xhtml">

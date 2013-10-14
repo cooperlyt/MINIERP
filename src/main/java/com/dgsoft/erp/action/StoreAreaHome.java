@@ -18,6 +18,8 @@ import java.util.Set;
 @Name("storeAreaHome")
 public class StoreAreaHome extends ErpEntityHome<StoreArea> {
 
+    private Set<String> allStoreAreaIds = null;
+
     public String getStoreAreaTitle() {
         String result = "";
         if (isIdDefined()) {
@@ -32,21 +34,33 @@ public class StoreAreaHome extends ErpEntityHome<StoreArea> {
         return result;
     }
 
-    private Set<String> subStoreAreaIds(StoreArea storeArea){
+    private Set<String> subStoreAreaIds(StoreArea storeArea) {
         Set<String> result = new HashSet<String>();
         result.add(storeArea.getId());
-        if (!storeArea.getStoreAreas().isEmpty()){
-            for(StoreArea subStoreArea: storeArea.getStoreAreas()){
+        if (!storeArea.getStoreAreas().isEmpty()) {
+            for (StoreArea subStoreArea : storeArea.getStoreAreas()) {
                 result.addAll(subStoreAreaIds(subStoreArea));
             }
         }
+
+
         return result;
     }
 
-    public Set<String> allStoreAreaIds(){
-        if (isIdDefined()){
-            return subStoreAreaIds(getInstance());
+    @Override
+    protected void initInstance() {
+        super.initInstance();
+        if (isIdDefined()) {
+            allStoreAreaIds = subStoreAreaIds(getInstance());
+        } else {
+            allStoreAreaIds = null;
         }
-        return null;
     }
+
+    public Set<String> getAllStoreAreaIds() {
+        if (isIdDefined()) {
+            return allStoreAreaIds;
+        } else return null;
+    }
+
 }

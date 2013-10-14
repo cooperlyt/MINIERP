@@ -28,12 +28,28 @@ public class StoreChangeItem implements java.io.Serializable {
     }
 
 
-    public StoreChangeItem(StoreChange storeChange, StoreRes storeRes, boolean storeOut, BigDecimal count) {
+    public StoreChangeItem(StoreChange storeChange, StoreRes storeRes, BigDecimal count,boolean storeOut) {
         this.storeChange = storeChange;
         this.storeRes = storeRes;
         this.storeOut = storeOut;
         this.count = count;
     }
+
+    public StoreChangeItem(StoreChange storeChange, Inventory inventory,BigDecimal count,boolean storeOut) {
+        this.storeChange = storeChange;
+        this.storeRes = inventory.getStoreRes();
+        this.inventory = inventory;
+        this.storeOut = storeOut;
+        this.count = count;
+        this.befortCount = inventory.getCount();
+        if (storeOut){
+            this.afterCount = befortCount.subtract(count);
+        } else{
+            this.afterCount = befortCount.add(count);
+        }
+    }
+
+
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -71,7 +87,7 @@ public class StoreChangeItem implements java.io.Serializable {
         this.inventory = inventory;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "STORE_CHANGE", nullable = false)
     @NotNull
     public StoreChange getStoreChange() {

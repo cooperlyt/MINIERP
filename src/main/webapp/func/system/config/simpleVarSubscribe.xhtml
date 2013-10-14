@@ -26,12 +26,12 @@
     }
 </h:outputStylesheet>
 <h:form>
-    <h:selectOneMenu value="#{businessSimpleVarConfig.selectedVersion}"
+    <rich:select value="#{businessSimpleVarConfig.selectedVersion}"
                      valueChangeListener="#{businessSimpleVarConfig.selectedVersionChange}">
         <s:selectItems value="#{businessSimpleVarConfig.versionList}" var="_ver" label="#{_ver}"
                        noSelectionLabel="#{messages.noSelectLabel}"/>
-        <a:ajax execute="@form" event="change" render="varTabPanel,simpleVarTabPanel"/>
-    </h:selectOneMenu>
+        <a:ajax execute="@form" event="selectitem" render="varTabPanel,simpleVarTabPanel"/>
+    </rich:select>
     <a:commandButton value="#{messages.copySubscribeToLasterVersion}" execute="@form"
                      oncomplete="alert('#{messages.businessSimpleVarCopyDone}')"
                      action="#{businessSimpleVarConfig.copySimpleVarToLaster}">
@@ -292,23 +292,23 @@
                     <rich:message for="title" styleClass="message-icon"
                                   showDetail="true" showSummary="false" tooltip="true"/>
                 </s:decorate>
-                <s:decorate template="/layout/edit.xhtml">
+                <s:decorate id="typeField" template="/layout/edit.xhtml">
                     <ui:define name="label">
                         #{messages.simpleVar_field_type}
                     </ui:define>
-                    <h:selectOneMenu id="type" label="#{messages.simpleVar_field_type}"
+                    <rich:select id="type" label="#{messages.simpleVar_field_type}"
                                      required="true"
                                      value="#{businessSimpleVarConfig.newSimpleVarSubscribe.simpleVarDefine.type}"
                                      disabled="#{not businessSimpleVarConfig.canChangeSimpleVar}">
                         <s:selectItems var="_varType" value="#{varTypes}" label="#{messages[_varType.name()]}"
                                        noSelectionLabel="#{messages.noSelectLabel}"/>
                         <s:convertEnum/>
-                        <a:ajax execute="@this" immediate="true" render="wordType" event="change"/>
-                        <rich:validator event="change"/>
-                    </h:selectOneMenu>
+                        <a:ajax execute="@this" immediate="true" render="typeField" event="selectitem"/>
 
-                    <rich:message for="type" styleClass="message-icon"
-                                  showDetail="true" showSummary="true" tooltip="true"/>
+                    </rich:select>
+
+                    <!--rich:message for="type" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/-->
                     <a:outputPanel id="wordType">
                         <a:outputPanel rendered="#{businessSimpleVarConfig.wordTypeVar}">
                             <h:selectOneMenu id="wordTypeSelect"

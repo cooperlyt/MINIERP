@@ -8,7 +8,11 @@
 
 
     <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/messagetip.js"/>
-
+    <h:outputStylesheet>
+        .roleCategorSelectWidth input[type="text"]{
+            width: 120px;
+        }
+    </h:outputStylesheet>
 
     <rich:panel rendered="#{identity.loggedIn}">
         <h:form>
@@ -29,14 +33,15 @@
         </li>
 
         <h:form>
-            <h:selectOneMenu value="#{authInfo.currRoleCategoryId}"
+            <rich:select value="#{authInfo.currRoleCategoryId}" styleClass="roleCategorSelectWidth"
+                         listWidth="140px"
                              valueChangeListener="#{authInfo.roleCategoryChanged}">
                 <s:selectItems value="#{authInfo.loginEmployee.roleCategoryList}" var="_roleCategory"
                                label="#{_roleCategory.name}" itemValue="#{_roleCategory.id}"/>
 
-                <a:ajax execute="@form" event="valueChange" render="navigationMenuForm"/>
+                <a:ajax execute="@form" event="selectitem" render="navigationMenuForm"/>
 
-            </h:selectOneMenu>
+            </rich:select>
         </h:form>
     </rich:panel>
     <br/>

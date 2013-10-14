@@ -113,26 +113,27 @@
             <h:panelGrid columns="3">
                 <s:decorate id="formatDefineTypeField" template="/layout/edit.xhtml">
                     <ui:define name="label">#{messages.formatDefine_field_DataType}</ui:define>
-                    <h:selectOneMenu value="#{resHome.newFormatDefine.dataType}"
+
+                    <rich:select value="#{resHome.newFormatDefine.dataType}"
                                      label="#{messages.formatDefine_field_DataType}" required="true">
                         <s:selectItems value="#{formatTypes}" var="_type"
                                        noSelectionLabel="#{messages.noSelectLabel}"
                                        label="#{messages[_type.name()]}"/>
                         <s:convertEnum/>
-                        <a:ajax execute="valueChange"
+                        <a:ajax execute="selectitem"
                                 render="formatDefineTypeField,formatDefineWordCategoryField"/>
-                    </h:selectOneMenu>
+                    </rich:select>
                 </s:decorate>
                 <s:decorate id="formatDefineWordCategoryField" template="/layout/edit.xhtml">
                     <ui:define name="label">#{messages.formatDafine_field_wordCategory}</ui:define>
-                    <h:selectOneMenu value="#{resHome.newFormatDefine.wordCategory}"
+                    <rich:select value="#{resHome.newFormatDefine.wordCategory}"
                                      required="#{resHome.newFormatDefine.dataType eq 'WORD'}"
                                      disabled="#{not (resHome.newFormatDefine.dataType eq 'WORD')}"
                                      label="#{messages.formatDafine_field_wordCategory}">
                         <s:selectItems value="#{userWordCategoryList.resultList}" var="_wc"
                                        noSelectionLabel="#{messages.noSelectLabel}" label="#{_wc.name}"
                                        itemValue="#{_wc.id}"/>
-                    </h:selectOneMenu>
+                    </rich:select>
                 </s:decorate>
 
 

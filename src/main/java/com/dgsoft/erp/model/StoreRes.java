@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.StoreResFormatFilter;
 import com.dgsoft.erp.action.StoreResHome;
 import org.hibernate.annotations.GenericGenerator;
@@ -106,16 +107,6 @@ public class StoreRes implements java.io.Serializable {
     }
 
     @Transient
-    public String getTitle(){
-        String result = "";
-        for (Format format: getFormatList()){
-            result += " " + format.getFormatDefine().getName() + ":" + format.getFormatValue();
-        }
-        return getRes().getName() + "(" + getRes().getCode() + ")" + result;
-
-    }
-
-    @Transient
     public List<Format> getFormatList(){
         List<Format> result = new ArrayList<Format>(getFormats());
         Collections.sort(result,new Comparator<Format>() {
@@ -141,7 +132,7 @@ public class StoreRes implements java.io.Serializable {
             return false;
         }
 
-        return StoreResHome.sameFormat(other.getFormats(), getFormats());
+        return ResHelper.sameFormat(other.getFormats(), getFormats());
     }
 
     @Override

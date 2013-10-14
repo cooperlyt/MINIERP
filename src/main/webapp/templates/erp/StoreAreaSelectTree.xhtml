@@ -21,12 +21,12 @@
 
         <ui:define name="formContent">
             <rich:panel>
-                <rich:tree value="#{storeInAction.selectStore.getRootStoreAreaList(false)}"
+                <rich:tree value="#{store}"
                            var="_node" toggleType="client"
                            selectionType="client">
                     <rich:treeNode>
                         <a:commandLink value="#{_node.name}" execute="@this" immediate="true"
-                                       render="storeAreaField"
+                                       render="#{render}"
                                        oncomplete="#{rich:component('storeAreaSelectPanel')}.hide();">
                             <a:attachQueue requestDelay="0"/>
                             <a:param value="#{_node.id}" assignTo="#{storeAreaHome.id}"/>

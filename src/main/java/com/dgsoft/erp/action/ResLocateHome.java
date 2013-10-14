@@ -7,6 +7,8 @@ import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResCategory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.RaiseEvent;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
@@ -81,6 +83,9 @@ public class ResLocateHome extends ErpEntityHome<Res> {
     protected void initInstance(){
         super.initInstance();
         storeResFormatFilter.selectRes(getInstance());
+        if (isIdDefined()){
+            Events.instance().raiseEvent("erp.resLocateSelected");
+        }
     }
 
 

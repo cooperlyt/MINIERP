@@ -5,6 +5,9 @@ import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
@@ -20,7 +23,7 @@ import java.util.*;
 @Name("storeOutAction")
 public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
-    @In
+    @In(create = true)
     private InventoryList inventoryList;
 
     @In
@@ -35,13 +38,19 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
     @In
     private NumberBuilder numberBuilder;
 
+    @In
+    private ResHelper resHelper;
+
+
+    @DataModel(value = "storeOutItems")
     private List<StoreOutItem> storeOutItems = new ArrayList<StoreOutItem>();
+
+    @DataModelSelection
+    private StoreOutItem selectStoreOutItem;
 
     private String selectInventoryId;
 
     private Store selectStore;
-
-    private BigDecimal outCount;
 
     private Date storeOutDate;
 
@@ -74,13 +83,6 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
         this.storeOutDate = storeOutDate;
     }
 
-    public BigDecimal getOutCount() {
-        return outCount;
-    }
-
-    public void setOutCount(BigDecimal outCount) {
-        this.outCount = outCount;
-    }
 
     public String getSelectInventoryId() {
         return selectInventoryId;
@@ -124,11 +126,17 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
                 temp.add(storeOutItem);
             }
             for (StoreRes storeRes : storeResGroup.keySet()) {
-                result.add(new StoreOutItemGroup(storeRes.getTitle(), storeResGroup.get(storeRes)));
+                result.add(new StoreOutItemGroup(resHelper.generateStoreResTitle(storeRes), storeResGroup.get(storeRes)));
             }
 
         }
         return result;
+    }
+
+
+    @Observer("erp.resLocateSelected")
+    public void resSelectedListener() {
+        inventoryList.first();
     }
 
     @Override
@@ -138,11 +146,10 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
         storeOutItems.clear();
         memo = null;
         storeOutDate = null;
-        outCount = null;
     }
 
     @Begin(flushMode = FlushModeType.MANUAL)
-    public void beginStoreIn() {
+    public void beginStoreOut() {
         inventoryList.setStore(selectStore);
         if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
             getInstance().setId(numberBuilder.getDateNumber("storeOutCode"));
@@ -155,9 +162,20 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
     @End
     @Transactional
-    public String StoreOut() {
+    public String storeOut() {
         if (isIdAvailable(getInstance().getId())) {
 
+
+            getInstance().setStoreChange(new StoreChange(selectStore, storeOutDate, credentials.getUsername(), StoreChange.StoreChangeType.STORE_IN, memo));
+            for (StoreOutItem storeInItem : storeOutItems) {
+
+                StoreChangeItem storeChangeItem = new StoreChangeItem(getInstance().getStoreChange(), storeInItem.getInventory(), storeInItem.getCount(),true);
+
+
+                getInstance().getStoreChange().getStoreChangeItems().add(storeChangeItem);
+
+                storeInItem.getInventory().setCount(storeChangeItem.getAfterCount());
+            }
 
             persist();
             clearInstance();
@@ -170,27 +188,31 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
     public void addItem() {
         Inventory inventory = getEntityManager().find(Inventory.class, selectInventoryId);
-        boolean added = false;
         for (StoreOutItem outItem : storeOutItems) {
             if (outItem.sameInventory(inventory)) {
-                outItem.setCount(outItem.getCount().add(outCount));
-                added = true;
-            }
-        }
-        if (!added) {
-            storeOutItems.add(new StoreOutItem(outCount, inventory));
-        }
-        outCount = new BigDecimal(0);
-    }
-
-    public void removeItem() {
-        for (StoreOutItem outItem : storeOutItems) {
-            if (selectInventoryId.equals(outItem.getInventory().getId())) {
-                storeOutItems.remove(outItem);
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "inventoryInStoreOut", resHelper.generateStoreResTitle(outItem.getInventory().getStoreRes()));
                 return;
             }
         }
+
+        storeOutItems.add(new StoreOutItem(inventory));
+
     }
+
+    public void removeItem() {
+        storeOutItems.remove(selectStoreOutItem);
+    }
+
+
+    public boolean inventoryInOrder(String inventoryId){
+         for (StoreOutItem item: storeOutItems){
+             if (item.getInventory().getId().equals(inventoryId)){
+                 return true;
+             }
+         }
+        return false;
+    }
+
 
     public static class StoreOutItemGroup {
 
@@ -220,9 +242,9 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
             this.items = items;
         }
 
-        public int getTotalCount(){
+        public int getTotalCount() {
             int result = 0;
-            for (StoreOutItem storeOutItem: items){
+            for (StoreOutItem storeOutItem : items) {
                 result += storeOutItem.getCount().toBigInteger().intValue();
             }
             return result;
@@ -235,8 +257,8 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
         private Inventory inventory;
 
-        public StoreOutItem(BigDecimal count, Inventory inventory) {
-            this.count = count;
+        public StoreOutItem(Inventory inventory) {
+            this.count = new BigDecimal(0);
             this.inventory = inventory;
         }
 

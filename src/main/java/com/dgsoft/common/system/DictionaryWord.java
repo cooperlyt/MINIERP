@@ -1,6 +1,7 @@
 package com.dgsoft.common.system;
 
 import com.dgsoft.common.OrderBeanComparator;
+import com.dgsoft.common.system.model.Employee;
 import com.dgsoft.common.system.model.Word;
 import com.dgsoft.common.system.model.WordCategory;
 import org.jboss.seam.ScopeType;
@@ -29,10 +30,18 @@ public class DictionaryWord {
 
     private Map<String, WordCategory> wordCategory;
 
+    private Map<String,Employee> employeeMap;
+
     @Create
-    @Observer({"org.jboss.seam.afterTransactionSuccess.WordCategory","org.jboss.seam.afterTransactionSuccess.Word"})
     @Transactional
     public void load() {
+        loadWord();
+        loadEmp();
+    }
+
+
+    @Observer({"org.jboss.seam.afterTransactionSuccess.WordCategory","org.jboss.seam.afterTransactionSuccess.Word"})
+    public void loadWord(){
         wordCache = new HashMap<String, Word>();
         wordCategory = new HashMap<String, WordCategory>();
         List<WordCategory> result = systemEntityLoader.getPersistenceContext().createQuery("select wordCategory from WordCategory wordCategory left join fetch wordCategory.words").getResultList();
@@ -41,6 +50,15 @@ public class DictionaryWord {
             for(Word word: category.getWords()){
                 wordCache.put(word.getId(),word);
             }
+        }
+    }
+
+    @Observer("org.jboss.seam.afterTransactionSuccess.Employee")
+    public void loadEmp(){
+        employeeMap = new HashMap<String, Employee>();
+        List<Employee> employees = systemEntityLoader.getPersistenceContext().createQuery("select emp from Employee emp join fetch emp.person").getResultList();
+        for(Employee emp: employees){
+            employeeMap.put(emp.getId(),emp);
         }
     }
 
@@ -84,6 +102,20 @@ public class DictionaryWord {
             return word.getValue();
         }else
             return "";
+
+    }
+
+
+    public Employee getEmpById(String id){
+       return employeeMap.get(id);
+    }
+
+    public String getEmpNameById(String id){
+        Employee emp = employeeMap.get(id);
+        if (emp == null){
+            return "invalid";
+        }else
+            return emp.getPerson().getName();
 
     }
 

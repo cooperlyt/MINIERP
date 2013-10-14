@@ -9,16 +9,16 @@
                 xmlns:rich="http://richfaces.org/rich">
 
 
-    <h:selectOneMenu label="#{format.formatDefine.name}" required="true" value="#{format.formatValue}"
+    <rich:select label="#{format.formatDefine.name}" required="#{empty requiredField ? 'true' : requiredField}" value="#{format.formatValue}"
                      rendered="#{format.formatDefine.dataType.name() eq 'WORD'}">
         <s:selectItems value="#{dictionary.getWordList(format.formatDefine.wordCategory)}"
                        var="_word" itemValue="#{_word.id}" label="#{_word.value}"
                        noSelectionLabel="#{messages.noSelectLabel}"/>
-        <a:ajax event="change" render="#{render}" disabled="#{empty ajaxDisable ? false : ajaxDisable}"/>
-    </h:selectOneMenu>
+        <a:ajax event="selectitem" render="#{render}" disabled="#{empty ajaxDisable ? false : ajaxDisable}"/>
+    </rich:select>
     <!-- TODO  -->
 
-    <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client" value="#{format.intValue}" layout="div" label="#{format.formatDefine.name}" required="true"
+    <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client" value="#{format.intValue}" layout="div" label="#{format.formatDefine.name}" required="#{empty requiredField ? 'true' : requiredField}"
                        var="_value" fetchValue="#{_value}" rendered="#{format.formatDefine.dataType.name() eq 'INTEGER'}"
                        autocompleteList="#{storeResFormatFilter.getFormatHistoryList(format.formatDefine.id)}"
                         converter="javax.faces.Integer" showButton="true">
@@ -26,7 +26,7 @@
         <a:ajax event="blur" render="#{render}" disabled="#{empty ajaxDisable ? false : ajaxDisable}"/>
     </rich:autocomplete>
 
-    <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client" value="#{format.floatValue}" layout="div" label="#{format.formatDefine.name}" required="true"
+    <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client" value="#{format.floatValue}" layout="div" label="#{format.formatDefine.name}" required="#{empty requiredField ? 'true' : requiredField}"
                        var="_value" fetchValue="#{_value}" rendered="#{format.formatDefine.dataType.name() eq 'FLOAT'}"
                        autocompleteList="#{storeResFormatFilter.getFormatHistoryList(format.formatDefine.id)}"
                        converter="javax.faces.BigDecimal" showButton="true">

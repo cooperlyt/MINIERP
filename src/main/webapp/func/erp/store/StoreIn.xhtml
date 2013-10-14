@@ -27,9 +27,14 @@
     }
 </h:outputStylesheet>
 
-<ui:include src="/templates/erp/StoreAreaSelectTree.xhtml"/>
+<ui:include src="/templates/erp/StoreAreaSelectTree.xhtml">
+    <ui:param name="render" value="storeAreaField"/>
+    <ui:param name="store" value="#{storeInAction.selectStore.getRootStoreAreaList(false)}"/>
+</ui:include>
 
-<ui:include src="/templates/erp/ResSelectTree.xhtml"/>
+<ui:include src="/templates/erp/ResSelectTree.xhtml">
+    <ui:param name="render" value="storeInItem"/>
+</ui:include>
 
 <h:form id="actions">
     <rich:toolbar height="26" rendered="#{not empty storeInAction.selectStore}">
@@ -115,12 +120,12 @@
             <s:decorate id="reasonField" template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.storeIn_field_reason}</ui:define>
 
-                <h:selectOneMenu label="#{messages.storeIn_field_reason}" value="#{storeInAction.instance.reason}"
+                <rich:select label="#{messages.storeIn_field_reason}" value="#{storeInAction.instance.reason}"
                                  required="true">
                     <s:selectItems value="#{dictionary.getWordList('erp.storeInReason')}" var="_word"
                                    itemValue="#{_word.id}" label="#{_word.value}"
                                    noSelectionLabel="#{messages.noSelectLabel}"/>
-                </h:selectOneMenu>
+                </rich:select>
             </s:decorate>
 
             <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">

@@ -64,7 +64,6 @@ public class Format implements java.io.Serializable {
     }
 
     @Column(name = "FORMAT_VALUE", nullable = false, length = 500)
-    @NotNull
     @Size(max = 500)
     public String getFormatValue() {
         return this.formatValue;
@@ -88,8 +87,11 @@ public class Format implements java.io.Serializable {
 
     @Transient
     public void setIntValue(Integer value) {
-
-        setFormatValue(String.valueOf(value));
+        if (value != null) {
+            setFormatValue(String.valueOf(value));
+        } else {
+            setFormatValue(null);
+        }
     }
 
     @Transient
@@ -106,7 +108,11 @@ public class Format implements java.io.Serializable {
 
     @Transient
     public void setFloatValue(BigDecimal value) {
-        setFormatValue(value.toPlainString());
+        if (value != null) {
+            setFormatValue(value.toPlainString());
+        }else{
+            setFormatValue(null);
+        }
     }
 
 

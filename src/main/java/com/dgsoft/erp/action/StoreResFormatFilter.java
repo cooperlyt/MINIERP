@@ -6,8 +6,10 @@ import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -25,6 +27,9 @@ public class StoreResFormatFilter {
 
     @In
     private EntityManager erpEntityManager;
+
+    @Logger
+    protected Log log;
 
     private Res res;
 
@@ -96,6 +101,13 @@ public class StoreResFormatFilter {
 
     }
 
+    public void clearRes(){
+        res = null;
+        historyValues.clear();
+        resFormatList.clear();
+
+    }
+
     public List<Object> getFormatHistoryList(String defineId) {
         List<Object> result = historyValues.get(defineId);
         if (result == null) {
@@ -104,15 +116,15 @@ public class StoreResFormatFilter {
             return result;
     }
 
-    public boolean typedFormat(){
-        if (res == null){
+    public boolean typedFormat() {
+        if (res == null) {
             return false;
         }
 
         for (Format format : resFormatList) {
-           if ((format.getFormatValue() != null) && (!format.getFormatValue().trim().equals(""))){
+            if ((format.getFormatValue() != null) && (!format.getFormatValue().trim().equals(""))) {
                 return true;
-           }
+            }
         }
         return false;
     }
@@ -120,25 +132,34 @@ public class StoreResFormatFilter {
     public Set<String> getAgreeStoreResIds() {
         if (res != null) {
             Set<String> result = new HashSet<String>();
+            result.add("none_none_none_if_collection_empty");
             List<StoreRes> storeReses = erpEntityManager.createQuery("select storeRes from StoreRes storeRes where storeRes.res.id = :resId").setParameter("resId", res.getId()).getResultList();
 
             for (StoreRes storeRes : storeReses) {
                 boolean agree = true;
                 for (Format format : resFormatList) {
+
+                    log.debug("getAgreeStoreResIds test: " + format);
+                    if (format != null){
+                        log.debug("getAgreeStoreResIds test: " + format.getFormatValue());
+                    }
                     if ((format.getFormatValue() != null) && (!format.getFormatValue().trim().equals("")) &&
-                            (!format.getFormatValue().equals(storeRes.getFormat(format.getFormatDefine().getId())))) {
+                            (!format.getFormatValue().equals(storeRes.getFormat(format.getFormatDefine().getId()).getFormatValue()))) {
                         agree = false;
                         break;
                     }
                 }
-                if (agree){
+                if (agree) {
                     result.add(storeRes.getId());
                 }
             }
 
+            log.debug("getAgreeStoreResIds return: " + result.size());
+
             return result;
-        } else
+        } else {
             return null;
+        }
     }
 
 }

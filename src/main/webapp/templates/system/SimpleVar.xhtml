@@ -131,7 +131,7 @@
                 </h:inputText>
 
 
-                <h:selectOneMenu label="#{lable}" value="#{var.wordValue}"
+                <rich:select label="#{lable}" value="#{var.wordValue}"
                                  rendered="#{var.wordType}"
                                  readonly="#{readonly}" style="width: 30px;"
                                  required="#{required}">
@@ -139,7 +139,7 @@
                     <f:converter converterId="systemEntityConverter"/>
                     <s:selectItems value="#{var.simpleVarSubscribe.simpleVarDefine.wordCategory.wordList}" var="_word"
                                    label="#{_word.value}" noSelectionLabel="#{messages.noSelectLabel}"/>
-                </h:selectOneMenu>
+                </rich:select>
 
 
         </h:panelGrid>

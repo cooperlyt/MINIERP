@@ -26,14 +26,14 @@
 
             <s:decorate id="sexField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.person_field_sex}</ui:define>
-                <h:selectOneMenu id="sex" style="width:60px" disabled="#{empty readonly?'false':readonly}"
+                <rich:select id="sex" style="width:60px" disabled="#{empty readonly?'false':readonly}"
                                  label="#{messages.person_field_sex}"
                                  value="#{personHome.instance.sex}">
                     <s:selectItems var="_sex" value="#{sexs}" label="#{messages[_sex.name()]}"
                                    noSelectionLabel="#{messages.noSelectLabel}"/>
                     <s:convertEnum/>
-                    <a:ajax event="valueChange" render="sexField" disabled="#{empty readonly?'false':readonly}"/>
-                </h:selectOneMenu>
+                    <a:ajax event="selectitem" render="sexField" disabled="#{empty readonly?'false':readonly}"/>
+                </rich:select>
 
             </s:decorate>
 

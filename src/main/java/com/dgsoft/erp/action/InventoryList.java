@@ -7,8 +7,10 @@ import com.dgsoft.erp.model.Store;
 import com.dgsoft.erp.model.StoreRes;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +28,15 @@ public class InventoryList extends ErpEntityQuery<Inventory> {
 
     private static final String EJBQL = "select inventory from Inventory inventory";
 
+    private static final String[] RESTRICTIONS = {
+            "inventory.storeArea.id in (#{storeAreaHome.allStoreAreaIds})",
+            "inventory.storeArea.store.id = #{inventoryList.store.id}",
+            "inventory.storeRes.id in (#{storeResFormatFilter.agreeStoreResIds})",
+            "inventory.storeRes.res.id = #{storeResFormatFilter.res.id}"};
+
+    @Logger
+    protected Log log;
+
     @In(create = true)
     private StoreAreaHome storeAreaHome;
 
@@ -34,6 +45,7 @@ public class InventoryList extends ErpEntityQuery<Inventory> {
 
     public InventoryList() {
         setEjbql(EJBQL);
+        setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setMaxResults(25);
     }
 
@@ -45,22 +57,6 @@ public class InventoryList extends ErpEntityQuery<Inventory> {
 
     public void setStore(Store store) {
         this.store = store;
-    }
-
-    public void search() {
-        List<String> restrictions = new ArrayList<String>();
-        if (storeAreaHome.isIdDefined()){
-            restrictions.add("inventory.storeArea.id in (#{storeAreaHome.allStoreAreaIds})");
-        }else{
-            restrictions.add("inventory.storeArea.store.id = #{store.id}");
-        }
-        if (storeResFormatFilter.typedFormat()){
-            restrictions.add("inventory.storeRes.id in (#{storeResFormatFilter.agreeStoreResIds})");
-        }else if (storeResFormatFilter.getRes() != null){
-            restrictions.add("inventory.storeRes.res.id = #{storeResFormatFilter.res.id}");
-        }
-        setRestrictionExpressionStrings(restrictions);
-        refresh();
     }
 
 }

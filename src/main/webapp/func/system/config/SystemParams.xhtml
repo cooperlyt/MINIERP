@@ -61,19 +61,19 @@
 
         <a:region>
             <a:outputPanel id="typeField">
-                <s:decorate template="/layout/edit.xhtml">
+                <s:decorate id="typeField" template="/layout/edit.xhtml">
                     <ui:define name="label">#{messages.systemParam_field_type}</ui:define>
-                    <h:selectOneMenu id="type" label="#{messages.systemParam_field_type}"
+                    <rich:select id="type" label="#{messages.systemParam_field_type}"
                                      required="true"
                                      value="#{systemParamHome.instance.type}">
                         <s:selectItems var="_paramType" value="#{paramTypes}" label="#{messages[_paramType.name()]}"
                                        noSelectionLabel="#{messages.noSelectLabel}"/>
                         <s:convertEnum/>
-                        <rich:validator event="blur"/>
-                    </h:selectOneMenu>
+                        <a:ajax event="selectitem" render="typeField" execute="@this"/>
+                    </rich:select>
 
-                    <rich:message for="type" styleClass="message-icon"
-                                  showDetail="true" showSummary="true" tooltip="true"/>
+                    <!--rich:message for="type" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/-->
                 </s:decorate>
             </a:outputPanel>
         </a:region>

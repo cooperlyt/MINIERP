@@ -154,7 +154,7 @@ public class StoreInAction extends ErpEntityHome<StoreIn> {
             getInstance().setStoreChange(new StoreChange(selectStore, storeInDate, credentials.getUsername(), StoreChange.StoreChangeType.STORE_IN, memo));
             for (StoreInItem storeInItem : storeInItems) {
                 storeResHome.setRes(storeInItem.getRes(), storeInItem.getFormats());
-                StoreChangeItem storeChangeItem = new StoreChangeItem(getInstance().getStoreChange(), storeResHome.getInstance(), false, storeInItem.getCount());
+                StoreChangeItem storeChangeItem = new StoreChangeItem(getInstance().getStoreChange(), storeResHome.getInstance(),storeInItem.getCount() , false);
                 if (storeResHome.isIdDefined()) {
                     List<Inventory> inventories = getEntityManager().createQuery("select inventory from Inventory inventory where inventory.storeRes.id = :storeResId and inventory.storeArea.id= :storeAreaId")
                             .setParameter("storeResId", storeResHome.getInstance().getId())
@@ -242,7 +242,7 @@ public class StoreInAction extends ErpEntityHome<StoreIn> {
         public boolean sameItem(StoreInItem storeInItem) {
             return (storeArea.getId().equals(storeInItem.getStoreArea().getId()) &&
                     res.getId().equals(storeInItem.getRes().getId()) &&
-                    StoreResHome.sameFormat(storeInItem.getFormats(), formats)
+                    ResHelper.sameFormat(storeInItem.getFormats(), formats)
             );
         }
     }

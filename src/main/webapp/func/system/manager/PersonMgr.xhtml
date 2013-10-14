@@ -28,15 +28,15 @@
     <s:decorate id="credentialsTypeField" template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.person_field_credentialsType}</ui:define>
 
-        <h:selectOneMenu id="credentialsType" label="#{messages.person_field_credentialsType}"
+        <rich:select id="credentialsType" label="#{messages.person_field_credentialsType}"
                          value="#{personHome.instance.credentialsType}" required="true"
                          disabled="#{personHome.managed}">
             <s:selectItems var="_type" value="#{credentialsTypes}" label="#{messages[_type.name()]}"
                            noSelectionLabel="#{messages.noSelectLabel}"/>
             <s:convertEnum/>
-            <a:ajax event="valueChange" render="credentialsTypeField"/>
+            <a:ajax event="selectitem" render="credentialsTypeField"/>
 
-        </h:selectOneMenu>
+        </rich:select>
 
 
     </s:decorate>

@@ -109,11 +109,12 @@
             </ui:define>
 
 
-            <h:selectOneMenu disabled="true"
+            <rich:select disabled="true"
+                         label="#{messages.person_field_credentialsType}"
                              value="#{personHome.instance.credentialsType}">
                 <s:selectItems var="_type" value="#{credentialsTypes}" label="#{messages[_type.name()]}"/>
                 <s:convertEnum/>
-            </h:selectOneMenu>
+            </rich:select>
         </s:decorate>
 
         <s:decorate template="/layout/display.xhtml">
@@ -131,13 +132,13 @@
             <s:decorate id="credentialsTypeField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.person_field_credentialsType}</ui:define>
 
-                <h:selectOneMenu id="credentialsType" label="#{messages.person_field_credentialsType}"
+                <rich:select id="credentialsType" label="#{messages.person_field_credentialsType}"
                                  value="#{personInput.cerdentialsType}" required="true">
                     <s:selectItems var="_type" value="#{credentialsTypes}" label="#{messages[_type.name()]}"/>
                     <s:convertEnum/>
-                    <a:ajax event="valueChange" listener="#{personInput.credentialsChangeListener}"
+                    <a:ajax event="selectitem" listener="#{personInput.credentialsChangeListener}"
                             render="credentialsTypeField,personEditFields" execute="@region" status="waitSearchPerson"/>
-                </h:selectOneMenu>
+                </rich:select>
             </s:decorate>
 
             <s:decorate id="credentialsNumberField" template="/layout/edit.xhtml">
@@ -218,29 +219,29 @@
 
             <s:decorate id="empJobField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.employee_field_job}</ui:define>
-                <h:selectOneMenu style="width:150px"
+                <rich:select style="width:150px"
                                  disabled="#{empty personHome.instance.credentialsNumber}"
                                  label="#{messages.employee_field_job}"
                                  value="#{employeeHome.instance.job}">
                     <s:selectItems var="_word" label="#{_word.value}"
                                    itemValue="#{_word.id}"
-                                   value="#{dictionary.getWordList('10')}"
+                                   value="#{dictionary.getWordList('system.empJob')}"
                                    noSelectionLabel="#{messages.noSelectLabel}"/>
 
-                </h:selectOneMenu>
+                </rich:select>
             </s:decorate>
 
 
             <s:decorate id="empOrgField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.employee_field_org}</ui:define>
-                <h:selectOneMenu disabled="#{not employeeHome.managed}"
+                <rich:select disabled="#{not employeeHome.managed}"
                                  style="width:150px;"
                                  label="#{messages.employee_field_org}"
                                  value="#{employeeHome.instance.organization}" required="true">
                     <s:selectItems value="#{allOrganizationList.resultList}" var="_org" label="#{_org.name}"/>
                     <f:converter converterId="systemEntityConverter"/>
                     <a:ajax event="valueChange" render="empOrgField" disabled="#{not employeeHome.managed}"/>
-                </h:selectOneMenu>
+                </rich:select>
             </s:decorate>
 
             <s:decorate id="empEMailField" template="/layout/edit.xhtml">

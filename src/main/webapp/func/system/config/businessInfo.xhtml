@@ -38,37 +38,30 @@
                 </ui:define>
             </s:decorate>
 
-            <s:decorate template="/layout/edit.xhtml">
+            <s:decorate id="wfnameField" template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.businessDefine_field_wfname}</ui:define>
-                <h:selectOneMenu id="wfName" value="#{businessDefineHome.instance.wfName}"
-                                 name="#{messages.businessDefine_field_wfname}" required="true"
+                <rich:select id="wfName" value="#{businessDefineHome.instance.wfName}"
+                                 label="#{messages.businessDefine_field_wfname}" required="true"
                                  style="width:150px;" disabled="#{businessDefineHome.managed}">
                     <s:selectItems value="#{jpdlNameList}" var="_jpdlName" label="#{_jpdlName}"
                                    noSelectionLabel="#{messages.noSelectLabel}"/>
                     <rich:validator event="change"/>
-                </h:selectOneMenu>
+                    <a:ajax event="change" render="wfnameField" />
+                </rich:select>
 
-                <ui:define name="tail">
-                    <rich:message for="wfName"
-                                  showDetail="true" showSummary="false" tooltip="true"/>
-                </ui:define>
             </s:decorate>
 
 
-            <s:decorate template="/layout/edit.xhtml">
+            <s:decorate id="categoryField" template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.businessDefine_category}</ui:define>
-                <h:selectOneMenu style="width:150px;" id="category"
+                <rich:select style="width:150px;" id="category"
                                  value="#{businessDefineHome.instance.businessCategory}"
-                                 title="#{messages.businessDefine_category}" required="true">
+                                 label="#{messages.businessDefine_category}" required="true">
                     <s:selectItems value="#{businessCategoryList.resultList}" var="_category"
                                    noSelectionLabel="#{messages.noSelectLabel}" label="#{_category.name}"/>
-                    <rich:validator event="change"/>
+                    <a:ajax event="change" render="categoryField" />
                     <f:converter converterId="systemEntityConverter"/>
-                </h:selectOneMenu>
-                <ui:define name="tail">
-                    <rich:message for="category"
-                                  showDetail="true" showSummary="false" tooltip="true"/>
-                </ui:define>
+                </rich:select>
             </s:decorate>
 
             <s:decorate template="/layout/edit.xhtml">

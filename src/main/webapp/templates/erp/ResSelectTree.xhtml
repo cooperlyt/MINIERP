@@ -34,7 +34,7 @@
                     </rich:treeNode>
                     <rich:treeNode type="res">
                         <a:commandLink value="#{_node.res.name}" execute="@this" immediate="true"
-                                       render="storeInItem"
+                                       render="#{render}"
                                        oncomplete="#{rich:component('resSelectPanel')}.hide();">
                             <a:param value="#{_node.res.id}" assignTo="#{resLocateHome.id}"/>
                             <a:attachQueue requestDelay="0"/>
