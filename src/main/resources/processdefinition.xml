@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns=""  name="order">
+
+
+	<start-state name="生成订单">
+		<transition to="订单收款" name="款到发货">
+			<condition expression="#{payType eq 'PAY_FIRST'}"></condition>
+		</transition>
+		<transition to="库存确认" name="欠款发货">
+			<condition expression="#{payType eq 'NOT_PAY'}"></condition>
+		</transition>
+		<transition to="fork1" name="货到付款">
+			<condition expression="#{payType eq 'COMMODITY_FIRST'}"></condition>
+		</transition>
+	</start-state>
+
+
+	<join name="join1">
+		<transition to="订单完成"></transition>
+	</join>
+
+	<task-node name="订单出库(1库)">
+		<task name="订单出库">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/func/erp/biz/custom/OrderOut.xhtml&quot;}
+			</description>
+		</task>
+		<transition to="出库确认"></transition>
+	</task-node>
+
+	<task-node name="订单收款">
+		<task name="订单收款">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/func/erp/biz/custom/OrderPay.xhtml&quot;}
+			</description>
+		</task>
+		<transition to="库存确认" name="款到发货">
+			<condition expression="#{payType eq 'PAY_FIRST'}"></condition>
+		</transition>
+		<transition to="join1" name="货到付款非自提">
+			<condition expression="#{not(payType eq 'PAY_FIRST')}"></condition>
+		</transition>
+		<transition to="join2" name="货到付款自提"></transition>
+	</task-node>
+
+	<task-node name="订单收货">
+		<task name="订单收货">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/func/erp/biz/custom/OrderCommodityConfirm.xhtml&quot;}
+			</description>
+		</task>
+		<event type="process-start">
+			<mail actors=""></mail>
+		</event>
+		<transition to="join1" name="货到付款">
+			<condition expression="#{receiveConfirm and (payType eq 'COMMODITY_FIRST')}"></condition>
+		</transition>
+		<transition to="订单完成" name="非货到付款">
+			<condition expression="#{receiveConfirm and (not (payType eq 'COMMODITY_FIRST'))}"></condition>
+		</transition>
+		<transition to="库存确认" name="补发">
+			<condition expression="#{not receiveConfirm}"></condition>
+		</transition>
+	</task-node>
+
+	<state name="等待入库">
+		<transition to="仓库选择"></transition>
+	</state>
+
+	<decision name="库存确认" expression="#{enough?'库存满足':'库存不足'}">
+		<transition to="等待入库" name="库存不足"></transition>
+		<transition to="仓库选择" name="库存满足"></transition>
+	</decision>
+
+	<fork name="fork1">
+		<transition to="订单收款"></transition>
+		<transition to="库存确认"></transition>
+	</fork>
+
+	<decision name="仓库选择">
+		<transition to="订单出库(1库)"></transition>
+		<transition to="订单出库(2库)"></transition>
+		<transition to="订单出库(天津)"></transition>
+	</decision>
+
+	<task-node name="订单出库(2库)">
+		<transition to="出库确认"></transition>
+	</task-node>
+
+	<task-node name="订单出库(天津)">
+		<transition to="出库确认"></transition>
+	</task-node>
+
+	<decision name="出库确认">
+		<transition to="订单收货" name="发货"></transition>
+		<transition to="等待入库" name="库存不足"></transition>
+		<transition to="订单完成" name="非货到付款自提"></transition>
+		<transition to="join2" name="货到付款自提"></transition>
+	</decision>
+
+	<join name="join2">
+		<transition to="订单完成"></transition>
+	</join>
+
+	<task-node name="task-node1"></task-node>
+
+	<task-node name="task-node2"></task-node>
+
+
+	<end-state name="订单完成"></end-state>
+
+
+</process-definition>

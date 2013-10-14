@@ -234,14 +234,14 @@
 
             <s:decorate id="empOrgField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.employee_field_org}</ui:define>
-                <rich:select disabled="#{not employeeHome.managed}"
+                <h:selectOneMenu disabled="#{not employeeHome.managed}"
                                  style="width:150px;"
                                  label="#{messages.employee_field_org}"
                                  value="#{employeeHome.instance.organization}" required="true">
                     <s:selectItems value="#{allOrganizationList.resultList}" var="_org" label="#{_org.name}"/>
                     <f:converter converterId="systemEntityConverter"/>
                     <a:ajax event="valueChange" render="empOrgField" disabled="#{not employeeHome.managed}"/>
-                </rich:select>
+                </h:selectOneMenu>
             </s:decorate>
 
             <s:decorate id="empEMailField" template="/layout/edit.xhtml">
