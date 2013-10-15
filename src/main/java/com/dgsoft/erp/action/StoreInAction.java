@@ -151,31 +151,31 @@ public class StoreInAction extends ErpEntityHome<StoreIn> {
     public String storeIn() {
         if (isIdAvailable(getInstance().getId())) {
 
-            getInstance().setStoreChange(new StoreChange(selectStore, storeInDate, credentials.getUsername(), StoreChange.StoreChangeType.STORE_IN, memo));
+            getInstance().setStockChange(new StockChange(selectStore, storeInDate, credentials.getUsername(), StockChange.StoreChangeType.STORE_IN, memo));
             for (StoreInItem storeInItem : storeInItems) {
                 storeResHome.setRes(storeInItem.getRes(), storeInItem.getFormats());
-                StoreChangeItem storeChangeItem = new StoreChangeItem(getInstance().getStoreChange(), storeResHome.getInstance(),storeInItem.getCount() , false);
+                StockChangeItem stockChangeItem = new StockChangeItem(getInstance().getStockChange(), storeResHome.getInstance(),storeInItem.getCount() , false);
                 if (storeResHome.isIdDefined()) {
-                    List<Inventory> inventories = getEntityManager().createQuery("select inventory from Inventory inventory where inventory.storeRes.id = :storeResId and inventory.storeArea.id= :storeAreaId")
+                    List<Stock> inventories = getEntityManager().createQuery("select inventory from Stock inventory where inventory.storeRes.id = :storeResId and inventory.storeArea.id= :storeAreaId")
                             .setParameter("storeResId", storeResHome.getInstance().getId())
                             .setParameter("storeAreaId", storeInItem.getStoreArea().getId()).getResultList();
                     if (!inventories.isEmpty()) {
                         if (inventories.size() > 1) {
                             log.warn("StoreIn inventory Repeat StoreRes ID:" + storeResHome.getInstance().getId());
                         }
-                        storeChangeItem.setInventory(inventories.get(0));
-                        storeChangeItem.setBefortCount(storeChangeItem.getInventory().getCount());
-                        storeChangeItem.getInventory().setCount(storeChangeItem.getInventory().getCount().add(storeInItem.getCount()));
-                        storeChangeItem.setAfterCount(storeChangeItem.getInventory().getCount());
+                        stockChangeItem.setStock(inventories.get(0));
+                        stockChangeItem.setBefortCount(stockChangeItem.getStock().getCount());
+                        stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getCount()));
+                        stockChangeItem.setAfterCount(stockChangeItem.getStock().getCount());
                     }
                 }
-                if (storeChangeItem.getInventory() == null){
-                    storeChangeItem.setInventory(new Inventory(storeResHome.getInstance(), storeInItem.getStoreArea(), storeInItem.getCount()));
-                    storeChangeItem.setBefortCount(new BigDecimal(0));
-                    storeChangeItem.setAfterCount(storeInItem.getCount());
+                if (stockChangeItem.getStock() == null){
+                    stockChangeItem.setStock(new Stock(storeResHome.getInstance(), storeInItem.getStoreArea(), storeInItem.getCount()));
+                    stockChangeItem.setBefortCount(new BigDecimal(0));
+                    stockChangeItem.setAfterCount(storeInItem.getCount());
                 }
 
-                getInstance().getStoreChange().getStoreChangeItems().add(storeChangeItem);
+                getInstance().getStockChange().getStockChangeItems().add(stockChangeItem);
             }
             persist();
             clearInstance();

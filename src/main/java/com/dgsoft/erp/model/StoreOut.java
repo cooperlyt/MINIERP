@@ -15,22 +15,22 @@ import javax.validation.constraints.Size;
 public class StoreOut implements java.io.Serializable {
 
 	private String id;
-	private StoreChange storeChange;
+	private StockChange stockChange;
 	private String reason;
 	private Set<OrderDelivery> orderDeliveries = new HashSet<OrderDelivery>(0);
 
 	public StoreOut() {
 	}
 
-	public StoreOut(String id, StoreChange storeChange, String reason) {
+	public StoreOut(String id, StockChange stockChange, String reason) {
 		this.id = id;
-		this.storeChange = storeChange;
+		this.stockChange = stockChange;
 		this.reason = reason;
 	}
-	public StoreOut(String id, StoreChange storeChange, String reason,
+	public StoreOut(String id, StockChange stockChange, String reason,
 			Set<OrderDelivery> orderDeliveries) {
 		this.id = id;
-		this.storeChange = storeChange;
+		this.stockChange = stockChange;
 		this.reason = reason;
 		this.orderDeliveries = orderDeliveries;
 	}
@@ -47,15 +47,15 @@ public class StoreOut implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-	@JoinColumn(name = "STORE_CHANGE", nullable = false)
+	@OneToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "STOCK_CHANGE", unique = true, nullable = false, updatable = false)
 	@NotNull
-	public StoreChange getStoreChange() {
-		return this.storeChange;
+	public StockChange getStockChange() {
+		return this.stockChange;
 	}
 
-	public void setStoreChange(StoreChange storeChange) {
-		this.storeChange = storeChange;
+	public void setStockChange(StockChange stockChange) {
+		this.stockChange = stockChange;
 	}
 
 	@Column(name = "REASON", nullable = false, length = 32)

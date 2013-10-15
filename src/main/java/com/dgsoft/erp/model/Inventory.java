@@ -1,10 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
-import org.hibernate.annotations.GenericGenerator;
-
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -17,27 +14,32 @@ import javax.validation.constraints.Size;
 public class Inventory implements java.io.Serializable {
 
 	private String id;
-	private Integer version;
-	private StoreRes storeRes;
-	private StoreArea storeArea;
-	private BigDecimal count;
-	private Set<StoreChangeItem> storeChangeItems = new HashSet<StoreChangeItem>(
-			0);
+	private Store store;
+	private StockChange stockChangeLoss;
+	private StockChange stockChangeAdd;
+	private Date checkDate;
+	private String memo;
 
 	public Inventory() {
 	}
 
-	public Inventory(StoreRes storeRes, StoreArea storeArea,
-			BigDecimal count) {
-		this.storeRes = storeRes;
-		this.storeArea = storeArea;
-		this.count = count;
+	public Inventory(String id, Store store, Date checkDate) {
+		this.id = id;
+		this.store = store;
+		this.checkDate = checkDate;
+	}
+	public Inventory(String id, Store store, StockChange stockChangeLoss,
+                     StockChange stockChangeAdd, Date checkDate, String memo) {
+		this.id = id;
+		this.store = store;
+		this.stockChangeLoss = stockChangeLoss;
+		this.stockChangeAdd = stockChangeAdd;
+		this.checkDate = checkDate;
+		this.memo = memo;
 	}
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -48,68 +50,56 @@ public class Inventory implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Version
-	@Column(name = "VERSION")
-	public Integer getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
-	@JoinColumn(name = "RES", nullable = false)
-	@NotNull
-	public StoreRes getStoreRes() {
-		return this.storeRes;
-	}
-
-	public void setStoreRes(StoreRes storeRes) {
-		this.storeRes = storeRes;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_AREA", nullable = false)
+	@JoinColumn(name = "STORE", nullable = false)
 	@NotNull
-	public StoreArea getStoreArea() {
-		return this.storeArea;
+	public Store getStore() {
+		return this.store;
 	}
 
-	public void setStoreArea(StoreArea storeArea) {
-		this.storeArea = storeArea;
+	public void setStore(Store store) {
+		this.store = store;
 	}
 
-	@Column(name = "COUNT", nullable = false, scale = 4)
+    @OneToOne(optional = true,fetch = FetchType.LAZY)
+    @JoinColumn(name = "LOSS_RES", unique = true, nullable = true, updatable = false)
+	public StockChange getStockChangeLoss() {
+		return this.stockChangeLoss;
+	}
+
+	public void setStockChangeLoss(StockChange stockChangeLoss) {
+		this.stockChangeLoss = stockChangeLoss;
+	}
+
+	@OneToOne(optional = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "ADD_RES", unique = true, nullable = true, updatable = false)
+	public StockChange getStockChangeAdd() {
+		return this.stockChangeAdd;
+	}
+
+	public void setStockChangeAdd(StockChange stockChangeAdd) {
+		this.stockChangeAdd = stockChangeAdd;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "CHECK_DATE", nullable = false, length = 19)
 	@NotNull
-	public BigDecimal getCount() {
-		return this.count;
+	public Date getCheckDate() {
+		return this.checkDate;
 	}
 
-	public void setCount(BigDecimal count) {
-		this.count = count;
+	public void setCheckDate(Date checkDate) {
+		this.checkDate = checkDate;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "inventory")
-	public Set<StoreChangeItem> getStoreChangeItems() {
-		return this.storeChangeItems;
+	@Column(name = "MEMO", length = 200)
+	@Size(max = 200)
+	public String getMemo() {
+		return this.memo;
 	}
 
-	public void setStoreChangeItems(Set<StoreChangeItem> storeChangeItems) {
-		this.storeChangeItems = storeChangeItems;
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
-
-
-    @Transient
-    public List<StoreChangeItem> getStoreChangeItemList(){
-        List<StoreChangeItem> result = new ArrayList<StoreChangeItem>(getStoreChangeItems());
-        Collections.sort(result, new Comparator<StoreChangeItem>() {
-            @Override
-            public int compare(StoreChangeItem storeChangeItem, StoreChangeItem storeChangeItem2) {
-                return storeChangeItem.getStoreChange().getOperDate().compareTo(storeChangeItem2.getStoreChange().getOperDate());
-            }
-        });
-        return result;
-    }
 
 }

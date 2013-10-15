@@ -1,7 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.model.Inventory;
+import com.dgsoft.erp.model.Stock;
 import org.jboss.seam.annotations.Name;
 
 /**
@@ -11,7 +11,7 @@ import org.jboss.seam.annotations.Name;
  * Time: 4:45 PM
  */
 @Name("inventoryHome")
-public class InventoryHome extends ErpEntityHome<Inventory> {
+public class InventoryHome extends ErpEntityHome<Stock> {
 
 
 }

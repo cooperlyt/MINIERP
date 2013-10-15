@@ -2,8 +2,6 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.action.StoreResFormatFilter;
-import com.dgsoft.erp.action.StoreResHome;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.*;
@@ -20,10 +18,10 @@ public class StoreRes implements java.io.Serializable {
 
     private String id;
     private Res res;
-    private Set<StoreChangeItem> storeChangeItems = new HashSet<StoreChangeItem>(
+    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(
             0);
     private Set<OrderList> orderLists = new HashSet<OrderList>(0);
-    private Set<Inventory> inventories = new HashSet<Inventory>(0);
+    private Set<Stock> inventories = new HashSet<Stock>(0);
     private Set<Format> formats = new HashSet<Format>(0);
 
     public StoreRes() {
@@ -61,12 +59,12 @@ public class StoreRes implements java.io.Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<StoreChangeItem> getStoreChangeItems() {
-        return this.storeChangeItems;
+    public Set<StockChangeItem> getStockChangeItems() {
+        return this.stockChangeItems;
     }
 
-    public void setStoreChangeItems(Set<StoreChangeItem> storeChangeItems) {
-        this.storeChangeItems = storeChangeItems;
+    public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
+        this.stockChangeItems = stockChangeItems;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
@@ -79,11 +77,11 @@ public class StoreRes implements java.io.Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<Inventory> getInventories() {
+    public Set<Stock> getInventories() {
         return this.inventories;
     }
 
-    public void setInventories(Set<Inventory> inventories) {
+    public void setInventories(Set<Stock> inventories) {
         this.inventories = inventories;
     }
 

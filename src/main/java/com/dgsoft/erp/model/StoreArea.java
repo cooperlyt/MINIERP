@@ -24,7 +24,7 @@ public class StoreArea implements java.io.Serializable, TreeNode {
     private boolean enable;
     private String description;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
-    private Set<Inventory> inventories = new HashSet<Inventory>(0);
+    private Set<Stock> inventories = new HashSet<Stock>(0);
 
     public StoreArea() {
     }
@@ -36,7 +36,7 @@ public class StoreArea implements java.io.Serializable, TreeNode {
     }
 
     public StoreArea(String id, Store store, StoreArea storeArea, String name,
-                     Set<StoreArea> storeAreas, Set<Inventory> inventories) {
+                     Set<StoreArea> storeAreas, Set<Stock> inventories) {
         this.id = id;
         this.store = store;
         this.storeArea = storeArea;
@@ -120,11 +120,11 @@ public class StoreArea implements java.io.Serializable, TreeNode {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeArea")
-    public Set<Inventory> getInventories() {
+    public Set<Stock> getInventories() {
         return this.inventories;
     }
 
-    public void setInventories(Set<Inventory> inventories) {
+    public void setInventories(Set<Stock> inventories) {
         this.inventories = inventories;
     }
 

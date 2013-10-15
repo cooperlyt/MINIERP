@@ -24,7 +24,7 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.area','仓库区设置','erp.store','','/func/erp/store/StoreAreaMgr.seam','','1','仓库存储区域设置');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.in','入库','erp.store','','/func/erp/store/StoreIn.seam','','2','物资入库');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.out','出库','erp.store','','/func/erp/store/StoreOut.seam','','3','物资出库');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.inventorySearch','库存查询','erp.store','','/func/erp/store/InventorySearch.seam','','4','库存查询');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.stockSearch','库存查询','erp.store','','/func/erp/store/StockSearch.seam','','4','库存查询');
 
 -- 角色
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, ROLE_TYPE, DESCRIPTION) VALUES ('system.config', '系统设置', 'ROLE_CATEGORY', '系统配置');
@@ -59,7 +59,7 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('admin', 'erp.
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.area');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.in');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.out');
-INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.inventorySearch');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.stockSearch');
 
 -- ROLE_ROLE_CATEGROY
 INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('system.config', 'superAdmin');

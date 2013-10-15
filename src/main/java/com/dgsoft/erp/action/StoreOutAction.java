@@ -105,10 +105,10 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
         if (groupByRes) {
             Map<Res, List<StoreOutItem>> resGroup = new HashMap<Res, List<StoreOutItem>>();
             for (StoreOutItem storeOutItem : storeOutItems) {
-                List<StoreOutItem> temp = resGroup.get(storeOutItem.getInventory().getStoreRes().getRes());
+                List<StoreOutItem> temp = resGroup.get(storeOutItem.getStock().getStoreRes().getRes());
                 if (temp == null) {
                     temp = new ArrayList<StoreOutItem>();
-                    resGroup.put(storeOutItem.getInventory().getStoreRes().getRes(), temp);
+                    resGroup.put(storeOutItem.getStock().getStoreRes().getRes(), temp);
                 }
                 temp.add(storeOutItem);
             }
@@ -118,10 +118,10 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
         } else {
             Map<StoreRes, List<StoreOutItem>> storeResGroup = new HashMap<StoreRes, List<StoreOutItem>>();
             for (StoreOutItem storeOutItem : storeOutItems) {
-                List<StoreOutItem> temp = storeResGroup.get(storeOutItem.getInventory().getStoreRes());
+                List<StoreOutItem> temp = storeResGroup.get(storeOutItem.getStock().getStoreRes());
                 if (temp == null) {
                     temp = new ArrayList<StoreOutItem>();
-                    storeResGroup.put(storeOutItem.getInventory().getStoreRes(), temp);
+                    storeResGroup.put(storeOutItem.getStock().getStoreRes(), temp);
                 }
                 temp.add(storeOutItem);
             }
@@ -166,15 +166,15 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
         if (isIdAvailable(getInstance().getId())) {
 
 
-            getInstance().setStoreChange(new StoreChange(selectStore, storeOutDate, credentials.getUsername(), StoreChange.StoreChangeType.STORE_IN, memo));
+            getInstance().setStockChange(new StockChange(selectStore, storeOutDate, credentials.getUsername(), StockChange.StoreChangeType.STORE_IN, memo));
             for (StoreOutItem storeInItem : storeOutItems) {
 
-                StoreChangeItem storeChangeItem = new StoreChangeItem(getInstance().getStoreChange(), storeInItem.getInventory(), storeInItem.getCount(),true);
+                StockChangeItem stockChangeItem = new StockChangeItem(getInstance().getStockChange(), storeInItem.getStock(), storeInItem.getCount(),true);
 
 
-                getInstance().getStoreChange().getStoreChangeItems().add(storeChangeItem);
+                getInstance().getStockChange().getStockChangeItems().add(stockChangeItem);
 
-                storeInItem.getInventory().setCount(storeChangeItem.getAfterCount());
+                storeInItem.getStock().setCount(stockChangeItem.getAfterCount());
             }
 
             persist();
@@ -187,15 +187,15 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
     }
 
     public void addItem() {
-        Inventory inventory = getEntityManager().find(Inventory.class, selectInventoryId);
+        Stock stock = getEntityManager().find(Stock.class, selectInventoryId);
         for (StoreOutItem outItem : storeOutItems) {
-            if (outItem.sameInventory(inventory)) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "inventoryInStoreOut", resHelper.generateStoreResTitle(outItem.getInventory().getStoreRes()));
+            if (outItem.sameInventory(stock)) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "inventoryInStoreOut", resHelper.generateStoreResTitle(outItem.getStock().getStoreRes()));
                 return;
             }
         }
 
-        storeOutItems.add(new StoreOutItem(inventory));
+        storeOutItems.add(new StoreOutItem(stock));
 
     }
 
@@ -206,7 +206,7 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
     public boolean inventoryInOrder(String inventoryId){
          for (StoreOutItem item: storeOutItems){
-             if (item.getInventory().getId().equals(inventoryId)){
+             if (item.getStock().getId().equals(inventoryId)){
                  return true;
              }
          }
@@ -255,11 +255,11 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
         private BigDecimal count;
 
-        private Inventory inventory;
+        private Stock stock;
 
-        public StoreOutItem(Inventory inventory) {
+        public StoreOutItem(Stock stock) {
             this.count = new BigDecimal(0);
-            this.inventory = inventory;
+            this.stock = stock;
         }
 
         public BigDecimal getCount() {
@@ -270,19 +270,19 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
             this.count = count;
         }
 
-        public Inventory getInventory() {
-            return inventory;
+        public Stock getStock() {
+            return stock;
         }
 
-        public void setInventory(Inventory inventory) {
-            this.inventory = inventory;
+        public void setStock(Stock stock) {
+            this.stock = stock;
         }
 
-        public boolean sameInventory(Inventory other) {
-            if (other == null || inventory == null) {
+        public boolean sameInventory(Stock other) {
+            if (other == null || stock == null) {
                 return false;
             }
-            return other.getId().equals(inventory.getId());
+            return other.getId().equals(stock.getId());
         }
     }
 

@@ -24,10 +24,10 @@ public class Store implements java.io.Serializable, TreeNode {
     private String tel;
     private boolean enable;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
-    private Set<ResCheck> resChecks = new HashSet<ResCheck>(0);
+    private Set<Inventory> inventories = new HashSet<Inventory>(0);
     private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
     private Set<StoreManager> storeManagers = new HashSet<StoreManager>(0);
-    private Set<StoreChange> storeChanges = new HashSet<StoreChange>(0);
+    private Set<StockChange> stockChanges = new HashSet<StockChange>(0);
 
     public Store() {
     }
@@ -44,8 +44,8 @@ public class Store implements java.io.Serializable, TreeNode {
 
     public Store(String id, String name, String description, String address,
                  String tel, boolean enable, Set<StoreArea> storeAreas,
-                 Set<ResCheck> resChecks, Set<CustomerOrder> customerOrders,
-                 Set<StoreManager> storeManagers, Set<StoreChange> storeChanges) {
+                 Set<Inventory> inventories, Set<CustomerOrder> customerOrders,
+                 Set<StoreManager> storeManagers, Set<StockChange> stockChanges) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -53,10 +53,10 @@ public class Store implements java.io.Serializable, TreeNode {
         this.tel = tel;
         this.enable = enable;
         this.storeAreas = storeAreas;
-        this.resChecks = resChecks;
+        this.inventories = inventories;
         this.customerOrders = customerOrders;
         this.storeManagers = storeManagers;
-        this.storeChanges = storeChanges;
+        this.stockChanges = stockChanges;
     }
 
     @Id
@@ -133,12 +133,12 @@ public class Store implements java.io.Serializable, TreeNode {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
-    public Set<ResCheck> getResChecks() {
-        return this.resChecks;
+    public Set<Inventory> getInventories() {
+        return this.inventories;
     }
 
-    public void setResChecks(Set<ResCheck> resChecks) {
-        this.resChecks = resChecks;
+    public void setInventories(Set<Inventory> inventories) {
+        this.inventories = inventories;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
@@ -160,12 +160,12 @@ public class Store implements java.io.Serializable, TreeNode {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
-    public Set<StoreChange> getStoreChanges() {
-        return this.storeChanges;
+    public Set<StockChange> getStockChanges() {
+        return this.stockChanges;
     }
 
-    public void setStoreChanges(Set<StoreChange> storeChanges) {
-        this.storeChanges = storeChanges;
+    public void setStockChanges(Set<StockChange> stockChanges) {
+        this.stockChanges = stockChanges;
     }
 
     @Transient

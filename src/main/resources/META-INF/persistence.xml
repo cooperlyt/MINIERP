@@ -8,9 +8,34 @@
     <persistence-unit name="systemEntityManagerFactory" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jboss/datasources/DGSystemXADS</jta-data-source>
+
+        <class>com.dgsoft.common.system.model.BusinessCategory</class>
+        <class>com.dgsoft.common.system.model.BusinessDefine</class>
+        <class>com.dgsoft.common.system.model.BusinessInstance</class>
+        <class>com.dgsoft.common.system.model.BusinessTask</class>
+        <class>com.dgsoft.common.system.model.ComplexVarSubscribe</class>
+        <class>com.dgsoft.common.system.model.Employee</class>
+        <class>com.dgsoft.common.system.model.FileSubscribe</class>
+        <class>com.dgsoft.common.system.model.FuncCategory</class>
+        <class>com.dgsoft.common.system.model.Function</class>
+        <class>com.dgsoft.common.system.model.Organization</class>
+        <class>com.dgsoft.common.system.model.Person</class>
+        <class>com.dgsoft.common.system.model.Rate</class>
+        <class>com.dgsoft.common.system.model.RateSubscribe</class>
+        <class>com.dgsoft.common.system.model.Report</class>
+        <class>com.dgsoft.common.system.model.ReportSubscribe</class>
+        <class>com.dgsoft.common.system.model.Role</class>
+        <class>com.dgsoft.common.system.model.RoleCategory</class>
+        <class>com.dgsoft.common.system.model.SimpleVarDefine</class>
+        <class>com.dgsoft.common.system.model.SimpleVarSubscribe</class>
+        <class>com.dgsoft.common.system.model.SystemParam</class>
+        <class>com.dgsoft.common.system.model.Word</class>
+        <class>com.dgsoft.common.system.model.WordCategory</class>
+
+        <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="20"/>
@@ -24,9 +49,45 @@
     <persistence-unit name="erpEntityManagerFactory" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jboss/datasources/MINIERPXADS</jta-data-source>
+
+        <class>com.dgsoft.erp.model.Accounting</class>
+        <class>com.dgsoft.erp.model.AccountOper</class>
+        <class>com.dgsoft.erp.model.BackMoney</class>
+        <class>com.dgsoft.erp.model.BackPrepareMoney</class>
+        <class>com.dgsoft.erp.model.BackRes</class>
+        <class>com.dgsoft.erp.model.Car</class>
+        <class>com.dgsoft.erp.model.Customer</class>
+        <class>com.dgsoft.erp.model.CustomerOrder</class>
+        <class>com.dgsoft.erp.model.DeliveryCar</class>
+        <class>com.dgsoft.erp.model.ExpressInfo</class>
+        <class>com.dgsoft.erp.model.Format</class>
+        <class>com.dgsoft.erp.model.FormatDefine</class>
+        <class>com.dgsoft.erp.model.Inventory</class>
+        <class>com.dgsoft.erp.model.MiddleMan</class>
+        <class>com.dgsoft.erp.model.MiddleMoney</class>
+        <class>com.dgsoft.erp.model.OrderBack</class>
+        <class>com.dgsoft.erp.model.OrderDelivery</class>
+        <class>com.dgsoft.erp.model.OrderList</class>
+        <class>com.dgsoft.erp.model.OrderPay</class>
+        <class>com.dgsoft.erp.model.OrderFee</class>
+        <class>com.dgsoft.erp.model.PreparePay</class>
+        <class>com.dgsoft.erp.model.Res</class>
+        <class>com.dgsoft.erp.model.ResCategory</class>
+        <class>com.dgsoft.erp.model.Stock</class>
+        <class>com.dgsoft.erp.model.StockChange</class>
+        <class>com.dgsoft.erp.model.StockChangeItem</class>
+        <class>com.dgsoft.erp.model.Store</class>
+        <class>com.dgsoft.erp.model.StoreArea</class>
+        <class>com.dgsoft.erp.model.StoreIn</class>
+        <class>com.dgsoft.erp.model.StoreManager</class>
+        <class>com.dgsoft.erp.model.StoreOut</class>
+        <class>com.dgsoft.erp.model.StoreRes</class>
+        <class>com.dgsoft.erp.model.TransCorp</class>
+
+        <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="20"/>
