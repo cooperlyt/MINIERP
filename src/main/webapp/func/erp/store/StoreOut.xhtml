@@ -184,7 +184,7 @@
                 </a:commandLink>
                 <a:commandButton render="storeAreaField,inventoryResult" rendered="#{storeAreaHome.idDefined}"
                                  title="#{messages.clear}" image="/img/delete.png"
-                                 action="#{inventoryList.first}" execute="@this" immediate="true">
+                                 action="#{stockList.first}" execute="@this" immediate="true">
                     <a:attachQueue requestDelay="0"/>
                     <a:param value="" assignTo="#{storeAreaHome.id}"/>
                 </a:commandButton>
@@ -210,7 +210,7 @@
                                          execute="@this" immediate="true">
                             <a:attachQueue requestDelay="0"/>
                             <a:param value="" assignTo="#{resLocateHome.id}"/>
-                            <a:param value="0" assignTo="#{inventoryList.firstResult}"/>
+                            <a:param value="0" assignTo="#{stockList.firstResult}"/>
                         </a:commandButton>
                     </h:panelGrid>
 
@@ -235,7 +235,7 @@
                     <a:outputPanel id="searchButton">
                         <a:commandButton execute="@region" value="#{messages.search}"
                                          render="itemFormats,inventoryResult"
-                                         action="#{inventoryList.first}">
+                                         action="#{stockList.first}">
                             <a:attachQueue requestDelay="0"/>
                         </a:commandButton>
                     </a:outputPanel>
@@ -245,13 +245,13 @@
         <a:outputPanel id="inventoryResult">
             <a:region>
                 <rich:dataTable rendered="#{(not empty storeOutAction.selectStore)}" style="width: 100%"
-                                value="#{inventoryList.resultList}" var="_inventory">
+                                value="#{stockList.resultList}" var="_inventory">
                     <rich:column>
                         <f:facet name="header">
                             <f:facet name="header">
                                 <ui:include src="/layout/a4jSort.xhtml">
                                     <ui:param name="render" value="inventoryResult"/>
-                                    <ui:param name="entityList" value="#{inventoryList}"/>
+                                    <ui:param name="entityList" value="#{stockList}"/>
                                     <ui:param name="propertyLabel" value="#{messages.res}"/>
                                     <ui:param name="propertyPath" value="stock.storeRes.res.name"/>
                                 </ui:include>
@@ -276,7 +276,7 @@
                             <f:facet name="header">
                                 <ui:include src="/layout/a4jSort.xhtml">
                                     <ui:param name="render" value="inventoryResult"/>
-                                    <ui:param name="entityList" value="#{inventoryList}"/>
+                                    <ui:param name="entityList" value="#{stockList}"/>
                                     <ui:param name="propertyLabel" value="#{messages.StoreArea}"/>
                                     <ui:param name="propertyPath" value="stock.storeArea.name"/>
                                 </ui:include>
@@ -290,7 +290,7 @@
                             <f:facet name="header">
                                 <ui:include src="/layout/a4jSort.xhtml">
                                     <ui:param name="render" value="inventoryResult"/>
-                                    <ui:param name="entityList" value="#{inventoryList}"/>
+                                    <ui:param name="entityList" value="#{stockList}"/>
                                     <ui:param name="propertyLabel" value="#{messages.InventoryCount}"/>
                                     <ui:param name="propertyPath" value="stock.count"/>
                                 </ui:include>
@@ -318,7 +318,7 @@
                     <f:facet name="footer">
                         <a:outputPanel rendered="#{not empty personList.resultList}">
                             <ui:include src="/layout/pageA4jNavigation.xhtml">
-                                <ui:param name="entityList" value="#{inventoryList}"/>
+                                <ui:param name="entityList" value="#{stockList}"/>
                                 <ui:param name="render" value="inventoryResult"/>
                             </ui:include>
                         </a:outputPanel>

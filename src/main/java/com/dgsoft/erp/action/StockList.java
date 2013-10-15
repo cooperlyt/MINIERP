@@ -18,15 +18,15 @@ import java.util.Arrays;
  * Date: 10/8/13
  * Time: 2:35 PM
  */
-@Name("inventoryList")
+@Name("stockList")
 @Scope(ScopeType.CONVERSATION)
-public class InventoryList extends ErpEntityQuery<Stock> {
+public class StockList extends ErpEntityQuery<Stock> {
 
     private static final String EJBQL = "select inventory from Stock inventory";
 
     private static final String[] RESTRICTIONS = {
             "inventory.storeArea.id in (#{storeAreaHome.allStoreAreaIds})",
-            "inventory.storeArea.store.id = #{inventoryList.store.id}",
+            "inventory.storeArea.store.id = #{stockList.store.id}",
             "inventory.storeRes.id in (#{storeResFormatFilter.agreeStoreResIds})",
             "inventory.storeRes.res.id = #{storeResFormatFilter.res.id}"};
 
@@ -39,7 +39,7 @@ public class InventoryList extends ErpEntityQuery<Stock> {
     @In(create = true)
     private StoreResFormatFilter storeResFormatFilter;
 
-    public InventoryList() {
+    public StockList() {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setMaxResults(25);

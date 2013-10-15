@@ -24,7 +24,7 @@ import java.util.*;
 public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
     @In(create = true)
-    private InventoryList inventoryList;
+    private StockList stockList;
 
     @In
     private FacesMessages facesMessages;
@@ -136,7 +136,7 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
     @Observer("erp.resLocateSelected")
     public void resSelectedListener() {
-        inventoryList.first();
+        stockList.first();
     }
 
     @Override
@@ -150,7 +150,7 @@ public class StoreOutAction extends ErpEntityHome<StoreOut> {
 
     @Begin(flushMode = FlushModeType.MANUAL)
     public void beginStoreOut() {
-        inventoryList.setStore(selectStore);
+        stockList.setStore(selectStore);
         if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
             getInstance().setId(numberBuilder.getDateNumber("storeOutCode"));
         }
