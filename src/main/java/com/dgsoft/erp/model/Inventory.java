@@ -1,8 +1,16 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -29,7 +37,7 @@ public class Inventory implements java.io.Serializable {
 		this.checkDate = checkDate;
 	}
 	public Inventory(String id, Store store, StockChange stockChangeLoss,
-                     StockChange stockChangeAdd, Date checkDate, String memo) {
+			StockChange stockChangeAdd, Date checkDate, String memo) {
 		this.id = id;
 		this.store = store;
 		this.stockChangeLoss = stockChangeLoss;
@@ -61,24 +69,24 @@ public class Inventory implements java.io.Serializable {
 		this.store = store;
 	}
 
-    @OneToOne(optional = true,fetch = FetchType.LAZY)
-    @JoinColumn(name = "LOSS_RES", unique = true, nullable = true, updatable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LOSS_RES")
 	public StockChange getStockChangeLoss() {
 		return this.stockChangeLoss;
 	}
 
-	public void setStockChangeLoss(StockChange stockChangeLoss) {
-		this.stockChangeLoss = stockChangeLoss;
+	public void setStockChangeLoss(StockChange stockChangeByLossRes) {
+		this.stockChangeLoss = stockChangeByLossRes;
 	}
 
-	@OneToOne(optional = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "ADD_RES", unique = true, nullable = true, updatable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ADD_RES")
 	public StockChange getStockChangeAdd() {
 		return this.stockChangeAdd;
 	}
 
-	public void setStockChangeAdd(StockChange stockChangeAdd) {
-		this.stockChangeAdd = stockChangeAdd;
+	public void setStockChangeAdd(StockChange stockChangeByAddRes) {
+		this.stockChangeAdd = stockChangeByAddRes;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

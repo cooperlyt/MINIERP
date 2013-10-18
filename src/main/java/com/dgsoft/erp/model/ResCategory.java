@@ -17,6 +17,7 @@ public class ResCategory implements java.io.Serializable {
 
 	private String id;
 	private ResCategory resCategory;
+    private Accounting accounting;
 	private boolean commodity;
 	private boolean material;
 	private boolean semiProduct;
@@ -83,6 +84,17 @@ public class ResCategory implements java.io.Serializable {
 	public void setResCategory(ResCategory resCategory) {
 		this.resCategory = resCategory;
 	}
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ACCOUNTING", nullable = false)
+    @NotNull
+    public Accounting getAccounting() {
+        return this.accounting;
+    }
+
+    public void setAccounting(Accounting accounting) {
+        this.accounting = accounting;
+    }
 
 	@Column(name = "COMMODITY", nullable = false)
 	public boolean isCommodity() {

@@ -1,21 +1,11 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,245 +16,233 @@ import javax.validation.constraints.Size;
 @Table(name = "CUSTOMER_ORDER", catalog = "MINI_ERP")
 public class CustomerOrder implements java.io.Serializable {
 
-    private String id;
-    private Integer version;
-    private Customer customer;
-    private Store store;
-    private String state;
-    private String payType;
-    private Date createDate;
-    private BigDecimal money;
-    private String processMessage;
-    private Date completeDate;
-    private BigDecimal profit;
-    private String memo;
-    private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
-    private Set<OrderPay> orderPays = new HashSet<OrderPay>(0);
-    private Set<OrderList> orderLists = new HashSet<OrderList>(0);
-    private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
-    private Set<OrderDelivery> orderDeliveries = new HashSet<OrderDelivery>(0);
-    private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
+	private String id;
+	private Integer version;
+	private Customer customer;
+	private Store store;
+	private String state;
+	private String payType;
+	private Date createDate;
+	private BigDecimal money;
+	private String processMessage;
+	private Date completeDate;
+	private BigDecimal profit;
+	private String memo;
+	private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
+	private Set<AccountOper> accountOper = new HashSet<AccountOper>(0);
+	private Set<OrderList> orderLists = new HashSet<OrderList>(0);
+	private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
+	private Set<OrderDelivery> orderDeliveries = new HashSet<OrderDelivery>(0);
+	private Set<OrderStoreOut> orderStoreOuts = new HashSet<OrderStoreOut>(0);
+	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
 
-    public CustomerOrder() {
-    }
+	public CustomerOrder() {
+	}
 
-    public CustomerOrder(String id, Customer customer, Store store,
-                         String state, String payType, Date createDate, BigDecimal money,
-                         Date completeDate) {
-        this.id = id;
-        this.customer = customer;
-        this.store = store;
-        this.state = state;
-        this.payType = payType;
-        this.createDate = createDate;
-        this.money = money;
-        this.completeDate = completeDate;
-    }
+	public CustomerOrder(String id, Customer customer, Store store,
+			String state, String payType, Date createDate, BigDecimal money,
+			Date completeDate) {
+		this.id = id;
+		this.customer = customer;
+		this.store = store;
+		this.state = state;
+		this.payType = payType;
+		this.createDate = createDate;
+		this.money = money;
+		this.completeDate = completeDate;
+	}
 
-    public CustomerOrder(String id, Customer customer, Store store,
-                         String state, String payType, Date createDate, BigDecimal money,
-                         String processMessage, Date completeDate, BigDecimal profit, String memo,
-                         Set<MiddleMoney> middleMoneys, Set<OrderPay> orderPays,
-                         Set<OrderList> orderLists, Set<OrderFee> orderFees,
-                         Set<OrderDelivery> orderDeliveries, Set<OrderBack> orderBacks) {
-        this.id = id;
-        this.customer = customer;
-        this.store = store;
-        this.state = state;
-        this.payType = payType;
-        this.createDate = createDate;
-        this.money = money;
-        this.processMessage = processMessage;
-        this.completeDate = completeDate;
-        this.profit = profit;
-        this.memo = memo;
-        this.middleMoneys = middleMoneys;
-        this.orderPays = orderPays;
-        this.orderLists = orderLists;
-        this.orderFees = orderFees;
-        this.orderDeliveries = orderDeliveries;
-        this.orderBacks = orderBacks;
-    }
 
-    @Id
-    @Column(name = "ID", unique = true, nullable = false, length = 32)
-    @NotNull
-    @Size(max = 32)
-    public String getId() {
-        return this.id;
-    }
+	@Id
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
+	@NotNull
+	@Size(max = 32)
+	public String getId() {
+		return this.id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    @Version
-    @Column(name = "VERSION")
-    public Integer getVersion() {
-        return this.version;
-    }
+	@Version
+	@Column(name = "VERSION")
+	public Integer getVersion() {
+		return this.version;
+	}
 
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CUSTOMER_ID", nullable = false)
-    @NotNull
-    public Customer getCustomer() {
-        return this.customer;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
+	@NotNull
+	public Customer getCustomer() {
+		return this.customer;
+	}
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "STORE_ID", nullable = false)
-    @NotNull
-    public Store getStore() {
-        return this.store;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STORE_ID", nullable = false)
+	@NotNull
+	public Store getStore() {
+		return this.store;
+	}
 
-    public void setStore(Store store) {
-        this.store = store;
-    }
+	public void setStore(Store store) {
+		this.store = store;
+	}
 
-    @Column(name = "STATE", nullable = false, length = 20)
-    @NotNull
-    @Size(max = 20)
-    public String getState() {
-        return this.state;
-    }
+	@Column(name = "STATE", nullable = false, length = 20)
+	@NotNull
+	@Size(max = 20)
+	public String getState() {
+		return this.state;
+	}
 
-    public void setState(String state) {
-        this.state = state;
-    }
+	public void setState(String state) {
+		this.state = state;
+	}
 
-    @Column(name = "PAY_TYPE", nullable = false, length = 32)
-    @NotNull
-    @Size(max = 32)
-    public String getPayType() {
-        return this.payType;
-    }
+	@Column(name = "PAY_TYPE", nullable = false, length = 32)
+	@NotNull
+	@Size(max = 32)
+	public String getPayType() {
+		return this.payType;
+	}
 
-    public void setPayType(String payType) {
-        this.payType = payType;
-    }
+	public void setPayType(String payType) {
+		this.payType = payType;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATE_DATE", nullable = false, length = 19)
-    @NotNull
-    public Date getCreateDate() {
-        return this.createDate;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "CREATE_DATE", nullable = false, length = 19)
+	@NotNull
+	public Date getCreateDate() {
+		return this.createDate;
+	}
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 
-    @Column(name = "MONEY", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getMoney() {
-        return this.money;
-    }
+	@Column(name = "MONEY", nullable = false, scale = 3)
+	@NotNull
+	public BigDecimal getMoney() {
+		return this.money;
+	}
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
+	public void setMoney(BigDecimal money) {
+		this.money = money;
+	}
 
-    @Column(name = "PROCESS_MESSAGE", length = 500)
-    @Size(max = 500)
-    public String getProcessMessage() {
-        return this.processMessage;
-    }
+	@Column(name = "PROCESS_MESSAGE", length = 500)
+	@Size(max = 500)
+	public String getProcessMessage() {
+		return this.processMessage;
+	}
 
-    public void setProcessMessage(String processMessage) {
-        this.processMessage = processMessage;
-    }
+	public void setProcessMessage(String processMessage) {
+		this.processMessage = processMessage;
+	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "COMPLETE_DATE", nullable = false, length = 19)
-    @NotNull
-    public Date getCompleteDate() {
-        return this.completeDate;
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "COMPLETE_DATE", nullable = false, length = 19)
+	@NotNull
+	public Date getCompleteDate() {
+		return this.completeDate;
+	}
 
-    public void setCompleteDate(Date completeDate) {
-        this.completeDate = completeDate;
-    }
+	public void setCompleteDate(Date completeDate) {
+		this.completeDate = completeDate;
+	}
 
-    @Column(name = "PROFIT", nullable = true, scale = 3)
-    public BigDecimal getProfit() {
-        return this.profit;
-    }
+	@Column(name = "PROFIT", scale = 3)
+	public BigDecimal getProfit() {
+		return this.profit;
+	}
 
-    public void setProfit(BigDecimal profit) {
-        this.profit = profit;
-    }
+	public void setProfit(BigDecimal profit) {
+		this.profit = profit;
+	}
 
-    @Column(name = "MEMO", length = 200)
-    @Size(max = 200)
-    public String getMemo() {
-        return this.memo;
-    }
+	@Column(name = "MEMO", length = 200)
+	@Size(max = 200)
+	public String getMemo() {
+		return this.memo;
+	}
 
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<MiddleMoney> getMiddleMoneys() {
-        return this.middleMoneys;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+	public Set<MiddleMoney> getMiddleMoneys() {
+		return this.middleMoneys;
+	}
 
-    public void setMiddleMoneys(Set<MiddleMoney> middleMoneys) {
-        this.middleMoneys = middleMoneys;
-    }
+	public void setMiddleMoneys(Set<MiddleMoney> middleMoneys) {
+		this.middleMoneys = middleMoneys;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<OrderPay> getOrderPays() {
-        return this.orderPays;
-    }
 
-    public void setOrderPays(Set<OrderPay> orderPays) {
-        this.orderPays = orderPays;
-    }
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AccountOper.class)
+    @JoinTable(name = "ORDER_PAY", joinColumns = @JoinColumn(name = "CUSTOMER_ORDER"), inverseJoinColumns = @JoinColumn(name = "ACCOUNT_OPER"))
+	public Set<AccountOper> getAccountOper() {
+		return this.accountOper;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<OrderList> getOrderLists() {
-        return this.orderLists;
-    }
+	public void setAccountOper(Set<AccountOper> orderPays) {
+		this.accountOper = orderPays;
+	}
 
-    public void setOrderLists(Set<OrderList> orderLists) {
-        this.orderLists = orderLists;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+	public Set<OrderList> getOrderLists() {
+		return this.orderLists;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<OrderFee> getOrderFees() {
-        return this.orderFees;
-    }
+	public void setOrderLists(Set<OrderList> orderLists) {
+		this.orderLists = orderLists;
+	}
 
-    public void setOrderFees(Set<OrderFee> orderFees) {
-        this.orderFees = orderFees;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+	public Set<OrderFee> getOrderFees() {
+		return this.orderFees;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<OrderDelivery> getOrderDeliveries() {
-        return this.orderDeliveries;
-    }
+	public void setOrderFees(Set<OrderFee> orderFees) {
+		this.orderFees = orderFees;
+	}
 
-    public void setOrderDeliveries(Set<OrderDelivery> orderDeliveries) {
-        this.orderDeliveries = orderDeliveries;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+	public Set<OrderDelivery> getOrderDeliveries() {
+		return this.orderDeliveries;
+	}
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<OrderBack> getOrderBacks() {
-        return this.orderBacks;
-    }
+	public void setOrderDeliveries(Set<OrderDelivery> orderDeliveries) {
+		this.orderDeliveries = orderDeliveries;
+	}
 
-    public void setOrderBacks(Set<OrderBack> orderBacks) {
-        this.orderBacks = orderBacks;
-    }
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+	public Set<OrderStoreOut> getOrderStoreOuts() {
+		return this.orderStoreOuts;
+	}
+
+	public void setOrderStoreOuts(Set<OrderStoreOut> orderStoreOuts) {
+		this.orderStoreOuts = orderStoreOuts;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+	public Set<OrderBack> getOrderBacks() {
+		return this.orderBacks;
+	}
+
+	public void setOrderBacks(Set<OrderBack> orderBacks) {
+		this.orderBacks = orderBacks;
+	}
 
 }

@@ -29,6 +29,11 @@ public class Store implements java.io.Serializable, TreeNode {
     private Set<StoreManager> storeManagers = new HashSet<StoreManager>(0);
     private Set<StockChange> stockChanges = new HashSet<StockChange>(0);
 
+
+    private Set<Stock> stocks = new HashSet<Stock>(0);
+    private Set<Allocation> allocationsForApplyStore = new HashSet<Allocation>(0);
+    private Set<Allocation> allocationsForTargetStore = new HashSet<Allocation>(0);
+
     public Store() {
     }
 
@@ -166,6 +171,35 @@ public class Store implements java.io.Serializable, TreeNode {
 
     public void setStockChanges(Set<StockChange> stockChanges) {
         this.stockChanges = stockChanges;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
+    public Set<Stock> getStocks() {
+        return this.stocks;
+    }
+
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeByApplyStore")
+    public Set<Allocation> getAllocationsForApplyStore() {
+        return this.allocationsForApplyStore;
+    }
+
+    public void setAllocationsForApplyStore(
+            Set<Allocation> allocationsForApplyStore) {
+        this.allocationsForApplyStore = allocationsForApplyStore;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeByTargetStore")
+    public Set<Allocation> getAllocationsForTargetStore() {
+        return this.allocationsForTargetStore;
+    }
+
+    public void setAllocationsForTargetStore(
+            Set<Allocation> allocationsForTargetStore) {
+        this.allocationsForTargetStore = allocationsForTargetStore;
     }
 
     @Transient

@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -29,14 +29,14 @@ public class OrderFee implements java.io.Serializable {
 	}
 
 	public OrderFee(String id, CustomerOrder customerOrder, String item,
-                    BigDecimal money) {
+			BigDecimal money) {
 		this.id = id;
 		this.customerOrder = customerOrder;
 		this.item = item;
 		this.money = money;
 	}
 	public OrderFee(String id, CustomerOrder customerOrder, String item,
-                    BigDecimal money, String description) {
+			BigDecimal money, String description) {
 		this.id = id;
 		this.customerOrder = customerOrder;
 		this.item = item;

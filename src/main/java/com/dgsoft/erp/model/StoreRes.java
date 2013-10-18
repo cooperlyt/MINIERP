@@ -4,6 +4,7 @@ package com.dgsoft.erp.model;
 import com.dgsoft.erp.action.ResHelper;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,11 +19,17 @@ public class StoreRes implements java.io.Serializable {
 
     private String id;
     private Res res;
-    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(
-            0);
+    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<OrderList> orderLists = new HashSet<OrderList>(0);
-    private Set<Stock> inventories = new HashSet<Stock>(0);
     private Set<Format> formats = new HashSet<Format>(0);
+
+    private String code;
+    private BigDecimal storeWarn;
+    private Integer expWarn;
+
+    private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
+    private Set<SupplierRes> supplierReses = new HashSet<SupplierRes>(0);
+    private Set<Stock> stocks = new HashSet<Stock>(0);
 
     public StoreRes() {
     }
@@ -58,6 +65,35 @@ public class StoreRes implements java.io.Serializable {
         this.res = res;
     }
 
+    @Column(name = "CODE", nullable = false, length = 50)
+    @NotNull
+    @Size(max = 50)
+    public String getCode() {
+        return this.code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    @Column(name = "STORE_WARN", scale = 4)
+    public BigDecimal getStoreWarn() {
+        return this.storeWarn;
+    }
+
+    public void setStoreWarn(BigDecimal storeWarn) {
+        this.storeWarn = storeWarn;
+    }
+
+    @Column(name = "EXP_WARN")
+    public Integer getExpWarn() {
+        return this.expWarn;
+    }
+
+    public void setExpWarn(Integer expWarn) {
+        this.expWarn = expWarn;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
     public Set<StockChangeItem> getStockChangeItems() {
         return this.stockChangeItems;
@@ -77,12 +113,12 @@ public class StoreRes implements java.io.Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<Stock> getInventories() {
-        return this.inventories;
+    public Set<Stock> getStocks() {
+        return this.stocks;
     }
 
-    public void setInventories(Set<Stock> inventories) {
-        this.inventories = inventories;
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
     }
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "storeRes", orphanRemoval = true, cascade = {CascadeType.ALL})
@@ -92,6 +128,24 @@ public class StoreRes implements java.io.Serializable {
 
     public void setFormats(Set<Format> formats) {
         this.formats = formats;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
+    public Set<AllocationRes> getAllocationReses() {
+        return this.allocationReses;
+    }
+
+    public void setAllocationReses(Set<AllocationRes> allocationReses) {
+        this.allocationReses = allocationReses;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
+    public Set<SupplierRes> getSupplierReses() {
+        return this.supplierReses;
+    }
+
+    public void setSupplierReses(Set<SupplierRes> supplierReses) {
+        this.supplierReses = supplierReses;
     }
 
     @Transient

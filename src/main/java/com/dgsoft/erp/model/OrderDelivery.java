@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +23,6 @@ public class OrderDelivery implements java.io.Serializable {
 
 	private String id;
 	private CustomerOrder customerOrder;
-	private StoreOut storeOut;
 	private String deliveryType;
 	private String memo;
 	private Set<ExpressInfo> expressInfos = new HashSet<ExpressInfo>(0);
@@ -33,18 +32,16 @@ public class OrderDelivery implements java.io.Serializable {
 	}
 
 	public OrderDelivery(String id, CustomerOrder customerOrder,
-			StoreOut storeOut, String deliveryType) {
+			String deliveryType) {
 		this.id = id;
 		this.customerOrder = customerOrder;
-		this.storeOut = storeOut;
 		this.deliveryType = deliveryType;
 	}
 	public OrderDelivery(String id, CustomerOrder customerOrder,
-			StoreOut storeOut, String deliveryType, String memo,
-			Set<ExpressInfo> expressInfos, Set<DeliveryCar> deliveryCars) {
+			String deliveryType, String memo, Set<ExpressInfo> expressInfos,
+			Set<DeliveryCar> deliveryCars) {
 		this.id = id;
 		this.customerOrder = customerOrder;
-		this.storeOut = storeOut;
 		this.deliveryType = deliveryType;
 		this.memo = memo;
 		this.expressInfos = expressInfos;
@@ -72,17 +69,6 @@ public class OrderDelivery implements java.io.Serializable {
 
 	public void setCustomerOrder(CustomerOrder customerOrder) {
 		this.customerOrder = customerOrder;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_OUT", nullable = false)
-	@NotNull
-	public StoreOut getStoreOut() {
-		return this.storeOut;
-	}
-
-	public void setStoreOut(StoreOut storeOut) {
-		this.storeOut = storeOut;
 	}
 
 	@Column(name = "DELIVERY_TYPE", nullable = false, length = 32)

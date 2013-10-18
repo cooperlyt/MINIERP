@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.Date;

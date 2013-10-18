@@ -1,20 +1,10 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,8 +24,10 @@ public class OrderBack implements java.io.Serializable {
 	private Date completeDate;
 	private String processMessage;
 	private String memo;
+
 	private Set<BackRes> backReses = new HashSet<BackRes>(0);
-	private Set<BackMoney> backMoneys = new HashSet<BackMoney>(0);
+
+	private Set<AccountOper> accountOper = new HashSet<AccountOper>(0);
 
 	public OrderBack() {
 	}
@@ -51,8 +43,7 @@ public class OrderBack implements java.io.Serializable {
 	}
 	public OrderBack(String id, CustomerOrder customerOrder, String state,
 			String reason, Date createDate, Date completeDate,
-			String processMessage, String memo, Set<BackRes> backReses,
-			Set<BackMoney> backMoneys) {
+			String processMessage, String memo, Set<BackRes> backReses) {
 		this.id = id;
 		this.customerOrder = customerOrder;
 		this.state = state;
@@ -62,7 +53,6 @@ public class OrderBack implements java.io.Serializable {
 		this.processMessage = processMessage;
 		this.memo = memo;
 		this.backReses = backReses;
-		this.backMoneys = backMoneys;
 	}
 
 	@Id
@@ -171,13 +161,14 @@ public class OrderBack implements java.io.Serializable {
 		this.backReses = backReses;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack")
-	public Set<BackMoney> getBackMoneys() {
-		return this.backMoneys;
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AccountOper.class)
+    @JoinTable(name = "BACK_MONEY", joinColumns = @JoinColumn(name = "BACK_ORDER"), inverseJoinColumns = @JoinColumn(name = "ACCOUNT_OPER"))
+    public Set<AccountOper> getAccountOper() {
+		return this.accountOper;
 	}
 
-	public void setBackMoneys(Set<BackMoney> backMoneys) {
-		this.backMoneys = backMoneys;
+	public void setAccountOper(Set<AccountOper> backMoneys) {
+		this.accountOper = backMoneys;
 	}
 
 }

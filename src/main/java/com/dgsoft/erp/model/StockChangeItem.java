@@ -24,6 +24,9 @@ public class StockChangeItem implements java.io.Serializable {
     private BigDecimal befortCount;
     private BigDecimal afterCount;
 
+    private Batch batch;
+    private BigDecimal floatConversionRate;
+
     public StockChangeItem() {
     }
 
@@ -74,6 +77,17 @@ public class StockChangeItem implements java.io.Serializable {
 
     public void setStoreRes(StoreRes storeRes) {
         this.storeRes = storeRes;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BATCH", nullable = false)
+    @NotNull
+    public Batch getBatch() {
+        return this.batch;
+    }
+
+    public void setBatch(Batch batch) {
+        this.batch = batch;
     }
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
@@ -135,6 +149,15 @@ public class StockChangeItem implements java.io.Serializable {
 
     public void setAfterCount(BigDecimal afterCount) {
         this.afterCount = afterCount;
+    }
+
+    @Column(name = "FLOAT_CONVERSION_RATE", scale = 10)
+    public BigDecimal getFloatConversionRate() {
+        return this.floatConversionRate;
+    }
+
+    public void setFloatConversionRate(BigDecimal floatConversionRate) {
+        this.floatConversionRate = floatConversionRate;
     }
 
 }

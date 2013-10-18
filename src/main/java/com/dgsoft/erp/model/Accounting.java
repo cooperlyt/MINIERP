@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +26,7 @@ public class Accounting implements java.io.Serializable {
 	private Set<AccountOper> accountOpersForDebit = new HashSet<AccountOper>(0);
 	private Set<MiddleMoney> middleMoneysForCredit = new HashSet<MiddleMoney>(0);
 	private Set<MiddleMoney> middleMoneysForDebit = new HashSet<MiddleMoney>(0);
+	private Set<ResCategory> resCategories = new HashSet<ResCategory>(0);
 	private Set<AccountOper> accountOpersForCredit = new HashSet<AccountOper>(0);
 
 	public Accounting() {
@@ -41,6 +42,7 @@ public class Accounting implements java.io.Serializable {
 			Set<AccountOper> accountOpersForDebit,
 			Set<MiddleMoney> middleMoneysForCredit,
 			Set<MiddleMoney> middleMoneysForDebit,
+			Set<ResCategory> resCategories,
 			Set<AccountOper> accountOpersForCredit) {
 		this.id = id;
 		this.name = name;
@@ -49,6 +51,7 @@ public class Accounting implements java.io.Serializable {
 		this.accountOpersForDebit = accountOpersForDebit;
 		this.middleMoneysForCredit = middleMoneysForCredit;
 		this.middleMoneysForDebit = middleMoneysForDebit;
+		this.resCategories = resCategories;
 		this.accountOpersForCredit = accountOpersForCredit;
 	}
 
@@ -120,6 +123,15 @@ public class Accounting implements java.io.Serializable {
 
 	public void setMiddleMoneysForDebit(Set<MiddleMoney> middleMoneysForDebit) {
 		this.middleMoneysForDebit = middleMoneysForDebit;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accounting")
+	public Set<ResCategory> getResCategories() {
+		return this.resCategories;
+	}
+
+	public void setResCategories(Set<ResCategory> resCategories) {
+		this.resCategories = resCategories;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCredit")

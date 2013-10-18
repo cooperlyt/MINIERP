@@ -1,20 +1,11 @@
 package com.dgsoft.erp.model;
-// Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
+// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -38,8 +29,8 @@ public class AccountOper implements java.io.Serializable {
 	private String description;
 	private String payType;
 	private String checkNumber;
-	private Set<OrderPay> orderPays = new HashSet<OrderPay>(0);
-	private Set<BackMoney> backMoneys = new HashSet<BackMoney>(0);
+	private Set<CustomerOrder> customerOrder = new HashSet<CustomerOrder>(0);
+	private Set<OrderBack> orderBack = new HashSet<OrderBack>(0);
 	private Set<BackPrepareMoney> backPrepareMoneys = new HashSet<BackPrepareMoney>(
 			0);
 	private Set<PreparePay> preparePays = new HashSet<PreparePay>(0);
@@ -59,31 +50,7 @@ public class AccountOper implements java.io.Serializable {
 		this.beforMoney = beforMoney;
 		this.afterMoney = afterMoney;
 	}
-	public AccountOper(String id, Accounting accountingByDebit,
-			Customer customer, Accounting accountingByCredit, String operEmp,
-			BigDecimal operMoney, String operType, Date operDate,
-			BigDecimal beforMoney, BigDecimal afterMoney, String description,
-			String payType, String checkNumber, Set<OrderPay> orderPays,
-			Set<BackMoney> backMoneys, Set<BackPrepareMoney> backPrepareMoneys,
-			Set<PreparePay> preparePays) {
-		this.id = id;
-		this.accountingByDebit = accountingByDebit;
-		this.customer = customer;
-		this.accountingByCredit = accountingByCredit;
-		this.operEmp = operEmp;
-		this.operMoney = operMoney;
-		this.operType = operType;
-		this.operDate = operDate;
-		this.beforMoney = beforMoney;
-		this.afterMoney = afterMoney;
-		this.description = description;
-		this.payType = payType;
-		this.checkNumber = checkNumber;
-		this.orderPays = orderPays;
-		this.backMoneys = backMoneys;
-		this.backPrepareMoneys = backPrepareMoneys;
-		this.preparePays = preparePays;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -221,22 +188,22 @@ public class AccountOper implements java.io.Serializable {
 		this.checkNumber = checkNumber;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
-	public Set<OrderPay> getOrderPays() {
-		return this.orderPays;
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
+	public Set<CustomerOrder> getCustomerOrder() {
+		return this.customerOrder;
 	}
 
-	public void setOrderPays(Set<OrderPay> orderPays) {
-		this.orderPays = orderPays;
+	public void setCustomerOrder(Set<CustomerOrder> orderPays) {
+		this.customerOrder = orderPays;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
-	public Set<BackMoney> getBackMoneys() {
-		return this.backMoneys;
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
+	public Set<OrderBack> getOrderBack() {
+		return this.orderBack;
 	}
 
-	public void setBackMoneys(Set<BackMoney> backMoneys) {
-		this.backMoneys = backMoneys;
+	public void setOrderBack(Set<OrderBack> backMoneys) {
+		this.orderBack = backMoneys;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")

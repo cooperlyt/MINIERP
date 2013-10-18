@@ -20,11 +20,16 @@ public class Res implements java.io.Serializable {
 	private ResCategory resCategory;
 	private String name;
 	private String description;
-	private String unit;
     private String code;
 	private boolean enable;
 	private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
 	private Set<FormatDefine> formatDefines = new HashSet<FormatDefine>(0);
+
+    private ResUnit resUnitByInDefault;
+    private ResUnit resUnitByMasterUnit;
+    private ResUnit resUnitByOutDefault;
+
+    private UnitGroup unitGroup;
 
 	public Res() {
 	}
@@ -39,18 +44,7 @@ public class Res implements java.io.Serializable {
 		this.name = name;
 		this.enable = enable;
 	}
-	public Res(String id, ResCategory resCategory, String name,
-			String description, String unit, boolean enable,
-			Set<StoreRes> storeReses, Set<FormatDefine> formatDefines) {
-		this.id = id;
-		this.resCategory = resCategory;
-		this.name = name;
-		this.description = description;
-		this.unit = unit;
-		this.enable = enable;
-		this.storeReses = storeReses;
-		this.formatDefines = formatDefines;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -65,6 +59,51 @@ public class Res implements java.io.Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IN_DEFAULT", nullable = false)
+    @NotNull
+    public ResUnit getResUnitByInDefault() {
+        return this.resUnitByInDefault;
+    }
+
+    public void setResUnitByInDefault(ResUnit resUnitByInDefault) {
+        this.resUnitByInDefault = resUnitByInDefault;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MASTER_UNIT", nullable = false)
+    @NotNull
+    public ResUnit getResUnitByMasterUnit() {
+        return this.resUnitByMasterUnit;
+    }
+
+    public void setResUnitByMasterUnit(ResUnit resUnitByMasterUnit) {
+        this.resUnitByMasterUnit = resUnitByMasterUnit;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OUT_DEFAULT", nullable = false)
+    @NotNull
+    public ResUnit getResUnitByOutDefault() {
+        return this.resUnitByOutDefault;
+    }
+
+    public void setResUnitByOutDefault(ResUnit resUnitByOutDefault) {
+        this.resUnitByOutDefault = resUnitByOutDefault;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UNIT_GROUP", nullable = false)
+    @NotNull
+    public UnitGroup getUnitGroup() {
+        return this.unitGroup;
+    }
+
+    public void setUnitGroup(UnitGroup unitGroup) {
+        this.unitGroup = unitGroup;
+    }
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CATEGORY", nullable = false)
@@ -107,16 +146,6 @@ public class Res implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@Column(name = "UNIT", length = 20)
-	@Size(max = 20)
-	public String getUnit() {
-		return this.unit;
-	}
-
-	public void setUnit(String unit) {
-		this.unit = unit;
 	}
 
 	@Column(name = "ENABLE", nullable = false)
