@@ -79,8 +79,7 @@ public class StockChangeItem implements java.io.Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BATCH", nullable = false)
-    @NotNull
+    @JoinColumn(name = "BATCH", nullable = true)
     public Batch getBatch() {
         return this.batch;
     }

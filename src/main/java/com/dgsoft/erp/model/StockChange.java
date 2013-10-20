@@ -18,7 +18,10 @@ import javax.validation.constraints.Size;
 public class StockChange implements java.io.Serializable {
 
     public enum StoreChangeType {
-        STORE_IN, STORE_OUT, STORE_CHECK_LOSS, STORE_CHECK_ADD;
+        MATERIAL_IN,MATERIAL_BACK_IN,MATERIAL_OUT,SELL_OUT,
+        PRODUCT_IN,ALLOCATION_IN,ALLOCATION_OUT,ASSEMBLY_IN,ASSEMBLY_OUT,
+        SCRAP_OUT, BORROW_OUT_OUT, BORROW_OUT_IN, BORROW_IN_IN, BORROW_IN_OUT,
+        STORE_CHECK_LOSS, STORE_CHECK_ADD;
     }
 
     private String id;
@@ -32,17 +35,18 @@ public class StockChange implements java.io.Serializable {
     private Inventory inventoryLoss;
 
 
-    private Set<Assembly> assembliesForStoreOut = new HashSet<Assembly>(0);
-    private Set<Assembly> assembliesForStoreIn = new HashSet<Assembly>(0);
-    private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
-    private Set<Allocation> allocationsForStoreOut = new HashSet<Allocation>(0);
-    private Set<MaterialStoreIn> materialStoreIns = new HashSet<MaterialStoreIn>(0);
-    private Set<Allocation> allocationsForStoreIn = new HashSet<Allocation>(0);
+    private Assembly assemblyForStoreOut;
+    private Assembly assemblyForStoreIn;
+    private ProductStoreIn productStoreIn;
+    private MaterialStoreOut materialStoreOut;
+    private Allocation allocationForStoreOut;
+    private MaterialStoreIn materialStoreIn;
+    private Allocation allocationForStoreIn;
 
-    private Set<ScrapStoreOut> scrapStoreOuts = new HashSet<ScrapStoreOut>(0);
-    private Set<BackRes> backReses = new HashSet<BackRes>(0);
-    private Set<MaterialBackStoreIn> materialBackStoreIns = new HashSet<MaterialBackStoreIn>(0);
-    private Set<OrderStoreOut> orderStoreOuts = new HashSet<OrderStoreOut>(0);
+    private ScrapStoreOut scrapStoreOut;
+    private ProductBackStoreIn productBackStoreIn;
+    private MaterialBackStoreIn materialBackStoreIn;
+    private OrderStoreOut orderStoreOut;
 
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
 
@@ -128,13 +132,13 @@ public class StockChange implements java.io.Serializable {
         this.memo = memo;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
-    public Set<Assembly> getAssembliesForStoreOut() {
-        return this.assembliesForStoreOut;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
+    public Assembly getAssemblyForStoreOut() {
+        return this.assemblyForStoreOut;
     }
 
-    public void setAssembliesForStoreOut(Set<Assembly> assembliesForStoreOut) {
-        this.assembliesForStoreOut = assembliesForStoreOut;
+    public void setAssemblyForStoreOut(Assembly assemblyForStoreOut) {
+        this.assemblyForStoreOut = assemblyForStoreOut;
     }
 
 
@@ -147,49 +151,58 @@ public class StockChange implements java.io.Serializable {
         this.stockChangeItems = stockChangeItems;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
-    public Set<Assembly> getAssembliesForStoreIn() {
-        return this.assembliesForStoreIn;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
+    public Assembly getAssemblyForStoreIn() {
+        return this.assemblyForStoreIn;
     }
 
-    public void setAssembliesForStoreIn(Set<Assembly> assembliesForStoreIn) {
-        this.assembliesForStoreIn = assembliesForStoreIn;
+    public void setAssemblyForStoreIn(Assembly assemblyForStoreIn) {
+        this.assemblyForStoreIn = assemblyForStoreIn;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public Set<ProductStoreIn> getProductStoreIns() {
-        return this.productStoreIns;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public ProductStoreIn getProductStoreIn() {
+        return this.productStoreIn;
     }
 
-    public void setProductStoreIns(Set<ProductStoreIn> productStoreIns) {
-        this.productStoreIns = productStoreIns;
+    public void setProductStoreIn(ProductStoreIn productStoreIn) {
+        this.productStoreIn = productStoreIn;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
-    public Set<Allocation> getAllocationsForStoreOut() {
-        return this.allocationsForStoreOut;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public MaterialStoreOut getMaterialStoreOut() {
+        return materialStoreOut;
     }
 
-    public void setAllocationsForStoreOut(Set<Allocation> allocationsForStoreOut) {
-        this.allocationsForStoreOut = allocationsForStoreOut;
+    public void setMaterialStoreOut(MaterialStoreOut materialStoreOut) {
+        this.materialStoreOut = materialStoreOut;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public Set<MaterialStoreIn> getMaterialStoreIns() {
-        return this.materialStoreIns;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
+    public Allocation getAllocationForStoreOut() {
+        return this.allocationForStoreOut;
     }
 
-    public void setMaterialStoreIns(Set<MaterialStoreIn> materialStoreIns) {
-        this.materialStoreIns = materialStoreIns;
+    public void setAllocationForStoreOut(Allocation allocationForStoreOut) {
+        this.allocationForStoreOut = allocationForStoreOut;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
-    public Set<Allocation> getAllocationsForStoreIn() {
-        return this.allocationsForStoreIn;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public MaterialStoreIn getMaterialStoreIn() {
+        return this.materialStoreIn;
     }
 
-    public void setAllocationsForStoreIn(Set<Allocation> allocationsForStoreIn) {
-        this.allocationsForStoreIn = allocationsForStoreIn;
+    public void setMaterialStoreIn(MaterialStoreIn materialStoreIn) {
+        this.materialStoreIn = materialStoreIn;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
+    public Allocation getAllocationForStoreIn() {
+        return this.allocationForStoreIn;
+    }
+
+    public void setAllocationForStoreIn(Allocation allocationsForStoreIn) {
+        this.allocationForStoreIn = allocationsForStoreIn;
     }
 
 
@@ -211,41 +224,41 @@ public class StockChange implements java.io.Serializable {
         this.inventoryLoss = inventoryLoss;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public Set<ScrapStoreOut> getScrapStoreOuts() {
-        return this.scrapStoreOuts;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public ScrapStoreOut getScrapStoreOut() {
+        return this.scrapStoreOut;
     }
 
-    public void setScrapStoreOuts(Set<ScrapStoreOut> scrapStoreOuts) {
-        this.scrapStoreOuts = scrapStoreOuts;
+    public void setScrapStoreOut(ScrapStoreOut scrapStoreOuts) {
+        this.scrapStoreOut = scrapStoreOuts;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public Set<BackRes> getBackReses() {
-        return this.backReses;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public ProductBackStoreIn getProductBackStoreIn() {
+        return this.productBackStoreIn;
     }
 
-    public void setBackReses(Set<BackRes> backReses) {
-        this.backReses = backReses;
+    public void setProductBackStoreIn(ProductBackStoreIn productBackStoreIn) {
+        this.productBackStoreIn = productBackStoreIn;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public Set<MaterialBackStoreIn> getMaterialBackStoreIns() {
-        return this.materialBackStoreIns;
+    @OneToOne(optional = true,fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public MaterialBackStoreIn getMaterialBackStoreIn() {
+        return this.materialBackStoreIn;
     }
 
-    public void setMaterialBackStoreIns(
-            Set<MaterialBackStoreIn> materialBackStoreIns) {
-        this.materialBackStoreIns = materialBackStoreIns;
+    public void setMaterialBackStoreIn(
+            MaterialBackStoreIn materialBackStoreIn) {
+        this.materialBackStoreIn = materialBackStoreIn;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public Set<OrderStoreOut> getOrderStoreOuts() {
-        return this.orderStoreOuts;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public OrderStoreOut getOrderStoreOut() {
+        return this.orderStoreOut;
     }
 
-    public void setOrderStoreOuts(Set<OrderStoreOut> orderStoreOuts) {
-        this.orderStoreOuts = orderStoreOuts;
+    public void setOrderStoreOut(OrderStoreOut orderStoreOuts) {
+        this.orderStoreOut = orderStoreOuts;
     }
 
 }

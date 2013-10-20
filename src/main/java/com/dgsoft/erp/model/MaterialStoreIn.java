@@ -3,13 +3,7 @@ package com.dgsoft.erp.model;
 
 import com.dgsoft.erp.model.api.StockChangeModel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -49,7 +43,7 @@ public class MaterialStoreIn implements java.io.Serializable, StockChangeModel {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORE_CHANGE", nullable = false)
 	@NotNull
 	public StockChange getStockChange() {

@@ -14,5 +14,13 @@ import org.jboss.seam.annotations.Name;
 @Name("stockChangeHome")
 public class StockChangeHome extends ErpEntityHome<StockChange> {
 
+    private String code;
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

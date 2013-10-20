@@ -1,13 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -60,9 +54,8 @@ public class Assembly implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_IN", nullable = false)
-	@NotNull
+	@OneToOne(optional = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "STORE_IN", nullable = true)
 	public StockChange getStockChangeByStoreIn() {
 		return this.stockChangeByStoreIn;
 	}
@@ -71,7 +64,7 @@ public class Assembly implements java.io.Serializable {
 		this.stockChangeByStoreIn = stockChangeByStoreIn;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(optional = false,fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORE_OUT", nullable = false)
 	@NotNull
 	public StockChange getStockChangeByStoreOut() {

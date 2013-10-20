@@ -1,13 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -19,17 +13,11 @@ import javax.validation.constraints.Size;
 public class ProductStoreIn implements java.io.Serializable {
 
 	private String id;
-	private Batch batch;
 	private StockChange stockChange;
 
 	public ProductStoreIn() {
 	}
 
-	public ProductStoreIn(String id, Batch batch, StockChange stockChange) {
-		this.id = id;
-		this.batch = batch;
-		this.stockChange = stockChange;
-	}
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -43,18 +31,7 @@ public class ProductStoreIn implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BATCH", nullable = false)
-	@NotNull
-	public Batch getBatch() {
-		return this.batch;
-	}
-
-	public void setBatch(Batch batch) {
-		this.batch = batch;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(optional = false ,fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORE_CHANGE", nullable = false)
 	@NotNull
 	public StockChange getStockChange() {

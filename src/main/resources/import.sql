@@ -7,7 +7,9 @@ INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateS
 -- 功能种类
 INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('system.config', '系统设置', '', '1', '超级管理员,一般由实施方有此权限');
 INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('system.manager', '系统管理', '', '2', '管理员');
-INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.store','仓库','','3','');
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.manager.data', '基础数据维护', '', '3','');
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.store.mgr','仓库管理','','4','');
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.store.inAndOut','出入库','',5,'');
 
 -- 功能
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.param', '系统参数管理', 'system.config', '', '/func/system/config/SystemParams.seam', '', '2', '系统运行方式设置');
@@ -19,14 +21,12 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.roleCategory','角色组管理','system.config','','/func/system/config/RoleCategoryMgr.seam','','6','角色组');
 
 
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.res','物资管理','system.manager','','/func/erp/data/ResMgr.seam','','10','物资和物资种类设置');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.store','仓库管理','system.manager','','/func/erp/data/StoreMgr.seam','','11','仓库管理及仓库权限分配');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.area','仓库区设置','erp.store','','/func/erp/store/StoreAreaMgr.seam','','1','仓库存储区域设置');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.in','入库','erp.store','','/func/erp/store/StoreIn.seam','','2','物资入库');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.out','出库','erp.store','','/func/erp/store/StoreOut.seam','','3','物资出库');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.stockSearch','库存查询','erp.store','','/func/erp/store/StockSearch.seam','','4','库存查询');
-
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.res','物资管理','erp.manager.data','','/func/erp/data/ResMgr.seam','','10','物资和物资种类设置');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.store','仓库管理','erp.manager.data','','/func/erp/data/StoreMgr.seam','','11','仓库管理及仓库权限分配');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.area','仓库区设置','erp.store.mgr','','/func/erp/store/StoreAreaMgr.seam','','1','仓库存储区域设置');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.stockSearch','库存查询','erp.store.mgr','','/func/erp/store/StockSearch.seam','','4','库存查询');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.resUnit','计量单位管理','system.manager','','/func/erp/data/UnitMgr.seam','','9','物资计量单位组和计量单位管理');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.materialIn','收料入库','erp.store.inAndOut','','/func/erp/store/storeChange/MaterialIn.seam','','1','物资入库');
 
 -- 角色
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, ROLE_TYPE, DESCRIPTION) VALUES ('system.config', '系统设置', 'ROLE_CATEGORY', '系统配置');
@@ -60,8 +60,8 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('admin', 'erp.
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('admin', 'erp.data.resUnit');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.area');
-INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.in');
-INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.out');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.materialIn');
+
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.stockSearch');
 
 -- ROLE_ROLE_CATEGROY

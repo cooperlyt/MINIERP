@@ -1,13 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -21,6 +15,7 @@ public class MaterialStoreOut implements java.io.Serializable {
 	private String id;
 	private Batch batch;
 	private String receiveEmp;
+    private StockChange stockChange;
 
 	public MaterialStoreOut() {
 	}
@@ -47,9 +42,8 @@ public class MaterialStoreOut implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PRODUCT_BATCH", nullable = false)
-	@NotNull
+	@OneToOne(optional = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "PRODUCT_BATCH", nullable = true)
 	public Batch getBatch() {
 		return this.batch;
 	}
@@ -67,5 +61,16 @@ public class MaterialStoreOut implements java.io.Serializable {
 	public void setReceiveEmp(String receiveEmp) {
 		this.receiveEmp = receiveEmp;
 	}
+
+    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "STORE_CHANGE", nullable = false)
+    @NotNull
+    public StockChange getStockChange() {
+        return this.stockChange;
+    }
+
+    public void setStockChange(StockChange stockChange) {
+        this.stockChange = stockChange;
+    }
 
 }

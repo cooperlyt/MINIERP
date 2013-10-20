@@ -11,8 +11,11 @@ import com.dgsoft.erp.model.api.StockChangeModel;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.FlushModeType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +24,7 @@ import java.util.List;
  * Date: 10/18/13
  * Time: 11:28 AM
  */
-public abstract class StoreInAction<E extends StockChangeModel> extends ErpEntityHome<E> implements StoreChangeAction {
+public abstract class StoreInAction<E extends StockChangeModel> extends StoreChangeHelper<E> implements StoreChangeAction {
 
     @In
     private RunParam runParam;
@@ -29,11 +32,16 @@ public abstract class StoreInAction<E extends StockChangeModel> extends ErpEntit
     @In
     private NumberBuilder numberBuilder;
 
-    @Begin(flushMode = FlushModeType.MANUAL)
+    @DataModel(value = "storeInItems")
+    private List<StoreInItem> storeInItems = new ArrayList<StoreInItem>();
+
+    @DataModelSelection
+    private StoreInItem selectedStoreInItem;
+
     @Override
-    public String begin() {
+    public String beginStoreChange() {
         if (runParam.getBooleanParamValue("erp.autoGenerateStoreInCode")) {
-            getInstance().setId(numberBuilder.getDateNumber("storeInCode"));
+            stockChangeHome.setCode(numberBuilder.getDateNumber("storeInCode"));
         }
         return "storeIn";
     }

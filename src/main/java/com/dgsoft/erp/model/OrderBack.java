@@ -25,7 +25,7 @@ public class OrderBack implements java.io.Serializable {
 	private String processMessage;
 	private String memo;
 
-	private Set<BackRes> backReses = new HashSet<BackRes>(0);
+	private Set<ProductBackStoreIn> productBackReses = new HashSet<ProductBackStoreIn>(0);
 
 	private Set<AccountOper> accountOper = new HashSet<AccountOper>(0);
 
@@ -43,7 +43,7 @@ public class OrderBack implements java.io.Serializable {
 	}
 	public OrderBack(String id, CustomerOrder customerOrder, String state,
 			String reason, Date createDate, Date completeDate,
-			String processMessage, String memo, Set<BackRes> backReses) {
+			String processMessage, String memo, Set<ProductBackStoreIn> productBackReses) {
 		this.id = id;
 		this.customerOrder = customerOrder;
 		this.state = state;
@@ -52,7 +52,7 @@ public class OrderBack implements java.io.Serializable {
 		this.completeDate = completeDate;
 		this.processMessage = processMessage;
 		this.memo = memo;
-		this.backReses = backReses;
+		this.productBackReses = productBackReses;
 	}
 
 	@Id
@@ -153,12 +153,12 @@ public class OrderBack implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack")
-	public Set<BackRes> getBackReses() {
-		return this.backReses;
+	public Set<ProductBackStoreIn> getProductBackReses() {
+		return this.productBackReses;
 	}
 
-	public void setBackReses(Set<BackRes> backReses) {
-		this.backReses = backReses;
+	public void setProductBackReses(Set<ProductBackStoreIn> productBackReses) {
+		this.productBackReses = productBackReses;
 	}
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = AccountOper.class)

@@ -6,6 +6,11 @@
        no-conversation-view-id="/home.xhtml"
        login-view-id="/login.xhtml">
 
+
+    <page view-id="/func/erp/store/storeChange/*" login-required="true">
+
+    </page>
+
     <page view-id="*">
         <navigation>
             <rule if-outcome="home">
@@ -15,6 +20,17 @@
     </page>
 
     <page view-id="/func/*" login-required="true">
+        <restrict>#{s:hasRole('erp.store.manager')}</restrict>
+        <navigation>
+            <rule if-outcome="StoreIn">
+                <begin-conversation/>
+                <redirect view-id="/func/erp/store/StoreIn.xhtml"/>
+            </rule>
+            <rule if-outcome="StoreOut">
+                <begin-conversation/>
+                <redirect view-id="/func/erp/store/StoreOut.xhtml"/>
+            </rule>
+        </navigation>
 
     </page>
 

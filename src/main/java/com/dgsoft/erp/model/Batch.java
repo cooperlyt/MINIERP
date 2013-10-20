@@ -4,16 +4,7 @@ package com.dgsoft.erp.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -28,16 +19,12 @@ public class Batch implements java.io.Serializable {
 	private Supplier supplier;
     private boolean produce;
     private boolean storeIn;
+    private Res res;
 	private Date proDate;
 	private Date expDate;
-	private Set<BackRes> backReses = new HashSet<BackRes>(0);
-	private Set<MaterialStoreOut> materialStoreOuts = new HashSet<MaterialStoreOut>(
-			0);
-	private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
-	private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(
-			0);
-	private Set<BatchStoreCount> batchStoreCounts = new HashSet<BatchStoreCount>(
-			0);
+	private MaterialStoreOut materialStoreOut;
+	private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
+	private Set<BatchStoreCount> batchStoreCounts = new HashSet<BatchStoreCount>(0);
 
 	public Batch() {
 	}
@@ -47,21 +34,7 @@ public class Batch implements java.io.Serializable {
 		this.proDate = proDate;
 		this.expDate = expDate;
 	}
-	public Batch(String id, Supplier supplier, Date proDate, Date expDate,
-			Set<BackRes> backReses, Set<MaterialStoreOut> materialStoreOuts,
-			Set<ProductStoreIn> productStoreIns,
-			Set<StockChangeItem> stockChangeItems,
-			Set<BatchStoreCount> batchStoreCounts) {
-		this.id = id;
-		this.supplier = supplier;
-		this.proDate = proDate;
-		this.expDate = expDate;
-		this.backReses = backReses;
-		this.materialStoreOuts = materialStoreOuts;
-		this.productStoreIns = productStoreIns;
-		this.stockChangeItems = stockChangeItems;
-		this.batchStoreCounts = batchStoreCounts;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -107,31 +80,24 @@ public class Batch implements java.io.Serializable {
 		this.expDate = expDate;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-	public Set<BackRes> getBackReses() {
-		return this.backReses;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RES", nullable = false)
+    @NotNull
+    public Res getRes() {
+        return this.res;
+    }
+
+    public void setRes(Res res) {
+        this.res = res;
+    }
+
+	@OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "batch")
+	public MaterialStoreOut getMaterialStoreOut() {
+		return this.materialStoreOut;
 	}
 
-	public void setBackReses(Set<BackRes> backReses) {
-		this.backReses = backReses;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-	public Set<MaterialStoreOut> getMaterialStoreOuts() {
-		return this.materialStoreOuts;
-	}
-
-	public void setMaterialStoreOuts(Set<MaterialStoreOut> materialStoreOuts) {
-		this.materialStoreOuts = materialStoreOuts;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-	public Set<ProductStoreIn> getProductStoreIns() {
-		return this.productStoreIns;
-	}
-
-	public void setProductStoreIns(Set<ProductStoreIn> productStoreIns) {
-		this.productStoreIns = productStoreIns;
+	public void setMaterialStoreOut(MaterialStoreOut materialStoreOut) {
+		this.materialStoreOut = materialStoreOut;
 	}
 
     @Column(name = "PRODUCE", nullable = false)

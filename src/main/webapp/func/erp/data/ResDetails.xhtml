@@ -9,7 +9,7 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-<ui:param name="functionTitle" value="Business Mgr"/>
+<ui:param name="functionTitle" value="#{resHome.managed ? messages.edit : messages.add} #{messages.res} "/>
 
 <ui:define name="body">
 

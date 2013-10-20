@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action.store;
 
 import com.dgsoft.erp.model.MaterialStoreIn;
+import com.dgsoft.erp.model.StockChange;
 import org.jboss.seam.annotations.Name;
 
 /**
@@ -37,5 +38,11 @@ public class MaterialStoreInHome extends StoreInAction<MaterialStoreIn>{
     @Override
     public String storeChange() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String beginStoreChange() {
+        stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.MATERIAL_IN);
+        return super.beginStoreChange();
     }
 }

@@ -4,16 +4,7 @@ package com.dgsoft.erp.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -78,8 +69,8 @@ public class Allocation implements java.io.Serializable {
 		this.storeByTargetStore = storeByTargetStore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_IN")
+	@OneToOne(optional = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "STORE_IN", nullable = true)
 	public StockChange getStockChangeByStoreIn() {
 		return this.stockChangeByStoreIn;
 	}
@@ -99,8 +90,8 @@ public class Allocation implements java.io.Serializable {
 		this.storeByApplyStore = storeByApplyStore;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_OUT")
+	@OneToOne(optional = true,fetch = FetchType.LAZY)
+	@JoinColumn(name = "STORE_OUT", nullable = true)
 	public StockChange getStockChangeByStoreOut() {
 		return this.stockChangeByStoreOut;
 	}

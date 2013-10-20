@@ -56,7 +56,7 @@
         <class>com.dgsoft.erp.model.AllocationRes</class>
         <class>com.dgsoft.erp.model.Assembly</class>
         <class>com.dgsoft.erp.model.BackPrepareMoney</class>
-        <class>com.dgsoft.erp.model.BackRes</class>
+        <class>com.dgsoft.erp.model.ProductBackStoreIn</class>
         <class>com.dgsoft.erp.model.Batch</class>
         <class>com.dgsoft.erp.model.BatchStoreCount</class>
         <class>com.dgsoft.erp.model.Car</class>
