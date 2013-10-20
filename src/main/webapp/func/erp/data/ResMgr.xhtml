@@ -10,409 +10,159 @@
 
 <ui:define name="toolbar">
 
-<h:form id="mainActions">
-    <rich:toolbar height="26" itemSeparator="grid">
-        <rich:toolbarGroup>
+    <h:outputStylesheet>
+        .dataTypeSelectWidth input[type="text"] {
+            width: 90px;
+        }
 
-            <a:commandButton image="/img/create.gif" title="#{messages.create_resCategory}"
-                             render="categoryEditPanel_form,categoryEditPanel_title"
-                             immediate="true" execute="@this" styleClass="toolBarPic"
-                             oncomplete="#{rich:component('categoryEditPanel')}.show();">
-                <s:conversationPropagation type="begin"/>
-                <a:param value="" assignTo="#{resCategoryHome.id}"/>
-                <a:param value="#{resCategoryHome.instance.id}" assignTo="#{resCategoryHome.parentId}"/>
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
+        .wordCategorySelectWidth input[type="text"] {
+            width: 90px;
+        }
+    </h:outputStylesheet>
 
+    <h:form id="mainActions">
+        <rich:toolbar height="26" itemSeparator="grid">
+            <rich:toolbarGroup>
 
-            <a:commandButton image="/img/edit.png" title="#{messages.edit_resCategory}"
-                             render="categoryEditPanel_form,categoryEditPanel_title"
-                             immediate="true" execute="@this" styleClass="toolBarPic"
-                             onclick="if (#{not resCategoryHome.idDefined}){alert('#{messages.plase_select_rescategory_first}'); return false;}"
-                             oncomplete="#{rich:component('categoryEditPanel')}.show();">
-                <s:conversationPropagation type="begin"/>
-                <a:attachQueue requestDelay="0"/>
-                <a:param value="#{resCategoryHome.instance.id}" assignTo="#{resCategoryHome.id}"/>
-            </a:commandButton>
-
-        </rich:toolbarGroup>
-
-
-        <rich:toolbarGroup>
-            <h:panelGroup>
-                <h:outputText value="#{resCategoryHome.categoryTitle}" rendered="#{resCategoryHome.idDefined}"/>
-
-                <h:outputText value="#{messages.plase_select_rescategory_first}"
-                              rendered="#{not resCategoryHome.idDefined}"/> </h:panelGroup>
-        </rich:toolbarGroup>
-
-        <rich:toolbarGroup location="right">
-            <a:commandButton value="#{messages.create}#{messages.res}"
-                             render="newFormatDefineFields,formatDefDataList,resFields,resEditPanel_buttons,resEditPanel_title"
-                             onclick="if (#{not resCategoryHome.idDefined}){alert('#{messages.plase_select_rescategory_first}'); return false;}"
-                             oncomplete="#{rich:component('resEditPanel')}.show();"
-                             immediate="true" execute="@this" styleClass="toolBarBtn">
-                <a:param value="" assignTo="#{resHome.id}"/>
-                <a:param value="#{resCategoryHome.instance.id}" assignTo="#{resCategoryHome.id}"/>
-                <s:conversationPropagation type="begin"/>
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-        </rich:toolbarGroup>
-    </rich:toolbar>
-</h:form>
-
-
-<rich:popupPanel id="resEditPanel" modal="true" autosized="true"
-                 moveable="true" resizeable="false">
-
-<f:facet name="header">
-    <h:panelGroup id="resEditPanel_title">
-        <h:outputText value="#{resHome.managed ? messages['edit']: messages['add']} #{messages.res}"/>
-    </h:panelGroup>
-</f:facet>
-<f:facet name="controls">
-    <h:panelGrid columns="3">
-        <a:status>
-            <f:facet name="start">
-                <h:graphicImage value="/img/connect_title_active.gif"/>
-            </f:facet>
-            <f:facet name="stop">
-                <h:graphicImage value="/img/connect_title.gif"/>
-            </f:facet>
-        </a:status>
-
-        <br/>
-
-        <h:panelGroup id="resEditPanel_controls">
-            <ui:insert name="controls">
-                <a:commandButton immediate="true"
-                                 execute="@this" image="/img/close.png"
-                                 oncomplete="#{rich:component('resEditPanel')}.hide(); return false;">
-                    <s:conversationPropagation type="end"/>
+                <a:commandButton image="/img/create.gif" title="#{messages.create_resCategory}"
+                                 render="categoryEditPanel_form,categoryEditPanel_title"
+                                 immediate="true" execute="@this" styleClass="toolBarPic"
+                                 oncomplete="#{rich:component('categoryEditPanel')}.show();">
+                    <s:conversationPropagation type="begin"/>
+                    <a:param value="" assignTo="#{resCategoryHome.id}"/>
+                    <a:param value="#{resCategoryHome.instance.id}" assignTo="#{resCategoryHome.parentId}"/>
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
-            </ui:insert>
-        </h:panelGroup>
-    </h:panelGrid>
-</f:facet>
-<rich:messages ajaxRendered="true" globalOnly="true"/>
 
-<a:outputPanel id="resEditPanel_Content">
 
-<h:form>
+                <a:commandButton image="/img/edit.png" title="#{messages.edit_resCategory}"
+                                 render="categoryEditPanel_form,categoryEditPanel_title"
+                                 immediate="true" execute="@this" styleClass="toolBarPic"
+                                 onclick="if (#{not resCategoryHome.idDefined}){alert('#{messages.plase_select_rescategory_first}'); return false;}"
+                                 oncomplete="#{rich:component('categoryEditPanel')}.show();">
+                    <s:conversationPropagation type="begin"/>
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{resCategoryHome.instance.id}" assignTo="#{resCategoryHome.id}"/>
+                </a:commandButton>
 
-    <a:outputPanel id="newFormatDefineFields">
-        <h:panelGrid columns="1" rendered="#{not resHome.managed}">
-            <s:decorate template="/layout/edit.xhtml">
-                <ui:define name="label">#{messages.formatDefine_field_name}</ui:define>
-                <h:inputText required="true" size="30" maxlength="50"
-                             label="#{messages.formatDefine_field_name}"
-                             value="#{resHome.newFormatDefine.name}">
+            </rich:toolbarGroup>
+
+
+            <rich:toolbarGroup>
+                <h:panelGroup>
+                    <h:outputText value="#{resCategoryHome.categoryTitle}" rendered="#{resCategoryHome.idDefined}"/>
+
+                    <h:outputText value="#{messages.plase_select_rescategory_first}"
+                                  rendered="#{not resCategoryHome.idDefined}"/> </h:panelGroup>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+
+                <s:button value="#{messages.create}#{messages.res}" action="#{resHome.clearInstance}"
+                          view="/func/erp/data/ResDetails.xhtml" propagation="begin" styleClass="toolBarBtn"
+                          onclick="if (#{not resCategoryHome.idDefined}){alert('#{messages.plase_select_rescategory_first}'); return false;}">
+                    <f:param name="categoryId" value="#{resCategoryHome.instance.id}"/>
+                </s:button>
+
+
+            </rich:toolbarGroup>
+        </rich:toolbar>
+    </h:form>
+
+
+    <s:decorate template="/layout/edit-modalpanel.xhtml">
+        <ui:param name="panelId" value="categoryEditPanel"/>
+        <ui:define name="panelTitle">
+            <h:outputText
+                    value="#{resCategoryHome.managed ? messages['edit'] : messages['add']} #{messages.resCategory}"/>
+        </ui:define>
+
+        <h:panelGrid columns="2">
+            <s:decorate id="nameField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.rescategory_field_name}</ui:define>
+                <h:inputText id="name"
+                             required="true"
+                             size="40"
+                             maxlength="50"
+                             label="#{messages.rescategory_field_name}"
+                             value="#{resCategoryHome.instance.name}">
+                    <a:ajax event="blur" render="nameField"/>
                 </h:inputText>
             </s:decorate>
-            <h:panelGrid columns="3">
-                <s:decorate id="formatDefineTypeField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.formatDefine_field_DataType}</ui:define>
 
-                    <rich:select value="#{resHome.newFormatDefine.dataType}"
-                                     label="#{messages.formatDefine_field_DataType}" required="true">
-                        <s:selectItems value="#{formatTypes}" var="_type"
-                                       noSelectionLabel="#{messages.noSelectLabel}"
-                                       label="#{messages[_type.name()]}"/>
-                        <s:convertEnum/>
-                        <a:ajax execute="selectitem"
-                                render="formatDefineTypeField,formatDefineWordCategoryField"/>
-                    </rich:select>
-                </s:decorate>
-                <s:decorate id="formatDefineWordCategoryField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.formatDafine_field_wordCategory}</ui:define>
-                    <rich:select value="#{resHome.newFormatDefine.wordCategory}"
-                                     required="#{resHome.newFormatDefine.dataType eq 'WORD'}"
-                                     disabled="#{not (resHome.newFormatDefine.dataType eq 'WORD')}"
-                                     label="#{messages.formatDafine_field_wordCategory}">
-                        <s:selectItems value="#{userWordCategoryList.resultList}" var="_wc"
-                                       noSelectionLabel="#{messages.noSelectLabel}" label="#{_wc.name}"
-                                       itemValue="#{_wc.id}"/>
-                    </rich:select>
-                </s:decorate>
+            <s:decorate id="enableField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.enable}</ui:define>
+                <h:selectBooleanCheckbox required="true" label="#{messages.enable}"
+                                         value="#{resCategoryHome.instance.enable}"/>
+            </s:decorate>
 
 
-                <a:commandButton value="#{messages.add}" execute="@form"
-                                 action="#{resHome.addFormatDefine}"
-                                 rendered="#{not resHome.managed}"
-                                 render="newFormatDefineFields,formatDefDataList">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-            </h:panelGrid>
         </h:panelGrid>
-    </a:outputPanel>
 
-</h:form>
+        <h:panelGrid columns="1">
+            <s:decorate id="descriptionField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.description}</ui:define>
+                <h:inputTextarea id="description"
+                                 cols="58"
+                                 rows="2"
+                                 label="#{messages.description}"
+                                 value="#{resCategoryHome.instance.description}"/>
+            </s:decorate>
+        </h:panelGrid>
 
-<h:form>
-    <rich:dataTable id="formatDefDataList" value="#{formatDefineList}" var="_formatDef"
-                    noDataLabel="#{messages.formatDefine_empty}" style="width: 100%">
-        <rich:column>
-            <f:facet name="header">
-                #{messages.formatDefine_field_name}
-            </f:facet>
-            #{_formatDef.name}
-        </rich:column>
+        <h:panelGrid columns="4">
 
-        <rich:column>
-            <f:facet name="header">
-                #{messages.formatDefine_field_DataType}
-            </f:facet>
-            <h:outputText value="#{messages[_formatDef.dataType.name()]}"/>
-        </rich:column>
+            <s:decorate id="rootField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.rescategory_field_root}</ui:define>
+                <h:selectBooleanCheckbox required="true"
+                                         disabled="#{empty resCategoryHome.parentId or resCategoryHome.managed}"
+                                         label="#{messages.rescategory_field_root}"
+                                         value="#{resCategoryHome.instance.root}">
+                    <a:ajax execute="@this" event="click" listener="#{resCategoryHome.assignParentType}"
+                            disabled="#{empty resCategoryHome.parentId}"
+                            render="categoryTypeField"/>
+                </h:selectBooleanCheckbox>
+            </s:decorate>
 
-        <rich:column>
-            <f:facet name="header">
-                #{messages.formatDafine_field_wordCategory}
-            </f:facet>
-            <h:outputText value="#{dictionary.getWordCategory(_formatDef.wordCategory)}"
-                          rendered="#{_formatDef.dataType eq 'WORD'}"/>
-        </rich:column>
-        <rich:column style="width: 60px">
-            <f:facet name="header">
-                #{messages.action}
-            </f:facet>
-            <a:commandButton image="/img/delete.png" execute="@form" action="#{resHome.deleteFormatDefine}"
-                             render="formatDefDataList" rendered="#{not resHome.managed}">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-
-            #{' '}
-            <a:commandButton image="/img/up.png" execute="@form" action="#{resHome.upFormatDefine}"
-                             render="formatDefDataList">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-            <a:commandButton image="/img/down.png" execute="@form" action="#{resHome.downFormatDefine}"
-                             render="formatDefDataList">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-
-        </rich:column>
-    </rich:dataTable>
-</h:form>
-
-<h:form>
-    <rich:panel>
-        <div class="edit">
-            <a:outputPanel id="resFields">
-
-                <h:panelGrid columns="2">
-                    <s:decorate id="idField" template="/layout/edit.xhtml">
-                        <ui:define name="label">#{messages.res_field_code}</ui:define>
-                        <h:inputText id="id"
-                                     required="true"
-                                     size="27"
-                                     maxlength="32"
-                                     valueChangeListener="#{resHome.verifyIdAvailable}"
-                                     label="#{messages.res_field_code}"
-                                     value="#{resHome.instance.code}">
-                            <a:ajax event="blur" render="idField"/>
-                        </h:inputText>
-                    </s:decorate>
-
-
-                    <s:decorate id="resEnableField" template="/layout/edit.xhtml">
-                        <ui:define name="label">#{messages.enable}</ui:define>
-                        <h:selectBooleanCheckbox
-                                required="true"
-                                label="#{messages.enable}"
-                                value="#{resHome.instance.enable}"/>
-                    </s:decorate>
-
-                    <s:decorate id="resNameField" template="/layout/edit.xhtml">
-                        <ui:define name="label">#{messages.res_field_name}</ui:define>
-                        <h:inputText
-                                required="true"
-                                size="27"
-                                maxlength="50"
-                                label="#{messages.res_field_name}"
-                                value="#{resHome.instance.name}">
-                            <a:ajax event="blur" render="resNameField"/>
-                        </h:inputText>
-                    </s:decorate>
-
-                    <s:decorate id="unitField" template="/layout/edit.xhtml">
-                        <ui:define name="label">#{messages.res_field_unit}</ui:define>
-                        <h:inputText id="unit"
-                                     size="10"
-                                     maxlength="20"
-                                     label="#{messages.res_field_unit}"
-                                     value="#{resHome.instance.unit}">
-                            <a:ajax event="blur" render="unitField"/>
-                        </h:inputText>
-                    </s:decorate>
-
-
-                </h:panelGrid>
-
-                <s:decorate id="descriptionField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.description}</ui:define>
-                    <h:inputTextarea id="description"
-                                     cols="55"
-                                     rows="2"
-                                     label="#{messages.description}"
-                                     value="#{resHome.instance.description}"/>
+            <a:outputPanel id="categoryTypeField">
+                <s:decorate template="/layout/edit.xhtml" rendered="#{resCategoryHome.instance.root}">
+                    <ui:define name="label">#{messages.rescategory_field_type}</ui:define>
+                    <rich:select required="true" label="#{messages.rescategory_field_type}"
+                                 value="#{resCategoryHome.instance.type}">
+                        <s:selectItems value="#{resTypes}" var="_restype" label="#{messages[_restype.name()]}"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <s:convertEnum/>
+                        <a:ajax execute="@this" event="blur" render="categoryTypeField"/>
+                    </rich:select>
                 </s:decorate>
-
-
             </a:outputPanel>
 
-            <div style="clear:both">
-                <span class="required">*</span>
-                #{messages.requiredFields}
-            </div>
-        </div>
-    </rich:panel>
+        </h:panelGrid>
 
+        <ui:define name="actionButtons">
+            <a:commandButton execute="@form"
+                             render="categoryEditPanel_inputs,tree"
+                             value="#{messages.save}" action="#{resCategoryHome.persistEnd}"
+                             rendered="#{!resCategoryHome.managed}"
+                             data="#{resCategoryHome.lastState}"
+                             oncomplete="if (event.data == 'persisted'){#{rich:component('categoryEditPanel')}.hide();}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+            <a:commandButton execute="@form" render="categoryEditPanel_inputs,tree"
+                             value="#{messages.update}" action="#{resCategoryHome.updateEnd}"
+                             rendered="#{resCategoryHome.managed}" data="#{resCategoryHome.lastState}"
+                             oncomplete="if (event.data == 'updated')#{rich:component('categoryEditPanel')}.hide();">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+            <a:commandButton immediate="true" execute="@this" action="#{resCategoryHome.refresh}"
+                             value="#{messages.cancel}" render="tree"
+                             oncomplete="#{rich:component('categoryEditPanel')}.hide();">
+                <s:conversationPropagation type="end"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </ui:define>
 
-    <h:panelGrid columns="1" style="width: 100%; text-align: right">
-        <a:outputPanel id="resEditPanel_buttons">
-            <div class="actionButtons">
-
-                <a:commandButton execute="@form"
-                                 render="resFields,resDatas"
-                                 value="#{messages.save}" action="#{resHome.persistEnd}"
-                                 rendered="#{!resHome.managed}"
-                                 data="#{resHome.lastState}"
-                                 oncomplete="if (event.data == 'persisted'){#{rich:component('resEditPanel')}.hide();}">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-                <a:commandButton execute="@form" render="resFields,resDatas"
-                                 value="#{messages.update}" action="#{resHome.updateEnd}"
-                                 rendered="#{resHome.managed}" data="#{resHome.lastState}"
-                                 oncomplete="if (event.data == 'updated')#{rich:component('resEditPanel')}.hide();">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-                <a:commandButton immediate="true" execute="@this" action="#{resHome.refresh}"
-                                 value="#{messages.cancel}" render="resDatas"
-                                 oncomplete="#{rich:component('resEditPanel')}.hide();">
-                    <s:conversationPropagation type="end"/>
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-
-            </div>
-        </a:outputPanel>
-    </h:panelGrid>
-
-</h:form>
-</a:outputPanel>
-
-</rich:popupPanel>
-
-
-<s:decorate template="/layout/edit-modalpanel.xhtml">
-    <ui:param name="panelId" value="categoryEditPanel"/>
-    <ui:define name="panelTitle">
-        <h:outputText
-                value="#{resCategoryHome.managed ? messages['edit'] : messages['add']} #{messages.resCategory}"/>
-    </ui:define>
-
-    <h:panelGrid columns="2">
-        <s:decorate id="nameField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.rescategory_field_name}</ui:define>
-            <h:inputText id="name"
-                         required="true"
-                         size="40"
-                         maxlength="50"
-                         label="#{messages.rescategory_field_name}"
-                         value="#{resCategoryHome.instance.name}">
-                <a:ajax event="blur" render="nameField"/>
-            </h:inputText>
-        </s:decorate>
-
-        <s:decorate id="enableField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.enable}</ui:define>
-            <h:selectBooleanCheckbox required="true" label="#{messages.enable}"
-                                     value="#{resCategoryHome.instance.enable}"/>
-        </s:decorate>
-
-    </h:panelGrid>
-
-    <h:panelGrid columns="1">
-        <s:decorate id="descriptionField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.description}</ui:define>
-            <h:inputTextarea id="description"
-                             cols="58"
-                             rows="2"
-                             label="#{messages.description}"
-                             value="#{resCategoryHome.instance.description}"/>
-        </s:decorate>
-    </h:panelGrid>
-
-    <h:panelGrid columns="4">
-
-        <s:decorate id="rootField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.rescategory_field_root}</ui:define>
-            <h:selectBooleanCheckbox required="true"
-                                     disabled="#{empty resCategoryHome.parentId or resCategoryHome.managed}"
-                                     label="#{messages.rescategory_field_root}"
-                                     value="#{resCategoryHome.instance.root}">
-                <a:ajax execute="@this" event="click" listener="#{resCategoryHome.assignParentType}"
-                        disabled="#{empty resCategoryHome.parentId}"
-                        render="commodityField,materialField,semiProductField"/>
-            </h:selectBooleanCheckbox>
-        </s:decorate>
-
-        <s:decorate id="commodityField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.res_field_commodity}</ui:define>
-            <h:selectBooleanCheckbox id="commodity"
-                                     required="true"
-                                     disabled="#{not resCategoryHome.instance.root or resCategoryHome.managed}"
-                                     label="#{messages.res_field_commodity}"
-                                     value="#{resCategoryHome.instance.commodity}"/>
-        </s:decorate>
-
-        <s:decorate id="materialField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.res_field_material}</ui:define>
-            <h:selectBooleanCheckbox id="material"
-                                     required="true"
-                                     disabled="#{not resCategoryHome.instance.root or resCategoryHome.managed}"
-                                     label="#{messages.res_field_material}"
-                                     value="#{resCategoryHome.instance.material}"/>
-        </s:decorate>
-
-
-        <s:decorate id="semiProductField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.res_field_semi}</ui:define>
-            <h:selectBooleanCheckbox id="semiProduct"
-                                     required="true"
-                                     disabled="#{not resCategoryHome.instance.root or resCategoryHome.managed}"
-                                     label="#{messages.res_field_semi}"
-                                     value="#{resCategoryHome.instance.semiProduct}"/>
-        </s:decorate>
-
-
-    </h:panelGrid>
-
-    <ui:define name="actionButtons">
-        <a:commandButton execute="@form"
-                         render="categoryEditPanel_inputs,tree"
-                         value="#{messages.save}" action="#{resCategoryHome.persistEnd}"
-                         rendered="#{!resCategoryHome.managed}"
-                         data="#{resCategoryHome.lastState}"
-                         oncomplete="if (event.data == 'persisted'){#{rich:component('categoryEditPanel')}.hide();}">
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-        <a:commandButton execute="@form" render="categoryEditPanel_inputs,tree"
-                         value="#{messages.update}" action="#{resCategoryHome.updateEnd}"
-                         rendered="#{resCategoryHome.managed}" data="#{resCategoryHome.lastState}"
-                         oncomplete="if (event.data == 'updated')#{rich:component('categoryEditPanel')}.hide();">
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-        <a:commandButton immediate="true" execute="@this" action="#{resCategoryHome.refresh}"
-                         value="#{messages.cancel}" render="tree"
-                         oncomplete="#{rich:component('categoryEditPanel')}.hide();">
-            <s:conversationPropagation type="end"/>
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-    </ui:define>
-
-</s:decorate>
+    </s:decorate>
 
 </ui:define>
 
@@ -479,14 +229,12 @@
                     <f:facet name="header">
                         #{messages.action}
                     </f:facet>
-                    <a:commandButton image="/img/edit.png" execute="@this" immediate="true" title="#{messages.edit}"
-                                     render="newFormatDefineFields,formatDefDataList,resFields,resEditPanel_buttons,resEditPanel_title"
-                                     oncomplete="#{rich:component('resEditPanel')}.show();">
-                        <s:conversationPropagation type="begin"/>
-                        <a:attachQueue requestDelay="0"/>
-                        <a:param value="#{_res.id}" assignTo="#{resHome.id}"/>
-                        <a:param value="#{resCategoryHome.instance.id}" assignTo="#{resCategoryHome.id}"/>
-                    </a:commandButton>
+                    <s:link propagation="begin" view="/func/erp/data/ResDetails.xhtml">
+                        <s:graphicImage value="/img/edit.png" title="#{messages.edit}"/>
+                        <f:param name="resId" value="#{_res.id}"/>
+                        <f:param name="categoryId" value="#{resCategoryHome.instance.id}" />
+                    </s:link>
+
                 </rich:column>
 
             </rich:dataTable>

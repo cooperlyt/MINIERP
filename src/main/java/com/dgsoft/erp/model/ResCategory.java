@@ -15,143 +15,87 @@ import javax.validation.constraints.Size;
 @Table(name = "RES_CATEGORY", catalog = "MINI_ERP")
 public class ResCategory implements java.io.Serializable {
 
-	private String id;
-	private ResCategory resCategory;
-    private Accounting accounting;
-	private boolean commodity;
-	private boolean material;
-	private boolean semiProduct;
-	private String name;
-	private String description;
-	private boolean root;
-	private boolean enable;
-	private Set<Res> reses = new HashSet<Res>(0);
-	private Set<ResCategory> resCategories = new HashSet<ResCategory>(0);
+    public enum ResType {
+        PRODUCT, SEMI_PRODUCT, MATERIAL, WORK_IN_PROCESS,CONSUMABLE,OUTER_MATERIAL;
+    }
 
-	public ResCategory() {
-	}
+    private String id;
+    private ResCategory resCategory;
+    private String name;
+    private String description;
+    private boolean root;
+    private boolean enable;
+    private Set<Res> reses = new HashSet<Res>(0);
+    private Set<ResCategory> resCategories = new HashSet<ResCategory>(0);
+    private ResType type;
+
+    public ResCategory() {
+    }
 
     public ResCategory(boolean enable) {
         this.enable = enable;
     }
 
-	public ResCategory(String id, boolean commodity, boolean material,
-			boolean semiProduct, String name, boolean root) {
-		this.id = id;
-		this.commodity = commodity;
-		this.material = material;
-		this.semiProduct = semiProduct;
-		this.name = name;
-		this.root = root;
-	}
-	public ResCategory(String id, ResCategory resCategory, boolean commodity,
-			boolean material, boolean semiProduct, String name,
-			String description, boolean root, Boolean enable, Set<Res> reses,
-			Set<ResCategory> resCategories) {
-		this.id = id;
-		this.resCategory = resCategory;
-		this.commodity = commodity;
-		this.material = material;
-		this.semiProduct = semiProduct;
-		this.name = name;
-		this.description = description;
-		this.root = root;
-		this.enable = enable;
-		this.reses = reses;
-		this.resCategories = resCategories;
-	}
+    public ResCategory(String id, ResType type, String name, boolean root) {
+        this.id = id;
+        this.type = type;
+        this.name = name;
+        this.root = root;
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CATEGORY")
-	public ResCategory getResCategory() {
-		return this.resCategory;
-	}
-
-	public void setResCategory(ResCategory resCategory) {
-		this.resCategory = resCategory;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCOUNTING", nullable = false)
+    @JoinColumn(name = "CATEGORY")
+    public ResCategory getResCategory() {
+        return this.resCategory;
+    }
+
+    public void setResCategory(ResCategory resCategory) {
+        this.resCategory = resCategory;
+    }
+
+    @Column(name = "NAME", nullable = false, length = 50)
     @NotNull
-    public Accounting getAccounting() {
-        return this.accounting;
+    @Size(max = 50)
+    public String getName() {
+        return this.name;
     }
 
-    public void setAccounting(Accounting accounting) {
-        this.accounting = accounting;
+    public void setName(String name) {
+        this.name = name;
     }
 
-	@Column(name = "COMMODITY", nullable = false)
-	public boolean isCommodity() {
-		return this.commodity;
-	}
+    @Column(name = "DESCRIPTION", length = 200)
+    @Size(max = 200)
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setCommodity(boolean commodity) {
-		this.commodity = commodity;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	@Column(name = "MATERIAL", nullable = false)
-	public boolean isMaterial() {
-		return this.material;
-	}
+    @Column(name = "_ROOT", nullable = false)
+    public boolean isRoot() {
+        return this.root;
+    }
 
-	public void setMaterial(boolean material) {
-		this.material = material;
-	}
-
-	@Column(name = "SEMI_PRODUCT", nullable = false)
-	public boolean isSemiProduct() {
-		return this.semiProduct;
-	}
-
-	public void setSemiProduct(boolean semiProduct) {
-		this.semiProduct = semiProduct;
-	}
-
-	@Column(name = "NAME", nullable = false, length = 50)
-	@NotNull
-	@Size(max = 50)
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Column(name = "DESCRIPTION", length = 200)
-	@Size(max = 200)
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Column(name = "_ROOT", nullable = false)
-	public boolean isRoot() {
-		return this.root;
-	}
-
-	public void setRoot(boolean root) {
-		this.root = root;
-	}
+    public void setRoot(boolean root) {
+        this.root = root;
+    }
 
 
     @Column(name = "ENABLE", nullable = false)
@@ -163,19 +107,19 @@ public class ResCategory implements java.io.Serializable {
         this.enable = enable;
     }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "resCategory")
-	public Set<Res> getReses() {
-		return this.reses;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resCategory")
+    public Set<Res> getReses() {
+        return this.reses;
+    }
 
-	public void setReses(Set<Res> reses) {
-		this.reses = reses;
-	}
+    public void setReses(Set<Res> reses) {
+        this.reses = reses;
+    }
 
     @Transient
-    public List<Res> getResList(){
+    public List<Res> getResList() {
         List<Res> result = new ArrayList<Res>(getReses());
-        Collections.sort(result,new Comparator<Res>() {
+        Collections.sort(result, new Comparator<Res>() {
             @Override
             public int compare(Res o1, Res o2) {
                 return o1.getId().compareTo(o2.getId());
@@ -184,19 +128,19 @@ public class ResCategory implements java.io.Serializable {
         return result;
     }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "resCategory")
-	public Set<ResCategory> getResCategories() {
-		return this.resCategories;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resCategory")
+    public Set<ResCategory> getResCategories() {
+        return this.resCategories;
+    }
 
-	public void setResCategories(Set<ResCategory> resCategories) {
-		this.resCategories = resCategories;
-	}
+    public void setResCategories(Set<ResCategory> resCategories) {
+        this.resCategories = resCategories;
+    }
 
     @Transient
-    public List<ResCategory> getResCategoryList(){
+    public List<ResCategory> getResCategoryList() {
         List<ResCategory> result = new ArrayList<ResCategory>(getResCategories());
-        Collections.sort(result,new Comparator<ResCategory>() {
+        Collections.sort(result, new Comparator<ResCategory>() {
             @Override
             public int compare(ResCategory o1, ResCategory o2) {
                 return o1.getId().compareTo(o2.getId());
@@ -204,5 +148,17 @@ public class ResCategory implements java.io.Serializable {
         });
         return result;
     }
+
+    @Column(name = "TYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    public ResType getType() {
+        return type;
+    }
+
+    public void setType(ResType type) {
+        this.type = type;
+    }
+
 
 }

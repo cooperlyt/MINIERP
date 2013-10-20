@@ -27,9 +27,12 @@ public class StoreRes implements java.io.Serializable {
     private BigDecimal storeWarn;
     private Integer expWarn;
 
+    private BigDecimal floatConversionRate;
+
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
-    private Set<SupplierRes> supplierReses = new HashSet<SupplierRes>(0);
+
     private Set<Stock> stocks = new HashSet<Stock>(0);
+    private boolean enable;
 
     public StoreRes() {
     }
@@ -74,6 +77,15 @@ public class StoreRes implements java.io.Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @Column(name = "ENABLE", nullable = false)
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     @Column(name = "STORE_WARN", scale = 4)
@@ -139,13 +151,13 @@ public class StoreRes implements java.io.Serializable {
         this.allocationReses = allocationReses;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<SupplierRes> getSupplierReses() {
-        return this.supplierReses;
+    @Column(name = "FLOAT_CONVERSION_RATE", scale = 10)
+    public BigDecimal getFloatConversionRate() {
+        return this.floatConversionRate;
     }
 
-    public void setSupplierReses(Set<SupplierRes> supplierReses) {
-        this.supplierReses = supplierReses;
+    public void setFloatConversionRate(BigDecimal floatConversionRate) {
+        this.floatConversionRate = floatConversionRate;
     }
 
     @Transient

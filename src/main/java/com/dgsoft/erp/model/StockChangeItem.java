@@ -25,7 +25,6 @@ public class StockChangeItem implements java.io.Serializable {
     private BigDecimal afterCount;
 
     private Batch batch;
-    private BigDecimal floatConversionRate;
 
     public StockChangeItem() {
     }
@@ -149,15 +148,6 @@ public class StockChangeItem implements java.io.Serializable {
 
     public void setAfterCount(BigDecimal afterCount) {
         this.afterCount = afterCount;
-    }
-
-    @Column(name = "FLOAT_CONVERSION_RATE", scale = 10)
-    public BigDecimal getFloatConversionRate() {
-        return this.floatConversionRate;
-    }
-
-    public void setFloatConversionRate(BigDecimal floatConversionRate) {
-        this.floatConversionRate = floatConversionRate;
     }
 
 }

@@ -1,14 +1,11 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import com.dgsoft.common.OrderBeanComparator;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -19,31 +16,23 @@ import javax.validation.constraints.Size;
 @Table(name = "UNIT_GROUP", catalog = "MINI_ERP")
 public class UnitGroup implements java.io.Serializable {
 
+    public enum UnitGroupType{
+        FIX_CONVERT,FLOAT_CONVERT; //NO_CONVERT
+    }
+
 	private String id;
 	private String name;
-	private String type;
+	private UnitGroupType type;
 	private Set<Res> reses = new HashSet<Res>(0);
 	private Set<ResUnit> resUnits = new HashSet<ResUnit>(0);
 
 	public UnitGroup() {
 	}
 
-	public UnitGroup(String id, String name, String type) {
-		this.id = id;
-		this.name = name;
-		this.type = type;
-	}
-	public UnitGroup(String id, String name, String type, Set<Res> reses,
-			Set<ResUnit> resUnits) {
-		this.id = id;
-		this.name = name;
-		this.type = type;
-		this.reses = reses;
-		this.resUnits = resUnits;
-	}
-
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -65,14 +54,14 @@ public class UnitGroup implements java.io.Serializable {
 		this.name = name;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "TYPE", nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getType() {
+    @NotNull
+	public UnitGroupType getType() {
 		return this.type;
 	}
 
-	public void setType(String type) {
+	public void setType(UnitGroupType type) {
 		this.type = type;
 	}
 
@@ -85,7 +74,7 @@ public class UnitGroup implements java.io.Serializable {
 		this.reses = reses;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unitGroup")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unitGroup", orphanRemoval = true, cascade = {CascadeType.ALL})
 	public Set<ResUnit> getResUnits() {
 		return this.resUnits;
 	}
@@ -93,5 +82,12 @@ public class UnitGroup implements java.io.Serializable {
 	public void setResUnits(Set<ResUnit> resUnits) {
 		this.resUnits = resUnits;
 	}
+
+    @Transient
+    public List<ResUnit> getResUnitList(){
+        List<ResUnit> result = new ArrayList<ResUnit>(getResUnits());
+        Collections.sort(result, OrderBeanComparator.getInstance());
+        return result;
+    }
 
 }

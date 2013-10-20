@@ -22,14 +22,18 @@ public class Res implements java.io.Serializable {
 	private String description;
     private String code;
 	private boolean enable;
+    private boolean batchMgr;
 	private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
 	private Set<FormatDefine> formatDefines = new HashSet<FormatDefine>(0);
+    private Accounting accounting;
 
     private ResUnit resUnitByInDefault;
     private ResUnit resUnitByMasterUnit;
     private ResUnit resUnitByOutDefault;
 
     private UnitGroup unitGroup;
+
+    private Set<Supplier> suppliers = new HashSet<Supplier>(0);
 
 	public Res() {
 	}
@@ -157,7 +161,16 @@ public class Res implements java.io.Serializable {
 		this.enable = enable;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "res")
+    @Column(name = "BATCH_MGR", nullable = false)
+    public boolean isBatchMgr() {
+        return batchMgr;
+    }
+
+    public void setBatchMgr(boolean batchMgr) {
+        this.batchMgr = batchMgr;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "res")
 	public Set<StoreRes> getStoreReses() {
 		return this.storeReses;
 	}
@@ -176,10 +189,42 @@ public class Res implements java.io.Serializable {
 	}
 
     @Transient
+    public List<StoreRes> getStoreResList(){
+        List<StoreRes> result = new ArrayList<StoreRes>(getStoreReses());
+        Collections.sort(result,new Comparator<StoreRes>() {
+            @Override
+            public int compare(StoreRes o1, StoreRes o2) {
+                return o1.getCode().compareTo(o2.getCode());
+            }
+        });
+        return result;
+    }
+
+    @Transient
     public List<FormatDefine> getFormatDefineList(){
         List<FormatDefine> result = new ArrayList<FormatDefine>(getFormatDefines());
         Collections.sort(result, OrderBeanComparator.getInstance());
         return result;
     }
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "reses",cascade = {CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE})
+    public Set<Supplier> getSuppliers() {
+        return this.suppliers;
+    }
+
+    public void setSuppliers(Set<Supplier> supplierReses) {
+        this.suppliers = supplierReses;
+    }
+
+    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "ACCOUNTING", unique = true, nullable = true, updatable = false)
+    public Accounting getAccounting() {
+        return accounting;
+    }
+
+    public void setAccounting(Accounting accounting) {
+        this.accounting = accounting;
+    }
+
 
 }

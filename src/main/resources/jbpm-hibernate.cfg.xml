@@ -16,7 +16,7 @@
     <property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property>
     <property name="cache.provider_class">org.hibernate.cache.HashtableCacheProvider</property>
     <!-- hbm2ddl.auto Must be "create" on the first deployment update -->
-    <property name="hbm2ddl.auto">validate</property>
+    <property name="hbm2ddl.auto">none</property>
 
       <!--property name="transaction.flush_before_completion">true</property-->
 

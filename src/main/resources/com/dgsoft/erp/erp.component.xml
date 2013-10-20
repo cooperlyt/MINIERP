@@ -33,4 +33,8 @@
     <component name="storeList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
         <property name="ejbql">select store from Store store where store.enable = true</property>
     </component>
+
+    <component name="unitGroupList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select unitGroup from UnitGroup unitGroup join fetch unitGroup.resUnits</property>
+    </component>
 </components>

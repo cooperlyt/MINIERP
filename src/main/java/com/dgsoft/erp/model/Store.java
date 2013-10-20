@@ -23,6 +23,8 @@ public class Store implements java.io.Serializable, TreeNode {
     private String address;
     private String tel;
     private boolean enable;
+    private boolean open;
+    private Integer version;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
     private Set<Inventory> inventories = new HashSet<Inventory>(0);
     private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
@@ -76,6 +78,25 @@ public class Store implements java.io.Serializable, TreeNode {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Version
+    @Column(name = "VERSION")
+    public Integer getVersion() {
+        return this.version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    @Column(name = "OPEN", nullable = false)
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     @Column(name = "NAME", nullable = false, length = 50)

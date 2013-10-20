@@ -1,9 +1,12 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.common.OrderBeanComparator;
+import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.FormatDefine;
 import com.dgsoft.erp.model.Res;
+import com.dgsoft.erp.model.ResUnit;
+import com.dgsoft.erp.model.UnitGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -33,6 +36,9 @@ public class ResHome extends ErpEntityHome<Res> {
     @In
     private FacesMessages facesMessages;
 
+    @In
+    private ActionExecuteState actionExecuteState;
+
     @DataModel(scope = ScopeType.PAGE)
     private List<FormatDefine> formatDefineList = new ArrayList<FormatDefine>();
 
@@ -56,6 +62,7 @@ public class ResHome extends ErpEntityHome<Res> {
         }
         OrderBeanComparator.addToLast(newFormatDefine, formatDefineList);
         newFormatDefine = new FormatDefine();
+        actionExecuteState.setLastState("success");
     }
 
     @Factory(value = "formatTypes", scope = ScopeType.SESSION, autoCreate = true)
@@ -90,6 +97,19 @@ public class ResHome extends ErpEntityHome<Res> {
 
     public void downFormatDefine() {
         OrderBeanComparator.down(formatDefine, formatDefineList);
+    }
+
+    public void unitGroupSelectListener(){
+        if (getInstance().getUnitGroup() != null){
+           for (ResUnit resUnit: getInstance().getUnitGroup().getResUnits()){
+               if (resUnit.getConversionRate().intValue() == 1){
+                   getInstance().setResUnitByMasterUnit(resUnit);
+                   getInstance().setResUnitByInDefault(resUnit);
+                   getInstance().setResUnitByOutDefault(resUnit);
+                   return;
+               }
+           }
+        }
     }
 
     @Override

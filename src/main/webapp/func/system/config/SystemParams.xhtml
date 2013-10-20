@@ -59,24 +59,23 @@
                           showDetail="true" showSummary="false" tooltip="true"/>
         </s:decorate>
 
-        <a:region>
-            <a:outputPanel id="typeField">
-                <s:decorate id="typeField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.systemParam_field_type}</ui:define>
-                    <rich:select id="type" label="#{messages.systemParam_field_type}"
-                                     required="true"
-                                     value="#{systemParamHome.instance.type}">
-                        <s:selectItems var="_paramType" value="#{paramTypes}" label="#{messages[_paramType.name()]}"
-                                       noSelectionLabel="#{messages.noSelectLabel}"/>
-                        <s:convertEnum/>
-                        <a:ajax event="selectitem" render="typeField" execute="@this"/>
-                    </rich:select>
 
-                    <!--rich:message for="type" styleClass="message-icon"
-                                  showDetail="true" showSummary="true" tooltip="true"/-->
-                </s:decorate>
-            </a:outputPanel>
-        </a:region>
+        <s:decorate id="typeField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.systemParam_field_type}</ui:define>
+            <rich:select id="type" label="#{messages.systemParam_field_type}"
+                         required="true"
+                         value="#{systemParamHome.instance.type}">
+                <s:selectItems var="_paramType" value="#{paramTypes}" label="#{messages[_paramType.name()]}"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                <s:convertEnum/>
+                <a:ajax event="selectitem" render="typeField" execute="@this"/>
+            </rich:select>
+
+            <!--rich:message for="type" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/-->
+        </s:decorate>
+
+
         <s:decorate id="memoField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.field_memo}</ui:define>
             <h:inputTextarea label="#{messages.field_memo}" id="memo" cols="27"
@@ -90,12 +89,12 @@
         <ui:define name="actionButtons">
             <a:outputPanel id="operButtons">
                 <a:commandButton render="systemParamListPanel" execute="@form" value="#{messages.save}"
-                                                   action="#{systemParamHome.persistEnd}"
-                                                   rendered="#{!systemParamHome.managed}"
-                                                   data="#{systemParamHome.lastState}"
-                                                   oncomplete="if (event.data == 'persisted'){#{rich:component('systemParamEditPanel')}.hide(); return true;} else return false;">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
+                                 action="#{systemParamHome.persistEnd}"
+                                 rendered="#{!systemParamHome.managed}"
+                                 data="#{systemParamHome.lastState}"
+                                 oncomplete="if (event.data == 'persisted'){#{rich:component('systemParamEditPanel')}.hide(); return true;} else return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
 
 
                 <a:commandButton render="systemParamListPanel" value="#{messages.update}" execute="@form"
@@ -106,7 +105,7 @@
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
             </a:outputPanel>
-            <a:commandButton id ="cancelButton" immediate="true" execute="@this" value="#{messages.cancel}"
+            <a:commandButton id="cancelButton" immediate="true" execute="@this" value="#{messages.cancel}"
                              oncomplete="#{rich:component('systemParamEditPanel')}.hide();return false;">
                 <s:conversationPropagation type="end"/>
                 <a:attachQueue requestDelay="0"/>
@@ -126,9 +125,9 @@
                           rendered="#{empty systemParamList.resultList}"/>
 
             <rich:dataTable id="systemParamList"
-                var="_systemParam"
-                value="#{systemParamList.resultList}"
-                rendered="#{not empty systemParamList.resultList}">
+                            var="_systemParam"
+                            value="#{systemParamList.resultList}"
+                            rendered="#{not empty systemParamList.resultList}">
                 <h:column>
                     <f:facet name="header">
                         #{messages.systemParam_field_id}
@@ -169,7 +168,6 @@
                         <a:param name="id" value="#{_systemParam.id}" assignTo="#{systemParamHome.id}"/>
                         <a:attachQueue requestDelay="0"/>
                     </a:commandLink>
-
 
 
                     <a:commandLink id="systemParamEdit" immediate="true" execute="@this" styleClass="no-decor"

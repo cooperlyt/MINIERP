@@ -3,12 +3,7 @@ package com.dgsoft.erp.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,10 +18,10 @@ public class Accounting implements java.io.Serializable {
 	private String name;
 	private String subjectNo;
 	private boolean debit;
+    private Res res;
 	private Set<AccountOper> accountOpersForDebit = new HashSet<AccountOper>(0);
 	private Set<MiddleMoney> middleMoneysForCredit = new HashSet<MiddleMoney>(0);
 	private Set<MiddleMoney> middleMoneysForDebit = new HashSet<MiddleMoney>(0);
-	private Set<ResCategory> resCategories = new HashSet<ResCategory>(0);
 	private Set<AccountOper> accountOpersForCredit = new HashSet<AccountOper>(0);
 
 	public Accounting() {
@@ -37,22 +32,6 @@ public class Accounting implements java.io.Serializable {
 		this.name = name;
 		this.subjectNo = subjectNo;
 		this.debit = debit;
-	}
-	public Accounting(String id, String name, String subjectNo, boolean debit,
-			Set<AccountOper> accountOpersForDebit,
-			Set<MiddleMoney> middleMoneysForCredit,
-			Set<MiddleMoney> middleMoneysForDebit,
-			Set<ResCategory> resCategories,
-			Set<AccountOper> accountOpersForCredit) {
-		this.id = id;
-		this.name = name;
-		this.subjectNo = subjectNo;
-		this.debit = debit;
-		this.accountOpersForDebit = accountOpersForDebit;
-		this.middleMoneysForCredit = middleMoneysForCredit;
-		this.middleMoneysForDebit = middleMoneysForDebit;
-		this.resCategories = resCategories;
-		this.accountOpersForCredit = accountOpersForCredit;
 	}
 
 	@Id
@@ -125,15 +104,6 @@ public class Accounting implements java.io.Serializable {
 		this.middleMoneysForDebit = middleMoneysForDebit;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accounting")
-	public Set<ResCategory> getResCategories() {
-		return this.resCategories;
-	}
-
-	public void setResCategories(Set<ResCategory> resCategories) {
-		this.resCategories = resCategories;
-	}
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCredit")
 	public Set<AccountOper> getAccountOpersForCredit() {
 		return this.accountOpersForCredit;
@@ -143,4 +113,12 @@ public class Accounting implements java.io.Serializable {
 		this.accountOpersForCredit = accountOpersForCredit;
 	}
 
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "accounting")
+    public Res getRes() {
+        return res;
+    }
+
+    public void setRes(Res res) {
+        this.res = res;
+    }
 }

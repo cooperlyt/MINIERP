@@ -3,12 +3,7 @@ package com.dgsoft.erp.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,7 +17,7 @@ public class Supplier implements java.io.Serializable {
 	private String id;
 	private String name;
 	private Set<Batch> batches = new HashSet<Batch>(0);
-	private Set<SupplierRes> supplierReses = new HashSet<SupplierRes>(0);
+	private Set<Res> reses = new HashSet<Res>(0);
 
 	public Supplier() {
 	}
@@ -30,13 +25,6 @@ public class Supplier implements java.io.Serializable {
 	public Supplier(String id, String name) {
 		this.id = id;
 		this.name = name;
-	}
-	public Supplier(String id, String name, Set<Batch> batches,
-			Set<SupplierRes> supplierReses) {
-		this.id = id;
-		this.name = name;
-		this.batches = batches;
-		this.supplierReses = supplierReses;
 	}
 
 	@Id
@@ -71,13 +59,14 @@ public class Supplier implements java.io.Serializable {
 		this.batches = batches;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "supplier")
-	public Set<SupplierRes> getSupplierReses() {
-		return this.supplierReses;
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = StoreRes.class)
+    @JoinTable(name = "SUPPLIER_RES", joinColumns = @JoinColumn(name = "SUPPLIER"), inverseJoinColumns = @JoinColumn(name = "RES"))
+	public Set<Res> getReses() {
+		return this.reses;
 	}
 
-	public void setSupplierReses(Set<SupplierRes> supplierReses) {
-		this.supplierReses = supplierReses;
+	public void setReses(Set<Res> storeReses) {
+		this.reses = storeReses;
 	}
 
 }

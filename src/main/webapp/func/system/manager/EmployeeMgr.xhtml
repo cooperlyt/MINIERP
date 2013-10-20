@@ -10,6 +10,12 @@
 
 <ui:define name="toolbar">
 
+<h:outputStylesheet>
+    .credentialsTypeSelectWidth input[type="text"] {
+        width: 100px;
+    }
+</h:outputStylesheet>
+
 <h:form>
     <rich:toolbar height="26" itemSeparator="grid">
         <rich:toolbarGroup>
@@ -109,9 +115,9 @@
             </ui:define>
 
 
-            <rich:select disabled="true"
+            <rich:select disabled="true" styleClass="credentialsTypeSelectWidth" listWidth="140px"
                          label="#{messages.person_field_credentialsType}"
-                             value="#{personHome.instance.credentialsType}">
+                         value="#{personHome.instance.credentialsType}">
                 <s:selectItems var="_type" value="#{credentialsTypes}" label="#{messages[_type.name()]}"/>
                 <s:convertEnum/>
             </rich:select>
@@ -133,7 +139,8 @@
                 <ui:define name="label">#{messages.person_field_credentialsType}</ui:define>
 
                 <rich:select id="credentialsType" label="#{messages.person_field_credentialsType}"
-                                 value="#{personInput.cerdentialsType}" required="true">
+                             styleClass="credentialsTypeSelectWidth" listWidth="140px"
+                             value="#{personInput.cerdentialsType}" required="true">
                     <s:selectItems var="_type" value="#{credentialsTypes}" label="#{messages[_type.name()]}"/>
                     <s:convertEnum/>
                     <a:ajax event="selectitem" listener="#{personInput.credentialsChangeListener}"
@@ -220,9 +227,9 @@
             <s:decorate id="empJobField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.employee_field_job}</ui:define>
                 <rich:select style="width:150px"
-                                 disabled="#{empty personHome.instance.credentialsNumber}"
-                                 label="#{messages.employee_field_job}"
-                                 value="#{employeeHome.instance.job}">
+                             disabled="#{empty personHome.instance.credentialsNumber}"
+                             label="#{messages.employee_field_job}"
+                             value="#{employeeHome.instance.job}">
                     <s:selectItems var="_word" label="#{_word.value}"
                                    itemValue="#{_word.id}"
                                    value="#{dictionary.getWordList('system.empJob')}"
@@ -530,8 +537,10 @@
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
                     #{' '}
-                    <a:commandButton immediate="true" image="/img/power.png" title="#{messages.employee_power_title}" execute="@this"
-                                     render="powerEditPanel_form,powerEditPanel_controls" action="#{employeeHome.readPower}"
+                    <a:commandButton immediate="true" image="/img/power.png" title="#{messages.employee_power_title}"
+                                     execute="@this"
+                                     render="powerEditPanel_form,powerEditPanel_controls"
+                                     action="#{employeeHome.readPower}"
                                      oncomplete="#{rich:component('powerEditPanel')}.show();">
                         <a:param value="#{_emp.id}" assignTo="#{employeeHome.id}"/>
                         <a:param value="#{_emp.organization.id}" assignTo="#{organizationHome.id}"/>

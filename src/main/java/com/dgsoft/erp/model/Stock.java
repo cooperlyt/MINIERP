@@ -21,7 +21,7 @@ public class Stock implements java.io.Serializable {
     private StoreRes storeRes;
     private Store store;
     private BigDecimal count;
-    private BigDecimal floatConversionRate;
+
     private Set<BatchStoreCount> batchStoreCounts = new HashSet<BatchStoreCount>(0);
     private Set<Depositary> depositaries = new HashSet<Depositary>(0);
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
@@ -88,15 +88,6 @@ public class Stock implements java.io.Serializable {
 
     public void setCount(BigDecimal count) {
         this.count = count;
-    }
-
-    @Column(name = "FLOAT_CONVERSION_RATE", scale = 10)
-    public BigDecimal getFloatConversionRate() {
-        return this.floatConversionRate;
-    }
-
-    public void setFloatConversionRate(BigDecimal floatConversionRate) {
-        this.floatConversionRate = floatConversionRate;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")

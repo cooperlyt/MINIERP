@@ -2,15 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -69,8 +61,9 @@ public class Inventory implements java.io.Serializable {
 		this.store = store;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LOSS_RES")
+
+    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "LOSS_RES", unique = true, nullable = true, updatable = true)
 	public StockChange getStockChangeLoss() {
 		return this.stockChangeLoss;
 	}
@@ -79,8 +72,8 @@ public class Inventory implements java.io.Serializable {
 		this.stockChangeLoss = stockChangeByLossRes;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ADD_RES")
+    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "ADD_RES", unique = true, nullable = true, updatable = true)
 	public StockChange getStockChangeAdd() {
 		return this.stockChangeAdd;
 	}

@@ -10,6 +10,12 @@
 
 <ui:define name="body">
 
+<h:outputStylesheet>
+    .credentialsTypeSelectWidth input[type="text"]{
+        width: 140px;
+    }
+</h:outputStylesheet>
+
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="personEditPanel"/>
     <ui:param name="panelTitle"
@@ -30,7 +36,7 @@
 
         <rich:select id="credentialsType" label="#{messages.person_field_credentialsType}"
                          value="#{personHome.instance.credentialsType}" required="true"
-                         disabled="#{personHome.managed}">
+                         disabled="#{personHome.managed}" styleClass="credentialsTypeSelectWidth">
             <s:selectItems var="_type" value="#{credentialsTypes}" label="#{messages[_type.name()]}"
                            noSelectionLabel="#{messages.noSelectLabel}"/>
             <s:convertEnum/>

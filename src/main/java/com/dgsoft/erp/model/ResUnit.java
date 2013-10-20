@@ -1,17 +1,13 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.OrderBean;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,7 +16,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "RES_UNIT", catalog = "MINI_ERP")
-public class ResUnit implements java.io.Serializable {
+public class ResUnit implements java.io.Serializable,OrderBean {
 
 	private String id;
 	private UnitGroup unitGroup;
@@ -34,28 +30,14 @@ public class ResUnit implements java.io.Serializable {
 	public ResUnit() {
 	}
 
-	public ResUnit(String id, UnitGroup unitGroup, String name, int priority) {
-		this.id = id;
-		this.unitGroup = unitGroup;
-		this.name = name;
-		this.priority = priority;
-	}
-	public ResUnit(String id, UnitGroup unitGroup, String name,
-			BigDecimal conversionRate, int priority,
-			Set<Res> resesForOutDefault, Set<Res> resesForMasterUnit,
-			Set<Res> resesForInDefault) {
-		this.id = id;
-		this.unitGroup = unitGroup;
-		this.name = name;
-		this.conversionRate = conversionRate;
-		this.priority = priority;
-		this.resesForOutDefault = resesForOutDefault;
-		this.resesForMasterUnit = resesForMasterUnit;
-		this.resesForInDefault = resesForInDefault;
-	}
+    public ResUnit(UnitGroup unitGroup){
+        this.unitGroup = unitGroup;
+    }
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {

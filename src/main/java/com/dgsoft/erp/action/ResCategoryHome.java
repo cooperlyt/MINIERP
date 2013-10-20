@@ -3,7 +3,9 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResCategory;
+import com.dgsoft.erp.model.StoreRes;
 import com.google.common.collect.Iterators;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -30,6 +32,11 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
     @In
     private FacesMessages facesMessages;
 
+    @Factory("resTypes")
+    public ResCategory.ResType[] getResTypes(){
+        return ResCategory.ResType.values();
+    }
+
     public String getParentId() {
         return parentId;
     }
@@ -38,23 +45,27 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         this.parentId = parentId;
     }
 
-    public class ResNode implements TreeNode {
-
-        private Res res;
+    public static class StoreResNode implements TreeNode {
 
         private TreeNode parent;
 
-        public ResNode(TreeNode parent, Res res) {
+        private StoreRes storeRes;
+
+        public StoreResNode(TreeNode parent, StoreRes storeRes) {
             this.parent = parent;
-            this.res = res;
+            this.storeRes = storeRes;
+        }
+
+        public StoreRes getStoreRes() {
+            return storeRes;
+        }
+
+        public void setStoreRes(StoreRes storeRes) {
+            this.storeRes = storeRes;
         }
 
         public String getType() {
-            return "res";
-        }
-
-        public Res getRes() {
-            return res;
+            return "storeRes";
         }
 
         @Override
@@ -90,6 +101,86 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         @Override
         public Enumeration children() {
             return null;
+        }
+    }
+
+    public class ResNode implements TreeNode {
+
+        private Res res;
+
+        private TreeNode parent;
+
+        private boolean addStoreResNode;
+
+        private List<TreeNode> childNodes = null;
+
+        public ResNode(TreeNode parent, Res res, boolean addStoreResNode, boolean hasDisable) {
+            this.parent = parent;
+            this.res = res;
+            this.addStoreResNode = addStoreResNode;
+            if (addStoreResNode) {
+                childNodes = new ArrayList<TreeNode>();
+                for (StoreRes storeRes : res.getStoreResList()) {
+                    if (hasDisable || storeRes.isEnable()) {
+                        childNodes.add(new StoreResNode(this, storeRes));
+                    }
+                }
+            }
+        }
+
+        public String getType() {
+            return "res";
+        }
+
+        public Res getRes() {
+            return res;
+        }
+
+        @Override
+        public TreeNode getChildAt(int childIndex) {
+            if (addStoreResNode) {
+                return childNodes.get(childIndex);
+            } else
+                return null;
+        }
+
+        @Override
+        public int getChildCount() {
+            if (addStoreResNode) {
+                return childNodes.size();
+            } else
+                return 0;
+        }
+
+        @Override
+        public TreeNode getParent() {
+            return parent;
+        }
+
+        @Override
+        public int getIndex(TreeNode node) {
+            if (addStoreResNode) {
+                return childNodes.indexOf(node);
+            } else
+                return 0;
+        }
+
+        @Override
+        public boolean getAllowsChildren() {
+            return addStoreResNode;
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return !addStoreResNode;
+        }
+
+        @Override
+        public Enumeration children() {
+            if (addStoreResNode) {
+                return Iterators.asEnumeration(childNodes.iterator());
+            } else
+                return null;
         }
     }
 
@@ -179,16 +270,12 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
             result.setRoot(true);
         } else {
             result.setResCategory(getEntityManager().find(ResCategory.class, parentId));
-            result.setCommodity(result.getResCategory().isCommodity());
-            result.setMaterial(result.getResCategory().isMaterial());
-            result.setSemiProduct(result.getResCategory().isSemiProduct());
         }
 
         return result;
     }
 
-    private void generateChildrenNode(ResCategoryNode node, boolean addRes,
-                                      boolean hasCommodity, boolean hasMaterial, boolean hasSemi, boolean hasDisable) {
+    private void generateChildrenNode(ResCategoryNode node, boolean addRes, boolean addStoreRes, boolean hasDisable, List<ResCategory.ResType> contains) {
         if (node.resCategory.getResCategories().isEmpty() && node.resCategory.getReses().isEmpty())
             return;
 
@@ -196,26 +283,29 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
             return;
         }
 
+
         if (addRes) {
             for (Res res : node.resCategory.getResList()) {
                 if (res.isEnable() || hasDisable) {
-                    node.childList.add(new ResNode(node, res));
+                    node.childList.add(new ResNode(node, res, addStoreRes, hasDisable));
                 }
             }
         }
 
+
         for (ResCategory category : node.resCategory.getResCategoryList()) {
             if (category.isEnable() || hasDisable) {
-                if ((hasCommodity && category.isCommodity()) || (hasMaterial && category.isMaterial())
-                        || (hasSemi && category.isSemiProduct())) {
+                if (contains.contains(category.getType())) {
                     ResCategoryNode childrenNode = new ResCategoryNode(node, category);
                     node.childList.add(childrenNode);
-                    generateChildrenNode(childrenNode, addRes, hasCommodity, hasMaterial, hasSemi, hasDisable);
+                    generateChildrenNode(childrenNode, addRes, addStoreRes, hasDisable, contains);
                 }
             }
         }
 
     }
+
+    //private static final ResCategory.ResType[] RESTRICTIONS = {};
 
     @Factory(value = "categoryManagerTree", scope = ScopeType.CONVERSATION)
     public List<ResCategoryNode> getResCategoryManagerTree() {
@@ -223,19 +313,19 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
         for (ResCategory resCategory : rootCategories) {
             ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, false, true, true, true, true);
+            generateChildrenNode(rootNode, false, false, true, Arrays.asList(ResCategory.ResType.values()));
             result.add(rootNode);
         }
         return result;
     }
 
-    @Factory(value="resCategoryTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getResCategoryTree(){
+    @Factory(value = "resCategoryTree", scope = ScopeType.CONVERSATION)
+    public List<ResCategoryNode> getResCategoryTree() {
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
         for (ResCategory resCategory : rootCategories) {
             ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, true, true, true, false);
+            generateChildrenNode(rootNode, true, false, false, Arrays.asList(ResCategory.ResType.values()));
             result.add(rootNode);
         }
         return result;
@@ -257,31 +347,10 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return true;
     }
 
-    private boolean verifyData() {
-        if (!getInstance().isSemiProduct() && !getInstance().isMaterial() && !getInstance().isCommodity()) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "resTypeRequest");
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    protected boolean verifyUpdateAvailable() {
-        return verifyData();
-    }
-
-    @Override
-    protected boolean verifyPersistAvailable() {
-        return verifyData();
-    }
-
     public void assignParentType() {
         if (!getInstance().isRoot()) {
             wire();
-            getInstance().setCommodity(getInstance().getResCategory().isCommodity());
-            getInstance().setMaterial(getInstance().getResCategory().isMaterial());
-            getInstance().setSemiProduct(getInstance().getResCategory().isSemiProduct());
+            getInstance().setType(getInstance().getResCategory().getType());
         }
     }
 

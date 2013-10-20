@@ -8,6 +8,11 @@
                 xmlns:a="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich">
 
+    <h:outputStylesheet>
+        .sexSelectWidth input[type="text"]{
+            width: 60px;
+        }
+    </h:outputStylesheet>
 
     <h:panelGrid columns="2">
 
@@ -26,7 +31,7 @@
 
             <s:decorate id="sexField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.person_field_sex}</ui:define>
-                <rich:select id="sex" style="width:60px" disabled="#{empty readonly?'false':readonly}"
+                <rich:select id="sex" styleClass="sexSelectWidth" listWidth="60px" disabled="#{empty readonly?'false':readonly}"
                                  label="#{messages.person_field_sex}"
                                  value="#{personHome.instance.sex}">
                     <s:selectItems var="_sex" value="#{sexs}" label="#{messages[_sex.name()]}"
