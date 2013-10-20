@@ -26,6 +26,8 @@ public class Batch implements java.io.Serializable {
 
 	private String id;
 	private Supplier supplier;
+    private boolean produce;
+    private boolean storeIn;
 	private Date proDate;
 	private Date expDate;
 	private Set<BackRes> backReses = new HashSet<BackRes>(0);
@@ -132,7 +134,25 @@ public class Batch implements java.io.Serializable {
 		this.productStoreIns = productStoreIns;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
+    @Column(name = "PRODUCE", nullable = false)
+    public boolean isProduce() {
+        return produce;
+    }
+
+    public void setProduce(boolean product) {
+        this.produce = product;
+    }
+
+    @Column(name = "STORE_IN", nullable = false)
+    public boolean isStoreIn() {
+        return storeIn;
+    }
+
+    public void setStoreIn(boolean storeIn) {
+        this.storeIn = storeIn;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
 	public Set<StockChangeItem> getStockChangeItems() {
 		return this.stockChangeItems;
 	}

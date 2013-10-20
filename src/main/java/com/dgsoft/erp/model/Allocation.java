@@ -36,7 +36,6 @@ public class Allocation implements java.io.Serializable {
 	private String state;
 	private Date createDate;
 	private Date completeDate;
-	private String processMessage;
 	private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
 
 	public Allocation() {
@@ -54,27 +53,7 @@ public class Allocation implements java.io.Serializable {
 		this.createDate = createDate;
 		this.completeDate = completeDate;
 	}
-	public Allocation(String id, Store storeByTargetStore,
-			StockChange stockChangeByStoreIn, Store storeByApplyStore,
-			StockChange stockChangeByStoreOut, String applyEmp,
-			String allocationEmp, String reason, String memo, String state,
-			Date createDate, Date completeDate, String processMessage,
-			Set<AllocationRes> allocationReses) {
-		this.id = id;
-		this.storeByTargetStore = storeByTargetStore;
-		this.stockChangeByStoreIn = stockChangeByStoreIn;
-		this.storeByApplyStore = storeByApplyStore;
-		this.stockChangeByStoreOut = stockChangeByStoreOut;
-		this.applyEmp = applyEmp;
-		this.allocationEmp = allocationEmp;
-		this.reason = reason;
-		this.memo = memo;
-		this.state = state;
-		this.createDate = createDate;
-		this.completeDate = completeDate;
-		this.processMessage = processMessage;
-		this.allocationReses = allocationReses;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -203,16 +182,6 @@ public class Allocation implements java.io.Serializable {
 
 	public void setCompleteDate(Date completeDate) {
 		this.completeDate = completeDate;
-	}
-
-	@Column(name = "PROCESS_MESSAGE", length = 500)
-	@Size(max = 500)
-	public String getProcessMessage() {
-		return this.processMessage;
-	}
-
-	public void setProcessMessage(String processMessage) {
-		this.processMessage = processMessage;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "allocation")

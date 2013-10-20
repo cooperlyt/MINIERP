@@ -24,7 +24,6 @@ public class CustomerOrder implements java.io.Serializable {
 	private String payType;
 	private Date createDate;
 	private BigDecimal money;
-	private String processMessage;
 	private Date completeDate;
 	private BigDecimal profit;
 	private String memo;
@@ -140,15 +139,6 @@ public class CustomerOrder implements java.io.Serializable {
 		this.money = money;
 	}
 
-	@Column(name = "PROCESS_MESSAGE", length = 500)
-	@Size(max = 500)
-	public String getProcessMessage() {
-		return this.processMessage;
-	}
-
-	public void setProcessMessage(String processMessage) {
-		this.processMessage = processMessage;
-	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "COMPLETE_DATE", nullable = false, length = 19)
