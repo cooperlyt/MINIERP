@@ -51,7 +51,7 @@
         <ui:define name="label">
             #{unitGroupHome.instance.type == 'FLOAT_CONVERT'? messages.ResUnit_field_Default_ConversionRate : messages.ResUnit_field_ConversionRate}
         </ui:define>
-        <h:inputText id="conversionRate" required="true" label="#{messages.ResUnit_field_name}"
+        <h:inputText id="conversionRate" disabled="#{unitGroupHome.instance.type == 'NO_CONVERT'}" required="true" label="#{messages.ResUnit_field_name}"
                      value="#{unitGroupHome.selectResUnit.conversionRate}"
                      size="26">
             <a:ajax event="blur" render="conversionRateField" disabled="#{unitGroupHome.editResUnit}"/>

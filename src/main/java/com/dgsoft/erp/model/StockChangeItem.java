@@ -4,6 +4,8 @@ package com.dgsoft.erp.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,6 +27,7 @@ public class StockChangeItem implements java.io.Serializable {
     private BigDecimal afterCount;
 
     private Batch batch;
+    private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
     public StockChangeItem() {
     }
@@ -147,6 +150,15 @@ public class StockChangeItem implements java.io.Serializable {
 
     public void setAfterCount(BigDecimal afterCount) {
         this.afterCount = afterCount;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeItem")
+    public Set<NoConvertCount> getNoConvertCounts() {
+        return this.noConvertCounts;
+    }
+
+    public void setNoConvertCounts(Set<NoConvertCount> noConvertCounts) {
+        this.noConvertCounts = noConvertCounts;
     }
 
 }

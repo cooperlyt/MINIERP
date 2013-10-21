@@ -2,14 +2,9 @@ package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,6 +21,7 @@ public class Depositary implements java.io.Serializable {
 	private BatchStoreCount batchStoreCount;
 	private Stock stock;
 	private BigDecimal count;
+    private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
 	public Depositary() {
 	}
@@ -103,5 +99,14 @@ public class Depositary implements java.io.Serializable {
 	public void setCount(BigDecimal count) {
 		this.count = count;
 	}
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "depositary")
+    public Set<NoConvertCount> getNoConvertCounts() {
+        return this.noConvertCounts;
+    }
+
+    public void setNoConvertCounts(Set<NoConvertCount> noConvertCounts) {
+        this.noConvertCounts = noConvertCounts;
+    }
 
 }

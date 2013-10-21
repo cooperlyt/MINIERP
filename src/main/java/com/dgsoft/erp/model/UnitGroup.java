@@ -16,78 +16,91 @@ import javax.validation.constraints.Size;
 @Table(name = "UNIT_GROUP", catalog = "MINI_ERP")
 public class UnitGroup implements java.io.Serializable {
 
-    public enum UnitGroupType{
-        FIX_CONVERT,FLOAT_CONVERT; //NO_CONVERT
+    public enum UnitGroupType {
+        FIX_CONVERT, FLOAT_CONVERT, NO_CONVERT;
     }
 
-	private String id;
-	private String name;
-	private UnitGroupType type;
-	private Set<Res> reses = new HashSet<Res>(0);
-	private Set<ResUnit> resUnits = new HashSet<ResUnit>(0);
+    private String id;
+    private String name;
+    private UnitGroupType type;
+    private Set<Res> reses = new HashSet<Res>(0);
+    private Set<ResUnit> resUnits = new HashSet<ResUnit>(0);
 
-	public UnitGroup() {
-	}
+    public UnitGroup() {
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@Column(name = "NAME", nullable = false, length = 50)
-	@NotNull
-	@Size(max = 50)
-	public String getName() {
-		return this.name;
-	}
+    @Column(name = "NAME", nullable = false, length = 50)
+    @NotNull
+    @Size(max = 50)
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Enumerated(EnumType.STRING)
-	@Column(name = "TYPE", nullable = false, length = 32)
+    @Column(name = "TYPE", nullable = false, length = 32)
     @NotNull
-	public UnitGroupType getType() {
-		return this.type;
-	}
+    public UnitGroupType getType() {
+        return this.type;
+    }
 
-	public void setType(UnitGroupType type) {
-		this.type = type;
-	}
+    public void setType(UnitGroupType type) {
+        this.type = type;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unitGroup")
-	public Set<Res> getReses() {
-		return this.reses;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "unitGroup")
+    public Set<Res> getReses() {
+        return this.reses;
+    }
 
-	public void setReses(Set<Res> reses) {
-		this.reses = reses;
-	}
+    public void setReses(Set<Res> reses) {
+        this.reses = reses;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unitGroup", orphanRemoval = true, cascade = {CascadeType.ALL})
-	public Set<ResUnit> getResUnits() {
-		return this.resUnits;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "unitGroup", orphanRemoval = true, cascade = {CascadeType.ALL})
+    public Set<ResUnit> getResUnits() {
+        return this.resUnits;
+    }
 
-	public void setResUnits(Set<ResUnit> resUnits) {
-		this.resUnits = resUnits;
-	}
+    public void setResUnits(Set<ResUnit> resUnits) {
+        this.resUnits = resUnits;
+    }
 
     @Transient
-    public List<ResUnit> getResUnitList(){
+    public List<ResUnit> getResUnitList() {
         List<ResUnit> result = new ArrayList<ResUnit>(getResUnits());
         Collections.sort(result, OrderBeanComparator.getInstance());
         return result;
+    }
+
+    @Transient
+    public ResUnit getFloatAuxiliaryUnit() {
+        if (getType().equals(UnitGroupType.FLOAT_CONVERT)) {
+            for (ResUnit unit : getResUnits()) {
+                if (unit.getConversionRate().intValue() != 1) {
+                    return unit;
+                }
+            }
+        }
+        return null;
+
     }
 
 }

@@ -153,7 +153,7 @@ public class StoreInAction  {
 ////
 ////            getInstance().setStockChange(new StockChange(selectStore, storeInDate, credentials.getUsername(), StockChange.StoreChangeType.STORE_IN, memo));
 ////            for (StoreInItem storeInItem : storeInItems) {
-////                storeResHome.setRes(storeInItem.getRes(), storeInItem.getFormats());
+////                storeResHome.selectedRes(storeInItem.getRes(), storeInItem.getFormats());
 ////                StockChangeItem stockChangeItem = new StockChangeItem(getInstance().getStockChange(), storeResHome.getInstance(),storeInItem.getCount() , false);
 ////                if (storeResHome.isIdDefined()) {
 ////                    List<Stock> inventories = getEntityManager().createQuery("select inventory from Stock inventory where inventory.storeRes.id = :storeResId and inventory.storeArea.id= :storeAreaId")
@@ -223,7 +223,7 @@ public class StoreInAction  {
 //            return res;
 //        }
 //
-//        public void setRes(Res res) {
+//        public void selectedRes(Res res) {
 //            this.res = res;
 //        }
 //

@@ -62,33 +62,7 @@
             </rich:toolbarGroup>
 
             <rich:toolbarGroup location="right">
-                <h:form>
-                    <h:panelGrid columns="3">
-                        <h:inputText id="storeOrderCodeInput"
-                                     disabled="#{storeInAction.managed}"
-                                     required="true"
-                                     maxlength="32"
-                                     styleClass="barsearch"
-                                     label="#{messages.storeIn_field_id}"
-                                     value="#{stockChangeHome.code}">
-                            <rich:placeholder value="#{messages.storeIn_field_id}"/>
-                        </h:inputText>
-
-                        <h:commandButton value="#{messages.storeIn}" action=""
-
-                        <a:commandButton value="#{messages.storeIn}" execute="@region"
-                                         action="#{storeInAction.storeIn}"
-                                         render="storeInItem,storeInItems,actions,beginActions">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
-                        <a:commandButton value="#{messages.cancel}" immediate="true"
-                                         action="#{storeInAction.clearInstance}"
-                                         execute="@this" render="storeInItem,storeInItems,actions,beginActions">
-                            <s:conversationPropagation type="end"/>
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
-                    </h:panelGrid>
-                </h:form>
+                <ui:insert name="rightToolbar"/>
 
             </rich:toolbarGroup>
 
@@ -131,6 +105,9 @@
                         </a:commandButton>
                     </h:panelGrid>
                 </s:decorate>
+
+
+                <ui:insert name="addItemAction"/>
 
                 <div style="clear:both">
                     <span class="required">*</span>
@@ -183,4 +160,5 @@
             </rich:dataTable>
         </h:form>
     </ui:define>
+
 </ui:composition>

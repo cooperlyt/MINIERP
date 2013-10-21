@@ -117,7 +117,7 @@
                     <ui:define name="label">#{messages.res_field_storeInUnit}</ui:define>
                     <rich:select label="#{messages.res_field_storeInUnit}"
                                  value="#{resHome.instance.resUnitByInDefault}"
-                                 required="true" disabled="#{empty resHome.instance.unitGroup}">
+                                 required="true" disabled="#{(empty resHome.instance.unitGroup) or (resHome.instance.unitGroup.type.name() == 'NO_CONVERT') }">
                         <s:selectItems rendered="#{not empty resHome.instance.unitGroup}"
                                        value="#{resHome.instance.unitGroup.resUnitList}" var="_resUnit"
                                        label="#{_resUnit.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
@@ -129,7 +129,7 @@
                     <ui:define name="label">#{messages.res_field_storeOutUnit}</ui:define>
                     <rich:select label="#{messages.res_field_storeOutUnit}" required="true"
                                  value="#{resHome.instance.resUnitByOutDefault}"
-                                 disabled="#{empty resHome.instance.unitGroup}">
+                                 disabled="#{(empty resHome.instance.unitGroup) or (resHome.instance.unitGroup.type.name() == 'NO_CONVERT')}">
                         <s:selectItems rendered="#{not empty resHome.instance.unitGroup}"
                                        value="#{resHome.instance.unitGroup.resUnitList}" var="_resUnit"
                                        label="#{_resUnit.name}" noSelectionLabel="#{messages.noSelectLabel}"/>

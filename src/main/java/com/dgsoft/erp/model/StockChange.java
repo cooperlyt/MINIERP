@@ -4,6 +4,7 @@ package com.dgsoft.erp.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
@@ -18,10 +19,32 @@ import javax.validation.constraints.Size;
 public class StockChange implements java.io.Serializable {
 
     public enum StoreChangeType {
-        MATERIAL_IN,MATERIAL_BACK_IN,MATERIAL_OUT,SELL_OUT,
-        PRODUCT_IN,ALLOCATION_IN,ALLOCATION_OUT,ASSEMBLY_IN,ASSEMBLY_OUT,
-        SCRAP_OUT, BORROW_OUT_OUT, BORROW_OUT_IN, BORROW_IN_IN, BORROW_IN_OUT,
-        STORE_CHECK_LOSS, STORE_CHECK_ADD;
+        MATERIAL_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL)),
+        MATERIAL_BACK_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL)),
+        MATERIAL_OUT(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL)),
+        SELL_OUT(EnumSet.of(ResCategory.ResType.PRODUCT)),
+        PRODUCT_IN(EnumSet.of(ResCategory.ResType.PRODUCT,ResCategory.ResType.SEMI_PRODUCT,ResCategory.ResType.WORK_IN_PROCESS)),
+        ALLOCATION_IN(EnumSet.of(ResCategory.ResType.PRODUCT)),
+        ALLOCATION_OUT(EnumSet.of(ResCategory.ResType.PRODUCT)),
+        ASSEMBLY_IN(EnumSet.allOf(ResCategory.ResType.class)),
+        ASSEMBLY_OUT(EnumSet.allOf(ResCategory.ResType.class)),
+        SCRAP_OUT(EnumSet.allOf(ResCategory.ResType.class)),
+        STORE_CHECK_LOSS(EnumSet.allOf(ResCategory.ResType.class)),
+        STORE_CHECK_ADD(EnumSet.allOf(ResCategory.ResType.class));
+
+        private EnumSet<ResCategory.ResType> resTypes;
+
+        public EnumSet<ResCategory.ResType> getResTypes() {
+            return resTypes;
+        }
+
+        public void setResTypes(EnumSet<ResCategory.ResType> resTypes) {
+            this.resTypes = resTypes;
+        }
+
+        private StoreChangeType(EnumSet<ResCategory.ResType> resTypes){
+            this.resTypes = resTypes;
+        }
     }
 
     private String id;
@@ -46,6 +69,7 @@ public class StockChange implements java.io.Serializable {
     private ScrapStoreOut scrapStoreOut;
     private ProductBackStoreIn productBackStoreIn;
     private MaterialBackStoreIn materialBackStoreIn;
+    private StoreChange storeChange;
     private OrderStoreOut orderStoreOut;
 
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
@@ -261,4 +285,12 @@ public class StockChange implements java.io.Serializable {
         this.orderStoreOut = orderStoreOuts;
     }
 
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public StoreChange getStoreChange() {
+        return storeChange;
+    }
+
+    public void setStoreChange(StoreChange storeChange) {
+        this.storeChange = storeChange;
+    }
 }

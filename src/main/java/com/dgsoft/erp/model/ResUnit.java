@@ -26,12 +26,15 @@ public class ResUnit implements java.io.Serializable,OrderBean {
 	private Set<Res> resesForOutDefault = new HashSet<Res>(0);
 	private Set<Res> resesForMasterUnit = new HashSet<Res>(0);
 	private Set<Res> resesForInDefault = new HashSet<Res>(0);
+    private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
 	public ResUnit() {
+        this.conversionRate = new BigDecimal(0);
 	}
 
     public ResUnit(UnitGroup unitGroup){
         this.unitGroup = unitGroup;
+        this.conversionRate = new BigDecimal(0);
     }
 
 	@Id
@@ -114,5 +117,14 @@ public class ResUnit implements java.io.Serializable,OrderBean {
 	public void setResesForInDefault(Set<Res> resesForInDefault) {
 		this.resesForInDefault = resesForInDefault;
 	}
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resUnit")
+    public Set<NoConvertCount> getNoConvertCounts() {
+        return this.noConvertCounts;
+    }
+
+    public void setNoConvertCounts(Set<NoConvertCount> noConvertCounts) {
+        this.noConvertCounts = noConvertCounts;
+    }
 
 }

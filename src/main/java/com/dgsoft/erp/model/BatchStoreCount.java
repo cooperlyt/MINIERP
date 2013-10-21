@@ -29,6 +29,7 @@ public class BatchStoreCount implements java.io.Serializable {
 	private Stock stock;
 	private BigDecimal count;
 	private Set<Depositary> depositaries = new HashSet<Depositary>(0);
+    private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
 	public BatchStoreCount() {
 	}
@@ -110,5 +111,14 @@ public class BatchStoreCount implements java.io.Serializable {
 	public void setDepositaries(Set<Depositary> depositaries) {
 		this.depositaries = depositaries;
 	}
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batchStoreCount")
+    public Set<NoConvertCount> getNoConvertCounts() {
+        return this.noConvertCounts;
+    }
+
+    public void setNoConvertCounts(Set<NoConvertCount> noConvertCounts) {
+        this.noConvertCounts = noConvertCounts;
+    }
 
 }

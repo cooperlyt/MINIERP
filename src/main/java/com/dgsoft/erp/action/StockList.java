@@ -28,7 +28,7 @@ public class StockList extends ErpEntityQuery<Stock> {
             "inventory.storeArea.id in (#{storeAreaHome.allStoreAreaIds})",
             "inventory.storeArea.store.id = #{stockList.store.id}",
             "inventory.storeRes.id in (#{storeResFormatFilter.agreeStoreResIds})",
-            "inventory.storeRes.res.id = #{storeResFormatFilter.res.id}"};
+            "inventory.storeRes.res.id = #{storeResFormatFilter.selectedRes.id}"};
 
     @Logger
     protected Log log;

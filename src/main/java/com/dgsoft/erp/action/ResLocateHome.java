@@ -1,20 +1,16 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.model.Format;
-import com.dgsoft.erp.model.FormatDefine;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResCategory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.RaiseEvent;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import javax.persistence.Query;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -34,6 +30,8 @@ public class ResLocateHome extends ErpEntityHome<Res> {
 
     private String code;
 
+    private StoreResFormatFilter.FilterType filterType;
+
     public String getCode() {
         return code;
     }
@@ -42,8 +40,16 @@ public class ResLocateHome extends ErpEntityHome<Res> {
         this.code = code;
     }
 
+    public void setFilterBy(String filterBy) {
+        this.filterType = StoreResFormatFilter.FilterType.valueOf(filterBy);
+    }
+
     public void locateByCode() {
-        List<Res> resList = getEntityManager().createQuery("select res from Res res where res.enable = true and res.code=:code").setParameter("code", code).getResultList();
+
+        Query query = getEntityManager().createQuery("select res from Res res where res.enable = true and res.code=:code and res.resCategory.type in (:resType)").setParameter("code", code);
+        if (filterBy.trim().toUpperCase().equals(""))
+
+            List<Res> resList =.getResultList();
         if (resList.isEmpty()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "resCodeIllegal", code);
             return;
@@ -80,14 +86,13 @@ public class ResLocateHome extends ErpEntityHome<Res> {
 
 
     @Override
-    protected void initInstance(){
+    protected void initInstance() {
         super.initInstance();
-        storeResFormatFilter.selectRes(getInstance());
-        if (isIdDefined()){
+        storeResFormatFilter.selectedRes(getInstance(), filterBy.toUpperCase().trim().equals("STOREIN"));
+        if (isIdDefined()) {
             Events.instance().raiseEvent("erp.resLocateSelected");
         }
     }
-
 
 
 }

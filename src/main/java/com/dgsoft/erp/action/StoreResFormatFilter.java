@@ -1,9 +1,6 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.erp.model.Format;
-import com.dgsoft.erp.model.FormatDefine;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -25,6 +22,10 @@ import java.util.*;
 @Scope(ScopeType.CONVERSATION)
 public class StoreResFormatFilter {
 
+    public enum FilterType{
+        STORE_IN,STORE_OUT,NONE;
+    }
+
     @In
     private EntityManager erpEntityManager;
 
@@ -33,7 +34,15 @@ public class StoreResFormatFilter {
 
     private Res res;
 
+    private BigDecimal count;
+
+    private ResUnit useUnit;
+
+    private BigDecimal floatConvertRate;
+
     private List<Format> resFormatList = new ArrayList<Format>();
+
+    private List<NoConvertCount> noConvertCountList;
 
     private Map<String, List<Object>> historyValues = new HashMap<String, List<Object>>();
 
@@ -45,63 +54,78 @@ public class StoreResFormatFilter {
         this.resFormatList = resFormatList;
     }
 
+    public ResUnit getUseUnit() {
+        return useUnit;
+    }
+
+    public void setUseUnit(ResUnit useUnit) {
+        this.useUnit = useUnit;
+    }
+
+    public BigDecimal getFloatConvertRate() {
+        return floatConvertRate;
+    }
+
+    public void setFloatConvertRate(BigDecimal floatConvertRate) {
+        this.floatConvertRate = floatConvertRate;
+    }
+
+    public BigDecimal getCount() {
+        return count;
+    }
+
+    public void setCount(BigDecimal count) {
+        this.count = count;
+    }
+
     public Res getRes() {
         return res;
     }
 
-    public void setRes(Res res) {
-        this.res = res;
-    }
 
-    private List<Object> searchHistoryValues(FormatDefine define) {
-        List<Format> formats = erpEntityManager.createQuery("select distinct format from Format format where format.formatDefine.id = :defineId").setParameter("defineId", define.getId()).getResultList();
-        formats.addAll(resFormatList);
-        List<Object> result = new ArrayList<Object>();
-        for (Format format : formats) {
-            if (format.getFormatDefine().getId().equals(define.getId())
-                    && (format.getFormatValue() != null) &&
-                    !format.getFormatValue().trim().equals("")) {
-                if (define.getDataType().equals(FormatDefine.FormatType.INTEGER)) {
-                    Integer value = Integer.parseInt(format.getFormatValue());
-                    if (!result.contains(value)) {
-                        result.add(value);
-                    }
-                } else if (define.getDataType().equals(FormatDefine.FormatType.FLOAT)) {
-                    BigDecimal value = new BigDecimal(format.getFormatValue());
-                    if (!result.contains(value)) {
-                        result.add(value);
+    private void generateCounts(FilterType filterType) {
+        count = new BigDecimal(0);
+        noConvertCountList = null;
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
+
+        } else if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
+            if (res.getUnitGroup().getResUnits().size() > 1) {
+                noConvertCountList = new ArrayList<NoConvertCount>(res.getUnitGroup().getResUnits().size() - 1);
+                for (ResUnit unit : res.getUnitGroup().getResUnitList()) {
+                    if (!unit.equals(res.getResUnitByMasterUnit())) {
+                        noConvertCountList.add(new NoConvertCount(unit, new BigDecimal(0)));
                     }
                 }
             }
+        }
+
+        switch (filterType){
+            case STORE_IN:
+                useUnit = res.getResUnitByInDefault();
+                break;
+            case STORE_OUT:
+                useUnit = res.getResUnitByOutDefault();
+                break;
+            default:
+                useUnit = res.getResUnitByMasterUnit();
+                break;
 
         }
 
-
-        Collections.sort(result, new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                if ((o1 instanceof Integer) && (o2 instanceof Integer)) {
-                    return ((Integer) o1).compareTo((Integer) o2);
-                } else if ((o1 instanceof BigDecimal) && (o2 instanceof BigDecimal)) {
-                    return ((BigDecimal) o1).compareTo((BigDecimal) o2);
-                }
-                return 0;
-            }
-        });
-        return result;
     }
 
-    public void selectRes(Res res) {
+    public void selectedRes(Res res, FilterType type) {
         this.res = res;
+        generateCounts(type);
         resFormatList = new ArrayList<Format>();
         for (FormatDefine formatDefine : res.getFormatDefineList()) {
             resFormatList.add(new Format(formatDefine));
             historyValues.put(formatDefine.getId(), searchHistoryValues(formatDefine));
         }
-
     }
 
-    public void clearRes(){
+    public void clearRes() {
         res = null;
         historyValues.clear();
         resFormatList.clear();
@@ -140,7 +164,7 @@ public class StoreResFormatFilter {
                 for (Format format : resFormatList) {
 
                     log.debug("getAgreeStoreResIds test: " + format);
-                    if (format != null){
+                    if (format != null) {
                         log.debug("getAgreeStoreResIds test: " + format.getFormatValue());
                     }
                     if ((format.getFormatValue() != null) && (!format.getFormatValue().trim().equals("")) &&
@@ -160,6 +184,45 @@ public class StoreResFormatFilter {
         } else {
             return null;
         }
+    }
+
+
+    private List<Object> searchHistoryValues(FormatDefine define) {
+        List<Format> formats = erpEntityManager.createQuery("select distinct format from Format format where format.formatDefine.id = :defineId").setParameter("defineId", define.getId()).getResultList();
+        formats.addAll(resFormatList);
+        List<Object> result = new ArrayList<Object>();
+        for (Format format : formats) {
+            if (format.getFormatDefine().getId().equals(define.getId())
+                    && (format.getFormatValue() != null) &&
+                    !format.getFormatValue().trim().equals("")) {
+                if (define.getDataType().equals(FormatDefine.FormatType.INTEGER)) {
+                    Integer value = Integer.parseInt(format.getFormatValue());
+                    if (!result.contains(value)) {
+                        result.add(value);
+                    }
+                } else if (define.getDataType().equals(FormatDefine.FormatType.FLOAT)) {
+                    BigDecimal value = new BigDecimal(format.getFormatValue());
+                    if (!result.contains(value)) {
+                        result.add(value);
+                    }
+                }
+            }
+
+        }
+
+
+        Collections.sort(result, new Comparator<Object>() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                if ((o1 instanceof Integer) && (o2 instanceof Integer)) {
+                    return ((Integer) o1).compareTo((Integer) o2);
+                } else if ((o1 instanceof BigDecimal) && (o2 instanceof BigDecimal)) {
+                    return ((BigDecimal) o1).compareTo((BigDecimal) o2);
+                }
+                return 0;
+            }
+        });
+        return result;
     }
 
 }
