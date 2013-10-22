@@ -134,7 +134,7 @@ public class StoreRes implements java.io.Serializable {
         this.stocks = stocks;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "storeRes", orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<Format> getFormats() {
         return this.formats;
     }

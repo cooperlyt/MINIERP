@@ -73,6 +73,7 @@
         <class>com.dgsoft.erp.model.MaterialStoreOut</class>
         <class>com.dgsoft.erp.model.MiddleMan</class>
         <class>com.dgsoft.erp.model.MiddleMoney</class>
+        <class>com.dgsoft.erp.model.NoConvertCount</class>
         <class>com.dgsoft.erp.model.OrderBack</class>
         <class>com.dgsoft.erp.model.OrderDelivery</class>
         <class>com.dgsoft.erp.model.OrderFee</class>
@@ -87,8 +88,10 @@
         <class>com.dgsoft.erp.model.Stock</class>
         <class>com.dgsoft.erp.model.StockChange</class>
         <class>com.dgsoft.erp.model.StockChangeItem</class>
+
         <class>com.dgsoft.erp.model.Store</class>
         <class>com.dgsoft.erp.model.StoreArea</class>
+        <class>com.dgsoft.erp.model.StoreChange</class>
         <class>com.dgsoft.erp.model.StoreManager</class>
         <class>com.dgsoft.erp.model.StoreRes</class>
         <class>com.dgsoft.erp.model.Supplier</class>
@@ -98,7 +101,7 @@
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="20"/>

@@ -191,26 +191,34 @@
 
                 </a:repeat>
             </rich:column>
+
             <rich:column>
-                <f:facet name="header">
-                    #{messages.StoreArea}
-                </f:facet>
-                #{_item.storeArea.getTitle(false)}
+                <f:facet name="header">#{messages.storeIn_field_floatConvertRate}</f:facet>
+                <h:outputText value="#{_item.floatConvertRate}" rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"
             </rich:column>
+
             <rich:column>
                 <f:facet name="header">
-                    #{messages.storeInCount}
+                    #{messages.MasterUnitCount}
                 </f:facet>
-                #{_item.count}#{(_item.res.unit)}
+                #{_item.count}#{(_item.res.resUnitByMasterUnit.name)}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.AuxUnitCount}
+                </f:facet>
+
             </rich:column>
             <rich:column>
                 <f:facet name="header">
                     #{messages.action}
                 </f:facet>
+                <!--
                 <a:commandButton title="#{messages.remove}" execute="@form" immediate="true" image="/img/delete.png"
                                  action="#{storeInAction.removeItem}" render="storeInItems">
                     <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
+                </a:commandButton>            -->
             </rich:column>
         </rich:dataTable>
     </h:form>

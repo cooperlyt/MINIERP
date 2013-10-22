@@ -16,8 +16,19 @@ public class MaterialStoreInHome extends StoreInAction<MaterialStoreIn>{
 
 
     @Override
-    public void addItem() {
-        //To change body of implemented methods use File | Settings | File Templates.
+    protected String beginStoreIn() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String beginStoreChange() {
+        stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.MATERIAL_IN);
+        return super.beginStoreChange();
+    }
+
+    @Override
+    protected String storeChange() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -31,18 +42,7 @@ public class MaterialStoreInHome extends StoreInAction<MaterialStoreIn>{
     }
 
     @Override
-    public boolean isIdAvailable(String newId) {
+    public boolean isIdAvailable() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String storeChange() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String beginStoreChange() {
-        stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.MATERIAL_IN);
-        return super.beginStoreChange();
     }
 }

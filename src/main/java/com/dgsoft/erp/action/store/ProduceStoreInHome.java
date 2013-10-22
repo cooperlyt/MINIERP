@@ -29,20 +29,20 @@ public class ProduceStoreInHome extends StoreInAction<ProductStoreIn>{
     @Override
     public String storeChange() {
 
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "ProcduceBeginStoreIn";
     }
 
     @Override
-    public String beginStoreChange() {
+    public String beginStoreIn() {
         stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.PRODUCE_IN);
-        return super.beginStoreChange();
+        return "ProduceStoreIn";
     }
 
     @Override
     public String cancel() {
         clearInstance();
         storeInItems.clear();
-        return "/func/erp/store/storeChange/ProduceIn.xhtml";
+        return "ProcduceBeginStoreIn";
     }
 
 }

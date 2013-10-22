@@ -8,7 +8,17 @@
 
 
     <page view-id="/func/erp/store/storeChange/*" login-required="true">
-
+        <restrict>#{s:hasRole('erp.store.manager')}</restrict>
+        <navigation>
+            <rule if-outcome="ProcduceBeginStoreIn">
+                <end-conversation/>
+                <redirect view-id="/func/erp/store/storeChange/ProduceIn.xhtml"/>
+            </rule>
+            <rule if-outcome="ProduceStoreIn">
+                <begin-conversation/>
+                <redirect view-id="/func/erp/store/ProduceStoreIn.xhtml"/>
+            </rule>
+        </navigation>
     </page>
 
     <page view-id="*">
@@ -20,18 +30,6 @@
     </page>
 
     <page view-id="/func/*" login-required="true">
-        <restrict>#{s:hasRole('erp.store.manager')}</restrict>
-        <navigation>
-            <rule if-outcome="StoreIn">
-                <begin-conversation/>
-                <redirect view-id="/func/erp/store/StoreIn.xhtml"/>
-            </rule>
-            <rule if-outcome="StoreOut">
-                <begin-conversation/>
-                <redirect view-id="/func/erp/store/StoreOut.xhtml"/>
-            </rule>
-        </navigation>
-
     </page>
 
     <page view-id="/func/system/config/*" login-required="true">

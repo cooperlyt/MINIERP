@@ -20,9 +20,9 @@ import java.util.Map;
  */
 public abstract class StoreChangeHelper<E extends StockChangeModel> extends ErpEntityHome<E> implements StoreChangeAction {
 
-    public abstract String beginStoreChange();
+    protected abstract String beginStoreChange();
 
-    public abstract String storeChange();
+    protected abstract String storeChange();
 
     @In(create = true)
     protected StockChangeHome stockChangeHome;
@@ -37,7 +37,6 @@ public abstract class StoreChangeHelper<E extends StockChangeModel> extends ErpE
     }
 
     @Override
-    @End
     public String saveStoreChange(){
         if (!isIdAvailable()){
 

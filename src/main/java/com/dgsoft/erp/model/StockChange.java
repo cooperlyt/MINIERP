@@ -102,8 +102,6 @@ public class StockChange implements java.io.Serializable {
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
     @NotNull
     @Size(max = 32)
     public String getId() {

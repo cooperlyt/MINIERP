@@ -47,12 +47,14 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     @DataModelSelection
     protected StoreInItem selectedStoreInItem;
 
+    protected abstract String beginStoreIn();
+
     @Override
     public String beginStoreChange() {
         if (runParam.getBooleanParamValue("erp.autoGenerateStoreInCode")) {
-            getInstance().setId(numberBuilder.getDateNumber("storeInCode"));
+            stockChangeHome.getInstance().setId("I" + numberBuilder.getDateNumber("storeInCode"));
         }
-        return "storeIn";
+        return beginStoreIn();
     }
 
     @Override
