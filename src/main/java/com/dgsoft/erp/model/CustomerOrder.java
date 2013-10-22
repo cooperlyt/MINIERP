@@ -119,7 +119,7 @@ public class CustomerOrder implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATE_DATE", nullable = false, length = 19)
+	@Column(name = "CREATE_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
 	@NotNull
 	public Date getCreateDate() {
 		return this.createDate;
@@ -141,7 +141,7 @@ public class CustomerOrder implements java.io.Serializable {
 
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "COMPLETE_DATE", nullable = false, length = 19)
+	@Column(name = "COMPLETE_DATE", nullable = false, length = 19,columnDefinition = "DATETIME")
 	@NotNull
 	public Date getCompleteDate() {
 		return this.completeDate;

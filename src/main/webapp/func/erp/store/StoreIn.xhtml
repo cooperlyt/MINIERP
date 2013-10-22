@@ -175,10 +175,7 @@
                     <f:facet name="header">
                         #{messages.action}
                     </f:facet>
-                    <a:commandButton title="#{messages.remove}" execute="@form" immediate="true" image="/img/delete.png"
-                                     action="#{storeInAction.removeItem}" render="storeInItems">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:commandButton>
+
                 </rich:column>
             </rich:dataTable>
         </h:form>

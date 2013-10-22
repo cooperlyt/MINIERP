@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.StockChangeModel;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,7 +12,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "PRODUCT_STORE_IN", catalog = "MINI_ERP")
-public class ProductStoreIn implements java.io.Serializable {
+public class ProductStoreIn implements java.io.Serializable, StockChangeModel {
 
 	private String id;
 	private StockChange stockChange;

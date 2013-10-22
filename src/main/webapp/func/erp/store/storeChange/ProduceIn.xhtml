@@ -7,8 +7,10 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/erp/beginStoreChange.xhtml">
-    <ui:define name="body">
-
+    <ui:define name="rightAction">
+        <h:commandButton value="#{messages.beginStoreIn}" action="#{produceStoreInHome.begin}">
+            <f:param name="multiBatch" value="#{true}"/>
+        </h:commandButton>
 
     </ui:define>
 </ui:composition>

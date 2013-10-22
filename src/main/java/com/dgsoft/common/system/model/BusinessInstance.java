@@ -74,7 +74,7 @@ public class BusinessInstance implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATE_TIME", nullable = false, length = 19)
+    @Column(name = "CREATE_TIME", nullable = false, length = 19, columnDefinition = "DATETIME")
     @NotNull
     public Date getCreateTime() {
         return this.createTime;
@@ -85,7 +85,7 @@ public class BusinessInstance implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "COMPLETE_TIME", nullable = true, length = 19)
+    @Column(name = "COMPLETE_TIME", nullable = true, length = 19, columnDefinition = "DATETIME")
     public Date getCompleteTime() {
         return this.completeTime;
     }

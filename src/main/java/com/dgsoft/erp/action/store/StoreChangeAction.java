@@ -18,9 +18,9 @@ public interface StoreChangeAction {
 
     public abstract String cancel();
 
-    public abstract boolean isIdAvailable(String newId);
+    public abstract boolean isIdAvailable();
 
-    public abstract String storeChange();
+    public abstract String saveStoreChange();
 
 
 }

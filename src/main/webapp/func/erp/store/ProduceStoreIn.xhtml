@@ -1,0 +1,54 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/erp/storeIn.xhtml">
+
+
+    <ui:param name="resTreeValue" value="#{produceInResTree}"/>
+    <ui:param name="storeChangeType" value="PRODUCE_IN"/>
+
+    <ui:define name="rightToolbar">
+        <h:form>
+            <h:panelGrid columns="3">
+                <h:inputText id="storeOrderCodeInput"
+                             required="true"
+                             maxlength="32"
+                             styleClass="barsearch"
+                             label="#{messages.storeIn_field_id}"
+                             value="#{produceStoreInHome.instance.id}">
+                    <rich:placeholder value="#{messages.storeIn_field_id}"/>
+                </h:inputText>
+
+                <h:commandButton value="#{messages.storeIn}" action="#{produceStoreInHome.storeChange}"/>
+
+                <s:button value="#{messages.cancel}" action="#{produceStoreInHome.cancel}" propagation="end"/>
+
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="storeInItemFields">
+          <s:decorate rendered="#{storeResFormatFilter.res.batchMgr}" template="/layout/edit.xhtml">
+              <ui:define name="label">#{messagse.ProductBatch}</ui:define>
+               <!-- TODO BATCH -->
+
+          </s:decorate>
+
+    </ui:define>
+
+    <ui:define name="addItemAction">
+        <a:commandButton value="#{messages.addItem}" execute="@form" render="storeInItem,storeInItems"
+                         action="#{produceStoreInHome.addItem}">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+
+    </ui:define>
+
+
+</ui:composition>

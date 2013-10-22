@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.erp.action.ResHelper;
+import com.dgsoft.erp.action.store.StoreChangeHelper;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -161,9 +162,9 @@ public class StoreRes implements java.io.Serializable {
     }
 
     @Transient
-    public Format getFormat(String formatDefineId){
-        for (Format format: getFormats()){
-            if (format.getFormatDefine().getId().equals(formatDefineId)){
+    public Format getFormat(String formatDefineId) {
+        for (Format format : getFormats()) {
+            if (format.getFormatDefine().getId().equals(formatDefineId)) {
                 return format;
             }
         }
@@ -171,9 +172,9 @@ public class StoreRes implements java.io.Serializable {
     }
 
     @Transient
-    public List<Format> getFormatList(){
+    public List<Format> getFormatList() {
         List<Format> result = new ArrayList<Format>(getFormats());
-        Collections.sort(result,new Comparator<Format>() {
+        Collections.sort(result, new Comparator<Format>() {
             @Override
             public int compare(Format o1, Format o2) {
                 return new Integer(o1.getFormatDefine().getPriority()).compareTo(o2.getFormatDefine().getPriority());
@@ -184,26 +185,31 @@ public class StoreRes implements java.io.Serializable {
 
     @Override
     @Transient
-    public boolean equals(Object obj){
-        if (obj == null){
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if (!(obj instanceof StoreRes)){
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof StoreRes)) {
             return false;
         }
         StoreRes other = (StoreRes) obj;
-        if (!getRes().getId().equals(other.getRes().getId())){
+        if (!getRes().getId().equals(other.getRes().getId())) {
             return false;
         }
 
-        return ResHelper.sameFormat(other.getFormats(), getFormats());
+        return StoreChangeHelper.sameFormat(other.getFormats(), getFormats())
+                && (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
+                || floatConversionRate.equals(other.floatConversionRate));
     }
 
     @Override
     @Transient
-    public int hashCode(){
+    public int hashCode() {
         String result = getRes().getId();
-        for(Format format: getFormatList()){
+        for (Format format : getFormatList()) {
             result += "_" + format.getFormatDefine().getId() + ":" + format.getFormatValue();
         }
         return result.hashCode();

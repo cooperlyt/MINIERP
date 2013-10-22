@@ -22,6 +22,7 @@ public class Batch implements java.io.Serializable {
     private Res res;
 	private Date proDate;
 	private Date expDate;
+    private Date firstInTime;
 	private MaterialStoreOut materialStoreOut;
 	private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
 	private Set<BatchStoreCount> batchStoreCounts = new HashSet<BatchStoreCount>(0);
@@ -59,7 +60,7 @@ public class Batch implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "PRO_DATE", nullable = false, length = 19)
+	@Column(name = "PRO_DATE", nullable = false, length = 19,columnDefinition = "DATETIME")
 	@NotNull
 	public Date getProDate() {
 		return this.proDate;
@@ -70,7 +71,7 @@ public class Batch implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "EXP_DATE", nullable = false, length = 19)
+	@Column(name = "EXP_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
 	@NotNull
 	public Date getExpDate() {
 		return this.expDate;
@@ -79,6 +80,16 @@ public class Batch implements java.io.Serializable {
 	public void setExpDate(Date expDate) {
 		this.expDate = expDate;
 	}
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "FIRST_IN_TIME", nullable = true, length = 19,columnDefinition = "DATETIME")
+    public Date getFirstInTime() {
+        return firstInTime;
+    }
+
+    public void setFirstInTime(Date firstInTime) {
+        this.firstInTime = firstInTime;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RES", nullable = false)

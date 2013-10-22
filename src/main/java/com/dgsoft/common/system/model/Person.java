@@ -126,7 +126,7 @@ public class Person implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DATE_OF_BIRTH", length = 19)
+	@Column(name = "DATE_OF_BIRTH", length = 19,columnDefinition = "DATETIME")
 	public Date getDateOfBirth() {
 		return this.dateOfBirth;
 	}

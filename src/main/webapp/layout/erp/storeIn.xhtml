@@ -8,157 +8,212 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-    <ui:define name="toolbar">
-        <h:outputStylesheet>
-            .barsearch {
-                height: 14px;
-                width: 100px;
-            }
+<ui:define name="toolbar">
+    <h:outputStylesheet>
+        .barsearch {
+            height: 14px;
+            width: 100px;
+        }
 
-            .autoCompleteWidth50 {
-                width: 80px !important;
-            }
+        .autoCompleteWidth50 {
+            width: 80px !important;
+        }
 
-            .rf-au-lst-scrl {
-                width: 80px !important;
-            }
+        .rf-au-lst-scrl {
+            width: 80px !important;
+        }
 
-            .autoCompletePopupHieght {
-                width: 80px !important;
-            }
-        </h:outputStylesheet>
-
-
-        <ui:include src="/templates/erp/ResSelectTree.xhtml">
-            <ui:param name="render" value="storeInItem"/>
-        </ui:include>
+        .autoCompletePopupHieght {
+            width: 80px !important;
+        }
+    </h:outputStylesheet>
 
 
-        <rich:toolbar height="26">
-
-            <rich:toolbarGroup>
-                <h:form>
-                    <h:panelGrid id="resSearchForm" columns="3">
-
-                        <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocateHome.code}"
-                                     required="true">
-                            <rich:placeholder value="#{messages.res_field_code}"/>
-                        </h:inputText>
+    <ui:include src="/templates/erp/ResSelectTree.xhtml">
+        <ui:param name="render" value="storeInItem"/>
+        <ui:param name="treeValue" value="#{resTreeValue}"/>
+        <ui:param name="changeType" value="#{storeChangeType}"/>
+    </ui:include>
 
 
-                        <a:commandButton value="#{messages.search}" execute="@region"
-                                         render="storeInItem,resSearchForm"
-                                         action="#{resLocateHome.locateByCode}">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
+    <rich:toolbar height="26">
 
-                        <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
-                                         title="#{messages.resSelect}"
-                                         onclick="#{rich:component('resSelectPanel')}.show();return false;">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
-                    </h:panelGrid>
-                </h:form>
-            </rich:toolbarGroup>
+        <rich:toolbarGroup>
+            <h:form>
+                <h:panelGrid id="resSearchForm" columns="3">
 
-            <rich:toolbarGroup location="right">
-                <ui:insert name="rightToolbar"/>
+                    <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocateHome.code}"
+                                 required="true">
+                        <rich:placeholder value="#{messages.res_field_code}"/>
+                    </h:inputText>
 
-            </rich:toolbarGroup>
 
-        </rich:toolbar>
+                    <a:commandButton value="#{messages.search}" execute="@region"
+                                     render="storeInItem,resSearchForm"
+                                     action="#{resLocateHome.locateByCode(storeChangeType)}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
 
-    </ui:define>
-
-    <ui:define name="body">
-
-        <h:form id="storeInItem">
-            <rich:panel rendered="#{resLocateHome.idDefined}">
-
-                <h:panelGrid columns="1">
-                    <h:outputText value="#{resLocateHome.resTitle}" styleClass="name"/>
+                    <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                     title="#{messages.resSelect}"
+                                     onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
                 </h:panelGrid>
+            </h:form>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup location="right">
+            <ui:insert name="rightToolbar"/>
+        </rich:toolbarGroup>
+
+    </rich:toolbar>
+
+</ui:define>
+
+<ui:define name="body">
+
+    <h:form id="storeInItem">
+        <rich:panel rendered="#{resLocateHome.idDefined}">
+
+            <h:panelGrid columns="1">
+                <h:outputText value="#{resLocateHome.resTitle}" styleClass="name"/>
+            </h:panelGrid>
 
 
-                <a:outputPanel id="itemFormats">
-                    <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
-                        <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
-                            <ui:define name="label">#{_format.formatDefine.name}</ui:define>
-                            <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
-                                <ui:param name="format" value="#{_format}"/>
-                                <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
+            <a:outputPanel id="itemFormats">
+                <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+                    <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{_format.formatDefine.name}</ui:define>
+                        <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
+                            <ui:param name="format" value="#{_format}"/>
+                            <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
 
-                            </ui:include>
-                        </s:decorate>
+                        </ui:include>
+                    </s:decorate>
+                </a:repeat>
+            </a:outputPanel>
+
+
+            <ui:insert name="storeInItemFields"/>
+
+            <a:region>
+                <rich:inputNumberSpinner id="masterUnitCount" enableManualInput="true" required="true"
+                                         value="#{storeResFormatFilter.count}" minValue="0"
+                                         maxValue="#{maxIntegerValue}">
+                    <a:ajax event="change" execute="@region" render="floatConvertAuxUnitFields"
+                            listener="#{storeResFormatFilter.calcFloatQuantityByMasterUnit}"
+                            disabled="#{not (storeResFormatFilter.res.unitGroup.type.name() eq 'FLOAT_CONVERT')}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </rich:inputNumberSpinner>
+
+                <h:outputText value="#{storeResFormatFilter.res.resUnitByMasterUnit.name}"
+                              rendered="#{not (storeResFormatFilter.res.unitGroup.type.name() eq 'FIX_CONVERT')}"/>
+
+
+                <rich:select value="#{storeResFormatFilter.useUnit}" required="true"
+                             rendered="#{storeResFormatFilter.res.unitGroup.type.name() eq 'FIX_CONVERT'}">
+                    <s:selectItems value="#{storeResFormatFilter.res.unitGroup.resUnitList}" var="_unit"
+                                   label="#{_unit.name}"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                </rich:select>
+
+                <a:outputPanel rendered="#{storeResFormatFilter.res.unitGroup.type.name() eq 'NO_CONVERT'}">
+                    <a:repeat value="#{storeResFormatFilter.noConvertCountList}" var="_count">
+                        <rich:inputNumberSpinner enableManualInput="true" required="true"
+                                                 value="#{_count.count}" minValue="0"
+                                                 maxValue="#{maxIntegerValue}"/>
+                        <h:outputText value="#{_count.resUnit.name}"/>
                     </a:repeat>
                 </a:outputPanel>
 
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.storeInCount}(#{storeResFormatFilter.selectedRes.unit})</ui:define>
-                    <h:panelGrid columns="2">
-                        <rich:inputNumberSpinner enableManualInput="true" required="true"
-                                                 value="#{storeInAction.resCount}" minValue="0"
-                                                 maxValue="#{maxIntegerValue}"/>
-                        <a:commandButton value="#{messages.addItem}" execute="@form" render="storeInItem,storeInItems"
-                                         action="#{storeInAction.addItem}">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
-                    </h:panelGrid>
-                </s:decorate>
+                <a:outputPanel id="floatConvertAuxUnitFields">
+                    <a:outputPanel rendered="#{storeResFormatFilter.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
+
+                        <rich:autocomplete inputClass="" popupClass="" mode="client"
+                                           value="#{storeResFormatFilter.floatConvertRate}"
+                                           layout="div" label=""
+                                           required="true"
+                                           var="_value"
+                                           fetchValue="#{_value}"
+                                           autocompleteList="#{storeResFormatFilter.floatConvertHistoryRateList}"
+                                           converter="javax.faces.BigDecimal" showButton="true">
+                            <b>#{_value}</b>
+
+                            <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxCount"
+                                    listener="#{storeResFormatFilter.calcFloatQuantityByRate}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </rich:autocomplete>
+
+                        <rich:inputNumberSpinner id="floatConvertAuxCount" enableManualInput="true" required="true"
+                                                 value="#{storeResFormatFilter.auxCount}" minValue="0"
+                                                 maxValue="#{maxIntegerValue}">
+                            <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxRate"
+                                    listener="#{storeResFormatFilter.calcFloatQuantityByAuxUnit}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </rich:inputNumberSpinner>
+
+                        <h:outputText value="#{storeResFormatFilter.res.unitGroup.floatAuxiliaryUnit.name}"/>
+
+                    </a:outputPanel>
+                </a:outputPanel>
+            </a:region>
+
+            <ui:insert name="addItemAction"/>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
 
 
-                <ui:insert name="addItemAction"/>
+        </rich:panel>
+    </h:form>
 
-                <div style="clear:both">
-                    <span class="required">*</span>
-                    #{messages.requiredFields}
-                </div>
+    <h:form id="storeInItems">
+        <rich:dataTable style="width: 100%" value="#{storeInItems}"
+                        var="_item">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res}
+                </f:facet>
+                #{_item.res.name}(#{_item.res.code}) #{' '}
+                <a:repeat value="#{_item.formats}" var="_format">
+                    #{' '}
+                    #{_format.formatDefine.name} :
+                    <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
+                                  rendered="#{_format.formatDefine.dataType.name() eq 'WORD'}"/>
+                    <h:outputText value="#{_format.formatValue}"
+                                  rendered="#{not (_format.formatDefine.dataType.name() eq 'WORD')}"/>
 
-
-            </rich:panel>
-        </h:form>
-
-        <h:form id="storeInItems">
-            <rich:dataTable style="width: 100%" value="#{storeInItems}"
-                            var="_item">
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.res}
-                    </f:facet>
-                    #{_item.res.name}(#{_item.res.code}) #{' '}
-                    <a:repeat value="#{_item.formats}" var="_format">
-                        #{' '}
-                        #{_format.formatDefine.name} :
-                        <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
-                                      rendered="#{_format.formatDefine.dataType.name() eq 'WORD'}"/>
-                        <h:outputText value="#{_format.formatValue}"
-                                      rendered="#{not (_format.formatDefine.dataType.name() eq 'WORD')}"/>
-
-                    </a:repeat>
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.StoreArea}
-                    </f:facet>
-                    #{_item.storeArea.getTitle(false)}
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.storeInCount}
-                    </f:facet>
-                    #{_item.count}#{(_item.res.unit)}
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.action}
-                    </f:facet>
-                    <a:commandButton title="#{messages.remove}" execute="@form" immediate="true" image="/img/delete.png"
-                                     action="#{storeInAction.removeItem}" render="storeInItems">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:commandButton>
-                </rich:column>
-            </rich:dataTable>
-        </h:form>
-    </ui:define>
+                </a:repeat>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.StoreArea}
+                </f:facet>
+                #{_item.storeArea.getTitle(false)}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.storeInCount}
+                </f:facet>
+                #{_item.count}#{(_item.res.unit)}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.action}
+                </f:facet>
+                <a:commandButton title="#{messages.remove}" execute="@form" immediate="true" image="/img/delete.png"
+                                 action="#{storeInAction.removeItem}" render="storeInItems">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </rich:column>
+        </rich:dataTable>
+    </h:form>
+</ui:define>
 
 </ui:composition>

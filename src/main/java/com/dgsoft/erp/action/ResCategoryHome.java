@@ -3,6 +3,7 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResCategory;
+import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StoreRes;
 import com.google.common.collect.Iterators;
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -15,6 +16,7 @@ import org.jboss.seam.international.StatusMessage;
 
 import javax.swing.tree.TreeNode;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
     private FacesMessages facesMessages;
 
     @Factory("resTypes")
-    public ResCategory.ResType[] getResTypes(){
+    public ResCategory.ResType[] getResTypes() {
         return ResCategory.ResType.values();
     }
 
@@ -275,7 +277,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
-    private void generateChildrenNode(ResCategoryNode node, boolean addRes, boolean addStoreRes, boolean hasDisable, List<ResCategory.ResType> contains) {
+    private void generateChildrenNode(ResCategoryNode node, boolean addRes, boolean addStoreRes, boolean hasDisable, EnumSet<ResCategory.ResType> contains) {
         if (node.resCategory.getResCategories().isEmpty() && node.resCategory.getReses().isEmpty())
             return;
 
@@ -313,7 +315,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
         for (ResCategory resCategory : rootCategories) {
             ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, false, false, true, Arrays.asList(ResCategory.ResType.values()));
+            generateChildrenNode(rootNode, false, false, true, EnumSet.allOf(ResCategory.ResType.class));
             result.add(rootNode);
         }
         return result;
@@ -325,10 +327,26 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
         for (ResCategory resCategory : rootCategories) {
             ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, false, false, Arrays.asList(ResCategory.ResType.values()));
+            generateChildrenNode(rootNode, true, false, false, EnumSet.allOf(ResCategory.ResType.class));
             result.add(rootNode);
         }
         return result;
+    }
+
+    private List<ResCategoryNode> getStoreChangeLimitTree(StockChange.StoreChangeType changeType){
+        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)").setParameter("changeTypes",changeType.getResTypes()).getResultList();
+        for (ResCategory resCategory : rootCategories) {
+            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+            generateChildrenNode(rootNode, true, false, false, EnumSet.allOf(ResCategory.ResType.class));
+            result.add(rootNode);
+        }
+        return result;
+    }
+
+    @Factory(value="produceInResTree",scope = ScopeType.CONVERSATION)
+    public List<ResCategoryNode> getProduceInResTree(){
+        return  getStoreChangeLimitTree(StockChange.StoreChangeType.PRODUCE_IN);
     }
 
 

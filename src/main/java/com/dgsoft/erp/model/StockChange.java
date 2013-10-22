@@ -19,20 +19,24 @@ import javax.validation.constraints.Size;
 public class StockChange implements java.io.Serializable {
 
     public enum StoreChangeType {
-        MATERIAL_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL)),
-        MATERIAL_BACK_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL)),
-        MATERIAL_OUT(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL)),
-        SELL_OUT(EnumSet.of(ResCategory.ResType.PRODUCT)),
-        PRODUCT_IN(EnumSet.of(ResCategory.ResType.PRODUCT,ResCategory.ResType.SEMI_PRODUCT,ResCategory.ResType.WORK_IN_PROCESS)),
-        ALLOCATION_IN(EnumSet.of(ResCategory.ResType.PRODUCT)),
-        ALLOCATION_OUT(EnumSet.of(ResCategory.ResType.PRODUCT)),
-        ASSEMBLY_IN(EnumSet.allOf(ResCategory.ResType.class)),
-        ASSEMBLY_OUT(EnumSet.allOf(ResCategory.ResType.class)),
-        SCRAP_OUT(EnumSet.allOf(ResCategory.ResType.class)),
-        STORE_CHECK_LOSS(EnumSet.allOf(ResCategory.ResType.class)),
-        STORE_CHECK_ADD(EnumSet.allOf(ResCategory.ResType.class));
+        MATERIAL_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL),false),
+        MATERIAL_BACK_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL),false),
+        MATERIAL_OUT(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL),true),
+        SELL_OUT(EnumSet.of(ResCategory.ResType.PRODUCT),true),
+        PRODUCE_IN(EnumSet.of(ResCategory.ResType.PRODUCT,ResCategory.ResType.SEMI_PRODUCT,ResCategory.ResType.WORK_IN_PROCESS),false),
+        ALLOCATION_IN(EnumSet.of(ResCategory.ResType.PRODUCT),false),
+        ALLOCATION_OUT(EnumSet.of(ResCategory.ResType.PRODUCT),true),
+        ASSEMBLY_IN(EnumSet.allOf(ResCategory.ResType.class),false),
+        ASSEMBLY_OUT(EnumSet.allOf(ResCategory.ResType.class),true),
+        SCRAP_OUT(EnumSet.allOf(ResCategory.ResType.class),true),
+        STORE_CHECK_LOSS(EnumSet.allOf(ResCategory.ResType.class),true),
+        STORE_CHECK_ADD(EnumSet.allOf(ResCategory.ResType.class),false),
+        STORE_CHANGE_IN(EnumSet.allOf(ResCategory.ResType.class),false),
+        STORE_CHANGE_OUT(EnumSet.allOf(ResCategory.ResType.class),true);
 
         private EnumSet<ResCategory.ResType> resTypes;
+
+        private boolean out;
 
         public EnumSet<ResCategory.ResType> getResTypes() {
             return resTypes;
@@ -42,8 +46,17 @@ public class StockChange implements java.io.Serializable {
             this.resTypes = resTypes;
         }
 
-        private StoreChangeType(EnumSet<ResCategory.ResType> resTypes){
+        public boolean isOut() {
+            return out;
+        }
+
+        public void setOut(boolean out) {
+            this.out = out;
+        }
+
+        private StoreChangeType(EnumSet<ResCategory.ResType> resTypes, boolean out){
             this.resTypes = resTypes;
+            this.out = out;
         }
     }
 

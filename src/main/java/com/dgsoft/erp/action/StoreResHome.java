@@ -1,11 +1,14 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.action.store.StoreChangeHelper;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.UnitGroup;
 import org.jboss.seam.annotations.Name;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -20,11 +23,13 @@ public class StoreResHome extends ErpEntityHome<StoreRes> {
 
 
 
-    public void setRes(Res res, Collection<Format> formatList) {
+    public void setRes(Res res, Collection<Format> formatList, BigDecimal floatConvertRate) {
 
         List<StoreRes> storeResList = getEntityManager().createQuery("select storeRes from StoreRes storeRes where storeRes.res.id = :resId").setParameter("resId", res.getId()).getResultList();
         for (StoreRes storeRes : storeResList) {
-            if (ResHelper.sameFormat(storeRes.getFormats(), formatList)) {
+            if (StoreChangeHelper.sameFormat(storeRes.getFormats(), formatList)
+                    && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
+                    || storeRes.getFloatConversionRate().equals(floatConvertRate))) {
                 this.setId(storeRes.getId());
                 getInstance();
                 return;
