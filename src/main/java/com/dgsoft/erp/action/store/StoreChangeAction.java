@@ -18,8 +18,6 @@ public interface StoreChangeAction {
 
     public abstract String cancel();
 
-    public abstract boolean isIdAvailable();
-
     public abstract String saveStoreChange();
 
 

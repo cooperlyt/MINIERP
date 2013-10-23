@@ -14,20 +14,13 @@ import org.jboss.seam.annotations.Name;
 @Name("materialStoreInHome")
 public class MaterialStoreInHome extends StoreInAction<MaterialStoreIn>{
 
-
     @Override
     protected String beginStoreIn() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String beginStoreChange() {
-        stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.MATERIAL_IN);
-        return super.beginStoreChange();
-    }
-
-    @Override
-    protected String storeChange() {
+    protected String storeIn() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -39,10 +32,5 @@ public class MaterialStoreInHome extends StoreInAction<MaterialStoreIn>{
     @Override
     public String cancel() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean isIdAvailable() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

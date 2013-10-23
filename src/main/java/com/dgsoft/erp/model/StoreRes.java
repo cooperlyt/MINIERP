@@ -32,7 +32,7 @@ public class StoreRes implements java.io.Serializable {
 
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
 
-    private Set<Stock> stocks = new HashSet<Stock>(0);
+    private Stock stock;
     private boolean enable;
 
     public StoreRes() {
@@ -125,13 +125,13 @@ public class StoreRes implements java.io.Serializable {
         this.orderLists = orderLists;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<Stock> getStocks() {
-        return this.stocks;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "storeRes")
+    public Stock getStock() {
+        return this.stock;
     }
 
-    public void setStocks(Set<Stock> stocks) {
-        this.stocks = stocks;
+    public void setStock(Stock stock) {
+        this.stock = stock;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes", orphanRemoval = true, cascade = {CascadeType.ALL})

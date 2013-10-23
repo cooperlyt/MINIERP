@@ -1,4 +1,4 @@
-package com.dgsoft.erp.action;
+package com.dgsoft.erp.action.store;
 
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
@@ -22,36 +22,6 @@ import java.util.*;
 @Scope(ScopeType.CONVERSATION)
 public class StoreResFormatFilter {
 
-    public static class NoConvertAuxCount{
-
-        private BigDecimal count;
-
-        private ResUnit resUnit;
-
-        public NoConvertAuxCount(ResUnit resUnit, BigDecimal count) {
-            this.count = count;
-            this.resUnit = resUnit;
-        }
-
-        public BigDecimal getCount() {
-            return count;
-        }
-
-        public void setCount(BigDecimal count) {
-            this.count = count;
-        }
-
-        public ResUnit getResUnit() {
-            return resUnit;
-        }
-
-        public void setResUnit(ResUnit resUnit) {
-            this.resUnit = resUnit;
-        }
-    }
-
-    private static final int FLOAT_CONVERT_SCALE = 10;
-
     @In
     private EntityManager erpEntityManager;
 
@@ -60,19 +30,12 @@ public class StoreResFormatFilter {
 
     private Res res;
 
-    private BigDecimal count;
+    //private BigDecimal count;
 
-    private ResUnit useUnit;
-
-    private BigDecimal floatConvertRate;
 
     private List<Format> resFormatList = new ArrayList<Format>();
 
-    private List<NoConvertAuxCount> noConvertCountList;
-
     private List<BigDecimal> floatConvertHistoryRates;
-
-    private BigDecimal auxCount;
 
     private Map<String, List<Object>> historyValues = new HashMap<String, List<Object>>();
 
@@ -84,105 +47,9 @@ public class StoreResFormatFilter {
         this.resFormatList = resFormatList;
     }
 
-    public ResUnit getUseUnit() {
-        return useUnit;
-    }
-
-    public void setUseUnit(ResUnit useUnit) {
-        this.useUnit = useUnit;
-    }
-
-    public BigDecimal getFloatConvertRate() {
-        return floatConvertRate;
-    }
-
-    public void setFloatConvertRate(BigDecimal floatConvertRate) {
-        this.floatConvertRate = floatConvertRate;
-    }
-
-    public List<NoConvertAuxCount> getNoConvertCountList() {
-        return noConvertCountList;
-    }
-
-    public void setNoConvertCountList(List<NoConvertAuxCount> noConvertCountList) {
-        this.noConvertCountList = noConvertCountList;
-    }
-
-    public BigDecimal getCount() {
-        return count;
-    }
-
-    public BigDecimal getFixConvertMasterCount(){
-        return count.multiply(useUnit.getConversionRate());
-    }
-
-    public void clearCount(){
-        noConvertCountList = null;
-        count = new BigDecimal(0);
-        auxCount = new BigDecimal(0);
-        floatConvertRate = new BigDecimal(0);
-        useUnit = null;
-    }
-
-    public void setCount(BigDecimal count) {
-        this.count = count;
-    }
-
     public Res getRes() {
         return res;
     }
-
-    public BigDecimal getAuxCount() {
-        return auxCount;
-    }
-
-    public void setAuxCount(BigDecimal auxCount) {
-        this.auxCount = auxCount;
-    }
-
-
-    public void calcFloatQuantityByMasterUnit() {
-        if ((count == null) || (count.doubleValue() == 0)) {
-            auxCount = new BigDecimal(0);
-            floatConvertRate = new BigDecimal(0);
-            return;
-        }
-
-        if ((floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)) {
-            auxCount = count.multiply(floatConvertRate);
-        } else if ((auxCount != null) && (auxCount.doubleValue() != 0)) {
-            floatConvertRate = auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
-        }
-    }
-
-    public void calcFloatQuantityByRate() {
-        if ((floatConvertRate == null) || (floatConvertRate.doubleValue() == 0)) {
-            count = new BigDecimal(0);
-            auxCount = new BigDecimal(0);
-            return;
-        }
-
-        if ((count != null) && (count.doubleValue() != 0)) {
-            auxCount = count.multiply(floatConvertRate);
-        } else if ((auxCount != null) && (auxCount.doubleValue() != 0)) {
-            count = auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
-        }
-
-    }
-
-    public void calcFloatQuantityByAuxUnit() {
-        if ((auxCount == null) || (auxCount.doubleValue() == 0)) {
-            count = new BigDecimal(0);
-            floatConvertRate = new BigDecimal(0);
-        }
-
-        if ((count != null) && (count.doubleValue() != 0)) {
-            floatConvertRate = auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
-        } else if ((floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)) {
-            count = auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
-        }
-    }
-
 
     public List<BigDecimal> getFloatConvertHistoryRateList() {
         return floatConvertHistoryRates;
@@ -197,36 +64,10 @@ public class StoreResFormatFilter {
         Collections.sort(floatConvertHistoryRates);
     }
 
-    private void generateCounts(Boolean out) {
-        count = new BigDecimal(0);
-        noConvertCountList = null;
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
 
-        } else if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
-            if (res.getUnitGroup().getResUnits().size() > 1) {
-                noConvertCountList = new ArrayList<NoConvertAuxCount>(res.getUnitGroup().getResUnits().size() - 1);
-                for (ResUnit unit : res.getUnitGroup().getResUnitList()) {
-                    if (!unit.equals(res.getResUnitByMasterUnit())) {
-                        noConvertCountList.add(new NoConvertAuxCount(unit, new BigDecimal(0)));
-                    }
-                }
-            }
-        }
 
-        if (out == null) {
-            useUnit = res.getResUnitByMasterUnit();
-        } else if (out) {
-            useUnit = res.getResUnitByOutDefault();
-        } else {
-            useUnit = res.getResUnitByInDefault();
-        }
-
-    }
-
-    public void selectedRes(Res res, Boolean out) {
+    public void selectedRes(Res res) {
         this.res = res;
-        generateCounts(out);
         resFormatList = new ArrayList<Format>();
         generateFloatConvertRateHistory();
         for (FormatDefine formatDefine : res.getFormatDefineList()) {

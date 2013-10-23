@@ -123,7 +123,7 @@ public class StoreInAction  {
 //                storeResFormatFilter.getResFormatList(), resCount);
 //
 //        for (StoreInItem storeInItem : storeInItems) {
-//            if (storeInItem.sameItem(newItem)) {
+//            if (storeInItem.same(newItem)) {
 //                storeInItem.setCount(storeInItem.getCount().add(resCount));
 //                newItem = null;
 //                break;
@@ -239,7 +239,7 @@ public class StoreInAction  {
 //            this.count = count;
 //        }
 //
-//        public boolean sameItem(StoreInItem storeInItem) {
+//        public boolean same(StoreInItem storeInItem) {
 //            return (storeArea.getId().equals(storeInItem.getStoreArea().getId()) &&
 //                    res.getId().equals(storeInItem.getRes().getId()) &&
 //                    ResHelper.sameFormat(storeInItem.getFormats(), formats)

@@ -22,10 +22,11 @@ public class Batch implements java.io.Serializable {
     private Res res;
 	private Date proDate;
 	private Date expDate;
-    private Date firstInTime;
+    private Date lastInTime;
 	private MaterialStoreOut materialStoreOut;
 	private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
-	private Set<BatchStoreCount> batchStoreCounts = new HashSet<BatchStoreCount>(0);
+	private BatchStoreCount batchStoreCount;
+    private boolean defaultBatch;
 
 	public Batch() {
 	}
@@ -34,7 +35,17 @@ public class Batch implements java.io.Serializable {
 		this.id = id;
 		this.proDate = proDate;
 		this.expDate = expDate;
+
 	}
+
+    public Batch(String id, Res res, boolean defaultBatch,boolean produce, boolean storeIn,Date lastInTime){
+        this.defaultBatch = defaultBatch;
+        this.produce = produce;
+        this.storeIn = storeIn;
+        this.lastInTime = lastInTime;
+        this.res = res;
+    }
+
 
 
 	@Id
@@ -82,13 +93,22 @@ public class Batch implements java.io.Serializable {
 	}
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "FIRST_IN_TIME", nullable = true, length = 19,columnDefinition = "DATETIME")
-    public Date getFirstInTime() {
-        return firstInTime;
+    @Column(name = "LAST_IN_TIME", nullable = true, length = 19)
+    public Date getLastInTime() {
+        return lastInTime;
     }
 
-    public void setFirstInTime(Date firstInTime) {
-        this.firstInTime = firstInTime;
+    public void setLastInTime(Date firstInTime) {
+        this.lastInTime = firstInTime;
+    }
+
+    @Column(name="DEFAULT_BATCH", nullable = false)
+    public boolean isDefaultBatch() {
+        return defaultBatch;
+    }
+
+    public void setDefaultBatch(boolean defaultBatch) {
+        this.defaultBatch = defaultBatch;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -138,13 +158,13 @@ public class Batch implements java.io.Serializable {
 		this.stockChangeItems = stockChangeItems;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-	public Set<BatchStoreCount> getBatchStoreCounts() {
-		return this.batchStoreCounts;
+	@OneToOne(optional = true,fetch = FetchType.LAZY, mappedBy = "batch")
+	public BatchStoreCount getBatchStoreCount() {
+		return this.batchStoreCount;
 	}
 
-	public void setBatchStoreCounts(Set<BatchStoreCount> batchStoreCounts) {
-		this.batchStoreCounts = batchStoreCounts;
+	public void setBatchStoreCount(BatchStoreCount batchStoreCount) {
+		this.batchStoreCount = batchStoreCount;
 	}
 
 }

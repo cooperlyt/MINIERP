@@ -7,6 +7,9 @@ import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.api.StockChangeModel;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.security.Credentials;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,22 +27,31 @@ public abstract class StoreChangeHelper<E extends StockChangeModel> extends ErpE
 
     protected abstract String storeChange();
 
+    @In
+    protected FacesMessages facesMessages;
+
     @In(create = true)
     protected StockChangeHome stockChangeHome;
 
     @In
-    private AuthenticationInfo authInfo;
+    private Credentials credentials;
 
     @Override
     public String begin() {
-        stockChangeHome.getInstance().setOperEmp(authInfo.getLoginEmployee().getId());
+        stockChangeHome.getInstance().setOperEmp(credentials.getUsername());
         return beginStoreChange();
     }
 
-    @Override
-    public String saveStoreChange(){
-        if (!isIdAvailable()){
 
+    protected boolean isIdAvailable(String newId) {
+        return getEntityManager().createQuery("select sc from StockChange sc where sc.id = ?1").setParameter(1, newId).getResultList().size() == 0;
+    }
+
+
+    @Override
+    public String saveStoreChange() {
+        if (!isIdAvailable(stockChangeHome.getInstance().getId())) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeInOutIDIsExists", stockChangeHome.getInstance().getId());
             return null;
         }
         return storeChange();

@@ -4,15 +4,7 @@ package com.dgsoft.erp.model;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,94 +15,95 @@ import javax.validation.constraints.Size;
 @Table(name = "BATCH_STORE_COUNT", catalog = "MINI_ERP")
 public class BatchStoreCount implements java.io.Serializable {
 
-	private String id;
-	private Integer version;
-	private Batch batch;
-	private Stock stock;
-	private BigDecimal count;
-	private Set<Depositary> depositaries = new HashSet<Depositary>(0);
+    private String id;
+    private Integer version;
+    private Batch batch;
+    private Stock stock;
+    private BigDecimal count;
+    private Set<Depositary> depositaries = new HashSet<Depositary>(0);
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
-	public BatchStoreCount() {
-	}
+    public BatchStoreCount() {
+    }
 
-	public BatchStoreCount(String id, Batch batch, Stock stock, BigDecimal count) {
-		this.id = id;
-		this.batch = batch;
-		this.stock = stock;
-		this.count = count;
-	}
-	public BatchStoreCount(String id, Batch batch, Stock stock,
-			BigDecimal count, Set<Depositary> depositaries) {
-		this.id = id;
-		this.batch = batch;
-		this.stock = stock;
-		this.count = count;
-		this.depositaries = depositaries;
-	}
+    public BatchStoreCount(String id, Batch batch, Stock stock, BigDecimal count) {
+        this.id = id;
+        this.batch = batch;
+        this.stock = stock;
+        this.count = count;
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    public BatchStoreCount(String id, Batch batch, Stock stock,
+                           BigDecimal count, Set<Depositary> depositaries) {
+        this.id = id;
+        this.batch = batch;
+        this.stock = stock;
+        this.count = count;
+        this.depositaries = depositaries;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	@Version
-	@Column(name = "VERSION")
-	public Integer getVersion() {
-		return this.version;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+    @Version
+    @Column(name = "VERSION")
+    public Integer getVersion() {
+        return this.version;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BATCH", nullable = false)
-	@NotNull
-	public Batch getBatch() {
-		return this.batch;
-	}
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
-	public void setBatch(Batch batch) {
-		this.batch = batch;
-	}
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
+    @JoinColumn(name = "BATCH", nullable = false)
+    @NotNull
+    public Batch getBatch() {
+        return this.batch;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STOCK", nullable = false)
-	@NotNull
-	public Stock getStock() {
-		return this.stock;
-	}
+    public void setBatch(Batch batch) {
+        this.batch = batch;
+    }
 
-	public void setStock(Stock stock) {
-		this.stock = stock;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STOCK", nullable = false)
+    @NotNull
+    public Stock getStock() {
+        return this.stock;
+    }
 
-	@Column(name = "COUNT", nullable = false, scale = 4)
-	@NotNull
-	public BigDecimal getCount() {
-		return this.count;
-	}
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
 
-	public void setCount(BigDecimal count) {
-		this.count = count;
-	}
+    @Column(name = "COUNT", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getCount() {
+        return this.count;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "batchStoreCount")
-	public Set<Depositary> getDepositaries() {
-		return this.depositaries;
-	}
+    public void setCount(BigDecimal count) {
+        this.count = count;
+    }
 
-	public void setDepositaries(Set<Depositary> depositaries) {
-		this.depositaries = depositaries;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batchStoreCount")
+    public Set<Depositary> getDepositaries() {
+        return this.depositaries;
+    }
+
+    public void setDepositaries(Set<Depositary> depositaries) {
+        this.depositaries = depositaries;
+    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "batchStoreCount")
     public Set<NoConvertCount> getNoConvertCounts() {

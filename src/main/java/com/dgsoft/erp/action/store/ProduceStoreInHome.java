@@ -16,26 +16,16 @@ import org.jboss.seam.annotations.Name;
 @Name("produceStoreInHome")
 public class ProduceStoreInHome extends StoreInAction<ProductStoreIn>{
 
-    @Override
-    public void removeItem() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public boolean isIdAvailable() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String storeChange() {
-
-        return "ProcduceBeginStoreIn";
-    }
 
     @Override
     public String beginStoreIn() {
         stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.PRODUCE_IN);
         return "ProduceStoreIn";
+    }
+
+    @Override
+    protected String storeIn() {
+        return "ProcduceBeginStoreIn";
     }
 
     @Override

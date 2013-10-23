@@ -26,12 +26,22 @@ public class NoConvertCount implements java.io.Serializable {
 	public NoConvertCount() {
 	}
 
-	public NoConvertCount(ResUnit resUnit, BigDecimal count) {
+	public NoConvertCount(StockChangeItem stockChangeItem,
+                          ResUnit resUnit, BigDecimal count) {
+        this.stockChangeItem = stockChangeItem;
 		this.resUnit = resUnit;
 		this.count = count;
 	}
 
-	@Id
+    public NoConvertCount(Stock stock,
+                          ResUnit resUnit, BigDecimal count) {
+        this.stock = stock;
+        this.resUnit = resUnit;
+        this.count = count;
+    }
+
+
+    @Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
@@ -46,8 +56,7 @@ public class NoConvertCount implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DEPOSITARY", nullable = false)
-	@NotNull
+	@JoinColumn(name = "DEPOSITARY", nullable = true)
 	public Depositary getDepositary() {
 		return this.depositary;
 	}
@@ -57,8 +66,7 @@ public class NoConvertCount implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STOCK_CHANGE", nullable = false)
-	@NotNull
+	@JoinColumn(name = "STOCK_CHANGE", nullable = true)
 	public StockChangeItem getStockChangeItem() {
 		return this.stockChangeItem;
 	}
@@ -68,8 +76,7 @@ public class NoConvertCount implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STOCK", nullable = false)
-	@NotNull
+	@JoinColumn(name = "STOCK", nullable = true)
 	public Stock getStock() {
 		return this.stock;
 	}
@@ -90,8 +97,7 @@ public class NoConvertCount implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BATCH_STORE_COUNT", nullable = false)
-	@NotNull
+	@JoinColumn(name = "BATCH_STORE_COUNT", nullable = true)
 	public BatchStoreCount getBatchStoreCount() {
 		return this.batchStoreCount;
 	}

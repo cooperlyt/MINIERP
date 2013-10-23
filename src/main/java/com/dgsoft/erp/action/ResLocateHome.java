@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResCategory;
 import com.dgsoft.erp.model.StockChange;
@@ -105,7 +106,7 @@ public class ResLocateHome extends ErpEntityHome<Res> {
     @Override
     protected void initInstance() {
         super.initInstance();
-        storeResFormatFilter.selectedRes(getInstance(), storeChangeType == null ? null : storeChangeType.isOut());
+        storeResFormatFilter.selectedRes(getInstance());
         if (isIdDefined()) {
             Events.instance().raiseEvent("erp.resLocateSelected");
         }

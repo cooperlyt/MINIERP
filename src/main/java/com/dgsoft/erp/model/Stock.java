@@ -58,7 +58,7 @@ public class Stock implements java.io.Serializable {
         this.version = version;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "RES", nullable = false)
     @NotNull
     public StoreRes getStoreRes() {
@@ -90,7 +90,7 @@ public class Stock implements java.io.Serializable {
         this.count = count;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock", cascade = {CascadeType.PERSIST, CascadeType.REFRESH , CascadeType.MERGE})
     public Set<BatchStoreCount> getBatchStoreCounts() {
         return this.batchStoreCounts;
     }
@@ -117,7 +117,7 @@ public class Stock implements java.io.Serializable {
         this.stockChangeItems = stockChangeItems;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<NoConvertCount> getNoConvertCounts() {
         return this.noConvertCounts;
     }

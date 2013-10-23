@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityQuery;
+import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.Stock;
 import com.dgsoft.erp.model.Store;
 import org.jboss.seam.ScopeType;
