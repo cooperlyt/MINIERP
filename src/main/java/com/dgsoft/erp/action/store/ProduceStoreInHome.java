@@ -12,7 +12,6 @@ import org.jboss.seam.annotations.Name;
  * Time: 10:07 PM
  * To change this template use File | Settings | File Templates.
  */
-
 @Name("produceStoreInHome")
 public class ProduceStoreInHome extends StoreInAction<ProductStoreIn>{
 

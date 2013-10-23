@@ -94,74 +94,6 @@
                 </a:repeat>
             </a:outputPanel>
 
-
-            <ui:insert name="storeInItemFields"/>
-
-            <a:region>
-                <rich:inputNumberSpinner id="masterUnitCount" enableManualInput="true" required="true"
-                                         value="#{storeResFormatFilter.count}" minValue="0"
-                                         maxValue="#{maxIntegerValue}">
-                    <a:ajax event="change" execute="@region" render="floatConvertAuxUnitFields"
-                            listener="#{storeResFormatFilter.calcFloatQuantityByMasterUnit}"
-                            disabled="#{not (storeResFormatFilter.res.unitGroup.type.name() eq 'FLOAT_CONVERT')}">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:ajax>
-                </rich:inputNumberSpinner>
-
-                <h:outputText value="#{storeResFormatFilter.res.resUnitByMasterUnit.name}"
-                              rendered="#{not (storeResFormatFilter.res.unitGroup.type.name() eq 'FIX_CONVERT')}"/>
-
-
-                <rich:select value="#{storeResFormatFilter.useUnit}" required="true"
-                             rendered="#{storeResFormatFilter.res.unitGroup.type.name() eq 'FIX_CONVERT'}">
-                    <s:selectItems value="#{storeResFormatFilter.res.unitGroup.resUnitList}" var="_unit"
-                                   label="#{_unit.name}"/>
-                    <f:converter converterId="erpEntityConverter"/>
-                </rich:select>
-
-                <a:outputPanel rendered="#{storeResFormatFilter.res.unitGroup.type.name() eq 'NO_CONVERT'}">
-                    <a:repeat value="#{storeResFormatFilter.noConvertCountList}" var="_count">
-                        <rich:inputNumberSpinner enableManualInput="true" required="true"
-                                                 value="#{_count.count}" minValue="0"
-                                                 maxValue="#{maxIntegerValue}"/>
-                        <h:outputText value="#{_count.resUnit.name}"/>
-                    </a:repeat>
-                </a:outputPanel>
-
-                <a:outputPanel id="floatConvertAuxUnitFields">
-                    <a:outputPanel rendered="#{storeResFormatFilter.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
-
-                        <rich:autocomplete inputClass="" popupClass="" mode="client"
-                                           value="#{storeResFormatFilter.floatConvertRate}"
-                                           layout="div" label=""
-                                           required="true"
-                                           var="_value"
-                                           fetchValue="#{_value}"
-                                           autocompleteList="#{storeResFormatFilter.floatConvertHistoryRateList}"
-                                           converter="javax.faces.BigDecimal" showButton="true">
-                            <b>#{_value}</b>
-
-                            <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxCount"
-                                    listener="#{storeResFormatFilter.calcFloatQuantityByRate}">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                        </rich:autocomplete>
-
-                        <rich:inputNumberSpinner id="floatConvertAuxCount" enableManualInput="true" required="true"
-                                                 value="#{storeResFormatFilter.auxCount}" minValue="0"
-                                                 maxValue="#{maxIntegerValue}">
-                            <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxRate"
-                                    listener="#{storeResFormatFilter.calcFloatQuantityByAuxUnit}">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                        </rich:inputNumberSpinner>
-
-                        <h:outputText value="#{storeResFormatFilter.res.unitGroup.floatAuxiliaryUnit.name}"/>
-
-                    </a:outputPanel>
-                </a:outputPanel>
-            </a:region>
-
             <ui:insert name="addItemAction"/>
 
             <div style="clear:both">
@@ -194,34 +126,63 @@
 
             <rich:column>
                 <f:facet name="header">#{messages.storeIn_field_floatConvertRate}</f:facet>
-                <h:outputText value="#{_item.floatConvertRate}" rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"
+                <h:outputText value="#{_item.storeResCount.floatConvertRate}" rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
             </rich:column>
 
             <rich:column>
                 <f:facet name="header">
                     #{messages.MasterUnitCount}
                 </f:facet>
-                #{_item.count}#{(_item.res.resUnitByMasterUnit.name)}
+                #{_item.storeResCount.masterCount}#{(_item.res.resUnitByMasterUnit.name)}
             </rich:column>
 
             <rich:column>
                 <f:facet name="header">
                     #{messages.AuxUnitCount}
                 </f:facet>
+                <a:outputPanel rendered="#{_item.res.unitGroup.type == 'NO_CONVERT'}">
+                    <a:repeat value="#{_item.storeResCount.noConvertCountList}" var="_unitCount">
+                        #{_unitCount.count}#{_unitCount.resUnit.name}#{' '}
+                    </a:repeat>
+                </a:outputPanel>
+                <a:outputPanel rendered="#{_item.res.unitGroup.type == 'FIX_CONVERT'}">
+                    <a:repeat value="#{_item.res.unitGroup.resUnitList}" var="_fixUnitCount">
+                        #{_fixUnitCount.conversionRate * _item.storeResCount.masterCount}
+                        #{_fixUnitCount.name} #{' '}
+                    </a:repeat>
+                </a:outputPanel>
+                <h:outputText value="#{_item.storeResCount.auxCount}#{_item.res.unitGroup.floatAuxiliaryUnit.name}"
+                              rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
 
             </rich:column>
             <rich:column>
                 <f:facet name="header">
                     #{messages.action}
                 </f:facet>
+                <a:commandLink value="test" execute="@form" oncomplete="#{rich:component('JumpToTaskInfoPanel')}.show();" render="itemInfoMessage"/>
                 <!--
                 <a:commandButton title="#{messages.remove}" execute="@form" immediate="true" image="/img/delete.png"
-                                 action="#{storeInAction.removeItem}" render="storeInItems">
+                                 action="" render="storeInItems">
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>            -->
             </rich:column>
         </rich:dataTable>
     </h:form>
+
+
+    <s:decorate template="/layout/message_dialog.xhtml">
+        <ui:param name="type" value="info"/>
+        <ui:param name="panelId" value="deleteStoreInItemConfirmDialog"/>
+        <ui:define name="messages">
+            <h:outputText id="itemInfoMessage" value="#{produceStoreInHome.selectedStoreInItem.res.name}"/>
+        </ui:define>
+        <ui:define name="actionButtons">
+            <a:commandButton value="OK" action="#{produceStoreInHome.removeItem}"
+                             oncomplete="#{rich:component('defaultBusinessDataPanel')}.hide();return false;"/>
+
+        </ui:define>
+    </s:decorate>
+
 </ui:define>
 
 </ui:composition>

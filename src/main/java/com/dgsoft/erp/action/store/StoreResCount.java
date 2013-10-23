@@ -18,7 +18,7 @@ public class StoreResCount implements java.io.Serializable{
 
     private static final int FLOAT_CONVERT_SCALE = 10;
 
-    public static class NoConverCountEntry {
+    public static class NoConverCountEntry implements java.io.Serializable{
 
         private BigDecimal count;
 
@@ -67,6 +67,10 @@ public class StoreResCount implements java.io.Serializable{
         this.res = res;
         this.useUnit = useUnit;
         init();
+    }
+
+    public Res getRes() {
+        return res;
     }
 
     public BigDecimal getCount() {
@@ -205,12 +209,13 @@ public class StoreResCount implements java.io.Serializable{
         if ((auxCount == null) || (auxCount.doubleValue() == 0)) {
             count = new BigDecimal(0);
             floatConvertRate = new BigDecimal(0);
+            return;
         }
 
-        if ((count != null) && (count.doubleValue() != 0)) {
-            floatConvertRate = auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
-        } else if ((floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)) {
+        if ((floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)){
             count = auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
+        } else if ((count != null) && (count.doubleValue() != 0)){
+            floatConvertRate = auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
         }
     }
 

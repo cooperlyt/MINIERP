@@ -6,6 +6,7 @@ import com.dgsoft.erp.action.ResLocateHome;
 import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StockChangeModel;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -30,13 +31,13 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     @In
     protected NumberBuilder numberBuilder;
 
-    @In
+    @In(required = false)
     protected StoreResFormatFilter storeResFormatFilter;
 
-    @In
+    @In(required = false)
     protected ResLocateHome resLocateHome;
 
-    @In
+    @In(create = true)
     protected StoreResHome storeResHome;
 
     @DataModel(value = "storeInItems")
@@ -58,7 +59,6 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     public void setEditingItem(StoreInItem editingItem) {
         this.editingItem = editingItem;
     }
-
 
     @Override
     protected String storeChange() {
@@ -138,6 +138,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
 
     @Override
     public void removeItem() {
+        log.debug("call remove Item :" + selectedStoreInItem.getRes().getName());
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -159,7 +160,8 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         if (editingItem != null) {
             storeInItems.add(editingItem);
         }
-        resLocateHome.clearInstance();
+        if (resLocateHome != null)
+            resLocateHome.clearInstance();
     }
 
 }

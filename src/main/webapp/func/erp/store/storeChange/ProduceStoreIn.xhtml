@@ -20,7 +20,7 @@
                              maxlength="32"
                              styleClass="barsearch"
                              label="#{messages.storeIn_field_id}"
-                             value="#{produceStoreInHome.instance.id}">
+                             value="#{stockChangeHome.instance.id}">
                     <rich:placeholder value="#{messages.storeIn_field_id}"/>
                 </h:inputText>
 
@@ -32,17 +32,21 @@
         </h:form>
     </ui:define>
 
-    <ui:define name="storeInItemFields">
-          <s:decorate rendered="#{storeResFormatFilter.res.batchMgr}" template="/layout/edit.xhtml">
-              <ui:define name="label">#{messagse.ProductBatch}</ui:define>
-               <!-- TODO BATCH -->
-
-          </s:decorate>
-
-    </ui:define>
-
     <ui:define name="addItemAction">
-        <a:commandButton value="#{messages.addItem}" execute="@form" render="storeInItem,storeInItems"
+
+
+        <s:decorate rendered="#{storeResFormatFilter.res.batchMgr}" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messagse.ProductBatch}</ui:define>
+            <!-- TODO BATCH -->
+
+        </s:decorate>
+
+        <ui:include src="/templates/erp/ResCountInput.xhtml">
+            <ui:param name="resCountBean" value="#{produceStoreInHome.editingItem.storeResCount}"/>
+        </ui:include>
+
+
+        <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form" render="storeInItem,storeInItems"
                          action="#{produceStoreInHome.addItem}">
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>

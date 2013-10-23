@@ -25,8 +25,9 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.store','仓库管理','erp.manager.data','','/func/erp/data/StoreMgr.seam','','11','仓库管理及仓库权限分配');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.area','仓库区设置','erp.store.mgr','','/func/erp/store/StoreAreaMgr.seam','','1','仓库存储区域设置');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.stockSearch','库存查询','erp.store.mgr','','/func/erp/store/StockSearch.seam','','4','库存查询');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.resUnit','计量单位管理','system.manager','','/func/erp/data/UnitMgr.seam','','9','物资计量单位组和计量单位管理');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.resUnit','计量单位管理','erp.manager.data','','/func/erp/data/UnitMgr.seam','','9','物资计量单位组和计量单位管理');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.materialIn','收料入库','erp.store.inAndOut','','/func/erp/store/storeChange/MaterialIn.seam','','1','物资入库');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.produceIn','生产入库','erp.store.inAndOut','','/func/erp/store/storeChange/ProduceIn.seam','','1','产成品，半成品入库');
 
 -- 角色
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, ROLE_TYPE, DESCRIPTION) VALUES ('system.config', '系统设置', 'ROLE_CATEGORY', '系统配置');
@@ -63,8 +64,10 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'e
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.materialIn');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.stockSearch');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.produceIn');
 
 -- ROLE_ROLE_CATEGROY
+
 INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('system.config', 'superAdmin');
 INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('system.manager', 'superAdmin');
 
@@ -75,7 +78,7 @@ INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('erp.data.man
 INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('erp.store.manager', 'storeMgr');
 
 
---
+
 -- ADMIN INSERY
 INSERT INTO DG_SYSTEM.PERSON (ID,NAME,CREDENTIALS_TYPE,_FOREIGN,CREDENTIALS_NUMBER,DATE_OF_BIRTH) VALUES ('admin','admin','OTHER',1,'1','2013-07-15 10:27:08');
 -- INSERT INTO DG_SYSTEM.EMPLOYEE(ID,ENABLE,PERSON_ID,PASSWORD,ORGANIZATION) VALUES ('admin',b'1','admin','admin','0');

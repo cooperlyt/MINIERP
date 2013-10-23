@@ -16,7 +16,7 @@
             </rule>
             <rule if-outcome="ProduceStoreIn">
                 <begin-conversation/>
-                <redirect view-id="/func/erp/store/ProduceStoreIn.xhtml"/>
+                <redirect view-id="/func/erp/store/storeChange/ProduceStoreIn.xhtml"/>
             </rule>
         </navigation>
     </page>

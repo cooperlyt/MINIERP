@@ -1,0 +1,125 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+    <h:outputStylesheet>
+        .unit_label {
+            vertical-align: top;
+            font-weight: bold;
+            width: 30px;
+            float: left;
+            padding: 5px;
+            margin-top: 3px;
+        }
+        .auto_width_unit_label{
+            vertical-align: top;
+            font-weight: bold;
+            float: left;
+            padding: 5px;
+            margin-top: 3px;
+        }
+
+
+        .fixConvertUnitSelectWidth input[type="text"] {
+            width: 70px;
+        }
+
+        .floatConvertRateWidth {
+            width: 80px !important;
+        }
+
+    </h:outputStylesheet>
+
+    <a:region>
+        <div>
+
+            <s:label styleClass="name">
+                #{messages.storeChangeCount}
+                <s:span styleClass="required" rendered="#{required}">*</s:span>
+            </s:label>
+
+
+            <span class="value">
+            <rich:inputNumberSpinner id="masterUnitCount" enableManualInput="true" required="true"
+                                     value="#{resCountBean.count}" minValue="0"
+                                     maxValue="#{maxIntegerValue}">
+                <a:ajax event="change" execute="@region" render="floatConvertAuxUnitFields"
+                        listener="#{resCountBean.calcFloatQuantityByMasterUnit}"
+                        disabled="#{not (resCountBean.res.unitGroup.type.name() eq 'FLOAT_CONVERT')}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </rich:inputNumberSpinner>
+            </span>
+
+            <h:outputText styleClass="unit_label" value="#{resCountBean.res.resUnitByMasterUnit.name}"
+                          rendered="#{not (resCountBean.res.unitGroup.type.name() eq 'FIX_CONVERT')}"/>
+
+            <span class="value">
+            <rich:select value="#{resCountBean.useUnit}" listWidth="87px" required="true" styleClass="fixConvertUnitSelectWidth"
+                         rendered="#{resCountBean.res.unitGroup.type.name() eq 'FIX_CONVERT'}">
+                <s:selectItems value="#{resCountBean.res.unitGroup.resUnitList}" var="_unit"
+                               label="#{_unit.name}"/>
+                <f:converter converterId="erpEntityConverter"/>
+            </rich:select>
+            </span>
+
+            <a:outputPanel rendered="#{resCountBean.res.unitGroup.type.name() eq 'NO_CONVERT'}">
+
+                <a:repeat value="#{resCountBean.noConvertCountList}" var="_count">
+                    <span class="value">
+                    <rich:inputNumberSpinner enableManualInput="true" required="true"
+                                             value="#{_count.count}" minValue="0"
+                                             maxValue="#{maxIntegerValue}"/>
+                     </span>
+
+                    <h:outputText styleClass="unit_label" value="#{_count.resUnit.name}"/>
+                </a:repeat>
+
+            </a:outputPanel>
+
+            <a:outputPanel id="floatConvertAuxUnitFields">
+
+                <h:outputText styleClass="auto_width_unit_label" value="*"/>
+
+                <a:outputPanel id="floatConvertUnitRate" rendered="#{resCountBean.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
+                    <span class="value">
+                    <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+                                       value="#{resCountBean.floatConvertRate}"
+                                       layout="div" label=""
+                                       required="true"
+                                       var="_value"
+                                       fetchValue="#{_value}"
+                                       autocompleteList="#{storeResFormatFilter.floatConvertHistoryRateList}"
+                                       converter="javax.faces.BigDecimal" showButton="true">
+                        <b>#{_value}</b>
+
+                        <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxCount"
+                                listener="#{resCountBean.calcFloatQuantityByRate}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:autocomplete>
+                    </span>
+                    <h:outputText styleClass="auto_width_unit_label" value="="/>
+                    <span class="value">
+                    <rich:inputNumberSpinner id="floatConvertAuxCount" enableManualInput="true" required="true"
+                                             value="#{resCountBean.auxCount}" minValue="0"
+                                             maxValue="#{maxIntegerValue}">
+                        <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertUnitRate"
+                                listener="#{resCountBean.calcFloatQuantityByAuxUnit}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:inputNumberSpinner>
+                    </span>
+                    <h:outputText styleClass="unit_label" value="#{resCountBean.res.unitGroup.floatAuxiliaryUnit.name}"/>
+                </a:outputPanel>
+
+            </a:outputPanel>
+        </div>
+    </a:region>
+
+</ui:composition>

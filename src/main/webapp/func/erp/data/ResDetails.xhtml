@@ -34,7 +34,8 @@
         <rich:toolbarGroup location="right">
 
 
-            <h:commandButton value="#{messages.save}" action="#{resHome.persist}" rendered="#{!resHome.managed}"/>
+            <h:commandButton value="#{messages.save}" action="#{resHome.persist}"
+                             rendered="#{!resHome.managed}"/>
 
             <h:commandButton value="#{messages.update}" action="#{resHome.update}"
                              rendered="#{resHome.managed}"/>
@@ -109,6 +110,8 @@
                                        value="#{resHome.instance.unitGroup.resUnitList}" var="_resUnit"
                                        label="#{_resUnit.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
                         <f:converter converterId="erpEntityConverter"/>
+                        <a:ajax event="selectitem" execute="@this" listener="#{resHome.masterUnitSelectListener}"
+                                render="storeInResUnitField,storeOutResUnitField" disabled="#{resHome.instance.unitGroup.type != 'NO_CONVERT'}"/>
                     </rich:select>
 
                 </s:decorate>
@@ -228,7 +231,6 @@
 
             <a:commandButton value="#{messages.add}" execute="@form"
                              action="#{resHome.addFormatDefine}"
-                             rendered="#{not resHome.managed}"
                              data="#{actionExecuteState.lastState}"
                              oncomplete="if (event.data == 'success')#{rich:component('addFormatDefinePanel')}.hide();"
                              render="addFormatDefinePanel_form,formatDefDataList">

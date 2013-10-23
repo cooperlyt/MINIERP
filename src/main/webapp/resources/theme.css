@@ -105,10 +105,19 @@ select {
 	clear: left;
 }
 
+.auto_width_name{
+    vertical-align: top;
+    font-weight: bold;
+    float: left;
+    padding: 5px;
+    margin-top: 3px;
+    clear: left;
+}
+
 .small_name{
     vertical-align: top;
     font-weight: bold;
-    width: 60px;
+    width: 65px;
     float: left;
     padding: 5px;
     margin-top: 3px;
@@ -118,7 +127,7 @@ select {
 /*  delete this*/
 .small_label{
     font-weight: bold;
-    width: 60px;
+    width: 65px;
     padding: 5px;
     margin-top: 3px;
 }

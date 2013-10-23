@@ -80,10 +80,10 @@ public class ResHome extends ErpEntityHome<Res> {
     @Override
     protected boolean wire() {
         if (!isManaged()) {
-            getInstance().getFormatDefines().clear();
-            getInstance().getFormatDefines().addAll(formatDefineList);
             getInstance().setResCategory(resCategoryHome.getInstance());
         }
+        getInstance().getFormatDefines().clear();
+        getInstance().getFormatDefines().addAll(formatDefineList);
         return true;
     }
 
@@ -109,6 +109,15 @@ public class ResHome extends ErpEntityHome<Res> {
                    return;
                }
            }
+        }
+    }
+
+    public void masterUnitSelectListener(){
+        if ((getInstance().getUnitGroup() != null) &&
+                (getInstance().getResUnitByMasterUnit() != null) &&
+                (getInstance().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT))){
+            getInstance().setResUnitByInDefault(getInstance().getResUnitByMasterUnit());
+            getInstance().setResUnitByOutDefault(getInstance().getResUnitByMasterUnit());
         }
     }
 
