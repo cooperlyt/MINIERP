@@ -26,7 +26,7 @@
                     <rich:placeholder value="#{messages.storeIn_field_id}"/>
                 </h:inputText>
 
-                <h:commandButton value="#{messages.storeIn}" action="#{produceStoreInHome.storeChange}"/>
+                <h:commandButton value="#{messages.storeIn}" action="#{produceStoreInHome.saveStoreChange}"/>
 
                 <s:button value="#{messages.cancel}" action="#{produceStoreInHome.cancel}" propagation="end"/>
 
@@ -99,7 +99,7 @@
                     </a:outputPanel>
                     <a:outputPanel rendered="#{_item.res.unitGroup.type == 'FIX_CONVERT'}">
                         <a:repeat value="#{_item.res.unitGroup.resUnitList}" var="_fixUnitCount">
-                            #{_fixUnitCount.conversionRate * _item.storeResCount.masterCount}
+                            #{_item.storeResCount.masterCount / _fixUnitCount.conversionRate }
                             #{_fixUnitCount.name} #{' '}
                         </a:repeat>
                     </a:outputPanel>

@@ -15,30 +15,31 @@ import javax.validation.constraints.Size;
 @Table(name = "BATCH", catalog = "MINI_ERP")
 public class Batch implements java.io.Serializable {
 
-	private String id;
-	private Supplier supplier;
+    private String id;
+    private Supplier supplier;
     private boolean produce;
     private boolean storeIn;
     private Res res;
-	private Date proDate;
-	private Date expDate;
+    private Date proDate;
+    private Date expDate;
     private Date lastInTime;
-	private MaterialStoreOut materialStoreOut;
-	private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
-	private BatchStoreCount batchStoreCount;
+    private MaterialStoreOut materialStoreOut;
+    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
+    private BatchStoreCount batchStoreCount;
     private boolean defaultBatch;
 
-	public Batch() {
-	}
+    public Batch() {
+    }
 
-	public Batch(String id, Date proDate, Date expDate) {
-		this.id = id;
-		this.proDate = proDate;
-		this.expDate = expDate;
+    public Batch(String id, Date proDate, Date expDate) {
+        this.id = id;
+        this.proDate = proDate;
+        this.expDate = expDate;
 
-	}
+    }
 
-    public Batch(String id, Res res, boolean defaultBatch,boolean produce, boolean storeIn,Date lastInTime){
+    public Batch(String id, Res res, boolean defaultBatch, boolean produce, boolean storeIn, Date lastInTime) {
+        this.id = id;
         this.defaultBatch = defaultBatch;
         this.produce = produce;
         this.storeIn = storeIn;
@@ -47,50 +48,49 @@ public class Batch implements java.io.Serializable {
     }
 
 
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SUPPLIER")
+    public Supplier getSupplier() {
+        return this.supplier;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUPPLIER")
-	public Supplier getSupplier() {
-		return this.supplier;
-	}
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
 
-	public void setSupplier(Supplier supplier) {
-		this.supplier = supplier;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "PRO_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
+    @NotNull
+    public Date getProDate() {
+        return this.proDate;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "PRO_DATE", nullable = false, length = 19,columnDefinition = "DATETIME")
-	@NotNull
-	public Date getProDate() {
-		return this.proDate;
-	}
+    public void setProDate(Date proDate) {
+        this.proDate = proDate;
+    }
 
-	public void setProDate(Date proDate) {
-		this.proDate = proDate;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "EXP_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
+    @NotNull
+    public Date getExpDate() {
+        return this.expDate;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "EXP_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
-	@NotNull
-	public Date getExpDate() {
-		return this.expDate;
-	}
-
-	public void setExpDate(Date expDate) {
-		this.expDate = expDate;
-	}
+    public void setExpDate(Date expDate) {
+        this.expDate = expDate;
+    }
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LAST_IN_TIME", nullable = true, length = 19)
@@ -102,7 +102,7 @@ public class Batch implements java.io.Serializable {
         this.lastInTime = firstInTime;
     }
 
-    @Column(name="DEFAULT_BATCH", nullable = false)
+    @Column(name = "DEFAULT_BATCH", nullable = false)
     public boolean isDefaultBatch() {
         return defaultBatch;
     }
@@ -122,14 +122,14 @@ public class Batch implements java.io.Serializable {
         this.res = res;
     }
 
-	@OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "batch")
-	public MaterialStoreOut getMaterialStoreOut() {
-		return this.materialStoreOut;
-	}
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "batch")
+    public MaterialStoreOut getMaterialStoreOut() {
+        return this.materialStoreOut;
+    }
 
-	public void setMaterialStoreOut(MaterialStoreOut materialStoreOut) {
-		this.materialStoreOut = materialStoreOut;
-	}
+    public void setMaterialStoreOut(MaterialStoreOut materialStoreOut) {
+        this.materialStoreOut = materialStoreOut;
+    }
 
     @Column(name = "PRODUCE", nullable = false)
     public boolean isProduce() {
@@ -150,21 +150,21 @@ public class Batch implements java.io.Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-	public Set<StockChangeItem> getStockChangeItems() {
-		return this.stockChangeItems;
-	}
+    public Set<StockChangeItem> getStockChangeItems() {
+        return this.stockChangeItems;
+    }
 
-	public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
-		this.stockChangeItems = stockChangeItems;
-	}
+    public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
+        this.stockChangeItems = stockChangeItems;
+    }
 
-	@OneToOne(optional = true,fetch = FetchType.LAZY, mappedBy = "batch")
-	public BatchStoreCount getBatchStoreCount() {
-		return this.batchStoreCount;
-	}
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "batch")
+    public BatchStoreCount getBatchStoreCount() {
+        return this.batchStoreCount;
+    }
 
-	public void setBatchStoreCount(BatchStoreCount batchStoreCount) {
-		this.batchStoreCount = batchStoreCount;
-	}
+    public void setBatchStoreCount(BatchStoreCount batchStoreCount) {
+        this.batchStoreCount = batchStoreCount;
+    }
 
 }

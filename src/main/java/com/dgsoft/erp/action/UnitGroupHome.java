@@ -187,7 +187,7 @@ public class UnitGroupHome extends ErpEntityHome<UnitGroup> {
     protected void initInstance() {
         super.initInstance();
         if (isIdDefined()) {
-            unitList = new ArrayList<ResUnit>(getInstance().getResUnits());
+            unitList =  getInstance().getResUnitList();
         } else {
             unitList = new ArrayList<ResUnit>();
         }

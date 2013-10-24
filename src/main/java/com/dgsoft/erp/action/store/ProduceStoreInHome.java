@@ -28,14 +28,13 @@ public class ProduceStoreInHome extends StoreInAction<ProductStoreIn> {
         return storeInItems;
     }
 
-    @Override
-    public void removeItem() {
-        log.debug("call remove Item :" + selectedStoreInItem.getRes().getName());
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public void setStoreInItems(List<StoreInItem> storeInItems) {
         this.storeInItems = storeInItems;
+    }
+
+    @Override
+    public void removeItem() {
+        storeInItems.remove(selectedStoreInItem);
     }
 
 
