@@ -4,6 +4,10 @@ import com.dgsoft.erp.model.MaterialStoreIn;
 import com.dgsoft.erp.model.ProductStoreIn;
 import com.dgsoft.erp.model.StockChange;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +17,26 @@ import org.jboss.seam.annotations.Name;
  * To change this template use File | Settings | File Templates.
  */
 @Name("produceStoreInHome")
-public class ProduceStoreInHome extends StoreInAction<ProductStoreIn>{
+public class ProduceStoreInHome extends StoreInAction<ProductStoreIn> {
+
+
+    @DataModelSelection
+    private StoreInItem selectedStoreInItem;
+
+    @DataModel("porduceStoreInItems")
+    public List<StoreInItem> getStoreInItems() {
+        return storeInItems;
+    }
+
+    @Override
+    public void removeItem() {
+        log.debug("call remove Item :" + selectedStoreInItem.getRes().getName());
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setStoreInItems(List<StoreInItem> storeInItems) {
+        this.storeInItems = storeInItems;
+    }
 
 
     @Override

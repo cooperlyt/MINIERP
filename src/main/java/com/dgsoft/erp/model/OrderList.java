@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
+// Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -20,28 +20,30 @@ import javax.validation.constraints.Size;
 public class OrderList implements java.io.Serializable {
 
 	private String id;
-	private StoreRes storeRes;
+	private Res res;
 	private CustomerOrder customerOrder;
 	private BigDecimal count;
 	private BigDecimal cost;
+	private BigDecimal floatConversionRate;
 
 	public OrderList() {
 	}
 
-	public OrderList(String id, StoreRes storeRes, CustomerOrder customerOrder,
+	public OrderList(String id, Res res, CustomerOrder customerOrder,
 			BigDecimal count) {
 		this.id = id;
-		this.storeRes = storeRes;
+		this.res = res;
 		this.customerOrder = customerOrder;
 		this.count = count;
 	}
-	public OrderList(String id, StoreRes storeRes, CustomerOrder customerOrder,
-			BigDecimal count, BigDecimal cost) {
+	public OrderList(String id, Res res, CustomerOrder customerOrder,
+			BigDecimal count, BigDecimal cost, BigDecimal floatConversionRate) {
 		this.id = id;
-		this.storeRes = storeRes;
+		this.res = res;
 		this.customerOrder = customerOrder;
 		this.count = count;
 		this.cost = cost;
+		this.floatConversionRate = floatConversionRate;
 	}
 
 	@Id
@@ -59,12 +61,12 @@ public class OrderList implements java.io.Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "RES", nullable = false)
 	@NotNull
-	public StoreRes getStoreRes() {
-		return this.storeRes;
+	public Res getRes() {
+		return this.res;
 	}
 
-	public void setStoreRes(StoreRes storeRes) {
-		this.storeRes = storeRes;
+	public void setRes(Res res) {
+		this.res = res;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -95,6 +97,15 @@ public class OrderList implements java.io.Serializable {
 
 	public void setCost(BigDecimal cost) {
 		this.cost = cost;
+	}
+
+	@Column(name = "FLOAT_CONVERSION_RATE", scale = 10)
+	public BigDecimal getFloatConversionRate() {
+		return this.floatConversionRate;
+	}
+
+	public void setFloatConversionRate(BigDecimal floatConversionRate) {
+		this.floatConversionRate = floatConversionRate;
 	}
 
 }

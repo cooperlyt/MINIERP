@@ -1,16 +1,17 @@
 package com.dgsoft.erp.model;
-// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
+// Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,30 +23,44 @@ import javax.validation.constraints.Size;
 public class OrderDelivery implements java.io.Serializable {
 
 	private String id;
+	private ExpressInfo expressInfo;
+	private ProductToDoor productToDoor;
+	private ExpressCar expressCar;
 	private CustomerOrder customerOrder;
 	private String deliveryType;
+	private Date sendTime;
 	private String memo;
-	private Set<ExpressInfo> expressInfos = new HashSet<ExpressInfo>(0);
-	private Set<DeliveryCar> deliveryCars = new HashSet<DeliveryCar>(0);
+	private BigDecimal money;
 
 	public OrderDelivery() {
 	}
 
-	public OrderDelivery(String id, CustomerOrder customerOrder,
-			String deliveryType) {
+	public OrderDelivery(String id, ExpressInfo expressInfo,
+			ProductToDoor productToDoor, ExpressCar expressCar,
+			CustomerOrder customerOrder, String deliveryType, Date sendTime,
+			BigDecimal money) {
 		this.id = id;
+		this.expressInfo = expressInfo;
+		this.productToDoor = productToDoor;
+		this.expressCar = expressCar;
 		this.customerOrder = customerOrder;
 		this.deliveryType = deliveryType;
+		this.sendTime = sendTime;
+		this.money = money;
 	}
-	public OrderDelivery(String id, CustomerOrder customerOrder,
-			String deliveryType, String memo, Set<ExpressInfo> expressInfos,
-			Set<DeliveryCar> deliveryCars) {
+	public OrderDelivery(String id, ExpressInfo expressInfo,
+			ProductToDoor productToDoor, ExpressCar expressCar,
+			CustomerOrder customerOrder, String deliveryType, Date sendTime,
+			String memo, BigDecimal money) {
 		this.id = id;
+		this.expressInfo = expressInfo;
+		this.productToDoor = productToDoor;
+		this.expressCar = expressCar;
 		this.customerOrder = customerOrder;
 		this.deliveryType = deliveryType;
+		this.sendTime = sendTime;
 		this.memo = memo;
-		this.expressInfos = expressInfos;
-		this.deliveryCars = deliveryCars;
+		this.money = money;
 	}
 
 	@Id
@@ -58,6 +73,39 @@ public class OrderDelivery implements java.io.Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "EXPRESS_INFO", nullable = false)
+	@NotNull
+	public ExpressInfo getExpressInfo() {
+		return this.expressInfo;
+	}
+
+	public void setExpressInfo(ExpressInfo expressInfo) {
+		this.expressInfo = expressInfo;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PRODUCT_TO_DOOR", nullable = false)
+	@NotNull
+	public ProductToDoor getProductToDoor() {
+		return this.productToDoor;
+	}
+
+	public void setProductToDoor(ProductToDoor productToDoor) {
+		this.productToDoor = productToDoor;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "EXPRESS_CAR", nullable = false)
+	@NotNull
+	public ExpressCar getExpressCar() {
+		return this.expressCar;
+	}
+
+	public void setExpressCar(ExpressCar expressCar) {
+		this.expressCar = expressCar;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -82,6 +130,17 @@ public class OrderDelivery implements java.io.Serializable {
 		this.deliveryType = deliveryType;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "SEND_TIME", nullable = false, length = 19)
+	@NotNull
+	public Date getSendTime() {
+		return this.sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
 	@Column(name = "MEMO", length = 200)
 	@Size(max = 200)
 	public String getMemo() {
@@ -92,22 +151,14 @@ public class OrderDelivery implements java.io.Serializable {
 		this.memo = memo;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderDelivery")
-	public Set<ExpressInfo> getExpressInfos() {
-		return this.expressInfos;
+	@Column(name = "MONEY", nullable = false, scale = 3)
+	@NotNull
+	public BigDecimal getMoney() {
+		return this.money;
 	}
 
-	public void setExpressInfos(Set<ExpressInfo> expressInfos) {
-		this.expressInfos = expressInfos;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderDelivery")
-	public Set<DeliveryCar> getDeliveryCars() {
-		return this.deliveryCars;
-	}
-
-	public void setDeliveryCars(Set<DeliveryCar> deliveryCars) {
-		this.deliveryCars = deliveryCars;
+	public void setMoney(BigDecimal money) {
+		this.money = money;
 	}
 
 }

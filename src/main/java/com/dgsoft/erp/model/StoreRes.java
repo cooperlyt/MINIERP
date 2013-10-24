@@ -21,7 +21,6 @@ public class StoreRes implements java.io.Serializable {
     private String id;
     private Res res;
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
-    private Set<OrderList> orderLists = new HashSet<OrderList>(0);
     private Set<Format> formats = new HashSet<Format>(0);
 
     private String code;
@@ -114,15 +113,6 @@ public class StoreRes implements java.io.Serializable {
 
     public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
         this.stockChangeItems = stockChangeItems;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<OrderList> getOrderLists() {
-        return this.orderLists;
-    }
-
-    public void setOrderLists(Set<OrderList> orderLists) {
-        this.orderLists = orderLists;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "storeRes")

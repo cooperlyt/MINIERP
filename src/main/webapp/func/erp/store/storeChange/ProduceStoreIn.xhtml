@@ -12,6 +12,8 @@
     <ui:param name="resTreeValue" value="#{produceInResTree}"/>
     <ui:param name="storeChangeType" value="PRODUCE_IN"/>
 
+    <ui:param name="functionTitle" value="#{messages.PRODUCE_IN}"/>
+    
     <ui:define name="rightToolbar">
         <h:form>
             <h:panelGrid columns="3">
@@ -51,6 +53,74 @@
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
 
+
+    </ui:define>
+
+    <ui:define name="storeInItemList">
+        <h:form id="storeInItems">
+            <rich:dataTable style="width: 100%" value="#{porduceStoreInItems}"
+                            var="_item">
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.res}
+                    </f:facet>
+                    #{_item.res.name}(#{_item.res.code}) #{' '}
+                    <a:repeat value="#{_item.formats}" var="_format">
+                        #{' '}
+                        #{_format.formatDefine.name} :
+                        <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
+                                      rendered="#{_format.formatDefine.dataType.name() eq 'WORD'}"/>
+                        <h:outputText value="#{_format.formatValue}"
+                                      rendered="#{not (_format.formatDefine.dataType.name() eq 'WORD')}"/>
+
+                    </a:repeat>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">#{messages.storeIn_field_floatConvertRate}</f:facet>
+                    <h:outputText value="#{_item.storeResCount.floatConvertRate}" rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.MasterUnitCount}
+                    </f:facet>
+                    #{_item.storeResCount.masterCount}#{(_item.res.resUnitByMasterUnit.name)}
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.AuxUnitCount}
+                    </f:facet>
+                    <a:outputPanel rendered="#{_item.res.unitGroup.type == 'NO_CONVERT'}">
+                        <a:repeat value="#{_item.storeResCount.noConvertCountList}" var="_unitCount">
+                            #{_unitCount.count}#{_unitCount.resUnit.name}#{' '}
+                        </a:repeat>
+                    </a:outputPanel>
+                    <a:outputPanel rendered="#{_item.res.unitGroup.type == 'FIX_CONVERT'}">
+                        <a:repeat value="#{_item.res.unitGroup.resUnitList}" var="_fixUnitCount">
+                            #{_fixUnitCount.conversionRate * _item.storeResCount.masterCount}
+                            #{_fixUnitCount.name} #{' '}
+                        </a:repeat>
+                    </a:outputPanel>
+                    <h:outputText value="#{_item.storeResCount.auxCount}#{_item.res.unitGroup.floatAuxiliaryUnit.name}"
+                                  rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
+
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.action}
+                    </f:facet>
+
+
+
+                    <a:commandButton title="#{messages.remove}" execute="@form" immediate="true" image="/img/delete.png"
+                                     action="#{produceStoreInHome.removeItem}" render="storeInItems">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </rich:column>
+            </rich:dataTable>
+        </h:form>
 
     </ui:define>
 

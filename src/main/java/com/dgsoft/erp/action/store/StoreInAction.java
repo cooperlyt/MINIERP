@@ -40,11 +40,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     @In(create = true)
     protected StoreResHome storeResHome;
 
-    @DataModel(value = "storeInItems")
     protected List<StoreInItem> storeInItems = new ArrayList<StoreInItem>();
-
-    @DataModelSelection
-    protected StoreInItem selectedStoreInItem;
 
     protected StoreInItem editingItem;
 
@@ -104,21 +100,39 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
 
             Batch batch = storeInItem.getBatch();
             if (batch == null) {
+                for (BatchStoreCount batchStoreCount: stockChangeItem.getStock().getBatchStoreCounts()){
+                    if (batchStoreCount.getBatch().isDefaultBatch()){
+                        batch = batchStoreCount.getBatch();
+                        break;
+                    }
+                }
+
+            }
+            if (batch == null)  {
                 batch = new Batch(UUID.randomUUID().toString().replace("-", ""), storeInItem.getRes(), true, false, true, stockChangeHome.getInstance().getOperDate());
             }
+
+            if (batch.getBatchStoreCount() == null){
+                batch.setBatchStoreCount(new BatchStoreCount(batch,stockChangeItem.getStock(),storeInItem.getStoreResCount().getMasterCount()));
+                batch.getBatchStoreCount().setBatch(batch);
+                stockChangeItem.getStock().getBatchStoreCounts().add(batch.getBatchStoreCount());
+            }else{
+                batch.getBatchStoreCount().setCount(batch.getBatchStoreCount().getCount().add(storeInItem.getStoreResCount().getMasterCount()));
+            }
+
             batch.getStockChangeItems().add(stockChangeItem);
             stockChangeItem.setBatch(batch);
 
+
             //stockChangeItem.getStock().getBatchStoreCounts()
 
-            getInstance().getStockChange().getStockChangeItems().add(stockChangeItem);
+            stockChangeHome.getInstance().getStockChangeItems().add(stockChangeItem);
+
         }
+        getInstance().setStockChange(stockChangeHome.getInstance());
         persist();
         clearInstance();
         return storeIn();
-
-
-        //return storeIn();
     }
 
 
@@ -133,13 +147,6 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             stockChangeHome.getInstance().setId("I" + numberBuilder.getDateNumber("storeInCode"));
         }
         return beginStoreIn();
-    }
-
-
-    @Override
-    public void removeItem() {
-        log.debug("call remove Item :" + selectedStoreInItem.getRes().getName());
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
 

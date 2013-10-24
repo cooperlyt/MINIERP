@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
+// Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -25,6 +25,8 @@ public class Customer implements java.io.Serializable {
 
 	private String id;
 	private Integer version;
+	private CustomerLevel customerLevel;
+	private CustomerArea customerArea;
 	private MiddleMan middleMan;
 	private String name;
 	private String type;
@@ -36,26 +38,35 @@ public class Customer implements java.io.Serializable {
 	private String memo;
 	private String mail;
 	private boolean enable;
+	private int provinceCode;
 	private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
 	private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
 
 	public Customer() {
 	}
 
-	public Customer(String id, MiddleMan middleMan, String name, String type,
-			String contact, boolean enable) {
+	public Customer(String id, CustomerLevel customerLevel,
+			CustomerArea customerArea, MiddleMan middleMan, String name,
+			String type, String contact, boolean enable, int provinceCode) {
 		this.id = id;
+		this.customerLevel = customerLevel;
+		this.customerArea = customerArea;
 		this.middleMan = middleMan;
 		this.name = name;
 		this.type = type;
 		this.contact = contact;
 		this.enable = enable;
+		this.provinceCode = provinceCode;
 	}
-	public Customer(String id, MiddleMan middleMan, String name, String type,
-			String bankNumber, String contact, BigDecimal balance, String tel,
-			String fax, String memo, String mail, boolean enable,
-			Set<CustomerOrder> customerOrders, Set<AccountOper> accountOpers) {
+	public Customer(String id, CustomerLevel customerLevel,
+			CustomerArea customerArea, MiddleMan middleMan, String name,
+			String type, String bankNumber, String contact, BigDecimal balance,
+			String tel, String fax, String memo, String mail, boolean enable,
+			int provinceCode, Set<CustomerOrder> customerOrders,
+			Set<AccountOper> accountOpers) {
 		this.id = id;
+		this.customerLevel = customerLevel;
+		this.customerArea = customerArea;
 		this.middleMan = middleMan;
 		this.name = name;
 		this.type = type;
@@ -67,6 +78,7 @@ public class Customer implements java.io.Serializable {
 		this.memo = memo;
 		this.mail = mail;
 		this.enable = enable;
+		this.provinceCode = provinceCode;
 		this.customerOrders = customerOrders;
 		this.accountOpers = accountOpers;
 	}
@@ -91,6 +103,28 @@ public class Customer implements java.io.Serializable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LEVEL", nullable = false)
+	@NotNull
+	public CustomerLevel getCustomerLevel() {
+		return this.customerLevel;
+	}
+
+	public void setCustomerLevel(CustomerLevel customerLevel) {
+		this.customerLevel = customerLevel;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CUSTOMER_AREA", nullable = false)
+	@NotNull
+	public CustomerArea getCustomerArea() {
+		return this.customerArea;
+	}
+
+	public void setCustomerArea(CustomerArea customerArea) {
+		this.customerArea = customerArea;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -203,6 +237,15 @@ public class Customer implements java.io.Serializable {
 
 	public void setEnable(boolean enable) {
 		this.enable = enable;
+	}
+
+	@Column(name = "PROVINCE_CODE", nullable = false)
+	public int getProvinceCode() {
+		return this.provinceCode;
+	}
+
+	public void setProvinceCode(int provinceCode) {
+		this.provinceCode = provinceCode;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")

@@ -27,6 +27,7 @@ public class CustomerOrder implements java.io.Serializable {
 	private Date completeDate;
 	private BigDecimal profit;
 	private String memo;
+    private boolean middleManPay;
 	private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
 	private Set<AccountOper> accountOper = new HashSet<AccountOper>(0);
 	private Set<OrderList> orderLists = new HashSet<OrderList>(0);
@@ -169,6 +170,15 @@ public class CustomerOrder implements java.io.Serializable {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+
+    @Column(name = "MIDDLE_MAN_PAY", nullable = false)
+    public boolean isMiddleManPay() {
+        return this.middleManPay;
+    }
+
+    public void setMiddleManPay(boolean middleManPay) {
+        this.middleManPay = middleManPay;
+    }
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
 	public Set<MiddleMoney> getMiddleMoneys() {

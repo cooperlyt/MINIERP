@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,24 +28,17 @@ public class BatchStoreCount implements java.io.Serializable {
     public BatchStoreCount() {
     }
 
-    public BatchStoreCount(String id, Batch batch, Stock stock, BigDecimal count) {
+    public BatchStoreCount(Batch batch, Stock stock, BigDecimal count) {
         this.id = id;
         this.batch = batch;
         this.stock = stock;
         this.count = count;
-    }
-
-    public BatchStoreCount(String id, Batch batch, Stock stock,
-                           BigDecimal count, Set<Depositary> depositaries) {
-        this.id = id;
-        this.batch = batch;
-        this.stock = stock;
-        this.count = count;
-        this.depositaries = depositaries;
     }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
     @NotNull
     @Size(max = 32)
     public String getId() {
@@ -64,7 +59,7 @@ public class BatchStoreCount implements java.io.Serializable {
         this.version = version;
     }
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "BATCH", nullable = false)
     @NotNull
     public Batch getBatch() {

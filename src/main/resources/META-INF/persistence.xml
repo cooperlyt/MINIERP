@@ -59,10 +59,10 @@
         <class>com.dgsoft.erp.model.ProductBackStoreIn</class>
         <class>com.dgsoft.erp.model.Batch</class>
         <class>com.dgsoft.erp.model.BatchStoreCount</class>
-        <class>com.dgsoft.erp.model.Car</class>
         <class>com.dgsoft.erp.model.Customer</class>
         <class>com.dgsoft.erp.model.CustomerOrder</class>
-        <class>com.dgsoft.erp.model.DeliveryCar</class>
+        <class>com.dgsoft.erp.model.CustomerLevel</class>
+        <class>com.dgsoft.erp.model.CustomerArea</class>
         <class>com.dgsoft.erp.model.Depositary</class>
         <class>com.dgsoft.erp.model.ExpressInfo</class>
         <class>com.dgsoft.erp.model.Format</class>
@@ -98,6 +98,11 @@
         <class>com.dgsoft.erp.model.TransCorp</class>
         <class>com.dgsoft.erp.model.UnitGroup</class>
 
+        <class>com.dgsoft.erp.model.ProductToDoor</class>
+        <class>com.dgsoft.erp.model.Employee</class>
+        <class>com.dgsoft.erp.model.Cars</class>
+        <class>com.dgsoft.erp.model.ExpressCar</class>
+        <class>com.dgsoft.erp.model.ExpressDriver</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
