@@ -1,0 +1,38 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/simpleDataCURD.xhtml">
+
+    <h:outputStylesheet>
+        .leftColumn {
+            vertical-align: top;
+            width: 150px;
+        }
+
+        .rightColumn {
+            vertical-align: top;
+        }
+    </h:outputStylesheet>
+    
+    <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
+    <ui:param name="dataList" value="#{customerAreaList.resultList}"/>
+    <ui:param name="dataListHeaderTitle" value="#{messages.CustomerArea}"/>
+    <ui:param name="dataHome" value="#{customerAreaHome}"/>
+
+    <ui:define name="editFields">
+           <s:decorate template="/layout/seam-edit.xhtml">
+               <ui:define name="label">#{messages.CustomerArea_field_name}</ui:define>
+               <h:inputText value="#{customerAreaHome.instance.name}"
+                            label="#{messages.CustomerArea_field_name}"
+                            readonly="#{not customerAreaHome.editing}"
+                            required="true"
+                            size="27"
+                            maxlength="50"/>
+           </s:decorate>
+    </ui:define>
+</ui:composition>

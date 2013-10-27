@@ -197,7 +197,7 @@ public class AccountOper implements java.io.Serializable {
 		this.customerOrder = orderPays;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
 	public Set<OrderBack> getOrderBack() {
 		return this.orderBack;
 	}

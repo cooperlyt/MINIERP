@@ -1,0 +1,116 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:define name="body">
+
+        <h:outputStylesheet>
+            .barsearch {
+                height: 14px;
+                width: 100px;
+            }
+        </h:outputStylesheet>
+
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup location="right">
+                    <h:inputText required="true"
+                                 maxlength="32"
+                                 styleClass="barsearch"
+                                 label="#{messages.OrderCode}"
+                                 value="#{startData.businessKey}">
+                        <rich:placeholder value="#{messages.OrderCode}"/>
+                    </h:inputText>
+                    <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+
+            <h:panelGrid columns="2">
+                <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.CustomerArea}</ui:define>
+                    <rich:select value="#{customerAreaHome.id}" required="true">
+                        <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                                       noSelectionLabel="#{messages.noSelectLabel}"
+                                       label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                        <a:ajax event="selectitem" execute="@this"
+                                listener="#{customerOrderHome.clearCustomer}"
+                                render="customerSelectNameField,customerInfo">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:select>
+                </s:decorate>
+
+                <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.Customer}</ui:define>
+                    <h:selectOneMenu style="width:120px" value="#{customerHome.id}" label="#{messages.Customer}">
+                        <s:selectItems value="#{customerList.resultList}" var="_customer"
+                                       noSelectionLabel="#{messages.createNewCustomer}"
+                                       label="#{_customer.name}" itemValue="#{_customer.id}"/>
+                        <a:ajax event="valueChange" listener="#{customerOrderHome.middleManPayChangeListener}"
+                                execute="@this" render="customerInfo">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </h:selectOneMenu>
+                </s:decorate>
+            </h:panelGrid>
+
+            <div style="clear:both"/>
+
+            <a:outputPanel id="customerInfo">
+
+                <rich:collapsiblePanel
+                        header="#{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}"
+                        switchType="client">
+                    <ui:include src="/templates/erp/CustomerDetails.xhtml">
+                        <ui:param name="balanceReadonly" value="true"/>
+                        <ui:param name="readonly" value="#{customerHome.idDefined}"/>
+                    </ui:include>
+
+                    <div style="clear:both"/>
+
+
+                    <a:outputPanel id="middleManInfo">
+                        <rich:panel
+                                rendered="#{(customerHome.idDefined and (not empty customerHome.instance.middleMan) or (not customerHome.idDefined)) }">
+                            <s:decorate template="/layout/seam-edit.xhtml">
+                                <ui:define name="label">#{messages.useCustomerMiddleMan}</ui:define>
+                                <h:selectBooleanCheckbox value="#{customerOrderHome.instance.middleManPay}">
+                                    <a:ajax event="click" execute="@this"
+                                            listener="#{customerOrderHome.middleManPayChangeListener}"
+                                            render="middleManDetails">
+                                        <a:attachQueue requestDelay="0"/>
+                                    </a:ajax>
+                                </h:selectBooleanCheckbox>
+                            </s:decorate>
+
+                            <div style="clear:both"/>
+
+                            <a:outputPanel id="middleManDetails">
+                                <h:outputText value="#{messages.customerNotHasMiddleMan}"
+                                              rendered="#{customerHome.idDefined and (empty customerHome.instance.middleMan)}"/>
+                                <a:outputPanel rendered="#{customerOrderHome.showMiddleMan}">
+                                    <ui:include src="/templates/erp/MiddleManDetails.xhtml">
+                                        <ui:param name="readonly" value="#{customerHome.idDefined}"/>
+                                    </ui:include>
+                                </a:outputPanel>
+                            </a:outputPanel>
+
+                            <div style="clear:both"/>
+                        </rich:panel>
+                    </a:outputPanel>
+                </rich:collapsiblePanel>
+            </a:outputPanel>
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

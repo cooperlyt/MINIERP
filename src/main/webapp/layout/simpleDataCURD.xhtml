@@ -1,0 +1,105 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="body">
+        <ui:insert/>
+
+        <h:panelGrid columns="2" columnClasses="#{bodyColumnClasses}" width="100%">
+            <h:form>
+                <rich:dataTable id="dataList" value="#{dataList}" var="_dataItem"
+                                noDataLabel="#{messages.emptyResult}" style="width: 100%">
+                    <ui:insert name="listColumns">
+
+                        <rich:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{dataListHeaderTitle}"/>
+                            </f:facet>
+                            <a:commandLink value="#{_dataItem.name}" immediate="true"
+                                           execute="@this" image="/img/edit.png"
+                                           render="#{detailsRender},details">
+                                <a:param value="#{_dataItem.id}" assignTo="#{dataHome.id}"/>
+                                <s:conversationPropagation type="end"/>
+                            </a:commandLink>
+
+                        </rich:column>
+                    </ui:insert>
+                </rich:dataTable>
+            </h:form>
+            <h:panelGroup>
+                <h:form id="details">
+                    <rich:toolbar id="actions" height="34" itemSeparator="line">
+
+                        <rich:toolbarGroup rendered="#{not dataHome.editing}">
+                            <h:graphicImage value="/img/add.png"/>
+                            <a:commandLink value="#{messages.add}" immediate="true"
+                                           execute="@this"
+                                           action="#{dataHome.createNew}"
+                                           render="#{detailsRender},details">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandLink>
+                        </rich:toolbarGroup>
+                        <rich:toolbarGroup rendered="#{not dataHome.editing}">
+                            <h:graphicImage value="/img/edit.png"/>
+                            <a:commandLink value="#{messages.edit}" immediate="true"
+                                           execute="@this"
+                                           action="#{dataHome.edit}" render="#{detailsRender},details"
+                                           onclick="if (#{not dataHome.idDefined}) {alert('#{messages.plaseSelectOperDataFirst}'); return false;}">
+                                <a:attachQueue requestDelay="0"/>
+                                <a:param value="#{dataHome.instance.id}" assignTo="#{dataHome.id}"/>
+                            </a:commandLink>
+                        </rich:toolbarGroup>
+
+                        <rich:toolbarGroup rendered="#{not dataHome.editing}">
+                            <h:graphicImage value="/img/delete.png"/>
+                            <a:commandLink value="#{messages.delete}" immediate="true" execute="@this"
+                                           action="#{dataHome.removeAndClear}"
+                                           onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                                           render="#{detailsRender},details,dataList">
+                                <a:attachQueue requestDelay="0"/>
+                                <a:param value="#{dataHome.instance.id}" assignTo="#{dataHome.id}"/>
+                            </a:commandLink>
+                        </rich:toolbarGroup>
+
+                        <rich:toolbarGroup location="#{dataHome.editing?'left':'right'}">
+                            #{dataHome.instance.name}
+                        </rich:toolbarGroup>
+                        <ui:insert name="actionToolbar"/>
+
+
+                        <rich:toolbarGroup rendered="#{dataHome.editing}" location="right">
+                            <a:commandButton value="#{messages.cancel}" render="#{detailsRender},details,dataList"
+                                             action="#{dataHome.cancel}" immediate="true" execute="@this">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                            <a:commandButton value="#{messages.save}"
+                                             action="#{dataHome.save}"
+                                             execute="@form" render="#{detailsRender},details,dataList">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </rich:toolbarGroup>
+                    </rich:toolbar>
+
+
+                    <rich:panel>
+                        <ui:insert name="editFields"/>
+
+                        <div style="clear:both">
+                            <span class="required">*</span>
+                            #{messages.requiredFields}
+                        </div>
+                    </rich:panel>
+
+                </h:form>
+
+                <ui:insert name="detailsAnnex"/>
+            </h:panelGroup>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

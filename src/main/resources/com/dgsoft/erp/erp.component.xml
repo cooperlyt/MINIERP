@@ -37,4 +37,20 @@
     <component name="unitGroupList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
         <property name="ejbql">select distinct unitGroup from UnitGroup unitGroup left join fetch unitGroup.resUnits</property>
     </component>
+
+    <component name="customerAreaList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select ca from CustomerArea ca</property>
+    </component>
+
+    <component name="customerList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select customer from Customer customer where customer.enable = true and customer.customerArea.id = &apos;#{customerAreaHome.id}&apos;</property>
+    </component>
+
+    <component name="customerAreaList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select customerArea from CustomerArea customerArea</property>
+    </component>
+
+    <component name="customerLevelList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select customerLevel from CustomerLevel customerLevel order by customerLevel.priority</property>
+    </component>
 </components>

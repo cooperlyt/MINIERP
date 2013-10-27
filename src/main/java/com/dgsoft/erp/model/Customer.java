@@ -1,18 +1,12 @@
 package com.dgsoft.erp.model;
 // Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,247 +17,238 @@ import javax.validation.constraints.Size;
 @Table(name = "CUSTOMER", catalog = "MINI_ERP")
 public class Customer implements java.io.Serializable {
 
-	private String id;
-	private Integer version;
-	private CustomerLevel customerLevel;
-	private CustomerArea customerArea;
-	private MiddleMan middleMan;
-	private String name;
-	private String type;
-	private String bankNumber;
-	private String contact;
-	private BigDecimal balance;
-	private String tel;
-	private String fax;
-	private String memo;
-	private String mail;
-	private boolean enable;
-	private int provinceCode;
-	private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
-	private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
+    private String id;
+    private Integer version;
+    private CustomerLevel customerLevel;
+    private CustomerArea customerArea;
+    private MiddleMan middleMan;
+    private String name;
+    private String type;
+    private String contact;
+    private BigDecimal balance;
+    private String tel;
+    private String fax;
+    private String memo;
+    private String mail;
+    private String address;
+    private boolean enable;
+    private String postCode;
+    private int provinceCode;
+    private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
+    private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
 
-	public Customer() {
-	}
+    public Customer() {
+    }
 
-	public Customer(String id, CustomerLevel customerLevel,
-			CustomerArea customerArea, MiddleMan middleMan, String name,
-			String type, String contact, boolean enable, int provinceCode) {
-		this.id = id;
-		this.customerLevel = customerLevel;
-		this.customerArea = customerArea;
-		this.middleMan = middleMan;
-		this.name = name;
-		this.type = type;
-		this.contact = contact;
-		this.enable = enable;
-		this.provinceCode = provinceCode;
-	}
-	public Customer(String id, CustomerLevel customerLevel,
-			CustomerArea customerArea, MiddleMan middleMan, String name,
-			String type, String bankNumber, String contact, BigDecimal balance,
-			String tel, String fax, String memo, String mail, boolean enable,
-			int provinceCode, Set<CustomerOrder> customerOrders,
-			Set<AccountOper> accountOpers) {
-		this.id = id;
-		this.customerLevel = customerLevel;
-		this.customerArea = customerArea;
-		this.middleMan = middleMan;
-		this.name = name;
-		this.type = type;
-		this.bankNumber = bankNumber;
-		this.contact = contact;
-		this.balance = balance;
-		this.tel = tel;
-		this.fax = fax;
-		this.memo = memo;
-		this.mail = mail;
-		this.enable = enable;
-		this.provinceCode = provinceCode;
-		this.customerOrders = customerOrders;
-		this.accountOpers = accountOpers;
-	}
+    public Customer(String id, CustomerLevel customerLevel,
+                    CustomerArea customerArea, MiddleMan middleMan, String name,
+                    String type, String contact, boolean enable, int provinceCode) {
+        this.id = id;
+        this.customerLevel = customerLevel;
+        this.customerArea = customerArea;
+        this.middleMan = middleMan;
+        this.name = name;
+        this.type = type;
+        this.contact = contact;
+        this.enable = enable;
+        this.provinceCode = provinceCode;
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	@Version
-	@Column(name = "VERSION")
-	public Integer getVersion() {
-		return this.version;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+    @Version
+    @Column(name = "VERSION")
+    public Integer getVersion() {
+        return this.version;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LEVEL", nullable = false)
-	@NotNull
-	public CustomerLevel getCustomerLevel() {
-		return this.customerLevel;
-	}
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
-	public void setCustomerLevel(CustomerLevel customerLevel) {
-		this.customerLevel = customerLevel;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LEVEL", nullable = false)
+    @NotNull
+    public CustomerLevel getCustomerLevel() {
+        return this.customerLevel;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOMER_AREA", nullable = false)
-	@NotNull
-	public CustomerArea getCustomerArea() {
-		return this.customerArea;
-	}
+    public void setCustomerLevel(CustomerLevel customerLevel) {
+        this.customerLevel = customerLevel;
+    }
 
-	public void setCustomerArea(CustomerArea customerArea) {
-		this.customerArea = customerArea;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CUSTOMER_AREA", nullable = false)
+    @NotNull
+    public CustomerArea getCustomerArea() {
+        return this.customerArea;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MIDDLE_MAN", nullable = false)
-	@NotNull
-	public MiddleMan getMiddleMan() {
-		return this.middleMan;
-	}
+    public void setCustomerArea(CustomerArea customerArea) {
+        this.customerArea = customerArea;
+    }
 
-	public void setMiddleMan(MiddleMan middleMan) {
-		this.middleMan = middleMan;
-	}
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "MIDDLE_MAN", nullable = false)
+    @NotNull
+    public MiddleMan getMiddleMan() {
+        return this.middleMan;
+    }
 
-	@Column(name = "NAME", nullable = false, length = 50)
-	@NotNull
-	@Size(max = 50)
-	public String getName() {
-		return this.name;
-	}
+    public void setMiddleMan(MiddleMan middleMan) {
+        this.middleMan = middleMan;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column(name = "NAME", nullable = false, length = 50)
+    @NotNull
+    @Size(max = 50)
+    public String getName() {
+        return this.name;
+    }
 
-	@Column(name = "TYPE", nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getType() {
-		return this.type;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    @Column(name = "TYPE", nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getType() {
+        return this.type;
+    }
 
-	@Column(name = "BANK_NUMBER", length = 50)
-	@Size(max = 50)
-	public String getBankNumber() {
-		return this.bankNumber;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public void setBankNumber(String bankNumber) {
-		this.bankNumber = bankNumber;
-	}
+    @Column(name = "CONTACT", nullable = false, length = 50)
+    @NotNull
+    @Size(max = 50)
+    public String getContact() {
+        return this.contact;
+    }
 
-	@Column(name = "CONTACT", nullable = false, length = 50)
-	@NotNull
-	@Size(max = 50)
-	public String getContact() {
-		return this.contact;
-	}
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 
-	public void setContact(String contact) {
-		this.contact = contact;
-	}
+    @Column(name = "BALANCE", scale = 3)
+    public BigDecimal getBalance() {
+        return this.balance;
+    }
 
-	@Column(name = "BALANCE", scale = 3)
-	public BigDecimal getBalance() {
-		return this.balance;
-	}
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
-	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
-	}
+    @Column(name = "TEL", nullable = false, length = 50)
+    @Size(max = 50)
+    @NotNull
+    public String getTel() {
+        return this.tel;
+    }
 
-	@Column(name = "TEL", length = 50)
-	@Size(max = 50)
-	public String getTel() {
-		return this.tel;
-	}
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
 
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
+    @Column(name = "FAX", length = 50)
+    @Size(max = 50)
+    public String getFax() {
+        return this.fax;
+    }
 
-	@Column(name = "FAX", length = 50)
-	@Size(max = 50)
-	public String getFax() {
-		return this.fax;
-	}
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
 
-	public void setFax(String fax) {
-		this.fax = fax;
-	}
+    @Column(name = "POST_CODE", length = 10)
+    @Size(max = 10)
+    public String getPostCode() {
+        return postCode;
+    }
 
-	@Column(name = "MEMO", length = 200)
-	@Size(max = 200)
-	public String getMemo() {
-		return this.memo;
-	}
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
 
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
+    @Column(name = "MEMO", length = 200)
+    @Size(max = 200)
+    public String getMemo() {
+        return this.memo;
+    }
 
-	@Column(name = "MAIL", length = 50)
-	@Size(max = 50)
-	public String getMail() {
-		return this.mail;
-	}
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
+    @Column(name = "ADDRESS", length = 200)
+    @Size(max = 200)
+    public String getAddress() {
+        return address;
+    }
 
-	@Column(name = "ENABLE", nullable = false)
-	public boolean isEnable() {
-		return this.enable;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setEnable(boolean enable) {
-		this.enable = enable;
-	}
+    @Column(name = "MAIL", length = 50)
+    @Size(max = 50)
+    public String getMail() {
+        return this.mail;
+    }
 
-	@Column(name = "PROVINCE_CODE", nullable = false)
-	public int getProvinceCode() {
-		return this.provinceCode;
-	}
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 
-	public void setProvinceCode(int provinceCode) {
-		this.provinceCode = provinceCode;
-	}
+    @Column(name = "ENABLE", nullable = false)
+    public boolean isEnable() {
+        return this.enable;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-	public Set<CustomerOrder> getCustomerOrders() {
-		return this.customerOrders;
-	}
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 
-	public void setCustomerOrders(Set<CustomerOrder> customerOrders) {
-		this.customerOrders = customerOrders;
-	}
+    @Column(name = "PROVINCE_CODE", nullable = false)
+    public int getProvinceCode() {
+        return this.provinceCode;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-	public Set<AccountOper> getAccountOpers() {
-		return this.accountOpers;
-	}
+    public void setProvinceCode(int provinceCode) {
+        this.provinceCode = provinceCode;
+    }
 
-	public void setAccountOpers(Set<AccountOper> accountOpers) {
-		this.accountOpers = accountOpers;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    public Set<CustomerOrder> getCustomerOrders() {
+        return this.customerOrders;
+    }
+
+    public void setCustomerOrders(Set<CustomerOrder> customerOrders) {
+        this.customerOrders = customerOrders;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    public Set<AccountOper> getAccountOpers() {
+        return this.accountOpers;
+    }
+
+    public void setAccountOpers(Set<AccountOper> accountOpers) {
+        this.accountOpers = accountOpers;
+    }
 
 }

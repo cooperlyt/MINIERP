@@ -372,7 +372,7 @@
                        removeAllText="#{messages.pick_removeAll}"
                        addAllText="#{messages.pick_addAll}" removeText="#{messages.pick_remove}">
 
-            <s:selectItems value="#{assignRoleList.resultList}" var="_role"
+            <s:selectItems value="#{roleList.resultList}" var="_role"
                            label="#{_role.name}"/>
             <f:converter converterId="systemEntityConverter"/>
         </rich:pickList>

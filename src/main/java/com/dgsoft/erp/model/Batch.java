@@ -71,8 +71,7 @@ public class Batch implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "PRO_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
-    @NotNull
+    @Column(name = "PRO_DATE", nullable = true, length = 19, columnDefinition = "DATETIME")
     public Date getProDate() {
         return this.proDate;
     }
@@ -82,8 +81,7 @@ public class Batch implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "EXP_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
-    @NotNull
+    @Column(name = "EXP_DATE", nullable = true, length = 19, columnDefinition = "DATETIME")
     public Date getExpDate() {
         return this.expDate;
     }

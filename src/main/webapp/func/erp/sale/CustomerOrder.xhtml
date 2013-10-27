@@ -9,6 +9,16 @@
                 template="/layout/template.xhtml">
 
     <ui:define name="toolbar">
+        <rich:toolbar>
+
+            <rich:toolbarGroup location="right">
+                <s:button value="#{messages.newOrder}" action="#{startData.generateKey}"
+                          view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml"
+                          propagation="begin">
+                     <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+                </s:button>
+            </rich:toolbarGroup>
+        </rich:toolbar>
 
 
     </ui:define>
@@ -16,5 +26,4 @@
     <ui:define name="body">
 
     </ui:define>
-
 </ui:composition>

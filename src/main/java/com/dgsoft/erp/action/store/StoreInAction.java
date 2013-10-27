@@ -75,12 +75,15 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
                     stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getStoreResCount().getMasterCount()));
                     stockChangeItem.setAfterCount(stockChangeItem.getStock().getCount());
                 }
+            }else{
+                storeResHome.getInstance().setCode("SR-" + numberBuilder.getSampleNumber("StoreResCode"));
             }
             if (stockChangeItem.getStock() == null) {
                 stockChangeItem.setStock(new Stock(storeResHome.getInstance(), storeInItem.getStoreResCount().getMasterCount()));
                 stockChangeItem.setBefortCount(new BigDecimal(0));
                 stockChangeItem.setAfterCount(storeInItem.getStoreResCount().getMasterCount());
             }
+            stockChangeItem.getStock().setStore(stockChangeHome.getInstance().getStore());
 
             if (storeInItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
                 for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {

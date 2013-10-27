@@ -56,6 +56,15 @@
         <begin-conversation join="true"/>
     </page>
 
+    <page view-id="/business/startPrepare/*" login-required="true">
+          <param name="from"/>
+    </page>
+
+    <page view-id="/business/startPrepare/erp/sale/*" login-required="true">
+        <restrict>#{s:hasRole('erp.sale.saler')}</restrict>
+    </page>
+
+
     <exception class="org.jboss.seam.framework.EntityNotFoundException">
         <redirect view-id="/error.xhtml">
             <message severity="warn">#{messages['org.jboss.seam.framework.EntityNotFoundException']}</message>

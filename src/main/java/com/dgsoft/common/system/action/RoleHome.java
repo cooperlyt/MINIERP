@@ -18,11 +18,6 @@ import java.util.List;
 @Name("roleHome")
 public class RoleHome extends SystemEntityHome<Role> {
 
-    @Factory(value = "roleTypes", scope = ScopeType.CONVERSATION)
-    public Role.RoleType[] getRoleTypes() {
-        return Role.RoleType.values();
-    }
-
     private boolean editing = false;
 
 

@@ -48,9 +48,6 @@ public class BusinessCreate {
     private EntityHome<BusinessInstance> businessInstanceHome;
 
     @In
-    private NumberBuilder numberBuilder;
-
-    @In
     private OwnerTaskInstanceListener ownerTaskInstanceListener;
 
     @In
@@ -79,19 +76,19 @@ public class BusinessCreate {
             if (verifyMsg == null) verifyMsg = "";
         }
         if (verifyMsg.equals("fail")) {
-            return businessDefineHome.getInstance().getStartPage();
+            return null;
         } else {
 
             log.debug("define Id:" + businessDefineHome.getInstance().getId());
-            String businessKey = numberBuilder.getDateNumber("businessKeyCode");
+
             businessInstanceHome.clearInstance();
-            businessInstanceHome.getInstance().setId(businessKey);
+            businessInstanceHome.getInstance().setId(startData.getBusinessKey());
             businessInstanceHome.getInstance().setBusinessDefine(businessDefineHome.getInstance());
             businessInstanceHome.getInstance().setMark(startData.getDescription());
             businessInstanceHome.getInstance().setProcessMessages(verifyMsg);
 
             BusinessProcess.instance().createProcess(businessDefineHome.getInstance().getWfName(),
-                    businessKey);
+                    startData.getBusinessKey());
 
             businessDefineId = businessDefineHome.getInstance().getId();
             businessDescription = startData.getDescription();
@@ -99,9 +96,11 @@ public class BusinessCreate {
 
             //startService.createBusiness(businessInstanceHome.getInstance());
             businessInstanceHome.persist();
-            events.raiseEvent("com.dgsoft.BusinessCreated", businessInstanceHome.getInstance());
-            log.debug(businessKey + "verfy ok is start!");
-            return navigation(businessKey);
+
+            events.raiseEvent("com.dgsoft.BusinessCreated." + businessDefineHome.getInstance().getWfName(),
+                    businessInstanceHome.getInstance());
+            log.debug(startData.getBusinessKey() + "verfy ok is start!");
+            return navigation(startData.getBusinessKey());
         }
     }
 

@@ -1,7 +1,9 @@
 package com.dgsoft.common.system.business;
 
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.model.BusinessDefine;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
@@ -15,7 +17,12 @@ import org.jboss.seam.annotations.Scope;
 @Scope(ScopeType.CONVERSATION)
 public class StartData {
 
+    @In
+    private NumberBuilder numberBuilder;
+
     private int level;
+
+    private String businessKey;
 
     private String description;
 
@@ -34,5 +41,17 @@ public class StartData {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public void generateKey(){
+        businessKey = numberBuilder.getDateNumber("businessKeyCode");
     }
 }

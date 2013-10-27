@@ -24,10 +24,12 @@ public class OrderBack implements java.io.Serializable {
 	private Date completeDate;
 	private String processMessage;
 	private String memo;
+    private String bankNumber;
+    private String bank;
 
 	private Set<ProductBackStoreIn> productBackReses = new HashSet<ProductBackStoreIn>(0);
 
-	private Set<AccountOper> accountOper = new HashSet<AccountOper>(0);
+	private AccountOper accountOper;
 
 	public OrderBack() {
 	}
@@ -161,14 +163,34 @@ public class OrderBack implements java.io.Serializable {
 		this.productBackReses = productBackReses;
 	}
 
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AccountOper.class)
-    @JoinTable(name = "BACK_MONEY", joinColumns = @JoinColumn(name = "BACK_ORDER"), inverseJoinColumns = @JoinColumn(name = "ACCOUNT_OPER"))
-    public Set<AccountOper> getAccountOper() {
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, targetEntity = AccountOper.class)
+    @JoinColumn(name = "BACK_MONEY", nullable = true)
+    public AccountOper getAccountOper() {
 		return this.accountOper;
 	}
 
-	public void setAccountOper(Set<AccountOper> backMoneys) {
+	public void setAccountOper(AccountOper backMoneys) {
 		this.accountOper = backMoneys;
 	}
 
+    @Column(name = "BANK_NUMBER", length = 50)
+    @Size(max = 50)
+    public String getBankNumber() {
+        return bankNumber;
+    }
+
+    public void setBankNumber(String bankNumber) {
+        this.bankNumber = bankNumber;
+    }
+
+
+    @Column(name = "BANK", length = 32)
+    @Size(max = 32)
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
 }

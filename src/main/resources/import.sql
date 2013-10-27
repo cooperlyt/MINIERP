@@ -4,12 +4,29 @@
 -- 系统参数
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateStoreInCode','BOOLEAN','true','是否自动生成入库单编号,是:true');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateStoreOutCode','BOOLEAN','true','是否自动生成出库单编号,是:true');
+
+-- 业务种类
+
+INSERT INTO DG_SYSTEM.BUSINESS_CATEGORY(ID, NAME, PRIORITY) VALUES('erp.sale','销售业务',1);
+INSERT INTO DG_SYSTEM.BUSINESS_CATEGORY(ID, NAME, PRIORITY) VALUES('erp.storage','仓储业务',2);
+
 -- 功能种类
 INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('system.config', '系统设置', '', '1', '超级管理员,一般由实施方有此权限');
 INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('system.manager', '系统管理', '', '2', '管理员');
-INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.manager.data', '基础数据维护', '', '3','');
-INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.store.mgr','仓库管理','','4','');
-INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.store.inAndOut','出入库','',5,'');
+
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.res.mgr','物资货品','',20,'');
+
+
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.produce.mgr', '生产管理','',30,'');
+
+
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.storage.mgr','仓储管理','',40,'');
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.storage.store','出入库','',50,'');
+
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.sale.order','销售订单','',60,'');
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.sale.mgr','销售管理','',70,'');
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.search','查询报表','',80,'');
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.search','统计分析','',90,'');
 
 -- 功能
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.param', '系统参数管理', 'system.config', '', '/func/system/config/SystemParams.seam', '', '2', '系统运行方式设置');
@@ -19,29 +36,55 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.role','角色管理','system.config','','/func/system/config/RoleMgr.seam','','4','角色管理和角色分配启动业务');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.word','字典管理','system.manager','','/func/system/manager/WordMgr.seam','','5','字典管理');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.roleCategory','角色组管理','system.config','','/func/system/config/RoleCategoryMgr.seam','','6','角色组');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.jbpmProcessDeployment','流程部署','system.config','','/func/system/jbpm/ProcessDefinition.seam','',7,'部署JBPM PAR 流程');
 
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.res','物资管理','erp.res.mgr','','/func/erp/data/ResMgr.seam','','10','物资和物资种类设置');
 
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.res','物资管理','erp.manager.data','','/func/erp/data/ResMgr.seam','','10','物资和物资种类设置');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.store','仓库管理','erp.manager.data','','/func/erp/data/StoreMgr.seam','','11','仓库管理及仓库权限分配');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.store','仓库管理','erp.store.mgr','','/func/erp/data/StoreMgr.seam','','11','仓库管理及仓库权限分配');
+
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.area','仓库区设置','erp.store.mgr','','/func/erp/store/StoreAreaMgr.seam','','1','仓库存储区域设置');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.stockSearch','库存查询','erp.store.mgr','','/func/erp/store/StockSearch.seam','','4','库存查询');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.resUnit','计量单位管理','erp.manager.data','','/func/erp/data/UnitMgr.seam','','9','物资计量单位组和计量单位管理');
+
+
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.stockSearch','库存查询','erp.search','','/func/erp/store/StockSearch.seam','','4','库存查询');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.resUnit','计量单位管理','erp.res.mgr','','/func/erp/data/UnitMgr.seam','','9','物资计量单位组和计量单位管理');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.materialIn','收料入库','erp.store.inAndOut','','/func/erp/store/storeChange/MaterialIn.seam','','1','物资入库');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.store.produceIn','生产入库','erp.store.inAndOut','','/func/erp/store/storeChange/ProduceIn.seam','','1','产成品，半成品入库');
 
--- 角色
-INSERT INTO DG_SYSTEM.ROLE (ID, NAME, ROLE_TYPE, DESCRIPTION) VALUES ('system.config', '系统设置', 'ROLE_CATEGORY', '系统配置');
-INSERT INTO DG_SYSTEM.ROLE (ID, NAME, ROLE_TYPE, DESCRIPTION) VALUES ('system.manager', '系统管理','ROLE_CATEGORY', '系统管理');
 
-INSERT INTO DG_SYSTEM.ROLE (ID, NAME, ROLE_TYPE, DESCRIPTION) VALUES ('erp.data.manager','数据管理员','ROLE_CATEGORY','ERP基础数据管理');
-INSERT INTO DG_SYSTEM.ROLE (ID, NAME, ROLE_TYPE, DESCRIPTION) VALUES ('erp.store.manager','仓库管理员','ROLE_CATEGORY','仓库');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.sale.createOrder','订单','erp.sale.order','','/func/erp/sale/CustomerOrder.seam','','1','');
+
+
+
+
+-- 角色
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION) VALUES ('system.config', '系统设置', '调整系统运行方式');
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION) VALUES ('system.manager', '系统管理', '系统管理');
+
+
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION) VALUES ('erp.sale.manager','销售主管','管理销售');
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION) VALUES ('erp.storage.manager','仓储主管','');
+
+
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION) VALUES ('erp.storage.store','仓库管理员','仓库');
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION) VALUES ('erp.sale.saler','销售员','销售员');
+
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION) VALUES ('erp.produce.manager','生产管理','');
+
+
+
 
 
 -- ROLE_CATEGORY
 INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID, NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('superAdmin', '超级管理员','1', '一般为系统实施人员',b'1');
 INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID,NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('admin','管理员','2','系统管理员',b'1');
 
-INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID,NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('storeMgr','仓库管理员','3','仓库管理员',b'1');
+
+INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID,NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('erp.produce','生产',10,'',b'1');
+INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID,NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('erp.purchase','采购',20,'',b'1');
+INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID,NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('erp.store','储运',30,'',b'1');
+INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID,NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('erp.sale','销售',40,'',b'1');
+INSERT INTO DG_SYSTEM.ROLE_CATEGORY (ID,NAME, PRIORITY, DESCRIPTION,SYSTEM) VALUES ('erp.finance','财务',50,'',b'1');
+
 
 
 -- ROLE_FUNCTION 角色种类
@@ -66,17 +109,15 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'e
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.stockSearch');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('storeMgr', 'erp.store.produceIn');
 
+
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_CATE_ID, FUN_ID) VALUES ('saler', 'erp.sale.createOrder');
+
 -- ROLE_ROLE_CATEGROY
 
 INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('system.config', 'superAdmin');
 INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('system.manager', 'superAdmin');
 
 INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('system.manager', 'admin');
-
-INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('erp.data.manager', 'admin');
-
-INSERT INTO DG_SYSTEM.ROLE_ROLE_CATEGROY (ROLE_ID, CAT_ID) VALUES ('erp.store.manager', 'storeMgr');
-
 
 
 -- ADMIN INSERY
@@ -97,22 +138,33 @@ INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, EN
 INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('system.empJob.emp','emp','职员','system.empJob','','2',b'1');
 INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('system.empJob.other','ohter','其它','system.empJob','','10',b'1');
 
-INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.storeInReason','入库原因','',b'1');
+INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.customerType','客户类型','',b'1');
 
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeInReason.product','product','生产入库','erp.storeInReason','','1',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeInReason.material','material','源材料采购入库','erp.storeInReason','','2',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeInReason.storeSwitch','storeSwitch','移库入库','erp.storeInReason','','3',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeInReason.other','other','其它原因','erp.storeInReason','','4',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeInReason.orderBack','orderBack','退单入库','erp.storeInReason','','5',b'0');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.customerType.dealer','dealer','经销商','erp.customerType','','1',b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.customerType.construct','construct','施工单位','erp.customerType','','2',b'1');
 
+INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.bank','银行','',b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.ccb','CCB','建设银行','erp.bank','',2,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.boc','BOC','中国银行','erp.bank','',1,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.abc','ABC','农业银行','erp.bank','',3,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.icbc','ICBC','工商银行','erp.bank','',4,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.cmbc','CMBC','民生银行','erp.bank','',12,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.cmb','CMB','招商银行','erp.bank','',5,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.cib','CIB','兴业银行','erp.bank','',13,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.bob','BOB','北京银行','erp.bank','',14,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.bcm','BCM','交通银行','erp.bank','',6,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.ceb','CEB','光大银行','erp.bank','',7,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.citic','CITIC','中信银行','erp.bank','',8,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.gdb','GDB','广东发展银行','erp.bank','',9,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.spdb','SPDB','上海浦东发展银行','erp.bank','',10,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.bank.sdb','SDB','深圳发展银行','erp.bank','',11,b'1');
 
-INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.storeOutReason','出库原因','',b'1');
+INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.middleManType','中间人类型','',b'1');
 
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeOutReason.product','product','产品再加工出库','erp.storeOutReason','','2',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeOutReason.material','material','生产源料出库','erp.storeOutReason','','1',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeOutReason.storeSwitch','storeSwitch','移库出库','erp.storeOutReason','','3',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeOutReason.other','other','其它原因','erp.storeOutReason','','4',b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.storeOutReason.orderBack','orderBack','订单出库','erp.storeOutReason','','5',b'0');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.middleManType.saler','saler','销售人员','erp.middleManType','',1,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.middleManType.dealer','dealer','经销商','erp.middleManType','',2,b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.middleManType.contact','contact','客户联系人','erp.middleManType','',3,b'1');
+
 
 INSERT INTO DG_SYSTEM.PUBLIC_PROVINCES(PID,FID,NAME,SORT)VALUES(11,0,'北京市',0);
 INSERT INTO DG_SYSTEM.PUBLIC_PROVINCES(PID,FID,NAME,SORT)VALUES(12,0,'天津市',0);

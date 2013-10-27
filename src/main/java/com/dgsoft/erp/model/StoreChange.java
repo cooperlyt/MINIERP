@@ -56,7 +56,7 @@ public class StoreChange implements java.io.Serializable {
 
 
     @OneToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "STORE_IN", nullable = false)
+    @JoinColumn(name = "STORE_CHANGE", nullable = false)
     @NotNull
     public StockChange getStockChange() {
         return stockChange;

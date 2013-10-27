@@ -78,16 +78,12 @@
         <property name="ejbql">select roleCategory from RoleCategory roleCategory order by roleCategory.priority</property>
     </component>
 
-    <component name="categoryRoleList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
-        <property name="ejbql">select role from Role role where role.roleType = 'ROLE_CATEGORY' order by role.name</property>
+    <component name="roleList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
+        <property name="ejbql">select role from Role role order by role.name</property>
     </component>
 
     <component name="assignFuncList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
         <property name="ejbql">select function from Function function order by function.name</property>
-    </component>
-
-    <component name="assignRoleList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
-        <property name="ejbql">select role from Role role where role.roleType &lt;&gt; 'ROLE_CATEGORY' order by role.name</property>
     </component>
 
     <event type="org.jboss.seam.afterTransactionSuccess.SystemParam">

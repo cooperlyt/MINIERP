@@ -1,14 +1,11 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -25,6 +22,7 @@ public class MiddleMan implements java.io.Serializable {
 	private String type;
 	private String memo;
 	private String bankNumber;
+    private String bank;
 	private String tel;
 	private Set<Customer> customers = new HashSet<Customer>(0);
 	private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
@@ -54,6 +52,8 @@ public class MiddleMan implements java.io.Serializable {
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -145,4 +145,13 @@ public class MiddleMan implements java.io.Serializable {
 		this.middleMoneys = middleMoneys;
 	}
 
+    @Column(name = "BANK", length = 32)
+    @Size(max = 32)
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
 }

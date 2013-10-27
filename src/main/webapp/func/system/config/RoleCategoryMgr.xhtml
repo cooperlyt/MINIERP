@@ -134,7 +134,7 @@
                                        value="#{roleCategoryHome.selectRoleList}" addText="#{messages.pick_add}"
                                        removeAllText="#{messages.pick_removeAll}"
                                        addAllText="#{messages.pick_addAll}" removeText="#{messages.pick_remove}">
-                            <s:selectItems value="#{categoryRoleList.resultList}" var="_role"
+                            <s:selectItems value="#{roleList.resultList}" var="_role"
                                            itemValue="#{_role}" label="#{_role.name}"/>
                             <f:converter converterId="systemEntityConverter"/>
                         </rich:pickList>

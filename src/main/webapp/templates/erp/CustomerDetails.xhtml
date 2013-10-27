@@ -1,0 +1,154 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <h:outputStylesheet>
+        .customerTypeSelectWidth input[type="text"] {
+            width: 100px;
+        }
+
+        .customerLevelSelectWidth input[type="text"] {
+            width: 100px;
+        }
+    </h:outputStylesheet>
+
+    <h:panelGrid columns="2">
+        <s:decorate id="customerNameField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_name}</ui:define>
+            <h:inputText label="#{messages.customer_field_name}"
+                         required="true"
+                         size="35"
+                         maxlength="50"
+                         readonly="#{readonly}"
+                         value="#{customerHome.instance.name}">
+                <a:ajax event="blur" render="customerNameField"/>
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate id="levelField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_level}</ui:define>
+            <rich:select styleClass="customerLevelSelectWidth" listWidth="117px"
+                         label="#{messages.customer_field_level}" required="true"
+                         value="#{customerHome.instance.customerLevel}" disabled="#{readonly}">
+                <s:selectItems value="#{customerLevelList.resultList}" var="_level"
+                               label="#{_level.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                <f:converter converterId="erpEntityConverter"/>
+            </rich:select>
+        </s:decorate>
+
+        <s:decorate id="provinceField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_province}</ui:define>
+            <h:inputText style="width: 127px" required="true" value="#{customerHome.instance.provinceCode}"
+                         disabled="#{readonly}"/>
+        </s:decorate>
+
+        <s:decorate id="typeField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_type}</ui:define>
+            <rich:select label="#{messages.customer_field_type}" styleClass="customerTypeSelectWidth"
+                         required="true" listWidth="117px"
+                         value="#{customerHome.instance.type}" disabled="#{readonly}">
+                <s:selectItems var="_word" label="#{_word.value}"
+                               itemValue="#{_word.id}"
+                               value="#{dictionary.getWordList('erp.customerType')}"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+            </rich:select>
+
+        </s:decorate>
+
+
+    </h:panelGrid>
+    <h:panelGrid columns="3">
+
+        <s:decorate id="contactField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_contact}</ui:define>
+            <h:inputText label="#{messages.customer_field_contact}"
+                         required="true"
+                         size="17"
+                         maxlength="50"
+                         readonly="#{readonly}"
+                         value="#{customerHome.instance.contact}">
+                <a:ajax event="blur" render="contactField"/>
+            </h:inputText>
+        </s:decorate>
+
+
+        <s:decorate id="telField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_tel}</ui:define>
+            <h:inputText id="tel"
+                         size="14"
+                         maxlength="50"
+                         required="true"
+                         readonly="#{readonly}"
+                         value="#{customerHome.instance.tel}">
+                <a:ajax event="blur" render="telField"/>
+            </h:inputText>
+        </s:decorate>
+
+
+        <s:decorate id="balanceField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_balance}</ui:define>
+            <h:inputText lable="#{messages.customer_field_balance}"
+                         value="#{customerHome.instance.balance}"
+                         readonly="#{balanceReadonly}"
+                         size="10">
+            </h:inputText>
+        </s:decorate>
+
+
+        <s:decorate id="mailField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_mail}</ui:define>
+            <h:inputText label="#{messages.customer_field_mail}"
+                         size="17"
+                         maxlength="50"
+                         readonly="#{readonly}"
+                         value="#{customerHome.instance.mail}">
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate id="faxField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_fax}</ui:define>
+            <h:inputText label="#{messages.customer_field_fax}"
+                         size="14"
+                         maxlength="50"
+                         readonly="#{readonly}"
+                         value="#{customerHome.instance.fax}">
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.postCode}</ui:define>
+            <h:inputText label="#{messages.postCode}" size="10" maxlength="10"
+                         readonly="#{readonly}" value="#{customerHome.instance.postCode}"/>
+        </s:decorate>
+
+
+    </h:panelGrid>
+    <h:panelGrid columns="1">
+        <s:decorate id="addressField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_address}</ui:define>
+            <h:inputTextarea label="#{messages.customer_field_address}"
+                             readonly="#{readonly}"
+                             cols="78"
+                             rows="2"
+                             value="#{customerHome.instance.address}"/>
+        </s:decorate>
+        <s:decorate id="memoField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+            <h:inputTextarea label="#{messages.field_memo}"
+                             readonly="#{readonly}"
+                             cols="78"
+                             rows="2"
+                             value="#{customerHome.instance.memo}"/>
+        </s:decorate>
+    </h:panelGrid>
+
+
+</ui:composition>
+

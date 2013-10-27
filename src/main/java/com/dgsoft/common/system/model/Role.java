@@ -16,15 +16,9 @@ import javax.validation.constraints.Size;
 @Table(name = "ROLE", catalog = "DG_SYSTEM")
 public class Role implements java.io.Serializable {
 
-
-    public enum RoleType{
-        ROLE_CATEGORY,FUNCTION,BUSINESS;
-    }
-
     private String id;
     private String name;
     private String description;
-    private RoleType roleType;
 
     private Set<BusinessDefine> businessDefines = new HashSet<BusinessDefine>(0);
 
@@ -86,17 +80,6 @@ public class Role implements java.io.Serializable {
 
     public void setBusinessDefines(Set<BusinessDefine> businessDefines) {
         this.businessDefines = businessDefines;
-    }
-
-    @Column(name = "ROLE_TYPE", nullable = false)
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    public RoleType getRoleType() {
-        return roleType;
-    }
-
-    public void setRoleType(RoleType roleType) {
-        this.roleType = roleType;
     }
 
     @Override

@@ -76,7 +76,6 @@
         <class>com.dgsoft.erp.model.NoConvertCount</class>
         <class>com.dgsoft.erp.model.OrderBack</class>
         <class>com.dgsoft.erp.model.OrderDelivery</class>
-        <class>com.dgsoft.erp.model.OrderFee</class>
         <class>com.dgsoft.erp.model.OrderList</class>
         <class>com.dgsoft.erp.model.OrderStoreOut</class>
         <class>com.dgsoft.erp.model.PreparePay</class>

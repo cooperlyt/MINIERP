@@ -26,12 +26,6 @@
             <h:form>
                 <a:outputPanel id="roleList">
                     <rich:dataTable noDataLabel="#{messages.emptyResult}" value="#{roleList.resultList}" var="_role">
-                        <rich:column>
-                            <f:facet name="header">
-                                #{messages.role_field_type}
-                            </f:facet>
-                            #{fn:substring( messages[_role.roleType.name()], 0, 1)}
-                        </rich:column>
 
                         <rich:column>
                             <f:facet name="header">
@@ -115,18 +109,6 @@
                                 <a:ajax disabled="#{not roleHome.editing}" execute="@this" event="blur"
                                         render="nameField"/>
                             </h:inputText>
-                        </s:decorate>
-
-                        <s:decorate id="roleTypeField" template="/layout/seam-edit.xhtml">
-                            <ui:define name="label">#{messages.role_field_type}</ui:define>
-                            <rich:select disabled="#{not roleHome.editing}" label="#{messages.role_field_type}"
-                                             required="true"
-                                             value="#{roleHome.instance.roleType}">
-                                <s:selectItems value="#{roleTypes}" noSelectionLabel="#{messages.noSelectLabel}"
-                                               var="_roleType" label="#{messages[_roleType.name()]}"/>
-                                <s:convertEnum/>
-                                <a:ajax disabled="#{not roleHome.editing}" event="selectitem" render="roleTypeField"/>
-                            </rich:select>
                         </s:decorate>
 
                         <s:decorate id="descriptionField" template="/layout/seam-edit.xhtml">

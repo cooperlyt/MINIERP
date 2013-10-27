@@ -84,9 +84,10 @@
 
             <a:outputPanel id="floatConvertAuxUnitFields">
 
-                <h:outputText styleClass="auto_width_unit_label" value="*"/>
+
 
                 <a:outputPanel id="floatConvertUnitRate" rendered="#{resCountBean.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
+                    <h:outputText styleClass="auto_width_unit_label" value="*"/>
                     <span class="value">
                     <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
                                        value="#{resCountBean.floatConvertRate}"
