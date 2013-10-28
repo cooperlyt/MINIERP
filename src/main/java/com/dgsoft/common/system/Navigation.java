@@ -2,15 +2,10 @@ package com.dgsoft.common.system;
 
 import com.dgsoft.common.system.model.FuncCategory;
 import com.dgsoft.common.system.model.Function;
-import com.dgsoft.common.system.model.RoleCategory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.web.RequestParameter;
 import org.jboss.seam.security.AuthorizationException;
-
-import javax.faces.event.ValueChangeEvent;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.

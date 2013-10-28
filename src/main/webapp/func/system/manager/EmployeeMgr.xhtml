@@ -346,22 +346,7 @@
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
     </ui:define>
-    <rich:panel>
-        <f:facet name="header">
-            #{messages.emp_power_roleCategory_select}
-        </f:facet>
 
-        <rich:pickList value="#{employeeHome.selectedRoleCategorys}" listHeight="200px"
-                       addText="#{messages.pick_add}"
-                       removeAllText="#{messages.pick_removeAll}"
-                       addAllText="#{messages.pick_addAll}" removeText="#{messages.pick_remove}">
-
-            <s:selectItems value="#{allRoleCategoryList.resultList}" var="_roleCategory"
-                           label="#{_roleCategory.name}"/>
-            <f:converter converterId="systemEntityConverter"/>
-        </rich:pickList>
-
-    </rich:panel>
     <rich:panel>
         <f:facet name="header">
             #{messages.emp_power_role_select}

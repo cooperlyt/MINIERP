@@ -25,13 +25,14 @@
         <class>com.dgsoft.common.system.model.Report</class>
         <class>com.dgsoft.common.system.model.ReportSubscribe</class>
         <class>com.dgsoft.common.system.model.Role</class>
-        <class>com.dgsoft.common.system.model.RoleCategory</class>
+
         <class>com.dgsoft.common.system.model.SimpleVarDefine</class>
         <class>com.dgsoft.common.system.model.SimpleVarSubscribe</class>
         <class>com.dgsoft.common.system.model.SystemParam</class>
         <class>com.dgsoft.common.system.model.Word</class>
         <class>com.dgsoft.common.system.model.WordCategory</class>
-
+        <class>com.dgsoft.common.system.model.Province</class>
+        <class>com.dgsoft.common.system.model.City</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
@@ -76,7 +77,6 @@
         <class>com.dgsoft.erp.model.NoConvertCount</class>
         <class>com.dgsoft.erp.model.OrderBack</class>
         <class>com.dgsoft.erp.model.OrderDelivery</class>
-        <class>com.dgsoft.erp.model.OrderList</class>
         <class>com.dgsoft.erp.model.OrderStoreOut</class>
         <class>com.dgsoft.erp.model.PreparePay</class>
         <class>com.dgsoft.erp.model.ProductStoreIn</class>
@@ -102,6 +102,10 @@
         <class>com.dgsoft.erp.model.Cars</class>
         <class>com.dgsoft.erp.model.ExpressCar</class>
         <class>com.dgsoft.erp.model.ExpressDriver</class>
+
+        <class>com.dgsoft.erp.model.Dispatch</class>
+        <class>com.dgsoft.erp.model.DispatchItem</class>
+        <class>com.dgsoft.erp.model.OrderItem</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

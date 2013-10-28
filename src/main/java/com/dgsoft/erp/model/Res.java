@@ -26,7 +26,6 @@ public class Res implements java.io.Serializable {
 	private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
 	private Set<FormatDefine> formatDefines = new HashSet<FormatDefine>(0);
     private Set<Batch> batches = new HashSet<Batch>(0);
-    private Set<OrderList> orderLists = new HashSet<OrderList>(0);
     private Accounting accounting;
 
     private ResUnit resUnitByInDefault;
@@ -198,15 +197,6 @@ public class Res implements java.io.Serializable {
 	public void setFormatDefines(Set<FormatDefine> formatDefines) {
 		this.formatDefines = formatDefines;
 	}
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "res")
-    public Set<OrderList> getOrderLists() {
-        return orderLists;
-    }
-
-    public void setOrderLists(Set<OrderList> orderLists) {
-        this.orderLists = orderLists;
-    }
 
     @Transient
     public List<StoreRes> getStoreResList(){

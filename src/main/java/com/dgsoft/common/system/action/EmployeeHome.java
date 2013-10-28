@@ -4,7 +4,6 @@ import com.dgsoft.common.system.SystemEntityHome;
 import com.dgsoft.common.system.model.Employee;
 import com.dgsoft.common.system.model.Organization;
 import com.dgsoft.common.system.model.Role;
-import com.dgsoft.common.system.model.RoleCategory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Factory;
@@ -38,17 +37,6 @@ public class EmployeeHome extends SystemEntityHome<Employee> {
     private FacesMessages facesMessages;
 
     private List<Role> selectedRoles = new ArrayList<Role>();
-
-    private List<RoleCategory> selectedRoleCategorys = new ArrayList<RoleCategory>();
-
-
-    public List<RoleCategory> getSelectedRoleCategorys() {
-        return selectedRoleCategorys;
-    }
-
-    public void setSelectedRoleCategorys(List<RoleCategory> selectedRoleCategorys) {
-        this.selectedRoleCategorys = selectedRoleCategorys;
-    }
 
     public List<Role> getSelectedRoles() {
         return selectedRoles;
@@ -102,11 +90,7 @@ public class EmployeeHome extends SystemEntityHome<Employee> {
 
     public void readPower() {
         selectedRoles.clear();
-        selectedRoleCategorys.clear();
-
         selectedRoles.addAll(getInstance().getRoles());
-        selectedRoleCategorys.addAll(getInstance().getRoleCategorys());
-
     }
 
 
@@ -114,9 +98,6 @@ public class EmployeeHome extends SystemEntityHome<Employee> {
     public String savePowerAssign() {
         getInstance().getRoles().clear();
         getInstance().getRoles().addAll(selectedRoles);
-
-        getInstance().getRoleCategorys().clear();
-        getInstance().getRoleCategorys().addAll(selectedRoleCategorys);
 
         return super.update();
     }

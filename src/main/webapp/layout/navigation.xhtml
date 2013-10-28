@@ -34,12 +34,13 @@
 
         <h:form>
             <rich:select value="#{authInfo.currRoleCategoryId}" styleClass="roleCategorSelectWidth"
-                         listWidth="140px"
-                             valueChangeListener="#{authInfo.roleCategoryChanged}">
-                <s:selectItems value="#{authInfo.loginEmployee.roleCategoryList}" var="_roleCategory"
+                         listWidth="140px">
+                <s:selectItems value="#{authInfo.functionRoleList}" var="_roleCategory"
+                               noSelectionLabel="#{messages.roleFilter}"
                                label="#{_roleCategory.name}" itemValue="#{_roleCategory.id}"/>
 
-                <a:ajax execute="@form" event="selectitem" render="navigationMenuForm"/>
+                <a:ajax execute="@form" listener="#{authInfo.generateFuncCategorys}"
+                        event="selectitem" render="navigationMenuForm"/>
 
             </rich:select>
         </h:form>

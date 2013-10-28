@@ -137,8 +137,7 @@ public class BusinessDefine implements java.io.Serializable {
         this.memo = memo;
     }
 
-    @Column(name = "TASK_SERVICE", length = 100, nullable = false)
-    @NotNull
+    @Column(name = "TASK_SERVICE", length = 100, nullable = true)
     @Size(max = 100)
     public String getTaskService() {
         return taskService;

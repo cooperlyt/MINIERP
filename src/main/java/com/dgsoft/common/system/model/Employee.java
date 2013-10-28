@@ -23,7 +23,6 @@ public class Employee implements java.io.Serializable {
     private String password;
     private boolean enable;
     private String memo;
-    private Set<RoleCategory> roleCategorys = new HashSet<RoleCategory>(0);
     private Set<Role> roles = new HashSet<Role>(0);
     private Person person;
 
@@ -127,16 +126,6 @@ public class Employee implements java.io.Serializable {
         this.memo = memo;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = RoleCategory.class)
-    @JoinTable(name = "ROLE_CATE_EMP", joinColumns = @JoinColumn(name = "EMP_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    public Set<RoleCategory> getRoleCategorys() {
-        return roleCategorys;
-    }
-
-    public void setRoleCategorys(Set<RoleCategory> roleCategorys) {
-        this.roleCategorys = roleCategorys;
-    }
-
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = Role.class)
     @JoinTable(name = "ROLE_EMP", joinColumns = @JoinColumn(name = "EMP_ID"), inverseJoinColumns = @JoinColumn(name = "ROL_ID"))
     public Set<Role> getRoles() {
@@ -156,15 +145,6 @@ public class Employee implements java.io.Serializable {
     public void setPerson(Person person) {
         this.person = person;
     }
-
-
-    @Transient
-    public List<RoleCategory> getRoleCategoryList() {
-        List<RoleCategory> result = new ArrayList<RoleCategory>(getRoleCategorys());
-        Collections.sort(result, OrderBeanComparator.getInstance());
-        return result;
-    }
-
 
     @Override
     public boolean equals(Object obj) {

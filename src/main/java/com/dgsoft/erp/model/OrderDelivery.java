@@ -1,14 +1,17 @@
 package com.dgsoft.erp.model;
-// Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
+// Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,41 +29,39 @@ public class OrderDelivery implements java.io.Serializable {
 	private ExpressInfo expressInfo;
 	private ProductToDoor productToDoor;
 	private ExpressCar expressCar;
-	private CustomerOrder customerOrder;
 	private String deliveryType;
 	private Date sendTime;
 	private String memo;
 	private BigDecimal money;
+	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
 	public OrderDelivery() {
 	}
 
 	public OrderDelivery(String id, ExpressInfo expressInfo,
 			ProductToDoor productToDoor, ExpressCar expressCar,
-			CustomerOrder customerOrder, String deliveryType, Date sendTime,
-			BigDecimal money) {
+			String deliveryType, Date sendTime, BigDecimal money) {
 		this.id = id;
 		this.expressInfo = expressInfo;
 		this.productToDoor = productToDoor;
 		this.expressCar = expressCar;
-		this.customerOrder = customerOrder;
 		this.deliveryType = deliveryType;
 		this.sendTime = sendTime;
 		this.money = money;
 	}
 	public OrderDelivery(String id, ExpressInfo expressInfo,
 			ProductToDoor productToDoor, ExpressCar expressCar,
-			CustomerOrder customerOrder, String deliveryType, Date sendTime,
-			String memo, BigDecimal money) {
+			String deliveryType, Date sendTime, String memo, BigDecimal money,
+			Set<Dispatch> dispatches) {
 		this.id = id;
 		this.expressInfo = expressInfo;
 		this.productToDoor = productToDoor;
 		this.expressCar = expressCar;
-		this.customerOrder = customerOrder;
 		this.deliveryType = deliveryType;
 		this.sendTime = sendTime;
 		this.memo = memo;
 		this.money = money;
+		this.dispatches = dispatches;
 	}
 
 	@Id
@@ -108,17 +109,6 @@ public class OrderDelivery implements java.io.Serializable {
 		this.expressCar = expressCar;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
-	@NotNull
-	public CustomerOrder getCustomerOrder() {
-		return this.customerOrder;
-	}
-
-	public void setCustomerOrder(CustomerOrder customerOrder) {
-		this.customerOrder = customerOrder;
-	}
-
 	@Column(name = "DELIVERY_TYPE", nullable = false, length = 32)
 	@NotNull
 	@Size(max = 32)
@@ -159,6 +149,15 @@ public class OrderDelivery implements java.io.Serializable {
 
 	public void setMoney(BigDecimal money) {
 		this.money = money;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderDelivery")
+	public Set<Dispatch> getDispatches() {
+		return this.dispatches;
+	}
+
+	public void setDispatches(Set<Dispatch> dispatches) {
+		this.dispatches = dispatches;
 	}
 
 }

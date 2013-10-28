@@ -1,5 +1,6 @@
 package com.dgsoft.common.system;
 
+import com.dgsoft.common.OrderBeanComparator;
 import com.dgsoft.common.system.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -12,8 +13,7 @@ import org.jboss.seam.security.Identity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,14 +53,13 @@ public class AuthenticationManager {
 
             Employee loginEmployee;
             if (identity.getCredentials().getUsername().equals("root") && identity.getCredentials().getPassword().equals("dgsoft")) {
-                loginEmployee = new Employee("root", new Person("system_administrator", superAdminName));
+                loginEmployee = new Employee("root", new Person("system_root_administrator", superAdminName));
 
-                loginEmployee.getRoleCategorys().addAll(systemEntityManager.createQuery("select rc from RoleCategory rc left join fetch rc.functions f left join fetch f.funcCategory fc left join fetch fc.functions order by rc.priority").getResultList());
                 roles.addAll(systemEntityManager.createQuery("select r from Role r").getResultList());
 
             } else {
 
-                loginEmployee = (Employee) systemEntityManager.createQuery("select e from Employee e left join fetch e.roleCategorys rc left join fetch e.roles r2 left join fetch r2.businessDefines left join fetch rc.roles r left join fetch r.businessDefines left join fetch rc.functions f left join fetch f.funcCategory fc left join fetch fc.functions where e.id = :username").setParameter("username", identity.getCredentials().getUsername()).getSingleResult();
+                loginEmployee = (Employee) systemEntityManager.createQuery("select e from Employee e left join fetch e.roles r left join fetch r.businessDefines left join fetch r.functions f left join fetch f.funcCategory fc where e.id = :username").setParameter("username", identity.getCredentials().getUsername()).getSingleResult();
 
                 log.info("loginEmployee:" + (loginEmployee != null ? identity.getCredentials().getPassword() + "==" + loginEmployee.getPassword() + "|enable:" + loginEmployee.isEnable() : "null"));
 
@@ -69,21 +68,22 @@ public class AuthenticationManager {
                     return false;
                 }
                 roles.addAll(loginEmployee.getRoles());
-                for (RoleCategory roleCategory : loginEmployee.getRoleCategorys()) {
-                    roles.addAll(roleCategory.getRoles());
-                }
             }
 
+            List<Role> funcRoles = new ArrayList<Role>();
             actor.setId(identity.getCredentials().getUsername());
             log.info("user login:" + loginEmployee.getId() + "role:" + roles.size());
             for (Role role : roles) {
                 identity.addRole(role.getId());
                 log.info("add role:" + role.getId());
                 actor.getGroupActorIds().add(role.getId());
+                if (!role.getFunctions().isEmpty()){
+                    funcRoles.add(role);
+                }
             }
 
-            if (loginEmployee.getRoleCategorys().size() > 0)
-                authInfo.setCurrRoleCategory(loginEmployee.getRoleCategoryList().get(0));
+            Collections.sort(funcRoles, OrderBeanComparator.getInstance());
+            authInfo.setFunctionRoleList(funcRoles);
             authInfo.generateFuncCategorys();
             authInfo.setLoginEmployee(loginEmployee);
             generateBusinessCategorys(roles);

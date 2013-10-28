@@ -27,7 +27,6 @@ public class Store implements java.io.Serializable, TreeNode {
     private Integer version;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
     private Set<Inventory> inventories = new HashSet<Inventory>(0);
-    private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
     private Set<StoreManager> storeManagers = new HashSet<StoreManager>(0);
     private Set<StockChange> stockChanges = new HashSet<StockChange>(0);
 
@@ -35,6 +34,7 @@ public class Store implements java.io.Serializable, TreeNode {
     private Set<Stock> stocks = new HashSet<Stock>(0);
     private Set<Allocation> allocationsForApplyStore = new HashSet<Allocation>(0);
     private Set<Allocation> allocationsForTargetStore = new HashSet<Allocation>(0);
+    private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
     public Store() {
     }
@@ -47,23 +47,6 @@ public class Store implements java.io.Serializable, TreeNode {
         this.id = id;
         this.name = name;
         this.enable = enable;
-    }
-
-    public Store(String id, String name, String description, String address,
-                 String tel, boolean enable, Set<StoreArea> storeAreas,
-                 Set<Inventory> inventories, Set<CustomerOrder> customerOrders,
-                 Set<StoreManager> storeManagers, Set<StockChange> stockChanges) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.address = address;
-        this.tel = tel;
-        this.enable = enable;
-        this.storeAreas = storeAreas;
-        this.inventories = inventories;
-        this.customerOrders = customerOrders;
-        this.storeManagers = storeManagers;
-        this.stockChanges = stockChanges;
     }
 
     @Id
@@ -167,15 +150,6 @@ public class Store implements java.io.Serializable, TreeNode {
         this.inventories = inventories;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
-    public Set<CustomerOrder> getCustomerOrders() {
-        return this.customerOrders;
-    }
-
-    public void setCustomerOrders(Set<CustomerOrder> customerOrders) {
-        this.customerOrders = customerOrders;
-    }
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<StoreManager> getStoreManagers() {
         return this.storeManagers;
@@ -221,6 +195,15 @@ public class Store implements java.io.Serializable, TreeNode {
     public void setAllocationsForTargetStore(
             Set<Allocation> allocationsForTargetStore) {
         this.allocationsForTargetStore = allocationsForTargetStore;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")
+    public Set<Dispatch> getDispatches() {
+        return this.dispatches;
+    }
+
+    public void setDispatches(Set<Dispatch> dispatches) {
+        this.dispatches = dispatches;
     }
 
     @Transient

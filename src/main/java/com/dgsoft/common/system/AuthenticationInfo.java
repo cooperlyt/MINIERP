@@ -20,7 +20,9 @@ public class AuthenticationInfo implements java.io.Serializable {
 
     private List<BusinessCategory> authenticationBussinessCategorys = new ArrayList<BusinessCategory>();
 
-    private RoleCategory currRoleCategory;
+    private Role currRole;
+
+    private List<Role> functionRoleList;
 
     private Employee loginEmployee;
 
@@ -32,12 +34,12 @@ public class AuthenticationInfo implements java.io.Serializable {
         this.loginEmployee = loginEmployee;
     }
 
-    public RoleCategory getCurrRoleCategory() {
-        return currRoleCategory;
+    public Role getCurrRole() {
+        return currRole;
     }
 
-    public void setCurrRoleCategory(RoleCategory currRoleCategory) {
-        this.currRoleCategory = currRoleCategory;
+    public void setCurrRole(Role currRole) {
+        this.currRole = currRole;
     }
 
     public List<FuncCategory> getAuthenticationFuncCategorys() {
@@ -62,13 +64,23 @@ public class AuthenticationInfo implements java.io.Serializable {
 
         Map<String, FuncCategory> result = new HashMap<String, FuncCategory>();
 
-        for (Function function : currRoleCategory.getFunctions()) {
+        Collection<Function> showFunctions = new HashSet<Function>();
+
+        if (currRole == null) {
+            for (Role role: functionRoleList){
+                showFunctions.addAll(role.getFunctions());
+            }
+        } else {
+            showFunctions = currRole.getFunctions();
+        }
+
+        for (Function function : showFunctions) {
 
             FuncCategory curCategory = result.get(function.getFuncCategory().getId());
 
             if (curCategory == null) {
                 curCategory = new FuncCategory(function.getFuncCategory().getId(), function.getFuncCategory().getName());
-                result.put(curCategory.getId(),curCategory);
+                result.put(curCategory.getId(), curCategory);
             }
 
             curCategory.getFunctions().add(function);
@@ -80,30 +92,29 @@ public class AuthenticationInfo implements java.io.Serializable {
         Collections.sort(authenticationFuncCategorys, OrderBeanComparator.getInstance());
     }
 
-    public void roleCategoryChanged(ValueChangeEvent event) {
-        String roleCategoryId = (String) event.getNewValue();
+    public List<Role> getFunctionRoleList() {
+        return functionRoleList;
+    }
 
-        for (RoleCategory roleCategory : loginEmployee.getRoleCategorys()) {
-            if (roleCategory.getId().equals(roleCategoryId)) {
-                currRoleCategory = roleCategory;
-                generateFuncCategorys();
-            }
-        }
+    public void setFunctionRoleList(List<Role> functionRoleList) {
+        this.functionRoleList = functionRoleList;
     }
 
     public String getCurrRoleCategoryId() {
-        if (currRoleCategory != null) {
-            return currRoleCategory.getId();
+        if (currRole != null) {
+            return currRole.getId();
         }
         return null;
     }
 
     public void setCurrRoleCategoryId(String roleCategoryId) {
-        for (RoleCategory roleCategory : loginEmployee.getRoleCategorys()) {
-            if (roleCategory.getId().equals(roleCategoryId)) {
-                currRoleCategory = roleCategory;
+        for (Role role : functionRoleList) {
+            if (role.getId().equals(roleCategoryId)) {
+                currRole = role;
+                return;
             }
         }
+        currRole = null;
     }
 
 }

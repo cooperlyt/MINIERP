@@ -1,6 +1,7 @@
 package com.dgsoft.common.system.model;
 // Generated Apr 28, 2013 11:02:59 AM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.OrderBean;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
@@ -16,13 +17,13 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "BUSINESS_CATEGORY", catalog = "DG_SYSTEM")
-public class BusinessCategory implements java.io.Serializable {
+public class BusinessCategory implements java.io.Serializable, OrderBean {
 
     private static final long serialVersionUID = -4834419763249347625L;
 
     private String id;
     private String name;
-    private Integer priority;
+    private int priority;
     private Set<BusinessDefine> businessDefines = new HashSet<BusinessDefine>(0);
 
     public BusinessCategory() {
@@ -66,12 +67,15 @@ public class BusinessCategory implements java.io.Serializable {
         this.name = name;
     }
 
-    @Column(name = "PRIORITY")
-    public Integer getPriority() {
+    @Override
+    @Column(name = "PRIORITY",nullable = false)
+    @NotNull
+    public int getPriority() {
         return this.priority;
     }
 
-    public void setPriority(Integer priority) {
+    @Override
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 

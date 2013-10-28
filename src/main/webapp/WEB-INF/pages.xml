@@ -44,16 +44,29 @@
         <restrict>#{s:hasRole('system.manager')}</restrict>
     </page>
 
-    <page view-id="/func/erp/data/*" login-required="true">
-        <restrict>#{s:hasRole('erp.data.manager')}</restrict>
+
+    <page view-id="/func/erp/res/*" login-required="true">
+        <restrict>#{s:hasRole('erp.storage.store') or s:hasRole('erp.produce.manager') or s:hasRole('erp.storage.manager')}</restrict>
     </page>
 
     <page view-id="/func/erp/store/*" login-required="true">
-        <restrict>#{s:hasRole('erp.store.manager')}</restrict>
+        <restrict>#{s:hasRole('erp.storage.store') or s:hasRole('erp.storage.manager')}</restrict>
     </page>
 
-    <page view-id="/func/erp/store/InventorySearch.xhtml" login-required="true">
-        <begin-conversation join="true"/>
+    <page view-id="/func/erp/store/storeChange/*" login-required="true">
+        <restrict>#{s:hasRole('erp.storage.store')}</restrict>
+    </page>
+
+    <page view-id="/func/erp/store/StoreMgr.xhtml" login-required="true">
+        <restrict>#{s:hasRole('erp.storage.store')}</restrict>
+    </page>
+
+    <page view-id="/func/erp/sale/*" login-required="true">
+        <restrict>#{s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}</restrict>
+    </page>
+
+    <page view-id="/func/erp/sale/mgr/*" login-required="true">
+        <restrict>#{s:hasRole('erp.sale.manager')}</restrict>
     </page>
 
     <page view-id="/business/startPrepare/*" login-required="true">

@@ -188,7 +188,7 @@ public class AccountOper implements java.io.Serializable {
 		this.checkNumber = checkNumber;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "accountOpers")
 	public Set<CustomerOrder> getCustomerOrder() {
 		return this.customerOrder;
 	}

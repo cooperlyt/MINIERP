@@ -1,9 +1,11 @@
 package com.dgsoft.common.system.model;
 // Generated Apr 28, 2013 11:02:59 AM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.OrderBean;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,13 +16,15 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ROLE", catalog = "DG_SYSTEM")
-public class Role implements java.io.Serializable {
+public class Role implements java.io.Serializable, OrderBean {
 
     private String id;
     private String name;
     private String description;
+    private int priority;
 
     private Set<BusinessDefine> businessDefines = new HashSet<BusinessDefine>(0);
+    private Set<Function> functions = new HashSet<Function>(0);
 
     public Role() {
     }
@@ -83,11 +87,35 @@ public class Role implements java.io.Serializable {
     }
 
     @Override
+    @Column(name = "PRIORITY",nullable = false)
+    @NotNull
+    public int getPriority() {
+        return this.priority;
+    }
+
+    @Override
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Function.class)
+    @JoinTable(name = "ROLE_FUNCTION", joinColumns = @JoinColumn(name = "ROL_ID"), inverseJoinColumns = @JoinColumn(name = "FUN_ID"))
+    public Set<Function> getFunctions() {
+        return functions;
+    }
+
+    public void setFunctions(Set<Function> functions) {
+        this.functions = functions;
+    }
+
+    @Override
+    @Transient
     public int hashCode(){
         return id.hashCode();
     }
 
     @Override
+    @Transient
     public boolean equals(Object obj){
         if (obj == null){
             return false;
@@ -97,4 +125,6 @@ public class Role implements java.io.Serializable {
         }
         return id.equals(((Role) obj).getId());
     }
+
+
 }

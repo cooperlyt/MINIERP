@@ -60,6 +60,7 @@ public class TaskOperate {
 
     @Transactional
     public void init() {
+        fallBackTransitions = new ArrayList<String>();
         businessDefineHome.setId(businessDefineId);
         log.debug("run taskOperate init [" + "version:" + String.valueOf(taskInstance.getProcessInstance().getProcessDefinition().getVersion()) + ",taskName:" + taskInstance.getName() + "]");
         List<SimpleVarSubscribe> simpleVarSubscribes = businessDefineHome.getSimpleVarDefineList(String.valueOf(taskInstance.getProcessInstance().getProcessDefinition().getVersion()), taskInstance.getName());
@@ -114,7 +115,8 @@ public class TaskOperate {
     //this func call maybe task not begin
     @BypassInterceptors
     public String operate() {
-        fallBackTransitions = new ArrayList<String>();
+
+
         return "success";
     }
 

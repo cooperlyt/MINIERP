@@ -30,6 +30,7 @@ public class StoreRes implements java.io.Serializable {
     private BigDecimal floatConversionRate;
 
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
+    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
 
     private Stock stock;
     private boolean enable;
@@ -149,6 +150,15 @@ public class StoreRes implements java.io.Serializable {
 
     public void setFloatConversionRate(BigDecimal floatConversionRate) {
         this.floatConversionRate = floatConversionRate;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
+    public Set<OrderItem> getOrderItems() {
+        return this.orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     @Transient
