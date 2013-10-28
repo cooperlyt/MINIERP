@@ -2,6 +2,8 @@
 -- The portable approach is to use a startup component (such as the @PostConstruct method of a @Startup @Singleton) or observe a lifecycle event fired by Seam Servlet
 
 -- 系统参数
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('system.business.forwordToTask','BOOLEAN','true','业务建立后是否自动跳转到业务处理页面,是:true');
+
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateStoreInCode','BOOLEAN','true','是否自动生成入库单编号,是:true');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateStoreOutCode','BOOLEAN','true','是否自动生成出库单编号,是:true');
 

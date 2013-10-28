@@ -17,23 +17,23 @@
             <rich:toolbar height="34" itemSeparator="line">
                 <rich:toolbarGroup>
                     <h:graphicImage id="save" value="/img/msg_save.png"/>
-                    <a:commandLink action="#{taskOperate.save}" execute="@form"
+                    <a:commandLink action="#{defaultTaskOperate.save}" execute="@form"
                                    value="#{messages.save}" styleClass="ltool"/>
                 </rich:toolbarGroup>
                 <rich:toolbarGroup>
                     <h:graphicImage id="complete" value="/img/msg_next.png"/>
-                    <h:commandLink value="#{messages.complete}" action="#{taskOperate.complete}" styleClass="ltool"/>
+                    <h:commandLink value="#{messages.complete}" action="#{defaultTaskOperate.complete}" styleClass="ltool"/>
                 </rich:toolbarGroup>
                 <rich:toolbarGroup>
                     <h:graphicImage id="fallback" value="/img/msg_back.png"/>
                     <a:commandLink value="#{messages.fallback}" immediate="true" execute="@this"
-                                   rendered="#{taskOperate.canFallback}"
+                                   rendered="#{defaultTaskOperate.canFallback}"
                                    styleClass="ltool">
                         <rich:componentControl for="backModalPanel" operation="show"
                                                event="onclick"/>
                     </a:commandLink>
 
-                    <h:outputText value="#{messages.fallback}" rendered="#{!taskOperate.canFallback}"/>
+                    <h:outputText value="#{messages.fallback}" rendered="#{!defaultTaskOperate.canFallback}"/>
 
 
                 </rich:toolbarGroup>
@@ -58,7 +58,7 @@
                 <rich:messages ajaxRendered="true" globalOnly="false"/>
 
                 <div class="edit">
-                    <a:repeat var="_simpleVar" value="#{taskOperate.writeSimpleVarList}">
+                    <a:repeat var="_simpleVar" value="#{defaultTaskOperate.writeSimpleVarList}">
 
                         <ui:include src="/templates/system/SimpleVar.xhtml">
                             <ui:param name="var" value="#{_simpleVar}"/>

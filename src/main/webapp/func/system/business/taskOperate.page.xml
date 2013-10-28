@@ -10,14 +10,6 @@
         <rule if-outcome="success">
             <redirect view-id="/func/system/business/task.xhtml"/>
         </rule>
-        <rule if-outcome="fail">
-            <redirect view-id="/func/system/business/taskOperate.xhtml">
-                <message severity="ERROR">
-                    #{messages.completeTaskFail}
-                </message>
-            </redirect>
-
-        </rule>
     </navigation>
 
 </page>

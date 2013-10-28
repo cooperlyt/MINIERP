@@ -11,21 +11,6 @@
 
     <ui:define name="body">
 
-        <s:decorate template="/layout/message_dialog.xhtml">
-            <ui:param name="type" value="info"/>
-            <ui:param name="panelId" value="JumpToTaskInfoPanel"/>
-            <ui:define name="messages">
-                <h:outputText id="JumpMessage" value="#{messages.jumptoTaskOperator}"/>
-            </ui:define>
-            <ui:define name="actionButtons">
-                <a:commandButton value="#{messages.notJumpBtn}"
-                                 onclick="#{rich:component('defaultBusinessDataPanel')}.hide();return false;"/>
-                <s:button id="JumpToTaskButton" value="#{messages.jumpToOperatorBtn}" taskInstance="#{businessCreate.operateTask}" action="#{taskOperate.operate}"/>
-
-            </ui:define>
-        </s:decorate>
-
-
         <s:decorate template="/layout/edit-modalpanel.xhtml">
             <ui:define name="panelTitle">
                 <h:outputText id="defaultBusinessCreatePanelTitle"
@@ -46,14 +31,8 @@
             </s:decorate>
             <ui:define name="actionButtons">
 
-                <a:commandButton id="createBusinessButton" data="#{businessCreate.ownerTaskName}"
-                                 value="#{messages.createBusiness}" action="#{businessCreate.create}"
-                                 render="JumpMessage,JumpToTaskButton" execute="@form"
-                                 oncomplete="#{rich:component('defaultBusinessDataPanel')}.hide();if (event.data != '')#{rich:component('JumpToTaskInfoPanel')}.show();">
-                    <s:conversationPropagation type="end"/>
-
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
+                <h:commandButton id="createBusinessButton" value="#{messages.createBusiness}"
+                                 action="#{businessCreate.create}"/>
 
 
                 <a:commandButton id="cancelButton" value="#{messages.cancel}" immediate="true" execute="@this"

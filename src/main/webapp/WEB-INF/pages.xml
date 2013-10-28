@@ -46,7 +46,9 @@
 
 
     <page view-id="/func/erp/res/*" login-required="true">
-        <restrict>#{s:hasRole('erp.storage.store') or s:hasRole('erp.produce.manager') or s:hasRole('erp.storage.manager')}</restrict>
+        <restrict>
+            #{s:hasRole('erp.storage.store') or s:hasRole('erp.produce.manager') or s:hasRole('erp.storage.manager')}
+        </restrict>
     </page>
 
     <page view-id="/func/erp/store/*" login-required="true">
@@ -70,7 +72,28 @@
     </page>
 
     <page view-id="/business/startPrepare/*" login-required="true">
-          <param name="from"/>
+        <param name="from"/>
+        <navigation from-action="#{businessCreate.create}">
+            <rule if-outcome="businessCreated" if="#{empty from}">
+                <end-conversation/>
+
+                 <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
+                     <message severity="INFO">
+                         #{messages.businessCreated}
+                     </message>
+                 </redirect>
+            </rule>
+            <rule if-outcome="businessCreated" if="#{not empty from}">
+                <end-conversation/>
+
+                <redirect include-page-params="true" view-id="#{from}">
+                    <message severity="INFO">
+                        #{messages.businessCreated}
+                    </message>
+                </redirect>
+            </rule>
+
+        </navigation>
     </page>
 
     <page view-id="/business/startPrepare/erp/sale/*" login-required="true">

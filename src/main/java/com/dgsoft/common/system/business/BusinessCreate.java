@@ -2,6 +2,7 @@ package com.dgsoft.common.system.business;
 
 import com.dgsoft.common.jbpm.OwnerTaskInstanceListener;
 import com.dgsoft.common.system.NumberBuilder;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.model.BusinessInstance;
 import org.jboss.seam.Component;
@@ -56,13 +57,12 @@ public class BusinessCreate {
     @In
     private StartData startData;
 
+    @In
+    private RunParam runParam;
 
-    private String ownerTaskName;
+    @In(create = true)
+    private TaskPrepare taskPrepare;
 
-    @BypassInterceptors
-    public String getOwnerTaskName() {
-        return ownerTaskName;
-    }
 
     @Transactional
     public String create() {
@@ -104,26 +104,32 @@ public class BusinessCreate {
         }
     }
 
-    private TaskInstance operateTask;
-
     private String navigation(String businessKey) {
-        ownerTaskName = "";
+
         ManagedJbpmContext.instance().getSession().flush();
 
-        ownerTaskInstanceListener.refresh();
-        for (TaskInstance taskInstance : ownerTaskInstanceListener.getTaskInstanceCreateList()) {
-            if (taskInstance.getProcessInstance().getKey().equals(businessKey)) {
-                operateTask = taskInstance;
-                ownerTaskName = taskInstance.getName();
-                return "success_oper";
+        if (runParam.getBooleanParamValue("system.business.forwordToTask")) {
+            ownerTaskInstanceListener.refresh();
+            int findTask = 0;
+            TaskInstance findTaskInstance = null;
+            for (TaskInstance taskInstance : ownerTaskInstanceListener.getTaskInstanceCreateList()) {
+                if (taskInstance.getProcessInstance().getKey().equals(businessKey)) {
+                    findTask++;
+                    if (findTask > 1) {
+                        return "businessCreated";
+                    } else {
+                        findTaskInstance = taskInstance;
+                    }
+                }
             }
-        }
-        return "success";
-    }
 
-    @BypassInterceptors
-    public TaskInstance getOperateTask() {
-        return operateTask;
+            if (findTaskInstance != null) {
+                BusinessProcess.instance().resumeTask(findTaskInstance.getId());
+                return taskPrepare.getTaskDescription(findTaskInstance.getId()).getTaskOperationPage();
+            }
+
+        }
+        return "businessCreated";
     }
 
     private StartDataValidator getDataValidator() {
