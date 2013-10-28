@@ -11,6 +11,14 @@ import org.jboss.seam.annotations.exception.Redirect;
  * To change this template use File | Settings | File Templates.
  */
 @ApplicationException()
-public class InitDataExction extends IllegalStateException {
+public class InitDataException extends IllegalStateException {
+
+    public InitDataException() {
+        super();
+    }
+
+    public InitDataException(String msg) {
+        super(msg);
+    }
 
 }

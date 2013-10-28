@@ -3,10 +3,10 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-    <action execute="#{taskOperate.init}"/>
+    <action execute="#{defaultTaskOperate.init}"/>
 
 
-    <navigation from-action="#{taskOperate.complete}">
+    <navigation from-action="#{defaultTaskOperate.complete}">
         <rule if-outcome="success">
             <redirect view-id="/func/system/business/task.xhtml"/>
         </rule>

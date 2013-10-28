@@ -18,10 +18,10 @@ import java.util.*;
  * Date: 5/27/13
  * Time: 9:12 AM
  */
-@Name("taskOperate")
+@Name("defaultTaskOperate")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
-public class TaskOperate {
+public class DefaultTaskOperate {
 
     private List<String> fallBackTransitions;
 
