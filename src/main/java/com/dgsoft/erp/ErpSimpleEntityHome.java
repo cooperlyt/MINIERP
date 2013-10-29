@@ -1,7 +1,7 @@
 package com.dgsoft.erp;
 
-import com.dgsoft.common.SimpleData;
-import com.dgsoft.common.SimpleDataHome;
+import com.dgsoft.common.NamedModel;
+import com.dgsoft.common.SimpleEntityHome;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +10,7 @@ import com.dgsoft.common.SimpleDataHome;
  * Time: 9:46 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ErpSimpleDataHome<E extends SimpleData> extends SimpleDataHome<E>{
+public class ErpSimpleEntityHome<E extends NamedModel> extends SimpleEntityHome<E> {
 
     @Override
     protected String getPersistenceContextName(){

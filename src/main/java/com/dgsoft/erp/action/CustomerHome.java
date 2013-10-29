@@ -1,6 +1,8 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.PinyinTools;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.Customer;
 import org.jboss.seam.annotations.Name;
 
@@ -12,7 +14,9 @@ import org.jboss.seam.annotations.Name;
  * To change this template use File | Settings | File Templates.
  */
 @Name("customerHome")
-public class CustomerHome extends ErpEntityHome<Customer>{
+public class CustomerHome extends ErpSimpleEntityHome<Customer> {
+
+
 
 
 }

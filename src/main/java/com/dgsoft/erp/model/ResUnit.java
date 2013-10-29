@@ -1,7 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.OrderBean;
+import com.dgsoft.common.OrderModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "RES_UNIT", catalog = "MINI_ERP")
-public class ResUnit implements java.io.Serializable,OrderBean {
+public class ResUnit implements java.io.Serializable,OrderModel {
 
 	private String id;
 	private UnitGroup unitGroup;

@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.erp.ErpSimpleDataHome;
+import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.CustomerLevel;
 import org.jboss.seam.annotations.Name;
 
@@ -12,5 +12,5 @@ import org.jboss.seam.annotations.Name;
  * To change this template use File | Settings | File Templates.
  */
 @Name("customerLevelHome")
-public class CustomerLevelHome extends ErpSimpleDataHome<CustomerLevel>{
+public class CustomerLevelHome extends ErpSimpleEntityHome<CustomerLevel> {
 }

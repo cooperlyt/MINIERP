@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 6/20/13
  * Time: 1:21 PM
  */
-public class OrderBeanComparator implements Comparator<OrderBean> {
+public class OrderBeanComparator implements Comparator<OrderModel> {
 
     private static OrderBeanComparator instance;
 
@@ -21,7 +21,7 @@ public class OrderBeanComparator implements Comparator<OrderBean> {
         return instance;
     }
 
-    public static <T extends OrderBean> void up(T target, List<T> collection) {
+    public static <T extends OrderModel> void up(T target, List<T> collection) {
         Collections.sort(collection, getInstance());
         int index = collection.indexOf(target);
         if (index > 0) {
@@ -32,7 +32,7 @@ public class OrderBeanComparator implements Comparator<OrderBean> {
         Collections.sort(collection, getInstance());
     }
 
-    public static <T extends OrderBean> void down(T target, List<T> collection) {
+    public static <T extends OrderModel> void down(T target, List<T> collection) {
         Collections.sort(collection, getInstance());
         int index = collection.indexOf(target);
         if (index >= 0 && index < (collection.size() - 1)) {
@@ -43,7 +43,7 @@ public class OrderBeanComparator implements Comparator<OrderBean> {
         Collections.sort(collection, getInstance());
     }
 
-    public static <T extends OrderBean> void addToLast(T target, List<T> collection) {
+    public static <T extends OrderModel> void addToLast(T target, List<T> collection) {
         if (!collection.isEmpty()) {
 
 
@@ -62,7 +62,7 @@ public class OrderBeanComparator implements Comparator<OrderBean> {
     }
 
     @Override
-    public int compare(OrderBean o1, OrderBean o2) {
+    public int compare(OrderModel o1, OrderModel o2) {
         return new Integer(o1.getPriority()).compareTo(o2.getPriority());
     }
 }

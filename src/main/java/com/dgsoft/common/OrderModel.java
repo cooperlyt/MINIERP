@@ -6,7 +6,7 @@ package com.dgsoft.common;
  * Date: 6/20/13
  * Time: 1:19 PM
  */
-public interface OrderBean {
+public interface OrderModel {
 
     public abstract int getPriority();
 

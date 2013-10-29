@@ -1,8 +1,6 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.SimpleDataHome;
-import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.ErpSimpleDataHome;
+import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.CustomerArea;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -17,7 +15,7 @@ import org.jboss.seam.international.StatusMessage;
  * To change this template use File | Settings | File Templates.
  */
 @Name("customerAreaHome")
-public class CustomerAreaHome extends ErpSimpleDataHome<CustomerArea> {
+public class CustomerAreaHome extends ErpSimpleEntityHome<CustomerArea> {
 
     @In
     private FacesMessages facesMessages;

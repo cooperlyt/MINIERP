@@ -1,7 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Sep 25, 2013 4:34:50 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.OrderBean;
+import com.dgsoft.common.OrderModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "FORMAT_DEFINE", catalog = "MINI_ERP")
-public class FormatDefine implements java.io.Serializable,OrderBean {
+public class FormatDefine implements java.io.Serializable,OrderModel {
 
     public enum FormatType{
         WORD,INTEGER,FLOAT;

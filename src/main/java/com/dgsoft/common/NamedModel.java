@@ -7,7 +7,7 @@ package com.dgsoft.common;
  * Time: 8:34 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface SimpleData {
+public interface NamedModel {
 
     public abstract String getName();
 

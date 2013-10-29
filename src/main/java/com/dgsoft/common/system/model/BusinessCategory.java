@@ -1,7 +1,7 @@
 package com.dgsoft.common.system.model;
 // Generated Apr 28, 2013 11:02:59 AM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.OrderBean;
+import com.dgsoft.common.OrderModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "BUSINESS_CATEGORY", catalog = "DG_SYSTEM")
-public class BusinessCategory implements java.io.Serializable, OrderBean {
+public class BusinessCategory implements java.io.Serializable, OrderModel {
 
     private static final long serialVersionUID = -4834419763249347625L;
 

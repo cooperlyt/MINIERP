@@ -1,7 +1,7 @@
 package com.dgsoft.common.system.model;
 // Generated Apr 28, 2013 11:02:59 AM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.OrderBean;
+import com.dgsoft.common.OrderModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "SIMPLE_VAR_SUBSCRIBE", catalog = "DG_SYSTEM", uniqueConstraints = @UniqueConstraint(columnNames = {
         "WF_TASK", "WF_VER", "BUSINESS_DEFIN", "VARIABLE"}))
-public class SimpleVarSubscribe implements java.io.Serializable, OrderBean {
+public class SimpleVarSubscribe implements java.io.Serializable, OrderModel {
 
     private String id;
     private BusinessDefine businessDefine;

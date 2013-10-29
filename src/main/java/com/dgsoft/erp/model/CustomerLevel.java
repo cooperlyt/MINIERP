@@ -1,7 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.SimpleData;
+import com.dgsoft.common.NamedModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "CUSTOMER_LEVEL", catalog = "MINI_ERP")
-public class CustomerLevel implements java.io.Serializable,SimpleData {
+public class CustomerLevel implements java.io.Serializable,NamedModel {
 
 	private String id;
 	private int priority;

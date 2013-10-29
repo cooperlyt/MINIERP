@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.MiddleMan;
 import org.jboss.seam.annotations.Name;
 
@@ -12,5 +13,5 @@ import org.jboss.seam.annotations.Name;
  * To change this template use File | Settings | File Templates.
  */
 @Name("middleManHome")
-public class MiddleManHome extends ErpEntityHome<MiddleMan>{
+public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
 }

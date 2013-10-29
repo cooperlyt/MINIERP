@@ -1,7 +1,7 @@
 package com.dgsoft.common.system.model;
 // Generated Apr 28, 2013 11:02:59 AM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.OrderBean;
+import com.dgsoft.common.OrderModel;
 import com.dgsoft.common.OrderBeanComparator;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "FUNC_CATEGORY", catalog = "DG_SYSTEM")
-public class FuncCategory implements OrderBean, java.io.Serializable {
+public class FuncCategory implements OrderModel, java.io.Serializable {
 
 	private String id;
 	private String name;

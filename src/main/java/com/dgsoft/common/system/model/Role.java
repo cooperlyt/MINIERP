@@ -1,11 +1,10 @@
 package com.dgsoft.common.system.model;
 // Generated Apr 28, 2013 11:02:59 AM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.OrderBean;
+import com.dgsoft.common.OrderModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ROLE", catalog = "DG_SYSTEM")
-public class Role implements java.io.Serializable, OrderBean {
+public class Role implements java.io.Serializable, OrderModel {
 
     private String id;
     private String name;
