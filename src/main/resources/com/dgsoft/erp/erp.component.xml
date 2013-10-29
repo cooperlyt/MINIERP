@@ -46,6 +46,10 @@
         <property name="ejbql">select customer from Customer customer where customer.enable = true and customer.customerArea.id = &apos;#{customerAreaHome.id}&apos;</property>
     </component>
 
+    <component name="middleManList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select middleMan from MiddleMan middleMan</property>
+    </component>
+
     <component name="customerAreaList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
         <property name="ejbql">select customerArea from CustomerArea customerArea</property>
     </component>

@@ -62,7 +62,7 @@
                                        fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
 
                         <h:outputText value="#{_customer.name}"/>
-                        <a:ajax event="selectitem" listener="#{customerOrderHome.middleManPayChangeListener}"
+                        <a:ajax event="selectitem" listener="#{customerHome.middleManPayChangeListener}"
                                 render="pinyinAutocomplete,customerInfo" execute="@this">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
@@ -90,76 +90,17 @@
                     <ui:include src="/templates/erp/CustomerDetails.xhtml">
                         <ui:param name="balanceReadonly" value="true"/>
                         <ui:param name="readonly" value="#{customerHome.idDefined}"/>
+                        <ui:param name="allowSwitchMiddleMan" value="false"/>
                     </ui:include>
+
+
+                    <h:outputText value="#{messages.customerNotHasMiddleMan}"
+                                  rendered="#{customerHome.idDefined and (empty customerHome.instance.middleMan)}"/>
 
                     <div style="clear:both"/>
 
 
-                    <a:outputPanel id="middleManInfo">
-                        <rich:panel
-                                rendered="#{(customerHome.idDefined and (not empty customerHome.instance.middleMan) or (not customerHome.idDefined)) }">
-                            <s:decorate template="/layout/seam-edit.xhtml">
-                                <ui:define name="label">#{messages.useCustomerMiddleMan}</ui:define>
-                                <h:selectBooleanCheckbox value="#{customerOrderHome.instance.middleManPay}">
-                                    <a:ajax event="click" execute="@this"
-                                            listener="#{customerOrderHome.middleManPayChangeListener}"
-                                            render="middleManDetails">
-                                        <a:attachQueue requestDelay="0"/>
-                                    </a:ajax>
-                                </h:selectBooleanCheckbox>
-                            </s:decorate>
 
-                            <div style="clear:both"/>
-
-
-                            <a:outputPanel id="middleManDetails">
-                                <h:outputText value="#{messages.customerNotHasMiddleMan}"
-                                              rendered="#{customerHome.idDefined and (empty customerHome.instance.middleMan)}"/>
-                                <a:outputPanel rendered="#{customerOrderHome.showMiddleMan}">
-                                    <a:outputPanel rendered="#{not customerHome.idDefined}">
-                                        <s:decorate id="middleManSelectNameField" template="/layout/edit.xhtml">
-                                            <ui:define name="label">#{messages.Customer}</ui:define>
-                                            <rich:autocomplete id="pinyinSearchMiddleMan" mode="client" minChars="1"
-                                                               autofill="false"
-                                                               required="true" showButton="true"
-                                                               selectFirst="true"
-                                                               label="#{messages.Customer}"
-                                                               clientFilterFunction="pinyinFilter"
-                                                               autocompleteList="#{customerList.resultList}"
-                                                               value="#{customerHome.pinyinSearchName}"
-
-                                                               fetchValue="[#{_customer.name}][id:#{_customer.id}]"
-                                                               var="_customer">
-
-                                                <h:outputText value="#{_customer.name}"/>
-                                                <a:ajax event="selectitem"
-                                                        listener="#{customerOrderHome.middleManPayChangeListener}"
-                                                        render="pinyinAutocomplete,customerInfo" execute="@this">
-                                                    <a:attachQueue requestDelay="0"/>
-                                                </a:ajax>
-                                                <a:ajax event="blur" execute="@this"
-                                                        render="pinyinSearchCustomer,customerInfo">
-                                                    <a:attachQueue requestDelay="0"/>
-                                                </a:ajax>
-                                            </rich:autocomplete>
-                                        </s:decorate>
-
-                                        <span style="float: left;padding: 5px;">
-                                        <a:commandButton image="/img/addItem.png" action="#{customerHome.clearInstance}"
-                                                         execute="@this" render="customerInfo,customerSelectNameField">
-                                            <a:attachQueue requestDelay="0"/>
-                                        </a:commandButton>
-                                        </span>
-                                    </a:outputPanel>
-                                    <ui:include src="/templates/erp/MiddleManDetails.xhtml">
-                                        <ui:param name="readonly" value="#{customerHome.idDefined}"/>
-                                    </ui:include>
-                                </a:outputPanel>
-                            </a:outputPanel>
-
-                            <div style="clear:both"/>
-                        </rich:panel>
-                    </a:outputPanel>
                 </rich:collapsiblePanel>
             </a:outputPanel>
 

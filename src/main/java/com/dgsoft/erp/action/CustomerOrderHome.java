@@ -39,19 +39,6 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder>{
         middleManHome.clearInstance();
     }
 
-    public void middleManPayChangeListener(){
-       if (getInstance().isMiddleManPay() && customerHome.isIdDefined() && (customerHome.getInstance().getMiddleMan() !=  null)){
-           middleManHome.setId(customerHome.getInstance().getMiddleMan().getId());
-       }else{
-           middleManHome.clearInstance();
-       }
-    }
-
-    public boolean isShowMiddleMan(){
-        return getInstance().isMiddleManPay() &&
-                ((customerHome.isIdDefined() && (customerHome.getInstance().getMiddleMan() != null)) || !customerHome.isIdDefined());
-    }
-
     public String beginCreateOrder(){
         businessDefineHome.setId("erp.business.order");
         startData.generateKey();
