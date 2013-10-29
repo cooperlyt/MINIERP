@@ -27,13 +27,13 @@ public class BussinessProcessUtils extends BusinessProcess{
     @Override
     public void createProcess(String processDefinitionName, String businessKey){
         super.createProcess(processDefinitionName,businessKey);
-        Events.instance().raiseEvent("org.jboss.seam.createProcess");
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.createProcess");
     }
 
     @Override
     public void createProcess(String processDefinitionName, boolean shouldSignalProcess){
         super.createProcess(processDefinitionName,shouldSignalProcess);
-        Events.instance().raiseEvent("org.jboss.seam.createProcess");
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.createProcess");
     }
 
 
@@ -41,6 +41,6 @@ public class BussinessProcessUtils extends BusinessProcess{
     public void endTask(String transitionName){
         super.endTask(transitionName);
         ManagedJbpmContext.instance().getSession().flush();
-        Events.instance().raiseEvent("org.jboss.seam.endTask");
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.endTask");
     }
 }

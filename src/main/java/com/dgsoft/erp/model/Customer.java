@@ -102,8 +102,7 @@ public class Customer implements java.io.Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "MIDDLE_MAN", nullable = false)
-    @NotNull
+    @JoinColumn(name = "MIDDLE_MAN", nullable = true)
     public MiddleMan getMiddleMan() {
         return this.middleMan;
     }

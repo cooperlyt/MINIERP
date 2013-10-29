@@ -41,6 +41,14 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
         return true;
     }
 
+    public E getReadyInstance() {
+        if (wire()) {
+            return getInstance();
+        } else {
+            return null;
+        }
+    }
+
     @Transactional
     @End
     public String updateEnd() {
@@ -88,7 +96,7 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
 
     public String removeAndClear() {
         String result = remove();
-        if ("removed".equals(result)){
+        if ("removed".equals(result)) {
             clearInstance();
         }
         return result;
@@ -125,7 +133,7 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
     public void refresh() {
         if (isIdDefined() && isManaged()) {
             getEntityManager().refresh(getInstance());
-        }else{
+        } else {
             clearInstance();
         }
     }

@@ -5,6 +5,7 @@ import org.jboss.seam.annotations.*;
 import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jboss.seam.bpm.PooledTask;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
@@ -25,36 +26,39 @@ public class PooledTaskUtils extends PooledTask {
 
     @Transactional
     @Override
-    @RaiseEvent("com.dgsot.jbpm.taskAssign")
     public String assignToCurrentActor() {
         String result = super.assignToCurrentActor();
         ManagedJbpmContext.instance().getSession().flush();
         if (result == null) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "acceptBusinessFail");
+        }else{
+            Events.instance().raiseTransactionSuccessEvent("com.dgsot.jbpm.taskAssign");
         }
         return result;
     }
 
     @Transactional
     @Override
-    @RaiseEvent("com.dgsot.jbpm.taskAssign")
     public String assign(String actorId) {
         String result = super.assign(actorId);
         ManagedJbpmContext.instance().getSession().flush();
         if (result == null) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "acceptBusinessFail");
+        }else{
+            Events.instance().raiseTransactionSuccessEvent("com.dgsot.jbpm.taskAssign");
         }
         return result;
     }
 
     @Transactional
     @Override
-    @RaiseEvent("com.dgsot.jbpm.taskUnassign")
     public String unassign() {
         String result = super.unassign();
         ManagedJbpmContext.instance().getSession().flush();
         if (result == null) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "operationFail");
+        }else {
+            Events.instance().raiseTransactionSuccessEvent("com.dgsot.jbpm.taskUnassign");
         }
         return result;
     }

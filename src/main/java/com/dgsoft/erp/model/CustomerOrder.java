@@ -73,7 +73,7 @@ public class CustomerOrder implements java.io.Serializable {
 		this.version = version;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
 	@NotNull
 	public Customer getCustomer() {

@@ -29,7 +29,7 @@
                     view="/func/system/business/start.xhtml" disabled="#{authInfo.loginEmployee.id eq 'root'}"/>
         </li>
         <li><s:link id="taskOperLink" propagation="end"
-                    view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceList.size}</strong>]#{messages.ownerTask}[<strong>#{taskInstanceList.size}</strong>]</s:link>
+                    view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceListener.taskInstanceCreateList.size}</strong>]#{messages.ownerTask}[<strong>#{ownerTaskInstanceListener.taskInstanceCreateList.size}</strong>]</s:link>
         </li>
 
         <h:form>

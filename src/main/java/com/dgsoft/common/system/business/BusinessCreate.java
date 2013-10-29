@@ -97,14 +97,18 @@ public class BusinessCreate {
             //startService.createBusiness(businessInstanceHome.getInstance());
             businessInstanceHome.persist();
 
+
             events.raiseEvent("com.dgsoft.BusinessCreated." + businessDefineHome.getInstance().getWfName(),
                     businessInstanceHome.getInstance());
+
+
             log.debug(startData.getBusinessKey() + "verfy ok is start!");
             return navigation(startData.getBusinessKey());
         }
     }
 
     private String navigation(String businessKey) {
+
 
         ManagedJbpmContext.instance().getSession().flush();
 

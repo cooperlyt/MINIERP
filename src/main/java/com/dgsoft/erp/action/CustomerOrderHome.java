@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessInstance;
 import com.dgsoft.erp.ErpEntityHome;
@@ -24,10 +25,14 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder>{
     @In(create = true)
     private MiddleManHome middleManHome;
 
+    @In(required = false)
+    private CustomerAreaHome customerAreaHome;
+
     @In(create = true)
     private StartData startData;
 
-
+    @In(create = true)
+    private BusinessDefineHome businessDefineHome;
 
     public void clearCustomer(){
         customerHome.clearInstance();
@@ -47,15 +52,32 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder>{
                 ((customerHome.isIdDefined() && (customerHome.getInstance().getMiddleMan() != null)) || !customerHome.isIdDefined());
     }
 
+    public String beginCreateOrder(){
+        businessDefineHome.setId("erp.business.order");
+        startData.generateKey();
+        return "beginning";
+    }
+
+    @Override
+    protected boolean wire() {
+        if (!customerHome.isIdDefined() && getInstance().isMiddleManPay()){
+            customerHome.getInstance().setMiddleMan(middleManHome.getInstance());
+        }
+        getInstance().setId(startData.getBusinessKey());
+        if (customerHome.isIdDefined()){
+            getInstance().setCustomer(customerHome.getInstance());
+        }else{
+            getInstance().setCustomer(customerHome.getReadyInstance());
+            getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
+        }
+        return true;
+    }
+
 
     @Observer("com.dgsoft.BusinessCreated.order")
     @Transactional
     public void createOrder(BusinessInstance businessInstance){
-        if (!customerHome.isIdDefined() && getInstance().isMiddleManPay()){
-            customerHome.getInstance().setMiddleMan(middleManHome.getInstance());
-        }
-        getInstance().setCustomer(customerHome.getInstance());
-        //getInstance().setId();
+
         this.persist();
     }
 

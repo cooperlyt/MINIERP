@@ -1,15 +1,11 @@
 package com.dgsoft.common.system.business;
 
 import com.dgsoft.common.exception.ProcessDefineException;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.bpm.BeginTask;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.bpm.ManagedJbpmContext;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.json.JSONException;
@@ -24,29 +20,31 @@ import org.json.JSONObject;
 @Name("taskPrepare")
 public class TaskPrepare {
 
-    @In
-    private TaskDescription taskDescription;
+    @In("#{param.taskId}")
+    private String taskId;
 
 
     @BeginTask
     public String beginTask() {
-        return taskDescription.getTaskOperationPage();
+        return getTaskDescription(Long.parseLong(taskId)).getTaskOperationPage();
     }
-
-
 
     @BypassInterceptors
     public TaskDescription getTaskDescription(long taskId){
         TaskInstance targetTaskInstance = ManagedJbpmContext.instance().getTaskInstanceForUpdate(taskId);
         if (targetTaskInstance != null){
             String taskJSONDescription = targetTaskInstance.getDescription();
+            Logging.getLog(this.getClass()).debug("task Description json str:" + taskJSONDescription);
             try {
                 return new TaskDescription(new JSONObject(taskJSONDescription));
             } catch (JSONException e) {
                 Logging.getLog(this.getClass()).error("jbpm process Define error task Description JSON ERROR", e);
                 throw new ProcessDefineException("jbpm process Define error task Description JSON ERROR");
             }
-        } else return null;
+        } else{
+            Logging.getLog(this.getClass()).warn("taskInstance not found.");
+            return null;
+        }
     }
 
 

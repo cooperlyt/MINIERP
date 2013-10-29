@@ -219,7 +219,7 @@
 
             <a:commandButton title="#{messages.unAcceptBusiness}" image="/img/forward.png"
                              action="#{pooledTask.unassign}" immediate="true"
-                             execute="@this">
+                             execute="@this" onclick="if (#{empty _task.pooledActors}) {alert('#{messages.cantUnassignTask}');return false;}">
                 <f:param name="taskId" value="#{_task.id}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
@@ -257,7 +257,7 @@
             <f:facet name="header">#{messages.version}</f:facet>
             #{_task.processInstance.processDefinition.version}
         </rich:column>
-        <f:facet name="footer">#{messages.mybusinessCount} #{taskInstanceList.size}</f:facet>
+        <f:facet name="footer">#{messages.mybusinessCount} #{ownerTaskInstanceListener.taskInstanceCreateList.size}</f:facet>
 
     </rich:extendedDataTable>
 </h:form>

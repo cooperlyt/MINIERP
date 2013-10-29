@@ -3,14 +3,10 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-    <navigation from-action="#{businessCreate.create}">
-        <rule if-outcome="businessCreated">
-            <end-conversation/>
-
-            <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
-            </redirect>
+    <navigation from-action="#{customerOrderHome.beginCreateOrder}">
+        <rule if-outcome="beginning">
+            <redirect view-id="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml"/>
         </rule>
-
     </navigation>
 
 </page>
