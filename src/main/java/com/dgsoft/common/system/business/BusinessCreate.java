@@ -1,5 +1,6 @@
 package com.dgsoft.common.system.business;
 
+import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.jbpm.OwnerTaskInstanceListener;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
@@ -81,6 +82,14 @@ public class BusinessCreate {
 
             log.debug("define Id:" + businessDefineHome.getInstance().getId());
 
+            try{
+                events.raiseEvent("com.dgsoft.BusinessCreatePrepare." + businessDefineHome.getInstance().getWfName(),
+                        businessDefineHome.getInstance());
+            }catch (ProcessCreatePrepareException e){
+                log.debug("prepare other business data exception",e);
+                return null;
+            }
+
             businessInstanceHome.clearInstance();
             businessInstanceHome.getInstance().setId(startData.getBusinessKey());
             businessInstanceHome.getInstance().setBusinessDefine(businessDefineHome.getInstance());
@@ -95,12 +104,16 @@ public class BusinessCreate {
             businessName = businessDefineHome.getInstance().getName();
 
             //startService.createBusiness(businessInstanceHome.getInstance());
+
+
             businessInstanceHome.persist();
 
 
-            events.raiseEvent("com.dgsoft.BusinessCreated." + businessDefineHome.getInstance().getWfName(),
+            events.raiseEvent("com.dgsoft.BusinessCreating." + businessDefineHome.getInstance().getWfName(),
                     businessInstanceHome.getInstance());
 
+            events.raiseTransactionSuccessEvent("com.dgsoft.BusinessCreated." + businessDefineHome.getInstance().getWfName(),
+                    businessInstanceHome.getInstance());
 
             log.debug(startData.getBusinessKey() + "verfy ok is start!");
             return navigation(startData.getBusinessKey());

@@ -1,19 +1,12 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,9 +17,13 @@ import javax.validation.constraints.Size;
 @Table(name = "NEED_RES", catalog = "MINI_ERP")
 public class NeedRes implements java.io.Serializable {
 
+    public enum NeedResType{
+        ORDER_SEND,SUPPLEMENT_SEND;
+    }
+
 	private String id;
 	private CustomerOrder customerOrder;
-	private String type;
+	private NeedResType type;
 	private Date limitTime;
 	private String reason;
 	private String memo;
@@ -37,31 +34,17 @@ public class NeedRes implements java.io.Serializable {
 	public NeedRes() {
 	}
 
-	public NeedRes(String id, CustomerOrder customerOrder, String type,
-			Date limitTime, String reason, Date createDate) {
-		this.id = id;
+	public NeedRes(CustomerOrder customerOrder, NeedResType type, String reason, Date createDate) {
 		this.customerOrder = customerOrder;
 		this.type = type;
-		this.limitTime = limitTime;
-		this.reason = reason;
 		this.createDate = createDate;
-	}
-	public NeedRes(String id, CustomerOrder customerOrder, String type,
-			Date limitTime, String reason, String memo, Date createDate,
-			Set<OrderItem> orderItems, Set<Dispatch> dispatches) {
-		this.id = id;
-		this.customerOrder = customerOrder;
-		this.type = type;
-		this.limitTime = limitTime;
-		this.reason = reason;
-		this.memo = memo;
-		this.createDate = createDate;
-		this.orderItems = orderItems;
-		this.dispatches = dispatches;
+        this.reason = reason;
 	}
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -83,14 +66,15 @@ public class NeedRes implements java.io.Serializable {
 		this.customerOrder = customerOrder;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "TYPE", nullable = false, length = 32)
 	@NotNull
 	@Size(max = 32)
-	public String getType() {
+	public NeedResType getType() {
 		return this.type;
 	}
 
-	public void setType(String type) {
+	public void setType(NeedResType type) {
 		this.type = type;
 	}
 

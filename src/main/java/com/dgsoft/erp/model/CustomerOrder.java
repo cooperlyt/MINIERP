@@ -16,12 +16,35 @@ import javax.validation.constraints.Size;
 @Table(name = "CUSTOMER_ORDER", catalog = "MINI_ERP")
 public class CustomerOrder implements java.io.Serializable {
 
+    public enum OrderState{
+        WAITING_PAY_SEND(false), WAITING_PAY_FIRST(false),WAITING_SEND(false),SENDING(false),
+        ORDER_ACCOUNT(true),ORDER_ALL_COMPLETE(true),ORDER_OVERDRAFT_COMPLETE(true);
+
+        private boolean completed;
+
+        public boolean isCompleted() {
+            return completed;
+        }
+
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
+        }
+
+        private OrderState(boolean completed){
+           this.completed = completed;
+        }
+    }
+
+    public enum OrderPayType{
+        OVERDRAFT,PAY_FIRST,COMPLETE_PAY;
+    }
+
 	private String id;
 	private Integer version;
 	private Customer customer;
-	private String state;
+	private OrderState state;
     private String orderEmp;
-	private String payType;
+	private OrderPayType payType;
 	private Date createDate;
 	private BigDecimal money;
 	private Date completeDate;
@@ -41,20 +64,9 @@ public class CustomerOrder implements java.io.Serializable {
 	private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
+    private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
 
 	public CustomerOrder() {
-	}
-
-	public CustomerOrder(String id, Customer customer, String state,
-			String payType, Date createDate, BigDecimal money,
-			boolean middleManPay) {
-		this.id = id;
-		this.customer = customer;
-		this.state = state;
-		this.payType = payType;
-		this.createDate = createDate;
-		this.money = money;
-		this.middleManPay = middleManPay;
 	}
 
 	@Id
@@ -90,25 +102,27 @@ public class CustomerOrder implements java.io.Serializable {
 		this.customer = customer;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "STATE", nullable = false, length = 20)
 	@NotNull
 	@Size(max = 20)
-	public String getState() {
+	public OrderState getState() {
 		return this.state;
 	}
 
-	public void setState(String state) {
+	public void setState(OrderState state) {
 		this.state = state;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "PAY_TYPE", nullable = false, length = 32)
 	@NotNull
 	@Size(max = 32)
-	public String getPayType() {
+	public OrderPayType getPayType() {
 		return this.payType;
 	}
 
-	public void setPayType(String payType) {
+	public void setPayType(OrderPayType payType) {
 		this.payType = payType;
 	}
 
@@ -182,8 +196,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.totalCost = totalCost;
     }
 
-    @Column(name = "MIDDLE_RATE", nullable = false, scale = 4)
-    @NotNull
+    @Column(name = "MIDDLE_RATE", nullable = true, scale = 4)
     public BigDecimal getMiddleRate() {
         return this.middleRate;
     }
@@ -220,6 +233,15 @@ public class CustomerOrder implements java.io.Serializable {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", orphanRemoval = true, cascade = {CascadeType.ALL})
+    public Set<NeedRes> getNeedReses() {
+        return needReses;
+    }
+
+    public void setNeedReses(Set<NeedRes> needReses) {
+        this.needReses = needReses;
+    }
 
     @Column(name="CONTACT",length = 50,nullable = false)
     @NotNull

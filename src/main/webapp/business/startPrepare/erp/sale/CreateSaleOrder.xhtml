@@ -66,7 +66,8 @@
                                 render="pinyinAutocomplete,customerInfo" execute="@this">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
-                        <a:ajax event="blur" execute="@this" render="pinyinSearchCustomer,customerInfo">
+                        <a:ajax event="blur" execute="@this" listener="#{customerOrderHome.customerChangeListener}"
+                                render="pinyinSearchCustomer,customerInfo,orderContactFields">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </rich:autocomplete>
@@ -106,15 +107,48 @@
             <rich:panel>
 
                 <a:outputPanel id="orderContactFields">
-                    <s:decorate template="/layout/edit.xhtml">
-                        <ui:define name="label">#{messages.}</ui:define>
+                    <s:decorate id="contactField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+                        <ui:define name="label">#{messages.order_field_contact}</ui:define>
+                        <h:inputText label="#{messages.order_field_contact}"
+                                     required="true"
+                                     size="50"
+                                     maxlength="50"
+                                     value="#{customerOrderHome.instance.contact}">
+                            <a:ajax event="blur" render="contactField"/>
+                        </h:inputText>
                     </s:decorate>
 
+
+                    <s:decorate id="orderTelField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+                        <ui:define name="label">#{messages.order_field_tel}</ui:define>
+                        <h:inputText label="#{messages.order_field_tel}"
+                                     required="true"
+                                     size="50"
+                                     maxlength="50"
+                                     value="#{customerOrderHome.instance.tel}">
+                            <a:ajax event="blur" render="orderTelField"/>
+                        </h:inputText>
+                    </s:decorate>
                 </a:outputPanel>
+
 
                 <s:decorate template="/layout/edit.xhtml">
                     <ui:define name="label">#{messages.includeMiddleMan}</ui:define>
-                    <h:selectBooleanCheckbox required="true" value="#{customerOrderHome.instance.middleManPay}"/>
+                    <h:selectBooleanCheckbox required="true"
+                                             label="#{messages.includeMiddleMan}"
+                                             value="#{customerOrderHome.instance.middleManPay}"/>
+                </s:decorate>
+
+                <s:decorate template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.order_field_payType}</ui:define>
+                    <rich:select value="#{customerOrderHome.instance.payType}"
+                                 label="#{messages.order_field_payType}"
+                                 required="true">
+                        <s:selectItems value="#{orderPayTypes}" var="_payType"
+                                       noSelectionLabel="#{messages.noSelectLabel}"
+                                       label="#{messages[_payType.name()]}"/>
+                        <s:convertEnum/>
+                    </rich:select>
                 </s:decorate>
 
 
