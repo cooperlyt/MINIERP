@@ -1,8 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
-import org.hibernate.annotations.GenericGenerator;
-
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -83,7 +81,7 @@ public class StockChange implements java.io.Serializable {
     private ProductBackStoreIn productBackStoreIn;
     private MaterialBackStoreIn materialBackStoreIn;
     private StoreChange storeChange;
-    private OrderStoreOut orderStoreOut;
+    private Dispatch orderDispatch;
 
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
 
@@ -288,12 +286,12 @@ public class StockChange implements java.io.Serializable {
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public OrderStoreOut getOrderStoreOut() {
-        return this.orderStoreOut;
+    public Dispatch getOrderDispatch() {
+        return this.orderDispatch;
     }
 
-    public void setOrderStoreOut(OrderStoreOut orderStoreOuts) {
-        this.orderStoreOut = orderStoreOuts;
+    public void setOrderDispatch(Dispatch orderStoreOuts) {
+        this.orderDispatch = orderStoreOuts;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")

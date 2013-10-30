@@ -100,11 +100,26 @@
                     <div style="clear:both"/>
 
 
-
                 </rich:collapsiblePanel>
             </a:outputPanel>
 
+            <rich:panel>
 
+                <a:outputPanel id="orderContactFields">
+                    <s:decorate template="/layout/edit.xhtml">
+                        <ui:define name="label">#{messages.}</ui:define>
+                    </s:decorate>
+
+                </a:outputPanel>
+
+                <s:decorate template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.includeMiddleMan}</ui:define>
+                    <h:selectBooleanCheckbox required="true" value="#{customerOrderHome.instance.middleManPay}"/>
+                </s:decorate>
+
+
+
+            </rich:panel>
         </h:form>
     </ui:define>
 

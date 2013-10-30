@@ -27,14 +27,20 @@ public class CustomerOrder implements java.io.Serializable {
 	private Date completeDate;
 	private BigDecimal profit;
 	private String memo;
+    private String contact;
+    private String tel;
+
+    private BigDecimal realMoney;
+    private BigDecimal totalRebate;
+    private BigDecimal middleMoney;
+    private BigDecimal totalCost;
+    private BigDecimal middleRate;
+
 	private boolean middleManPay;
-    private Dispatch dispatche;
 	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
 	private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
-	private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
-	private Set<OrderStoreOut> orderStoreOuts = new HashSet<OrderStoreOut>(0);
 
 	public CustomerOrder() {
 	}
@@ -138,6 +144,54 @@ public class CustomerOrder implements java.io.Serializable {
 		this.money = money;
 	}
 
+    @Column(name = "REAL_MONEY", scale = 3)
+    public BigDecimal getRealMoney() {
+        return this.realMoney;
+    }
+
+    public void setRealMoney(BigDecimal realMoney) {
+        this.realMoney = realMoney;
+    }
+
+    @Column(name = "TOTAL_REBATE", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getTotalRebate() {
+        return this.totalRebate;
+    }
+
+    public void setTotalRebate(BigDecimal totalRebate) {
+        this.totalRebate = totalRebate;
+    }
+
+    @Column(name = "MIDDLE_MONEY", scale = 3)
+    public BigDecimal getMiddleMoney() {
+        return this.middleMoney;
+    }
+
+    public void setMiddleMoney(BigDecimal middleMoney) {
+        this.middleMoney = middleMoney;
+    }
+
+    @Column(name = "TOTAL_COST", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getTotalCost() {
+        return this.totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    @Column(name = "MIDDLE_RATE", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getMiddleRate() {
+        return this.middleRate;
+    }
+
+    public void setMiddleRate(BigDecimal middleRate) {
+        this.middleRate = middleRate;
+    }
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "COMPLETE_DATE", length = 19)
 	public Date getCompleteDate() {
@@ -167,7 +221,29 @@ public class CustomerOrder implements java.io.Serializable {
 		this.memo = memo;
 	}
 
-	@Column(name = "MIDDLE_MAN_PAY", nullable = false)
+    @Column(name="CONTACT",length = 50,nullable = false)
+    @NotNull
+    @Size(max = 50)
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    @Column(name="TEL",length = 50,nullable = false)
+    @NotNull
+    @Size(max = 50)
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    @Column(name = "MIDDLE_MAN_PAY", nullable = false)
 	public boolean isMiddleManPay() {
 		return this.middleManPay;
 	}
@@ -194,15 +270,6 @@ public class CustomerOrder implements java.io.Serializable {
 		this.middleMoneys = middleMoneys;
 	}
 
-	@OneToOne(optional = false, fetch = FetchType.LAZY, mappedBy = "customerOrder")
-	public Dispatch getDispatche() {
-		return this.dispatche;
-	}
-
-	public void setDispatche(Dispatch dispatche) {
-		this.dispatche = dispatche;
-	}
-
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = AccountOper.class)
     @JoinTable(name = "ORDER_PAY", joinColumns = @JoinColumn(name = "CUSTOMER_ORDER"), inverseJoinColumns = @JoinColumn(name = "ACCOUNT_OPER"))
     public Set<AccountOper> getAccountOpers() {
@@ -212,23 +279,5 @@ public class CustomerOrder implements java.io.Serializable {
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
     }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-	public Set<OrderItem> getOrderItems() {
-		return this.orderItems;
-	}
-
-	public void setOrderItems(Set<OrderItem> orderItems) {
-		this.orderItems = orderItems;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-	public Set<OrderStoreOut> getOrderStoreOuts() {
-		return this.orderStoreOuts;
-	}
-
-	public void setOrderStoreOuts(Set<OrderStoreOut> orderStoreOuts) {
-		this.orderStoreOuts = orderStoreOuts;
-	}
 
 }

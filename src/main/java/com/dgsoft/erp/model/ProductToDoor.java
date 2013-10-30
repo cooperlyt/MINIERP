@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
+// Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class ProductToDoor implements java.io.Serializable {
 	private String id;
 	private Employee employee;
 	private Cars cars;
-	private Set<OrderDelivery> orderDeliveries = new HashSet<OrderDelivery>(0);
+	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
 	public ProductToDoor() {
 	}
@@ -35,11 +35,11 @@ public class ProductToDoor implements java.io.Serializable {
 		this.cars = cars;
 	}
 	public ProductToDoor(String id, Employee employee, Cars cars,
-			Set<OrderDelivery> orderDeliveries) {
+			Set<Dispatch> dispatches) {
 		this.id = id;
 		this.employee = employee;
 		this.cars = cars;
-		this.orderDeliveries = orderDeliveries;
+		this.dispatches = dispatches;
 	}
 
 	@Id
@@ -77,12 +77,12 @@ public class ProductToDoor implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productToDoor")
-	public Set<OrderDelivery> getOrderDeliveries() {
-		return this.orderDeliveries;
+	public Set<Dispatch> getDispatches() {
+		return this.dispatches;
 	}
 
-	public void setOrderDeliveries(Set<OrderDelivery> orderDeliveries) {
-		this.orderDeliveries = orderDeliveries;
+	public void setDispatches(Set<Dispatch> dispatches) {
+		this.dispatches = dispatches;
 	}
 
 }

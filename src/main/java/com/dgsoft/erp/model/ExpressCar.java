@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
+// Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class ExpressCar implements java.io.Serializable {
 	private String id;
 	private ExpressDriver expressDriver;
 	private String carCode;
-	private Set<OrderDelivery> orderDeliveries = new HashSet<OrderDelivery>(0);
+	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
 	public ExpressCar() {
 	}
@@ -34,11 +34,11 @@ public class ExpressCar implements java.io.Serializable {
 		this.expressDriver = expressDriver;
 	}
 	public ExpressCar(String id, ExpressDriver expressDriver, String carCode,
-			Set<OrderDelivery> orderDeliveries) {
+			Set<Dispatch> dispatches) {
 		this.id = id;
 		this.expressDriver = expressDriver;
 		this.carCode = carCode;
-		this.orderDeliveries = orderDeliveries;
+		this.dispatches = dispatches;
 	}
 
 	@Id
@@ -75,12 +75,12 @@ public class ExpressCar implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "expressCar")
-	public Set<OrderDelivery> getOrderDeliveries() {
-		return this.orderDeliveries;
+	public Set<Dispatch> getDispatches() {
+		return this.dispatches;
 	}
 
-	public void setOrderDeliveries(Set<OrderDelivery> orderDeliveries) {
-		this.orderDeliveries = orderDeliveries;
+	public void setDispatches(Set<Dispatch> dispatches) {
+		this.dispatches = dispatches;
 	}
 
 }

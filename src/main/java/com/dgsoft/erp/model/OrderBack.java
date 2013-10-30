@@ -22,7 +22,6 @@ public class OrderBack implements java.io.Serializable {
 	private String reason;
 	private Date createDate;
 	private Date completeDate;
-	private String processMessage;
 	private String memo;
     private String bankNumber;
     private String bank;
@@ -42,19 +41,6 @@ public class OrderBack implements java.io.Serializable {
 		this.reason = reason;
 		this.createDate = createDate;
 		this.completeDate = completeDate;
-	}
-	public OrderBack(String id, CustomerOrder customerOrder, String state,
-			String reason, Date createDate, Date completeDate,
-			String processMessage, String memo, Set<ProductBackStoreIn> productBackReses) {
-		this.id = id;
-		this.customerOrder = customerOrder;
-		this.state = state;
-		this.reason = reason;
-		this.createDate = createDate;
-		this.completeDate = completeDate;
-		this.processMessage = processMessage;
-		this.memo = memo;
-		this.productBackReses = productBackReses;
 	}
 
 	@Id
@@ -132,16 +118,6 @@ public class OrderBack implements java.io.Serializable {
 
 	public void setCompleteDate(Date completeDate) {
 		this.completeDate = completeDate;
-	}
-
-	@Column(name = "PROCESS_MESSAGE", length = 500)
-	@Size(max = 500)
-	public String getProcessMessage() {
-		return this.processMessage;
-	}
-
-	public void setProcessMessage(String processMessage) {
-		this.processMessage = processMessage;
 	}
 
 	@Column(name = "MEMO", length = 200)

@@ -20,8 +20,8 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="" />
         <datasource-mapping>
-          <factory-entry name="erpEntityManagerFactory" value="9e6053d3-0caf-4ab7-810e-8bdc741cafba" />
-          <factory-entry name="systemEntityManagerFactory" value="9e6053d3-0caf-4ab7-810e-8bdc741cafba" />
+          <factory-entry name="erpEntityManagerFactory" value="b4d6ca00-b810-41b9-95c8-92a951162c74" />
+          <factory-entry name="systemEntityManagerFactory" value="b4d6ca00-b810-41b9-95c8-92a951162c74" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>

@@ -1,5 +1,5 @@
 package com.dgsoft.erp.model;
-// Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
+// Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class ExpressInfo implements java.io.Serializable {
 	private String id;
 	private TransCorp transCorp;
 	private String number;
-	private Set<OrderDelivery> orderDeliveries = new HashSet<OrderDelivery>(0);
+	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
 	public ExpressInfo() {
 	}
@@ -34,11 +34,11 @@ public class ExpressInfo implements java.io.Serializable {
 		this.transCorp = transCorp;
 	}
 	public ExpressInfo(String id, TransCorp transCorp, String number,
-			Set<OrderDelivery> orderDeliveries) {
+			Set<Dispatch> dispatches) {
 		this.id = id;
 		this.transCorp = transCorp;
 		this.number = number;
-		this.orderDeliveries = orderDeliveries;
+		this.dispatches = dispatches;
 	}
 
 	@Id
@@ -75,12 +75,12 @@ public class ExpressInfo implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "expressInfo")
-	public Set<OrderDelivery> getOrderDeliveries() {
-		return this.orderDeliveries;
+	public Set<Dispatch> getDispatches() {
+		return this.dispatches;
 	}
 
-	public void setOrderDeliveries(Set<OrderDelivery> orderDeliveries) {
-		this.orderDeliveries = orderDeliveries;
+	public void setDispatches(Set<Dispatch> dispatches) {
+		this.dispatches = dispatches;
 	}
 
 }
