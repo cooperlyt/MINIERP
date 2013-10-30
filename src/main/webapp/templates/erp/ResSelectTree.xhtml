@@ -36,8 +36,7 @@
                         <a:commandLink value="#{_node.res.name}" execute="@this" immediate="true"
                                        render="#{render}"
                                        oncomplete="#{rich:component('resSelectPanel')}.hide();">
-                            <a:param value="#{_node.res.id}" assignTo="#{resLocateHome.id}"/>
-                            <a:param value="#{changeType}" assignTo="#{resLocateHome.changeType}"/>
+                            <a:param value="#{_node.res.id}" assignTo="#{resHome.id}"/>
                             <a:attachQueue requestDelay="0"/>
                             <s:conversationId/>
                         </a:commandLink>

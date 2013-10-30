@@ -21,7 +21,7 @@ import java.util.*;
 @Name("storeResHome")
 public class StoreResHome extends ErpEntityHome<StoreRes> {
 
-
+    public static final String STORE_RES_CODE_RULE_PARAM_NAME = "erp.storeResRegRule";
 
     public void setRes(Res res, Collection<Format> formatList, BigDecimal floatConvertRate) {
 

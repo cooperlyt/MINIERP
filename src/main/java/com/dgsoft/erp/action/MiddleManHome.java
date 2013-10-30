@@ -14,4 +14,5 @@ import org.jboss.seam.annotations.Name;
  */
 @Name("middleManHome")
 public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
+
 }

@@ -2,10 +2,8 @@ package com.dgsoft.erp.action.store;
 
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.log.Log;
 
 import javax.persistence.EntityManager;
@@ -29,9 +27,6 @@ public class StoreResFormatFilter {
     protected Log log;
 
     private Res res;
-
-    //private BigDecimal count;
-
 
     private List<Format> resFormatList = new ArrayList<Format>();
 
@@ -65,11 +60,24 @@ public class StoreResFormatFilter {
     }
 
 
+    @Observer("erp.storeResLocateSelected")
+    public void selectedStoreRes(StoreRes storeRes){
+        this.res = storeRes.getRes();
+        generateFloatConvertRateHistory();
+        resFormatList = new ArrayList<Format>();
+        for (Format format: storeRes.getFormatList()){
+            resFormatList.add(new Format(format.getFormatDefine(),format.getFormatValue()));
+            historyValues.put(format.getFormatDefine().getId(), searchHistoryValues(format.getFormatDefine()));
+        }
 
+    }
+
+
+    @Observer("erp.resLocateSelected")
     public void selectedRes(Res res) {
         this.res = res;
-        resFormatList = new ArrayList<Format>();
         generateFloatConvertRateHistory();
+        resFormatList = new ArrayList<Format>();
         for (FormatDefine formatDefine : res.getFormatDefineList()) {
             resFormatList.add(new Format(formatDefine));
             historyValues.put(formatDefine.getId(), searchHistoryValues(formatDefine));

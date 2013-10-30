@@ -12,7 +12,7 @@ public interface StoreChangeAction {
 
     public abstract String begin();
 
-    public abstract void addItem();
+    public abstract String addItem();
 
     public abstract void removeItem();
 

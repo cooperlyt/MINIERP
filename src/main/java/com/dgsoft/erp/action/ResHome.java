@@ -2,11 +2,9 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.common.OrderBeanComparator;
 import com.dgsoft.common.helper.ActionExecuteState;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.model.FormatDefine;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.ResUnit;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -30,6 +28,8 @@ import java.util.List;
 @Name("resHome")
 public class ResHome extends ErpEntityHome<Res> {
 
+    public static final String RES_CODE_RULE_PARAM_NAME = "erp.resRegRule";
+
     @In(create = true)
     private ResCategoryHome resCategoryHome;
 
@@ -38,6 +38,9 @@ public class ResHome extends ErpEntityHome<Res> {
 
     @In
     private ActionExecuteState actionExecuteState;
+
+    @In
+    private RunParam runParam;
 
     @DataModel(scope = ScopeType.PAGE)
     private List<FormatDefine> formatDefineList = new ArrayList<FormatDefine>();
@@ -133,6 +136,10 @@ public class ResHome extends ErpEntityHome<Res> {
         }
     }
 
+    public void verifyCodeAvailable(ValueChangeEvent e){
+
+    }
+
     @Override
     protected boolean verifyPersistAvailable() {
         String newId = this.getInstance().getId();
@@ -144,8 +151,46 @@ public class ResHome extends ErpEntityHome<Res> {
 
     }
 
+    @Override
+    protected boolean verifyUpdateAvailable(){
+        if (verifyCodeAvailable(getInstance().getCode())){
+
+            return false;
+        } else{
+            return true;
+        }
+
+    }
+
+    public boolean isCodeAvailable(String code){
+
+    }
+
     public boolean isIdAvailable(String newId) {
         return getEntityManager().createQuery("select res from Res res where res.id = ?1").setParameter(1, newId).getResultList().size() == 0;
+    }
+
+
+    public String getResTitle() {
+        if (isIdDefined()) {
+
+            ResCategory category = getInstance().getResCategory();
+            String result = "";
+            if (category != null) {
+                String categoryTitle = category.getName();
+
+                while (category.getResCategory() != null) {
+                    category = category.getResCategory();
+
+                    categoryTitle = category.getName() + " > " + categoryTitle;
+                }
+                result = categoryTitle;
+            }
+            result = result + " : " + getInstance().getName() + "(" + getInstance().getCode() + ")";
+            return result;
+
+        } else
+            return "";
     }
 
 }
