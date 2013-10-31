@@ -2,6 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.common.OrderBeanComparator;
 import com.dgsoft.common.helper.ActionExecuteState;
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
@@ -41,6 +42,9 @@ public class ResHome extends ErpEntityHome<Res> {
 
     @In
     private RunParam runParam;
+
+    @In
+    private NumberBuilder numberBuilder;
 
     @DataModel(scope = ScopeType.PAGE)
     private List<FormatDefine> formatDefineList = new ArrayList<FormatDefine>();
@@ -102,72 +106,68 @@ public class ResHome extends ErpEntityHome<Res> {
         OrderBeanComparator.down(formatDefine, formatDefineList);
     }
 
-    public void unitGroupSelectListener(){
-        if (getInstance().getUnitGroup() != null){
-           for (ResUnit resUnit: getInstance().getUnitGroup().getResUnits()){
-               if (resUnit.getConversionRate().intValue() == 1){
-                   getInstance().setResUnitByMasterUnit(resUnit);
-                   getInstance().setResUnitByInDefault(resUnit);
-                   getInstance().setResUnitByOutDefault(resUnit);
-                   return;
-               }
-           }
+    public void unitGroupSelectListener() {
+        if (getInstance().getUnitGroup() != null) {
+            for (ResUnit resUnit : getInstance().getUnitGroup().getResUnits()) {
+                if (resUnit.getConversionRate().intValue() == 1) {
+                    getInstance().setResUnitByMasterUnit(resUnit);
+                    getInstance().setResUnitByInDefault(resUnit);
+                    getInstance().setResUnitByOutDefault(resUnit);
+                    return;
+                }
+            }
         }
     }
 
-    public void masterUnitSelectListener(){
+    public void masterUnitSelectListener() {
         if ((getInstance().getUnitGroup() != null) &&
                 (getInstance().getResUnitByMasterUnit() != null) &&
-                (getInstance().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT))){
+                (getInstance().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT))) {
             getInstance().setResUnitByInDefault(getInstance().getResUnitByMasterUnit());
             getInstance().setResUnitByOutDefault(getInstance().getResUnitByMasterUnit());
         }
     }
 
     @Override
-    protected Res createInstance(){
-        return new Res(true);
+    protected Res createInstance() {
+        return new Res(String.valueOf(numberBuilder.getNumber("erp.res.code")), true);
     }
 
-    public void verifyIdAvailable(ValueChangeEvent e) {
-        String id = (String) e.getNewValue();
-        if (!isIdAvailable(id)) {
-            facesMessages.addToControlFromResourceBundle(e.getComponent().getId(), StatusMessage.Severity.ERROR, "fieldConflict", id);
+
+    public void verifyCodeAvailable(ValueChangeEvent e) {
+        if (!getInstance().getCode().matches(runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME))) {
+            facesMessages.addToControlFromResourceBundle(e.getComponent().getId(), StatusMessage.Severity.ERROR, "resCodeNotRule",
+                    getInstance().getCode(), runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME));
+
+        } else if (!isCodeAvailable(getInstance().getCode())) {
+            facesMessages.addToControlFromResourceBundle(e.getComponent().getId(),
+                    StatusMessage.Severity.ERROR, "resCodeConflict", getInstance().getCode());
         }
-    }
-
-    public void verifyCodeAvailable(ValueChangeEvent e){
-
     }
 
     @Override
     protected boolean verifyPersistAvailable() {
-        String newId = this.getInstance().getId();
-        if (!isIdAvailable(newId)) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "fieldConflict", newId);
-            return false;
-        } else
-            return true;
+        return verifyUpdateAvailable();
 
     }
 
     @Override
-    protected boolean verifyUpdateAvailable(){
-        if (verifyCodeAvailable(getInstance().getCode())){
-
+    protected boolean verifyUpdateAvailable() {
+        if (!getInstance().getCode().matches(runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME))) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "resCodeNotRule",
+                    getInstance().getCode(), runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME));
             return false;
-        } else{
+        } else if (!isCodeAvailable(getInstance().getCode())) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "resCodeConflict", getInstance().getCode());
+            return false;
+        } else {
             return true;
         }
 
     }
 
-    public boolean isCodeAvailable(String code){
-
-    }
-
-    public boolean isIdAvailable(String newId) {
-        return getEntityManager().createQuery("select res from Res res where res.id = ?1").setParameter(1, newId).getResultList().size() == 0;
+    public boolean isCodeAvailable(String code) {
+        return getEntityManager().createQuery("select res from Res res where res.code = ?1").setParameter(1, code).getResultList().isEmpty();
     }
 
 

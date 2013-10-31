@@ -34,12 +34,17 @@
         <ui:param name="treeValue" value="#{resTreeValue}"/>
     </ui:include>
 
+    <ui:include src="/templates/erp/StoreResSelectTree.xhtml">
+        <ui:param name="render" value="storeInItem"/>
+        <ui:param name="treeValue" value="#{storeResTreeValue}"/>
+    </ui:include>
+
 
     <rich:toolbar height="26">
 
         <rich:toolbarGroup>
             <h:form>
-                <h:panelGrid id="resSearchForm" columns="3">
+                <h:panelGrid id="resSearchForm" columns="4">
 
                     <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocate.code}"
                                  required="true">
@@ -58,30 +63,36 @@
                                      onclick="#{rich:component('resSelectPanel')}.show();return false;">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
+
+                    <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                     title="#{messages.storeResSelect}"
+                                     onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
                 </h:panelGrid>
             </h:form>
         </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">
-            <ui:insert name="rightToolbar">
-                <h:form>
-                    <h:panelGrid columns="3">
-                        <h:inputText id="storeOrderCodeInput"
-                                     required="true"
-                                     maxlength="32"
-                                     styleClass="barsearch"
-                                     label="#{messages.storeIn_field_id}"
-                                     value="#{stockChangeHome.instance.id}">
-                            <rich:placeholder value="#{messages.storeIn_field_id}"/>
-                        </h:inputText>
 
-                        <h:commandButton value="#{messages.storeIn}" action="#{sotreInAction.saveStoreChange}"/>
+            <h:form>
+                <h:panelGrid columns="3">
+                    <h:inputText id="storeOrderCodeInput"
+                                 required="true"
+                                 maxlength="32"
+                                 styleClass="barsearch"
+                                 label="#{messages.storeIn_field_id}"
+                                 value="#{stockChangeHome.instance.id}">
+                        <rich:placeholder value="#{messages.storeIn_field_id}"/>
+                    </h:inputText>
 
-                        <s:button value="#{messages.cancel}" action="#{sotreInAction.cancel}" propagation="end"/>
+                    <h:commandButton value="#{messages.storeIn}" action="#{sotreInAction.saveStoreChange}"/>
+                    <ui:insert name="cancelButton">
 
-                    </h:panelGrid>
-                </h:form>
-            </ui:insert>
+                    </ui:insert>
+                </h:panelGrid>
+            </h:form>
+
         </rich:toolbarGroup>
 
     </rich:toolbar>
@@ -94,11 +105,6 @@
         <ui:param name="panelTitle" value="#{messages.storeRes_field_code}"/>
         <ui:param name="panelId" value="newStoreResCodeInputPanel"/>
         <ui:define name="controls">
-            <a:commandButton immediate="true"
-                             execute="@this" image="/img/close.png"
-                             onclick="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
         </ui:define>
 
 
@@ -112,7 +118,8 @@
         <ui:define name="actionButtons">
             <a:commandButton immediate="true"
                              execute="@this" value="#{messages.cancel}"
-                             onclick="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
+                             oncomplete="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
+                <a:param value="" assignTo="#{sotreInAction.editingItem.storeResCode}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
             <a:commandButton value="#{messages.addItem}" execute="@form"
@@ -158,12 +165,13 @@
                     <ui:param name="resCountBean" value="#{sotreInAction.editingItem.storeResCount}"/>
                 </ui:include>
 
-
                 <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
-                                 render="storeInItem,storeInItems"  data="#{sotreInAction.addItemLastState}"
-                                 oncomplete="if (event.data != 'added')#{rich:component('newStoreResCodeInputPanel')}.show();"
-                                 action="#{sotreInAction.addItem}">
+                                 render="storeInItem,storeInItems,newStoreResCodeInputPanel_inputs"
+                                 data="#{sotreInAction.addItemLastState}"
+                                 oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
+                                 action="#{produceStoreInHome.addItem}">
                     <a:attachQueue requestDelay="0"/>
+
                 </a:commandButton>
             </ui:insert>
 
@@ -185,16 +193,11 @@
                     <f:facet name="header">
                         #{messages.res}
                     </f:facet>
-                    #{_item.res.name}(#{_item.res.code}) #{' '}
-                    <a:repeat value="#{_item.formats}" var="_format">
-                        #{' '}
-                        #{_format.formatDefine.name} :
-                        <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
-                                      rendered="#{_format.formatDefine.dataType.name() eq 'WORD'}"/>
-                        <h:outputText value="#{_format.formatValue}"
-                                      rendered="#{not (_format.formatDefine.dataType.name() eq 'WORD')}"/>
+                    
+                    <ui:include src="/templates/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item}"/>
+                    </ui:include>
 
-                    </a:repeat>
                 </rich:column>
 
                 <rich:column>

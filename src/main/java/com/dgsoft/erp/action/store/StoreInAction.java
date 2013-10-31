@@ -61,7 +61,13 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     @Override
     protected String storeChange() {
 
+        boolean haveItem = false;
         for (StoreInItem storeInItem : storeInItems) {
+
+            if (storeInItem.getStoreResCount().getMasterCount().floatValue() == 0){
+
+                continue;
+            }
 
             if (storeInItem.getStoreRes() == null){
                 storeResHome.setRes(storeInItem.getRes(), storeInItem.getFormats(), storeInItem.getStoreResCount().getFloatConvertRate());
@@ -136,7 +142,11 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             //stockChangeItem.getStock().getBatchStoreCounts()
 
             stockChangeHome.getInstance().getStockChangeItems().add(stockChangeItem);
-
+            haveItem = true;
+        }
+        if (!haveItem){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeInNotItem");
+            return null;
         }
         getInstance().setStockChange(stockChangeHome.getInstance());
         persist();
@@ -151,7 +161,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         addItemLastState = "";
     }
 
-    @Observer("erp.resLocateSelected")
+    @Observer("erp.storeResLocateSelected")
     public void generateStoreInItemByStoreRes(StoreRes storeRes) {
         editingItem = new StoreInItem(storeRes.getRes(), storeRes.getFloatConversionRate());
         addItemLastState = "";
@@ -184,37 +194,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         }
 
 
-        if ((editingItem.getStoreRes() == null)) {
-            if ((editingItem.getStoreResCode() == null) || "".equals(editingItem.getStoreResCode().trim())) {
-                storeResHome.setRes(editingItem.getRes(),
-                        storeResFormatFilter.getResFormatList(), editingItem.getStoreResCount().getFloatConvertRate());
-                if (!storeResHome.isIdDefined()) {
-                    facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
-                            "newSotreResTypedCodePlase");
-                    //TODO reCODE
-                    editingItem.setStoreResCode(editingItem.getRes().getCode() + "-" + numberBuilder.getSampleNumber("StoreResCode"));
-                    addItemLastState = "code_not_set";
-                    return addItemLastState;
-                } else {
-                    editingItem.setStoreRes(storeResHome.getInstance());
-                }
 
-            } else if (!editingItem.getStoreResCode().matches(runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME))) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                        "storeResCodeNotRule", editingItem.getStoreResCode(),
-                        runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME));
-                addItemLastState = "code_not_rule";
-                return addItemLastState;
-            }
-
-            if (!getEntityManager().createQuery("select storeRes from StoreRes storeRes where code = :code")
-                    .setParameter("code",editingItem.getStoreResCode()).getResultList().isEmpty()){
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                        "storeResCodeExists", editingItem.getStoreResCode());
-                addItemLastState = "code_exists";
-                return addItemLastState;
-            }
-        }
 
         editingItem.setFormats(storeResFormatFilter.getResFormatList());
         for (StoreInItem storeInItem : storeInItems) {
@@ -226,8 +206,43 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         }
 
         if (editingItem != null) {
+
+            if ((editingItem.getStoreRes() == null)) {
+                if ((editingItem.getStoreResCode() == null) || "".equals(editingItem.getStoreResCode().trim())) {
+                    storeResHome.setRes(editingItem.getRes(),
+                            storeResFormatFilter.getResFormatList(), editingItem.getStoreResCount().getFloatConvertRate());
+                    if (!storeResHome.isIdDefined()) {
+                        facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
+                                "newSotreResTypedCodePlase");
+                        editingItem.setStoreResCode(editingItem.getRes().getCode() + "-" +
+                                numberBuilder.getNumber("erp.storeResCode." + editingItem.getRes().getCode()));
+                        addItemLastState = "code_not_set";
+                        return addItemLastState;
+                    } else {
+                        editingItem.setStoreRes(storeResHome.getInstance());
+                    }
+
+                } else if (!editingItem.getStoreResCode().matches(runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME))) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                            "storeResCodeNotRule", editingItem.getStoreResCode(),
+                            runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME));
+                    addItemLastState = "code_not_rule";
+                    return addItemLastState;
+                }
+
+                if (!getEntityManager().createQuery("select storeRes from StoreRes storeRes where code = :code")
+                        .setParameter("code",editingItem.getStoreResCode()).getResultList().isEmpty()){
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                            "storeResCodeExists", editingItem.getStoreResCode());
+                    addItemLastState = "code_exists";
+                    return addItemLastState;
+                }
+            }
+
+
             storeInItems.add(editingItem);
         }
+
         resHome.clearInstance();
         storeResHome.clearInstance();
         addItemLastState = "added";

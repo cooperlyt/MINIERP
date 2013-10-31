@@ -34,6 +34,10 @@
         <rich:toolbarGroup location="right">
 
 
+
+            <s:button action="#{resHome.refresh}" view="/func/erp/res/ResMgr.xhtml"
+                      propagation="end" value="#{messages.cancel}"/>
+
             <h:commandButton value="#{messages.save}" action="#{resHome.persist}"
                              rendered="#{!resHome.managed}"/>
 
@@ -41,8 +45,6 @@
                              rendered="#{resHome.managed}"/>
 
 
-            <s:button action="#{resHome.refresh}" view="/func/erp/data/ResMgr.xhtml"
-                      propagation="end" value="#{messages.cancel}"/>
 
 
         </rich:toolbarGroup>
@@ -67,7 +69,7 @@
                                  required="true"
                                  size="27"
                                  maxlength="32"
-                                 valueChangeListener="#{resHome.verifyIdAvailable}"
+                                 valueChangeListener="#{resHome.verifyCodeAvailable}"
                                  label="#{messages.res_field_code}"
                                  value="#{resHome.instance.code}">
                         <a:ajax event="blur" render="idField"/>

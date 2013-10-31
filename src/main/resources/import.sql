@@ -7,8 +7,8 @@ INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('system.business.f
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateStoreInCode','BOOLEAN','true','是否自动生成入库单编号,是:true');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateStoreOutCode','BOOLEAN','true','是否自动生成出库单编号,是:true');
 
-INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.storeResRegRule','STRING','^\w+\-\w+$','货品编号规则(正则表表达),一但建立不可更改,因为已有数据可能不符合规则');
-INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.resRegRule','STRING','^\w+$','物资编号规则(正则表表达),一但建立不可更改,因为已有数据可能不符合规则');
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.storeResRegRule','STRING','^\\w+\\-\\w+$','货品编号规则(正则表表达),一但建立不可更改,因为已有数据可能不符合规则');
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.resRegRule','STRING','^\\w+$','物资编号规则(正则表表达),一但建立不可更改,因为已有数据可能不符合规则');
 
 -- 业务类别
 

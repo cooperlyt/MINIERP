@@ -59,7 +59,7 @@
             <rich:toolbarGroup location="right">
 
                 <s:button value="#{messages.create}#{messages.res}" action="#{resHome.clearInstance}"
-                          view="/func/erp/data/ResDetails.xhtml" propagation="begin" styleClass="toolBarBtn"
+                          view="/func/erp/res/ResDetails.xhtml" propagation="begin" styleClass="toolBarBtn"
                           onclick="if (#{not resCategoryHome.idDefined}){alert('#{messages.plase_select_rescategory_first}'); return false;}">
                     <f:param name="categoryId" value="#{resCategoryHome.instance.id}"/>
                 </s:button>
@@ -229,7 +229,7 @@
                     <f:facet name="header">
                         #{messages.action}
                     </f:facet>
-                    <s:link propagation="begin" view="/func/erp/data/ResDetails.xhtml">
+                    <s:link propagation="begin" view="/func/erp/res/ResDetails.xhtml">
                         <s:graphicImage value="/img/edit.png" title="#{messages.edit}"/>
                         <f:param name="resId" value="#{_res.id}"/>
                         <f:param name="categoryId" value="#{resCategoryHome.instance.id}" />

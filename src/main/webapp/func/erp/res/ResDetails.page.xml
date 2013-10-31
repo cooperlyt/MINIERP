@@ -9,14 +9,14 @@
     <navigation from-action="#{resHome.persist}">
         <rule if-outcome="persisted">
             <end-conversation/>
-            <redirect view-id="/func/erp/data/ResMgr.xhtml"/>
+            <redirect view-id="/func/erp/res/ResMgr.xhtml"/>
         </rule>
     </navigation>
 
     <navigation from-action="#{resHome.update}">
         <rule if-outcome="updated">
             <end-conversation/>
-            <redirect view-id="/func/erp/data/ResMgr.xhtml"/>
+            <redirect view-id="/func/erp/res/ResMgr.xhtml"/>
         </rule>
     </navigation>
 

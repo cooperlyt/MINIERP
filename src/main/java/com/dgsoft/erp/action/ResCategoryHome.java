@@ -6,7 +6,6 @@ import com.dgsoft.erp.model.ResCategory;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StoreRes;
 import com.google.common.collect.Iterators;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -333,12 +332,12 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
-    private List<ResCategoryNode> getStoreChangeLimitTree(StockChange.StoreChangeType changeType){
+    private List<ResCategoryNode> getStoreChangeResLimitTree(StockChange.StoreChangeType changeType, boolean addStoreRes){
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)").setParameter("changeTypes",changeType.getResTypes()).getResultList();
         for (ResCategory resCategory : rootCategories) {
             ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, false, false, EnumSet.allOf(ResCategory.ResType.class));
+            generateChildrenNode(rootNode, true, addStoreRes, false, changeType.getResTypes());
             result.add(rootNode);
         }
         return result;
@@ -346,7 +345,12 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
 
     @Factory(value="produceInResTree",scope = ScopeType.CONVERSATION)
     public List<ResCategoryNode> getProduceInResTree(){
-        return  getStoreChangeLimitTree(StockChange.StoreChangeType.PRODUCE_IN);
+        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,false);
+    }
+
+    @Factory(value = "produceInStoreResTree",scope = ScopeType.CONVERSATION)
+    public List<ResCategoryNode> getProduceInStoreResTree(){
+        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,true);
     }
 
 

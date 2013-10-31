@@ -15,6 +15,7 @@ import org.jboss.seam.international.StatusMessage;
 import org.richfaces.component.UITree;
 import org.richfaces.event.TreeSelectionChangeEvent;
 
+import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.swing.tree.TreeNode;
 import java.util.*;
@@ -100,12 +101,30 @@ public class StoreHome extends ErpEntityHome<Store> {
         super.setId(id);
         if (this.isIdDefined())
             editing = false;
+    }
 
+    @Override
+    protected boolean verifyPersistAvailable() {
+        if (!isIdAvailable(getInstance().getId())) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"fieldConflict",getInstance().getId());
+            return false;
+        }
+        return true;
+    }
+
+    public void verifyIdAvailable(ValueChangeEvent e) {
+        String id = (String) e.getNewValue();
+        if (!isIdAvailable(id)) {
+            facesMessages.addToControlFromResourceBundle(e.getComponent().getId(), StatusMessage.Severity.ERROR, "fieldConflict", id);
+        }
+    }
+
+    private boolean isIdAvailable(String newId) {
+        return getEntityManager().createQuery("select store from Store store where store.id =:newId").setParameter("newId", newId).getResultList().isEmpty();
     }
 
     @Override
     protected void initInstance() {
-
         super.initInstance();
         //selectStoreArea = null;
         List<StoreManager> storeManagerList = new ArrayList<StoreManager>(getInstance().getStoreManagers());
@@ -167,7 +186,7 @@ public class StoreHome extends ErpEntityHome<Store> {
     public List<StoreTreeNode> getStoreAreaTree() {
         List<Store> stores = getMyStoreList();
         List<StoreTreeNode> result = new ArrayList<StoreTreeNode>(stores.size());
-        for(Store store: stores){
+        for (Store store : stores) {
             result.add(new StoreTreeNode(store));
         }
         return result;
@@ -260,7 +279,7 @@ public class StoreHome extends ErpEntityHome<Store> {
 
         private List<StoreAreaTreeNode> childs;
 
-        public StoreTreeNode(Store store){
+        public StoreTreeNode(Store store) {
             this.store = store;
             childs = new ArrayList<StoreAreaTreeNode>();
             for (StoreArea storeArea : store.getRootStoreAreaList(true)) {

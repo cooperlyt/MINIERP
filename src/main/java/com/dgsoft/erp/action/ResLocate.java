@@ -176,5 +176,28 @@ public class ResLocate {
         Events.instance().raiseEvent("erp.storeResLocateSelected",resultStoreRes);
     }
 
+    private String localedId;
 
+    public String getLocaledId() {
+        return localedId;
+    }
+
+    public void setLocaledId(String localedId) {
+        this.localedId = localedId;
+    }
+
+    public void resLocaledById(){
+        resHome.setId(localedId);
+        resultRes = resHome.getInstance();
+        result = LocateResult.FOUND_RES;
+        Events.instance().raiseEvent("erp.resLocateSelected",resultRes);
+    }
+
+    public void storeResLocaledById(){
+        result = LocateResult.FOUND_STORERES;
+        storeResHome.setId(localedId);
+        resultStoreRes = storeResHome.getInstance();
+        resHome.setId(resultStoreRes.getRes().getId());
+        Events.instance().raiseEvent("erp.storeResLocateSelected",resultStoreRes);
+    }
 }

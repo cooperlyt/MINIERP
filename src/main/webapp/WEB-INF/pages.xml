@@ -7,16 +7,23 @@
        login-view-id="/login.xhtml">
 
 
+
     <page view-id="/func/erp/store/storeChange/*" login-required="true">
-        <restrict>#{s:hasRole('erp.store.manager')}</restrict>
+        <restrict>#{s:hasRole('erp.storage.store')}</restrict>
         <navigation>
             <rule if-outcome="ProcduceBeginStoreIn">
+
+                <begin-conversation/>
+                <redirect view-id="/func/erp/store/storeChange/ProduceStoreIn.xhtml"/>
+            </rule>
+            <rule if-outcome="ProcduceStoreInComplete">
                 <end-conversation/>
                 <redirect view-id="/func/erp/store/storeChange/ProduceIn.xhtml"/>
             </rule>
-            <rule if-outcome="ProduceStoreIn">
-                <begin-conversation/>
-                <redirect view-id="/func/erp/store/storeChange/ProduceStoreIn.xhtml"/>
+            <rule if-outcome="ProcduceStoreInCancel">
+
+                <end-conversation/>
+                <redirect view-id="/func/erp/store/storeChange/ProduceIn.xhtml"/>
             </rule>
         </navigation>
     </page>
@@ -55,9 +62,7 @@
         <restrict>#{s:hasRole('erp.storage.store') or s:hasRole('erp.storage.manager')}</restrict>
     </page>
 
-    <page view-id="/func/erp/store/storeChange/*" login-required="true">
-        <restrict>#{s:hasRole('erp.storage.store')}</restrict>
-    </page>
+
 
     <page view-id="/func/erp/store/StoreMgr.xhtml" login-required="true">
         <restrict>#{s:hasRole('erp.storage.store')}</restrict>

@@ -134,6 +134,18 @@
                                          value="#{storeHome.instance.enable}"/>
             </s:decorate>
 
+            <s:decorate id="storeIdField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.store_field_id}</ui:define>
+                <h:inputText required="true" label="#{messages.store_field_id}"
+                             size="25" maxlength="32"
+                             valueChangeListener="#{storeHome.verifyIdAvailable}"
+                             readonly="#{storeHome.managed || (not storeHome.editing)}"
+                             value="#{storeHome.instance.id}">
+                     <a:ajax event="blur" render="storeIdField"
+                             disabled="#{storeHome.managed || (not storeHome.editing)}"/>
+                </h:inputText>
+            </s:decorate>
+
             <s:decorate id="nameField" template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.name}</ui:define>
                 <h:inputText id="name"
