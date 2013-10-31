@@ -27,6 +27,7 @@ public class ResUnit implements java.io.Serializable,OrderModel {
 	private Set<Res> resesForMasterUnit = new HashSet<Res>(0);
 	private Set<Res> resesForInDefault = new HashSet<Res>(0);
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
+    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
 
 	public ResUnit() {
         this.conversionRate = new BigDecimal(0);
@@ -127,4 +128,12 @@ public class ResUnit implements java.io.Serializable,OrderModel {
         this.noConvertCounts = noConvertCounts;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "middleUnit")
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 }

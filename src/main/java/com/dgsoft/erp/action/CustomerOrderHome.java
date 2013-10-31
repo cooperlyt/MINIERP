@@ -4,17 +4,19 @@ import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
-import com.dgsoft.common.system.model.BusinessInstance;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.NeedRes;
+import com.dgsoft.erp.model.OrderItem;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,6 +52,16 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
 
     private NeedRes needRes;
 
+    private List<OrderItem> orderItemList;
+
+    public NeedRes getNeedRes() {
+        return needRes;
+    }
+
+    public void setNeedRes(NeedRes needRes) {
+        this.needRes = needRes;
+    }
+
     public void clearCustomer() {
         customerHome.clearInstance();
         middleManHome.clearInstance();
@@ -60,7 +72,16 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         startData.generateKey();
         needRes = new NeedRes(getInstance(),
                 NeedRes.NeedResType.ORDER_SEND,ORDER_SEND_REASON_WORD_KEY,new Date());
+        orderItemList = new ArrayList<OrderItem>();
         return "beginning";
+    }
+
+    public List<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
+
+    public void setOrderItemList(List<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
     }
 
     @Factory("orderPayTypes")
@@ -93,7 +114,7 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
             getInstance().setTel(customerHome.getInstance().getTel());
         }
 
-        if (getInstance().isMiddleManPay()) {
+        if (getInstance().isIncludeMiddleMan()) {
             if (getInstance().getCustomer().getMiddleMan() == null) {
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"orderIncludeMiddleManError");
                 return false;

@@ -20,8 +20,8 @@ public class Accounting implements java.io.Serializable {
 	private boolean debit;
     private Res res;
 	private Set<AccountOper> accountOpersForDebit = new HashSet<AccountOper>(0);
-	private Set<MiddleMoney> middleMoneysForCredit = new HashSet<MiddleMoney>(0);
-	private Set<MiddleMoney> middleMoneysForDebit = new HashSet<MiddleMoney>(0);
+	private Set<MiddleMoneyPay> middleMoneysForCredit = new HashSet<MiddleMoneyPay>(0);
+	private Set<MiddleMoneyPay> middleMoneysForDebit = new HashSet<MiddleMoneyPay>(0);
 	private Set<AccountOper> accountOpersForCredit = new HashSet<AccountOper>(0);
 
 	public Accounting() {
@@ -87,20 +87,20 @@ public class Accounting implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCredit")
-	public Set<MiddleMoney> getMiddleMoneysForCredit() {
+	public Set<MiddleMoneyPay> getMiddleMoneysForCredit() {
 		return this.middleMoneysForCredit;
 	}
 
-	public void setMiddleMoneysForCredit(Set<MiddleMoney> middleMoneysForCredit) {
+	public void setMiddleMoneysForCredit(Set<MiddleMoneyPay> middleMoneysForCredit) {
 		this.middleMoneysForCredit = middleMoneysForCredit;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByDebit")
-	public Set<MiddleMoney> getMiddleMoneysForDebit() {
+	public Set<MiddleMoneyPay> getMiddleMoneysForDebit() {
 		return this.middleMoneysForDebit;
 	}
 
-	public void setMiddleMoneysForDebit(Set<MiddleMoney> middleMoneysForDebit) {
+	public void setMiddleMoneysForDebit(Set<MiddleMoneyPay> middleMoneysForDebit) {
 		this.middleMoneysForDebit = middleMoneysForDebit;
 	}
 

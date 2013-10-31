@@ -26,7 +26,7 @@ public class MiddleMan implements java.io.Serializable, NamedModel {
     private String bank;
 	private String tel;
 	private Set<Customer> customers = new HashSet<Customer>(0);
-	private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
+	private Set<MiddleMoneyPay> middleMoneys = new HashSet<MiddleMoneyPay>(0);
 
 	public MiddleMan() {
 	}
@@ -39,7 +39,7 @@ public class MiddleMan implements java.io.Serializable, NamedModel {
 	}
 	public MiddleMan(String id, String name, String contact, String type,
 			String memo, String bankNumber, String tel,
-			Set<Customer> customers, Set<MiddleMoney> middleMoneys) {
+			Set<Customer> customers, Set<MiddleMoneyPay> middleMoneys) {
 		this.id = id;
 		this.name = name;
 		this.contact = contact;
@@ -138,11 +138,11 @@ public class MiddleMan implements java.io.Serializable, NamedModel {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "middleMan")
-	public Set<MiddleMoney> getMiddleMoneys() {
+	public Set<MiddleMoneyPay> getMiddleMoneys() {
 		return this.middleMoneys;
 	}
 
-	public void setMiddleMoneys(Set<MiddleMoney> middleMoneys) {
+	public void setMiddleMoneys(Set<MiddleMoneyPay> middleMoneys) {
 		this.middleMoneys = middleMoneys;
 	}
 

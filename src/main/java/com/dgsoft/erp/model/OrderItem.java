@@ -4,14 +4,7 @@ package com.dgsoft.erp.model;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,9 +15,13 @@ import javax.validation.constraints.Size;
 @Table(name = "ORDER_ITEM", catalog = "MINI_ERP")
 public class OrderItem implements java.io.Serializable {
 
+    public enum MiddleMoneyCalcType{
+        COUNT_FIX,MONEY_RATE;
+    }
+
 	private String id;
 	private StoreRes storeRes;
-	private UnitGroup unitGroup;
+	private ResUnit middleUnit;
 	private NeedRes needRes;
 	private BigDecimal count;
 	private BigDecimal cost;
@@ -32,41 +29,10 @@ public class OrderItem implements java.io.Serializable {
 	private BigDecimal rebate;
 	private BigDecimal middleMoney;
 	private BigDecimal middleRate;
+    private MiddleMoneyCalcType middleMoneyCalcType;
 	private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
 
 	public OrderItem() {
-	}
-
-	public OrderItem(String id, StoreRes storeRes, UnitGroup unitGroup,
-			NeedRes needRes, BigDecimal count, BigDecimal cost,
-			BigDecimal money, BigDecimal rebate, BigDecimal middleMoney,
-			BigDecimal middleRate) {
-		this.id = id;
-		this.storeRes = storeRes;
-		this.unitGroup = unitGroup;
-		this.needRes = needRes;
-		this.count = count;
-		this.cost = cost;
-		this.money = money;
-		this.rebate = rebate;
-		this.middleMoney = middleMoney;
-		this.middleRate = middleRate;
-	}
-	public OrderItem(String id, StoreRes storeRes, UnitGroup unitGroup,
-			NeedRes needRes, BigDecimal count, BigDecimal cost,
-			BigDecimal money, BigDecimal rebate, BigDecimal middleMoney,
-			BigDecimal middleRate, Set<DispatchItem> dispatchItems) {
-		this.id = id;
-		this.storeRes = storeRes;
-		this.unitGroup = unitGroup;
-		this.needRes = needRes;
-		this.count = count;
-		this.cost = cost;
-		this.money = money;
-		this.rebate = rebate;
-		this.middleMoney = middleMoney;
-		this.middleRate = middleRate;
-		this.dispatchItems = dispatchItems;
 	}
 
 	@Id
@@ -93,17 +59,17 @@ public class OrderItem implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MIDDLE_UNIT", nullable = false)
+	@JoinColumn(name = "MIDDLE_UNIT", nullable = true)
 	@NotNull
-	public UnitGroup getUnitGroup() {
-		return this.unitGroup;
-	}
+    public ResUnit getMiddleUnit() {
+        return middleUnit;
+    }
 
-	public void setUnitGroup(UnitGroup unitGroup) {
-		this.unitGroup = unitGroup;
-	}
+    public void setMiddleUnit(ResUnit middleUnit) {
+        this.middleUnit = middleUnit;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "NEED_RES", nullable = false)
 	@NotNull
 	public NeedRes getNeedRes() {
@@ -154,7 +120,7 @@ public class OrderItem implements java.io.Serializable {
 		this.rebate = rebate;
 	}
 
-	@Column(name = "MIDDLE_MONEY", nullable = false, scale = 3)
+	@Column(name = "MIDDLE_MONEY", nullable = true, scale = 3)
 	@NotNull
 	public BigDecimal getMiddleMoney() {
 		return this.middleMoney;
@@ -164,7 +130,7 @@ public class OrderItem implements java.io.Serializable {
 		this.middleMoney = middleMoney;
 	}
 
-	@Column(name = "MIDDLE_RATE", nullable = false, scale = 4)
+	@Column(name = "MIDDLE_RATE", nullable = true, scale = 4)
 	@NotNull
 	public BigDecimal getMiddleRate() {
 		return this.middleRate;
@@ -173,6 +139,16 @@ public class OrderItem implements java.io.Serializable {
 	public void setMiddleRate(BigDecimal middleRate) {
 		this.middleRate = middleRate;
 	}
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "MIDDLE_CALC_TYPE",nullable = true)
+    public MiddleMoneyCalcType getMiddleMoneyCalcType() {
+        return middleMoneyCalcType;
+    }
+
+    public void setMiddleMoneyCalcType(MiddleMoneyCalcType middleMoneyCalcType) {
+        this.middleMoneyCalcType = middleMoneyCalcType;
+    }
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderItem")
 	public Set<DispatchItem> getDispatchItems() {

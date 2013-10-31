@@ -74,7 +74,7 @@
         <class>com.dgsoft.erp.model.MaterialStoreIn</class>
         <class>com.dgsoft.erp.model.MaterialStoreOut</class>
         <class>com.dgsoft.erp.model.MiddleMan</class>
-        <class>com.dgsoft.erp.model.MiddleMoney</class>
+        <class>com.dgsoft.erp.model.MiddleMoneyPay</class>
         <class>com.dgsoft.erp.model.NoConvertCount</class>
         <class>com.dgsoft.erp.model.OrderBack</class>
         <class>com.dgsoft.erp.model.PreparePay</class>

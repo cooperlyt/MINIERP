@@ -136,7 +136,7 @@
                     <ui:define name="label">#{messages.includeMiddleMan}</ui:define>
                     <h:selectBooleanCheckbox required="true"
                                              label="#{messages.includeMiddleMan}"
-                                             value="#{customerOrderHome.instance.middleManPay}"/>
+                                             value="#{customerOrderHome.instance.includeMiddleMan}"/>
                 </s:decorate>
 
                 <s:decorate template="/layout/edit.xhtml">
@@ -151,7 +151,18 @@
                     </rich:select>
                 </s:decorate>
 
-
+                 <s:decorate template="/layout/edit.xhtml">
+                     <ui:define name="label">#{messages.storeOutLimitDate}</ui:define>
+                     <rich:calendar
+                             enableManualInput="true"
+                             inputSize="20"
+                             timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                             datePattern="#{messages.datetimepattern}"
+                             required="true"
+                             label="#{messages.storeOutLimitDate}"
+                             value="#{customerOrderHome.needRes.limitTime}"/>
+                 </s:decorate>
 
             </rich:panel>
         </h:form>

@@ -39,6 +39,10 @@ public class CustomerOrder implements java.io.Serializable {
         OVERDRAFT,PAY_FIRST,COMPLETE_PAY;
     }
 
+    public enum MiddleMoneyCalcType{
+       CONSULT_FIX,MIDDLE_RATE;
+    }
+
 	private String id;
 	private Integer version;
 	private Customer customer;
@@ -58,10 +62,12 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal middleMoney;
     private BigDecimal totalCost;
     private BigDecimal middleRate;
+    private BigDecimal middleTotal;
 
-	private boolean middleManPay;
+	private boolean includeMiddleMan;
+    private MiddleMoneyCalcType middleMoneyCalcType;
 	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
-	private Set<MiddleMoney> middleMoneys = new HashSet<MiddleMoney>(0);
+	private Set<MiddleMoneyPay> middleMoneyPays = new HashSet<MiddleMoneyPay>(0);
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
@@ -186,6 +192,15 @@ public class CustomerOrder implements java.io.Serializable {
         this.middleMoney = middleMoney;
     }
 
+    @Column(name = "MIDDLE_TOTAL", scale = 3)
+    public BigDecimal getMiddleTotal() {
+        return middleTotal;
+    }
+
+    public void setMiddleTotal(BigDecimal middleTotal) {
+        this.middleTotal = middleTotal;
+    }
+
     @Column(name = "TOTAL_COST", nullable = false, scale = 3)
     @NotNull
     public BigDecimal getTotalCost() {
@@ -205,7 +220,17 @@ public class CustomerOrder implements java.io.Serializable {
         this.middleRate = middleRate;
     }
 
-	@Temporal(TemporalType.TIMESTAMP)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "MIDDLE_CALC_TYPE",nullable = true)
+    public MiddleMoneyCalcType getMiddleMoneyCalcType() {
+        return middleMoneyCalcType;
+    }
+
+    public void setMiddleMoneyCalcType(MiddleMoneyCalcType middleMoneyCalcType) {
+        this.middleMoneyCalcType = middleMoneyCalcType;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "COMPLETE_DATE", length = 19)
 	public Date getCompleteDate() {
 		return this.completeDate;
@@ -265,13 +290,13 @@ public class CustomerOrder implements java.io.Serializable {
         this.tel = tel;
     }
 
-    @Column(name = "MIDDLE_MAN_PAY", nullable = false)
-	public boolean isMiddleManPay() {
-		return this.middleManPay;
+    @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
+	public boolean isIncludeMiddleMan() {
+		return this.includeMiddleMan;
 	}
 
-	public void setMiddleManPay(boolean middleManPay) {
-		this.middleManPay = middleManPay;
+	public void setIncludeMiddleMan(boolean middleManPay) {
+		this.includeMiddleMan = middleManPay;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
@@ -284,12 +309,12 @@ public class CustomerOrder implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-	public Set<MiddleMoney> getMiddleMoneys() {
-		return this.middleMoneys;
+	public Set<MiddleMoneyPay> getMiddleMoneyPays() {
+		return this.middleMoneyPays;
 	}
 
-	public void setMiddleMoneys(Set<MiddleMoney> middleMoneys) {
-		this.middleMoneys = middleMoneys;
+	public void setMiddleMoneyPays(Set<MiddleMoneyPay> middleMoneys) {
+		this.middleMoneyPays = middleMoneys;
 	}
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = AccountOper.class)
