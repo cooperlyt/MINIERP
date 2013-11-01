@@ -5,6 +5,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesPage;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
+
 /**
  * Created with IntelliJ IDEA.
  * User: cooperlee
@@ -13,6 +20,32 @@ import org.jboss.seam.faces.FacesPage;
  */
 @Name("testKnow")
 public class TestKnow {
+
+    public static void main(String[] args){
+
+        NumberFormat df = DecimalFormat.getCurrencyInstance(Locale.CHINA);
+        //DecimalFormat df = new DecimalFormat("###,###,##0");
+
+         //df.setRoundingMode(RoundingMode.HALF_UP);
+        BigDecimal bd = new BigDecimal("-9999999.22222");
+
+
+        //String vv = df.format(bd).replace(String.valueOf(df.getDecimalFormatSymbols().getGroupingSeparator()),"");
+
+        try {
+            System.out.println(df.format(bd));
+            System.out.println(df.parse( df.format(bd)));
+
+            System.out.println(df.format(new BigDecimal(df.parse( df.format(bd)).toString())));
+        } catch (ParseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        //df.format(bd);
+
+        //df.format((new BigDecimal(df.format(bd))));
+
+        //System.out.println(df.format((new BigDecimal(vv))));
+    }
 
     private String v1;
 

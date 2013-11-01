@@ -91,6 +91,16 @@ public class UnitGroup implements java.io.Serializable {
     }
 
     @Transient
+    public ResUnit getMasterUnit(){
+        for (ResUnit unit : getResUnits()) {
+            if (unit.getConversionRate().floatValue() == 1) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    @Transient
     public ResUnit getFloatAuxiliaryUnit() {
         if (getType().equals(UnitGroupType.FLOAT_CONVERT)) {
             for (ResUnit unit : getResUnits()) {

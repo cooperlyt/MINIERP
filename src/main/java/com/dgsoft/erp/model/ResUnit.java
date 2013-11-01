@@ -21,6 +21,7 @@ public class ResUnit implements java.io.Serializable,OrderModel {
 	private String id;
 	private UnitGroup unitGroup;
 	private String name;
+    private String countFormate;
 	private BigDecimal conversionRate;
 	private int priority;
 	private Set<Res> resesForOutDefault = new HashSet<Res>(0);
@@ -74,7 +75,18 @@ public class ResUnit implements java.io.Serializable,OrderModel {
 		this.name = name;
 	}
 
-	@Column(name = "CONVERSION_RATE", scale = 10)
+    @Column(name="COUNT_FORMAT",nullable = false, length = 20)
+    @NotNull
+    @Size(max = 20)
+    public String getCountFormate() {
+        return countFormate;
+    }
+
+    public void setCountFormate(String countFormate) {
+        this.countFormate = countFormate;
+    }
+
+    @Column(name = "CONVERSION_RATE", scale = 10)
 	public BigDecimal getConversionRate() {
 		return this.conversionRate;
 	}

@@ -16,7 +16,6 @@
                        noSelectionLabel="#{messages.noSelectLabel}"/>
         <a:ajax event="selectitem" render="#{render}" disabled="#{empty ajaxDisable ? false : ajaxDisable}"/>
     </rich:select>
-    <!-- TODO  -->
 
     <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client" value="#{format.intValue}" layout="div" label="#{format.formatDefine.name}" required="#{empty requiredField ? 'true' : requiredField}"
                        var="_value" fetchValue="#{_value}" rendered="#{format.formatDefine.dataType.name() eq 'INTEGER'}"

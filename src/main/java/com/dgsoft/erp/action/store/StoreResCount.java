@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action.store;
 
 import com.dgsoft.erp.model.*;
+import org.jboss.seam.core.Events;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -65,7 +66,10 @@ public class StoreResCount implements java.io.Serializable {
 
     public StoreResCount(Res res, ResUnit useUnit) {
         this.res = res;
-        this.useUnit = useUnit;
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            this.useUnit = res.getUnitGroup().getMasterUnit();
+        }else
+            this.useUnit = useUnit;
         init();
     }
 
@@ -181,7 +185,14 @@ public class StoreResCount implements java.io.Serializable {
     }
 
 
-    public void calcFloatQuantityByMasterUnit() {
+    public void masterCountChangeListener(){
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            calcFloatQuantityByMasterUnit();
+        }
+        Events.instance().raiseEvent("storeResCountIsChanged");
+    }
+
+    private void calcFloatQuantityByMasterUnit() {
         if ((count == null) || (count.doubleValue() == 0)) {
             auxCount = new BigDecimal(0);
             floatConvertRate = new BigDecimal(0);
@@ -198,6 +209,7 @@ public class StoreResCount implements java.io.Serializable {
     public void calcFloatQuantityByRate() {
         if ((floatConvertRate == null) || (floatConvertRate.doubleValue() == 0)) {
             count = new BigDecimal(0);
+            Events.instance().raiseEvent("storeResCountIsChanged");
             auxCount = new BigDecimal(0);
             return;
         }
@@ -206,6 +218,7 @@ public class StoreResCount implements java.io.Serializable {
             auxCount = count.multiply(floatConvertRate);
         } else if ((auxCount != null) && (auxCount.doubleValue() != 0)) {
             count = auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
+            Events.instance().raiseEvent("storeResCountIsChanged");
         }
 
     }
@@ -213,12 +226,14 @@ public class StoreResCount implements java.io.Serializable {
     public void calcFloatQuantityByAuxUnit() {
         if ((auxCount == null) || (auxCount.doubleValue() == 0)) {
             count = new BigDecimal(0);
+            Events.instance().raiseEvent("storeResCountIsChanged");
             floatConvertRate = new BigDecimal(0);
             return;
         }
 
         if ((floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)) {
             count = auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
+            Events.instance().raiseEvent("storeResCountIsChanged");
         } else if ((count != null) && (count.doubleValue() != 0)) {
             floatConvertRate = auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
         }

@@ -9,69 +9,69 @@
                 template="/layout/full-template.xhtml">
 
 
-    <ui:define name="body">
-        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
-        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
-        <h:outputStylesheet>
-            .barsearch {
-                height: 14px;
-                width: 100px;
-            }
-        </h:outputStylesheet>
+<ui:define name="body">
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+<h:outputStylesheet>
+    .barsearch {
+        height: 14px;
+        width: 100px;
+    }
+</h:outputStylesheet>
 
-        <h:form>
-            <rich:toolbar>
-                <rich:toolbarGroup location="right">
-                    <h:inputText required="true"
-                                 maxlength="32"
-                                 styleClass="barsearch"
-                                 label="#{messages.OrderCode}"
-                                 value="#{startData.businessKey}">
-                        <rich:placeholder value="#{messages.OrderCode}"/>
-                    </h:inputText>
-                    <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
-                </rich:toolbarGroup>
-            </rich:toolbar>
+<h:form>
+    <rich:toolbar>
+        <rich:toolbarGroup location="right">
+            <h:inputText required="true"
+                         maxlength="32"
+                         styleClass="barsearch"
+                         label="#{messages.OrderCode}"
+                         value="#{startData.businessKey}">
+                <rich:placeholder value="#{messages.OrderCode}"/>
+            </h:inputText>
+            <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+        </rich:toolbarGroup>
+    </rich:toolbar>
 
 
-            <h:panelGrid columns="2">
-                <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.CustomerArea}</ui:define>
-                    <rich:select value="#{customerAreaHome.id}" required="true">
-                        <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
-                                       noSelectionLabel="#{messages.noSelectLabel}"
-                                       label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
-                        <a:ajax event="selectitem" execute="@this"
-                                listener="#{customerOrderHome.clearCustomer}"
-                                render="customerSelectNameField,customerInfo">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:ajax>
-                    </rich:select>
-                </s:decorate>
+    <h:panelGrid columns="2">
+        <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.CustomerArea}</ui:define>
+            <rich:select value="#{customerAreaHome.id}" required="true">
+                <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                <a:ajax event="selectitem" execute="@this"
+                        listener="#{customerOrderHome.clearCustomer}"
+                        render="customerSelectNameField,customerInfo">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </rich:select>
+        </s:decorate>
 
-                <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.Customer}</ui:define>
-                    <rich:autocomplete id="pinyinSearchCustomer" mode="client" minChars="1" autofill="false"
-                                       required="true" showButton="true"
-                                       selectFirst="true"
-                                       label="#{messages.Customer}"
-                                       clientFilterFunction="pinyinFilter"
-                                       autocompleteList="#{customerList.resultList}"
-                                       value="#{customerHome.pinyinSearchName}"
+        <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.Customer}</ui:define>
+            <rich:autocomplete id="pinyinSearchCustomer" mode="client" minChars="1" autofill="false"
+                               required="true" showButton="true"
+                               selectFirst="true"
+                               label="#{messages.Customer}"
+                               clientFilterFunction="pinyinFilter"
+                               autocompleteList="#{customerList.resultList}"
+                               value="#{customerHome.pinyinSearchName}"
 
-                                       fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
+                               fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
 
-                        <h:outputText value="#{_customer.name}"/>
-                        <a:ajax event="selectitem" listener="#{customerHome.middleManPayChangeListener}"
-                                render="pinyinAutocomplete,customerInfo" execute="@this">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:ajax>
-                        <a:ajax event="blur" execute="@this" listener="#{customerOrderHome.customerChangeListener}"
-                                render="pinyinSearchCustomer,customerInfo,orderContactFields">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:ajax>
-                    </rich:autocomplete>
-                </s:decorate>
+                <h:outputText value="#{_customer.name}"/>
+                <a:ajax event="selectitem" listener="#{customerHome.middleManPayChangeListener}"
+                        render="pinyinAutocomplete,customerInfo" execute="@this">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+                <a:ajax event="blur" execute="@this" listener="#{customerOrderHome.customerChangeListener}"
+                        render="pinyinSearchCustomer,customerInfo,orderContactFields">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </rich:autocomplete>
+        </s:decorate>
 
                 <span style="float: left;padding: 5px;">
                 <a:commandButton image="/img/addItem.png" action="#{customerHome.clearInstance}"
@@ -79,93 +79,189 @@
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
                 </span>
-            </h:panelGrid>
+    </h:panelGrid>
+
+    <div style="clear:both"/>
+
+    <a:outputPanel id="customerInfo">
+
+        <rich:collapsiblePanel
+                header="#{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}"
+                switchType="client">
+            <ui:include src="/templates/erp/CustomerDetails.xhtml">
+                <ui:param name="balanceReadonly" value="true"/>
+                <ui:param name="readonly" value="#{customerHome.idDefined}"/>
+                <ui:param name="allowSwitchMiddleMan" value="false"/>
+            </ui:include>
+
+
+            <h:outputText value="#{messages.customerNotHasMiddleMan}"
+                          rendered="#{customerHome.idDefined and (empty customerHome.instance.middleMan)}"/>
 
             <div style="clear:both"/>
 
-            <a:outputPanel id="customerInfo">
 
-                <rich:collapsiblePanel
-                        header="#{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}"
-                        switchType="client">
-                    <ui:include src="/templates/erp/CustomerDetails.xhtml">
-                        <ui:param name="balanceReadonly" value="true"/>
-                        <ui:param name="readonly" value="#{customerHome.idDefined}"/>
-                        <ui:param name="allowSwitchMiddleMan" value="false"/>
-                    </ui:include>
+        </rich:collapsiblePanel>
+    </a:outputPanel>
+
+    <rich:panel>
+
+        <a:outputPanel id="orderContactFields">
+            <s:decorate id="contactField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+                <ui:define name="label">#{messages.order_field_contact}</ui:define>
+                <h:inputText label="#{messages.order_field_contact}"
+                             required="true"
+                             size="50"
+                             maxlength="50"
+                             value="#{customerOrderHome.instance.contact}">
+                    <a:ajax event="blur" render="contactField"/>
+                </h:inputText>
+            </s:decorate>
 
 
-                    <h:outputText value="#{messages.customerNotHasMiddleMan}"
-                                  rendered="#{customerHome.idDefined and (empty customerHome.instance.middleMan)}"/>
+            <s:decorate id="orderTelField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+                <ui:define name="label">#{messages.order_field_tel}</ui:define>
+                <h:inputText label="#{messages.order_field_tel}"
+                             required="true"
+                             size="50"
+                             maxlength="50"
+                             value="#{customerOrderHome.instance.tel}">
+                    <a:ajax event="blur" render="orderTelField"/>
+                </h:inputText>
+            </s:decorate>
+        </a:outputPanel>
 
-                    <div style="clear:both"/>
+
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.includeMiddleMan}</ui:define>
+            <h:selectBooleanCheckbox required="true"
+                                     label="#{messages.includeMiddleMan}"
+                                     value="#{customerOrderHome.instance.includeMiddleMan}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_payType}</ui:define>
+            <rich:select value="#{customerOrderHome.instance.payType}"
+                         label="#{messages.order_field_payType}"
+                         required="true">
+                <s:selectItems value="#{orderPayTypes}" var="_payType"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{messages[_payType.name()]}"/>
+                <s:convertEnum/>
+            </rich:select>
+        </s:decorate>
+
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.storeOutLimitDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="20"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datetimepattern}"
+                    required="true"
+                    label="#{messages.storeOutLimitDate}"
+                    value="#{customerOrderHome.needRes.limitTime}"/>
+        </s:decorate>
+
+    </rich:panel>
+</h:form>
+
+<rich:panel>
+    <h:form>
+        <h:panelGrid id="resSearchForm" columns="4">
+
+            <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocate.code}"
+                         required="true">
+                <rich:placeholder value="#{messages.res_field_code}"/>
+            </h:inputText>
 
 
-                </rich:collapsiblePanel>
+            <a:commandButton value="#{messages.search}" execute="@region"
+                             render="resSearchForm,orderItemDetails"
+                             action="#{resLocate.locateByCode(storeChangeType)}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+            <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                             title="#{messages.resSelect}"
+                             onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+            <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                             title="#{messages.storeResSelect}"
+                             onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </h:panelGrid>
+    </h:form>
+    <h:form id="orderItemDetails">
+
+
+        <rich:panel rendered="#{resHome.idDefined}">
+
+            <h:panelGrid columns="1">
+                <h:outputText value="#{resHome.resTitle}" styleClass="name"/>
+            </h:panelGrid>
+
+
+            <a:outputPanel id="itemFormats">
+                <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+                    <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{_format.formatDefine.name}</ui:define>
+                        <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
+                            <ui:param name="format" value="#{_format}"/>
+                            <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
+
+                        </ui:include>
+                    </s:decorate>
+                </a:repeat>
             </a:outputPanel>
 
-            <rich:panel>
+            <ui:include src="/templates/erp/ResCountInput.xhtml">
+                <ui:param name="resCountBean" value="#{customerOrderHome.editingItem.storeResCount}"/>
 
-                <a:outputPanel id="orderContactFields">
-                    <s:decorate id="contactField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
-                        <ui:define name="label">#{messages.order_field_contact}</ui:define>
-                        <h:inputText label="#{messages.order_field_contact}"
-                                     required="true"
-                                     size="50"
-                                     maxlength="50"
-                                     value="#{customerOrderHome.instance.contact}">
-                            <a:ajax event="blur" render="contactField"/>
-                        </h:inputText>
-                    </s:decorate>
+            </ui:include>
 
+            <a:outputPanel id="priceFields">
+                <h:inputText value="#{customerOrderHome.editingItem.unitPrice}">
+                    <f:convertNumber type="currency" currencyCode="CNY"/>
+                    <a:ajax event="blur" render="priceFields"
+                            listener="#{customerOrderHome.editingItem.calcPriceByUnitPrice}"/>
+                </h:inputText>
 
-                    <s:decorate id="orderTelField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
-                        <ui:define name="label">#{messages.order_field_tel}</ui:define>
-                        <h:inputText label="#{messages.order_field_tel}"
-                                     required="true"
-                                     size="50"
-                                     maxlength="50"
-                                     value="#{customerOrderHome.instance.tel}">
-                            <a:ajax event="blur" render="orderTelField"/>
-                        </h:inputText>
-                    </s:decorate>
-                </a:outputPanel>
+                <h:inputText value="#{customerOrderHome.editingItem.rebate}">
+                    <f:convertNumber type="percent"/>
+                    <a:ajax event="blur" render="priceFields"
+                            listener="#{customerOrderHome.editingItem.calcPriceByRebate}"/>
+                </h:inputText>
 
+                <h:inputText value="#{customerOrderHome.editingItem.totalPrice}">
+                    <f:convertNumber type="currency" currencyCode="CNY"/>
+                    <a:ajax event="blur" render="priceFields"
+                            listener="#{customerOrderHome.editingItem.calcPriceByTotalPrice}"/>
+                </h:inputText>
+            </a:outputPanel>
 
-                <s:decorate template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.includeMiddleMan}</ui:define>
-                    <h:selectBooleanCheckbox required="true"
-                                             label="#{messages.includeMiddleMan}"
-                                             value="#{customerOrderHome.instance.includeMiddleMan}"/>
-                </s:decorate>
+        </rich:panel>
+    </h:form>
 
-                <s:decorate template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.order_field_payType}</ui:define>
-                    <rich:select value="#{customerOrderHome.instance.payType}"
-                                 label="#{messages.order_field_payType}"
-                                 required="true">
-                        <s:selectItems value="#{orderPayTypes}" var="_payType"
-                                       noSelectionLabel="#{messages.noSelectLabel}"
-                                       label="#{messages[_payType.name()]}"/>
-                        <s:convertEnum/>
-                    </rich:select>
-                </s:decorate>
+    <h:form>
+        <rich:dataTable value="#{customerOrderHome.orderNeedItems}" var="_item">
+            <rich:column>
+                <f:facet name="header">
 
-                 <s:decorate template="/layout/edit.xhtml">
-                     <ui:define name="label">#{messages.storeOutLimitDate}</ui:define>
-                     <rich:calendar
-                             enableManualInput="true"
-                             inputSize="20"
-                             timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                             datePattern="#{messages.datetimepattern}"
-                             required="true"
-                             label="#{messages.storeOutLimitDate}"
-                             value="#{customerOrderHome.needRes.limitTime}"/>
-                 </s:decorate>
+                </f:facet>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
 
-            </rich:panel>
-        </h:form>
-    </ui:define>
+                </f:facet>
+            </rich:column>
+        </rich:dataTable>
+    </h:form>
+</rich:panel>
+</ui:define>
 
 </ui:composition>

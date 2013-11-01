@@ -51,11 +51,18 @@
         <ui:define name="label">
             #{unitGroupHome.instance.type == 'FLOAT_CONVERT'? messages.ResUnit_field_Default_ConversionRate : messages.ResUnit_field_ConversionRate}
         </ui:define>
-        <h:inputText id="conversionRate" disabled="#{unitGroupHome.instance.type == 'NO_CONVERT'}" required="true" label="#{messages.ResUnit_field_name}"
+        <h:inputText id="conversionRate" disabled="#{unitGroupHome.instance.type == 'NO_CONVERT'}" required="true"
+                     label="#{messages.ResUnit_field_name}"
                      value="#{unitGroupHome.selectResUnit.conversionRate}"
                      size="26">
             <a:ajax event="blur" render="conversionRateField" disabled="#{unitGroupHome.editResUnit}"/>
         </h:inputText>
+    </s:decorate>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.ResUnit_field_InputFormat}</ui:define>
+        <h:inputText required="true" label="#{messages.ResUnit_field_InputFormat}" maxlength="20"
+                     size="26" value="#{unitGroupHome.selectResUnit.countFormate}"/>
     </s:decorate>
 
 
@@ -72,7 +79,7 @@
 
         <a:commandButton execute="@form" value="#{messages.ok}" data="#{actionExecuteState.lastState}"
                          render="resUnitEditPanel_inputs,resUnitListTable"
-                         rendered="#{unitGroupHome.editResUnit}"  action="#{unitGroupHome.saveResUnit}"
+                         rendered="#{unitGroupHome.editResUnit}" action="#{unitGroupHome.saveResUnit}"
                          oncomplete="if (event.data == 'success') #{rich:component('resUnitEditPanel')}.hide();">
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
@@ -102,9 +109,10 @@
             <rich:column colspan="2">
                 <rich:collapsibleSubTableToggler for="sbtbl"/>
 
-                <a:commandLink value="#{_unitGroup.name}(#{fn:substring(messages[_unitGroup.type.name()],0,1)})" immediate="true"
+                <a:commandLink value="#{_unitGroup.name}(#{fn:substring(messages[_unitGroup.type.name()],0,1)})"
+                               immediate="true"
                                execute="@this" image="/img/edit.png"
-                                render="details,resUnitListTable">
+                               render="details,resUnitListTable">
                     <a:param value="#{_unitGroup.id}" assignTo="#{unitGroupHome.id}"/>
                     <s:conversationPropagation type="end"/>
                 </a:commandLink>
@@ -117,7 +125,9 @@
                     <h:outputText value="#{_item.name}"/>
                 </rich:column>
                 <rich:column>
-                    <h:outputText value="#{_item.conversionRate}"/>
+                    <h:outputText value="#{_item.conversionRate}">
+                        <f:convertNumber pattern="#.#"/>
+                    </h:outputText>
                 </rich:column>
 
             </rich:collapsibleSubTable>
@@ -200,13 +210,18 @@
                 <s:decorate id="typeField" template="/layout/edit.xhtml">
                     <ui:define name="label">#{messages.ResUnitGroup_field_type}</ui:define>
                     <rich:select value="#{unitGroupHome.instance.type}" required="true"
-                                 disabled="#{not unitGroupHome.editing}"
+                                 disabled="#{(not unitGroupHome.editing) or unitGroupHome.managed}"
                                  label="#{messages.ResUnitGroup_field_type}">
                         <s:selectItems value="#{unitGroupTypes}" var="_unitGroupType"
                                        label="#{messages[_unitGroupType.name()]}"
                                        noSelectionLabel="#{messages.noSelectLabel}"/>
                         <s:convertEnum/>
-                        <a:ajax event="selectitem" render="typeField"/>
+                        <a:ajax event="selectitem"
+                                disabled="#{(not unitGroupHome.editing) or unitGroupHome.managed}"
+                                listener="#{unitGroupHome.typeChangeListener}"
+                                render="typeField,resUnitListTable">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
                     </rich:select>
                 </s:decorate>
 
@@ -225,11 +240,19 @@
                     </f:facet>
                     #{_resUnit.name}
                 </rich:column>
+
                 <rich:column>
                     <f:facet name="header">
                         #{unitGroupHome.instance.type == 'FLOAT_CONVERT' ? messages.ResUnit_field_Default_ConversionRate : messages.ResUnit_field_ConversionRate}
                     </f:facet>
                     #{_resUnit.conversionRate}
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.ResUnit_field_InputFormat}
+                    </f:facet>
+                    #{_resUnit.countFormate}
                 </rich:column>
                 <rich:column style="width: 80px" rendered="#{unitGroupHome.editing}">
                     <f:facet name="header">

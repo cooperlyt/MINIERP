@@ -5,6 +5,7 @@ import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.action.store.OrderNeedItem;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.NeedRes;
 import com.dgsoft.erp.model.OrderItem;
@@ -52,7 +53,24 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
 
     private NeedRes needRes;
 
-    private List<OrderItem> orderItemList;
+    private List<OrderNeedItem> orderNeedItems;
+
+    private OrderNeedItem editingItem;
+
+    public OrderNeedItem getEditingItem() {
+        return editingItem;
+    }
+
+    public void setEditingItem(OrderNeedItem editingItem) {
+        this.editingItem = editingItem;
+    }
+
+    @Observer(value = "storeResCountIsChanged",create = false)
+    public void itemCountChangeListener(){
+        if (editingItem != null){
+           editingItem.calcPriceByCount();
+        }
+    }
 
     public NeedRes getNeedRes() {
         return needRes;
@@ -72,16 +90,17 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         startData.generateKey();
         needRes = new NeedRes(getInstance(),
                 NeedRes.NeedResType.ORDER_SEND,ORDER_SEND_REASON_WORD_KEY,new Date());
-        orderItemList = new ArrayList<OrderItem>();
+        orderNeedItems = new ArrayList<OrderNeedItem>();
         return "beginning";
     }
 
-    public List<OrderItem> getOrderItemList() {
-        return orderItemList;
+
+    public List<OrderNeedItem> getOrderNeedItems() {
+        return orderNeedItems;
     }
 
-    public void setOrderItemList(List<OrderItem> orderItemList) {
-        this.orderItemList = orderItemList;
+    public void setOrderNeedItems(List<OrderNeedItem> orderNeedItems) {
+        this.orderNeedItems = orderNeedItems;
     }
 
     @Factory("orderPayTypes")

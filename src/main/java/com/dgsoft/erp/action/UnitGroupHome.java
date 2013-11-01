@@ -87,6 +87,10 @@ public class UnitGroupHome extends ErpEntityHome<UnitGroup> {
         editResUnit = true;
     }
 
+    public void typeChangeListener(){
+        unitList.clear();
+    }
+
     public void saveResUnit() {
         if (!editResUnit){
             OrderBeanComparator.addToLast(selectResUnit, unitList);
