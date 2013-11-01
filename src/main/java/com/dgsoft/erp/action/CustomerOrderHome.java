@@ -6,9 +6,7 @@ import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.store.OrderNeedItem;
-import com.dgsoft.erp.model.CustomerOrder;
-import com.dgsoft.erp.model.NeedRes;
-import com.dgsoft.erp.model.OrderItem;
+import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
@@ -57,6 +55,16 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
 
     private OrderNeedItem editingItem;
 
+    private String addItemLastState = "";
+
+    public String getAddItemLastState() {
+        return addItemLastState;
+    }
+
+    public void setAddItemLastState(String addItemLastState) {
+        this.addItemLastState = addItemLastState;
+    }
+
     public OrderNeedItem getEditingItem() {
         return editingItem;
     }
@@ -70,6 +78,18 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         if (editingItem != null){
            editingItem.calcPriceByCount();
         }
+    }
+
+    @Observer(value = "erp.resLocateSelected",create = false)
+    public void generateSaleItemByRes(Res res) {
+        editingItem = new OrderNeedItem(res);
+        addItemLastState = "";
+    }
+
+    @Observer(value = "erp.storeResLocateSelected",create = false)
+    public void generateSaleItemByStoreRes(StoreRes storeRes) {
+        editingItem = new OrderNeedItem(storeRes.getRes(), storeRes.getFloatConversionRate());
+        addItemLastState = "";
     }
 
     public NeedRes getNeedRes() {

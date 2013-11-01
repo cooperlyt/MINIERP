@@ -23,6 +23,11 @@ public class OrderNeedItem extends StoreChangeItem {
         super(res, res.getResUnitByOutDefault());
     }
 
+    public OrderNeedItem(Res res, BigDecimal floatConvertRate){
+        this(res);
+        storeResCount.setFloatConvertRate(floatConvertRate);
+    }
+
     private BigDecimal unitPrice = new BigDecimal(0);
 
     private BigDecimal rebate = new BigDecimal(0);

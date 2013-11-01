@@ -66,7 +66,7 @@
 </h:panelGrid>
 <h:panelGrid columns="3">
 
-    <s:decorate id="contactField" template="/layout/edit.xhtml">
+    <s:decorate id="customerContactField" template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.customer_field_contact}</ui:define>
         <h:inputText label="#{messages.customer_field_contact}"
                      required="true"
@@ -74,7 +74,7 @@
                      maxlength="50"
                      readonly="#{readonly}"
                      value="#{customerHome.instance.contact}">
-            <a:ajax event="blur" render="contactField"/>
+            <a:ajax event="blur" render="customerContactField"/>
         </h:inputText>
     </s:decorate>
 

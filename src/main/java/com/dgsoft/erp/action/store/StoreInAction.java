@@ -155,13 +155,13 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     }
 
 
-    @Observer("erp.resLocateSelected")
+    @Observer(value = "erp.resLocateSelected",create = false)
     public void generateStoreInItemByRes(Res res) {
         editingItem = new StoreInItem(res);
         addItemLastState = "";
     }
 
-    @Observer("erp.storeResLocateSelected")
+    @Observer(value = "erp.storeResLocateSelected",create = false)
     public void generateStoreInItemByStoreRes(StoreRes storeRes) {
         editingItem = new StoreInItem(storeRes.getRes(), storeRes.getFloatConversionRate());
         addItemLastState = "";
