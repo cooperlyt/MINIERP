@@ -23,23 +23,17 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     private boolean haveMiddleMan;
 
     public boolean isHaveMiddleMan() {
-        if (isIdDefined()) {
-            return getInstance().getMiddleMan() != null;
+        if (isIdDefined()){
+            haveMiddleMan = getInstance().getMiddleMan() !=  null;
         }
-
-
         return haveMiddleMan;
     }
 
     public void setHaveMiddleMan(boolean haveMiddleMan) {
-        if (isIdDefined()) {
-            if (haveMiddleMan) {
-                middleManHome.setId(null);
-            } else
-                getInstance().setMiddleMan(null);
-        }
         this.haveMiddleMan = haveMiddleMan;
     }
+
+
 
     @Override
     public boolean wire(){
@@ -47,6 +41,8 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
             if ((isIdDefined() && middleManHome.isIdDefined()) || (!isIdDefined())){
                 getInstance().setMiddleMan(middleManHome.getReadyInstance());
             }
+        }else{
+            getInstance().setMiddleMan(null);
         }
         return true;
     }
@@ -56,6 +52,9 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
         if (haveMiddleMan && isIdDefined() && (getInstance().getMiddleMan() !=  null)){
             middleManHome.setId(getInstance().getMiddleMan().getId());
         }else{
+            if (!haveMiddleMan){
+                getInstance().setMiddleMan(null);
+            }
             middleManHome.clearInstance();
         }
     }

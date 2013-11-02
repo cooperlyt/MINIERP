@@ -147,12 +147,6 @@ public class ResHome extends ErpEntityHome<Res> {
 
     @Override
     protected boolean verifyPersistAvailable() {
-        return verifyUpdateAvailable();
-
-    }
-
-    @Override
-    protected boolean verifyUpdateAvailable() {
         if (!getInstance().getCode().matches(runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME))) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "resCodeNotRule",
                     getInstance().getCode(), runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME));
@@ -163,6 +157,24 @@ public class ResHome extends ErpEntityHome<Res> {
         } else {
             return true;
         }
+
+
+    }
+
+    @Override
+    protected boolean verifyUpdateAvailable() {
+        if (!getInstance().getCode().matches(runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME))) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "resCodeNotRule",
+                    getInstance().getCode(), runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME));
+            return false;
+        } else {
+            List<Res> codeResult = getEntityManager().createQuery("select res from Res res where res.code = ?1").setParameter(1, getInstance().getCode()).getResultList();
+            if (!codeResult.isEmpty() && !codeResult.get(0).getId().equals(getInstance().getId())) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "resCodeConflict", getInstance().getCode());
+                return false;
+            }
+        }
+        return true;
 
     }
 

@@ -45,14 +45,15 @@
 
 
             <span class="value">
-            <h:inputText id="masterUnitCount" required="true"
-                         value="#{resCountBean.count}">
-                <f:convertNumber pattern="#{resCountBean.useUnit.countFormate}"/>
-                <a:ajax event="change" execute="@region" render="floatConvertAuxUnitFields"
+            <h:inputText id="masterUnitCount" required="true" style="width: 100px"
+                         value="#{resCountBean.count}" converter="javax.faces.BigDecimal">
+
+                <a:ajax event="change" execute="@region" render="floatConvertAuxUnitFields,masterUnitCount"
                         listener="#{resCountBean.masterCountChangeListener}">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
             </h:inputText>
+
             </span>
 
             <h:outputText styleClass="unit_label" value="#{resCountBean.res.resUnitByMasterUnit.name}"
@@ -69,13 +70,13 @@
             </rich:select>
             </span>
 
-            <a:outputPanel rendered="#{resCountBean.res.unitGroup.type.name() eq 'NO_CONVERT'}">
+            <a:outputPanel id="noConvertCountFields" rendered="#{resCountBean.res.unitGroup.type.name() eq 'NO_CONVERT'}">
 
                 <a:repeat value="#{resCountBean.noConvertCountList}" var="_count">
                     <span class="value">
                     <h:inputText required="true"
-                                 value="#{_count.count}">
-                         <f:convertNumber pattern="#{_count.resUnit.countFormate}" />
+                                 value="#{_count.count}" converter="javax.faces.BigDecimal">
+                        <a:ajax event="blur" render="noConvertCountFields"/>
                     </h:inputText>
                      </span>
 
@@ -98,11 +99,11 @@
                                        var="_value"
                                        fetchValue="#{_value}"
                                        autocompleteList="#{storeResFormatFilter.floatConvertHistoryRateList}"
-                                       showButton="true">
+                                       showButton="true" converter="javax.faces.BigDecimal">
                         <b>#{_value}</b>
 
-                        <f:convertNumber pattern="#.#"/>
-                        <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxCount"
+
+                        <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxUnitFields"
                                 listener="#{resCountBean.calcFloatQuantityByRate}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
@@ -110,10 +111,9 @@
                     </span>
                     <h:outputText styleClass="auto_width_unit_label" value="="/>
                     <span class="value">
-                    <h:inputText id="floatConvertAuxCount" required="true"
-                                 value="#{resCountBean.auxCount}">
-                        <f:convertNumber pattern="#{resCountBean.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
-                        <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertUnitRate"
+                    <h:inputText id="floatConvertAuxCount" required="true" style="width: 100px"
+                                 value="#{resCountBean.auxCount}" converter="javax.faces.BigDecimal">
+                        <a:ajax event="change" execute="@region" render="masterUnitCount,floatConvertAuxUnitFields"
                                 listener="#{resCountBean.calcFloatQuantityByAuxUnit}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>

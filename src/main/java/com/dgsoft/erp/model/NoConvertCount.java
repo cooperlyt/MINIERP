@@ -4,6 +4,9 @@ package com.dgsoft.erp.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -114,6 +117,13 @@ public class NoConvertCount implements java.io.Serializable {
 
 	public void setCount(BigDecimal count) {
 		this.count = count;
-	}
+        DecimalFormat df = new DecimalFormat(getResUnit().getCountFormate());
+        df.setGroupingUsed(false);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        try {
+            this.count = new BigDecimal(df.parse(df.format(count)).toString());
+        } catch (ParseException e) {
+        }
+    }
 
 }

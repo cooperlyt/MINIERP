@@ -2,8 +2,13 @@ package com.dgsoft.erp.action.store;
 
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -66,11 +71,24 @@ public class StoreResCount implements java.io.Serializable {
 
     public StoreResCount(Res res, ResUnit useUnit) {
         this.res = res;
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             this.useUnit = res.getUnitGroup().getMasterUnit();
-        }else
+        } else
             this.useUnit = useUnit;
         init();
+    }
+
+    private BigDecimal countFormat(BigDecimal count, ResUnit unit) {
+        DecimalFormat df = new DecimalFormat(unit.getCountFormate());
+        df.setGroupingUsed(false);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        try {
+            return new BigDecimal(df.parse(df.format(count)).toString());
+        } catch (ParseException e) {
+            Logging.getLog(this.getClass()).warn("count cant be format:" + count);
+            return count;
+        }
+
     }
 
     public Res getRes() {
@@ -82,7 +100,11 @@ public class StoreResCount implements java.io.Serializable {
     }
 
     public void setCount(BigDecimal count) {
-        this.count = count;
+        if (useUnit != null) {
+            this.count = countFormat(count, useUnit);
+        } else {
+            this.count = count;
+        }
     }
 
     public BigDecimal getFloatConvertRate() {
@@ -90,7 +112,18 @@ public class StoreResCount implements java.io.Serializable {
     }
 
     public void setFloatConvertRate(BigDecimal floatConvertRate) {
+
         this.floatConvertRate = floatConvertRate;
+        if ((res != null) && (res.getUnitGroup().getFloatConvertRateFormat() != null)) {
+            DecimalFormat df = new DecimalFormat(res.getUnitGroup().getFloatConvertRateFormat());
+            df.setRoundingMode(RoundingMode.HALF_UP);
+            df.setGroupingUsed(false);
+            try {
+                this.floatConvertRate = new BigDecimal(df.parse(df.format(floatConvertRate)).toString());
+            } catch (ParseException e) {
+                Logging.getLog(this.getClass()).warn("floatConvertRate cant be format:" + this.floatConvertRate);
+            }
+        }
     }
 
     public List<NoConverCountEntry> getNoConvertCountList() {
@@ -106,7 +139,11 @@ public class StoreResCount implements java.io.Serializable {
     }
 
     public void setAuxCount(BigDecimal auxCount) {
-        this.auxCount = auxCount;
+        if (res != null) {
+            this.auxCount = countFormat(auxCount, res.getUnitGroup().getFloatAuxiliaryUnit());
+        } else {
+            this.auxCount = auxCount;
+        }
     }
 
     public ResUnit getUseUnit() {
@@ -115,6 +152,51 @@ public class StoreResCount implements java.io.Serializable {
 
     public void setUseUnit(ResUnit useUnit) {
         this.useUnit = useUnit;
+    }
+
+    public String getDisplayAuxCount() {
+        DecimalFormat df = new DecimalFormat();
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        String result;
+        switch (res.getUnitGroup().getType()) {
+            case FIX_CONVERT:
+
+                result = "";
+                for (ResUnit resUnit : res.getUnitGroup().getResUnitList()) {
+                    df.applyPattern(resUnit.getCountFormate());
+                    if (!resUnit.getConversionRate().equals(new BigDecimal("1"))) {
+                        result += df.format(getMasterCount().divide(resUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP))
+                                + " " + resUnit.getName() + ",";
+                    }
+                }
+
+                if (!"".equals(result))
+                result = result.substring(0, result.length() - 1);
+
+                return result;
+            case FLOAT_CONVERT:
+                df.applyPattern(res.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
+                return df.format(getAuxCount()) + " " + res.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate();
+            case NO_CONVERT:
+
+                result = "";
+                for (NoConverCountEntry entry : noConvertCountList) {
+                    df.applyPattern(entry.getResUnit().getCountFormate());
+                    try {
+                        result += new BigDecimal(df.parse(df.format(entry.getCount())).toString());
+                    } catch (ParseException e) {
+                        Logging.getLog(this.getClass()).warn("cnat form noConvertCount:" + entry.getCount());
+                        result += entry.getCount().toPlainString();
+                    }
+                    result += " " + entry.getResUnit().getName() + ",";
+                }
+                if (!"".equals(result))
+                    result = result.substring(0, result.length() - 1);
+                return result;
+            default:
+                return null;
+        }
+
     }
 
     public Set<NoConvertCount> getNoConvertCounts(StockChangeItem stockChangeItem) {
@@ -126,6 +208,12 @@ public class StoreResCount implements java.io.Serializable {
             return result;
         } else
             return new HashSet<NoConvertCount>(0);
+    }
+
+    public String getMasterDisplayCount() {
+        DecimalFormat df = new DecimalFormat(res.getUnitGroup().getMasterUnit().getCountFormate());
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.format(getMasterCount()) + " " + res.getUnitGroup().getMasterUnit().getName();
     }
 
     public BigDecimal getMasterCount() {
@@ -140,8 +228,8 @@ public class StoreResCount implements java.io.Serializable {
         count = new BigDecimal(0);
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             useUnit = res.getResUnitByMasterUnit();
-            floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
-            auxCount = new BigDecimal(0);
+            setFloatConvertRate(res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate());
+            setAuxCount(new BigDecimal(0));
         } else if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
             useUnit = res.getResUnitByMasterUnit();
 
@@ -158,26 +246,28 @@ public class StoreResCount implements java.io.Serializable {
 
     public void add(StoreResCount otherCount) {
         if (!otherCount.res.equals(res) || (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
-                && (otherCount.getFloatConvertRate() != floatConvertRate))) {
-            throw new IllegalArgumentException("not same storeInItem can't merger");
+                && (!otherCount.getFloatConvertRate().equals(floatConvertRate)))) {
+            throw new IllegalArgumentException("not same storeInItem can't merger, float:" + otherCount.getFloatConvertRate() + "=" + floatConvertRate);
         }
 
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-            count = count.add(useUnit.getConversionRate().multiply(otherCount.getMasterCount()));
-            System.out.println(useUnit.getConversionRate().toPlainString() + "*"
-                    + otherCount.getMasterCount());
+            setCount(count.add(useUnit.getConversionRate().multiply(otherCount.getMasterCount())));
+
         } else {
-            this.count.add(otherCount.getCount());
+            setCount(count.add(otherCount.getCount()));
             if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
-                for (NoConverCountEntry auxCount : noConvertCountList) {
+                for (NoConverCountEntry noConvertauxCount : noConvertCountList) {
                     for (NoConverCountEntry otherAuxCount : otherCount.noConvertCountList) {
-                        if (auxCount.getResUnit().equals(otherAuxCount.getResUnit())) {
-                            auxCount.setCount(auxCount.getCount().add(otherAuxCount.getCount()));
+                        if (noConvertauxCount.getResUnit().equals(otherAuxCount.getResUnit())) {
+                            noConvertauxCount.setCount(noConvertauxCount.getCount().add(otherAuxCount.getCount()));
                         }
                     }
                 }
             } else if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+
+
                 calcFloatQuantityByMasterUnit();
+
             } else {
                 throw new IllegalArgumentException("not define UnitGorupTYpe");
             }
@@ -185,58 +275,66 @@ public class StoreResCount implements java.io.Serializable {
     }
 
 
-    public void masterCountChangeListener(){
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+    public void masterCountChangeListener() {
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             calcFloatQuantityByMasterUnit();
         }
         Events.instance().raiseEvent("storeResCountIsChanged");
     }
 
+    private void calcFloatAuxUnit(){
+       if ((count != null) && (count.doubleValue() != 0) && (floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)){
+           setAuxCount(count.multiply(floatConvertRate));
+       }
+    }
+
     private void calcFloatQuantityByMasterUnit() {
         if ((count == null) || (count.doubleValue() == 0)) {
-            auxCount = new BigDecimal(0);
-            floatConvertRate = new BigDecimal(0);
+            setAuxCount(new BigDecimal(0));
+            //setFloatConvertRate(new BigDecimal(0));
             return;
         }
 
         if ((floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)) {
-            auxCount = count.multiply(floatConvertRate);
+            setAuxCount(count.multiply(floatConvertRate));
         } else if ((auxCount != null) && (auxCount.doubleValue() != 0)) {
-            floatConvertRate = auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
+            setFloatConvertRate(auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP));
         }
     }
 
     public void calcFloatQuantityByRate() {
         if ((floatConvertRate == null) || (floatConvertRate.doubleValue() == 0)) {
-            count = new BigDecimal(0);
+            setCount(new BigDecimal(0));
             Events.instance().raiseEvent("storeResCountIsChanged");
-            auxCount = new BigDecimal(0);
+            setAuxCount(new BigDecimal(0));
             return;
         }
 
         if ((count != null) && (count.doubleValue() != 0)) {
-            auxCount = count.multiply(floatConvertRate);
+            setAuxCount(count.multiply(floatConvertRate));
         } else if ((auxCount != null) && (auxCount.doubleValue() != 0)) {
-            count = auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
+            setCount(auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP));
             Events.instance().raiseEvent("storeResCountIsChanged");
         }
-
+        calcFloatAuxUnit();
     }
 
     public void calcFloatQuantityByAuxUnit() {
         if ((auxCount == null) || (auxCount.doubleValue() == 0)) {
-            count = new BigDecimal(0);
+            setCount(new BigDecimal(0));
             Events.instance().raiseEvent("storeResCountIsChanged");
-            floatConvertRate = new BigDecimal(0);
+            //setFloatConvertRate(new BigDecimal(0));
             return;
         }
 
         if ((floatConvertRate != null) && (floatConvertRate.doubleValue() != 0)) {
-            count = auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
+            setCount(auxCount.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP));
             Events.instance().raiseEvent("storeResCountIsChanged");
         } else if ((count != null) && (count.doubleValue() != 0)) {
-            floatConvertRate = auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
+            setFloatConvertRate(auxCount.divide(count, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP));
         }
+        calcFloatAuxUnit();
+
     }
 
 }

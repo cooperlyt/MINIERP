@@ -27,6 +27,9 @@ public class StoreResHome extends ErpEntityHome<StoreRes> {
 
         List<StoreRes> storeResList = getEntityManager().createQuery("select storeRes from StoreRes storeRes where storeRes.res.id = :resId").setParameter("resId", res.getId()).getResultList();
         for (StoreRes storeRes : storeResList) {
+
+            log.debug("setRes:" + storeRes + "|" + res + "|" + res.getUnitGroup() + "|" + res.getUnitGroup().getType() + "|"
+             + storeRes.getFloatConversionRate());
             if (StoreChangeHelper.sameFormat(storeRes.getFormats(), formatList)
                     && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                     || storeRes.getFloatConversionRate().equals(floatConvertRate))) {
@@ -37,6 +40,9 @@ public class StoreResHome extends ErpEntityHome<StoreRes> {
         }
         clearInstance();
         getInstance().setRes(res);
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            getInstance().setFloatConversionRate(floatConvertRate);
+        }
         for (Format format: formatList){
             format.setStoreRes(getInstance());
             getInstance().getFormats().add(format);

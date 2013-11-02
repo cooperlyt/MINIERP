@@ -74,7 +74,6 @@
         </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">
-
             <h:form>
                 <h:panelGrid columns="3">
                     <h:inputText id="storeOrderCodeInput"
@@ -165,6 +164,8 @@
                     <ui:param name="resCountBean" value="#{sotreInAction.editingItem.storeResCount}"/>
                 </ui:include>
 
+
+
                 <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
                                  render="storeInItem,storeInItems,newStoreResCodeInputPanel_inputs"
                                  data="#{sotreInAction.addItemLastState}"
@@ -203,7 +204,7 @@
 
                 <rich:column>
                     <f:facet name="header">#{messages.storeIn_field_floatConvertRate}</f:facet>
-                    <h:outputText value="#{_item.storeResCount.floatConvertRate}"
+                    <h:outputText value="#{_item.storeResCount.floatConvertRate} #{_item.res.unitGroup.name}"
                                   rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
                 </rich:column>
 
@@ -211,26 +212,16 @@
                     <f:facet name="header">
                         #{messages.MasterUnitCount}
                     </f:facet>
-                    #{_item.storeResCount.masterCount}#{(_item.res.resUnitByMasterUnit.name)}
+                    <h:outputText value="#{_item.storeResCount.masterDisplayCount}">
+                    </h:outputText>
+
                 </rich:column>
 
                 <rich:column>
                     <f:facet name="header">
                         #{messages.AuxUnitCount}
                     </f:facet>
-                    <a:outputPanel rendered="#{_item.res.unitGroup.type == 'NO_CONVERT'}">
-                        <a:repeat value="#{_item.storeResCount.noConvertCountList}" var="_unitCount">
-                            #{_unitCount.count}#{_unitCount.resUnit.name}#{' '}
-                        </a:repeat>
-                    </a:outputPanel>
-                    <a:outputPanel rendered="#{_item.res.unitGroup.type == 'FIX_CONVERT'}">
-                        <a:repeat value="#{_item.res.unitGroup.resUnitList}" var="_fixUnitCount">
-                            #{_item.storeResCount.masterCount / _fixUnitCount.conversionRate }
-                            #{_fixUnitCount.name} #{' '}
-                        </a:repeat>
-                    </a:outputPanel>
-                    <h:outputText value="#{_item.storeResCount.auxCount}#{_item.res.unitGroup.floatAuxiliaryUnit.name}"
-                                  rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
+                    #{_item.storeResCount.displayAuxCount}
 
                 </rich:column>
                 <rich:column>

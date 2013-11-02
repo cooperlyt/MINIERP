@@ -22,6 +22,12 @@
         <property name="entityLoader">#{systemEntityLoader}</property>
     </component>
 
+    <component name="provinceList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select province from Province province order by province.priority</property>
+    </component>
+
+
+
     <component name="systemParamList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
         <property name="ejbql">select systemParam from SystemParam systemParam</property>
     </component>

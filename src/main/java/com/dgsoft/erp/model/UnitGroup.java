@@ -23,6 +23,7 @@ public class UnitGroup implements java.io.Serializable {
     private String id;
     private String name;
     private UnitGroupType type;
+    private String floatConvertRateFormat;
     private Set<Res> reses = new HashSet<Res>(0);
     private Set<ResUnit> resUnits = new HashSet<ResUnit>(0);
 
@@ -72,6 +73,16 @@ public class UnitGroup implements java.io.Serializable {
 
     public void setReses(Set<Res> reses) {
         this.reses = reses;
+    }
+
+    @Column(name = "FLOAT_CONVERT_FORMAT",nullable = true,length = 20)
+    @Size(max = 20)
+    public String getFloatConvertRateFormat() {
+        return floatConvertRateFormat;
+    }
+
+    public void setFloatConvertRateFormat(String floatConvertRateFormat) {
+        this.floatConvertRateFormat = floatConvertRateFormat;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "unitGroup", orphanRemoval = true, cascade = {CascadeType.ALL})

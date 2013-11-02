@@ -211,13 +211,20 @@
                     <f:facet name="header">
                         #{messages.res_field_name}
                     </f:facet>
-                    #{_res.name}
+                    <a:outputPanel>
+                        #{_res.name}
+                        <rich:tooltip followMouse="false" showDelay="1500" styleClass="tooltip-custom-body"
+                                      layout="block" rendered="#{not empty _res.description}">
+                            <span style="white-space: nowrap">#{_res.description}</span>
+                        </rich:tooltip>
+                    </a:outputPanel>
+
                 </rich:column>
                 <rich:column>
                     <f:facet name="header">
-                        #{messages.description}
+                        #{messages.ResUnit}
                     </f:facet>
-                    #{_res.description}
+                    #{_res.unitGroup.name}
                 </rich:column>
                 <rich:column style="width: 30px">
                     <f:facet name="header">

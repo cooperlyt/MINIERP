@@ -13,10 +13,12 @@
 
         <span class="value #{invalid?'errors':''}">
             <s:validateAll>
-            <ui:insert/>
-        </s:validateAll>
+                <ui:insert/>
+            </s:validateAll>
         </span>
-
+        <span class="value">
+            <ui:insert name="tail"/>
+        </span>
 
         <span class="error">
             <h:graphicImage value="/img/error.gif" rendered="#{invalid}" styleClass="errors"/>

@@ -1,0 +1,31 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <h:panelGrid columns="4">
+    <rich:select value="#{cityList.provinceId}" styleClass="provinceSelectWidth" listWidth="#{provinceListWidth}">
+        <s:selectItems value="#{provinceList.resultList}" var="_province"
+                       noSelectionLabel="#{messages.allCity}"
+                       label="#{_province.name}" itemValue="#{_province.id}">
+        </s:selectItems>
+        <a:ajax event="selectitem" render="citySelect">
+            <a:attachQueue requestDelay="0"/>
+        </a:ajax>
+    </rich:select>
+
+    <h:outputText value="#{messages.Province}" />
+
+    <rich:select id="citySelect" required="#{required}" value="#{value}" listWidth="#{cityListWidth}" styleClass="citySelectWidth">
+        <s:selectItems value="#{cityList.resultList}" var="_city"
+                       label="#{_city.name}" itemValue="#{_city.id}"/>
+    </rich:select>
+    <h:outputText value="#{messages.City}" />
+
+    </h:panelGrid>
+</ui:composition>
