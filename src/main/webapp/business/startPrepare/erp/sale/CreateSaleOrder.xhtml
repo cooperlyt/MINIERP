@@ -63,14 +63,22 @@
 
 
         <rich:toolbarGroup location="right">
-            <h:inputText required="true"
-                         maxlength="32"
-                         styleClass="barsearch"
-                         label="#{messages.OrderCode}"
-                         value="#{startData.businessKey}">
-                <rich:placeholder value="#{messages.OrderCode}"/>
-            </h:inputText>
-            <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+
+            <h:panelGrid columns="4">
+
+                <h:inputText required="true"
+                             maxlength="32"
+                             styleClass="barsearch"
+                             label="#{messages.OrderCode}"
+                             value="#{startData.businessKey}">
+                    <rich:placeholder value="#{messages.OrderCode}"/>
+                </h:inputText>
+
+                <s:button value="#{messages.cancel}" propagation="end"
+                          view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
+
+                <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+            </h:panelGrid>
         </rich:toolbarGroup>
     </rich:toolbar>
 
@@ -366,7 +374,7 @@
                     </ui:include>
                 </a:outputPanel>
                 <f:facet name="footer">
-                     #{messages.recordTotal} #{customerOrderHome.itemsCount} #{messages.item}
+                    #{messages.recordTotal} #{customerOrderHome.itemsCount} #{messages.item}
                 </f:facet>
 
             </rich:column>
@@ -415,9 +423,8 @@
                     </h:outputText>
                 </f:facet>
             </rich:column>
-            <rich:column>
+            <rich:column style="text-align: center">
                 <f:facet name="header">
-
                 </f:facet>
                 <a:commandButton image="/img/delete.png" render="orderItemListTable"
                                  title="#{messages.remove}"
