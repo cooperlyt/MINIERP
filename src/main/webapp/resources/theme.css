@@ -132,6 +132,19 @@ select {
     margin-top: 3px;
 }
 
+.fix_name{
+    vertical-align: top;
+    font-weight: bold;
+    padding: 5px;
+    margin-top: 3px;
+    clear: left;
+}
+
+.fix_value{
+    vertical-align: top;
+    padding: 5px;
+}
+
 .small_value{
     padding: 5px;
 }
@@ -144,6 +157,11 @@ select {
 .error {
 	float: left;
 	padding: 5px;
+}
+
+.fix_error{
+    vertical-align: top;
+    padding: 5px;
 }
 
 .errors {
@@ -162,6 +180,10 @@ img.errors {
 .required {
 	color: #FF0000;
 	padding-left: 2px;
+}
+
+.autoCompleteWidth50 {
+    width: 80px !important;
 }
 
 

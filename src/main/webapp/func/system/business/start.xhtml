@@ -26,7 +26,7 @@
                              value="#{startData.description}">
                     <rich:validator event="blur"/>
                 </h:inputText>
-                <rich:message for="value" styleClass="message-icon"
+                <rich:message for="value" styleClass="message-icon" ajaxRendered="true"
                               showDetail="true" showSummary="true" tooltip="true"/>
             </s:decorate>
             <ui:define name="actionButtons">

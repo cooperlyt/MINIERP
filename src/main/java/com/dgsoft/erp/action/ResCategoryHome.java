@@ -353,6 +353,16 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return  getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,true);
     }
 
+    @Factory(value = "saleResTree",scope = ScopeType.CONVERSATION)
+    public List<ResCategoryNode> getSaleResTree(){
+        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,false);
+    }
+
+    @Factory(value = "saleStoreResTree", scope = ScopeType.CONVERSATION)
+    public List<ResCategoryNode> getSaleStoreTree(){
+        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,true);
+    }
+
 
     @Override
     protected boolean wire() {

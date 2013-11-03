@@ -22,6 +22,7 @@ public class OrderItem implements java.io.Serializable {
 	private String id;
 	private StoreRes storeRes;
 	private ResUnit middleUnit;
+    private ResUnit moneyUnit;
 	private NeedRes needRes;
 	private BigDecimal count;
 	private BigDecimal cost;
@@ -31,6 +32,8 @@ public class OrderItem implements java.io.Serializable {
 	private BigDecimal middleRate;
     private MiddleMoneyCalcType middleMoneyCalcType;
 	private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
+    private boolean storeResItem;
+    private Res res;
 
 	public OrderItem() {
 	}
@@ -47,9 +50,8 @@ public class OrderItem implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_RES", nullable = false)
-	@NotNull
+	@ManyToOne(optional = true,fetch = FetchType.LAZY)
+	@JoinColumn(name = "STORE_RES", nullable = true)
 	public StoreRes getStoreRes() {
 		return this.storeRes;
 	}
@@ -67,6 +69,18 @@ public class OrderItem implements java.io.Serializable {
 
     public void setMiddleUnit(ResUnit middleUnit) {
         this.middleUnit = middleUnit;
+    }
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "MONEY_UNIT",nullable = false)
+    @NotNull
+    public ResUnit getMoneyUnit() {
+        return moneyUnit;
+    }
+
+    public void setMoneyUnit(ResUnit moneyUnit) {
+        this.moneyUnit = moneyUnit;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -159,4 +173,22 @@ public class OrderItem implements java.io.Serializable {
 		this.dispatchItems = dispatchItems;
 	}
 
+    @Column(name="STORE_RES_ITEM",nullable = false)
+    public boolean isStoreResItem() {
+        return storeResItem;
+    }
+
+    public void setStoreResItem(boolean storeResItem) {
+        this.storeResItem = storeResItem;
+    }
+
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "RES", nullable = true)
+    public Res getRes() {
+        return res;
+    }
+
+    public void setRes(Res res) {
+        this.res = res;
+    }
 }

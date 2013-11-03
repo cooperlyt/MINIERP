@@ -11,9 +11,8 @@
     <!-- param: storeRes , showResName -->
 
 
-
     <h:outputText value="#{storeRes.res.name}(#{storeRes.code}) #{' '}"
-            rendered="#{empty showResName ? true : showResName}"/>
+                  rendered="#{empty showResName ? true : showResName}"/>
     <a:repeat value="#{storeRes.formatList}" var="_format">
         #{' '}
         #{_format.formatDefine.name} :
@@ -23,7 +22,10 @@
                       rendered="#{not (_format.formatDefine.dataType.name() eq 'WORD')}"/>
 
     </a:repeat>
-    <h:outputText value="#{storeRes.res.unitGroup.name}:#{storeRes.floatConversionRate}" rendered="#{storeRes.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
-
+    <h:outputText value="#{storeRes.res.unitGroup.name}:" rendered="#{storeRes.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
+    <h:outputText value="#{storeRes.floatConversionRate}"
+                  rendered="#{storeRes.res.unitGroup.type == 'FLOAT_CONVERT'}">
+        <f:convertNumber pattern="#{storeRes.res.unitGroup.floatConvertRateFormat}"/>
+    </h:outputText>
 
 </ui:composition>

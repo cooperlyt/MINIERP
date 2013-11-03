@@ -6,8 +6,12 @@ import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.store.OrderNeedItem;
+import com.dgsoft.erp.action.store.StoreInItem;
+import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
@@ -26,7 +30,7 @@ import java.util.List;
 @Name("customerOrderHome")
 public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
 
-    private static final String ORDER_SEND_REASON_WORD_KEY ="erp.needResReason.order";
+    private static final String ORDER_SEND_REASON_WORD_KEY = "erp.needResReason.order";
 
     @In(create = true)
     private CustomerHome customerHome;
@@ -43,6 +47,15 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
     @In(create = true)
     private BusinessDefineHome businessDefineHome;
 
+    @In(create = true)
+    private StoreResHome storeResHome;
+
+    @In(required = false)
+    protected StoreResFormatFilter storeResFormatFilter;
+
+    @In(create = true)
+    protected ResHome resHome;
+
     @In
     private FacesMessages facesMessages;
 
@@ -51,19 +64,13 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
 
     private NeedRes needRes;
 
+    @DataModel("orderNeedItems")
     private List<OrderNeedItem> orderNeedItems;
 
+    @DataModelSelection
+    private OrderNeedItem orderNeedItem;
+
     private OrderNeedItem editingItem;
-
-    private String addItemLastState = "";
-
-    public String getAddItemLastState() {
-        return addItemLastState;
-    }
-
-    public void setAddItemLastState(String addItemLastState) {
-        this.addItemLastState = addItemLastState;
-    }
 
     public OrderNeedItem getEditingItem() {
         return editingItem;
@@ -73,23 +80,78 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         this.editingItem = editingItem;
     }
 
-    @Observer(value = "storeResCountIsChanged",create = false)
-    public void itemCountChangeListener(){
-        if (editingItem != null){
-           editingItem.calcPriceByCount();
+    @Observer(value = "storeResCountIsChanged", create = false)
+    public void itemCountChangeListener() {
+        if (editingItem != null) {
+            editingItem.calcPriceByCount();
         }
     }
 
-    @Observer(value = "erp.resLocateSelected",create = false)
+    @Observer(value = "erp.resLocateSelected", create = false)
     public void generateSaleItemByRes(Res res) {
         editingItem = new OrderNeedItem(res);
-        addItemLastState = "";
+        editingItem.setStoreResItem(false);
     }
 
-    @Observer(value = "erp.storeResLocateSelected",create = false)
+    @Observer(value = "erp.storeResLocateSelected", create = false)
     public void generateSaleItemByStoreRes(StoreRes storeRes) {
         editingItem = new OrderNeedItem(storeRes.getRes(), storeRes.getFloatConversionRate());
-        addItemLastState = "";
+        editingItem.setStoreResItem(true);
+    }
+
+    public int getItemsCount(){
+        return orderNeedItems.size();
+    }
+
+    public BigDecimal getOrderTotalPrice(){
+       BigDecimal result = new BigDecimal("0");
+        for (OrderNeedItem item: orderNeedItems){
+            result = result.add(item.getTotalPrice());
+        }
+        return result;
+    }
+
+    public void removeItem(){
+        orderNeedItems.remove(orderNeedItem);
+    }
+
+    public void addOrderItem() {
+        if ((editingItem == null)) {
+            throw new IllegalArgumentException("editingItem state error");
+        }
+        if (editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)){
+            editingItem.setUseUnit(editingItem.getStoreResCount().getUseUnit());
+        }
+
+        editingItem.calcPriceByCount();
+
+        if (editingItem.isStoreResItem()){
+            storeResHome.setRes(editingItem.getRes(), storeResFormatFilter.getResFormatList(), editingItem.getStoreResCount().getFloatConvertRate());
+            if (storeResHome.isIdDefined()) {
+                editingItem.setStoreRes(storeResHome.getInstance());
+            } else {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
+                return;
+            }
+
+        }
+
+        for (OrderNeedItem orderNeedItem : orderNeedItems) {
+
+            if (orderNeedItem.same(editingItem)) {
+                orderNeedItem.merger(editingItem);
+                editingItem = null;
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,"storeResInOrderItemMerger");
+                break;
+            }
+        }
+        if (editingItem != null){
+            orderNeedItems.add(editingItem);
+        }
+        editingItem = null;
+        resHome.clearInstance();
+        storeResHome.clearInstance();
+
     }
 
     public NeedRes getNeedRes() {
@@ -109,18 +171,9 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         businessDefineHome.setId("erp.business.order");
         startData.generateKey();
         needRes = new NeedRes(getInstance(),
-                NeedRes.NeedResType.ORDER_SEND,ORDER_SEND_REASON_WORD_KEY,new Date());
+                NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date());
         orderNeedItems = new ArrayList<OrderNeedItem>();
         return "beginning";
-    }
-
-
-    public List<OrderNeedItem> getOrderNeedItems() {
-        return orderNeedItems;
-    }
-
-    public void setOrderNeedItems(List<OrderNeedItem> orderNeedItems) {
-        this.orderNeedItems = orderNeedItems;
     }
 
     @Factory("orderPayTypes")
@@ -155,7 +208,7 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
 
         if (getInstance().isIncludeMiddleMan()) {
             if (getInstance().getCustomer().getMiddleMan() == null) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"orderIncludeMiddleManError");
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderIncludeMiddleManError");
                 return false;
             }
         }

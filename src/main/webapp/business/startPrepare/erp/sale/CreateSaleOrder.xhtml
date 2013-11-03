@@ -17,39 +17,48 @@
         height: 14px;
         width: 100px;
     }
+
+    .priceUnitSelectWidth input[type="text"] {
+        width: 70px;
+    }
 </h:outputStylesheet>
 
 <h:form>
     <rich:toolbar>
         <rich:toolbarGroup>
-            <h:panelGrid columns="7">
-                <s:decorate template="/layout/edit.xhtml">
-                    <rich:select value="#{customerOrderHome.instance.payType}"
-                                 label="#{messages.order_field_payType}"
-                                 required="true">
-                        <s:selectItems value="#{orderPayTypes}" var="_payType"
-                                       noSelectionLabel="#{messages.noSelectLabel}"
-                                       label="#{messages[_payType.name()]}"/>
-                        <s:convertEnum/>
-                        <rich:placeholder value="#{messages.order_field_payType}"/>
-                    </rich:select>
-                </s:decorate>
-            </h:panelGrid>
+
+
+            <rich:select value="#{customerOrderHome.instance.payType}"
+                         label="#{messages.order_field_payType}"
+                         required="true" id="payTypeField">
+                <s:selectItems value="#{orderPayTypes}" var="_payType"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{messages[_payType.name()]}"/>
+                <s:convertEnum/>
+                <rich:validator event="selectitem"/>
+                <rich:placeholder value="#{messages.order_field_payType}"/>
+            </rich:select>
+            <rich:message for="payTypeField" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+
         </rich:toolbarGroup>
 
         <rich:toolbarGroup>
-            <rich:calendar
-                    enableManualInput="true"
-                    inputSize="20"
-                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                    datePattern="#{messages.datetimepattern}"
-                    required="true"
-                    label="#{messages.storeOutLimitDate}"
-                    value="#{customerOrderHome.needRes.limitTime}">
 
+            <rich:calendar id="orderSendLimitDateField"
+                           enableManualInput="true"
+                           inputSize="20"
+                           timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                           showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                           datePattern="#{messages.datetimepattern}"
+                           required="true"
+                           label="#{messages.storeOutLimitDate}"
+                           value="#{customerOrderHome.needRes.limitTime}">
+                <rich:validator event="change"/>
                 <rich:placeholder value="#{messages.storeOutLimitDate}"/>
             </rich:calendar>
+            <rich:message for="orderSendLimitDateField" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
         </rich:toolbarGroup>
 
 
@@ -185,7 +194,7 @@
 
 
         <a:commandButton value="#{messages.search}" execute="@region"
-                         render="resSearchForm,orderItemDetails"
+                         render="resSearchForm,orderItemDetails,orderItemActionMessages"
                          action="#{resLocate.locateByCode('SELL_OUT')}">
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
@@ -204,72 +213,217 @@
     </h:panelGrid>
 </h:form>
 
+
+<ui:include src="/templates/erp/ResSelectTree.xhtml">
+    <ui:param name="render" value="orderItemDetails"/>
+    <ui:param name="treeValue" value="#{saleResTree}"/>
+</ui:include>
+
+<ui:include src="/templates/erp/StoreResSelectTree.xhtml">
+    <ui:param name="render" value="orderItemDetails"/>
+    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+</ui:include>
+
 <h:form id="orderItemDetails">
 
 
     <rich:panel rendered="#{resHome.idDefined}">
 
-        <h:panelGrid columns="1">
+        <h:panelGrid columns="4">
             <h:outputText value="#{resHome.resTitle}" styleClass="name"/>
+            #{' '}
+            <h:selectBooleanCheckbox value="#{customerOrderHome.editingItem.storeResItem}">
+                <a:ajax event="click" render="orderItemDetails"/>
+            </h:selectBooleanCheckbox>
+
+            #{messages.orderItemIsStoreRes}
         </h:panelGrid>
 
 
-        <a:outputPanel id="itemFormats">
-            <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
-                <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{_format.formatDefine.name}</ui:define>
-                    <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
-                        <ui:param name="format" value="#{_format}"/>
-                        <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
+        <a:outputPanel rendered="#{customerOrderHome.editingItem.storeResItem}">
+            <a:outputPanel id="itemFormats">
+                <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+                    <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{_format.formatDefine.name}</ui:define>
+                        <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
+                            <ui:param name="format" value="#{_format}"/>
+                            <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
 
-                    </ui:include>
-                </s:decorate>
-            </a:repeat>
+                        </ui:include>
+                    </s:decorate>
+                </a:repeat>
+            </a:outputPanel>
+
+
+            <ui:include src="/templates/erp/ResCountInput.xhtml">
+                <ui:param name="resCountBean" value="#{customerOrderHome.editingItem.storeResCount}"/>
+                <ui:param name="countChangeRender" value="priceFields"/>
+            </ui:include>
+
         </a:outputPanel>
+
+        <s:decorate template="/layout/seam-edit.xhtml" rendered="#{not customerOrderHome.editingItem.storeResItem}">
+            <ui:define name="label">#{messages.orderItemCount}</ui:define>
+            <h:inputText value="#{customerOrderHome.editingItem.resCount}" size="15" required="true"
+                         label="#{messages.orderItemCount}" converter="javax.faces.BigDecimal">
+                <a:ajax event="blur"
+                        listener="#{customerOrderHome.editingItem.calcPriceByCount}" render="priceFields"/>
+            </h:inputText>
+        </s:decorate>
 
         <div style="clear:both"/>
-
-        <ui:include src="/templates/erp/ResCountInput.xhtml">
-            <ui:param name="resCountBean" value="#{customerOrderHome.editingItem.storeResCount}"/>
-
-        </ui:include>
-
         <a:outputPanel id="priceFields">
-            <h:inputText value="#{customerOrderHome.editingItem.unitPrice}">
-                <f:convertNumber type="currency" currencyCode="CNY"/>
-                <a:ajax event="blur" render="priceFields"
-                        listener="#{customerOrderHome.editingItem.calcPriceByUnitPrice}"/>
-            </h:inputText>
 
-            <h:inputText value="#{customerOrderHome.editingItem.rebate}">
-                <f:convertNumber type="percent"/>
-                <a:ajax event="blur" render="priceFields"
-                        listener="#{customerOrderHome.editingItem.calcPriceByRebate}"/>
-            </h:inputText>
+            <div>
+                <s:label styleClass="name">
+                    #{messages.orderItemPrice}
+                    <s:span styleClass="required">*</s:span>
+                </s:label>
 
-            <h:inputText value="#{customerOrderHome.editingItem.totalPrice}">
-                <f:convertNumber type="currency" currencyCode="CNY"/>
-                <a:ajax event="blur" render="priceFields"
-                        listener="#{customerOrderHome.editingItem.calcPriceByTotalPrice}"/>
-            </h:inputText>
+
+                <s:span styleClass="value">
+                    #{messages.orderItemUnitPrice}
+                    <h:inputText required="true" size="12" value="#{customerOrderHome.editingItem.unitPrice}">
+                        <f:convertNumber groupingUsed="false" type="currency" locale="#{calendarBean.locale}"
+                                         currencySymbol=""/>
+                        <a:ajax event="blur" render="priceFields"
+                                listener="#{customerOrderHome.editingItem.calcPriceByUnitPrice}"/>
+                    </h:inputText>
+                </s:span>
+
+
+                <s:span styleClass="value"
+                        rendered="#{not (customerOrderHome.editingItem.storeResItem and (customerOrderHome.editingItem.res.unitGroup.type eq 'FIX_CONVERT'))}">
+                    <h:outputText value="#{' / '}"/>
+
+                    <h:selectOneMenu value="#{customerOrderHome.editingItem.useUnit}" style="width: 80px"
+                                     required="true">
+                        <s:selectItems value="#{customerOrderHome.editingItem.res.unitGroup.resUnitList}" var="_unit"
+                                       label="#{_unit.name}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                        <a:ajax event="valueChange" listener="#{customerOrderHome.editingItem.calcPriceByCount}"
+                                render="priceFields">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </h:selectOneMenu>
+                </s:span>
+
+                <s:span styleClass="value">
+                    #{messages.orderItemPriceRebate}
+
+                    <h:inputText required="true" size="7" value="#{customerOrderHome.editingItem.rebate}">
+                        <f:convertNumber pattern="#0.##"/>
+                        <a:ajax event="blur" render="priceFields"
+                                listener="#{customerOrderHome.editingItem.calcPriceByRebate}"/>
+                    </h:inputText>
+                </s:span>
+
+
+                <s:span styleClass="value">
+                    <h:inputText size="17" value="#{customerOrderHome.editingItem.totalPrice}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                         groupingUsed="false"/>
+                        <a:ajax event="blur" render="priceFields"
+                                listener="#{customerOrderHome.editingItem.calcPriceByTotalPrice}"/>
+                    </h:inputText>
+                </s:span>
+
+
+            </div>
         </a:outputPanel>
+        <s:span styleClass="value">
+            <a:commandButton value="#{messages.addItem}" execute="@form"
+                             action="#{customerOrderHome.addOrderItem}"
+                             render="orderItemListTable,orderItemDetails,orderItemActionMessages">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </s:span>
 
+        <div style="clear:both"/>
     </rich:panel>
 
-    <div style="clear:both"/>
+
 </h:form>
+<rich:messages id="orderItemActionMessages" ajaxRendered="false" globalOnly="true"/>
 <rich:collapsiblePanel switchType="client" header="#{messages.orderItems}">
     <h:form>
-        <rich:dataTable value="#{customerOrderHome.orderNeedItems}" var="_item">
+        <rich:dataTable id="orderItemListTable" style="width: 100%" value="#{orderNeedItems}"
+                        var="_item">
             <rich:column>
                 <f:facet name="header">
+                    #{messages.orderItem}
+                </f:facet>
+                <a:outputPanel rendered="#{_item.storeResItem}">
+                    #{messages.StoreRes}:
+                    <ui:include src="/templates/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                    </ui:include>
+                </a:outputPanel>
+                <a:outputPanel rendered="#{not _item.storeResItem}">
+                    #{messages.res}:
+                    <ui:include src="/templates/erp/ChangeItemResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item}"/>
+                    </ui:include>
+                </a:outputPanel>
+                <f:facet name="footer">
+                     #{messages.recordTotal} #{customerOrderHome.itemsCount} #{messages.item}
+                </f:facet>
 
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemCount}
+                </f:facet>
+                <h:outputText value="#{_item.count}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+                #{_item.useUnit.name}
+
+
+            </rich:column>
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemUnitPrice}
+                </f:facet>
+                <h:outputText value="#{_item.unitPrice}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true" currencySymbol="¥"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemPriceRebate}
+                </f:facet>
+                #{'%'}
+                <h:outputText value="#{_item.rebate}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+
+            </rich:column>
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemTotalPrice}
+                </f:facet>
+                <h:outputText value="#{_item.totalPrice}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true" currencySymbol="¥"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{customerOrderHome.orderTotalPrice}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true" currencySymbol="¥"/>
+                    </h:outputText>
                 </f:facet>
             </rich:column>
             <rich:column>
                 <f:facet name="header">
 
                 </f:facet>
+                <a:commandButton image="/img/delete.png" render="orderItemListTable"
+                                 title="#{messages.remove}"
+                                 execute="@form" action="#{customerOrderHome.removeItem}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
             </rich:column>
         </rich:dataTable>
     </h:form>

@@ -31,6 +31,7 @@ public class StoreRes implements java.io.Serializable {
 
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
+    private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
 
     private Stock stock;
     private boolean enable;
@@ -161,6 +162,15 @@ public class StoreRes implements java.io.Serializable {
 
     public void setOrderItems(Set<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "storeReses")
+    public Set<DispatchItem> getDispatchItems() {
+        return dispatchItems;
+    }
+
+    public void setDispatchItems(Set<DispatchItem> dispatchItems) {
+        this.dispatchItems = dispatchItems;
     }
 
     @Transient

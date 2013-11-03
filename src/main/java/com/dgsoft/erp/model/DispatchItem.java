@@ -4,14 +4,7 @@ package com.dgsoft.erp.model;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -25,22 +18,12 @@ public class DispatchItem implements java.io.Serializable {
 	private String id;
 	private OrderItem orderItem;
 	private BigDecimal count;
-	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
+	private Dispatch dispatch;
+    private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
 
 	public DispatchItem() {
 	}
 
-	public DispatchItem(String id, OrderItem orderItem) {
-		this.id = id;
-		this.orderItem = orderItem;
-	}
-	public DispatchItem(String id, OrderItem orderItem, BigDecimal count,
-			Set<Dispatch> dispatches) {
-		this.id = id;
-		this.orderItem = orderItem;
-		this.count = count;
-		this.dispatches = dispatches;
-	}
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -74,13 +57,24 @@ public class DispatchItem implements java.io.Serializable {
 		this.count = count;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dispatchItem")
-	public Set<Dispatch> getDispatches() {
-		return this.dispatches;
-	}
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @JoinColumn(name = "DISPATCH", nullable = false)
+    @NotNull
+    public Dispatch getDispatch() {
+        return dispatch;
+    }
 
-	public void setDispatches(Set<Dispatch> dispatches) {
-		this.dispatches = dispatches;
-	}
+    public void setDispatch(Dispatch dispatch) {
+        this.dispatch = dispatch;
+    }
 
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = StoreRes.class)
+    @JoinTable(name = "DISPATCH_RES_ITEM", joinColumns = @JoinColumn(name = "ITEM"), inverseJoinColumns = @JoinColumn(name = "STORE_RES"))
+    public Set<StoreRes> getStoreReses() {
+        return storeReses;
+    }
+
+    public void setStoreReses(Set<StoreRes> storeReses) {
+        this.storeReses = storeReses;
+    }
 }

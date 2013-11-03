@@ -201,6 +201,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             if (storeInItem.same(editingItem)) {
                 storeInItem.merger(editingItem);
                 editingItem = null;
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,"");
                 break;
             }
         }

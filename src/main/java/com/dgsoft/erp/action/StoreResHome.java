@@ -32,7 +32,7 @@ public class StoreResHome extends ErpEntityHome<StoreRes> {
              + storeRes.getFloatConversionRate());
             if (StoreChangeHelper.sameFormat(storeRes.getFormats(), formatList)
                     && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
-                    || storeRes.getFloatConversionRate().equals(floatConvertRate))) {
+                    || (storeRes.getFloatConversionRate().compareTo(floatConvertRate) == 0))) {
                 this.setId(storeRes.getId());
                 getInstance();
                 return;

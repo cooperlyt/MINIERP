@@ -4,6 +4,7 @@ package com.dgsoft.erp.model;
 import com.dgsoft.common.OrderBeanComparator;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -104,7 +105,7 @@ public class UnitGroup implements java.io.Serializable {
     @Transient
     public ResUnit getMasterUnit(){
         for (ResUnit unit : getResUnits()) {
-            if (unit.getConversionRate().floatValue() == 1) {
+            if (unit.isMasterUnit()) {
                 return unit;
             }
         }
@@ -115,7 +116,7 @@ public class UnitGroup implements java.io.Serializable {
     public ResUnit getFloatAuxiliaryUnit() {
         if (getType().equals(UnitGroupType.FLOAT_CONVERT)) {
             for (ResUnit unit : getResUnits()) {
-                if (unit.getConversionRate().intValue() != 1) {
+                if (!unit.isMasterUnit()) {
                     return unit;
                 }
             }

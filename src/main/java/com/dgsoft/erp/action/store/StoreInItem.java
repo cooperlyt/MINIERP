@@ -23,6 +23,8 @@ public class StoreInItem extends StoreChangeItem {
 
     private String storeResCode = null;
 
+    private List<Format> formats;
+
     public StoreInItem(Res res, BigDecimal floatConvertRate){
         this(res);
         storeResCount.setFloatConvertRate(floatConvertRate);
@@ -58,11 +60,23 @@ public class StoreInItem extends StoreChangeItem {
         this.batch = batch;
     }
 
+    public void setFormats(List<Format> formats) {
+        this.formats = formats;
+    }
+
+    @Override
+    public List<Format> getFormats() {
+        return formats;
+    }
+
     @Override
     public boolean same(StoreChangeItem storeInItem) {
         //TODO batch
         //TODO storeaArea
         return super.same(storeInItem);
     }
+
+
+
 
 }

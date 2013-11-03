@@ -14,6 +14,7 @@ import org.jboss.seam.international.StatusMessage;
 import org.richfaces.component.UIExtendedDataTable;
 
 import javax.faces.event.AjaxBehaviorEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -139,7 +140,7 @@ public class UnitGroupHome extends ErpEntityHome<UnitGroup> {
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "FloatConvertUnitCountError");
                 return false;
             }
-            if ((unitList.get(0).getConversionRate().intValue() != 1) && (unitList.get(1).getConversionRate().intValue() != 1)){
+            if ((unitList.get(0).getConversionRate().compareTo(new BigDecimal("1")) != 0) && (unitList.get(1).getConversionRate().compareTo(new BigDecimal("1")) != 0)){
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "FloatConvertNoMainError");
                 return false;
             }

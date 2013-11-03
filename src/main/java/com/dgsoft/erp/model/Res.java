@@ -26,6 +26,7 @@ public class Res implements java.io.Serializable {
 	private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
 	private Set<FormatDefine> formatDefines = new HashSet<FormatDefine>(0);
     private Set<Batch> batches = new HashSet<Batch>(0);
+    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Accounting accounting;
 
     private ResUnit resUnitByInDefault;
@@ -150,7 +151,16 @@ public class Res implements java.io.Serializable {
         this.batches = batches;
     }
 
-	@Column(name = "DESCRIPTION", length = 200)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "res")
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    @Column(name = "DESCRIPTION", length = 200)
 	@Size(max = 200)
 	public String getDescription() {
 		return this.description;

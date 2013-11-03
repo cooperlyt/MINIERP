@@ -3,16 +3,9 @@ package com.dgsoft.erp.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -30,7 +23,6 @@ public class Dispatch implements java.io.Serializable {
 	private ExpressInfo expressInfo;
 	private ProductToDoor productToDoor;
 	private ExpressCar expressCar;
-	private DispatchItem dispatchItem;
 	private NeedRes needRes;
 	private String deliveryType;
 	private Date sendTime;
@@ -41,43 +33,12 @@ public class Dispatch implements java.io.Serializable {
 	private String outCustomer;
 	private String memo;
 
+    private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
+
 	public Dispatch() {
 	}
 
-	public Dispatch(String id, Store store, DispatchItem dispatchItem,
-			NeedRes needRes, String deliveryType, String farePayType,
-			String state) {
-		this.id = id;
-		this.store = store;
-		this.dispatchItem = dispatchItem;
-		this.needRes = needRes;
-		this.deliveryType = deliveryType;
-		this.farePayType = farePayType;
-		this.state = state;
-	}
-	public Dispatch(String id, Store store, StockChange stockChange,
-			ExpressInfo expressInfo, ProductToDoor productToDoor,
-			ExpressCar expressCar, DispatchItem dispatchItem, NeedRes needRes,
-			String deliveryType, Date sendTime, String farePayType,
-			BigDecimal fare, String sendEmp, String state, String outCustomer,
-			String memo) {
-		this.id = id;
-		this.store = store;
-		this.stockChange = stockChange;
-		this.expressInfo = expressInfo;
-		this.productToDoor = productToDoor;
-		this.expressCar = expressCar;
-		this.dispatchItem = dispatchItem;
-		this.needRes = needRes;
-		this.deliveryType = deliveryType;
-		this.sendTime = sendTime;
-		this.farePayType = farePayType;
-		this.fare = fare;
-		this.sendEmp = sendEmp;
-		this.state = state;
-		this.outCustomer = outCustomer;
-		this.memo = memo;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -102,7 +63,7 @@ public class Dispatch implements java.io.Serializable {
 		this.store = store;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STOCK_CHANGE")
 	public StockChange getStockChange() {
 		return this.stockChange;
@@ -140,17 +101,6 @@ public class Dispatch implements java.io.Serializable {
 
 	public void setExpressCar(ExpressCar expressCar) {
 		this.expressCar = expressCar;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ITEMS", nullable = false)
-	@NotNull
-	public DispatchItem getDispatchItem() {
-		return this.dispatchItem;
-	}
-
-	public void setDispatchItem(DispatchItem dispatchItem) {
-		this.dispatchItem = dispatchItem;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -246,4 +196,12 @@ public class Dispatch implements java.io.Serializable {
 		this.memo = memo;
 	}
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch")
+    public Set<DispatchItem> getDispatchItems() {
+        return dispatchItems;
+    }
+
+    public void setDispatchItems(Set<DispatchItem> dispatchItems) {
+        this.dispatchItems = dispatchItems;
+    }
 }

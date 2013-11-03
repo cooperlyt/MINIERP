@@ -28,7 +28,8 @@ public class ResUnit implements java.io.Serializable,OrderModel {
 	private Set<Res> resesForMasterUnit = new HashSet<Res>(0);
 	private Set<Res> resesForInDefault = new HashSet<Res>(0);
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
-    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
+    private Set<OrderItem> orderItemsByMiddleUnit = new HashSet<OrderItem>(0);
+    private Set<OrderItem> orderItemsByMoneyUnit = new HashSet<OrderItem>(0);
 
 	public ResUnit() {
         this.conversionRate = new BigDecimal(0);
@@ -141,11 +142,25 @@ public class ResUnit implements java.io.Serializable,OrderModel {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "middleUnit")
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
+    public Set<OrderItem> getOrderItemsByMiddleUnit() {
+        return orderItemsByMiddleUnit;
     }
 
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    public void setOrderItemsByMiddleUnit(Set<OrderItem> orderItems) {
+        this.orderItemsByMiddleUnit = orderItems;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moneyUnit")
+    public Set<OrderItem> getOrderItemsByMoneyUnit() {
+        return orderItemsByMoneyUnit;
+    }
+
+    public void setOrderItemsByMoneyUnit(Set<OrderItem> orderItemsByMoneyUnit) {
+        this.orderItemsByMoneyUnit = orderItemsByMoneyUnit;
+    }
+
+    @Transient
+    public boolean isMasterUnit(){
+        return getConversionRate().compareTo(new BigDecimal("1")) == 0;
     }
 }

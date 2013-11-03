@@ -23,6 +23,8 @@ public class TestKnow {
 
     public static void main(String[] args){
 
+        System.out.println(new BigDecimal("10.0000000000").compareTo(new BigDecimal("10")));
+
         NumberFormat df = DecimalFormat.getCurrencyInstance(Locale.CHINA);
         //DecimalFormat df = new DecimalFormat("###,###,##0");
 

@@ -16,6 +16,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
 import javax.faces.event.ValueChangeEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -109,7 +110,7 @@ public class ResHome extends ErpEntityHome<Res> {
     public void unitGroupSelectListener() {
         if (getInstance().getUnitGroup() != null) {
             for (ResUnit resUnit : getInstance().getUnitGroup().getResUnits()) {
-                if (resUnit.getConversionRate().intValue() == 1) {
+                if (resUnit.getConversionRate().compareTo(new BigDecimal("1")) == 0) {
                     getInstance().setResUnitByMasterUnit(resUnit);
                     getInstance().setResUnitByInDefault(resUnit);
                     getInstance().setResUnitByOutDefault(resUnit);

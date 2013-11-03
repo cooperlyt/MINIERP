@@ -5,9 +5,13 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -52,8 +56,23 @@ public class StoreResFormatFilter {
 
     private void generateFloatConvertRateHistory() {
         Set<BigDecimal> result = new HashSet<BigDecimal>();
+        if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            return;
+        }
+        DecimalFormat df = new DecimalFormat(res.getUnitGroup().getFloatConvertRateFormat());
+
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setGroupingUsed(false);
+
         for (StoreRes storeRes : res.getStoreReses()) {
-            result.add(storeRes.getFloatConversionRate());
+
+            try {
+                result.add(new BigDecimal(df.parse(df.format(storeRes.getFloatConversionRate())).toString()));
+            } catch (ParseException e) {
+                result.add(storeRes.getFloatConversionRate());
+                Logging.getLog(this.getClass()).warn("floatConvertRate cant be format:" + storeRes.getFloatConversionRate());
+            }
+
         }
         floatConvertHistoryRates = new ArrayList<BigDecimal>(result);
         Collections.sort(floatConvertHistoryRates);
