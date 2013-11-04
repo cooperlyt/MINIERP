@@ -26,7 +26,7 @@
         width: 80px;
     }
 
-    .saleAreaSelect input[type="text"]{
+    .saleAreaSelect input[type="text"] {
         width: 115px;
     }
 </h:outputStylesheet>
@@ -68,36 +68,37 @@
                           showDetail="true" showSummary="true" tooltip="true"/>
         </rich:toolbarGroup>
 
-        <rich:toolbarGroup >
+        <rich:toolbarGroup>
 
-            <h:panelGrid id="orderTotalPrice" columns="20">
-                #{messages.orderPrice}:
-                <h:outputText value="#{customerOrderHome.orderTotalPrice}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
-                </h:outputText>
-                * #{' '} %
-                <h:inputText id="orderTotalRebateField" value="#{customerOrderHome.instance.totalRebate}" required="true"
-                             converter="javax.faces.BigDecimal" size="7" label="#{messages.orderRebate}" >
-                    <a:ajax event="blur" listener="#{customerOrderHome.calcOrderPrice}" render="orderTotalPrice"/>
-                    <rich:placeholder value="#{messages.orderRebate}"/>
-                </h:inputText>
-                <rich:message for="orderTotalRebateField" styleClass="message-icon"
-                              showDetail="true" showSummary="true" tooltip="true"/>
-                =
-                <h:inputText id="orderMoneyField" value="#{customerOrderHome.instance.money}"
-                        label="#{messages.orderItemPrice}" required="true" size="12">
-                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                     type="currency" groupingUsed="false"/>
-                    <a:ajax listener="calcOrderTotalRebate" event="blur" render="orderTotalPrice"/>
-                    <rich:placeholder value="#{messages.orderItemPrice}"/>
-                </h:inputText>
-                <rich:message for="orderMoneyField" styleClass="message-icon"
-                              showDetail="true" showSummary="true" tooltip="true"/>
-            </h:panelGrid>
+                <h:panelGrid id="orderTotalPrice" columns="20">
+                    #{messages.orderPrice}:
+                    <h:outputText value="#{customerOrderHome.orderTotalPrice}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                    * #{' '} %
+                    <h:inputText id="orderTotalRebateField" value="#{customerOrderHome.instance.totalRebate}"
+                                 required="true"
+                                 converter="javax.faces.BigDecimal" size="7" label="#{messages.orderRebate}">
+                        <a:ajax event="blur" execute="@this" listener="#{customerOrderHome.calcOrderPrice}"
+                                render="orderTotalPrice"/>
+                        <rich:placeholder value="#{messages.orderRebate}"/>
+                    </h:inputText>
+                    <rich:message for="orderTotalRebateField" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+                    =
+                    <h:inputText id="orderMoneyField" value="#{customerOrderHome.instance.money}"
+                                 label="#{messages.orderItemPrice}" required="true" size="12">
+                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                         type="currency" groupingUsed="false"/>
+                        <a:ajax listener="calcOrderTotalRebate" event="blur" execute="@this" render="orderTotalPrice"/>
+                        <rich:placeholder value="#{messages.orderItemPrice}"/>
+                    </h:inputText>
+                    <rich:message for="orderMoneyField" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+                </h:panelGrid>
+
         </rich:toolbarGroup>
-
-
 
 
         <rich:toolbarGroup location="right">
@@ -360,7 +361,8 @@
                 <s:span styleClass="value">
                     #{messages.orderItemPriceRebate}
 
-                    <h:inputText required="true" label="#{messages.rebate}" size="7" value="#{customerOrderHome.editingItem.rebate}">
+                    <h:inputText required="true" label="#{messages.rebate}" size="7"
+                                 value="#{customerOrderHome.editingItem.rebate}">
                         <f:convertNumber pattern="#0.##"/>
                         <a:ajax event="blur" render="priceFields"
                                 listener="#{customerOrderHome.editingItem.calcPriceByRebate}"/>
@@ -369,7 +371,8 @@
 
 
                 <s:span styleClass="value">
-                    <h:inputText size="17" value="#{customerOrderHome.editingItem.totalPrice}" label="#{messages.orderItemPrice}">
+                    <h:inputText size="17" value="#{customerOrderHome.editingItem.totalPrice}"
+                                 label="#{messages.orderItemPrice}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                          groupingUsed="false"/>
                         <a:ajax event="blur" render="priceFields"

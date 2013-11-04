@@ -204,7 +204,7 @@
                                    fetchValue="[#{_middleMan.name}][id:#{_middleMan.id}]"
                                    var="_middleMan">
 
-                    <h:outputText value="#{_customer.name}"/>
+                    <h:outputText value="#{_middleMan.name}"/>
                     <a:ajax event="selectitem"
                             render="middleManDetails" execute="@this">
                         <a:attachQueue requestDelay="0"/>
