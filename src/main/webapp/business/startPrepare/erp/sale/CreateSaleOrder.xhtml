@@ -162,7 +162,7 @@
             </rich:autocomplete>
             <ui:define name="tail">
                 <a:commandButton immediate="true" image="/img/reset_btn.png" action="#{customerHome.clearInstance}"
-                                 execute="@this" render="customerInfo,customerSelectNameField">
+                                 execute="@this" render="customerInfo,customerSelectNameField,orderContactFields">
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
             </ui:define>
