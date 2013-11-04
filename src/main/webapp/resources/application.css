@@ -337,7 +337,12 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
 .message-icon .rf-msg-err {
     display: inline;
     visibility: visible;
+    /*
+     background-image: url('#{facesContext.externalContext.requestContextPath}/img/error.gif');
+*/
 }
+
+
 .message-icon .rf-msg-dtl {
     display: none;
     visibility: hidden;

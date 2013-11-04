@@ -117,7 +117,7 @@ select {
 .small_name{
     vertical-align: top;
     font-weight: bold;
-    width: 65px;
+    width: 70px;
     float: left;
     padding: 5px;
     margin-top: 3px;
@@ -127,7 +127,7 @@ select {
 /*  delete this*/
 .small_label{
     font-weight: bold;
-    width: 65px;
+    width: 70px;
     padding: 5px;
     margin-top: 3px;
 }
@@ -157,6 +157,10 @@ select {
 .error {
 	float: left;
 	padding: 5px;
+}
+
+.tail{
+    float: left;
 }
 
 .fix_error{

@@ -39,4 +39,12 @@ public class CityList extends SystemEntityQuery<City>{
     public void setProvinceId(Integer provinceId) {
         this.provinceId = provinceId;
     }
+
+    public String getCityById(int cityId){
+        City city = getEntityManager().find(City.class,cityId);
+        if (city != null){
+            return city.getProvince().getName() + " " + city.getName();
+        }
+        return "";
+    }
 }

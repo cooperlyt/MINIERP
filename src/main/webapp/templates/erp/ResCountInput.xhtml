@@ -50,6 +50,7 @@
 
             <span class="value">
             <h:inputText id="masterUnitCount" required="true" style="width: 100px"
+                         label="#{messages.storeResCount}"
                          value="#{resCountBean.count}" converter="javax.faces.BigDecimal">
 
                 <a:ajax event="change" execute="@region"
@@ -83,7 +84,7 @@
 
                 <a:repeat value="#{resCountBean.noConvertCountList}" var="_count">
                     <span class="value">
-                    <h:inputText required="true"
+                    <h:inputText required="true" label="#{_count.resUnit.name}"
                                  value="#{_count.count}" converter="javax.faces.BigDecimal">
                         <a:ajax event="blur" render="noConvertCountFields"/>
                     </h:inputText>
@@ -103,7 +104,7 @@
                     <span class="value">
                     <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
                                        value="#{resCountBean.floatConvertRate}"
-                                       layout="div" label=""
+                                       layout="div" label="#{resCountBean.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
                                        required="true"
                                        var="_value"
                                        selectFirst="false"
@@ -123,6 +124,7 @@
                     <h:outputText styleClass="auto_width_unit_label" value="="/>
                     <span class="value">
                     <h:inputText id="floatConvertAuxCount" required="true" style="width: 100px"
+                                 label="#{resCountBean.res.unitGroup.floatAuxiliaryUnit.name}"
                                  value="#{resCountBean.auxCount}" converter="javax.faces.BigDecimal">
                         <a:ajax event="change" execute="@region"
                                 render="masterUnitCount,floatConvertAuxUnitFields,#{countChangeRender}"

@@ -36,7 +36,7 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     public enum OrderPayType{
-        OVERDRAFT,PAY_FIRST,COMPLETE_PAY;
+        COMPLETE_PAY,PAY_FIRST,OVERDRAFT;
     }
 
     public enum MiddleMoneyCalcType{
@@ -57,6 +57,7 @@ public class CustomerOrder implements java.io.Serializable {
     private String contact;
     private String tel;
 
+    private BigDecimal totalMoney;
     private BigDecimal realMoney;
     private BigDecimal totalRebate;
     private BigDecimal middleMoney;
@@ -111,7 +112,6 @@ public class CustomerOrder implements java.io.Serializable {
     @Enumerated(EnumType.STRING)
 	@Column(name = "STATE", nullable = false, length = 20)
 	@NotNull
-	@Size(max = 20)
 	public OrderState getState() {
 		return this.state;
 	}
@@ -123,7 +123,6 @@ public class CustomerOrder implements java.io.Serializable {
     @Enumerated(EnumType.STRING)
 	@Column(name = "PAY_TYPE", nullable = false, length = 32)
 	@NotNull
-	@Size(max = 32)
 	public OrderPayType getPayType() {
 		return this.payType;
 	}
@@ -163,6 +162,16 @@ public class CustomerOrder implements java.io.Serializable {
 	public void setMoney(BigDecimal money) {
 		this.money = money;
 	}
+
+    @Column(name="TOTAL_MONEY", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getTotalMoney() {
+        return totalMoney;
+    }
+
+    public void setTotalMoney(BigDecimal totalMoney) {
+        this.totalMoney = totalMoney;
+    }
 
     @Column(name = "REAL_MONEY", scale = 3)
     public BigDecimal getRealMoney() {

@@ -7,8 +7,6 @@ import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.log.Log;
 import org.jbpm.taskmgmt.exe.TaskInstance;
-import org.richfaces.application.push.TopicKey;
-import org.richfaces.application.push.TopicsContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +43,6 @@ public abstract class TaskInstanceListener {
         ((BpmTaskChangePublish) Component.getInstance("bpmTaskChangePublish", ScopeType.APPLICATION, true, true)).unSubscribe(this);
     }
 
-    @Asynchronous
     public void refresh() {
         newTaskIds.clear();
         taskInstanceList = queryTaskList();

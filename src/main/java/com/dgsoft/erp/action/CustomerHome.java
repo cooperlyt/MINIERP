@@ -23,9 +23,6 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     private boolean haveMiddleMan;
 
     public boolean isHaveMiddleMan() {
-        if (isIdDefined()){
-            haveMiddleMan = getInstance().getMiddleMan() !=  null;
-        }
         return haveMiddleMan;
     }
 
@@ -33,28 +30,43 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
         this.haveMiddleMan = haveMiddleMan;
     }
 
-
+    @Override
+    protected Customer createInstance() {
+        return new Customer(true);
+    }
 
     @Override
-    public boolean wire(){
-        if (haveMiddleMan){
-            if ((isIdDefined() && middleManHome.isIdDefined()) || (!isIdDefined())){
+    protected void initInstance() {
+        super.initInstance();
+        if (isIdDefined()) {
+            haveMiddleMan = getInstance().getMiddleMan() != null;
+            if (haveMiddleMan)
+                middleManHome.setId(getInstance().getMiddleMan().getId());
+        } else {
+            haveMiddleMan = false;
+        }
+
+    }
+
+    @Override
+    public boolean wire() {
+        if (haveMiddleMan) {
+            if ((isIdDefined() && middleManHome.isIdDefined()) || (!isIdDefined())) {
                 getInstance().setMiddleMan(middleManHome.getReadyInstance());
             }
-        }else{
+        } else {
             getInstance().setMiddleMan(null);
         }
         return true;
     }
 
 
-    public void middleManPayChangeListener(){
-        if (haveMiddleMan && isIdDefined() && (getInstance().getMiddleMan() !=  null)){
+    public void middleManPayChangeListener() {
+
+
+        if (haveMiddleMan && isIdDefined() && (getInstance().getMiddleMan() != null)) {
             middleManHome.setId(getInstance().getMiddleMan().getId());
-        }else{
-            if (!haveMiddleMan){
-                getInstance().setMiddleMan(null);
-            }
+        } else {
             middleManHome.clearInstance();
         }
     }

@@ -41,6 +41,10 @@ public class Customer implements java.io.Serializable, NamedModel {
     public Customer() {
     }
 
+    public Customer(boolean enable){
+        this.enable = enable;
+    }
+
     public Customer(String id, CustomerLevel customerLevel,
                     CustomerArea customerArea, MiddleMan middleMan, String name,
                     String type, String contact, boolean enable, int provinceCode) {

@@ -21,14 +21,22 @@
     .priceUnitSelectWidth input[type="text"] {
         width: 70px;
     }
+
+    .payTypeSelectWidth input[type="text"] {
+        width: 80px;
+    }
+
+    .saleAreaSelect input[type="text"]{
+        width: 115px;
+    }
 </h:outputStylesheet>
 
 <h:form>
     <rich:toolbar>
         <rich:toolbarGroup>
 
-
             <rich:select value="#{customerOrderHome.instance.payType}"
+                         styleClass="payTypeSelectWidth" listWidth="93px"
                          label="#{messages.order_field_payType}"
                          required="true" id="payTypeField">
                 <s:selectItems value="#{orderPayTypes}" var="_payType"
@@ -44,13 +52,12 @@
         </rich:toolbarGroup>
 
         <rich:toolbarGroup>
-
             <rich:calendar id="orderSendLimitDateField"
                            enableManualInput="true"
-                           inputSize="20"
+                           inputSize="10"
                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                           datePattern="#{messages.datetimepattern}"
+                           datePattern="#{messages.datePattern}"
                            required="true"
                            label="#{messages.storeOutLimitDate}"
                            value="#{customerOrderHome.needRes.limitTime}">
@@ -60,6 +67,37 @@
             <rich:message for="orderSendLimitDateField" styleClass="message-icon"
                           showDetail="true" showSummary="true" tooltip="true"/>
         </rich:toolbarGroup>
+
+        <rich:toolbarGroup >
+
+            <h:panelGrid id="orderTotalPrice" columns="20">
+                #{messages.orderPrice}:
+                <h:outputText value="#{customerOrderHome.orderTotalPrice}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+                * #{' '} %
+                <h:inputText id="orderTotalRebateField" value="#{customerOrderHome.instance.totalRebate}" required="true"
+                             converter="javax.faces.BigDecimal" size="7" label="#{messages.orderRebate}" >
+                    <a:ajax event="blur" listener="#{customerOrderHome.calcOrderPrice}" render="orderTotalPrice"/>
+                    <rich:placeholder value="#{messages.orderRebate}"/>
+                </h:inputText>
+                <rich:message for="orderTotalRebateField" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+                =
+                <h:inputText id="orderMoneyField" value="#{customerOrderHome.instance.money}"
+                        label="#{messages.orderItemPrice}" required="true" size="12">
+                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                     type="currency" groupingUsed="false"/>
+                    <a:ajax listener="calcOrderTotalRebate" event="blur" render="orderTotalPrice"/>
+                    <rich:placeholder value="#{messages.orderItemPrice}"/>
+                </h:inputText>
+                <rich:message for="orderMoneyField" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+            </h:panelGrid>
+        </rich:toolbarGroup>
+
+
 
 
         <rich:toolbarGroup location="right">
@@ -87,36 +125,37 @@
 
         <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.CustomerArea}</ui:define>
-            <rich:select value="#{customerAreaHome.id}" required="true">
+            <rich:select value="#{customerAreaHome.id}" required="true" styleClass="saleAreaSelect" listWidth="132px">
                 <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
                                noSelectionLabel="#{messages.noSelectLabel}"
                                label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
                 <a:ajax event="selectitem" execute="@this"
                         listener="#{customerOrderHome.clearCustomer}"
-                        render="customerSelectNameField,customerInfo">
+                        render="customerSelectNameField,customerInfo,orderContactFields">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
             </rich:select>
         </s:decorate>
 
+
         <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.Customer}</ui:define>
             <rich:autocomplete id="pinyinSearchCustomer" mode="client" minChars="1" autofill="false"
                                showButton="true"
+                               disabled="#{not customerAreaHome.idDefined}"
                                selectFirst="true"
                                label="#{messages.Customer}"
                                clientFilterFunction="pinyinFilter"
                                autocompleteList="#{customerList.resultList}"
                                value="#{customerHome.pinyinSearchName}"
-
                                fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
 
                 <h:outputText value="#{_customer.name}"/>
-                <a:ajax event="selectitem" listener="#{customerHome.middleManPayChangeListener}"
-                        render="pinyinAutocomplete,customerInfo" execute="@this">
+                <a:ajax event="selectitem" listener="#{customerOrderHome.customerChangeListener}"
+                        render="pinyinSearchCustomer,customerInfo,orderContactFields" execute="@this">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
-                <a:ajax event="blur" execute="@this" listener="#{customerOrderHome.customerChangeListener}"
+                <a:ajax event="blur" execute="@this"
                         render="pinyinSearchCustomer,customerInfo,orderContactFields">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
@@ -136,7 +175,7 @@
                 <ui:define name="label">#{messages.order_field_contact}</ui:define>
                 <h:inputText label="#{messages.order_field_contact}"
                              required="true"
-                             size="50"
+                             size="17"
                              maxlength="50"
                              value="#{customerOrderHome.instance.contact}">
                     <a:ajax event="blur" render="contactField"/>
@@ -148,7 +187,7 @@
                 <ui:define name="label">#{messages.order_field_tel}</ui:define>
                 <h:inputText label="#{messages.order_field_tel}"
                              required="true"
-                             size="50"
+                             size="14"
                              maxlength="50"
                              value="#{customerOrderHome.instance.tel}">
                     <a:ajax event="blur" render="orderTelField"/>
@@ -221,14 +260,15 @@
     </h:panelGrid>
 </h:form>
 
+<rich:messages id="orderItemActionMessages" ajaxRendered="true" globalOnly="false"/>
 
 <ui:include src="/templates/erp/ResSelectTree.xhtml">
-    <ui:param name="render" value="orderItemDetails"/>
+    <ui:param name="render" value="orderItemDetails,orderItemActionMessages"/>
     <ui:param name="treeValue" value="#{saleResTree}"/>
 </ui:include>
 
 <ui:include src="/templates/erp/StoreResSelectTree.xhtml">
-    <ui:param name="render" value="orderItemDetails"/>
+    <ui:param name="render" value="orderItemDetails,orderItemActionMessages"/>
     <ui:param name="treeValue" value="#{saleStoreResTree}"/>
 </ui:include>
 
@@ -291,7 +331,8 @@
 
                 <s:span styleClass="value">
                     #{messages.orderItemUnitPrice}
-                    <h:inputText required="true" size="12" value="#{customerOrderHome.editingItem.unitPrice}">
+                    <h:inputText required="true" size="12" label="#{messages.orderItemUnitPrice}"
+                                 value="#{customerOrderHome.editingItem.unitPrice}">
                         <f:convertNumber groupingUsed="false" type="currency" locale="#{calendarBean.locale}"
                                          currencySymbol=""/>
                         <a:ajax event="blur" render="priceFields"
@@ -319,7 +360,7 @@
                 <s:span styleClass="value">
                     #{messages.orderItemPriceRebate}
 
-                    <h:inputText required="true" size="7" value="#{customerOrderHome.editingItem.rebate}">
+                    <h:inputText required="true" label="#{messages.rebate}" size="7" value="#{customerOrderHome.editingItem.rebate}">
                         <f:convertNumber pattern="#0.##"/>
                         <a:ajax event="blur" render="priceFields"
                                 listener="#{customerOrderHome.editingItem.calcPriceByRebate}"/>
@@ -328,7 +369,7 @@
 
 
                 <s:span styleClass="value">
-                    <h:inputText size="17" value="#{customerOrderHome.editingItem.totalPrice}">
+                    <h:inputText size="17" value="#{customerOrderHome.editingItem.totalPrice}" label="#{messages.orderItemPrice}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                          groupingUsed="false"/>
                         <a:ajax event="blur" render="priceFields"
@@ -342,7 +383,7 @@
         <s:span styleClass="value">
             <a:commandButton value="#{messages.addItem}" execute="@form"
                              action="#{customerOrderHome.addOrderItem}"
-                             render="orderItemListTable,orderItemDetails,orderItemActionMessages">
+                             render="orderItemListTable,orderItemDetails,orderItemActionMessages, orderTotalPrice">
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
         </s:span>
@@ -352,7 +393,7 @@
 
 
 </h:form>
-<rich:messages id="orderItemActionMessages" ajaxRendered="false" globalOnly="true"/>
+
 <rich:collapsiblePanel switchType="client" header="#{messages.orderItems}">
     <h:form>
         <rich:dataTable id="orderItemListTable" style="width: 100%" value="#{orderNeedItems}"
@@ -395,7 +436,7 @@
                 </f:facet>
                 <h:outputText value="#{_item.unitPrice}">
                     <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true" currencySymbol="¥"/>
+                                     type="currency" groupingUsed="true"/>
                 </h:outputText>
             </rich:column>
             <rich:column>
@@ -414,12 +455,12 @@
                 </f:facet>
                 <h:outputText value="#{_item.totalPrice}">
                     <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true" currencySymbol="¥"/>
+                                     type="currency" groupingUsed="true"/>
                 </h:outputText>
                 <f:facet name="footer">
                     <h:outputText value="#{customerOrderHome.orderTotalPrice}">
                         <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true" currencySymbol="¥"/>
+                                         type="currency" groupingUsed="true"/>
                     </h:outputText>
                 </f:facet>
             </rich:column>

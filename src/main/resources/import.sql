@@ -83,6 +83,9 @@ INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.produce
 
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.storage.dispatch','订单调度','业务流中的调度阶段',40);
 
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.finance.cashier','出纳','业务流中的收款阶段',50);
+
+
 -- ROLE_FUNCTION 角色种类
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('system.config', 'system.param');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('system.config', 'system.businessConfig');

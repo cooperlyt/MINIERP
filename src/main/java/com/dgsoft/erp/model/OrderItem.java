@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,54 +17,80 @@ import javax.validation.constraints.Size;
 @Table(name = "ORDER_ITEM", catalog = "MINI_ERP")
 public class OrderItem implements java.io.Serializable {
 
-    public enum MiddleMoneyCalcType{
-        COUNT_FIX,MONEY_RATE;
+    public enum MiddleMoneyCalcType {
+        COUNT_FIX, MONEY_RATE;
     }
 
-	private String id;
-	private StoreRes storeRes;
-	private ResUnit middleUnit;
+    private String id;
+    private StoreRes storeRes;
+    private ResUnit middleUnit;
     private ResUnit moneyUnit;
-	private NeedRes needRes;
-	private BigDecimal count;
-	private BigDecimal cost;
-	private BigDecimal money;
-	private BigDecimal rebate;
-	private BigDecimal middleMoney;
-	private BigDecimal middleRate;
+    private NeedRes needRes;
+    private BigDecimal count;
+    private BigDecimal cost;
+    private BigDecimal money;
+    private BigDecimal rebate;
+    private BigDecimal middleMoney;
+    private BigDecimal middleRate;
     private MiddleMoneyCalcType middleMoneyCalcType;
-	private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
+    private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
     private boolean storeResItem;
     private Res res;
 
-	public OrderItem() {
-	}
+    public OrderItem() {
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    public OrderItem(NeedRes needRes, Res res, BigDecimal cost, ResUnit moneyUnit,
+                     BigDecimal count, BigDecimal money,
+                     BigDecimal rebate) {
+        this.moneyUnit = moneyUnit;
+        this.needRes = needRes;
+        this.count = count;
+        this.cost = cost;
+        this.money = money;
+        this.rebate = rebate;
+        this.storeResItem = false;
+        this.res = res;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public OrderItem(NeedRes needRes, StoreRes storeRes, BigDecimal cost,
+                     ResUnit moneyUnit, BigDecimal count, BigDecimal money, BigDecimal rebate) {
+        this.storeRes = storeRes;
+        this.moneyUnit = moneyUnit;
+        this.count = count;
+        this.cost = cost;
+        this.money = money;
+        this.rebate = rebate;
+        this.storeResItem = true;
+        this.needRes = needRes;
+    }
 
-	@ManyToOne(optional = true,fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_RES", nullable = true)
-	public StoreRes getStoreRes() {
-		return this.storeRes;
-	}
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setStoreRes(StoreRes storeRes) {
-		this.storeRes = storeRes;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MIDDLE_UNIT", nullable = true)
-	@NotNull
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "STORE_RES", nullable = true)
+    public StoreRes getStoreRes() {
+        return this.storeRes;
+    }
+
+    public void setStoreRes(StoreRes storeRes) {
+        this.storeRes = storeRes;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MIDDLE_UNIT", nullable = true)
     public ResUnit getMiddleUnit() {
         return middleUnit;
     }
@@ -73,7 +101,7 @@ public class OrderItem implements java.io.Serializable {
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "MONEY_UNIT",nullable = false)
+    @JoinColumn(name = "MONEY_UNIT", nullable = false)
     @NotNull
     public ResUnit getMoneyUnit() {
         return moneyUnit;
@@ -84,78 +112,76 @@ public class OrderItem implements java.io.Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "NEED_RES", nullable = false)
-	@NotNull
-	public NeedRes getNeedRes() {
-		return this.needRes;
-	}
+    @JoinColumn(name = "NEED_RES", nullable = false)
+    @NotNull
+    public NeedRes getNeedRes() {
+        return this.needRes;
+    }
 
-	public void setNeedRes(NeedRes needRes) {
-		this.needRes = needRes;
-	}
+    public void setNeedRes(NeedRes needRes) {
+        this.needRes = needRes;
+    }
 
-	@Column(name = "COUNT", nullable = false, scale = 4)
-	@NotNull
-	public BigDecimal getCount() {
-		return this.count;
-	}
+    @Column(name = "COUNT", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getCount() {
+        return this.count;
+    }
 
-	public void setCount(BigDecimal count) {
-		this.count = count;
-	}
+    public void setCount(BigDecimal count) {
+        this.count = count;
+    }
 
-	@Column(name = "COST", nullable = false, scale = 3)
-	@NotNull
-	public BigDecimal getCost() {
-		return this.cost;
-	}
+    @Column(name = "COST", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getCost() {
+        return this.cost;
+    }
 
-	public void setCost(BigDecimal cost) {
-		this.cost = cost;
-	}
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
 
-	@Column(name = "MONEY", nullable = false, scale = 3)
-	@NotNull
-	public BigDecimal getMoney() {
-		return this.money;
-	}
+    @Column(name = "MONEY", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getMoney() {
+        return this.money;
+    }
 
-	public void setMoney(BigDecimal money) {
-		this.money = money;
-	}
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
 
-	@Column(name = "REBATE", nullable = false, scale = 4)
-	@NotNull
-	public BigDecimal getRebate() {
-		return this.rebate;
-	}
+    @Column(name = "REBATE", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getRebate() {
+        return this.rebate;
+    }
 
-	public void setRebate(BigDecimal rebate) {
-		this.rebate = rebate;
-	}
+    public void setRebate(BigDecimal rebate) {
+        this.rebate = rebate;
+    }
 
-	@Column(name = "MIDDLE_MONEY", nullable = true, scale = 3)
-	@NotNull
-	public BigDecimal getMiddleMoney() {
-		return this.middleMoney;
-	}
+    @Column(name = "MIDDLE_MONEY", nullable = true, scale = 3)
+    public BigDecimal getMiddleMoney() {
+        return this.middleMoney;
+    }
 
-	public void setMiddleMoney(BigDecimal middleMoney) {
-		this.middleMoney = middleMoney;
-	}
+    public void setMiddleMoney(BigDecimal middleMoney) {
+        this.middleMoney = middleMoney;
+    }
 
-	@Column(name = "MIDDLE_RATE", nullable = true, scale = 4)
-	@NotNull
-	public BigDecimal getMiddleRate() {
-		return this.middleRate;
-	}
+    @Column(name = "MIDDLE_RATE", nullable = true, scale = 4)
+    public BigDecimal getMiddleRate() {
+        return this.middleRate;
+    }
 
-	public void setMiddleRate(BigDecimal middleRate) {
-		this.middleRate = middleRate;
-	}
+    public void setMiddleRate(BigDecimal middleRate) {
+        this.middleRate = middleRate;
+    }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "MIDDLE_CALC_TYPE",nullable = true)
+    @Column(name = "MIDDLE_CALC_TYPE", nullable = true)
     public MiddleMoneyCalcType getMiddleMoneyCalcType() {
         return middleMoneyCalcType;
     }
@@ -164,16 +190,16 @@ public class OrderItem implements java.io.Serializable {
         this.middleMoneyCalcType = middleMoneyCalcType;
     }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderItem")
-	public Set<DispatchItem> getDispatchItems() {
-		return this.dispatchItems;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderItem")
+    public Set<DispatchItem> getDispatchItems() {
+        return this.dispatchItems;
+    }
 
-	public void setDispatchItems(Set<DispatchItem> dispatchItems) {
-		this.dispatchItems = dispatchItems;
-	}
+    public void setDispatchItems(Set<DispatchItem> dispatchItems) {
+        this.dispatchItems = dispatchItems;
+    }
 
-    @Column(name="STORE_RES_ITEM",nullable = false)
+    @Column(name = "STORE_RES_ITEM", nullable = false)
     public boolean isStoreResItem() {
         return storeResItem;
     }

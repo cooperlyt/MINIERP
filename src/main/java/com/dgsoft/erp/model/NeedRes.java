@@ -69,7 +69,6 @@ public class NeedRes implements java.io.Serializable {
     @Enumerated(EnumType.STRING)
 	@Column(name = "TYPE", nullable = false, length = 32)
 	@NotNull
-	@Size(max = 32)
 	public NeedResType getType() {
 		return this.type;
 	}
@@ -121,7 +120,7 @@ public class NeedRes implements java.io.Serializable {
 		this.createDate = createDate;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", orphanRemoval = true,cascade = {CascadeType.ALL})
 	public Set<OrderItem> getOrderItems() {
 		return this.orderItems;
 	}

@@ -9,6 +9,7 @@ import com.dgsoft.erp.action.store.OrderNeedItem;
 import com.dgsoft.erp.action.store.StoreInItem;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
@@ -17,9 +18,13 @@ import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -78,6 +83,32 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
 
     public void setEditingItem(OrderNeedItem editingItem) {
         this.editingItem = editingItem;
+    }
+
+    public NeedRes getNeedRes() {
+        return needRes;
+    }
+
+    public void setNeedRes(NeedRes needRes) {
+        this.needRes = needRes;
+    }
+
+    public void calcOrderPrice(){
+        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(Locale.CHINA);
+        try {
+            getInstance().setMoney(new BigDecimal(currencyFormat.parse(currencyFormat.
+                    format(getOrderTotalPrice().multiply(getInstance().getTotalRebate().
+                            divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)))).toString()));
+        } catch (ParseException e) {
+            log.warn("format OrderPrice error", e);
+            getInstance().setMoney(getInstance().getTotalRebate().
+                    divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP));
+        }
+    }
+
+    public void calcOrderTotalRebate(){
+        getInstance().setTotalRebate(getInstance().getMoney().
+                divide(getOrderTotalPrice(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")));
     }
 
     @Observer(value = "storeResCountIsChanged", create = false)
@@ -151,15 +182,7 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         editingItem = null;
         resHome.clearInstance();
         storeResHome.clearInstance();
-
-    }
-
-    public NeedRes getNeedRes() {
-        return needRes;
-    }
-
-    public void setNeedRes(NeedRes needRes) {
-        this.needRes = needRes;
+        calcOrderPrice();
     }
 
     public void clearCustomer() {
@@ -173,6 +196,10 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         needRes = new NeedRes(getInstance(),
                 NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date());
         orderNeedItems = new ArrayList<OrderNeedItem>();
+        //toDO read from customer level
+        getInstance().setTotalRebate(new BigDecimal("100"));
+        getInstance().setMoney(new BigDecimal(0));
+        getInstance().setTotalMoney(new BigDecimal(0));
         return "beginning";
     }
 
@@ -197,6 +224,7 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         getInstance().setOrderEmp(credentials.getUsername());
         getInstance().setId(startData.getBusinessKey());
         if (customerHome.isIdDefined()) {
+            customerHome.refresh();
             getInstance().setCustomer(customerHome.getInstance());
         } else {
 
@@ -213,8 +241,25 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
             }
         }
 
-        getInstance().getNeedReses().add(needRes);
 
+
+
+        for (OrderNeedItem orderNeedItem : orderNeedItems){
+            if (orderNeedItem.isStoreResItem()){
+                //TODO cost from BOM
+                needRes.getOrderItems().add(new OrderItem(needRes,orderNeedItem.getStoreRes(),
+                        new BigDecimal("0"),orderNeedItem.getUseUnit(),
+                        orderNeedItem.getCount(),orderNeedItem.getUnitPrice(),orderNeedItem.getRebate()));
+            }else{
+                needRes.getOrderItems().add(new OrderItem(needRes,orderNeedItem.getRes(),
+                        new BigDecimal("0"),orderNeedItem.getUseUnit(),
+                        orderNeedItem.getCount(),orderNeedItem.getUnitPrice(),orderNeedItem.getRebate()));
+            }
+        }
+
+
+        getInstance().getNeedReses().add(needRes);
+        getInstance().setTotalMoney(getOrderTotalPrice());
         return true;
     }
 
@@ -222,17 +267,30 @@ public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
         if (customerHome.isIdDefined()) {
             getInstance().setContact(customerHome.getInstance().getContact());
             getInstance().setTel(customerHome.getInstance().getTel());
+        }else{
+            getInstance().setContact(null);
+            getInstance().setTel(null);
         }
     }
+
+
+    @Out(scope = ScopeType.CONVERSATION, required = false)
+    private CustomerOrder bizOrder;
 
 
     @Observer("com.dgsoft.BusinessCreatePrepare.order")
     @Transactional
     public void createOrder(BusinessDefine businessDefine) {
 
+
+
         if (!"persisted".equals(persist())) {
             throw new ProcessCreatePrepareException("create order persist fail");
         }
+
+        startData.setDescription(getInstance().getCustomer().getName());
+
+        bizOrder = getInstance();
     }
 
 }

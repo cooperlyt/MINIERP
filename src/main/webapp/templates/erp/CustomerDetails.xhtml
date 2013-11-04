@@ -51,7 +51,8 @@
         </rich:select>
     </s:decorate>
 
-    <s:decorate id="provinceField" template="/layout/edit.xhtml">
+
+    <s:decorate id="provinceField" template="/layout/edit.xhtml" rendered="#{not readonly}">
         <ui:define name="label">#{messages.customer_field_province}</ui:define>
         <ui:include src="/templates/system/CitySelect.xhtml">
             <ui:param name="value" value="#{customerHome.instance.provinceCode}"/>
@@ -59,6 +60,11 @@
             <ui:param name="cityListWidth" value="112"/>
             <ui:param name="provinceListWidth" value="102"/>
         </ui:include>
+    </s:decorate>
+
+    <s:decorate template="/layout/edit.xhtml" rendered="#{readonly}">
+        <ui:define name="label">#{messages.customer_field_province}</ui:define>
+        <h:outputText value="#{cityList.getCityById(customerHome.instance.provinceCode)}"/>
     </s:decorate>
 
     <s:decorate id="typeField" template="/layout/edit.xhtml">
@@ -173,11 +179,12 @@
 
 
         <a:outputPanel id="middleManDetails">
+            <h:outputText value="#{messages.MiddleMan}"
+                          rendered="#{(not allowSwitchMiddleMan) and customerHome.idDefined and (not empty customerHome.instance.middleMan)}"/>
 
-
-            <s:decorate id="middleManSelectNameField" template="/layout/seam-edit.xhtml">
+            <s:decorate id="middleManSelectNameField" template="/layout/seam-edit.xhtml" rendered="#{(not customerHome.idDefined) or allowSwitchMiddleMan}">
                 <ui:define name="label">
-                    <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
+                    <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}" >
                         <a:ajax event="click" execute="@this"
                                 listener="#{customerHome.middleManPayChangeListener}"
                                 render="middleManDetails,#{middleMainChangeRender}">
@@ -193,7 +200,7 @@
                                    clientFilterFunction="pinyinFilter"
                                    autocompleteList="#{middleManList.resultList}"
                                    value="#{middleManHome.pinyinSearchName}"
-                                   rendered="#{customerHome.haveMiddleMan or allowSwitchMiddleMan}"
+                                   rendered="#{customerHome.haveMiddleMan and ((not customerHome.idDefined) or allowSwitchMiddleMan)}"
                                    fetchValue="[#{_middleMan.name}][id:#{_middleMan.id}]"
                                    var="_middleMan">
 

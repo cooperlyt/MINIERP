@@ -4,7 +4,6 @@ import com.dgsoft.common.system.model.NumberPool;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;

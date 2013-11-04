@@ -11,12 +11,14 @@ import org.jboss.seam.annotations.FlushModeType;
  * Time: 8:40 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleEntityHome<E extends NamedModel> extends EntityHomeAdapter<E>{
+public class SimpleEntityHome<E extends NamedModel> extends EntityHomeAdapter<E> {
 
     public void setPinyinSearchName(String searchStr) {
         String id = PinyinTools.splitPinyinId(searchStr);
-        if (id == null){
-            setId(null);
+        if (id == null) {
+            if ((searchStr == null) || searchStr.trim().equals("")) {
+                setId(null);
+            }
             return;
         }
         try {
@@ -26,8 +28,8 @@ public class SimpleEntityHome<E extends NamedModel> extends EntityHomeAdapter<E>
         }
     }
 
-    public String getPinyinSearchName(){
-        if (isIdDefined()){
+    public String getPinyinSearchName() {
+        if (isIdDefined()) {
             return getInstance().getName();
         }
         return "";
@@ -48,7 +50,7 @@ public class SimpleEntityHome<E extends NamedModel> extends EntityHomeAdapter<E>
     }
 
     @Begin(flushMode = FlushModeType.MANUAL)
-    public String createNew(){
+    public String createNew() {
         editing = true;
         return "editBeginning";
     }
