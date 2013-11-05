@@ -1,10 +1,11 @@
-package com.dgsoft.erp.action;
+package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.action.store.OrderNeedItem;
 import com.dgsoft.erp.action.store.StoreInItem;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
@@ -32,8 +33,8 @@ import java.util.Locale;
  * Date: 10/24/13
  * Time: 11:05 AM
  */
-@Name("customerOrderHome")
-public class CustomerOrderHome extends ErpEntityHome<CustomerOrder> {
+@Name("orderCreate")
+public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     private static final String ORDER_SEND_REASON_WORD_KEY = "erp.needResReason.order";
 

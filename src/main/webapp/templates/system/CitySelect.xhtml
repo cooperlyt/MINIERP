@@ -9,7 +9,8 @@
                 xmlns:rich="http://richfaces.org/rich">
 
     <h:panelGrid columns="4">
-    <rich:select value="#{cityList.provinceId}" styleClass="provinceSelectWidth" listWidth="#{provinceListWidth}">
+    <rich:select value="#{cityList.provinceId}"
+                 styleClass="provinceSelectWidth" listWidth="#{provinceListWidth}">
         <s:selectItems value="#{provinceList.resultList}" var="_province"
                        noSelectionLabel="#{messages.allCity}"
                        label="#{_province.name}" itemValue="#{_province.id}">
@@ -21,7 +22,9 @@
 
     <h:outputText value="#{messages.Province}" />
 
-    <rich:select id="citySelect" required="#{required}" value="#{value}" listWidth="#{cityListWidth}" styleClass="citySelectWidth">
+    <rich:select id="citySelect" required="#{required}"
+                 label="#{messages.City}"
+                 value="#{value}" listWidth="#{cityListWidth}" styleClass="citySelectWidth">
         <s:selectItems value="#{cityList.resultList}" var="_city"
                        label="#{_city.name}" itemValue="#{_city.id}"/>
     </rich:select>

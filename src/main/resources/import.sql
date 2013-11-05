@@ -10,8 +10,8 @@ INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.autoGenerateS
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.storeResRegRule','STRING','^\\w+\\-\\w+$','货品编号规则(正则表表达),一但建立不可更改,因为已有数据可能不符合规则');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.resRegRule','STRING','^\\w+$','物资编号规则(正则表表达),一但建立不可更改,因为已有数据可能不符合规则');
 
-
-
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.finance.bankAccount','STRING','1002','银行总帐科目代码');
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.finance.cashAccount','STRING','1001','现金总帐科目代码');
 -- 业务类别
 
 INSERT INTO DG_SYSTEM.BUSINESS_CATEGORY(ID, NAME, PRIORITY) VALUES('erp.sale','销售业务',1);

@@ -7,7 +7,6 @@
        login-view-id="/login.xhtml">
 
 
-
     <page view-id="/func/erp/store/storeChange/*" login-required="true">
         <restrict>#{s:hasRole('erp.storage.store')}</restrict>
         <navigation>
@@ -63,7 +62,6 @@
     </page>
 
 
-
     <page view-id="/func/erp/store/StoreMgr.xhtml" login-required="true">
         <restrict>#{s:hasRole('erp.storage.store')}</restrict>
     </page>
@@ -76,17 +74,56 @@
         <restrict>#{s:hasRole('erp.sale.manager')}</restrict>
     </page>
 
+    <page view-id="/business/taskOperator/*" login-required="true">
+        <param name="from"/>
+        <navigation>
+            <rule if-outcome="taskCompleted" if="#{empty from}">
+                <redirect include-page-params="true"
+                          view-id="/func/system/business/task.xhtml">
+                    <message severity="INFO">
+                        #{messages.taskCompleted}
+                    </message>
+                </redirect>
+            </rule>
+            <rule if-outcome="taskCompleted" if="#{not empty from}">
+                <redirect view-id="#{from}">
+                    <message severity="INFO">
+                        #{messages.taskCompleted}
+                    </message>
+                </redirect>
+            </rule>
+            <rule if-outcome="taskComplete" if="#{empty from}">
+                <end-task/>
+                <redirect include-page-params="true"
+                          view-id="/func/system/business/task.xhtml">
+
+                    <message severity="INFO">
+                        #{messages.taskCompleted}
+                    </message>
+                </redirect>
+            </rule>
+            <rule if-outcome="taskComplete" if="#{not empty from}">
+                <end-task/>
+                <redirect view-id="#{from}">
+                    <message severity="INFO">
+                        #{messages.taskCompleted}
+                    </message>
+                </redirect>
+            </rule>
+        </navigation>
+    </page>
+
     <page view-id="/business/startPrepare/*" login-required="true">
         <param name="from"/>
         <navigation from-action="#{businessCreate.create}">
             <rule if-outcome="businessCreated" if="#{empty from}">
                 <end-conversation/>
 
-                 <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
-                     <message severity="INFO">
-                         #{messages.businessCreated}
-                     </message>
-                 </redirect>
+                <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
+                    <message severity="INFO">
+                        #{messages.businessCreated}
+                    </message>
+                </redirect>
             </rule>
             <rule if-outcome="businessCreated" if="#{not empty from}">
                 <end-conversation/>

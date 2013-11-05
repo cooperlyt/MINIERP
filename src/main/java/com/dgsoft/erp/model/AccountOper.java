@@ -1,5 +1,7 @@
 package com.dgsoft.erp.model;
-// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
+// Generated Nov 5, 2013 1:32:07 PM by Hibernate Tools 4.0.0
+
+import com.dgsoft.erp.model.api.PayType;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,41 +18,45 @@ import javax.validation.constraints.Size;
 @Table(name = "ACCOUNT_OPER", catalog = "MINI_ERP")
 public class AccountOper implements java.io.Serializable {
 
+    public enum AccountOperType{
+        ORDER_PAY(false),PRE_DEPOSIT(true),DEPOSIT_BACK(false),ORDER_BACK(true);
+
+        private boolean add;
+
+        public boolean isAdd() {
+            return add;
+        }
+
+        public void setAdd(boolean add) {
+            this.add = add;
+        }
+
+        private AccountOperType(boolean add){
+            this.add = add;
+        }
+    }
+
 	private String id;
-	private Accounting accountingByDebit;
+	private Accounting accountingByCreditAccount;
+	private Accounting accountingByDebitAccount;
 	private Customer customer;
-	private Accounting accountingByCredit;
 	private String operEmp;
 	private BigDecimal operMoney;
-	private String operType;
+	private AccountOperType operType;
 	private Date operDate;
 	private BigDecimal beforMoney;
 	private BigDecimal afterMoney;
 	private String description;
-	private String payType;
+	private PayType payType;
 	private String checkNumber;
-	private Set<CustomerOrder> customerOrder = new HashSet<CustomerOrder>(0);
-	private Set<OrderBack> orderBack = new HashSet<OrderBack>(0);
 	private Set<BackPrepareMoney> backPrepareMoneys = new HashSet<BackPrepareMoney>(
 			0);
 	private Set<PreparePay> preparePays = new HashSet<PreparePay>(0);
+	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
+    private CustomerOrder customerOrder ;
 
-	public AccountOper() {
+    public AccountOper() {
 	}
-
-	public AccountOper(String id, Customer customer, String operEmp,
-			BigDecimal operMoney, String operType, Date operDate,
-			BigDecimal beforMoney, BigDecimal afterMoney) {
-		this.id = id;
-		this.customer = customer;
-		this.operEmp = operEmp;
-		this.operMoney = operMoney;
-		this.operType = operType;
-		this.operDate = operDate;
-		this.beforMoney = beforMoney;
-		this.afterMoney = afterMoney;
-	}
-
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -65,16 +71,29 @@ public class AccountOper implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DEBIT")
-	public Accounting getAccountingByDebit() {
-		return this.accountingByDebit;
+	@JoinColumn(name = "CREDIT_ACCOUNT", nullable = false)
+	@NotNull
+	public Accounting getAccountingByCreditAccount() {
+		return this.accountingByCreditAccount;
 	}
 
-	public void setAccountingByDebit(Accounting accountingByDebit) {
-		this.accountingByDebit = accountingByDebit;
+	public void setAccountingByCreditAccount(
+			Accounting accountingByCreditAccount) {
+		this.accountingByCreditAccount = accountingByCreditAccount;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DEBIT_ACCOUNT", nullable = false)
+	@NotNull
+	public Accounting getAccountingByDebitAccount() {
+		return this.accountingByDebitAccount;
+	}
+
+	public void setAccountingByDebitAccount(Accounting accountingByDebitAccount) {
+		this.accountingByDebitAccount = accountingByDebitAccount;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "CUSTOM", nullable = false)
 	@NotNull
 	public Customer getCustomer() {
@@ -83,16 +102,6 @@ public class AccountOper implements java.io.Serializable {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CREDIT")
-	public Accounting getAccountingByCredit() {
-		return this.accountingByCredit;
-	}
-
-	public void setAccountingByCredit(Accounting accountingByCredit) {
-		this.accountingByCredit = accountingByCredit;
 	}
 
 	@Column(name = "OPER_EMP", nullable = false, length = 32)
@@ -116,14 +125,14 @@ public class AccountOper implements java.io.Serializable {
 		this.operMoney = operMoney;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "OPER_TYPE", nullable = false, length = 32)
 	@NotNull
-	@Size(max = 32)
-	public String getOperType() {
+	public AccountOperType getOperType() {
 		return this.operType;
 	}
 
-	public void setOperType(String operType) {
+	public void setOperType(AccountOperType operType) {
 		this.operType = operType;
 	}
 
@@ -168,13 +177,14 @@ public class AccountOper implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "PAY_TYPE", length = 32)
-	@Size(max = 32)
-	public String getPayType() {
+    @Enumerated(EnumType.STRING)
+	@Column(name = "PAY_TYPE", nullable = false, length = 32)
+	@NotNull
+	public PayType getPayType() {
 		return this.payType;
 	}
 
-	public void setPayType(String payType) {
+	public void setPayType(PayType payType) {
 		this.payType = payType;
 	}
 
@@ -188,23 +198,17 @@ public class AccountOper implements java.io.Serializable {
 		this.checkNumber = checkNumber;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "accountOpers")
-	public Set<CustomerOrder> getCustomerOrder() {
-		return this.customerOrder;
-	}
 
-	public void setCustomerOrder(Set<CustomerOrder> orderPays) {
-		this.customerOrder = orderPays;
-	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
-	public Set<OrderBack> getOrderBack() {
-		return this.orderBack;
-	}
+    @ManyToOne(optional = true,fetch = FetchType.LAZY)
+    @JoinColumn(name = "CUSTOMER_ORDER", nullable = true)
+    public CustomerOrder getCustomerOrder() {
+        return this.customerOrder;
+    }
 
-	public void setOrderBack(Set<OrderBack> backMoneys) {
-		this.orderBack = backMoneys;
-	}
+    public void setCustomerOrder(CustomerOrder orderPays) {
+        this.customerOrder = orderPays;
+    }
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
 	public Set<BackPrepareMoney> getBackPrepareMoneys() {
@@ -222,6 +226,15 @@ public class AccountOper implements java.io.Serializable {
 
 	public void setPreparePays(Set<PreparePay> preparePays) {
 		this.preparePays = preparePays;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountOper")
+	public Set<OrderBack> getOrderBacks() {
+		return this.orderBacks;
+	}
+
+	public void setOrderBacks(Set<OrderBack> orderBacks) {
+		this.orderBacks = orderBacks;
 	}
 
 }

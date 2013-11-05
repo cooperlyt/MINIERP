@@ -1,9 +1,11 @@
 package com.dgsoft.erp.model;
-// Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
+// Generated Nov 5, 2013 1:58:21 PM by Hibernate Tools 4.0.0
 
-import java.util.HashSet;
-import java.util.Set;
+import com.google.common.collect.Iterators;
+
+import java.util.*;
 import javax.persistence.*;
+import javax.swing.tree.TreeNode;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -12,106 +14,153 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ACCOUNTING", catalog = "MINI_ERP")
-public class Accounting implements java.io.Serializable {
+public class Accounting implements java.io.Serializable, TreeNode {
 
-	private String id;
-	private String name;
-	private String subjectNo;
-	private boolean debit;
+    private String id;
+    private Accounting accounting;
+    private AccountingType accountingType;
+    private String name;
+    private String currency;
+    private String directoin;
+    private boolean root;
     private Res res;
-	private Set<AccountOper> accountOpersForDebit = new HashSet<AccountOper>(0);
-	private Set<MiddleMoneyPay> middleMoneysForCredit = new HashSet<MiddleMoneyPay>(0);
-	private Set<MiddleMoneyPay> middleMoneysForDebit = new HashSet<MiddleMoneyPay>(0);
-	private Set<AccountOper> accountOpersForCredit = new HashSet<AccountOper>(0);
+    private Set<AccountOper> accountOpersForDebitAccount = new HashSet<AccountOper>(
+            0);
+    private Set<Accounting> accountings = new HashSet<Accounting>(0);
+    private Set<MiddleMoneyPay> middleMoneyPaysForCreditAccount = new HashSet<MiddleMoneyPay>(
+            0);
+    private Set<MiddleMoneyPay> middleMoneyPaysForDebitAccount = new HashSet<MiddleMoneyPay>(
+            0);
+    private Set<AccountOper> accountOpersForCreditAccount = new HashSet<AccountOper>(
+            0);
 
-	public Accounting() {
-	}
+    public Accounting() {
+    }
 
-	public Accounting(String id, String name, String subjectNo, boolean debit) {
-		this.id = id;
-		this.name = name;
-		this.subjectNo = subjectNo;
-		this.debit = debit;
-	}
+    public Accounting(String id, AccountingType accountingType, String name,
+                      String currency, String directoin, boolean root) {
+        this.id = id;
+        this.accountingType = accountingType;
+        this.name = name;
+        this.currency = currency;
+        this.directoin = directoin;
+        this.root = root;
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@Column(name = "NAME", nullable = false, length = 50)
-	@NotNull
-	@Size(max = 50)
-	public String getName() {
-		return this.name;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PARENT")
+    public Accounting getAccounting() {
+        return this.accounting;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setAccounting(Accounting accounting) {
+        this.accounting = accounting;
+    }
 
-	@Column(name = "SUBJECT_NO", nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getSubjectNo() {
-		return this.subjectNo;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TYPE", nullable = false)
+    @NotNull
+    public AccountingType getAccountingType() {
+        return this.accountingType;
+    }
 
-	public void setSubjectNo(String subjectNo) {
-		this.subjectNo = subjectNo;
-	}
+    public void setAccountingType(AccountingType accountingType) {
+        this.accountingType = accountingType;
+    }
 
-	@Column(name = "DEBIT", nullable = false)
-	public boolean isDebit() {
-		return this.debit;
-	}
+    @Column(name = "NAME", nullable = false, length = 50)
+    @NotNull
+    @Size(max = 50)
+    public String getName() {
+        return this.name;
+    }
 
-	public void setDebit(boolean debit) {
-		this.debit = debit;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByDebit")
-	public Set<AccountOper> getAccountOpersForDebit() {
-		return this.accountOpersForDebit;
-	}
+    @Column(name = "CURRENCY", nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getCurrency() {
+        return this.currency;
+    }
 
-	public void setAccountOpersForDebit(Set<AccountOper> accountOpersForDebit) {
-		this.accountOpersForDebit = accountOpersForDebit;
-	}
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCredit")
-	public Set<MiddleMoneyPay> getMiddleMoneysForCredit() {
-		return this.middleMoneysForCredit;
-	}
+    @Column(name = "DIRECTOIN", nullable = false, length = 10)
+    @NotNull
+    @Size(max = 10)
+    public String getDirectoin() {
+        return this.directoin;
+    }
 
-	public void setMiddleMoneysForCredit(Set<MiddleMoneyPay> middleMoneysForCredit) {
-		this.middleMoneysForCredit = middleMoneysForCredit;
-	}
+    public void setDirectoin(String directoin) {
+        this.directoin = directoin;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByDebit")
-	public Set<MiddleMoneyPay> getMiddleMoneysForDebit() {
-		return this.middleMoneysForDebit;
-	}
+    @Column(name = "ROOT", nullable = false)
+    public boolean isRoot() {
+        return this.root;
+    }
 
-	public void setMiddleMoneysForDebit(Set<MiddleMoneyPay> middleMoneysForDebit) {
-		this.middleMoneysForDebit = middleMoneysForDebit;
-	}
+    public void setRoot(boolean root) {
+        this.root = root;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCredit")
-	public Set<AccountOper> getAccountOpersForCredit() {
-		return this.accountOpersForCredit;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByDebitAccount")
+    public Set<AccountOper> getAccountOpersForDebitAccount() {
+        return this.accountOpersForDebitAccount;
+    }
 
-	public void setAccountOpersForCredit(Set<AccountOper> accountOpersForCredit) {
-		this.accountOpersForCredit = accountOpersForCredit;
-	}
+    public void setAccountOpersForDebitAccount(
+            Set<AccountOper> accountOpersForDebitAccount) {
+        this.accountOpersForDebitAccount = accountOpersForDebitAccount;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accounting")
+    public Set<Accounting> getAccountings() {
+        return this.accountings;
+    }
+
+    public void setAccountings(Set<Accounting> accountings) {
+        this.accountings = accountings;
+    }
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCreditAccount")
+    public Set<MiddleMoneyPay> getMiddleMoneyPaysForCreditAccount() {
+        return this.middleMoneyPaysForCreditAccount;
+    }
+
+    public void setMiddleMoneyPaysForCreditAccount(
+            Set<MiddleMoneyPay> middleMoneyPaysForCreditAccount) {
+        this.middleMoneyPaysForCreditAccount = middleMoneyPaysForCreditAccount;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByDebitAccount")
+    public Set<MiddleMoneyPay> getMiddleMoneyPaysForDebitAccount() {
+        return this.middleMoneyPaysForDebitAccount;
+    }
+
+    public void setMiddleMoneyPaysForDebitAccount(
+            Set<MiddleMoneyPay> middleMoneyPaysForDebitAccount) {
+        this.middleMoneyPaysForDebitAccount = middleMoneyPaysForDebitAccount;
+    }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "accounting")
     public Res getRes() {
@@ -120,5 +169,73 @@ public class Accounting implements java.io.Serializable {
 
     public void setRes(Res res) {
         this.res = res;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCreditAccount")
+    public Set<AccountOper> getAccountOpersForCreditAccount() {
+        return this.accountOpersForCreditAccount;
+    }
+
+    public void setAccountOpersForCreditAccount(
+            Set<AccountOper> accountOpersForCreditAccount) {
+        this.accountOpersForCreditAccount = accountOpersForCreditAccount;
+    }
+
+    @Transient
+    public List<Accounting> getAccountingList() {
+        List<Accounting> result = new ArrayList<Accounting>(getAccountings());
+        Collections.sort(result, new Comparator<Accounting>() {
+            @Override
+            public int compare(Accounting o1, Accounting o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+        return result;
+    }
+
+    @Override
+    @Transient
+    public TreeNode getChildAt(int childIndex) {
+        return getAccountingList().get(childIndex);
+    }
+
+    @Override
+    @Transient
+    public int getChildCount() {
+        return getAccountings().size();
+    }
+
+    @Override
+    @Transient
+    public TreeNode getParent() {
+        if (isRoot()) {
+            return null;
+        } else {
+            return getAccounting();
+        }
+    }
+
+    @Override
+    @Transient
+    public int getIndex(TreeNode node) {
+        return getAccountingList().indexOf(node);
+    }
+
+    @Override
+    @Transient
+    public boolean getAllowsChildren() {
+        return true;
+    }
+
+    @Override
+    @Transient
+    public boolean isLeaf() {
+        return getAccountings().isEmpty();
+    }
+
+    @Override
+    @Transient
+    public Enumeration children() {
+        return Iterators.asEnumeration(getAccountingList().iterator());
     }
 }

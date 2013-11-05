@@ -1,12 +1,84 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+
+    <ui:define name="func-body">
+        <rich:toolbar>
+            <rich:toolbarGroup location="right">
+                <h:panelGrid columns="5">
+
+                    <s:button value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                    <s:button value="#{messages.complete}" action="#{orderFinanceReceivables.complete}"/>
+                </h:panelGrid>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+        <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+
+
+
+        <rich:dataTable value="#{bizOrder.accountOperList}" var="_oper" noDataLabel="#{messages.orderNoReceiveRecord}">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.accountOper_field_operDate}
+                </f:facet>
+                <h:outputText value="#{_oper.operDate}">
+                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    #{messages.recordTotal}#{bizOrder.accountOperList.size}#{messages.item}
+                </f:facet>
+            </rich:column>
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.accountOper_field_operMoney}
+                </f:facet>
+                <h:outputText value="#{_oper.operMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{orderFinanceReceivables.totalReveiveMoney}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.accountOper_field_payTYpe}
+                </f:facet>
+                <h:outputText value="#{messages[_oper.payType.name()]}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.accountOper_field_operEmp}
+                </f:facet>
+                #{dictionary.getEmpNameById(_oper.operEmp)}
+            </rich:column>
+
+        </rich:dataTable>
+
+        <rich:panel>
+            <ui:include src="/templates/erp/CustomerDetails.xhtml">
+                <ui:param name="balanceReadonly" value="true"/>
+                <ui:param name="readonly" value="#{customerHome.idDefined}"/>
+                <ui:param name="allowSwitchMiddleMan" value="false"/>
+                <ui:param name="middleMainChangeRender" value="includeMiddleManField"/>
+            </ui:include>
+        </rich:panel>
+
+    </ui:define>
+
+</ui:composition>

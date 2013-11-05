@@ -26,6 +26,18 @@
         <property name="entityLoader">#{erpEntityLoader}</property>
     </component>
 
+    <component name="rootAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select accounting from Accounting accounting where accounting.root = true</property>
+    </component>
+
+    <component name="cashAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select accounting from Accounting accounting where accounting.id = &apos;#{runParam.getStringParamValue(&apos;erp.finance.cashAccount&apos;)}&apos;</property>
+    </component>
+
+    <component name="bankAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select accounting from Accounting accounting where accounting.id = &apos;#{runParam.getStringParamValue(&apos;erp.finance.bankAccount&apos;)}&apos;</property>
+    </component>
+
     <component name="allStoreList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
         <property name="ejbql">select store from Store store</property>
     </component>

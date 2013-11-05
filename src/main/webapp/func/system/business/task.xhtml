@@ -50,8 +50,8 @@
                 <h:outputText value="#{messages.businessKey}"/>
             </f:facet>
             <a:outputPanel>
-                <h:outputText value="#{_task.processInstance.key}"/><h:graphicImage value="/img/new_messages.png"
-                                                                                    rendered="#{pooledTaskInstanceListener.isNewTask(_task.id)}"/>
+
+                #{_task.processInstance.key}
                 <rich:tooltip mode="ajax" followMouse="false" showDelay="1500" styleClass="tooltip"
                               layout="block">
                     <f:facet name="loading">
@@ -72,6 +72,9 @@
                      filterValue="#{pooledTaskSortFilter.nameFilter}"
                      filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessName,_filterValue)}">
             <f:facet name="header">#{messages.businessName}</f:facet>
+            <h:graphicImage style="float:right" alt="rf" value="/img/new_messages.png"
+                            rendered="#{pooledTaskInstanceListener.isNewTask(_task.id)}"/>
+
             <h:outputText value="#{_task.variables.businessName}"/>
         </rich:column>
         <rich:column width="90px" sortBy="#{_task.name}" filterValue="#{pooledTaskSortFilter.taskNameFilter}"
@@ -171,8 +174,9 @@
                 #{messages.businessKey}
             </f:facet>
             <a:outputPanel>
-                <h:outputText value="#{_task.processInstance.key}"/><h:graphicImage value="/img/new_messages.png"
-                                                                                    rendered="#{ownerTaskInstanceListener.isNewTask(_task.id)}"/>
+
+                <h:outputText value="#{_task.processInstance.key}"/>
+
                 <rich:tooltip mode="ajax" followMouse="false" showDelay="1500" styleClass="tooltip"
                               layout="block">
                     <f:facet name="loading">
@@ -193,6 +197,8 @@
                      filterValue="#{taskSortFilter.nameFilter}"
                      filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessName,_filterValue)}">
             <f:facet name="header">#{messages.businessName}</f:facet>
+            <h:graphicImage style="float:right" alt="rf" value="/img/new_messages.png"
+                            rendered="#{ownerTaskInstanceListener.isNewTask(_task.id)}"/>
             <h:outputText value="#{_task.variables.businessName}"/>
         </rich:column>
         <rich:column width="90px" sortBy="#{_task.name}" filterValue="#{taskSortFilter.taskNameFilter}"
@@ -219,7 +225,8 @@
 
             <a:commandButton title="#{messages.unAcceptBusiness}" image="/img/forward.png"
                              action="#{pooledTask.unassign}" immediate="true"
-                             execute="@this" onclick="if (#{empty _task.pooledActors}) {alert('#{messages.cantUnassignTask}');return false;}">
+                             execute="@this"
+                             onclick="if (#{empty _task.pooledActors}) {alert('#{messages.cantUnassignTask}');return false;}">
                 <f:param name="taskId" value="#{_task.id}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
@@ -257,7 +264,8 @@
             <f:facet name="header">#{messages.version}</f:facet>
             #{_task.processInstance.processDefinition.version}
         </rich:column>
-        <f:facet name="footer">#{messages.mybusinessCount} #{ownerTaskInstanceListener.taskInstanceCreateList.size}</f:facet>
+        <f:facet
+                name="footer">#{messages.mybusinessCount} #{ownerTaskInstanceListener.taskInstanceCreateList.size}</f:facet>
 
     </rich:extendedDataTable>
 </h:form>

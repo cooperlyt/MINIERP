@@ -5,7 +5,7 @@
 
     <param name="from"/>
 
-    <navigation from-action="#{customerOrderHome.beginCreateOrder}">
+    <navigation from-action="#{orderCreate.beginCreateOrder}">
         <rule if-outcome="beginning">
             <redirect view-id="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml"/>
         </rule>

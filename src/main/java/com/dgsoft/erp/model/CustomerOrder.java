@@ -2,9 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -56,6 +54,7 @@ public class CustomerOrder implements java.io.Serializable {
 	private String memo;
     private String contact;
     private String tel;
+    private boolean payComplete;
 
     private BigDecimal totalMoney;
     private BigDecimal realMoney;
@@ -299,6 +298,15 @@ public class CustomerOrder implements java.io.Serializable {
         this.tel = tel;
     }
 
+    @Column(name = "PAY_COMPLETE", nullable = false)
+    public boolean isPayComplete() {
+        return this.payComplete;
+    }
+
+    public void setPayComplete(boolean payComplete) {
+        this.payComplete = payComplete;
+    }
+
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
 	public boolean isIncludeMiddleMan() {
 		return this.includeMiddleMan;
@@ -326,14 +334,26 @@ public class CustomerOrder implements java.io.Serializable {
 		this.middleMoneyPays = middleMoneys;
 	}
 
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = AccountOper.class)
-    @JoinTable(name = "ORDER_PAY", joinColumns = @JoinColumn(name = "CUSTOMER_ORDER"), inverseJoinColumns = @JoinColumn(name = "ACCOUNT_OPER"))
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
     public Set<AccountOper> getAccountOpers() {
         return accountOpers;
     }
 
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
+    }
+
+    @Transient
+    public List<AccountOper> getAccountOperList(){
+        List<AccountOper> result = new ArrayList<AccountOper>(getAccountOpers());
+        Collections.sort(result,new Comparator<AccountOper>() {
+            @Override
+            public int compare(AccountOper o1, AccountOper o2) {
+                return o1.getOperDate().compareTo(o2.getOperDate());
+            }
+        });
+        return result;
     }
 
 }
