@@ -34,7 +34,7 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     public enum OrderPayType{
-        COMPLETE_PAY,PAY_FIRST,OVERDRAFT;
+        COMPLETE_PAY,PAY_FIRST,EARNEST_FIRST,OVERDRAFT;
     }
 
     public enum MiddleMoneyCalcType{

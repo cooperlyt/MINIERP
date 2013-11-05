@@ -19,7 +19,8 @@ import javax.validation.constraints.Size;
 public class AccountOper implements java.io.Serializable {
 
     public enum AccountOperType{
-        ORDER_PAY(false),PRE_DEPOSIT(true),DEPOSIT_BACK(false),ORDER_BACK(true),ORDER_ARREARS(false);
+        ORDER_PAY(false),PRE_DEPOSIT(true),DEPOSIT_BACK(false),
+        ORDER_BACK(true),ORDER_ARREARS(false),ORDER_EARNEST(false);
 
         private boolean add;
 
