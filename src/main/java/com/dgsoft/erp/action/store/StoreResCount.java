@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.common.utils.BigDecimalFormat;
+import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Logging;
@@ -8,7 +8,6 @@ import org.jboss.seam.log.Logging;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;

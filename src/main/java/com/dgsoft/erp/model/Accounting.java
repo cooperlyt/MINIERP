@@ -2,7 +2,9 @@ package com.dgsoft.erp.model;
 // Generated Nov 5, 2013 1:58:21 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.NamedEntity;
+import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.google.common.collect.Iterators;
+import org.jboss.seam.international.StatusMessage;
 
 import java.util.*;
 import javax.persistence.*;
@@ -15,6 +17,8 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ACCOUNTING", catalog = "MINI_ERP")
+@UniqueVerify(name = "Name",severity = StatusMessage.Severity.WARN,namedQueryName = "findAccountingByName",field={"name"})
+@NamedQuery(name = "findAccountingByName",query = "select accounting from Accounting accounting where accounting.name=:name")
 public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
 
     public enum Direction {

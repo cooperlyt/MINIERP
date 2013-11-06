@@ -7,7 +7,7 @@ package com.dgsoft.common;
  * Time: 8:34 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface NamedEntity extends IdentityEntity{
+public interface NamedEntity{
 
     public abstract String getName();
 

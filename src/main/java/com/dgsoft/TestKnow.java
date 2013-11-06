@@ -1,12 +1,19 @@
 package com.dgsoft;
 
+import com.dgsoft.common.utils.persistence.UniqueVerify;
+
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.bpm.BeginTask;
+import org.jboss.seam.annotations.bpm.ResumeProcess;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesPage;
 
+import javax.persistence.NamedQueries;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -21,7 +28,75 @@ import java.util.Locale;
 @Name("testKnow")
 public class TestKnow {
 
+
+
+    public static class TestAnn{
+
+
+        private String name;
+
+
+
+        public String getName() {
+            return name;
+        }
+
+
+
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+
     public static void main(String[] args){
+
+
+
+        TestAnn testAnn = new TestAnn();
+        testAnn.setName("pppp");
+
+        for (Field field : testAnn.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(UniqueVerify.class) ){
+                field.setAccessible(true);
+                try {
+                    System.out.println("find UniqueVerify Field:" + field.getName() + "=" + field.get(testAnn));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+        }
+
+        for (Method method: testAnn.getClass().getDeclaredMethods()){
+            if (method.isAnnotationPresent(UniqueVerify.class)){
+                method.setAccessible(true);
+                try {
+                    System.out.println("find UniqueVerify Method:" + method.getName() + "=" + method.invoke(testAnn));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         System.out.println(new BigDecimal("10.0000000000").compareTo(new BigDecimal("10")));
 

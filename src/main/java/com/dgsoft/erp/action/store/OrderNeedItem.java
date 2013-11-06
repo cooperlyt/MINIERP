@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.common.utils.BigDecimalFormat;
+import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResUnit;

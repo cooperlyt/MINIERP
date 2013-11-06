@@ -37,6 +37,8 @@ public class SimpleEntityHome<E extends NamedEntity> extends EntityHomeAdapter<E
 
     private boolean editing = false;
 
+
+
     @End
     public void cancel() {
         refresh();
