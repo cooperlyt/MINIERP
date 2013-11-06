@@ -120,18 +120,14 @@
                 <end-conversation/>
 
                 <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
-                    <message severity="INFO">
-                        #{messages.businessCreated}
-                    </message>
+
                 </redirect>
             </rule>
             <rule if-outcome="businessCreated" if="#{not empty from}">
                 <end-conversation/>
 
                 <redirect include-page-params="true" view-id="#{from}">
-                    <message severity="INFO">
-                        #{messages.businessCreated}
-                    </message>
+
                 </redirect>
             </rule>
 

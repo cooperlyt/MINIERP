@@ -4,6 +4,7 @@ import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
+import com.dgsoft.common.utils.BigDecimalFormat;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.action.store.OrderNeedItem;
@@ -68,6 +69,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     @In
     private Credentials credentials;
 
+    @In(create = true)
+    protected OrderHome orderHome;
+
     private NeedRes needRes;
 
     @DataModel("orderNeedItems")
@@ -94,22 +98,48 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         this.needRes = needRes;
     }
 
-    public void calcOrderPrice(){
-        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(Locale.CHINA);
-        try {
-            getInstance().setMoney(new BigDecimal(currencyFormat.parse(currencyFormat.
-                    format(getOrderTotalPrice().multiply(getInstance().getTotalRebate().
-                            divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)))).toString()));
-        } catch (ParseException e) {
-            log.warn("format OrderPrice error", e);
-            getInstance().setMoney(getInstance().getTotalRebate().
-                    divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP));
+    private BigDecimal earnestScale = BigDecimal.ZERO;
+
+    public BigDecimal getEarnestScale() {
+        return earnestScale;
+    }
+
+    public void setEarnestScale(BigDecimal earnestScale) {
+        this.earnestScale = earnestScale;
+    }
+
+    public void calcEarnest() {
+        getInstance().setEarnest(BigDecimalFormat.halfUpCurrency(getInstance().getMoney()
+                .multiply(earnestScale.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+    }
+
+    public void calcEarnestScale() {
+        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) == 1){
+            earnestScale = getInstance().getEarnest()
+                    .divide(getInstance().getMoney(), 4, BigDecimal.ROUND_HALF_UP)
+                    .multiply(new BigDecimal("100"));
+        }else{
+            earnestScale = BigDecimal.ZERO;
         }
     }
 
-    public void calcOrderTotalRebate(){
-        getInstance().setTotalRebate(getInstance().getMoney().
-                divide(getOrderTotalPrice(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")));
+
+    public void calcOrderPrice() {
+
+        getInstance().setMoney(BigDecimalFormat.halfUpCurrency(getOrderTotalPrice().multiply(getInstance().getTotalRebate().
+                divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+        calcEarnest();
+
+    }
+
+    public void calcOrderTotalRebate() {
+        if (getOrderTotalPrice().compareTo(BigDecimal.ZERO) == 1){
+            getInstance().setTotalRebate(getInstance().getMoney()
+                    .divide(getOrderTotalPrice(), 4, BigDecimal.ROUND_HALF_UP)
+                    .multiply(new BigDecimal("100")));
+        }else{
+            getInstance().setTotalRebate(BigDecimal.ZERO);
+        }
     }
 
     @Observer(value = "storeResCountIsChanged", create = false)
@@ -131,19 +161,19 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         editingItem.setStoreResItem(true);
     }
 
-    public int getItemsCount(){
+    public int getItemsCount() {
         return orderNeedItems.size();
     }
 
-    public BigDecimal getOrderTotalPrice(){
-       BigDecimal result = new BigDecimal("0");
-        for (OrderNeedItem item: orderNeedItems){
+    public BigDecimal getOrderTotalPrice() {
+        BigDecimal result = new BigDecimal("0");
+        for (OrderNeedItem item : orderNeedItems) {
             result = result.add(item.getTotalPrice());
         }
         return result;
     }
 
-    public void removeItem(){
+    public void removeItem() {
         orderNeedItems.remove(orderNeedItem);
     }
 
@@ -151,13 +181,13 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         if ((editingItem == null)) {
             throw new IllegalArgumentException("editingItem state error");
         }
-        if (editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)){
+        if (editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
             editingItem.setUseUnit(editingItem.getStoreResCount().getUseUnit());
         }
 
         editingItem.calcPriceByCount();
 
-        if (editingItem.isStoreResItem()){
+        if (editingItem.isStoreResItem()) {
             storeResHome.setRes(editingItem.getRes(), storeResFormatFilter.getResFormatList(), editingItem.getStoreResCount().getFloatConvertRate());
             if (storeResHome.isIdDefined()) {
                 editingItem.setStoreRes(storeResHome.getInstance());
@@ -173,11 +203,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             if (orderNeedItem.same(editingItem)) {
                 orderNeedItem.merger(editingItem);
                 editingItem = null;
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,"storeResInOrderItemMerger");
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "storeResInOrderItemMerger");
                 break;
             }
         }
-        if (editingItem != null){
+        if (editingItem != null) {
             orderNeedItems.add(editingItem);
         }
         editingItem = null;
@@ -191,6 +221,12 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         middleManHome.clearInstance();
     }
 
+    public String saveOrderCustomer() {
+
+
+        return "/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml";
+    }
+
     public String beginCreateOrder() {
         businessDefineHome.setId("erp.business.order");
         startData.generateKey();
@@ -199,8 +235,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         orderNeedItems = new ArrayList<OrderNeedItem>();
         //toDO read from customer level
         getInstance().setTotalRebate(new BigDecimal("100"));
-        getInstance().setMoney(new BigDecimal(0));
-        getInstance().setTotalMoney(new BigDecimal(0));
+        getInstance().setMoney(BigDecimal.ZERO);
+        getInstance().setTotalMoney(BigDecimal.ZERO);
+        getInstance().setEarnest(BigDecimal.ZERO);
         return "beginning";
     }
 
@@ -243,18 +280,16 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         }
 
 
-
-
-        for (OrderNeedItem orderNeedItem : orderNeedItems){
-            if (orderNeedItem.isStoreResItem()){
+        for (OrderNeedItem orderNeedItem : orderNeedItems) {
+            if (orderNeedItem.isStoreResItem()) {
                 //TODO cost from BOM
-                needRes.getOrderItems().add(new OrderItem(needRes,orderNeedItem.getStoreRes(),
-                        new BigDecimal("0"),orderNeedItem.getUseUnit(),
-                        orderNeedItem.getCount(),orderNeedItem.getUnitPrice(),orderNeedItem.getRebate()));
-            }else{
-                needRes.getOrderItems().add(new OrderItem(needRes,orderNeedItem.getRes(),
-                        new BigDecimal("0"),orderNeedItem.getUseUnit(),
-                        orderNeedItem.getCount(),orderNeedItem.getUnitPrice(),orderNeedItem.getRebate()));
+                needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getStoreRes(),
+                        new BigDecimal("0"), orderNeedItem.getUseUnit(),
+                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate()));
+            } else {
+                needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getRes(),
+                        new BigDecimal("0"), orderNeedItem.getUseUnit(),
+                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate()));
             }
         }
 
@@ -268,15 +303,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         if (customerHome.isIdDefined()) {
             getInstance().setContact(customerHome.getInstance().getContact());
             getInstance().setTel(customerHome.getInstance().getTel());
-        }else{
+        } else {
             getInstance().setContact(null);
             getInstance().setTel(null);
         }
     }
-
-
-    @Out(scope = ScopeType.CONVERSATION, required = false)
-    private CustomerOrder bizOrder;
 
 
     @Observer("com.dgsoft.BusinessCreatePrepare.order")
@@ -284,14 +315,12 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     public void createOrder(BusinessDefine businessDefine) {
 
 
-
         if (!"persisted".equals(persist())) {
             throw new ProcessCreatePrepareException("create order persist fail");
         }
 
         startData.setDescription(getInstance().getCustomer().getName());
-
-        bizOrder = getInstance();
+        orderHome.setId(getInstance().getId());
     }
 
 }

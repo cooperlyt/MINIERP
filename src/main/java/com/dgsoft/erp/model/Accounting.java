@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Nov 5, 2013 1:58:21 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.NamedEntity;
 import com.google.common.collect.Iterators;
 
 import java.util.*;
@@ -14,14 +15,18 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ACCOUNTING", catalog = "MINI_ERP")
-public class Accounting implements java.io.Serializable, TreeNode {
+public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
+
+    public enum Direction {
+        CREDIT,DBEDIT;
+    }
 
     private String id;
     private Accounting accounting;
-    private AccountingType accountingType;
+    private String accountingType;
     private String name;
     private String currency;
-    private String directoin;
+    private Direction direction;
     private boolean root;
     private Res res;
     private Set<AccountOper> accountOpersForDebitAccount = new HashSet<AccountOper>(
@@ -37,15 +42,6 @@ public class Accounting implements java.io.Serializable, TreeNode {
     public Accounting() {
     }
 
-    public Accounting(String id, AccountingType accountingType, String name,
-                      String currency, String directoin, boolean root) {
-        this.id = id;
-        this.accountingType = accountingType;
-        this.name = name;
-        this.currency = currency;
-        this.directoin = directoin;
-        this.root = root;
-    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -69,14 +65,15 @@ public class Accounting implements java.io.Serializable, TreeNode {
         this.accounting = accounting;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TYPE", nullable = false)
+
+    @Column(name = "TYPE", nullable = false, length = 32)
+    @Size(max = 32)
     @NotNull
-    public AccountingType getAccountingType() {
+    public String getAccountingType() {
         return this.accountingType;
     }
 
-    public void setAccountingType(AccountingType accountingType) {
+    public void setAccountingType(String accountingType) {
         this.accountingType = accountingType;
     }
 
@@ -102,15 +99,15 @@ public class Accounting implements java.io.Serializable, TreeNode {
         this.currency = currency;
     }
 
-    @Column(name = "DIRECTOIN", nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "DIRECTION", nullable = false, length = 10)
     @NotNull
-    @Size(max = 10)
-    public String getDirectoin() {
-        return this.directoin;
+    public Direction getDirection() {
+        return this.direction;
     }
 
-    public void setDirectoin(String directoin) {
-        this.directoin = directoin;
+    public void setDirection(Direction directoin) {
+        this.direction = directoin;
     }
 
     @Column(name = "ROOT", nullable = false)

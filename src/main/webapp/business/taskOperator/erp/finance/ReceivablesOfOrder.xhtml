@@ -26,49 +26,10 @@
 
 
 
-        <rich:dataTable value="#{bizOrder.accountOperList}" var="_oper" noDataLabel="#{messages.orderNoReceiveRecord}">
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.accountOper_field_operDate}
-                </f:facet>
-                <h:outputText value="#{_oper.operDate}">
-                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-                </h:outputText>
-                <f:facet name="footer">
-                    #{messages.recordTotal}#{bizOrder.accountOperList.size}#{messages.item}
-                </f:facet>
-            </rich:column>
-            <rich:column style="text-align: right">
-                <f:facet name="header">
-                    #{messages.accountOper_field_operMoney}
-                </f:facet>
-                <h:outputText value="#{_oper.operMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
-                </h:outputText>
-                <f:facet name="footer">
-                    <h:outputText value="#{orderFinanceReceivables.totalReveiveMoney}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </f:facet>
-            </rich:column>
-
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.accountOper_field_payTYpe}
-                </f:facet>
-                <h:outputText value="#{messages[_oper.payType.name()]}"/>
-            </rich:column>
-
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.accountOper_field_operEmp}
-                </f:facet>
-                #{dictionary.getEmpNameById(_oper.operEmp)}
-            </rich:column>
-
-        </rich:dataTable>
+        <ui:include src="/templates/erp/OrderPayRecord.xhtml">
+            <ui:param name="order" value="#{orderHome.instance}"/>
+            <ui:param name="totalMoney" value="#{orderMoneyReceive.totalReveiveMoney}"/>
+        </ui:include>
 
         <rich:panel>
             <ui:include src="/templates/erp/CustomerDetails.xhtml">

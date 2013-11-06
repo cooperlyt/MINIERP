@@ -52,12 +52,12 @@ public class NumberBuilder {
 
     @Destroy
     public void onDestroy(){
-        EntityManager entityManager = getSystemEntityManger();
-        for(Map.Entry<String, Numbers> entry: numbers.entrySet()){
-            NumberPool numberPool = entityManager.find(NumberPool.class,entry.getKey());
-            numberPool.setNumber(entry.getValue().nextNumber);
-        }
-        entityManager.flush();
+//        EntityManager entityManager = getSystemEntityManger();
+//        for(Map.Entry<String, Numbers> entry: numbers.entrySet()){
+//            NumberPool numberPool = entityManager.find(NumberPool.class,entry.getKey());
+//            numberPool.setNumber(entry.getValue().nextNumber);
+//        }
+//        entityManager.flush();
     }
 
     @In

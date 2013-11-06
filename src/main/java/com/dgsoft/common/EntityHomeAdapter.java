@@ -7,6 +7,8 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.log.Log;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Created with IntelliJ IDEA.
  * User: cooperlee

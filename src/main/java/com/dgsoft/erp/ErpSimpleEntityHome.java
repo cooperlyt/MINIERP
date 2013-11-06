@@ -1,6 +1,6 @@
 package com.dgsoft.erp;
 
-import com.dgsoft.common.NamedModel;
+import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.SimpleEntityHome;
 
 /**
@@ -10,7 +10,7 @@ import com.dgsoft.common.SimpleEntityHome;
  * Time: 9:46 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ErpSimpleEntityHome<E extends NamedModel> extends SimpleEntityHome<E> {
+public class ErpSimpleEntityHome<E extends NamedEntity> extends SimpleEntityHome<E> {
 
     @Override
     protected String getPersistenceContextName(){

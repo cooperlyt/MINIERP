@@ -22,18 +22,19 @@ import java.math.BigDecimal;
  * Date: 11/5/13
  * Time: 9:55 AM
  */
-@Name("orderFinanceReceivables")
-public class FinanceReceivables extends OrderTaskHandle {
+
+public abstract class FinanceReceivables extends OrderTaskHandle {
 
     @In(create = true)
-    private AccountOperHome accountOperHome;
+    protected AccountOperHome accountOperHome;
 
     @In
-    private Credentials credentials;
+    protected Credentials credentials;
+
 
     public BigDecimal getTotalReveiveMoney(){
         BigDecimal result = new BigDecimal("0");
-        for (AccountOper oper: bizOrder.getAccountOpers()){
+        for (AccountOper oper: orderHome.getInstance().getAccountOpers()){
             result = result.add(oper.getOperMoney());
         }
         return result;

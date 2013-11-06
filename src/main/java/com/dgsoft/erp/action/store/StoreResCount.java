@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.common.utils.BigDecimalFormat;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Logging;
@@ -79,16 +80,7 @@ public class StoreResCount implements java.io.Serializable {
     }
 
     private BigDecimal countFormat(BigDecimal count, ResUnit unit) {
-        DecimalFormat df = new DecimalFormat(unit.getCountFormate());
-        df.setGroupingUsed(false);
-        df.setRoundingMode(RoundingMode.HALF_UP);
-        try {
-            return new BigDecimal(df.parse(df.format(count)).toString());
-        } catch (ParseException e) {
-            Logging.getLog(this.getClass()).warn("count cant be format:" + count);
-            return count;
-        }
-
+        return BigDecimalFormat.format(count,unit.getCountFormate());
     }
 
     public Res getRes() {

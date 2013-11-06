@@ -1,7 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.NamedModel;
+import com.dgsoft.common.NamedEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "MIDDLE_MAN", catalog = "MINI_ERP")
-public class MiddleMan implements java.io.Serializable, NamedModel {
+public class MiddleMan implements java.io.Serializable, NamedEntity {
 
 	private String id;
 	private String name;

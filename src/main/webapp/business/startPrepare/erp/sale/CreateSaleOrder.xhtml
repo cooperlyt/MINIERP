@@ -8,15 +8,12 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
+    <ui:param name="functionTitle" value="#{messagse.createOrder}-#{messages.orderCustomer}"/>
 
     <ui:define name="func-body">
         <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
         <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
         <h:outputStylesheet>
-            .barsearch {
-                height: 14px;
-                width: 100px;
-            }
 
             .priceUnitSelectWidth input[type="text"] {
                 width: 70px;
@@ -35,6 +32,21 @@
             <rich:toolbar>
 
                 <rich:toolbarGroup>
+
+                    <rich:select value="#{orderCreate.instance.payType}"
+                                 styleClass="payTypeSelectWidth" listWidth="93px"
+                                 label="#{messages.order_field_payType}"
+                                 required="true" id="payTypeField">
+                        <s:selectItems value="#{orderPayTypes}" var="_payType"
+                                       noSelectionLabel="#{messages.noSelectLabel}"
+                                       label="#{messages[_payType.name()]}"/>
+                        <s:convertEnum/>
+                        <rich:validator event="selectitem"/>
+                        <rich:placeholder value="#{messages.order_field_payType}"/>
+                    </rich:select>
+                    <rich:message for="payTypeField" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+
                     <rich:calendar id="orderSendLimitDateField"
                                    enableManualInput="true"
                                    inputSize="10"
@@ -43,7 +55,7 @@
                                    datePattern="#{messages.datePattern}"
                                    required="true"
                                    label="#{messages.storeOutLimitDate}"
-                                   value="#{customerOrderHome.needRes.limitTime}">
+                                   value="#{orderCreate.needRes.limitTime}">
                         <rich:validator event="change"/>
                         <rich:placeholder value="#{messages.storeOutLimitDate}"/>
                     </rich:calendar>
@@ -53,8 +65,11 @@
 
 
                 <rich:toolbarGroup location="right">
-
-
+                    <s:button value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
+                    <h:commandButton value="#{messages.ok}" action="#{orderCreate.saveOrderCustomer}">
+                        <f:param name="from" value="#{from}"/>
+                    </h:commandButton>
                 </rich:toolbarGroup>
             </rich:toolbar>
             <rich:messages ajaxRendered="true" globalOnly="true"/>
@@ -135,16 +150,6 @@
                             <a:ajax event="blur" render="orderTelField"/>
                         </h:inputText>
                     </s:decorate>
-
-
-                    <a:outputPanel id="includeMiddleManField">
-                        <s:decorate template="/layout/seam-edit.xhtml" rendered="#{customerHome.haveMiddleMan}">
-                            <ui:define name="label">#{messages.includeMiddleMan}</ui:define>
-                            <h:selectBooleanCheckbox required="true"
-                                                     label="#{messages.includeMiddleMan}"
-                                                     value="#{orderCreate.instance.includeMiddleMan}"/>
-                        </s:decorate>
-                    </a:outputPanel>
                 </h:panelGrid>
             </a:outputPanel>
 
@@ -170,7 +175,16 @@
                 </rich:collapsiblePanel>
             </a:outputPanel>
 
-
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+                <h:inputTextarea label="#{messages.field_memo}"
+                                 value="#{orderCreate.instance.memo}"
+                                 cols="60" rows="2"/>
+            </s:decorate>
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
         </h:form>
 
     </ui:define>

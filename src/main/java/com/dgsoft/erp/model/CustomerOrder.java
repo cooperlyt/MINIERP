@@ -57,7 +57,7 @@ public class CustomerOrder implements java.io.Serializable {
     private boolean payComplete;
 
     private BigDecimal totalMoney;
-    private BigDecimal realMoney;
+    private BigDecimal earnest;
     private BigDecimal totalRebate;
     private BigDecimal middleMoney;
     private BigDecimal totalCost;
@@ -172,13 +172,13 @@ public class CustomerOrder implements java.io.Serializable {
         this.totalMoney = totalMoney;
     }
 
-    @Column(name = "REAL_MONEY", scale = 3)
-    public BigDecimal getRealMoney() {
-        return this.realMoney;
+    @Column(name = "EARNEST", scale = 3)
+    public BigDecimal getEarnest() {
+        return this.earnest;
     }
 
-    public void setRealMoney(BigDecimal realMoney) {
-        this.realMoney = realMoney;
+    public void setEarnest(BigDecimal realMoney) {
+        this.earnest = realMoney;
     }
 
     @Column(name = "TOTAL_REBATE", nullable = false, scale = 4)

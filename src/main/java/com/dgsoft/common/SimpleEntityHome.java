@@ -11,7 +11,7 @@ import org.jboss.seam.annotations.FlushModeType;
  * Time: 8:40 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SimpleEntityHome<E extends NamedModel> extends EntityHomeAdapter<E> {
+public class SimpleEntityHome<E extends NamedEntity> extends EntityHomeAdapter<E> {
 
     public void setPinyinSearchName(String searchStr) {
         String id = PinyinTools.splitPinyinId(searchStr);

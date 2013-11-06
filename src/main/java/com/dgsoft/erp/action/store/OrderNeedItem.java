@@ -1,16 +1,12 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.common.utils.BigDecimalFormat;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResUnit;
 import com.dgsoft.erp.model.UnitGroup;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
@@ -98,9 +94,9 @@ public class OrderNeedItem extends StoreChangeItem {
         if (!same(other)) {
             throw new IllegalArgumentException("not same orderItem can't merger");
         }
-        if (storeResItem){
+        if (storeResItem) {
             storeResCount.add(other.storeResCount);
-        }else{
+        } else {
             resCount = resCount.add(other.getResCount());
         }
         calcByCU();
@@ -111,19 +107,12 @@ public class OrderNeedItem extends StoreChangeItem {
         return value != null && (value.compareTo(new BigDecimal("0")) != 0);
     }
 
-    private BigDecimal halfUpCurrency(BigDecimal number) throws ParseException {
-        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(Locale.CHINA);
-        return new BigDecimal(currencyFormat.parse(currencyFormat.format(number)).toString());
-    }
-
     private void calcByCU() {
         totalPrice = unitPrice.multiply(rebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)).
                 multiply(getCount());
-        try {
-            totalPrice = halfUpCurrency(totalPrice);
-        } catch (ParseException e) {
-            Logging.getLog(this.getClass()).warn("Number convert error CU");
-        }
+
+        totalPrice = BigDecimalFormat.halfUpCurrency(totalPrice);
+
     }
 
     private void calcByCT() {
@@ -131,11 +120,9 @@ public class OrderNeedItem extends StoreChangeItem {
         unitPrice = totalPrice.divide(getCount(),
                 Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
                 BigDecimal.ROUND_HALF_UP).divide(rebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP));
-        try {
-            unitPrice = halfUpCurrency(unitPrice);
-        } catch (ParseException e) {
-            Logging.getLog(this.getClass()).warn("Number convert error CT");
-        }
+
+        unitPrice = BigDecimalFormat.halfUpCurrency(unitPrice);
+
 
     }
 
@@ -154,23 +141,23 @@ public class OrderNeedItem extends StoreChangeItem {
                         BigDecimal.ROUND_HALF_UP), 20, BigDecimal.ROUND_HALF_UP));
     }
 
-    private boolean countIsTyped(){
-        if (storeResItem){
+    private boolean countIsTyped() {
+        if (storeResItem) {
             return decimalIsTyped(getStoreResCount().getCount());
-        }else{
+        } else {
             return decimalIsTyped(resCount);
         }
     }
 
-    public BigDecimal getCount(){
-        if (storeResItem){
-            if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)){
+    public BigDecimal getCount() {
+        if (storeResItem) {
+            if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
                 return storeResCount.getCount();
-            }else{
+            } else {
                 return storeResCount.getCountByResUnit(useUnit);
             }
 
-        }else{
+        } else {
             return resCount;
         }
     }
@@ -251,11 +238,11 @@ public class OrderNeedItem extends StoreChangeItem {
             return false;
         }
 
-        if (other.getUnitPrice().compareTo(getUnitPrice()) != 0){
+        if (other.getUnitPrice().compareTo(getUnitPrice()) != 0) {
             return false;
         }
 
-        if (!other.getUseUnit().getId().equals(getUseUnit().getId())){
+        if (!other.getUseUnit().getId().equals(getUseUnit().getId())) {
             return false;
         }
 

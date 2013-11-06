@@ -20,10 +20,6 @@ public abstract class OrderTaskHandle extends TaskHandle {
     @In(create= true)
     protected OrderHome orderHome;
 
-    @In(required = false)
-    @Out
-    protected CustomerOrder bizOrder;
-
     protected String initOrderTask(){
         return "success";
     }
@@ -43,7 +39,6 @@ public abstract class OrderTaskHandle extends TaskHandle {
     @Override
     protected final String initTask() {
         orderHome.setId(taskInstance.getProcessInstance().getKey());
-        bizOrder = orderHome.getInstance();
         return initOrderTask();
     }
 

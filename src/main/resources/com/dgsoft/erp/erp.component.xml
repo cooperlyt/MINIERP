@@ -30,12 +30,25 @@
         <property name="ejbql">select accounting from Accounting accounting where accounting.root = true</property>
     </component>
 
-    <component name="cashAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+    <component name="rootCashAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
         <property name="ejbql">select accounting from Accounting accounting where accounting.id = &apos;#{runParam.getStringParamValue(&apos;erp.finance.cashAccount&apos;)}&apos;</property>
     </component>
 
-    <component name="bankAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+    <component name="rootBankAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
         <property name="ejbql">select accounting from Accounting accounting where accounting.id = &apos;#{runParam.getStringParamValue(&apos;erp.finance.bankAccount&apos;)}&apos;</property>
+    </component>
+
+    <component name="cashAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select accounting from Accounting accounting where accounting.id like &apos;#{runParam.getStringParamValue(&apos;erp.finance.cashAccount&apos;)}%&apos;</property>
+    </component>
+
+    <component name="bankAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select accounting from Accounting accounting where accounting.id like &apos;#{runParam.getStringParamValue(&apos;erp.finance.bankAccount&apos;)}%&apos;</property>
+    </component>
+
+    <component name="allAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+
+        <property name="ejbql">select accounting from Accounting accounting </property>
     </component>
 
     <component name="allStoreList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
@@ -69,4 +82,5 @@
     <component name="customerLevelList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
         <property name="ejbql">select customerLevel from CustomerLevel customerLevel order by customerLevel.priority</property>
     </component>
+
 </components>
