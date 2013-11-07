@@ -60,7 +60,11 @@ public class AccountOper implements java.io.Serializable {
     public AccountOper() {
 	}
 
-	@Id
+    public AccountOper(PayType payType) {
+        this.payType = payType;
+    }
+
+    @Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")

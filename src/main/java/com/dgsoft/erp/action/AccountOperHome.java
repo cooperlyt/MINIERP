@@ -66,9 +66,19 @@ public class AccountOperHome extends ErpEntityHome<AccountOper> {
     }
 
     @Override
+    protected AccountOper createInstance(){
+        return new AccountOper(PayType.BANK_TRANSFER);
+
+    }
+
+    @Override
     protected boolean wire(){
         getInstance().setOperEmp(credentials.getUsername());
         return true;
+    }
+
+    public void payTypeChangeListener(){
+        getInstance().setAccountingByDebitAccount(null);
     }
 
 }

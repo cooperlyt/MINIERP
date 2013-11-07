@@ -49,9 +49,9 @@ public abstract class StoreChangeItem implements java.io.Serializable {
 
 
     public boolean same(StoreChangeItem storeChangeItem) {
-        return (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
+        return res.getId().equals(storeChangeItem.getRes().getId()) &&
+                (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || storeResCount.getFloatConvertRate().compareTo(storeChangeItem.storeResCount.getFloatConvertRate()) == 0) &&
-                res.getId().equals(storeChangeItem.getRes().getId()) &&
                 StoreChangeHelper.sameFormat(storeChangeItem.getFormats(), getFormats());
     }
 }

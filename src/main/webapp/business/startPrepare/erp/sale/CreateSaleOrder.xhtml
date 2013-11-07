@@ -160,7 +160,7 @@
                 <rich:collapsiblePanel
                         header="#{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}"
                         switchType="client">
-                    <ui:include src="/templates/erp/CustomerDetails.xhtml">
+                    <ui:include src="/layout/erp/CustomerDetails.xhtml">
                         <ui:param name="balanceReadonly" value="true"/>
                         <ui:param name="readonly" value="#{customerHome.idDefined}"/>
                         <ui:param name="allowSwitchMiddleMan" value="false"/>

@@ -21,7 +21,7 @@
         </ui:define>
 
         <ui:define name="formContent">
-            <rich:panel>
+            <rich:panel style="width: 250px;height: 350px">
                 <rich:tree
                         var="_node"
                         value="#{treeValue}"
@@ -45,7 +45,7 @@
                             <s:conversationId/>
                         </a:commandLink>
 
-                        <ui:include src="/templates/erp/StoreResTitle.xhtml">
+                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
                             <ui:param name="storeRes" value="#{_node.storeRes}"/>
                         </ui:include>
                     </rich:treeNode>

@@ -25,12 +25,12 @@
     </h:outputStylesheet>
 
 
-    <ui:include src="/templates/erp/ResSelectTree.xhtml">
+    <ui:include src="/layout/erp/ResSelectTree.xhtml">
         <ui:param name="render" value="storeInItem"/>
         <ui:param name="treeValue" value="#{resTreeValue}"/>
     </ui:include>
 
-    <ui:include src="/templates/erp/StoreResSelectTree.xhtml">
+    <ui:include src="/layout/erp/StoreResSelectTree.xhtml">
         <ui:param name="render" value="storeInItem"/>
         <ui:param name="treeValue" value="#{storeResTreeValue}"/>
     </ui:include>
@@ -140,7 +140,7 @@
                 <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
                     <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{_format.formatDefine.name}</ui:define>
-                        <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
+                        <ui:include src="/layout/erp/ResFormatVarInput.xhtml">
                             <ui:param name="format" value="#{_format}"/>
                             <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
 
@@ -156,7 +156,7 @@
 
                 </s:decorate>
 
-                <ui:include src="/templates/erp/ResCountInput.xhtml">
+                <ui:include src="/layout/erp/ResCountInput.xhtml">
                     <ui:param name="resCountBean" value="#{sotreInAction.editingItem.storeResCount}"/>
                 </ui:include>
 
@@ -192,7 +192,7 @@
                     </f:facet>
 
 
-                    <ui:include src="/templates/erp/ChangeItemResTitle.xhtml">
+                    <ui:include src="/layout/erp/ChangeItemResTitle.xhtml">
                         <ui:param name="storeRes" value="#{_item}"/>
                     </ui:include>
 

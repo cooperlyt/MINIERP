@@ -21,7 +21,7 @@ public class SimpleVar implements SubscribeVar<SimpleVar> {
 
     @Override
     public String getView() {
-        return "/templates/system/business/SimpleVar.xhtml";
+        return "/layout/system/business/SimpleVar.xhtml";
     }
 
     public SimpleVar(SimpleVarSubscribe simpleVarSubscribe) {

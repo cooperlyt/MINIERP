@@ -58,6 +58,8 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
         accountOperHome.persist();
         accountOperHome.clearInstance();
+        orderHome.refresh();
+
     }
 
     @Override

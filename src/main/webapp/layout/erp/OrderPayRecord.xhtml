@@ -8,7 +8,11 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <rich:dataTable value="#{order.accountOperList}" var="_oper" noDataLabel="#{messages.orderNoReceiveRecord}">
+    <rich:dataTable style="width: 100%" value="#{order.accountOperList}" var="_oper" noDataLabel="#{messages.orderNoReceiveRecord}">
+        <f:facet name="header">
+            #{messages.orderPayRecord}
+        </f:facet>
+
         <rich:column>
             <f:facet name="header">
                 #{messages.accountOper_field_operDate}
@@ -20,6 +24,35 @@
                 #{messages.recordTotal}#{order.accountOperList.size}#{messages.item}
             </f:facet>
         </rich:column>
+
+
+
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.accountOper_field_operEmp}
+            </f:facet>
+            #{dictionary.getEmpNameById(_oper.operEmp)}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.accountOper_field_payType}
+            </f:facet>
+            <h:outputText value="#{messages[_oper.payType.name()]}"/>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.accountOper_field_beforBalance}
+            </f:facet>
+            <h:outputText value="#{_oper.beforMoney}" rendered="#{_oper.payType eq 'FROM_PRE_DEPOSIT'}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+        </rich:column>
+
+
         <rich:column style="text-align: right">
             <f:facet name="header">
                 #{messages.accountOper_field_operMoney}
@@ -36,18 +69,14 @@
             </f:facet>
         </rich:column>
 
-        <rich:column>
+        <rich:column style="text-align: right">
             <f:facet name="header">
-                #{messages.accountOper_field_payType}
+                #{messages.accountOper_field_afterBanance}
             </f:facet>
-            <h:outputText value="#{messages[_oper.payType.name()]}"/>
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.accountOper_field_operEmp}
-            </f:facet>
-            #{dictionary.getEmpNameById(_oper.operEmp)}
+            <h:outputText value="#{_oper.afterMoney}" rendered="#{_oper.payType eq 'FROM_PRE_DEPOSIT'}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
         </rich:column>
 
     </rich:dataTable>

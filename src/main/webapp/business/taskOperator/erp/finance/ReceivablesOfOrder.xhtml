@@ -26,13 +26,13 @@
 
 
 
-        <ui:include src="/templates/erp/OrderPayRecord.xhtml">
+        <ui:include src="/layout/erp/OrderPayRecord.xhtml">
             <ui:param name="order" value="#{orderHome.instance}"/>
             <ui:param name="totalMoney" value="#{orderMoneyReceive.totalReveiveMoney}"/>
         </ui:include>
 
         <rich:panel>
-            <ui:include src="/templates/erp/CustomerDetails.xhtml">
+            <ui:include src="/layout/erp/CustomerDetails.xhtml">
                 <ui:param name="balanceReadonly" value="true"/>
                 <ui:param name="readonly" value="#{customerHome.idDefined}"/>
                 <ui:param name="allowSwitchMiddleMan" value="false"/>

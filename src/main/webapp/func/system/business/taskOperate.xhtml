@@ -60,7 +60,7 @@
                 <div class="edit">
                     <a:repeat var="_simpleVar" value="#{defaultTaskOperate.writeSimpleVarList}">
 
-                        <ui:include src="/templates/system/SimpleVar.xhtml">
+                        <ui:include src="/layout/system/SimpleVar.xhtml">
                             <ui:param name="var" value="#{_simpleVar}"/>
                             <ui:param name="lable" value="#{_simpleVar.simpleVarSubscribe.simpleVarDefine.title}"/>
                             <ui:param name="required" value="#{_simpleVar.simpleVarSubscribe.request}"/>

@@ -54,7 +54,7 @@
 
     <s:decorate id="provinceField" template="/layout/edit.xhtml" rendered="#{not readonly}">
         <ui:define name="label">#{messages.customer_field_province}</ui:define>
-        <ui:include src="/templates/system/CitySelect.xhtml">
+        <ui:include src="/layout/system/CitySelect.xhtml">
             <ui:param name="value" value="#{customerHome.instance.provinceCode}"/>
             <ui:param name="required" value="true"/>
             <ui:param name="cityListWidth" value="112"/>
@@ -229,7 +229,7 @@
             <div style="clear:both"/>
 
             <a:outputPanel rendered="#{customerHome.haveMiddleMan}" id="middleManDeatilsFields">
-                <ui:include src="/templates/erp/MiddleManDetails.xhtml">
+                <ui:include src="/layout/erp/MiddleManDetails.xhtml">
                     <ui:param name="readonly" value="#{middleManHome.idDefined}"/>
                 </ui:include>
             </a:outputPanel>

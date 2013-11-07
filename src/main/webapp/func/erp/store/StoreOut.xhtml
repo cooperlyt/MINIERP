@@ -28,12 +28,12 @@
         }
     </h:outputStylesheet>
 
-    <ui:include src="/templates/erp/StoreAreaSelectTree.xhtml">
+    <ui:include src="/layout/erp/StoreAreaSelectTree.xhtml">
         <ui:param name="render" value="storeAreaField,inventoryResult"/>
         <ui:param name="store" value="#{storeOutAction.selectStore.getRootStoreAreaList(false)}"/>
     </ui:include>
 
-    <ui:include src="/templates/erp/ResSelectTree.xhtml">
+    <ui:include src="/layout/erp/ResSelectTree.xhtml">
         <ui:param name="render" value="itemFormats,inventoryResult"/>
     </ui:include>
 
@@ -217,7 +217,7 @@
                     <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
                         <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
                             <ui:define name="label">#{_format.formatDefine.name}</ui:define>
-                            <ui:include src="/templates/erp/ResFormatVarInput.xhtml">
+                            <ui:include src="/layout/erp/ResFormatVarInput.xhtml">
                                 <ui:param name="format" value="#{_format}"/>
                                 <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
                                 <ui:param name="requiredField" value="false"/>

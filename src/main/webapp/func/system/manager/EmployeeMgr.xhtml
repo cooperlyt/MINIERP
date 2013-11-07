@@ -179,7 +179,7 @@
     </a:region>
 
     <rich:panel id="personEditFields">
-        <ui:include src="/templates/system/PersonEdit.xhtml">
+        <ui:include src="/layout/system/PersonEdit.xhtml">
             <ui:param name="readonly"
                       value="#{(empty personHome.instance.credentialsNumber) or personHome.managed}"/>
         </ui:include>
