@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Nov 5, 2013 1:32:07 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.erp.model.api.PayType;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -61,6 +62,8 @@ public class AccountOper implements java.io.Serializable {
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {

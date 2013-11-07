@@ -65,9 +65,9 @@
 
 
                 <rich:toolbarGroup location="right">
-                    <s:button value="#{messages.cancel}" propagation="end"
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
-                    <h:commandButton value="#{messages.ok}" action="#{orderCreate.saveOrderCustomer}">
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{orderCreate.saveOrderCustomer}">
                         <f:param name="from" value="#{from}"/>
                     </h:commandButton>
                 </rich:toolbarGroup>

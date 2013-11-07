@@ -12,14 +12,20 @@ import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 
 import javax.faces.event.ValueChangeEvent;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +34,8 @@ import java.util.List;
  * Time: 9:51 AM
  */
 public class EntityHomeAdapter<E> extends EntityHome<E> {
+
+    public static final String UNIQUE_VERIFY_ATTRIBUTE_NAME = "unique";
 
     @Logger
     protected Log log;
@@ -55,62 +63,124 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
         return true;
     }
 
-    private boolean verifyUnique(){
+    protected CriteriaQuery<E> createQueryFieldsEq(Map<String, Object> params) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<E> result = getEntityManager().getCriteriaBuilder().createQuery(getEntityClass());
+        Root<E> from = result.from(getEntityClass());
 
-        List<UniqueVerify> uniques = new ArrayList<UniqueVerify>();
-        if (getEntityClass().isAnnotationPresent(UniqueVerify.class)){
-            uniques.add(getEntityClass().getAnnotation(UniqueVerify.class));
-        }
-        if (getEntityClass().isAnnotationPresent(UniqueVerifys.class)){
-            UniqueVerifys uniqueVerifys = getEntityClass().getAnnotation(UniqueVerifys.class);
-            uniques.addAll(Arrays.asList(uniqueVerifys.value()));
-        }
-        boolean result = true;
-        if (!uniques.isEmpty()){
-            for (UniqueVerify unique: uniques){
-                Query query;
-                if (unique.namedQueryName() == null || "".equals(unique.namedQueryName().trim())){
-                    query = getEntityManager().createQuery(unique.query(),getEntityClass());
-                }else{
-                    query = getEntityManager().createNamedQuery(unique.namedQueryName(),getEntityClass());
-                }
-                for (String fieldName: unique.field()){
-                    try {
-                        query.setParameter(fieldName,getEntityClass().getField(fieldName).get(getInstance()));
-                    } catch (IllegalAccessException e) {
-                        throw new IllegalArgumentException("UniqueVerify define field [" + fieldName + "] can't access");
-                    } catch (NoSuchFieldException e) {
-                        throw new IllegalArgumentException("UniqueVerify No Such field [" + fieldName + "]");
-                    }
-                }
+        EntityType<E> et = getEntityManager().getMetamodel().entity(getEntityClass());
 
-                if (!query.getResultList().isEmpty()){
-                    getStatusMessages().addFromResourceBundleOrDefault(unique.severity(),
-                            getMessageKeyPrefix() + unique.name() + "_conflict", unique.name() + " conflict");
-                    if (unique.severity().compareTo(StatusMessage.Severity.ERROR) >= 0){
-                        result = false;
-                    }
-                }
+
+        Predicate predicate = null;
+        for (Map.Entry<String, Object> param : params.entrySet()) {
+            Predicate eq = cb.equal(from.get(et.getDeclaredSingularAttribute(param.getKey())), param.getValue());
+            if (predicate == null) {
+                predicate = eq;
+            } else {
+                predicate = cb.and(eq);
             }
-
         }
-        return result;
+        if (predicate != null)
+            result.where(predicate);
 
+        return result;
     }
 
 
+    private boolean verifyUnique(List<UniqueVerify> uniques) {
+        boolean result = true;
+        if (!uniques.isEmpty()) {
+            for (UniqueVerify unique : uniques) {
 
+                try {
+                    Map<String, Object> fields = new HashMap<String, Object>();
+                    for (String fieldName : unique.field()) {
+                        Field field = getEntityClass().getDeclaredField(fieldName);
+                        field.setAccessible(true);
+                        fields.put(fieldName, field.get(getInstance()));
+                    }
+
+                    for (E record : getEntityManager().createQuery(createQueryFieldsEq(fields)).getResultList()) {
+                        if (!isManaged() || !getInstanceId(record,true).equals(getInstanceId(getInstance(),true))) {
+                            getStatusMessages().addFromResourceBundleOrDefault(unique.severity(),
+                                    getMessageKeyPrefix() + unique.name() + "_conflict", unique.name() + " conflict");
+                            if (unique.severity().compareTo(StatusMessage.Severity.ERROR) >= 0) {
+                                result = false;
+                            }
+                            break;
+                        }
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("UniqueVerify define field [" + unique.name() + "] can't access");
+                } catch (NoSuchFieldException e) {
+                    throw new IllegalArgumentException("UniqueVerify No Such field [" + unique.name() + "]");
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<UniqueVerify> getUniqueVerifys() {
+        List<UniqueVerify> uniques = new ArrayList<UniqueVerify>();
+        if (getEntityClass().isAnnotationPresent(UniqueVerify.class)) {
+            uniques.add(getEntityClass().getAnnotation(UniqueVerify.class));
+        }
+        if (getEntityClass().isAnnotationPresent(UniqueVerifys.class)) {
+            UniqueVerifys uniqueVerifys = getEntityClass().getAnnotation(UniqueVerifys.class);
+            uniques.addAll(Arrays.asList(uniqueVerifys.value()));
+        }
+        return uniques;
+    }
+
+    protected boolean verifyUnique() {
+        return verifyUnique(getUniqueVerifys());
+    }
+
+    private List<UniqueVerify> getUniqueVerifys(String uniqueName) {
+        List<UniqueVerify> uniques = new ArrayList<UniqueVerify>();
+        for (UniqueVerify uniqueVerify : getUniqueVerifys()) {
+            if (uniqueName.trim().equals(uniqueVerify.name().trim())) {
+                uniques.add(uniqueVerify);
+            }
+        }
+        return uniques;
+    }
+
+    public void verifyUniqueAvailable(ValueChangeEvent e) {
+        String uniqueVerifyName = e.getComponent().getAttributes().get(UNIQUE_VERIFY_ATTRIBUTE_NAME).toString();
+        if (uniqueVerifyName != null) {
+
+            for (UniqueVerify unique : getUniqueVerifys(uniqueVerifyName)) {
+                if (unique.field().length != 1) {
+                    throw new IllegalArgumentException("unique cannot is union unique");
+                }
+                Map<String, Object> fields = new HashMap<String, Object>();
+                fields.put(unique.field()[0], e.getNewValue());
+
+                for (E record : getEntityManager().createQuery(createQueryFieldsEq(fields)).getResultList()) {
+                    if (!isManaged() || !getInstanceId(record,true).equals(getInstanceId(getInstance(),true))) {
+                        getStatusMessages().addToControlFromResourceBundleOrDefault(e.getComponent().getId(),
+                                unique.severity(),
+                                getMessageKeyPrefix() + unique.name() + "_conflict", unique.name() + " conflict");
+                        return;
+                    }
+                }
+            }
+        } else {
+            log.warn("verifyUniqueAvailable Listener unique not define");
+        }
+    }
 
     public void verifyIdAvailable(ValueChangeEvent e) {
-        if (getEntityManager().find(getEntityClass(), e.getNewValue()) != null){
+        if (getEntityManager().find(getEntityClass(), e.getNewValue()) != null) {
             getStatusMessages().addToControlFromResourceBundleOrDefault(e.getComponent().getId(),
-                    StatusMessage.Severity.ERROR,getConflictMessageKey(),
+                    StatusMessage.Severity.ERROR, getConflictMessageKey(),
                     getConflictMessage().getExpressionString());
         }
     }
 
     @Override
-    protected void initDefaultMessages(){
+    protected void initDefaultMessages() {
         super.initDefaultMessages();
         Expressions expressions = new Expressions();
         if (conflictMessage == null) {
@@ -127,45 +197,45 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
         this.conflictMessage = conflictMessage;
     }
 
-    protected String getConflictMessageKey()
-    {
+    protected String getConflictMessageKey() {
         return getMessageKeyPrefix() + "conflict";
     }
 
-    protected String getHeadingRepeatMessageKey(){
+    protected String getHeadingRepeatMessageKey() {
         return getMessageKeyPrefix() + "headingRepeat";
     }
 
     protected void conflictMessage() {
         debug("conflict entity #0 #1", getEntityClass().getName(), getId());
         getStatusMessages().addFromResourceBundleOrDefault(StatusMessage.Severity.ERROR,
-                getConflictMessageKey(), getConflictMessage().getExpressionString() );
+                getConflictMessageKey(), getConflictMessage().getExpressionString());
     }
 
-    private Object getInstanceId() {
-
+    private Object getInstanceId(E entityObj,boolean generated) {
         for (Field field : getEntityClass().getDeclaredFields()) {
 
-            if (field.isAnnotationPresent(Id.class)) {
+            if (field.isAnnotationPresent(Id.class)
+                    && (generated || !field.isAnnotationPresent(GeneratedValue.class))) {
                 field.setAccessible(true);
                 try {
-                    return field.get(getInstance());
+                    return field.get(entityObj);
                 } catch (IllegalAccessException e) {
                     log.warn("Accessible Id field value error", e);
                     return null;
                 }
             }
         }
-        for (Method method: getEntityClass().getDeclaredMethods()){
-            if (method.isAnnotationPresent(Id.class)){
+        for (Method method : getEntityClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Id.class) &&
+                    (generated || !method.isAnnotationPresent(GeneratedValue.class))) {
                 method.setAccessible(true);
                 try {
-                    return method.invoke(getInstance());
+                    return method.invoke(entityObj);
                 } catch (IllegalAccessException e) {
-                    log.warn("Accessible Id method value error",e);
+                    log.warn("Accessible Id method value error", e);
                     return null;
                 } catch (InvocationTargetException e) {
-                    log.warn("Accessible Id method value error",e);
+                    log.warn("Accessible Id method value error", e);
                 }
             }
         }
@@ -173,9 +243,9 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
         return null;
     }
 
-    private boolean verifyPersist(){
+    private boolean verifyPersist() {
         boolean result = verifyPersistAvailable() & verifyUnique();
-        Object idValue = getInstanceId();
+        Object idValue = getInstanceId(getInstance(),false);
         if ((idValue != null) &&
                 (getEntityManager().find(getEntityClass(), idValue) != null)) {
             conflictMessage();
@@ -185,7 +255,7 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
         return result;
     }
 
-    private boolean verifyUpdate(){
+    private boolean verifyUpdate() {
         return verifyUpdateAvailable() & verifyUnique();
     }
 

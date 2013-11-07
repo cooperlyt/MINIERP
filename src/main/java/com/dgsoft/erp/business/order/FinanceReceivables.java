@@ -28,9 +28,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     @In(create = true)
     protected AccountOperHome accountOperHome;
 
-    @In
-    protected Credentials credentials;
-
+    protected abstract AccountOper.AccountOperType getAccountOperType();
 
     public BigDecimal getTotalReveiveMoney(){
         BigDecimal result = new BigDecimal("0");
@@ -43,7 +41,9 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     public void receiveMoney(){
 
 
-
+        accountOperHome.getInstance().setOperType(getAccountOperType());
+        accountOperHome.getInstance().setCustomer(orderHome.getInstance().getCustomer());
+        accountOperHome.getInstance().setCustomerOrder(orderHome.getInstance());
 
         if (accountOperHome.getInstance().getPayType().equals(PayType.FROM_PRE_DEPOSIT)){
             accountOperHome.getInstance().setBeforMoney(accountOperHome.getInstance().getCustomer().getBalance());
@@ -53,7 +53,9 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             accountOperHome.getInstance().setBeforMoney(accountOperHome.getInstance().getCustomer().getBalance());
             accountOperHome.getInstance().setAfterMoney(accountOperHome.getInstance().getCustomer().getBalance());
         }
-        accountOperHome.getInstance().setOperEmp(credentials.getUsername());
+
+
+
         accountOperHome.persist();
         accountOperHome.clearInstance();
     }

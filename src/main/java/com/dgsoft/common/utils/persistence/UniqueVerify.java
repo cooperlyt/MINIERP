@@ -22,10 +22,6 @@ public @interface UniqueVerify {
 
     StatusMessage.Severity severity() default StatusMessage.Severity.ERROR;
 
-    String namedQueryName() default "";
-
-    String query() default "";
-
     String [] field();
 
     String name() default "";

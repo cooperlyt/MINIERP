@@ -6,6 +6,7 @@ import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.CustomerOrder;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Out;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 

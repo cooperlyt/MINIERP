@@ -52,34 +52,22 @@ public class TestKnow {
 
     public static void main(String[] args){
 
-
-
         TestAnn testAnn = new TestAnn();
         testAnn.setName("pppp");
-
-        for (Field field : testAnn.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(UniqueVerify.class) ){
+        try {
+            try {
+                Field field = TestAnn.class.getDeclaredField("name");
                 field.setAccessible(true);
-                try {
-                    System.out.println("find UniqueVerify Field:" + field.getName() + "=" + field.get(testAnn));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
+                System.out.println(field.get(testAnn));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        for (Method method: testAnn.getClass().getDeclaredMethods()){
-            if (method.isAnnotationPresent(UniqueVerify.class)){
-                method.setAccessible(true);
-                try {
-                    System.out.println("find UniqueVerify Method:" + method.getName() + "=" + method.invoke(testAnn));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-        }
+
+
 
 
 

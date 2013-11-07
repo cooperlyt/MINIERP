@@ -1,6 +1,10 @@
 package com.dgsoft.common.system.business;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.transaction.Transaction;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 import java.io.Serializable;
@@ -11,6 +15,7 @@ import java.io.Serializable;
  * Date: 11/5/13
  * Time: 9:56 AM
  */
+@Scope(ScopeType.CONVERSATION)
 public abstract class TaskHandle implements Serializable{
 
     @In
@@ -20,13 +25,14 @@ public abstract class TaskHandle implements Serializable{
 
     protected abstract String initTask();
 
-    public final String complete(){
+    public String complete(){
 
         return completeTask();
     }
 
 
-    public final String init(){
+    @Transactional
+    public String init(){
 
         return initTask();
     }

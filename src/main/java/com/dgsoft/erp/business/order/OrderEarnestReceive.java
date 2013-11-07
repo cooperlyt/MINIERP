@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.erp.model.AccountOper;
 import org.jboss.seam.annotations.Name;
 
 /**
@@ -13,4 +14,8 @@ import org.jboss.seam.annotations.Name;
 public class OrderEarnestReceive extends FinanceReceivables{
 
 
+    @Override
+    protected AccountOper.AccountOperType getAccountOperType() {
+        return AccountOper.AccountOperType.ORDER_EARNEST;
+    }
 }

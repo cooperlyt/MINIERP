@@ -39,25 +39,14 @@ public class Customer implements java.io.Serializable, NamedEntity {
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
 
     public Customer() {
+        balance = BigDecimal.ZERO;
     }
 
     public Customer(boolean enable){
+        balance = BigDecimal.ZERO;
         this.enable = enable;
     }
 
-    public Customer(String id, CustomerLevel customerLevel,
-                    CustomerArea customerArea, MiddleMan middleMan, String name,
-                    String type, String contact, boolean enable, int provinceCode) {
-        this.id = id;
-        this.customerLevel = customerLevel;
-        this.customerArea = customerArea;
-        this.middleMan = middleMan;
-        this.name = name;
-        this.type = type;
-        this.contact = contact;
-        this.enable = enable;
-        this.provinceCode = provinceCode;
-    }
 
 
     @Id
@@ -149,7 +138,8 @@ public class Customer implements java.io.Serializable, NamedEntity {
         this.contact = contact;
     }
 
-    @Column(name = "BALANCE", scale = 3)
+    @Column(name = "BALANCE", scale = 3, nullable = false)
+    @NotNull
     public BigDecimal getBalance() {
         return this.balance;
     }

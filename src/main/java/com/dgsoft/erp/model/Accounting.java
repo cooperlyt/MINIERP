@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ACCOUNTING", catalog = "MINI_ERP")
-@UniqueVerify(name = "Name",severity = StatusMessage.Severity.WARN,namedQueryName = "findAccountingByName",field={"name"})
+@UniqueVerify(name = "Name",severity = StatusMessage.Severity.WARN,field={"name"})
 @NamedQuery(name = "findAccountingByName",query = "select accounting from Accounting accounting where accounting.name=:name")
 public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
 

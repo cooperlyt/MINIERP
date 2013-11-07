@@ -320,6 +320,7 @@ table.radio input[type=radio] {
 .toolBarBtn {
     border-width: 1px;
     margin-bottom: 5px;
+    margin: 0px;
     background-color: #{a4jSkin.generalBackgroundColor};
 }
 
