@@ -264,6 +264,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
             getInstance().setContact(customerHome.getInstance().getContact());
             getInstance().setTel(customerHome.getInstance().getTel());
+            getInstance().setAddress(customerHome.getInstance().getAddress());
+            getInstance().setPostCode(customerHome.getInstance().getPostCode());
         }
 
         if (getInstance().isIncludeMiddleMan()) {
@@ -297,9 +299,13 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         if (customerHome.isIdDefined()) {
             getInstance().setContact(customerHome.getInstance().getContact());
             getInstance().setTel(customerHome.getInstance().getTel());
+            getInstance().setAddress(customerHome.getInstance().getAddress());
+            getInstance().setPostCode(customerHome.getInstance().getPostCode());
         } else {
             getInstance().setContact(null);
             getInstance().setTel(null);
+            getInstance().setPostCode(null);
+            getInstance().setAddress(null);
         }
     }
 

@@ -143,16 +143,16 @@
 
     <s:decorate template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.postCode}</ui:define>
-        <h:inputText label="#{messages.postCode}" size="10" maxlength="10"
+        <h:inputText required="true" label="#{messages.postCode}" size="10" maxlength="10"
                      readonly="#{readonly}" value="#{customerHome.instance.postCode}"/>
     </s:decorate>
 
 
 </h:panelGrid>
 <h:panelGrid columns="1">
-    <s:decorate id="addressField" template="/layout/edit.xhtml">
+    <s:decorate id="addressField"  template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.customer_field_address}</ui:define>
-        <h:inputTextarea label="#{messages.customer_field_address}"
+        <h:inputTextarea required="true"  label="#{messages.customer_field_address}"
                          readonly="#{readonly}"
                          cols="78"
                          rows="2"
@@ -170,77 +170,81 @@
 
 <div style="clear:both"/>
 
-<hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-<a:outputPanel id="middleManInfo">
+
+<a:outputPanel rendered="#{empty showMiddleMan ? 'true' : showMiddleMan}">
+    <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+    <a:outputPanel id="middleManInfo">
 
 
-    <a:outputPanel
-            rendered="#{(not customerHome.idDefined) or allowSwitchMiddleMan or (customerHome.idDefined and (not empty customerHome.instance.middleMan))}">
+        <a:outputPanel
+                rendered="#{(not customerHome.idDefined) or allowSwitchMiddleMan or (customerHome.idDefined and (not empty customerHome.instance.middleMan))}">
 
 
-        <a:outputPanel id="middleManDetails">
-            <h:outputText value="#{messages.MiddleMan}"
-                          rendered="#{(not allowSwitchMiddleMan) and customerHome.idDefined and (not empty customerHome.instance.middleMan)}"/>
+            <a:outputPanel id="middleManDetails">
+                <h:outputText value="#{messages.MiddleMan}"
+                              rendered="#{(not allowSwitchMiddleMan) and customerHome.idDefined and (not empty customerHome.instance.middleMan)}"/>
 
-            <s:decorate id="middleManSelectNameField" template="/layout/seam-edit.xhtml" rendered="#{(not customerHome.idDefined) or allowSwitchMiddleMan}">
-                <ui:define name="label">
-                    <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}" >
-                        <a:ajax event="click" execute="@this"
-                                listener="#{customerHome.middleManPayChangeListener}"
-                                render="middleManDetails,#{middleMainChangeRender}">
+                <s:decorate id="middleManSelectNameField" template="/layout/seam-edit.xhtml"
+                            rendered="#{(not customerHome.idDefined) or allowSwitchMiddleMan}">
+                    <ui:define name="label">
+                        <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
+                            <a:ajax event="click" execute="@this"
+                                    listener="#{customerHome.middleManPayChangeListener}"
+                                    render="middleManDetails,#{middleMainChangeRender}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </h:selectBooleanCheckbox>
+                        #{messages.MiddleMan}
+                    </ui:define>
+                    <rich:autocomplete id="pinyinSearchMiddleMan" mode="client" minChars="1"
+                                       autofill="false" showButton="true"
+                                       selectFirst="true"
+                                       label="#{messages.MiddleMan}"
+                                       clientFilterFunction="pinyinFilter"
+                                       autocompleteList="#{middleManList.resultList}"
+                                       value="#{middleManHome.pinyinSearchName}"
+                                       rendered="#{customerHome.haveMiddleMan and ((not customerHome.idDefined) or allowSwitchMiddleMan)}"
+                                       fetchValue="[#{_middleMan.name}][id:#{_middleMan.id}]"
+                                       var="_middleMan">
+
+                        <h:outputText value="#{_middleMan.name}"/>
+                        <a:ajax event="selectitem"
+                                render="middleManDetails" execute="@this">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
-                    </h:selectBooleanCheckbox>
-                    #{messages.MiddleMan}
-                </ui:define>
-                <rich:autocomplete id="pinyinSearchMiddleMan" mode="client" minChars="1"
-                                   autofill="false" showButton="true"
-                                   selectFirst="true"
-                                   label="#{messages.MiddleMan}"
-                                   clientFilterFunction="pinyinFilter"
-                                   autocompleteList="#{middleManList.resultList}"
-                                   value="#{middleManHome.pinyinSearchName}"
-                                   rendered="#{customerHome.haveMiddleMan and ((not customerHome.idDefined) or allowSwitchMiddleMan)}"
-                                   fetchValue="[#{_middleMan.name}][id:#{_middleMan.id}]"
-                                   var="_middleMan">
+                        <a:ajax event="blur" execute="@this"
+                                render="middleManDetails">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:autocomplete>
+                    <ui:define name="tail">
 
-                    <h:outputText value="#{_middleMan.name}"/>
-                    <a:ajax event="selectitem"
-                            render="middleManDetails" execute="@this">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:ajax>
-                    <a:ajax event="blur" execute="@this"
-                            render="middleManDetails">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:ajax>
-                </rich:autocomplete>
-                <ui:define name="tail">
-
-                    <a:commandButton image="/img/reset_btn.png" action="#{middleManHome.clearinstance}"
-                                     execute="@this"
-                                     rendered="#{customerHome.haveMiddleMan or allowSwitchMiddleMan}"
-                                     render="middleManDetails">
-                        <a:attachQueue requestdelay="0"/>
-                    </a:commandButton>
-                </ui:define>
-            </s:decorate>
+                        <a:commandButton image="/img/reset_btn.png" action="#{middleManHome.clearinstance}"
+                                         execute="@this"
+                                         rendered="#{customerHome.haveMiddleMan or allowSwitchMiddleMan}"
+                                         render="middleManDetails">
+                            <a:attachQueue requestdelay="0"/>
+                        </a:commandButton>
+                    </ui:define>
+                </s:decorate>
 
 
-            <div style="clear:both"/>
+                <div style="clear:both"/>
 
-            <a:outputPanel rendered="#{customerHome.haveMiddleMan}" id="middleManDeatilsFields">
-                <ui:include src="/layout/erp/MiddleManDetails.xhtml">
-                    <ui:param name="readonly" value="#{middleManHome.idDefined}"/>
-                </ui:include>
+                <a:outputPanel rendered="#{customerHome.haveMiddleMan}" id="middleManDeatilsFields">
+                    <ui:include src="/layout/erp/MiddleManDetails.xhtml">
+                        <ui:param name="readonly" value="#{middleManHome.idDefined}"/>
+                    </ui:include>
+                </a:outputPanel>
+
+
             </a:outputPanel>
 
 
         </a:outputPanel>
-
-
     </a:outputPanel>
-</a:outputPanel>
 
-<div style="clear:both"/>
+    <div style="clear:both"/>
+</a:outputPanel>
 </ui:composition>
 

@@ -28,6 +28,8 @@ public class BigDecimalFormat {
         return halfUpCurrency(number,Locale.CHINA);
     }
 
+
+
     public static BigDecimal format(BigDecimal value, String formatStr) {
         DecimalFormat df = new DecimalFormat(formatStr);
         df.setGroupingUsed(false);

@@ -2,6 +2,11 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.model.AccountOper;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.international.StatusMessage;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,5 +22,24 @@ public class OrderEarnestReceive extends FinanceReceivables{
     @Override
     protected AccountOper.AccountOperType getAccountOperType() {
         return AccountOper.AccountOperType.ORDER_EARNEST;
+    }
+
+    public BigDecimal getShortageMoney(){
+        return  orderHome.getInstance().getEarnest().subtract(getTotalReveiveMoney());
+    }
+
+    @Override
+    protected String completeOrderTask(){
+        if (getTotalReveiveMoney().compareTo(orderHome.getInstance().getEarnest()) < 0){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                    "order_earnest_not_enough",
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getEarnest()),
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getTotalReveiveMoney()),
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
+
+            return null;
+        }
+
+        return "taskComplete";
     }
 }

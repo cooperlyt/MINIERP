@@ -169,8 +169,9 @@ public class Customer implements java.io.Serializable, NamedEntity {
         this.fax = fax;
     }
 
-    @Column(name = "POST_CODE", length = 10)
+    @Column(name = "POST_CODE", length = 10, nullable = false)
     @Size(max = 10)
+    @NotNull
     public String getPostCode() {
         return postCode;
     }
@@ -189,8 +190,9 @@ public class Customer implements java.io.Serializable, NamedEntity {
         this.memo = memo;
     }
 
-    @Column(name = "ADDRESS", length = 200)
+    @Column(name = "ADDRESS", length = 200,nullable = false)
     @Size(max = 200)
+    @NotNull
     public String getAddress() {
         return address;
     }

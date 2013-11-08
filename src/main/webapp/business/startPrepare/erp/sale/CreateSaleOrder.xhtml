@@ -67,7 +67,8 @@
                 <rich:toolbarGroup location="right">
                     <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{orderCreate.saveOrderCustomer}">
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}"
+                                     action="#{orderCreate.saveOrderCustomer}">
                         <f:param name="from" value="#{from}"/>
                     </h:commandButton>
                 </rich:toolbarGroup>
@@ -150,6 +151,23 @@
                             <a:ajax event="blur" render="orderTelField"/>
                         </h:inputText>
                     </s:decorate>
+
+                    <s:decorate template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+                        <ui:define name="label">#{messages.order_field_postCode}</ui:define>
+                        <h:inputText value="#{orderCreate.instance.postCode}" label="#{messages.order_field_postCode}"
+                                     required="true" size="10" maxlength="10"/>
+                    </s:decorate>
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+
+
+                    <s:decorate template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+                        <ui:define name="label">#{messages.order_field_address}</ui:define>
+                        <h:inputText value="#{orderCreate.instance.address}" label="#{messages.order_field_address}"
+                                     required="true" size="81" maxlength="200"/>
+                    </s:decorate>
                 </h:panelGrid>
             </a:outputPanel>
 
@@ -181,6 +199,7 @@
                                  value="#{orderCreate.instance.memo}"
                                  cols="60" rows="2"/>
             </s:decorate>
+
             <div style="clear:both">
                 <span class="required">*</span>
                 #{messages.requiredFields}

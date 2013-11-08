@@ -54,6 +54,8 @@ public class CustomerOrder implements java.io.Serializable {
 	private String memo;
     private String contact;
     private String tel;
+    private String address;
+    private String postCode;
     private boolean payComplete;
 
     private BigDecimal totalMoney;
@@ -296,6 +298,28 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setTel(String tel) {
         this.tel = tel;
+    }
+
+    @Column(name="ADDRESS",length = 200,nullable = false)
+    @NotNull
+    @Size(max = 200)
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Column(name = "POST_CODE",length = 10, nullable = false)
+    @Size(max = 10)
+    @NotNull
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
     }
 
     @Column(name = "PAY_COMPLETE", nullable = false)

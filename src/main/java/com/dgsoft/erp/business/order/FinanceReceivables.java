@@ -28,10 +28,13 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     @In(create = true)
     protected AccountOperHome accountOperHome;
 
+    @In(create = true)
+    protected CustomerHome customerHome;
+
     protected abstract AccountOper.AccountOperType getAccountOperType();
 
     public BigDecimal getTotalReveiveMoney(){
-        BigDecimal result = new BigDecimal("0");
+        BigDecimal result = BigDecimal.ZERO;
         for (AccountOper oper: orderHome.getInstance().getAccountOpers()){
             result = result.add(oper.getOperMoney());
         }
@@ -65,6 +68,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     @Override
     protected String initOrderTask(){
         accountOperHome.clearInstance();
+        customerHome.setId(orderHome.getInstance().getCustomer().getId());
         return super.initOrderTask();
     }
 

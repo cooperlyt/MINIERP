@@ -1,0 +1,197 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+    <ui:define name="func-body">
+        <rich:toolbar height="20" itemSeparator="line">
+
+            <ui:insert name="toolbarContext"/>
+
+            <rich:toolbarGroup location="right">
+
+
+                <h:panelGroup>
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                    <ui:insert name="commpleteBtn"/>
+
+                </h:panelGroup>
+
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+        <br/>
+        <rich:messages ajaxRendered="true" globalOnly="true"/>
+        <h:form>
+            <rich:collapsiblePanel switchType="client" expanded="#{false}" header="#{messages.Customer}: #{customerHome.instance.name}">
+                <ui:include src="/layout/erp/CustomerDetails.xhtml">
+                    <ui:param name="balanceReadonly" value="true"/>
+                    <ui:param name="readonly" value="true"/>
+                    <ui:param name="allowSwitchMiddleMan" value="false"/>
+                    <ui:param name="showMiddleMan" value="false"/>
+                </ui:include>
+            </rich:collapsiblePanel>
+
+            <br/>
+            <rich:collapsiblePanel switchType="client"  expanded="false" header="#{messages.order_info}">
+                <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+                    <s:decorate template="/layout/display.xhtml">
+                        <ui:define name="label">#{messages.order_field_totalMoney}</ui:define>
+                        <h:outputText value="#{orderHome.instance.money}"/>
+                    </s:decorate>
+                </s:decorate>
+            </rich:collapsiblePanel>
+            <br/>
+        </h:form>
+
+        <a:outputPanel id="debitAccountSelectTreePanel">
+            <ui:include src="/layout/erp/FinanceAccountingSelect.xhtml">
+                <ui:param name="panelId" value="debitAccountSelectPanel"/>
+                <ui:param name="panelTitle" value="#{messages.debitAccountSelect}"/>
+                <ui:param name="rootAccounting"
+                          value="#{accountOperHome.instance.payType eq 'BANK_TRANSFER' ? rootBankAccountingList.resultList : (accountOperHome.instance.payType eq 'FROM_PRE_DEPOSIT' ? rootAccountingList.resultList : rootCashAccountingList.resultList)}"/>
+                <ui:param name="render" value="debitAccountField"/>
+                <ui:param name="assignTo" value="#{accountOperHome.debitAccountId}"/>
+            </ui:include>
+        </a:outputPanel>
+
+        <ui:include src="/layout/erp/FinanceAccountingSelect.xhtml">
+            <ui:param name="panelId" value="creditAccountSelectPanel"/>
+            <ui:param name="panelTitle" value="#{messages.creditAccountSelect}"/>
+            <ui:param name="rootAccounting"
+                      value="#{rootAccountingList.resultList}"/>
+            <ui:param name="render" value="creditAccountField"/>
+            <ui:param name="assignTo" value="#{accountOperHome.creditAccountId}"/>
+        </ui:include>
+
+        <h:form id="receiveDetails">
+            <rich:panel>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.accountOper_field_operDate}</ui:define>
+                    <rich:calendar id="orderSendLimitDateField"
+                                   enableManualInput="true"
+                                   inputSize="10"
+                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                   datePattern="#{messages.datePattern}"
+                                   required="true"
+                                   defaultLabel="#{currentDate}"
+                                   label="#{messages.storeOutLimitDate}"
+                                   value="#{accountOperHome.instance.operDate}">
+                    </rich:calendar>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
+                    <h:inputText style="width: 120px" value="#{accountOperHome.instance.operMoney}" required="true"
+                                 size="27"
+                                 label="#{messages.accountOper_field_operMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                         groupingUsed="false"/>
+                        <f:validateDoubleRange minimum="0.01"/>
+                    </h:inputText>
+                </s:decorate>
+
+                <s:decorate id="payTypeField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
+                    <h:selectOneMenu style="width: 120px" label="#{messages.accountOper_field_payType}" required="true"
+                                     value="#{accountOperHome.instance.payType}">
+
+                        <s:selectItems value="#{accountPayTypes}" var="_payType"
+                                       label="#{messages[_payType.name()]}"/>
+                        <s:convertEnum/>
+                        <a:ajax event="valueChange" listener="#{accountOperHome.payTypeChangeListener}"
+                                render="payTypeField,debitAccountField,debitAccountSelectTreePanel">
+                            <a:attachQueue requestDelay="0"/>
+
+                        </a:ajax>
+                    </h:selectOneMenu>
+
+                    <ui:define name="tail">
+                        <h:outputText value="#{messages.accountOper_field_checkNumber}#{' '}"
+                                      rendered="#{accountOperHome.instance.payType eq 'CHECK'}"/>
+                        <h:inputText rendered="#{accountOperHome.instance.payType eq 'CHECK'}"
+                                     label="#{messages.accountOper_field_checkNumber}"
+                                     value="#{accountOperHome.instance.checkNumber}">
+                        </h:inputText>
+                    </ui:define>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-edit.xhtml" id="debitAccountField">
+                    <ui:define name="label">#{messages.field_debit_account}</ui:define>
+                    <rich:autocomplete value="#{accountOperHome.debitAccountId}" required="true" showButton="true"
+
+                                       label="#{messages.field_debit_account}"
+                                       mode="client"
+                                       autocompleteList="#{accountOperHome.instance.payType eq 'BANK_TRANSFER' ? bankAccountingList.resultList : (accountOperHome.instance.payType eq 'FROM_PRE_DEPOSIT' ? allAccountingList.resultList : cashAccountingList.resultList)}"
+                                       var="_account" fetchValue="#{_account.id}" layout="table">
+                        <rich:column>
+                            <b>#{_account.id}</b>
+                        </rich:column>
+                        <rich:column>
+                            #{_account.name}
+                        </rich:column>
+                        <a:ajax event="blur" render="debitAccountField"/>
+                    </rich:autocomplete>
+
+
+                    <ui:define name="tail">
+                        <a:commandButton image="/img/onetomany.gif"
+                                         onclick="#{rich:component('debitAccountSelectPanel')}.show();return false;"/>
+                    </ui:define>
+                </s:decorate>
+
+
+                <s:decorate id="creditAccountField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_credit_account}</ui:define>
+                    <rich:autocomplete value="#{accountOperHome.creditAccountId}" required="true" showButton="true"
+                                       mode="client" autocompleteList="#{allAccountingList.resultList}"
+                                       label="#{messages.field_credit_account}"
+                                       var="_account" fetchValue="#{_account.id}" layout="table">
+                        <rich:column>
+                            <b>#{_account.id}</b>
+                        </rich:column>
+                        <rich:column>
+                            #{_account.name}
+                        </rich:column>
+                        <a:ajax event="blur" render="creditAccountField">
+                        </a:ajax>
+                    </rich:autocomplete>
+
+                    <ui:define name="tail">
+                        <a:commandButton image="/img/onetomany.gif"
+                                         onclick="#{rich:component('creditAccountSelectPanel')}.show();return false;"/>
+                    </ui:define>
+                </s:decorate>
+
+                <a:commandButton value="#{messages.addItem}" action="#{orderFinanceReveiveAction.receiveMoney}"
+                                 render="orderPayRecord,receiveDetails,moneyTotal">
+                    <a:attachQueue requestDelay="0"/>
+
+                </a:commandButton>
+
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
+            </rich:panel>
+        </h:form>
+        <a:outputPanel id="orderPayRecord">
+            <ui:include src="/layout/erp/OrderPayRecord.xhtml">
+                <ui:param name="order" value="#{orderHome.instance}"/>
+                <ui:param name="totalMoney" value="#{orderFinanceReveiveAction.totalReveiveMoney}"/>
+            </ui:include>
+        </a:outputPanel>
+    </ui:define>
+
+
+</ui:composition>
