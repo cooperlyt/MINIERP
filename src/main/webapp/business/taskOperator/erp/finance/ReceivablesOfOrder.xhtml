@@ -6,40 +6,36 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
-                template="/layout/full-template.xhtml">
+                template="/layout/erp/OrderFinanceReceive.xhtml">
 
 
-    <ui:define name="func-body">
-        <rich:toolbar>
-            <rich:toolbarGroup location="right">
-                <h:panelGrid columns="5">
+    <ui:param name="functionTitle" value="#{messages.orderMoneyPay}"/>
 
-                    <s:button value="#{messages.cancel}" propagation="end"
-                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+    <ui:param name="orderFinanceReveiveAction" value="#{orderMoneyReceive}"/>
+    <ui:define name="toolbarContext">
+        <rich:toolbarGroup>
+            <a:outputPanel ajaxRendered="true">
+                #{messages.order_money}
 
-                    <s:button value="#{messages.complete}" action="#{orderFinanceReceivables.complete}"/>
-                </h:panelGrid>
-            </rich:toolbarGroup>
-        </rich:toolbar>
-        <rich:messages ajaxRendered="true" globalOnly="true"/>
-
-
-
-
-        <ui:include src="/layout/erp/OrderPayRecord.xhtml">
-            <ui:param name="order" value="#{orderHome.instance}"/>
-            <ui:param name="totalMoney" value="#{orderMoneyReceive.totalReveiveMoney}"/>
-        </ui:include>
-
-        <rich:panel>
-            <ui:include src="/layout/erp/CustomerDetails.xhtml">
-                <ui:param name="balanceReadonly" value="true"/>
-                <ui:param name="readonly" value="#{customerHome.idDefined}"/>
-                <ui:param name="allowSwitchMiddleMan" value="false"/>
-                <ui:param name="middleMainChangeRender" value="includeMiddleManField"/>
-            </ui:include>
-        </rich:panel>
-
+                <h:outputText value="#{orderHome.instance.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+                #{messages.order_money_real}
+                <h:outputText value="#{orderMoneyReceive.totalReveiveMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+                #{messages.order_money_lacking}
+                <h:outputText value="#{orderMoneyReceive.shortageMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </a:outputPanel>
+        </rich:toolbarGroup>
     </ui:define>
+    <ui:define name="commpleteBtn">
+
+        <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                  action="#{orderMoneyReceive.complete}"/>
+    </ui:define>
+
 
 </ui:composition>

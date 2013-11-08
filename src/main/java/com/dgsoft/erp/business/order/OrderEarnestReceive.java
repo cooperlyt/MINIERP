@@ -24,6 +24,7 @@ public class OrderEarnestReceive extends FinanceReceivables{
         return AccountOper.AccountOperType.ORDER_EARNEST;
     }
 
+    @Override
     public BigDecimal getShortageMoney(){
         return  orderHome.getInstance().getEarnest().subtract(getTotalReveiveMoney());
     }

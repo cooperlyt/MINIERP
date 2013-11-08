@@ -31,6 +31,7 @@ public abstract class TaskHandle implements Serializable{
     protected abstract String initTask();
 
 
+    @Transactional
     public String complete(){
 
         return completeTask();
