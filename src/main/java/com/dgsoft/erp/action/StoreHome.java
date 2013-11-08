@@ -1,21 +1,16 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.common.system.AuthenticationInfo;
-import com.dgsoft.common.system.action.EmployeeHome;
-import com.dgsoft.common.system.model.Employee;
+import com.dgsoft.common.system.action.RoleHome;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.Store;
 import com.dgsoft.erp.model.StoreArea;
-import com.dgsoft.erp.model.StoreManager;
 import com.google.common.collect.Iterators;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
-import org.richfaces.component.UITree;
-import org.richfaces.event.TreeSelectionChangeEvent;
+import org.jboss.seam.security.Identity;
 
-import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.swing.tree.TreeNode;
 import java.util.*;
@@ -30,17 +25,8 @@ import java.util.*;
 public class StoreHome extends ErpEntityHome<Store> {
 
     @In
-    private EntityManager systemEntityManager;
+    private Identity identity;
 
-    @In
-    private FacesMessages facesMessages;
-
-    @In
-    private AuthenticationInfo authInfo;
-
-    private List<Employee> employees = new ArrayList<Employee>();
-
-    private String operEmpId;
 
     private boolean editing = false;
 
@@ -50,44 +36,6 @@ public class StoreHome extends ErpEntityHome<Store> {
 
     public void setEditing(boolean editing) {
         this.editing = editing;
-    }
-
-    public String getOperEmpId() {
-        return operEmpId;
-    }
-
-    public void setOperEmpId(String operEmpId) {
-        this.operEmpId = operEmpId;
-    }
-
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public void removeEmp() {
-        if ((operEmpId != null) && (!"".equals(operEmpId.trim()))) {
-            for (Employee emp : employees) {
-                if (emp.getId().equals(operEmpId)) {
-                    log.debug("emp is remove:" + operEmpId);
-                    employees.remove(emp);
-                    return;
-                }
-            }
-        }
-    }
-
-    public void selectEmployee() {
-        Employee emp = systemEntityManager.find(Employee.class, operEmpId);
-        if (employees.contains(emp)) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "employeeAlreadyStoreManager", emp.getPerson().getName());
-        } else {
-            employees.add(emp);
-            log.debug("add employee :" + employees.size());
-        }
     }
 
 
@@ -101,55 +49,6 @@ public class StoreHome extends ErpEntityHome<Store> {
         super.setId(id);
         if (this.isIdDefined())
             editing = false;
-    }
-
-    @Override
-    protected boolean verifyPersistAvailable() {
-        if (!isIdAvailable(getInstance().getId())) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"fieldConflict",getInstance().getId());
-            return false;
-        }
-        return true;
-    }
-
-    public void verifyIdAvailable(ValueChangeEvent e) {
-        String id = (String) e.getNewValue();
-        if (!isIdAvailable(id)) {
-            facesMessages.addToControlFromResourceBundle(e.getComponent().getId(), StatusMessage.Severity.ERROR, "fieldConflict", id);
-        }
-    }
-
-    private boolean isIdAvailable(String newId) {
-        return getEntityManager().createQuery("select store from Store store where store.id =:newId").setParameter("newId", newId).getResultList().isEmpty();
-    }
-
-    @Override
-    protected void initInstance() {
-        super.initInstance();
-        //selectStoreArea = null;
-        List<StoreManager> storeManagerList = new ArrayList<StoreManager>(getInstance().getStoreManagers());
-        if (storeManagerList.isEmpty()) {
-            log.debug("call employee clear for initInstance");
-            employees.clear();
-            return;
-        }
-
-        List<String> empIds = new ArrayList<String>(storeManagerList.size());
-        for (StoreManager storeManager : storeManagerList) {
-            empIds.add(storeManager.getEmpId());
-        }
-
-        employees = systemEntityManager.createQuery("select emp from Employee emp left join fetch emp.person where emp.id in (:empIds)").setParameter("empIds", empIds).getResultList();
-    }
-
-    @Override
-    protected boolean wire() {
-        getInstance().getStoreManagers().clear();
-
-        for (Employee emp : employees) {
-            getInstance().getStoreManagers().add(new StoreManager(getInstance(), emp.getId()));
-        }
-        return true;
     }
 
     @End
@@ -192,14 +91,29 @@ public class StoreHome extends ErpEntityHome<Store> {
         return result;
     }
 
+    public String getStoreRoleId(String storeId) {
+        Store store = getEntityManager().find(Store.class, storeId);
+        if (store == null) {
+            return null;
+        } else {
+            return store.getRoleId();
+        }
+    }
+
+
     @Factory(value = "myStores", scope = ScopeType.CONVERSATION)
     public List<Store> getMyStoreList() {
-        List<StoreManager> storeManagerList = getEntityManager().createQuery("select storeManager from StoreManager storeManager join fetch storeManager.store where storeManager.empId = :empId and storeManager.store.enable = true").setParameter("empId", authInfo.getLoginEmployee().getId()).getResultList();
-        List<Store> myStores = new ArrayList();
-        for (StoreManager storeManager : storeManagerList) {
-            myStores.add(storeManager.getStore());
+
+        List<Store> result = new ArrayList<Store>();
+
+        for (Store store: getEntityManager().createQuery("select store from Store store where store.enable = true",Store.class).getResultList()){
+            if (identity.hasRole(store.getRoleId())){
+                result.add(store);
+            }
         }
-        return myStores;
+
+        return result;
+
     }
 
     public static class StoreAreaTreeNode implements TreeNode {

@@ -90,7 +90,6 @@
         <class>com.dgsoft.erp.model.Store</class>
         <class>com.dgsoft.erp.model.StoreArea</class>
         <class>com.dgsoft.erp.model.StoreChange</class>
-        <class>com.dgsoft.erp.model.StoreManager</class>
         <class>com.dgsoft.erp.model.StoreRes</class>
         <class>com.dgsoft.erp.model.Supplier</class>
         <class>com.dgsoft.erp.model.TransCorp</class>

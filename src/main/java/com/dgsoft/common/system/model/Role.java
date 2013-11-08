@@ -44,8 +44,6 @@ public class Role implements java.io.Serializable, OrderModel {
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @NotNull
     @Size(max = 32)
-    @GeneratedValue(generator = "paymentableGenerator")
-    @GenericGenerator(name = "paymentableGenerator",strategy = "uuid")
     public String getId() {
         return this.id;
     }

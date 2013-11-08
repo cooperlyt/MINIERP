@@ -12,12 +12,12 @@
 
     <ui:define name="body">
         <h:outputStylesheet>
-            .leftColumn{
+            .leftColumn {
                 vertical-align: top;
                 width: 200px;
             }
 
-            .rightColumn{
+            .rightColumn {
                 vertical-align: top;
             }
         </h:outputStylesheet>
@@ -25,7 +25,8 @@
 
             <h:form>
                 <a:outputPanel id="roleList">
-                    <rich:dataTable style="width: 100%" noDataLabel="#{messages.emptyResult}" value="#{roleList.resultList}" var="_role">
+                    <rich:dataTable style="width: 100%" noDataLabel="#{messages.emptyResult}"
+                                    value="#{roleList.resultList}" var="_role">
 
                         <rich:column>
                             <f:facet name="header">
@@ -97,6 +98,17 @@
 
 
                     <rich:panel>
+
+                        <s:decorate id="idField" template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.role_field_id}</ui:define>
+                            <h:inputText readonly="#{(not roleHome.editing) || roleHome.managed}"
+                                         required="true" size="20" maxlength="32"
+                                         valueChangeListener="#{roleHome.verifyIdAvailable}"
+                                         label="#{messages.role_field_id}"
+                                         value="#{roleHome.instance.id}">
+                                <a:ajax event="blur" render="idField"/>
+                            </h:inputText>
+                        </s:decorate>
 
                         <s:decorate id="nameField" template="/layout/seam-edit.xhtml">
                             <ui:define name="label">#{messages.role_field_name}</ui:define>

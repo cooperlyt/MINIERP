@@ -25,9 +25,9 @@ public class Store implements java.io.Serializable, TreeNode {
     private boolean enable;
     private boolean open;
     private Integer version;
+    private String roleId;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
     private Set<Inventory> inventories = new HashSet<Inventory>(0);
-    private Set<StoreManager> storeManagers = new HashSet<StoreManager>(0);
     private Set<StockChange> stockChanges = new HashSet<StockChange>(0);
 
 
@@ -130,6 +130,17 @@ public class Store implements java.io.Serializable, TreeNode {
         this.enable = enable;
     }
 
+    @Column(name="ROLE_ID",nullable = false,length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<StoreArea> getStoreAreas() {
         return this.storeAreas;
@@ -146,15 +157,6 @@ public class Store implements java.io.Serializable, TreeNode {
 
     public void setInventories(Set<Inventory> inventories) {
         this.inventories = inventories;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "store", orphanRemoval = true, cascade = {CascadeType.ALL})
-    public Set<StoreManager> getStoreManagers() {
-        return this.storeManagers;
-    }
-
-    public void setStoreManagers(Set<StoreManager> storeManagers) {
-        this.storeManagers = storeManagers;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store")

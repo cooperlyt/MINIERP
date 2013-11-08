@@ -72,10 +72,6 @@
         <property name="ejbql">select wordCategory from WordCategory wordCategory</property>
     </component>
 
-    <component name="roleList" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
-        <property name="ejbql">select role from Role role</property>
-    </component>
-
    <component name="selectBusinessDefineList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
         <property name="ejbql">select businessDefine from BusinessDefine businessDefine order by businessDefine.name</property>
    </component>
