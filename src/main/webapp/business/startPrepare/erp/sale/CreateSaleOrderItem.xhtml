@@ -73,6 +73,8 @@
 
     <rich:toolbarGroup location="right">
         <h:form>
+
+
             <h:panelGrid columns="2">
                 <h:panelGroup id="orderTotalPrice" columns="20">
                     #{messages.orderPrice}:
@@ -82,7 +84,7 @@
                     </h:outputText>
                     * #{' '} %
                     <h:inputText id="orderTotalRebateField" value="#{orderCreate.instance.totalRebate}"
-                                 required="true" size="7" label="#{messages.orderRebate}">
+                                 required="true" size="5" label="#{messages.orderRebate}">
                         <f:convertNumber pattern="#0.##" groupingUsed="false"/>
                         <a:ajax event="blur" execute="@this" listener="#{orderCreate.calcOrderPrice}"
                                 render="orderTotalPrice">
@@ -96,7 +98,7 @@
                                   showDetail="true" showSummary="true" tooltip="true"/>
                     =
                     <h:inputText id="orderMoneyField" value="#{orderCreate.instance.money}"
-                                 label="#{messages.orderItemPrice}" required="true" size="12">
+                                 label="#{messages.orderItemPrice}" required="true" size="9">
                         <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                          type="currency" groupingUsed="false"/>
                         <a:ajax listener="#{orderCreate.calcOrderTotalRebate}" event="blur" execute="@this"
@@ -111,7 +113,7 @@
 
                     <a:outputPanel rendered="#{orderCreate.instance.payType eq 'EARNEST_FIRST'}">
                         <h:inputText id="orderEarnestScaleField" value="#{orderCreate.earnestScale}" rendered="true"
-                                     size="7" label="#{messages.earnestScale}">
+                                     size="5" label="#{messages.earnestScale}">
                             <f:convertNumber pattern="#0.##" groupingUsed="false"/>
                             <a:ajax event="blur" execute="@this" listener="#{orderCreate.calcEarnest}"
                                     render="orderTotalPrice">
@@ -125,7 +127,7 @@
                                       showDetail="true" showSummary="true" tooltip="true"/>
 
                         <h:inputText id="orderEarnestField" label="#{messages.order_field_earnest}"
-                                     value="#{orderCreate.instance.earnest}" required="true" size="12">
+                                     value="#{orderCreate.instance.earnest}" required="true" size="10">
 
                             <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                              type="currency" groupingUsed="false"/>

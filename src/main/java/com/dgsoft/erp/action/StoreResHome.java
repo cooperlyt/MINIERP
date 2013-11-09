@@ -2,10 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
-import com.dgsoft.erp.model.Format;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.Name;
 
 import java.math.BigDecimal;
@@ -29,7 +26,7 @@ public class StoreResHome extends ErpEntityHome<StoreRes> {
         for (StoreRes storeRes : storeResList) {
 
             log.debug("setRes:" + storeRes + "|" + res + "|" + res.getUnitGroup() + "|" + res.getUnitGroup().getType() + "|"
-             + storeRes.getFloatConversionRate());
+                    + storeRes.getFloatConversionRate());
             if (StoreChangeHelper.sameFormat(storeRes.getFormats(), formatList)
                     && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                     || (storeRes.getFloatConversionRate().compareTo(floatConvertRate) == 0))) {
@@ -40,13 +37,22 @@ public class StoreResHome extends ErpEntityHome<StoreRes> {
         }
         clearInstance();
         getInstance().setRes(res);
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             getInstance().setFloatConversionRate(floatConvertRate);
         }
-        for (Format format: formatList){
+        for (Format format : formatList) {
             format.setStoreRes(getInstance());
             getInstance().getFormats().add(format);
         }
+    }
+
+    public Stock getStock(Store store) {
+        for (Stock stock : getInstance().getStocks()) {
+            if (stock.getStore().getId().equals(store.getId())) {
+                return stock;
+            }
+        }
+        return null;
     }
 
 }

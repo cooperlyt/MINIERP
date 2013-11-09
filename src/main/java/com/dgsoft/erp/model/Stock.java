@@ -58,7 +58,8 @@ public class Stock implements java.io.Serializable {
         this.version = version;
     }
 
-    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+
+    @ManyToOne(optional = false,fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "RES", nullable = false)
     @NotNull
     public StoreRes getStoreRes() {

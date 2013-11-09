@@ -167,7 +167,7 @@ public class StoreResCount implements java.io.Serializable {
                 return result;
             case FLOAT_CONVERT:
                 df.applyPattern(res.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
-                return df.format(getAuxCount()) + " " + res.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate();
+                return df.format(getAuxCount()) + " " + res.getUnitGroup().getFloatAuxiliaryUnit().getName();
             case NO_CONVERT:
 
                 result = "";

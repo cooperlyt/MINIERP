@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.DeliveryType;
+import com.dgsoft.erp.model.api.FarePayType;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
@@ -28,6 +30,8 @@ public class NeedRes implements java.io.Serializable {
 	private String reason;
 	private String memo;
 	private Date createDate;
+    private DeliveryType deliveryType;
+    private FarePayType farePayType;
 	private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
 	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
@@ -109,7 +113,28 @@ public class NeedRes implements java.io.Serializable {
 		this.memo = memo;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+    @Enumerated(EnumType.STRING)
+    @Column(name="DELIVERY_TYPE",nullable = false,length = 32)
+    @NotNull
+    public DeliveryType getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(DeliveryType deliveryType) {
+        this.deliveryType = deliveryType;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="FARE_PAY_TYPE",nullable = true, length = 32)
+    public FarePayType getFarePayType() {
+        return farePayType;
+    }
+
+    public void setFarePayType(FarePayType farePayType) {
+        this.farePayType = farePayType;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATE_DATE", nullable = false, length = 19)
 	@NotNull
 	public Date getCreateDate() {

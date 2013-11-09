@@ -33,7 +33,7 @@ public class StoreRes implements java.io.Serializable {
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
 
-    private Stock stock;
+    private Set<Stock> stocks = new HashSet<Stock>(0);
     private boolean enable;
 
     public StoreRes() {
@@ -119,13 +119,14 @@ public class StoreRes implements java.io.Serializable {
         this.stockChangeItems = stockChangeItems;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Stock getStock() {
-        return this.stock;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "storeRes")
+    public Set<Stock> getStocks() {
+        return stocks;
     }
 
-    public void setStock(Stock stock) {
-        this.stock = stock;
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes", orphanRemoval = true, cascade = {CascadeType.ALL})
@@ -164,7 +165,7 @@ public class StoreRes implements java.io.Serializable {
         this.orderItems = orderItems;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "storeReses")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "storeRes")
     public Set<DispatchItem> getDispatchItems() {
         return dispatchItems;
     }

@@ -12,8 +12,8 @@
         <rich:toolbar>
 
             <rich:toolbarGroup location="right">
-                <s:button value="#{messages.newOrder}" action="#{orderCreate.beginCreateOrder}"
-                          propagation="begin">
+                <s:button value="#{messages.newOrder}"
+                          view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml" propagation="begin">
                      <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
                 </s:button>
             </rich:toolbarGroup>

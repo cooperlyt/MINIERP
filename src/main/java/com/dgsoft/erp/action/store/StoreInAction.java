@@ -58,6 +58,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         this.editingItem = editingItem;
     }
 
+
     @Override
     protected String storeChange() {
 
@@ -80,7 +81,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
 
 
             if (storeResHome.isIdDefined()) {
-                Stock stock = storeResHome.getInstance().getStock();
+                Stock stock = storeResHome.getStock(stockChangeHome.getInstance().getStore());
                 if (stock != null) {
                     stockChangeItem.setStock(stock);
                     stockChangeItem.setBefortCount(stockChangeItem.getStock().getCount());

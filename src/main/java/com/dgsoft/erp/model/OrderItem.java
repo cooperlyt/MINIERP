@@ -33,7 +33,6 @@ public class OrderItem implements java.io.Serializable {
     private BigDecimal middleMoney;
     private BigDecimal middleRate;
     private MiddleMoneyCalcType middleMoneyCalcType;
-    private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
     private boolean storeResItem;
     private Res res;
 
@@ -188,15 +187,6 @@ public class OrderItem implements java.io.Serializable {
 
     public void setMiddleMoneyCalcType(MiddleMoneyCalcType middleMoneyCalcType) {
         this.middleMoneyCalcType = middleMoneyCalcType;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderItem")
-    public Set<DispatchItem> getDispatchItems() {
-        return this.dispatchItems;
-    }
-
-    public void setDispatchItems(Set<DispatchItem> dispatchItems) {
-        this.dispatchItems = dispatchItems;
     }
 
     @Column(name = "STORE_RES_ITEM", nullable = false)

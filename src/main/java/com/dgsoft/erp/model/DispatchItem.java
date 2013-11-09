@@ -16,10 +16,9 @@ import javax.validation.constraints.Size;
 public class DispatchItem implements java.io.Serializable {
 
 	private String id;
-	private OrderItem orderItem;
 	private BigDecimal count;
 	private Dispatch dispatch;
-    private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
+    private StoreRes storeRes;
 
 	public DispatchItem() {
 	}
@@ -37,18 +36,8 @@ public class DispatchItem implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORDER_ITEM", nullable = false)
-	@NotNull
-	public OrderItem getOrderItem() {
-		return this.orderItem;
-	}
-
-	public void setOrderItem(OrderItem orderItem) {
-		this.orderItem = orderItem;
-	}
-
-	@Column(name = "COUNT", scale = 4)
+	@Column(name = "COUNT", scale = 4, nullable = false)
+    @NotNull
 	public BigDecimal getCount() {
 		return this.count;
 	}
@@ -68,13 +57,16 @@ public class DispatchItem implements java.io.Serializable {
         this.dispatch = dispatch;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = StoreRes.class)
-    @JoinTable(name = "DISPATCH_RES_ITEM", joinColumns = @JoinColumn(name = "ITEM"), inverseJoinColumns = @JoinColumn(name = "STORE_RES"))
-    public Set<StoreRes> getStoreReses() {
-        return storeReses;
+
+
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @JoinColumn(name = "STORE_RES", nullable = false)
+    @NotNull
+    public StoreRes getStoreRes() {
+        return storeRes;
     }
 
-    public void setStoreReses(Set<StoreRes> storeReses) {
-        this.storeReses = storeReses;
+    public void setStoreRes(StoreRes storeRes) {
+        this.storeRes = storeRes;
     }
 }

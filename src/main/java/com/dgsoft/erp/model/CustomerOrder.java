@@ -56,7 +56,6 @@ public class CustomerOrder implements java.io.Serializable {
     private String tel;
     private String address;
     private String postCode;
-    private boolean payComplete;
 
     private BigDecimal totalMoney;
     private BigDecimal earnest;
@@ -320,15 +319,6 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
-    }
-
-    @Column(name = "PAY_COMPLETE", nullable = false)
-    public boolean isPayComplete() {
-        return this.payComplete;
-    }
-
-    public void setPayComplete(boolean payComplete) {
-        this.payComplete = payComplete;
     }
 
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
