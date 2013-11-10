@@ -1,10 +1,12 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.DeliveryType;
+import com.dgsoft.erp.model.api.FarePayType;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -17,6 +19,10 @@ import javax.validation.constraints.Size;
 		"NEED_RES", "STORE"}))
 public class Dispatch implements java.io.Serializable {
 
+    public enum DispatchState{
+        DISPATCH_COMPLETE,DISPATCH_STORE_OUT,SEND_COMPLETE,ALL_COMPLETE;
+    }
+
 	private String id;
 	private Store store;
 	private StockChange stockChange;
@@ -24,12 +30,12 @@ public class Dispatch implements java.io.Serializable {
 	private ProductToDoor productToDoor;
 	private ExpressCar expressCar;
 	private NeedRes needRes;
-	private String deliveryType;
+	private DeliveryType deliveryType;
 	private Date sendTime;
-	private String farePayType;
+	private FarePayType farePayType;
 	private BigDecimal fare;
 	private String sendEmp;
-	private String state;
+	private DispatchState state;
 	private String outCustomer;
 	private String memo;
 
@@ -38,10 +44,20 @@ public class Dispatch implements java.io.Serializable {
 	public Dispatch() {
 	}
 
+    public Dispatch(NeedRes needRes, Store store,
+                    DeliveryType deliveryType, FarePayType farePayType,  String memo, DispatchState state) {
+        this.deliveryType = deliveryType;
+        this.farePayType = farePayType;
+        this.store = store;
+        this.memo = memo;
+        this.state = state;
+        this.needRes = needRes;
+    }
 
-
-	@Id
+    @Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -114,14 +130,14 @@ public class Dispatch implements java.io.Serializable {
 		this.needRes = needRes;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "DELIVERY_TYPE", nullable = false, length = 32)
 	@NotNull
-	@Size(max = 32)
-	public String getDeliveryType() {
+	public DeliveryType getDeliveryType() {
 		return this.deliveryType;
 	}
 
-	public void setDeliveryType(String deliveryType) {
+	public void setDeliveryType(DeliveryType deliveryType) {
 		this.deliveryType = deliveryType;
 	}
 
@@ -135,14 +151,14 @@ public class Dispatch implements java.io.Serializable {
 		this.sendTime = sendTime;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "FARE_PAY_TYPE", nullable = false, length = 32)
 	@NotNull
-	@Size(max = 32)
-	public String getFarePayType() {
+	public FarePayType getFarePayType() {
 		return this.farePayType;
 	}
 
-	public void setFarePayType(String farePayType) {
+	public void setFarePayType(FarePayType farePayType) {
 		this.farePayType = farePayType;
 	}
 
@@ -165,14 +181,14 @@ public class Dispatch implements java.io.Serializable {
 		this.sendEmp = sendEmp;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "STATE", nullable = false, length = 20)
 	@NotNull
-	@Size(max = 20)
-	public String getState() {
+	public DispatchState getState() {
 		return this.state;
 	}
 
-	public void setState(String state) {
+	public void setState(DispatchState state) {
 		this.state = state;
 	}
 
@@ -196,12 +212,24 @@ public class Dispatch implements java.io.Serializable {
 		this.memo = memo;
 	}
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch",orphanRemoval = true,cascade = {CascadeType.ALL})
     public Set<DispatchItem> getDispatchItems() {
         return dispatchItems;
     }
 
     public void setDispatchItems(Set<DispatchItem> dispatchItems) {
         this.dispatchItems = dispatchItems;
+    }
+
+    @Transient
+    public List<DispatchItem> getDispatchItemList(){
+        List<DispatchItem> result = new ArrayList<DispatchItem>(getDispatchItems());
+        Collections.sort(result,new Comparator<DispatchItem>() {
+            @Override
+            public int compare(DispatchItem o1, DispatchItem o2) {
+                return o1.getStoreRes().getId().compareTo(o2.getStoreRes().getId());
+            }
+        });
+        return result;
     }
 }

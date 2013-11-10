@@ -157,7 +157,7 @@
                 </s:decorate>
 
                 <ui:include src="/layout/erp/ResCountInput.xhtml">
-                    <ui:param name="resCountBean" value="#{sotreInAction.editingItem.storeResCount}"/>
+                    <ui:param name="resCountBean" value="#{sotreInAction.editingItem.storeResCountInupt}"/>
                 </ui:include>
 
 
@@ -200,7 +200,7 @@
 
                 <rich:column>
                     <f:facet name="header">#{messages.storeIn_field_floatConvertRate}</f:facet>
-                    <h:outputText value="#{_item.storeResCount.floatConvertRate} #{_item.res.unitGroup.name}"
+                    <h:outputText value="#{_item.storeResCountInupt.floatConvertRate} #{_item.res.unitGroup.name}"
                                   rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
                 </rich:column>
 
@@ -208,7 +208,7 @@
                     <f:facet name="header">
                         #{messages.MasterUnitCount}
                     </f:facet>
-                    <h:outputText value="#{_item.storeResCount.masterDisplayCount}">
+                    <h:outputText value="#{_item.storeResCountInupt.masterDisplayCount}">
                     </h:outputText>
 
                 </rich:column>
@@ -217,7 +217,7 @@
                     <f:facet name="header">
                         #{messages.AuxUnitCount}
                     </f:facet>
-                    #{_item.storeResCount.displayAuxCount}
+                    #{_item.storeResCountInupt.displayAuxCount}
 
                 </rich:column>
                 <rich:column>

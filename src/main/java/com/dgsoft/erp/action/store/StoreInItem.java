@@ -1,6 +1,5 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
 
 import java.math.BigDecimal;
@@ -27,7 +26,7 @@ public class StoreInItem extends StoreChangeItem {
 
     public StoreInItem(Res res, BigDecimal floatConvertRate){
         this(res);
-        storeResCount.setFloatConvertRate(floatConvertRate);
+        storeResCountInupt.setFloatConvertRate(floatConvertRate);
     }
 
     public StoreInItem(Res res) {
@@ -41,7 +40,7 @@ public class StoreInItem extends StoreChangeItem {
         if (!same(storeInItem)) {
             throw new IllegalArgumentException("not same storeInItem can't merger");
         }
-        storeResCount.add(storeInItem.storeResCount);
+        storeResCountInupt.add(storeInItem.storeResCountInupt);
     }
 
     public String getStoreResCode() {

@@ -24,6 +24,13 @@
                 <h:outputText value="#{orderMoneyReceive.totalReveiveMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
+
+                <h:outputText value="#{messages.order_fare}" rendered="#{orderHome.masterNeedRes.farePayType eq 'EXPRESS_RECEIVE'}"/>
+
+                <h:outputText value="#{orderHome.totalFare}" rendered="#{orderHome.masterNeedRes.farePayType eq 'EXPRESS_RECEIVE'}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
                 #{messages.order_money_lacking}
                 <h:outputText value="#{orderMoneyReceive.shortageMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>

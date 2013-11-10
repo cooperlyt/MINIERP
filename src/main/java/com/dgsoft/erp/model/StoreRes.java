@@ -3,9 +3,12 @@ package com.dgsoft.erp.model;
 
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
+import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -172,6 +175,49 @@ public class StoreRes implements java.io.Serializable {
 
     public void setDispatchItems(Set<DispatchItem> dispatchItems) {
         this.dispatchItems = dispatchItems;
+    }
+
+    @Transient
+    public List<Stock> getVaildStockList(){
+        List<Stock> result = new ArrayList<Stock>();
+        for(Stock stock: getStocks()){
+            if (stock.getCount().compareTo(BigDecimal.ZERO) > 0){
+                result.add(stock);
+            }
+        }
+
+        Collections.sort(result,new Comparator<Stock>() {
+            @Override
+            public int compare(Stock o1, Stock o2) {
+                return o1.getStore().getId().compareTo(o2.getStore().getId());
+            }
+        });
+        return result;
+    }
+
+    @Transient
+    public ResCount getResCount(BigDecimal count, ResUnit unit){
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            return new ResCount(count,unit,getFloatConversionRate());
+        }else{
+            return new ResCount(count,unit);
+        }
+    }
+
+    @Transient
+    public ResCount getTotalCount(){
+        ResCount resCount = null;
+        for (Stock stock: getVaildStockList()){
+            if (resCount == null){
+                resCount = stock.getResCount();
+            }else
+                resCount.add(stock.getResCount());
+        }
+        if (resCount == null){
+            return ResCount.ZERO;
+        }else{
+            return resCount;
+        }
     }
 
     @Transient

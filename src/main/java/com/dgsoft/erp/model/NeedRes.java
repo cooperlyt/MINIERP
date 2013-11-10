@@ -19,102 +19,102 @@ import javax.validation.constraints.Size;
 @Table(name = "NEED_RES", catalog = "MINI_ERP")
 public class NeedRes implements java.io.Serializable {
 
-    public enum NeedResType{
-        ORDER_SEND,SUPPLEMENT_SEND;
+    public enum NeedResType {
+        ORDER_SEND, SUPPLEMENT_SEND;
     }
 
-	private String id;
-	private CustomerOrder customerOrder;
-	private NeedResType type;
-	private Date limitTime;
-	private String reason;
-	private String memo;
-	private Date createDate;
+    private String id;
+    private CustomerOrder customerOrder;
+    private NeedResType type;
+    private Date limitTime;
+    private String reason;
+    private String memo;
+    private Date createDate;
     private DeliveryType deliveryType;
     private FarePayType farePayType;
-	private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
-	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
+    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
+    private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
-	public NeedRes() {
-	}
+    public NeedRes() {
+    }
 
-	public NeedRes(CustomerOrder customerOrder, NeedResType type, String reason, Date createDate) {
-		this.customerOrder = customerOrder;
-		this.type = type;
-		this.createDate = createDate;
+    public NeedRes(CustomerOrder customerOrder, NeedResType type, String reason, Date createDate) {
+        this.customerOrder = customerOrder;
+        this.type = type;
+        this.createDate = createDate;
         this.reason = reason;
-	}
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
-	@NotNull
-	public CustomerOrder getCustomerOrder() {
-		return this.customerOrder;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
+    @NotNull
+    public CustomerOrder getCustomerOrder() {
+        return this.customerOrder;
+    }
 
-	public void setCustomerOrder(CustomerOrder customerOrder) {
-		this.customerOrder = customerOrder;
-	}
-
-    @Enumerated(EnumType.STRING)
-	@Column(name = "TYPE", nullable = false, length = 32)
-	@NotNull
-	public NeedResType getType() {
-		return this.type;
-	}
-
-	public void setType(NeedResType type) {
-		this.type = type;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "LIMIT_TIME", nullable = false, length = 19)
-	@NotNull
-	public Date getLimitTime() {
-		return this.limitTime;
-	}
-
-	public void setLimitTime(Date limitTime) {
-		this.limitTime = limitTime;
-	}
-
-	@Column(name = "REASON", nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getReason() {
-		return this.reason;
-	}
-
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
-
-	@Column(name = "MEMO", length = 200)
-	@Size(max = 200)
-	public String getMemo() {
-		return this.memo;
-	}
-
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
+    public void setCustomerOrder(CustomerOrder customerOrder) {
+        this.customerOrder = customerOrder;
+    }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="DELIVERY_TYPE",nullable = false,length = 32)
+    @Column(name = "TYPE", nullable = false, length = 32)
+    @NotNull
+    public NeedResType getType() {
+        return this.type;
+    }
+
+    public void setType(NeedResType type) {
+        this.type = type;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "LIMIT_TIME", nullable = false, length = 19)
+    @NotNull
+    public Date getLimitTime() {
+        return this.limitTime;
+    }
+
+    public void setLimitTime(Date limitTime) {
+        this.limitTime = limitTime;
+    }
+
+    @Column(name = "REASON", nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getReason() {
+        return this.reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    @Column(name = "MEMO", length = 200)
+    @Size(max = 200)
+    public String getMemo() {
+        return this.memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "DELIVERY_TYPE", nullable = false, length = 32)
     @NotNull
     public DeliveryType getDeliveryType() {
         return deliveryType;
@@ -125,7 +125,7 @@ public class NeedRes implements java.io.Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="FARE_PAY_TYPE",nullable = true, length = 32)
+    @Column(name = "FARE_PAY_TYPE", nullable = true, length = 32)
     public FarePayType getFarePayType() {
         return farePayType;
     }
@@ -135,32 +135,32 @@ public class NeedRes implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATE_DATE", nullable = false, length = 19)
-	@NotNull
-	public Date getCreateDate() {
-		return this.createDate;
-	}
+    @Column(name = "CREATE_DATE", nullable = false, length = 19)
+    @NotNull
+    public Date getCreateDate() {
+        return this.createDate;
+    }
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", orphanRemoval = true,cascade = {CascadeType.ALL})
-	public Set<OrderItem> getOrderItems() {
-		return this.orderItems;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", orphanRemoval = true, cascade = {CascadeType.ALL})
+    public Set<OrderItem> getOrderItems() {
+        return this.orderItems;
+    }
 
-	public void setOrderItems(Set<OrderItem> orderItems) {
-		this.orderItems = orderItems;
-	}
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes")
-	public Set<Dispatch> getDispatches() {
-		return this.dispatches;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", cascade = {CascadeType.MERGE})
+    public Set<Dispatch> getDispatches() {
+        return this.dispatches;
+    }
 
-	public void setDispatches(Set<Dispatch> dispatches) {
-		this.dispatches = dispatches;
-	}
+    public void setDispatches(Set<Dispatch> dispatches) {
+        this.dispatches = dispatches;
+    }
 
 }

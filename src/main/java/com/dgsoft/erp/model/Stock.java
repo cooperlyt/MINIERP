@@ -1,9 +1,15 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.OrderBeanComparator;
+import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -127,6 +133,19 @@ public class Stock implements java.io.Serializable {
         this.noConvertCounts = noConvertCounts;
     }
 
+    @Transient
+    public ResCount getResCount(){
+        switch (getStoreRes().getRes().getUnitGroup().getType()){
+            case FIX_CONVERT:
+                return new ResCount(getCount(),getStoreRes().getRes().getUnitGroup());
+            case FLOAT_CONVERT:
+                return new ResCount(getCount(),getStoreRes().getRes().getUnitGroup(),getStoreRes().getFloatConversionRate());
+            case NO_CONVERT:
+                return new ResCount(getCount(),getStoreRes().getRes().getUnitGroup(),getNoConvertCountList());
+            default:
+                throw new IllegalStateException("stock res define error");
+        }
+    }
 
     @Transient
     public List<StockChangeItem> getStoreChangeItemList() {
@@ -137,6 +156,13 @@ public class Stock implements java.io.Serializable {
                 return stockChangeItem.getStockChange().getOperDate().compareTo(stockChangeItem2.getStockChange().getOperDate());
             }
         });
+        return result;
+    }
+
+    @Transient
+    public List<NoConvertCount> getNoConvertCountList(){
+        List<NoConvertCount> result = new ArrayList<NoConvertCount>(getNoConvertCounts());
+        Collections.sort(result, OrderBeanComparator.getInstance());
         return result;
     }
 

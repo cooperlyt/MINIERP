@@ -176,13 +176,13 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             throw new IllegalArgumentException("editingItem state error");
         }
         if (editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-            editingItem.setUseUnit(editingItem.getStoreResCount().getUseUnit());
+            editingItem.setUseUnit(editingItem.getStoreResCountInupt().getUseUnit());
         }
 
         editingItem.calcPriceByCount();
 
         if (editingItem.isStoreResItem()) {
-            storeResHome.setRes(editingItem.getRes(), storeResFormatFilter.getResFormatList(), editingItem.getStoreResCount().getFloatConvertRate());
+            storeResHome.setRes(editingItem.getRes(), storeResFormatFilter.getResFormatList(), editingItem.getStoreResCountInupt().getFloatConvertRate());
             if (storeResHome.isIdDefined()) {
                 editingItem.setStoreRes(storeResHome.getInstance());
             } else {

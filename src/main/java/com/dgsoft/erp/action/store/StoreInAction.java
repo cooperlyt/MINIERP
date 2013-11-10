@@ -3,7 +3,6 @@ package com.dgsoft.erp.action.store;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.ResHome;
-import com.dgsoft.erp.action.ResLocate;
 import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StockChangeModel;
@@ -65,19 +64,19 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         boolean haveItem = false;
         for (StoreInItem storeInItem : storeInItems) {
 
-            if (storeInItem.getStoreResCount().getMasterCount().floatValue() == 0){
+            if (storeInItem.getStoreResCountInupt().getMasterCount().floatValue() == 0){
 
                 continue;
             }
 
             if (storeInItem.getStoreRes() == null){
-                storeResHome.setRes(storeInItem.getRes(), storeInItem.getFormats(), storeInItem.getStoreResCount().getFloatConvertRate());
+                storeResHome.setRes(storeInItem.getRes(), storeInItem.getFormats(), storeInItem.getStoreResCountInupt().getFloatConvertRate());
             }else{
                 storeResHome.setId(storeInItem.getStoreRes().getId());
             }
             StockChangeItem stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
-                    storeResHome.getInstance(), storeInItem.getStoreResCount().getMasterCount(), false);
-            stockChangeItem.setNoConvertCounts(storeInItem.getStoreResCount().getNoConvertCounts(stockChangeItem));
+                    storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount(), false);
+            stockChangeItem.setNoConvertCounts(storeInItem.getStoreResCountInupt().getNoConvertCounts(stockChangeItem));
 
 
             if (storeResHome.isIdDefined()) {
@@ -85,16 +84,16 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
                 if (stock != null) {
                     stockChangeItem.setStock(stock);
                     stockChangeItem.setBefortCount(stockChangeItem.getStock().getCount());
-                    stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getStoreResCount().getMasterCount()));
+                    stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
                     stockChangeItem.setAfterCount(stockChangeItem.getStock().getCount());
                 }
             } else {
                 storeResHome.getInstance().setCode(storeInItem.getStoreResCode());
             }
             if (stockChangeItem.getStock() == null) {
-                stockChangeItem.setStock(new Stock(storeResHome.getInstance(), storeInItem.getStoreResCount().getMasterCount()));
+                stockChangeItem.setStock(new Stock(storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount()));
                 stockChangeItem.setBefortCount(new BigDecimal(0));
-                stockChangeItem.setAfterCount(storeInItem.getStoreResCount().getMasterCount());
+                stockChangeItem.setAfterCount(storeInItem.getStoreResCountInupt().getMasterCount());
             }
             stockChangeItem.getStock().setStore(stockChangeHome.getInstance().getStore());
 
@@ -129,11 +128,11 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             }
 
             if (batch.getBatchStoreCount() == null) {
-                batch.setBatchStoreCount(new BatchStoreCount(batch, stockChangeItem.getStock(), storeInItem.getStoreResCount().getMasterCount()));
+                batch.setBatchStoreCount(new BatchStoreCount(batch, stockChangeItem.getStock(), storeInItem.getStoreResCountInupt().getMasterCount()));
                 batch.getBatchStoreCount().setBatch(batch);
                 stockChangeItem.getStock().getBatchStoreCounts().add(batch.getBatchStoreCount());
             } else {
-                batch.getBatchStoreCount().setCount(batch.getBatchStoreCount().getCount().add(storeInItem.getStoreResCount().getMasterCount()));
+                batch.getBatchStoreCount().setCount(batch.getBatchStoreCount().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
             }
 
             batch.getStockChangeItems().add(stockChangeItem);
@@ -212,7 +211,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             if ((editingItem.getStoreRes() == null)) {
                 if ((editingItem.getStoreResCode() == null) || "".equals(editingItem.getStoreResCode().trim())) {
                     storeResHome.setRes(editingItem.getRes(),
-                            storeResFormatFilter.getResFormatList(), editingItem.getStoreResCount().getFloatConvertRate());
+                            storeResFormatFilter.getResFormatList(), editingItem.getStoreResCountInupt().getFloatConvertRate());
                     if (!storeResHome.isIdDefined()) {
                         facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
                                 "newSotreResTypedCodePlase");

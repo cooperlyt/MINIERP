@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 21, 2013 2:02:43 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.OrderModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "NO_CONVERT_COUNT", catalog = "MINI_ERP")
-public class NoConvertCount implements java.io.Serializable {
+public class NoConvertCount implements java.io.Serializable, OrderModel {
 
 	private String id;
 	private Depositary depositary;
@@ -126,4 +127,14 @@ public class NoConvertCount implements java.io.Serializable {
         }
     }
 
+    @Transient
+    @Override
+    public int getPriority() {
+        return getResUnit().getPriority();
+    }
+
+    @Transient
+    @Override
+    public void setPriority(int priority) {
+    }
 }

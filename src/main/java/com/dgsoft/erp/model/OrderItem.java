@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -206,5 +207,45 @@ public class OrderItem implements java.io.Serializable {
 
     public void setRes(Res res) {
         this.res = res;
+    }
+
+    private ResCount resCount = null;
+
+    @Transient
+    public ResCount getStoreResCount() {
+        if (!isStoreResItem()) {
+
+            throw new IllegalArgumentException("must storeRes can call this method");
+        }
+        if (resCount == null) {
+            generateResCount();
+        }
+        return resCount;
+    }
+
+    @Transient
+    public void generateResCount() {
+        if (getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            resCount = new ResCount(getCount(), getMoneyUnit(), getStoreRes().getFloatConversionRate());
+        } else {
+            resCount =  new ResCount(getCount(), getMoneyUnit());
+        }
+    }
+
+    @Transient
+    public void addCount(OrderItem orderItem) {
+
+        if (orderItem.isStoreResItem() && isStoreResItem()) {
+            if (!getStoreRes().getId().equals(orderItem.getStoreRes().getId())) {
+                throw new IllegalArgumentException("only same storeRes item can add!");
+            }
+            if (resCount == null){
+                generateResCount();
+            }
+            resCount.add(orderItem.getStoreResCount());
+
+        } else {
+            throw new IllegalArgumentException("only storeRes item can add!");
+        }
     }
 }

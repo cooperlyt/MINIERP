@@ -27,7 +27,7 @@ public class OrderNeedItem extends StoreChangeItem {
 
     public OrderNeedItem(Res res, BigDecimal floatConvertRate) {
         this(res);
-        storeResCount.setFloatConvertRate(floatConvertRate);
+        storeResCountInupt.setFloatConvertRate(floatConvertRate);
     }
 
     private BigDecimal unitPrice = new BigDecimal("0");
@@ -95,7 +95,7 @@ public class OrderNeedItem extends StoreChangeItem {
             throw new IllegalArgumentException("not same orderItem can't merger");
         }
         if (storeResItem) {
-            storeResCount.add(other.storeResCount);
+            storeResCountInupt.add(other.storeResCountInupt);
         } else {
             resCount = resCount.add(other.getResCount());
         }
@@ -135,7 +135,7 @@ public class OrderNeedItem extends StoreChangeItem {
     }
 
     private void calcByUT() {
-        getStoreResCount().setCount(
+        getStoreResCountInupt().setCount(
                 totalPrice.divide(unitPrice.divide(rebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP),
                         Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
                         BigDecimal.ROUND_HALF_UP), 20, BigDecimal.ROUND_HALF_UP));
@@ -143,7 +143,7 @@ public class OrderNeedItem extends StoreChangeItem {
 
     private boolean countIsTyped() {
         if (storeResItem) {
-            return decimalIsTyped(getStoreResCount().getCount());
+            return decimalIsTyped(getStoreResCountInupt().getCount());
         } else {
             return decimalIsTyped(resCount);
         }
@@ -152,9 +152,9 @@ public class OrderNeedItem extends StoreChangeItem {
     public BigDecimal getCount() {
         if (storeResItem) {
             if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-                return storeResCount.getCount();
+                return storeResCountInupt.getCount();
             } else {
-                return storeResCount.getCountByResUnit(useUnit);
+                return storeResCountInupt.getCountByResUnit(useUnit);
             }
 
         } else {

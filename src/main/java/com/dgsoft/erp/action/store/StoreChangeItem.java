@@ -13,20 +13,20 @@ import java.util.List;
 public abstract class StoreChangeItem implements java.io.Serializable {
 
     protected Res res;
-    protected StoreResCount storeResCount;
+    protected StoreResCountInupt storeResCountInupt;
     protected StoreRes storeRes = null;
 
     public StoreChangeItem(Res res, ResUnit useUnit) {
         this.res = res;
-        storeResCount = new StoreResCount(res, useUnit);
+        storeResCountInupt = new StoreResCountInupt(res, useUnit);
     }
 
-    public StoreResCount getStoreResCount() {
-        return storeResCount;
+    public StoreResCountInupt getStoreResCountInupt() {
+        return storeResCountInupt;
     }
 
-    public void setStoreResCount(StoreResCount storeResCount) {
-        this.storeResCount = storeResCount;
+    public void setStoreResCountInupt(StoreResCountInupt storeResCountInupt) {
+        this.storeResCountInupt = storeResCountInupt;
     }
 
     public StoreRes getStoreRes() {
@@ -51,7 +51,7 @@ public abstract class StoreChangeItem implements java.io.Serializable {
     public boolean same(StoreChangeItem storeChangeItem) {
         return res.getId().equals(storeChangeItem.getRes().getId()) &&
                 (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
-                || storeResCount.getFloatConvertRate().compareTo(storeChangeItem.storeResCount.getFloatConvertRate()) == 0) &&
+                || storeResCountInupt.getFloatConvertRate().compareTo(storeChangeItem.storeResCountInupt.getFloatConvertRate()) == 0) &&
                 StoreChangeHelper.sameFormat(storeChangeItem.getFormats(), getFormats());
     }
 }
