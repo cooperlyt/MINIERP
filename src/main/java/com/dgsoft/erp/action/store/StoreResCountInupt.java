@@ -135,14 +135,17 @@ public class StoreResCountInupt extends ResCount {
         }
     }
 
+    @Override
     public void add(ResCount otherCount) {
-        if (!(otherCount instanceof StoreResCountInupt)){
-            throw new IllegalArgumentException("not instanceof StoreRes count input cannot add");
-        }
-        if (!((StoreResCountInupt)otherCount).res.getId().equals(res.getId())){
-            throw new IllegalArgumentException("not seam res cannot add");
-        }
         super.add(otherCount);
+        if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            calcFloatQuantityByMasterUnit();
+        }
+    }
+
+    @Override
+    public void subtract(ResCount otherCount){
+        super.subtract(otherCount);
         if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
             calcFloatQuantityByMasterUnit();
         }

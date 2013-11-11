@@ -24,6 +24,11 @@ import java.util.*;
 @Name("storeHome")
 public class StoreHome extends ErpEntityHome<Store> {
 
+    public String getStoreRole(String id){
+        this.setId(id);
+        return getInstance().getRoleId();
+    }
+
     @In
     private Identity identity;
 

@@ -8,6 +8,10 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
+    <s:decorate template="/layout/display.xhtml">
+        <ui:define name="label">#{messages.order_field_id}</ui:define>
+        <h:outputText value="#{orderHome.id}"/>
+    </s:decorate>
 
     <s:decorate template="/layout/display.xhtml">
         <ui:define name="label">#{messages.order_field_emp}</ui:define>

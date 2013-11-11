@@ -4,6 +4,7 @@ import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.common.utils.persistence.UniqueVerifys;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Expressions;

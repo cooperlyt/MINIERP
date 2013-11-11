@@ -273,6 +273,11 @@ public class ResCount implements java.io.Serializable {
             }
         }
 
+        if ((useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
+                && (resCount.getFloatConvertRate().compareTo(floatConvertRate) != 0))) {
+           return false;
+        }
+
         return true;
     }
 
@@ -300,14 +305,39 @@ public class ResCount implements java.io.Serializable {
         return df.format(getMasterCount()) + " " + useUnit.getUnitGroup().getMasterUnit().getName();
     }
 
-    public void add(ResCount otherCount) {
-        if (!useUnit.getUnitGroup().equals(otherCount.useUnit.getUnitGroup())){
-            throw new IllegalArgumentException("not seam unit cant add");
+    public void subtract(ResCount otherCount){
+        if (!canMerger(otherCount)){
+            throw new IllegalArgumentException("not seam unit cant subtract");
         }
 
-        if ((useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
-                && (otherCount.getFloatConvertRate().compareTo(floatConvertRate) != 0))) {
-            throw new IllegalArgumentException("not same storeInItem can't merger, float:" + otherCount.getFloatConvertRate() + "=" + floatConvertRate);
+
+        if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
+            count = BigDecimalFormat.format(count.subtract(otherCount.getMasterCount().divide(useUnit.getConversionRate(),FLOAT_CONVERT_SCALE,BigDecimal.ROUND_HALF_UP)),useUnit.getCountFormate());
+
+        } else {
+            count = BigDecimalFormat.format(count.subtract(otherCount.count),useUnit.getCountFormate());
+
+
+            if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
+                if (noConvertCountList.size() != otherCount.noConvertCountList.size()){
+                    throw new IllegalArgumentException("NO ConvertRate Unit count aux unit not same");
+                }
+                for (NoConverCountEntry noConvertauxCount : noConvertCountList) {
+                    for (NoConverCountEntry otherAuxCount : otherCount.noConvertCountList) {
+                        if (noConvertauxCount.getResUnit().equals(otherAuxCount.getResUnit())) {
+                            noConvertauxCount.setCount(noConvertauxCount.getCount().subtract(otherAuxCount.getCount()));
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    public void add(ResCount otherCount) {
+        if (!canMerger(otherCount)){
+            throw new IllegalArgumentException("not seam unit cant add");
         }
 
         if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
