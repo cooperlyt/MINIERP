@@ -26,8 +26,8 @@
 
 <rich:toolbar height="34" itemSeparator="line">
 
-    <rich:toolbarGroup location="right" id="orderDispatchTaskAction">
-        <h:panelGroup>
+    <rich:toolbarGroup location="right">
+        <h:panelGroup id="orderDispatchTaskAction">
             <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                       view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
             <s:button styleClass="toolBarBtn" value="#{messages.complete}"
@@ -42,54 +42,6 @@
 <!--tencent://message/?uin=2751194453&amp;Site=blog.sina.com&amp;Menu=yes-->
 
 
-<s:decorate template="/layout/edit-modalpanel.xhtml">
-    <ui:param name="panelId" value="dispatchEditPanel"/>
-    <ui:param name="panelTitle" value="#{messages.Dispatch}"/>
-    <ui:define name="controls">
-
-    </ui:define>
-
-    <s:decorate id="dispatchEditPanelDeliveryTypeField" template="/layout/edit.xhtml">
-        <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
-        <h:selectOneMenu value="#{orderDispatch.selectDispatch.deliveryType}"
-                         required="true" label="#{messages.order_field_deliveryType}">
-            <s:selectItems value="#{deliveryTypes}" var="_type"
-                           label="#{messages[_type.name()]}"
-                           noSelectionLabel="#{messages.noSelectLabel}"/>
-            <s:convertEnum/>
-            <a:ajax event="valueChange" render="dispatchEditPanelFarePayTypeField,dispatchEditPanelDeliveryTypeField">
-                <a:attachQueue requestDelay="0"/>
-            </a:ajax>
-        </h:selectOneMenu>
-    </s:decorate>
-
-    <a:outputPanel id="dispatchEditPanelFarePayTypeField">
-        <s:decorate
-                rendered="#{ (not empty orderDispatch.selectDispatch.deliveryType) and orderDispatch.selectDispatch.deliveryType.haveFare}"
-                template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.order_field_farePayType}</ui:define>
-            <h:selectOneMenu value="#{orderDispatch.selectDispatch.farePayType}"
-                             required="true" label="#{messages.order_field_farePayType}">
-                <s:selectItems value="#{farePayTypes}" var="_type"
-                               label="#{messages[_type.name()]}"
-                               noSelectionLabel="#{messages.noSelectLabel}"/>
-                <s:convertEnum/>
-            </h:selectOneMenu>
-        </s:decorate>
-    </a:outputPanel>
-
-    <ui:define name="actionButtons">
-        <a:commandButton immediate="true"
-                         execute="@this" value="#{messages.ok}"
-                         data="#{actionExecuteState.lastState}"
-                         action="#{actionExecuteState.actionExecute}"
-                         render="dispatchItems"
-                         oncomplete="if (event.data == 'success')#{rich:component(panelId)}.hide();">
-            <a:attachQueue requestDelay="0"/>
-
-        </a:commandButton>
-    </ui:define>
-</s:decorate>
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="singleDispatchPanel"/>
@@ -100,63 +52,115 @@
                          onclick="#{rich:component(panelId)}.hide(); return false;">
         </a:commandButton>
     </ui:define>
-    <s:decorate template="/layout/edit.xhtml">
-        <ui:define name="label">#{messages.dispatch_field_store}</ui:define>
-        <h:selectOneMenu value="#{orderDispatch.store}"
-                         required="true" label="#{messages.dispatch_field_store}">
-            <s:selectItems value="#{storeList.resultList}" var="_store"
-                           label="#{_store.name}(#{_store.id})" noSelectionLabel="#{messages.noSelectLabel}"/>
-            <a:ajax event="valueChange" render="newDispatchFields"
-                    listener="#{orderDispatch.storeSelectListener}"/>
-            <f:converter converterId="erpEntityConverter"/>
-        </h:selectOneMenu>
-    </s:decorate>
 
-    <a:outputPanel rendered="#{not empty orderDispatch.selectOrderItem}">
-        <ui:include src="/layout/erp/ResCountInput.xhtml">
-            <ui:param name="resCountBean" value="#{orderDispatch.storeResCountInupt}"/>
-        </ui:include>
-    </a:outputPanel>
-    <a:outputPanel id="newDispatchFields">
+    <h:panelGroup>
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.dispatch_field_store}</ui:define>
+            <h:selectOneMenu value="#{orderDispatch.store}"  disabled="#{not empty orderDispatch.selectDispatch}"
+                             required="true" label="#{messages.dispatch_field_store}">
+                <s:selectItems value="#{storeList.resultList}" var="_store"
+                               label="#{_store.name}(#{_store.id})" noSelectionLabel="#{messages.noSelectLabel}"/>
+                <a:ajax event="valueChange" render="newDispatchFields"
+                        listener="#{orderDispatch.storeSelectListener}"/>
+                <f:converter converterId="erpEntityConverter"/>
+            </h:selectOneMenu>
+        </s:decorate>
 
-        <a:outputPanel rendered="#{(not empty orderDispatch.store) and (not orderDispatch.dispatchStoreExists)}">
-            <s:decorate id="deliveryTypeField" template="/layout/edit.xhtml">
-                <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
-                <h:selectOneMenu value="#{orderDispatch.deliveryType}"
-                                 required="true" label="#{messages.order_field_deliveryType}">
-                    <s:selectItems value="#{deliveryTypes}" var="_type"
-                                   label="#{messages[_type.name()]}"
-                                   noSelectionLabel="#{messages.noSelectLabel}"/>
-                    <s:convertEnum/>
-                    <a:ajax event="valueChange" render="deliveryTypeField,farePayTypeField">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:ajax>
-                </h:selectOneMenu>
-            </s:decorate>
+        <a:outputPanel rendered="#{(not empty orderDispatch.selectOrderItem)}">
+            <ui:include src="/layout/erp/ResCountInput.xhtml">
+                <ui:param name="resCountBean" value="#{orderDispatch.storeResCountInupt}"/>
+                <ui:param name="lableStyleClass" value="small_name"/>
+            </ui:include>
+        </a:outputPanel>
+        <a:outputPanel id="newDispatchFields">
 
-            <a:outputPanel id="farePayTypeField">
-                <s:decorate
-                        rendered="#{ (not empty orderDispatch.deliveryType) and orderDispatch.deliveryType.haveFare}"
-                        template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.order_field_farePayType}</ui:define>
-                    <h:selectOneMenu value="#{orderDispatch.farePayType}"
-                                     required="true" label="#{messages.order_field_farePayType}">
-                        <s:selectItems value="#{farePayTypes}" var="_type"
-                                       label="#{messages[_type.name()]}"
-                                       noSelectionLabel="#{messages.noSelectLabel}"/>
-                        <s:convertEnum/>
-                    </h:selectOneMenu>
+            <a:outputPanel rendered="#{(not empty orderDispatch.store) and (not orderDispatch.dispatchStoreExists)}">
+
+                <h:panelGrid style="clear: left;" columns="2">
+                    <s:decorate id="deliveryTypeField" template="/layout/edit.xhtml">
+                        <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
+                        <h:selectOneMenu value="#{orderDispatch.deliveryType}"
+                                         required="true" label="#{messages.order_field_deliveryType}">
+                            <s:selectItems value="#{deliveryTypes}" var="_type"
+                                           label="#{messages[_type.name()]}"
+                                           noSelectionLabel="#{messages.noSelectLabel}"/>
+                            <s:convertEnum/>
+                            <a:ajax event="valueChange" render="deliveryTypeField,farePayTypeField,expressInfoField">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </h:selectOneMenu>
+                    </s:decorate>
+
+                    <a:outputPanel id="farePayTypeField">
+                        <s:decorate
+                                rendered="#{ (not empty orderDispatch.deliveryType) and orderDispatch.deliveryType.haveFare}"
+                                template="/layout/edit.xhtml">
+                            <ui:define name="label">#{messages.order_field_farePayType}</ui:define>
+                            <h:selectOneMenu value="#{orderDispatch.farePayType}"
+                                             required="true" label="#{messages.order_field_farePayType}">
+                                <s:selectItems value="#{farePayTypes}" var="_type"
+                                               label="#{messages[_type.name()]}"
+                                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                                <s:convertEnum/>
+                            </h:selectOneMenu>
+                        </s:decorate>
+                    </a:outputPanel>
+                </h:panelGrid>
+
+
+                <a:outputPanel id="expressInfoField">
+                    <a:outputPanel
+                            rendered="#{ (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'FULL_CAR_SEND')}">
+                        <ui:include src="/layout/erp/ExpressDriverInput.xhtml">
+
+                        </ui:include>
+
+
+                    </a:outputPanel>
+
+                    <a:outputPanel
+                            rendered="#{ (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'EXPRESS_SEND')}">
+                        <ui:include src="/layout/erp/TransCorpInput.xhtml">
+
+                        </ui:include>
+                    </a:outputPanel>
+
+                    <s:decorate
+                            rendered="#{ (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'SEND_TO_DOOR')}"
+                            template="/layout/edit.xhtml">
+                        <ui:define name="label">#{messages.Cars}</ui:define>
+                        <rich:autocomplete id="carsInputField" mode="client" minChars="1" autofill="true"
+                                           showButton="true"
+                                           selectFirst="true"
+                                           label="#{messages.Cars}"
+                                           clientFilterFunction="pinyinFilter"
+                                           autocompleteList="#{validCarsList.resultList}"
+                                           value="#{carsHome.searchId}"
+                                           fetchValue="#{_car.id}" var="_car">
+
+                            <h:outputText value="#{_car.id}(#{dictionary.getEmpNameById(_car.employeeId)})"/>
+                            <a:ajax event="selectitem"
+                                    render="carsInputField,transCorpDetails" execute="@this">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                            <a:ajax event="blur" execute="@this"
+                                    render="carsInputField">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </rich:autocomplete>
+                    </s:decorate>
+
+                </a:outputPanel>
+
+
+                <s:decorate template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea value="#{orderDispatch.memo}"
+                                     label="#{messages.field_memo}" cols="27" rows="2"/>
                 </s:decorate>
             </a:outputPanel>
-
-            <s:decorate template="/layout/edit.xhtml">
-                <ui:define name="label">#{messages.field_memo}</ui:define>
-                <h:inputTextarea value="#{orderDispatch.memo}"
-                                 label="#{messages.field_memo}" cols="27" rows="2"/>
-            </s:decorate>
         </a:outputPanel>
-    </a:outputPanel>
-
+    </h:panelGroup>
     <ui:define name="actionButtons">
         <a:commandButton immediate="true"
                          execute="@this" value="#{messages.cancel}"
@@ -165,10 +169,11 @@
 
         <a:commandButton value="#{messages.ok}" execute="@form"
                          data="#{actionExecuteState.lastState}"
-                         oncomplete="if (event.data == 'success')#{rich:component(panelId)}.hide();"
-                         render="singleDispatchPanel_inputs,orderDispatchTaskAction,orderStoreResOrderItems,dispatchItems"
+                         oncomplete="if (event.data == 'success')#{rich:component('singleDispatchPanel')}.hide();"
+                         render="singleDispatchPanel_inputs,orderStoreResOrderItems,dispatchItems,orderDispatchTaskAction"
                          action="#{orderDispatch.dispatchAllStoreRes}">
             <a:attachQueue requestDelay="0"/>
+
         </a:commandButton>
 
 
@@ -289,12 +294,16 @@
                 #{_dispatch.store.name}(#{_dispatch.store.id})
 
                 [
-                #{messages.order_field_deliveryType}:#{messages[_dispatch.deliveryType.name()]}
+                #{messages.order_field_deliveryType}:#{messages[_dispatch.deliveryType.name()]}(
+                <h:outputText value="#{_dispatch.expressCar.expressDriver.name}" rendered="#{_dispatch.deliveryType eq 'FULL_CAR_SEND'}" />
+                <h:outputText value="#{_dispatch.expressInfo.transCorp.name}" rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}" />
+                <h:outputText value="#{_dispatch.productToDoor.cars.id}" rendered="#{_dispatch.deliveryType eq 'SEND_TO_DOOR'}" /> )
                 <h:outputText value="#{messages.order_field_farePayType}:#{messages[_dispatch.farePayType.name()]}"
                               rendered="#{_dispatch.deliveryType.haveFare}"/>
-                <a:commandButton image="/img/edit.png" immediate="true" render="dispatchEditPanel_inputs"
+
+                <a:commandButton image="/img/edit.png" immediate="true" render="singleDispatchPanel_inputs"
                                  action="#{orderDispatch.beginEditDispatchInfo}"
-                                 oncomplete="#{rich:component('dispatchEditPanel')}.show();return false;">
+                                 oncomplete="#{rich:component('singleDispatchPanel')}.show();return false;">
 
                     <a:param value="#{_dispatch.store.id}" assignTo="#{orderDispatch.storeId}"/>
                     <a:attachQueue requestDelay="0"/>

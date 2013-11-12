@@ -96,7 +96,7 @@
         <class>com.dgsoft.erp.model.UnitGroup</class>
 
         <class>com.dgsoft.erp.model.ProductToDoor</class>
-        <class>com.dgsoft.erp.model.Employee</class>
+
         <class>com.dgsoft.erp.model.Cars</class>
         <class>com.dgsoft.erp.model.ExpressCar</class>
         <class>com.dgsoft.erp.model.ExpressDriver</class>

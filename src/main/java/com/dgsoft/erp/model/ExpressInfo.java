@@ -1,16 +1,11 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,25 +19,21 @@ public class ExpressInfo implements java.io.Serializable {
 	private String id;
 	private TransCorp transCorp;
 	private String number;
-	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
+	private Dispatch dispatch;
 
 	public ExpressInfo() {
 	}
 
-	public ExpressInfo(String id, TransCorp transCorp) {
-		this.id = id;
+	public ExpressInfo(Dispatch dispatch, TransCorp transCorp) {
 		this.transCorp = transCorp;
+        this.dispatch = dispatch;
 	}
-	public ExpressInfo(String id, TransCorp transCorp, String number,
-			Set<Dispatch> dispatches) {
-		this.id = id;
-		this.transCorp = transCorp;
-		this.number = number;
-		this.dispatches = dispatches;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -53,7 +44,7 @@ public class ExpressInfo implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "TRANS", nullable = false)
 	@NotNull
 	public TransCorp getTransCorp() {
@@ -74,13 +65,13 @@ public class ExpressInfo implements java.io.Serializable {
 		this.number = number;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "expressInfo")
-	public Set<Dispatch> getDispatches() {
-		return this.dispatches;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "expressInfo")
+	public Dispatch getDispatch() {
+		return this.dispatch;
 	}
 
-	public void setDispatches(Set<Dispatch> dispatches) {
-		this.dispatches = dispatches;
+	public void setDispatch(Dispatch dispatches) {
+		this.dispatch = dispatches;
 	}
 
 }

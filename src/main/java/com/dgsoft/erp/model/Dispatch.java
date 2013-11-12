@@ -89,7 +89,7 @@ public class Dispatch implements java.io.Serializable {
 		this.stockChange = stockChange;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
 	@JoinColumn(name = "EXPRESS_INFO")
 	public ExpressInfo getExpressInfo() {
 		return this.expressInfo;
@@ -99,7 +99,7 @@ public class Dispatch implements java.io.Serializable {
 		this.expressInfo = expressInfo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
 	@JoinColumn(name = "PRODUCT_TO_DOOR")
 	public ProductToDoor getProductToDoor() {
 		return this.productToDoor;
@@ -109,7 +109,7 @@ public class Dispatch implements java.io.Serializable {
 		this.productToDoor = productToDoor;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
 	@JoinColumn(name = "EXPRESS_CAR")
 	public ExpressCar getExpressCar() {
 		return this.expressCar;

@@ -30,13 +30,16 @@ public class SimpleEntityHome<E extends NamedEntity> extends EntityHomeAdapter<E
 
     public String getPinyinSearchName() {
         if (isIdDefined()) {
-            return getInstance().getName();
+            try {
+                return getInstance().getName();
+            }catch (javax.persistence.EntityNotFoundException e) {
+                setId(null);
+            }
         }
         return "";
     }
 
     private boolean editing = false;
-
 
 
     @End

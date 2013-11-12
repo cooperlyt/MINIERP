@@ -1,14 +1,12 @@
 package com.dgsoft.erp.model;
 // Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.NamedEntity;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,11 +15,12 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "TRANS_CORP", catalog = "MINI_ERP")
-public class TransCorp implements java.io.Serializable {
+public class TransCorp implements java.io.Serializable,NamedEntity {
 
 	private String id;
 	private String name;
 	private String tel;
+    private String memo;
 	private String contact;
 	private boolean enable;
 	private Set<ExpressInfo> expressInfos = new HashSet<ExpressInfo>(0);
@@ -46,6 +45,8 @@ public class TransCorp implements java.io.Serializable {
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -104,5 +105,15 @@ public class TransCorp implements java.io.Serializable {
 	public void setExpressInfos(Set<ExpressInfo> expressInfos) {
 		this.expressInfos = expressInfos;
 	}
+
+    @Column(name = "MEMO", length = 200)
+    @Size(max = 200)
+    public String getMemo() {
+        return this.memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
 }

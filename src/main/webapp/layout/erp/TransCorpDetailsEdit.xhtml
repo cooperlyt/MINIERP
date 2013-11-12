@@ -1,0 +1,37 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.transCorp_field_name}</ui:define>
+        <h:inputText value="#{transCorpHome.instance.name}"
+                     size="20" required="true" maxlength="50"
+                     label="#{messages.transCorp_field_name}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.Tel}</ui:define>
+        <h:inputText value="#{transCorpHome.instance.tel}"
+                     size="20" required="true" maxlength="50"
+                     label="#{messages.Tel}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.Contact}</ui:define>
+        <h:inputText value="#{transCorpHome.instance.contact}"
+                     size="20" maxlength="50"
+                     label="#{messages.Contact}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.field_memo}</ui:define>
+        <h:inputTextarea value="#{transCorpHome.instance.memo}"
+                         cols="27" rows="2"/>
+    </s:decorate>
+</ui:composition>

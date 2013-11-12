@@ -1,16 +1,11 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,28 +17,23 @@ import javax.validation.constraints.Size;
 public class ProductToDoor implements java.io.Serializable {
 
 	private String id;
-	private Employee employee;
+    private String employeeId;
 	private Cars cars;
-	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
+
+	private Dispatch dispatch;
 
 	public ProductToDoor() {
 	}
 
-	public ProductToDoor(String id, Employee employee, Cars cars) {
-		this.id = id;
-		this.employee = employee;
-		this.cars = cars;
-	}
-	public ProductToDoor(String id, Employee employee, Cars cars,
-			Set<Dispatch> dispatches) {
-		this.id = id;
-		this.employee = employee;
-		this.cars = cars;
-		this.dispatches = dispatches;
-	}
+    public ProductToDoor(Dispatch dispatch ,Cars cars){
+        this.dispatch= dispatch;
+        this.cars = cars;
+    }
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -52,17 +42,6 @@ public class ProductToDoor implements java.io.Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DRIVER", nullable = false)
-	@NotNull
-	public Employee getEmployee() {
-		return this.employee;
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -76,13 +55,23 @@ public class ProductToDoor implements java.io.Serializable {
 		this.cars = cars;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productToDoor")
-	public Set<Dispatch> getDispatches() {
-		return this.dispatches;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "productToDoor")
+	public Dispatch getDispatch() {
+		return this.dispatch;
 	}
 
-	public void setDispatches(Set<Dispatch> dispatches) {
-		this.dispatches = dispatches;
+	public void setDispatch(Dispatch dispatches) {
+		this.dispatch = dispatches;
 	}
+
+    @Column(name = "EMP_DRIVER", nullable = true, length = 32)
+    @Size(max = 32)
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
 
 }

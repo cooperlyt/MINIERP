@@ -26,15 +26,19 @@
         }
 
         .fixConvertUnitSelectWidth input[type="text"] {
-            width: 70px;
+            width: 60px;
         }
 
         .fixConvertUnitPopupHieght {
-            width: 80px !important;
+            width: 72px !important;
         }
 
         .floatConvertRateWidth {
-            width: 80px !important;
+            width: 60px !important;
+        }
+
+        .floatConvertRatePopupHeight {
+            width: 74px !important;
         }
 
     </h:outputStylesheet>
@@ -42,24 +46,26 @@
     <a:region>
         <div>
 
-            <s:label styleClass="name">
+            <s:label styleClass="#{empty lableStyleClass ? 'name' : lableStyleClass}">
                 #{messages.storeChangeCount}
                 <s:span styleClass="required">*</s:span>
             </s:label>
 
 
             <span class="value">
-            <h:inputText id="masterUnitCount" required="true" style="width: 100px"
+            <h:inputText id="masterUnitCount" required="true" style="width: 70px"
                          label="#{messages.storeResCountInupt}"
                          value="#{resCountBean.count}" converter="javax.faces.BigDecimal">
-
+                <f:validateDoubleRange minimum="0"/>
+                <rich:validator/>
                 <a:ajax event="change" execute="@region"
                         render="floatConvertAuxUnitFields,masterUnitCount,#{countChangeRender}"
                         listener="#{resCountBean.masterCountChangeListener}">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
             </h:inputText>
-
+             <rich:message for="masterUnitCount" styleClass="message-icon"
+                           showDetail="true" showSummary="true" tooltip="true"/>
             </span>
 
             <h:outputText styleClass="unit_label" value="#{resCountBean.res.resUnitByMasterUnit.name}"
@@ -103,8 +109,10 @@
                     <h:outputText styleClass="auto_width_unit_label" value="*"/>
                     <span class="value">
                     <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+                                       popupClass="floatConvertRatePopupHeight"
                                        value="#{resCountBean.floatConvertRate}"
-                                       layout="div" label="#{resCountBean.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
+                                       layout="div"
+                                       label="#{resCountBean.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
                                        required="true"
                                        var="_value"
                                        selectFirst="false"
@@ -123,7 +131,7 @@
                     </span>
                     <h:outputText styleClass="auto_width_unit_label" value="="/>
                     <span class="value">
-                    <h:inputText id="floatConvertAuxCount" required="true" style="width: 100px"
+                    <h:inputText id="floatConvertAuxCount" required="true" style="width: 80px"
                                  label="#{resCountBean.res.unitGroup.floatAuxiliaryUnit.name}"
                                  value="#{resCountBean.auxCount}" converter="javax.faces.BigDecimal">
                         <a:ajax event="change" execute="@region"
@@ -131,7 +139,11 @@
                                 listener="#{resCountBean.calcFloatQuantityByAuxUnit}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
+                        <f:validateDoubleRange minimum="0"/>
+                        <rich:validator/>
                     </h:inputText>
+                        <rich:message for="floatConvertAuxCount" styleClass="message-icon"
+                                      showDetail="true" showSummary="true" tooltip="true"/>
                     </span>
                     <h:outputText styleClass="unit_label"
                                   value="#{resCountBean.res.unitGroup.floatAuxiliaryUnit.name}"/>

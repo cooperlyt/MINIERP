@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+    <h:panelGrid style="clear: left; " columns="1">
+
+    <s:decorate template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.ExpressDriver}</ui:define>
+        <rich:autocomplete id="expressDriverPySearch" mode="client" minChars="1" autofill="false"
+                           showButton="true"
+                           selectFirst="true"
+                           label="#{messages.ExpressDriver}"
+                           clientFilterFunction="pinyinFilter"
+                           autocompleteList="#{vaildExpressDriverList.resultList}"
+                           value="#{expressDriverHome.pinyinSearchName}"
+                           fetchValue="[#{_expressDriver.name}][id:#{_expressDriver.id}]" var="_expressDriver">
+
+            <h:outputText value="#{_expressDriver.name}"/>
+            <a:ajax event="selectitem"
+                    render="expressDriverPySearch,expressDriverDetails,#{render}" execute="@this">
+                <a:attachQueue requestDelay="0"/>
+            </a:ajax>
+            <a:ajax event="blur" execute="@this"
+                    render="expressDriverPySearch">
+                <a:attachQueue requestDelay="0"/>
+            </a:ajax>
+        </rich:autocomplete>
+        <ui:define name="tail">
+            <a:commandButton immediate="true" image="/img/reset_btn.png"
+                             action="#{expressDriverHome.clearInstance}"
+                             execute="@this"
+                             render="expressDriverPySearch,expressDriverDetails">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </ui:define>
+    </s:decorate>
+    <rich:panel id="expressDriverDetails">
+        <h:panelGrid columns="1" rendered="#{expressDriverHome.managed}">
+              <ui:include src="/layout/erp/ExpressDriverDetailsView.xhtml"/>
+        </h:panelGrid>
+
+        <h:panelGrid columns="1" rendered="#{not expressDriverHome.managed}">
+              <ui:include src="/layout/erp/ExpressDriverDetailsEdit.xhtml"/>
+        </h:panelGrid>
+    </rich:panel>
+    </h:panelGrid>
+</ui:composition>

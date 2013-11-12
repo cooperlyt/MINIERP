@@ -1,16 +1,11 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,25 +19,21 @@ public class ExpressCar implements java.io.Serializable {
 	private String id;
 	private ExpressDriver expressDriver;
 	private String carCode;
-	private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
+	private Dispatch dispatch;
 
 	public ExpressCar() {
 	}
 
-	public ExpressCar(String id, ExpressDriver expressDriver) {
-		this.id = id;
+	public ExpressCar(Dispatch dispatch, ExpressDriver expressDriver) {
 		this.expressDriver = expressDriver;
+        this.dispatch = dispatch;
 	}
-	public ExpressCar(String id, ExpressDriver expressDriver, String carCode,
-			Set<Dispatch> dispatches) {
-		this.id = id;
-		this.expressDriver = expressDriver;
-		this.carCode = carCode;
-		this.dispatches = dispatches;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -53,7 +44,7 @@ public class ExpressCar implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
 	@JoinColumn(name = "DRIVER", nullable = false)
 	@NotNull
 	public ExpressDriver getExpressDriver() {
@@ -74,13 +65,13 @@ public class ExpressCar implements java.io.Serializable {
 		this.carCode = carCode;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "expressCar")
-	public Set<Dispatch> getDispatches() {
-		return this.dispatches;
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "expressCar")
+	public Dispatch getDispatch() {
+		return this.dispatch;
 	}
 
-	public void setDispatches(Set<Dispatch> dispatches) {
-		this.dispatches = dispatches;
+	public void setDispatch(Dispatch dispatches) {
+		this.dispatch = dispatches;
 	}
 
 }

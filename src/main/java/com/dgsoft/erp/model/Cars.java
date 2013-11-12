@@ -22,20 +22,11 @@ import javax.validation.constraints.Size;
 public class Cars implements java.io.Serializable {
 
 	private String id;
-	private Employee employee;
+    private boolean enable;
+	private String employeeId;
 	private Set<ProductToDoor> productToDoors = new HashSet<ProductToDoor>(0);
 
 	public Cars() {
-	}
-
-	public Cars(String id, Employee employee) {
-		this.id = id;
-		this.employee = employee;
-	}
-	public Cars(String id, Employee employee, Set<ProductToDoor> productToDoors) {
-		this.id = id;
-		this.employee = employee;
-		this.productToDoors = productToDoors;
 	}
 
 	@Id
@@ -50,18 +41,18 @@ public class Cars implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DEFAULT_DRIVER", nullable = false)
-	@NotNull
-	public Employee getEmployee() {
-		return this.employee;
-	}
+    @Column(name = "EMP_DRIVER", nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getEmployeeId() {
+        return employeeId;
+    }
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cars")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cars")
 	public Set<ProductToDoor> getProductToDoors() {
 		return this.productToDoors;
 	}
@@ -69,5 +60,14 @@ public class Cars implements java.io.Serializable {
 	public void setProductToDoors(Set<ProductToDoor> productToDoors) {
 		this.productToDoors = productToDoors;
 	}
+
+    @Column(name = "ENABLE", nullable = false)
+    public boolean isEnable() {
+        return this.enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 
 }

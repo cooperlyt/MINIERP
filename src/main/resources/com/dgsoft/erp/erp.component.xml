@@ -83,4 +83,16 @@
         <property name="ejbql">select customerLevel from CustomerLevel customerLevel order by customerLevel.priority</property>
     </component>
 
+    <component name="vaildExpressDriverList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select expressDriver from ExpressDriver expressDriver where enable=true</property>
+    </component>
+
+    <component name="validTransCorpList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select transCorp from TransCorp transCorp where enable=true</property>
+    </component>
+
+    <component name="validCarsList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select cars from Cars cars where enable=true</property>
+    </component>
+
 </components>
