@@ -110,5 +110,28 @@ public class DispatchItem implements java.io.Serializable {
         setCount(getCount().add(addCount.getCountByResUnit(getResUnit())));
     }
 
+    @Transient
+    public ResCount getStockCount() {
+        for(Stock stock: getStoreRes().getStocks()){
+            if (stock.getStore().getId().equals(getDispatch().getStore().getId())){
+                return stock.getResCount();
+            }
+        }
+        return getStoreRes().getResCount(BigDecimal.ZERO,getStoreRes().getRes().getUnitGroup().getMasterUnit());
+    }
+
+    @Transient
+    public boolean isEnough() {
+        return getStockCount().getMasterCount().compareTo(getResCount().getMasterCount()) >= 0;
+    }
+
+    @Transient
+    public ResCount getDisparity() {
+
+        ResCount result = getResCount();
+        result.subtract(getStockCount());
+        return getStoreRes().getResCount(result.getMasterCount(), getStoreRes().getRes().getUnitGroup().getMasterUnit());
+    }
+
 
 }

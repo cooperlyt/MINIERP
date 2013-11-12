@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class ResCount implements java.io.Serializable {
 
-    public static final ResCount ZERO = new ResCount(BigDecimal.ZERO);
+    //public static final ResCount ZERO = new ResCount(BigDecimal.ZERO);
 
     protected static final int FLOAT_CONVERT_SCALE = 10;
 

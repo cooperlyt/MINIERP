@@ -154,7 +154,7 @@ public class NeedRes implements java.io.Serializable {
         this.orderItems = orderItems;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", cascade = {CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", cascade = {CascadeType.ALL})
     public Set<Dispatch> getDispatches() {
         return this.dispatches;
     }

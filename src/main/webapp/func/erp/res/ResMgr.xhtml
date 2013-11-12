@@ -58,7 +58,7 @@
 
             <rich:toolbarGroup location="right">
 
-                <s:button value="#{messages.create}#{messages.res}" action="#{resHome.clearInstance}"
+                <s:button  value="#{messages.create}#{messages.res}" action="#{resHome.clearInstance}"
                           view="/func/erp/res/ResDetails.xhtml" propagation="begin" styleClass="toolBarBtn"
                           onclick="if (#{not resCategoryHome.idDefined}){alert('#{messages.plase_select_rescategory_first}'); return false;}">
                     <f:param name="categoryId" value="#{resCategoryHome.instance.id}"/>

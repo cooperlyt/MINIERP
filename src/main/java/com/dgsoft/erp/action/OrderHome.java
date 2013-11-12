@@ -52,4 +52,12 @@ public class OrderHome extends ErpEntityHome<CustomerOrder>{
         }
         return null;
     }
+
+
+    public synchronized boolean needStoreOut(String storeId){
+        for (NeedRes needRes: getInstance().getNeedReses()){
+
+        }           //TODO
+        return true;
+    }
 }

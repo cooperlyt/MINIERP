@@ -2,8 +2,10 @@ package com.dgsoft.erp.model;
 // Generated Sep 25, 2013 4:34:50 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.OrderBeanComparator;
+import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
 import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

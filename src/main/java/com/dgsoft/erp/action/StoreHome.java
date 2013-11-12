@@ -9,6 +9,7 @@ import com.google.common.collect.Iterators;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.security.Identity;
 
 import javax.persistence.EntityManager;
@@ -24,9 +25,15 @@ import java.util.*;
 @Name("storeHome")
 public class StoreHome extends ErpEntityHome<Store> {
 
-    public String getStoreRole(String id){
+    @Transactional
+    public synchronized String getStoreRole(String id) {
         this.setId(id);
-        return getInstance().getRoleId();
+        try {
+            return getInstance().getRoleId();
+        } catch (EntityNotFoundException e) {
+            setId(null);
+            return "erp.storage.manager";
+        }
     }
 
     @In
@@ -111,8 +118,8 @@ public class StoreHome extends ErpEntityHome<Store> {
 
         List<Store> result = new ArrayList<Store>();
 
-        for (Store store: getEntityManager().createQuery("select store from Store store where store.enable = true",Store.class).getResultList()){
-            if (identity.hasRole(store.getRoleId())){
+        for (Store store : getEntityManager().createQuery("select store from Store store where store.enable = true", Store.class).getResultList()) {
+            if (identity.hasRole(store.getRoleId())) {
                 result.add(store);
             }
         }

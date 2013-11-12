@@ -307,7 +307,7 @@ public class OrderDispatch extends OrderTaskHandle {
         }
 
 
-        if (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <=0 ){
+        if ((selectOrderItem != null) && (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <=0) ){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_less_zero");
             actionExecuteState.setState("fail");
             return;
@@ -485,7 +485,7 @@ public class OrderDispatch extends OrderTaskHandle {
             dispatchStoreIds[i] = dispatchList.get(i).getStore().getId();
         }
 
-        return super.completeTask();
+        return super.completeOrderTask();
     }
 
 }

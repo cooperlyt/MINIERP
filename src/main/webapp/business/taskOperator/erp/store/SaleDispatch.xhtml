@@ -42,7 +42,6 @@
 <!--tencent://message/?uin=2751194453&amp;Site=blog.sina.com&amp;Menu=yes-->
 
 
-
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="singleDispatchPanel"/>
     <ui:param name="panelTitle" value="#{messages.Dispatch}"/>
@@ -56,7 +55,7 @@
     <h:panelGroup>
         <s:decorate template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.dispatch_field_store}</ui:define>
-            <h:selectOneMenu value="#{orderDispatch.store}"  disabled="#{not empty orderDispatch.selectDispatch}"
+            <h:selectOneMenu value="#{orderDispatch.store}" disabled="#{not empty orderDispatch.selectDispatch}"
                              required="true" label="#{messages.dispatch_field_store}">
                 <s:selectItems value="#{storeList.resultList}" var="_store"
                                label="#{_store.name}(#{_store.id})" noSelectionLabel="#{messages.noSelectLabel}"/>
@@ -295,12 +294,15 @@
 
                 [
                 #{messages.order_field_deliveryType}:#{messages[_dispatch.deliveryType.name()]}(
-                <h:outputText value="#{_dispatch.expressCar.expressDriver.name}" rendered="#{_dispatch.deliveryType eq 'FULL_CAR_SEND'}" />
-                <h:outputText value="#{_dispatch.expressInfo.transCorp.name}" rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}" />
-                <h:outputText value="#{_dispatch.productToDoor.cars.id}" rendered="#{_dispatch.deliveryType eq 'SEND_TO_DOOR'}" /> )
+                <h:outputText value="#{_dispatch.expressCar.expressDriver.name}"
+                              rendered="#{_dispatch.deliveryType eq 'FULL_CAR_SEND'}"/>
+                <h:outputText value="#{_dispatch.expressInfo.transCorp.name}"
+                              rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"/>
+                <h:outputText value="#{_dispatch.productToDoor.cars.id}"
+                              rendered="#{_dispatch.deliveryType eq 'SEND_TO_DOOR'}"/> )
                 <h:outputText value="#{messages.order_field_farePayType}:#{messages[_dispatch.farePayType.name()]}"
                               rendered="#{_dispatch.deliveryType.haveFare}"/>
-
+                ]
                 <a:commandButton image="/img/edit.png" immediate="true" render="singleDispatchPanel_inputs"
                                  action="#{orderDispatch.beginEditDispatchInfo}"
                                  oncomplete="#{rich:component('singleDispatchPanel')}.show();return false;">
@@ -308,7 +310,7 @@
                     <a:param value="#{_dispatch.store.id}" assignTo="#{orderDispatch.storeId}"/>
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
-                ]
+
             </rich:column>
 
             <rich:collapsibleSubTable id="sbtblDispatchItem" value="#{_dispatch.dispatchItemList}"
@@ -321,6 +323,21 @@
                 </rich:column>
                 <rich:column>
                     #{_dispatchItem.resCount.masterDisplayCount}
+                    <h:graphicImage style="float:right" alt="#{messages.order_item_full}" title="#{messages.order_item_full}"
+                                    value="/img/full_tip.png"
+                                    rendered="#{_dispatchItem.enough}"/>
+                    <a:outputPanel style="float:right" rendered="#{not _dispatchItem.enough}">
+                        <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.stockCount.masterDisplayCount})"/>
+                        <h:graphicImage alt="#{messages.order_item_not_full}"
+                                        value="/img/not_full_tip.png"/>
+                        <rich:tooltip followMouse="false" showDelay="1500" styleClass="tooltip-custom-body"
+                                      layout="block">
+                            <span style="white-space: nowrap;color: #FF0000;">
+                            #{messages.order_item_not_full}:
+                            #{_dispatchItem.disparity.masterDisplayCount}
+                            #{_dispatchItem.disparity.displayAuxCount}</span>
+                        </rich:tooltip>
+                    </a:outputPanel>
                 </rich:column>
                 <rich:column>
                     #{_dispatchItem.resCount.displayAuxCount}

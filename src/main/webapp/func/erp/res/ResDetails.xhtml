@@ -35,13 +35,13 @@
 
 
 
-            <s:button action="#{resHome.refresh}" view="/func/erp/res/ResMgr.xhtml"
+            <s:button styleClass="toolBarBtn" action="#{resHome.refresh}" view="/func/erp/res/ResMgr.xhtml"
                       propagation="end" value="#{messages.cancel}"/>
 
-            <h:commandButton value="#{messages.save}" action="#{resHome.persist}"
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.save}" action="#{resHome.persist}"
                              rendered="#{!resHome.managed}"/>
 
-            <h:commandButton value="#{messages.update}" action="#{resHome.update}"
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.update}" action="#{resHome.update}"
                              rendered="#{resHome.managed}"/>
 
 

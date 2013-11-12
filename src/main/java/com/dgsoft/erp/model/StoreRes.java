@@ -205,6 +205,11 @@ public class StoreRes implements java.io.Serializable {
     }
 
     @Transient
+    public ResCount getResCount(BigDecimal count){
+        return getResCount(count,getRes().getUnitGroup().getMasterUnit());
+    }
+
+    @Transient
     public ResCount getTotalCount(){
         ResCount resCount = null;
         for (Stock stock: getVaildStockList()){
@@ -214,7 +219,7 @@ public class StoreRes implements java.io.Serializable {
                 resCount.add(stock.getResCount());
         }
         if (resCount == null){
-            return ResCount.ZERO;
+            return getResCount(BigDecimal.ZERO);
         }else{
             return resCount;
         }
