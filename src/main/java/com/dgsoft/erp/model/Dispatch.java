@@ -79,7 +79,7 @@ public class Dispatch implements java.io.Serializable {
 		this.store = store;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})
 	@JoinColumn(name = "STOCK_CHANGE")
 	public StockChange getStockChange() {
 		return this.stockChange;

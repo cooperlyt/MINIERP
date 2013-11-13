@@ -31,9 +31,6 @@ import java.util.List;
 @Name("orderDispatch")
 public class OrderDispatch extends OrderTaskHandle {
 
-    @Out(required = false,value = "dispatchStoreIds", scope = ScopeType.CONVERSATION)
-    private String[] dispatchStoreIds;
-
     @In
     private ActionExecuteState actionExecuteState;
 
@@ -479,14 +476,11 @@ public class OrderDispatch extends OrderTaskHandle {
         needResHome.getInstance().getDispatches().addAll(dispatchList);
         needResHome.getInstance().setDispatched(true);
 
-        needResHome.update();
-
-        dispatchStoreIds = new String[dispatchList.size()];
-        for (int i = 0; i< dispatchList.size(); i++){
-            dispatchStoreIds[i] = dispatchList.get(i).getStore().getId();
+        if (needResHome.update().equals("updated")){
+           return "taskComplete";
+        }else {
+            return "updateFail";
         }
-
-        return super.completeOrderTask();
     }
 
 }

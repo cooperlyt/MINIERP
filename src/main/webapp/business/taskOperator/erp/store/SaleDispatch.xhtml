@@ -23,38 +23,40 @@
         vertical-align: top;
     }
 </h:outputStylesheet>
-<h:form>
-    <rich:toolbar height="34" itemSeparator="line">
 
-        <rich:toolbarGroup>
-            #{' '}
-            <h:panelGroup rendered="#{(needResHome.instance.type eq 'ORDER_SEND') and (needResHome.instance.deliveryType.haveFare) and (needResHome.instance.farePayType eq 'EXPRESS_RECEIVE')}">
-                <s:label value="#{messages.order_fare}" />
-                <h:inputText id="orderSubFareInput" value="#{needResHome.instance.fare}" required="true"
-                             label="#{messages.order_fare}"
-                             size="8">
-                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                     type="currency" groupingUsed="false"/>
-                    <rich:validator/>
-                    <rich:placeholder value="#{messages.order_fare}"/>
-                </h:inputText>
-                <rich:message for="orderSubFareInput" styleClass="message-icon"
-                              showDetail="true" showSummary="true" tooltip="true"/>
-            </h:panelGroup>
-        </rich:toolbarGroup>
+<rich:toolbar height="34" itemSeparator="line">
 
-        <rich:toolbarGroup location="right">
-            <h:panelGroup id="orderDispatchTaskAction">
-                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                          view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
-                <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                          onclick="if(#{not empty orderDispatch.storeResOrderItems}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
-                          action="#{orderDispatch.complete}"/>
-            </h:panelGroup>
-        </rich:toolbarGroup>
-    </rich:toolbar>
-</h:form>
+    <rich:toolbarGroup location="right">
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:panelGroup
+                        rendered="#{(needResHome.instance.type eq 'ORDER_SEND') and (needResHome.instance.deliveryType.haveFare) and (needResHome.instance.farePayType eq 'EXPRESS_RECEIVE')}">
+                    <s:label value="#{messages.order_fare}"/>
+                    <h:inputText id="orderSubFareInput" value="#{needResHome.instance.fare}" required="true"
+                                 label="#{messages.order_fare}"
+                                 size="8">
+                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                         type="currency" groupingUsed="false"/>
+                        <rich:validator/>
+                        <rich:placeholder value="#{messages.order_fare}"/>
+                    </h:inputText>
+                    <rich:message for="orderSubFareInput" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+                </h:panelGroup>
+                <h:panelGroup id="orderDispatchTaskAction">
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                     onclick="if(#{not empty orderDispatch.storeResOrderItems}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
+                                     action="#{orderDispatch.complete}"/>
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:form>
+    </rich:toolbarGroup>
+</rich:toolbar>
+
 <rich:messages ajaxRendered="true" globalOnly="true"/>
 
 <!--tencent://message/?uin=2751194453&amp;Site=blog.sina.com&amp;Menu=yes-->
@@ -342,19 +344,24 @@
                 <rich:column>
                     #{_dispatchItem.resCount.masterDisplayCount}
                     <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
-                                    title="#{messages.order_item_full}"
+                                    title="#{messages.order_item_full}:#{_dispatchItem.stockCount.masterDisplayCount}(#{_dispatchItem.stockCount.displayAuxCount}) "
                                     value="/img/full_tip.png"
                                     rendered="#{_dispatchItem.enough}"/>
+
                     <a:outputPanel style="float:right" rendered="#{not _dispatchItem.enough}">
-                        <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.stockCount.masterDisplayCount})"/>
+                        <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.disparity.masterDisplayCount})"/>
                         <h:graphicImage alt="#{messages.order_item_not_full}"
                                         value="/img/not_full_tip.png"/>
-                        <rich:tooltip followMouse="false" showDelay="1500" styleClass="tooltip-custom-body"
+                        <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
                                       layout="block">
                             <span style="white-space: nowrap;color: #FF0000;">
-                            #{messages.order_item_not_full}:
+                            #{messages.order_item_not_full} #{messages.InventoryCount}:
+                                #{_dispatchItem.stockCount.masterDisplayCount}
+                                (#{_dispatchItem.stockCount.displayAuxCount}) <br/>
+                                #{messages.stockDisparity}:
                                 #{_dispatchItem.disparity.masterDisplayCount}
-                                (#{_dispatchItem.disparity.displayAuxCount})</span>
+                                (#{_dispatchItem.disparity.displayAuxCount})
+                            </span>
                         </rich:tooltip>
                     </a:outputPanel>
                 </rich:column>

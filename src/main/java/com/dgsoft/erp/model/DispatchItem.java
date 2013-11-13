@@ -111,13 +111,22 @@ public class DispatchItem implements java.io.Serializable {
     }
 
     @Transient
-    public ResCount getStockCount() {
-        for(Stock stock: getStoreRes().getStocks()){
-            if (stock.getStore().getId().equals(getDispatch().getStore().getId())){
-                return stock.getResCount();
+    public Stock getStock() {
+        for (Stock stock : getStoreRes().getStocks()) {
+            if (stock.getStore().getId().equals(getDispatch().getStore().getId())) {
+                return stock;
             }
         }
-        return getStoreRes().getResCount(BigDecimal.ZERO,getStoreRes().getRes().getUnitGroup().getMasterUnit());
+        return null;
+    }
+
+    @Transient
+    public ResCount getStockCount() {
+        Stock stock = getStock();
+        if (stock != null) {
+            return stock.getResCount();
+        } else
+            return getStoreRes().getResCount(BigDecimal.ZERO, getStoreRes().getRes().getUnitGroup().getMasterUnit());
     }
 
     @Transient
