@@ -225,7 +225,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         businessDefineHome.setId("erp.business.order");
         startData.generateKey();
         needRes = new NeedRes(getInstance(),
-                NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date());
+                NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(),false);
         orderNeedItems = new ArrayList<OrderNeedItem>();
         //toDO read from customer level
         getInstance().setTotalRebate(new BigDecimal("100"));

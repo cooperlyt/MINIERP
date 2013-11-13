@@ -28,7 +28,7 @@ public class OrderMoneyReceive extends FinanceReceivables {
     public BigDecimal getShortageMoney() {
         BigDecimal result = orderHome.getInstance().getMoney().subtract(getTotalReveiveMoney());
         if (FarePayType.EXPRESS_RECEIVE.equals(orderHome.getMasterNeedRes().getFarePayType())){
-            result = result.subtract(orderHome.getTotalFare());
+            result = result.subtract(orderHome.getReceivePayFare());
         }
         return result;
     }

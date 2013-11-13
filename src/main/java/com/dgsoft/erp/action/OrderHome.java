@@ -8,6 +8,7 @@ import com.dgsoft.erp.model.api.DeliveryType;
 import com.dgsoft.erp.model.api.FarePayType;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 import java.math.BigDecimal;
@@ -19,34 +20,46 @@ import java.math.BigDecimal;
  * Time: 10:11 AM
  */
 @Name("orderHome")
-public class OrderHome extends ErpEntityHome<CustomerOrder>{
+public class OrderHome extends ErpEntityHome<CustomerOrder> {
+
+    @In(required = false)
+    private NeedResHome needResHome;
 
     @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)
-    public DeliveryType[] getDeliveryTypes(){
+    public DeliveryType[] getDeliveryTypes() {
         return DeliveryType.values();
     }
 
-    @Factory(value= "farePayTypes", scope = ScopeType.CONVERSATION)
-    public FarePayType[] getFarePayTypes(){
+    @Factory(value = "farePayTypes", scope = ScopeType.CONVERSATION)
+    public FarePayType[] getFarePayTypes() {
         return FarePayType.values();
     }
 
 
-    public BigDecimal getTotalFare(){
-        BigDecimal result = BigDecimal.ZERO;
-        for (NeedRes nr: getInstance().getNeedReses()){
-            for(Dispatch dispatch: nr.getDispatches()){
-                if (dispatch.getFare()!= null){
-                    result = result.add(dispatch.getFare());
-                }
-            }
+    public BigDecimal getReceivePayFare(){
+        NeedRes masterSend = getMasterNeedRes();
+        if (masterSend.getDeliveryType().isHaveFare() &&
+                masterSend.getFarePayType().equals(FarePayType.EXPRESS_RECEIVE)){
+            return masterSend.getFare() == null ? BigDecimal.ZERO : masterSend.getFare();
         }
-        return result;
+        return BigDecimal.ZERO;
     }
 
-    public NeedRes getMasterNeedRes(){
-        for (NeedRes nr: getInstance().getNeedReses()){
-            if (nr.getType().equals(NeedRes.NeedResType.ORDER_SEND)){
+//    public BigDecimal getTotalFare() {
+//        BigDecimal result = BigDecimal.ZERO;
+//        for (NeedRes nr : getInstance().getNeedReses()) {
+//            for (Dispatch dispatch : nr.getDispatches()) {
+//                if (dispatch.getFare() != null) {
+//                    result = result.add(dispatch.getFare());
+//                }
+//            }
+//        }
+//        return result;
+//    }
+
+    public NeedRes getMasterNeedRes() {
+        for (NeedRes nr : getInstance().getNeedReses()) {
+            if (nr.getType().equals(NeedRes.NeedResType.ORDER_SEND)) {
                 return nr;
             }
         }
@@ -54,10 +67,20 @@ public class OrderHome extends ErpEntityHome<CustomerOrder>{
     }
 
 
-    public synchronized boolean needStoreOut(String storeId){
-        for (NeedRes needRes: getInstance().getNeedReses()){
+    public synchronized boolean isReissue(){
+        return needResHome.getInstance().getType().equals(NeedRes.NeedResType.SUPPLEMENT_SEND);
+    }
 
-        }           //TODO
-        return true;
+    public synchronized boolean needStoreOut(String storeId) {
+
+
+        for (Dispatch dispatch: needResHome.getInstance().getDispatches()){
+            if (dispatch.getStore().getId().equals(storeId)){
+                log.debug("call need store out return true:" + storeId);
+                return true;
+            }
+        }
+        log.debug("call need store out return false:" + storeId);
+        return false;
     }
 }

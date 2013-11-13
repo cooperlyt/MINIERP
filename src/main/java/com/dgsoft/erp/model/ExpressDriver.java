@@ -26,9 +26,11 @@ public class ExpressDriver implements java.io.Serializable, NamedEntity {
 	private Set<ExpressCar> expressCars = new HashSet<ExpressCar>(0);
 
 	public ExpressDriver() {
+        enable = true;
 	}
 
 	public ExpressDriver(String id, String name, String tel) {
+        enable = true;
 		this.id = id;
 		this.name = name;
 		this.tel = tel;
@@ -40,6 +42,7 @@ public class ExpressDriver implements java.io.Serializable, NamedEntity {
 		this.tel = tel;
 		this.carCode = carCode;
 		this.expressCars = expressCars;
+        enable = true;
 	}
 
 	@Id

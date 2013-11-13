@@ -14,7 +14,7 @@ public class TaskDescription {
 
     //{"description":"","operPage":"/func/erp/biz/custom/OrderPay.xhtml"}
 
-    private static final String DEFAULT_TASK_OPERPAGE = "/func/system/business/taskOperate.xhtml";
+    private static final String DEFAULT_TASK_OPERPAGE = "/business/taskOperator/AutoTaskOperate.xhtml";
 
     private JSONObject jsonObject;
 
@@ -51,6 +51,18 @@ public class TaskDescription {
         } catch (JSONException e) {
             Logging.getLog(this.getClass()).warn("TaskDescription get task Description fail",e);
             return "";
+        }
+    }
+
+    public String getValue(String key){
+        if (jsonObject == null){
+            return null;
+        }
+        try {
+            return jsonObject.getString(key);
+        } catch (JSONException e) {
+            Logging.getLog(this.getClass()).warn("TaskDescription get task Description fail",e);
+            return null;
         }
     }
 

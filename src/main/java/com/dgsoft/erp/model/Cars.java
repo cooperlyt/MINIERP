@@ -27,6 +27,7 @@ public class Cars implements java.io.Serializable {
 	private Set<ProductToDoor> productToDoors = new HashSet<ProductToDoor>(0);
 
 	public Cars() {
+        enable = true;
 	}
 
 	@Id

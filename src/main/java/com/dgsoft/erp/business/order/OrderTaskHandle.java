@@ -27,7 +27,6 @@ public abstract class OrderTaskHandle extends TaskHandle {
     }
 
     protected String completeOrderTask(){
-
         return "taskComplete";
     }
 

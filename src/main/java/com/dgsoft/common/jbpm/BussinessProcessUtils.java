@@ -9,6 +9,7 @@ import org.jboss.seam.bpm.BusinessProcess;
 import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.log.Logging;
 
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
@@ -41,6 +42,7 @@ public class BussinessProcessUtils extends BusinessProcess{
     public void endTask(String transitionName){
         super.endTask(transitionName);
         ManagedJbpmContext.instance().getSession().flush();
+        Logging.getLog(getClass()).debug("call endTask:" + transitionName);
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.endTask");
     }
 }

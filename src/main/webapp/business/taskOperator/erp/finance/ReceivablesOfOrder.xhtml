@@ -25,9 +25,9 @@
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
 
-                <h:outputText value="#{messages.order_fare}" rendered="#{orderHome.masterNeedRes.farePayType eq 'EXPRESS_RECEIVE'}"/>
+                <h:outputText value="#{messages.order_fare}" rendered="#{orderHome.masterNeedRes.deliveryType.haveFare and  (orderHome.masterNeedRes.farePayType eq 'EXPRESS_RECEIVE')}"/>
 
-                <h:outputText value="#{orderHome.totalFare}" rendered="#{orderHome.masterNeedRes.farePayType eq 'EXPRESS_RECEIVE'}">
+                <h:outputText value="#{orderHome.receivePayFare}" rendered="#{orderHome.masterNeedRes.deliveryType.haveFare and  (orderHome.masterNeedRes.farePayType eq 'EXPRESS_RECEIVE')}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
 

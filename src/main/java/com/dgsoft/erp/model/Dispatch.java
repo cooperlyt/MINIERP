@@ -152,8 +152,7 @@ public class Dispatch implements java.io.Serializable {
 	}
 
     @Enumerated(EnumType.STRING)
-	@Column(name = "FARE_PAY_TYPE", nullable = false, length = 32)
-	@NotNull
+	@Column(name = "FARE_PAY_TYPE", nullable = true, length = 32)
 	public FarePayType getFarePayType() {
 		return this.farePayType;
 	}

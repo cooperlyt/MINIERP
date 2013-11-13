@@ -5,6 +5,7 @@ import com.dgsoft.erp.model.api.DeliveryType;
 import com.dgsoft.erp.model.api.FarePayType;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +31,8 @@ public class NeedRes implements java.io.Serializable {
     private String reason;
     private String memo;
     private Date createDate;
+    private boolean dispatched;
+    private BigDecimal fare;
     private DeliveryType deliveryType;
     private FarePayType farePayType;
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
@@ -38,11 +41,13 @@ public class NeedRes implements java.io.Serializable {
     public NeedRes() {
     }
 
-    public NeedRes(CustomerOrder customerOrder, NeedResType type, String reason, Date createDate) {
+    public NeedRes(CustomerOrder customerOrder, NeedResType type,
+                   String reason, Date createDate,boolean dispatched) {
         this.customerOrder = customerOrder;
         this.type = type;
         this.createDate = createDate;
         this.reason = reason;
+        this.dispatched = dispatched;
     }
 
     @Id
@@ -113,6 +118,15 @@ public class NeedRes implements java.io.Serializable {
         this.memo = memo;
     }
 
+    @Column(name="DISPATCHED", nullable = false)
+    public boolean isDispatched() {
+        return dispatched;
+    }
+
+    public void setDispatched(boolean dispatched) {
+        this.dispatched = dispatched;
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "DELIVERY_TYPE", nullable = false, length = 32)
     @NotNull
@@ -163,4 +177,12 @@ public class NeedRes implements java.io.Serializable {
         this.dispatches = dispatches;
     }
 
+    @Column(name = "FARE",nullable = true,scale = 3)
+    public BigDecimal getFare() {
+        return fare;
+    }
+
+    public void setFare(BigDecimal fare) {
+        this.fare = fare;
+    }
 }

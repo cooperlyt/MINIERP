@@ -26,6 +26,7 @@ public class TransCorp implements java.io.Serializable,NamedEntity {
 	private Set<ExpressInfo> expressInfos = new HashSet<ExpressInfo>(0);
 
 	public TransCorp() {
+        enable = true;
 	}
 
 	public TransCorp(String id, String name, boolean enable) {

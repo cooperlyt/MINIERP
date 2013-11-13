@@ -2,6 +2,7 @@ package com.dgsoft.common.system.business;
 
 import com.dgsoft.common.exception.ProcessDefineException;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Unwrap;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 @Scope(ScopeType.STATELESS)
 @Name("taskDescription")
 @BypassInterceptors
+@AutoCreate
 public class CurrTaskDescription {
 
     @Unwrap

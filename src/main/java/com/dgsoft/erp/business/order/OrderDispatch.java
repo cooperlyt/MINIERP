@@ -3,6 +3,7 @@ package com.dgsoft.erp.business.order;
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.action.CarsHome;
 import com.dgsoft.erp.action.ExpressDriverHome;
+import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
@@ -44,6 +45,9 @@ public class OrderDispatch extends OrderTaskHandle {
 
     @In(create = true)
     private CarsHome carsHome;
+
+    @In(create = true)
+    private NeedResHome needResHome;
 
     public static class ResOrderItem {
 
@@ -93,15 +97,15 @@ public class OrderDispatch extends OrderTaskHandle {
 
     private String selectOrderItemId;
 
-    private NeedRes needRes;
+    //private NeedRes needRes;
 
     public void clearDispatch() {
         store = null;
         //count = BigDecimal.ZERO;
         orderItemId = null;
         memo = null;
-        deliveryType = needRes.getDeliveryType();
-        farePayType = needRes.getFarePayType();
+        deliveryType = needResHome.getInstance().getDeliveryType();
+        farePayType = needResHome.getInstance().getFarePayType();
         dispatchStoreExists = false;
 
         expressDriverHome.clearInstance();
@@ -215,14 +219,6 @@ public class OrderDispatch extends OrderTaskHandle {
         this.selectOrderItemId = selectOrderItemId;
     }
 
-    public NeedRes getNeedRes() {
-        return needRes;
-    }
-
-    public void setNeedRes(NeedRes needRes) {
-        this.needRes = needRes;
-    }
-
     public Store getStore() {
         return store;
     }
@@ -282,9 +278,13 @@ public class OrderDispatch extends OrderTaskHandle {
             }
         }
 
+
         storeResCountInupt = new StoreResCountInupt(selectOrderItem.getStoreRes().getRes(),
                 selectOrderItem.getStoreRes().getRes().getResUnitByOutDefault());
 
+        if (selectOrderItem.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            storeResCountInupt.setFloatConvertRate(selectOrderItem.getStoreRes().getFloatConversionRate());
+        }
 
         actionExecuteState.clearState();
         clearDispatch();
@@ -317,7 +317,7 @@ public class OrderDispatch extends OrderTaskHandle {
         Dispatch dispatch = getStoreDispatch();
 
         if (dispatch == null) {
-            dispatch = new Dispatch(needRes, store, deliveryType,
+            dispatch = new Dispatch(needResHome.getInstance(), store, deliveryType,
                     deliveryType.isHaveFare() ? farePayType : null, memo, Dispatch.DispatchState.DISPATCH_COMPLETE);
             setSendInfo(dispatch);
 
@@ -441,13 +441,14 @@ public class OrderDispatch extends OrderTaskHandle {
         dispatchList = new ArrayList<Dispatch>();
         for (NeedRes nr : orderHome.getInstance().getNeedReses()) {
             if (nr.getDispatches().isEmpty()) {
-                needRes = nr;
+                //needRes = nr;
+                needResHome.setId(nr.getId());
                 break;
             }
         }
 
         storeResOrderItems = new ArrayList<OrderItem>();
-        for (OrderItem oi : needRes.getOrderItems()) {
+        for (OrderItem oi : needResHome.getInstance().getOrderItems()) {
 
             if (oi.isStoreResItem()) {
                 oi.generateResCount();
@@ -475,10 +476,10 @@ public class OrderDispatch extends OrderTaskHandle {
 
     @Override
     protected String completeOrderTask(){
-        needRes.getDispatches().addAll(dispatchList);
+        needResHome.getInstance().getDispatches().addAll(dispatchList);
+        needResHome.getInstance().setDispatched(true);
 
-
-        orderHome.update();
+        needResHome.update();
 
         dispatchStoreIds = new String[dispatchList.size()];
         for (int i = 0; i< dispatchList.size(); i++){
