@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.system.model.Function;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +20,8 @@ public class Depositary implements java.io.Serializable {
 	private String id;
 	private Integer version;
 	private StoreArea storeArea;
-	private BatchStoreCount batchStoreCount;
+	private Set<BatchStoreCount> batchStoreCounts = new HashSet<BatchStoreCount>();
+
 	private Stock stock;
 	private BigDecimal count;
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
@@ -26,14 +29,6 @@ public class Depositary implements java.io.Serializable {
 	public Depositary() {
 	}
 
-	public Depositary(String id, StoreArea storeArea,
-			BatchStoreCount batchStoreCount, Stock stock, BigDecimal count) {
-		this.id = id;
-		this.storeArea = storeArea;
-		this.batchStoreCount = batchStoreCount;
-		this.stock = stock;
-		this.count = count;
-	}
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -68,15 +63,15 @@ public class Depositary implements java.io.Serializable {
 		this.storeArea = storeArea;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BATCH", nullable = false)
-	@NotNull
-	public BatchStoreCount getBatchStoreCount() {
-		return this.batchStoreCount;
+
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = BatchStoreCount.class)
+    @JoinTable(name = "BATCH_AND_AREA", joinColumns = @JoinColumn(name = "STORE_AREA"), inverseJoinColumns = @JoinColumn(name = "BATCH"))
+	public Set<BatchStoreCount> getBatchStoreCounts() {
+		return this.batchStoreCounts;
 	}
 
-	public void setBatchStoreCount(BatchStoreCount batchStoreCount) {
-		this.batchStoreCount = batchStoreCount;
+	public void setBatchStoreCounts(Set<BatchStoreCount> batchStoreCount) {
+		this.batchStoreCounts = batchStoreCount;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

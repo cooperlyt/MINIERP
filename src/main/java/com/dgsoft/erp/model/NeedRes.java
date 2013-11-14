@@ -1,8 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.erp.model.api.DeliveryType;
-import com.dgsoft.erp.model.api.FarePayType;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -32,9 +30,10 @@ public class NeedRes implements java.io.Serializable {
     private String memo;
     private Date createDate;
     private boolean dispatched;
-    private BigDecimal fare;
-    private DeliveryType deliveryType;
-    private FarePayType farePayType;
+    private BigDecimal totalFare;
+    private boolean receiveMoney;
+    private boolean fareByCustomer;
+
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
@@ -127,27 +126,6 @@ public class NeedRes implements java.io.Serializable {
         this.dispatched = dispatched;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "DELIVERY_TYPE", nullable = false, length = 32)
-    @NotNull
-    public DeliveryType getDeliveryType() {
-        return deliveryType;
-    }
-
-    public void setDeliveryType(DeliveryType deliveryType) {
-        this.deliveryType = deliveryType;
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "FARE_PAY_TYPE", nullable = true, length = 32)
-    public FarePayType getFarePayType() {
-        return farePayType;
-    }
-
-    public void setFarePayType(FarePayType farePayType) {
-        this.farePayType = farePayType;
-    }
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATE_DATE", nullable = false, length = 19)
     @NotNull
@@ -177,12 +155,40 @@ public class NeedRes implements java.io.Serializable {
         this.dispatches = dispatches;
     }
 
-    @Column(name = "FARE",nullable = true,scale = 3)
-    public BigDecimal getFare() {
-        return fare;
+    @Column(name = "TOTAL_FARE",nullable = true,scale = 3)
+    public BigDecimal getTotalFare() {
+        return totalFare;
     }
 
-    public void setFare(BigDecimal fare) {
-        this.fare = fare;
+    public void setTotalFare(BigDecimal fare) {
+        this.totalFare = fare;
+    }
+
+    @Column(name="RECEIVE_MONEY", nullable = false)
+    public boolean isReceiveMoney() {
+        return receiveMoney;
+    }
+
+    public void setReceiveMoney(boolean receiveMoney) {
+        this.receiveMoney = receiveMoney;
+    }
+
+    @Column(name="FARE_BY_CUSTOMER", nullable = false)
+    public boolean isFareByCustomer() {
+        return fareByCustomer;
+    }
+
+    public void setFareByCustomer(boolean fareByCustomer) {
+        this.fareByCustomer = fareByCustomer;
+    }
+
+    @Transient
+    public boolean isAllCustomerSelfTake(){
+        for (Dispatch dispatch: getDispatches()){
+           if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)){
+               return false;
+           }
+        }
+        return true;
     }
 }

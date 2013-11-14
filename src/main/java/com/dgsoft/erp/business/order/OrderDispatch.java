@@ -7,8 +7,6 @@ import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.DeliveryType;
-import com.dgsoft.erp.model.api.FarePayType;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -61,7 +59,6 @@ public class OrderDispatch extends OrderTaskHandle {
     private List<Dispatch> dispatchList;
 
 
-
     //--------------------
 
     private Store store;
@@ -75,9 +72,7 @@ public class OrderDispatch extends OrderTaskHandle {
 
     private String memo;
 
-    private DeliveryType deliveryType;
-
-    private FarePayType farePayType;
+    private Dispatch.DeliveryType deliveryType;
 
     private boolean dispatchStoreExists;
 
@@ -101,8 +96,7 @@ public class OrderDispatch extends OrderTaskHandle {
         //count = BigDecimal.ZERO;
         orderItemId = null;
         memo = null;
-        deliveryType = needResHome.getInstance().getDeliveryType();
-        farePayType = needResHome.getInstance().getFarePayType();
+
         dispatchStoreExists = false;
 
         expressDriverHome.clearInstance();
@@ -159,14 +153,6 @@ public class OrderDispatch extends OrderTaskHandle {
         this.dispatchStoreExists = dispatchStoreExists;
     }
 
-    public FarePayType getFarePayType() {
-        return farePayType;
-    }
-
-    public DeliveryType getDeliveryType() {
-        return deliveryType;
-    }
-
     public String getMemo() {
         return memo;
     }
@@ -183,13 +169,14 @@ public class OrderDispatch extends OrderTaskHandle {
         this.memo = memo;
     }
 
-    public void setDeliveryType(DeliveryType deliveryType) {
+    public Dispatch.DeliveryType getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(Dispatch.DeliveryType deliveryType) {
         this.deliveryType = deliveryType;
     }
 
-    public void setFarePayType(FarePayType farePayType) {
-        this.farePayType = farePayType;
-    }
 
     public List<OrderItem> getStoreResOrderItems() {
         return storeResOrderItems;
@@ -232,24 +219,23 @@ public class OrderDispatch extends OrderTaskHandle {
         this.orderItemId = orderItemId;
     }
 
-    public void beginEditDispatchInfo(){
-        for (Dispatch dispatch: dispatchList){
-            if (dispatch.getStore().getId().equals(storeId)){
+    public void beginEditDispatchInfo() {
+        for (Dispatch dispatch : dispatchList) {
+            if (dispatch.getStore().getId().equals(storeId)) {
                 selectDispatch = dispatch;
                 deliveryType = selectDispatch.getDeliveryType();
-                farePayType = selectDispatch.getFarePayType();
                 memo = selectDispatch.getMemo();
 
                 expressDriverHome.clearInstance();
                 carsHome.clearInstance();
                 transCorpHome.clearInstance();
 
-                switch (deliveryType){
+                switch (deliveryType) {
                     case SEND_TO_DOOR:
                         carsHome.setInstance(selectDispatch.getProductToDoor().getCars());
                         break;
                     case FULL_CAR_SEND:
-                         expressDriverHome.setInstance(selectDispatch.getExpressCar().getExpressDriver());
+                        expressDriverHome.setInstance(selectDispatch.getExpressCar().getExpressDriver());
                         break;
                     case EXPRESS_SEND:
                         transCorpHome.setInstance(selectDispatch.getExpressInfo().getTransCorp());
@@ -267,7 +253,6 @@ public class OrderDispatch extends OrderTaskHandle {
     public void beginDispatchItem() {
 
 
-
         for (OrderItem oi : storeResOrderItems) {
             if (oi.getId().equals(orderItemId)) {
                 selectOrderItem = oi;
@@ -279,7 +264,7 @@ public class OrderDispatch extends OrderTaskHandle {
         storeResCountInupt = new StoreResCountInupt(selectOrderItem.getStoreRes().getRes(),
                 selectOrderItem.getStoreRes().getRes().getResUnitByOutDefault());
 
-        if (selectOrderItem.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+        if (selectOrderItem.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             storeResCountInupt.setFloatConvertRate(selectOrderItem.getStoreRes().getFloatConversionRate());
         }
 
@@ -295,16 +280,15 @@ public class OrderDispatch extends OrderTaskHandle {
 
     public void dispatchAllStoreRes() {
 
-        if (selectDispatch != null){
+        if (selectDispatch != null) {
             setSendInfo(selectDispatch);
             selectDispatch.setDeliveryType(deliveryType);
-            selectDispatch.setFarePayType(deliveryType.isHaveFare()? farePayType: null);
             selectDispatch = null;
             return;
         }
 
 
-        if ((selectOrderItem != null) && (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <=0) ){
+        if ((selectOrderItem != null) && (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <= 0)) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_less_zero");
             actionExecuteState.setState("fail");
             return;
@@ -315,7 +299,7 @@ public class OrderDispatch extends OrderTaskHandle {
 
         if (dispatch == null) {
             dispatch = new Dispatch(needResHome.getInstance(), store, deliveryType,
-                    deliveryType.isHaveFare() ? farePayType : null, memo, Dispatch.DispatchState.DISPATCH_COMPLETE);
+                    memo, Dispatch.DispatchState.DISPATCH_COMPLETE);
             setSendInfo(dispatch);
 
             dispatchList.add(dispatch);
@@ -352,19 +336,19 @@ public class OrderDispatch extends OrderTaskHandle {
     }
 
     private void setSendInfo(Dispatch dispatch) {
-        switch (deliveryType){
+        switch (deliveryType) {
             case FULL_CAR_SEND:
-                dispatch.setExpressCar(new ExpressCar(dispatch,expressDriverHome.getReadyInstance()));
+                dispatch.setExpressCar(new ExpressCar(dispatch, expressDriverHome.getReadyInstance()));
                 dispatch.setExpressInfo(null);
                 dispatch.setProductToDoor(null);
                 break;
             case EXPRESS_SEND:
-                dispatch.setExpressInfo(new ExpressInfo(dispatch,transCorpHome.getReadyInstance()));
+                dispatch.setExpressInfo(new ExpressInfo(dispatch, transCorpHome.getReadyInstance()));
                 dispatch.setProductToDoor(null);
                 dispatch.setExpressCar(null);
                 break;
             case SEND_TO_DOOR:
-                dispatch.setProductToDoor(new ProductToDoor(dispatch,carsHome.getReadyInstance()));
+                dispatch.setProductToDoor(new ProductToDoor(dispatch, carsHome.getReadyInstance()));
                 dispatch.setExpressCar(null);
                 dispatch.setExpressInfo(null);
                 break;
@@ -472,13 +456,13 @@ public class OrderDispatch extends OrderTaskHandle {
 
 
     @Override
-    protected String completeOrderTask(){
+    protected String completeOrderTask() {
         needResHome.getInstance().getDispatches().addAll(dispatchList);
         needResHome.getInstance().setDispatched(true);
 
-        if (needResHome.update().equals("updated")){
-           return "taskComplete";
-        }else {
+        if (needResHome.update().equals("updated")) {
+            return "taskComplete";
+        } else {
             return "updateFail";
         }
     }

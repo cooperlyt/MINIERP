@@ -28,32 +28,19 @@
 
 
     <rich:toolbarGroup location="right">
-        <h:form>
-            <h:panelGrid columns="2">
-                <h:panelGroup
-                        rendered="#{(needResHome.instance.type eq 'ORDER_SEND') and (needResHome.instance.deliveryType.haveFare) and (needResHome.instance.farePayType eq 'EXPRESS_RECEIVE')}">
-                    <s:label value="#{messages.order_fare}"/>
-                    <h:inputText id="orderSubFareInput" value="#{needResHome.instance.fare}" required="true"
-                                 label="#{messages.order_fare}"
-                                 size="8">
-                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                         type="currency" groupingUsed="false"/>
-                        <rich:validator/>
-                        <rich:placeholder value="#{messages.order_fare}"/>
-                    </h:inputText>
-                    <rich:message for="orderSubFareInput" styleClass="message-icon"
-                                  showDetail="true" showSummary="true" tooltip="true"/>
-                </h:panelGroup>
-                <h:panelGroup id="orderDispatchTaskAction">
-                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                                     onclick="if(#{not empty orderDispatch.storeResOrderItems}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
-                                     action="#{orderDispatch.complete}"/>
-                </h:panelGroup>
-            </h:panelGrid>
-        </h:form>
+        <h:panelGrid columns="2">
+
+            <h:panelGroup id="orderDispatchTaskAction">
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                          view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                          onclick="if(#{not empty orderDispatch.storeResOrderItems}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
+                          action="#{orderDispatch.complete}"/>
+            </h:panelGroup>
+        </h:panelGrid>
+
     </rich:toolbarGroup>
 </rich:toolbar>
 
@@ -104,26 +91,12 @@
                                            label="#{messages[_type.name()]}"
                                            noSelectionLabel="#{messages.noSelectLabel}"/>
                             <s:convertEnum/>
-                            <a:ajax event="valueChange" render="deliveryTypeField,farePayTypeField,expressInfoField">
+                            <a:ajax event="valueChange" render="deliveryTypeField,expressInfoField">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
                         </h:selectOneMenu>
                     </s:decorate>
 
-                    <a:outputPanel id="farePayTypeField">
-                        <s:decorate
-                                rendered="#{ (not empty orderDispatch.deliveryType) and orderDispatch.deliveryType.haveFare}"
-                                template="/layout/edit.xhtml">
-                            <ui:define name="label">#{messages.order_field_farePayType}</ui:define>
-                            <h:selectOneMenu value="#{orderDispatch.farePayType}"
-                                             required="true" label="#{messages.order_field_farePayType}">
-                                <s:selectItems value="#{farePayTypes}" var="_type"
-                                               label="#{messages[_type.name()]}"
-                                               noSelectionLabel="#{messages.noSelectLabel}"/>
-                                <s:convertEnum/>
-                            </h:selectOneMenu>
-                        </s:decorate>
-                    </a:outputPanel>
                 </h:panelGrid>
 
 
@@ -320,8 +293,7 @@
                               rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"/>
                 <h:outputText value="#{_dispatch.productToDoor.cars.id}"
                               rendered="#{_dispatch.deliveryType eq 'SEND_TO_DOOR'}"/> )
-                <h:outputText value="#{messages.order_field_farePayType}:#{messages[_dispatch.farePayType.name()]}"
-                              rendered="#{_dispatch.deliveryType.haveFare}"/>
+
                 ]
                 <a:commandButton image="/img/edit.png" immediate="true" render="singleDispatchPanel_inputs"
                                  action="#{orderDispatch.beginEditDispatchInfo}"

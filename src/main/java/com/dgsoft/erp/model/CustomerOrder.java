@@ -34,7 +34,17 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     public enum OrderPayType{
-        COMPLETE_PAY,PAY_FIRST,EARNEST_FIRST,OVERDRAFT;
+        COMPLETE_PAY(true),PAY_FIRST(false),EARNEST_FIRST(true),OVERDRAFT(false);
+
+        private boolean canExpressReceive;
+
+        public boolean isCanExpressReceive() {
+            return canExpressReceive;
+        }
+
+        private OrderPayType(boolean canExpressReceive){
+           this.canExpressReceive = canExpressReceive;
+        }
     }
 
     public enum MiddleMoneyCalcType{

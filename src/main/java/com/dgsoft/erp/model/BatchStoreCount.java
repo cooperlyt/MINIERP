@@ -91,7 +91,7 @@ public class BatchStoreCount implements java.io.Serializable {
         this.count = count;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batchStoreCount")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "batchStoreCounts")
     public Set<Depositary> getDepositaries() {
         return this.depositaries;
     }

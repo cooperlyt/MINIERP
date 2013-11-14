@@ -42,47 +42,27 @@
                                noSelectionLabel="#{messages.noSelectLabel}"
                                label="#{messages[_payType.name()]}"/>
                 <s:convertEnum/>
-                <rich:validator event="selectitem"/>
+                <rich:validator/>
                 <rich:placeholder value="#{messages.order_field_payType}"/>
+                <a:ajax event="selectitem" render="farePayTypeField"/>
             </rich:select>
             <rich:message for="payTypeField" styleClass="message-icon"
                           showDetail="true" showSummary="true" tooltip="true"/>
 
-            <rich:select value="#{orderCreate.needRes.deliveryType}"
-                         styleClass="payTypeSelectWidth" listWidth="93px"
-                         label="#{messages.order_field_deliveryType}"
-                         required="true" id="deliveryTypeSelect">
-                <s:selectItems value="#{deliveryTypes}" var="_deliveryType"
-                               noSelectionLabel="#{messages.noSelectLabel}"
-                               label="#{messages[_deliveryType.name()]}"/>
-                <s:convertEnum/>
-                <rich:placeholder value="#{messages.order_field_deliveryType}"/>
-                <a:ajax event="selectitem" render="farePayTypeField"/>
-            </rich:select>
-            <rich:message for="deliveryTypeSelect" styleClass="message-icon"
-                          showDetail="true" showSummary="true" tooltip="true"/>
+             <s:decorate template="/layout/edit.xhtml">
+                 <ui:define name="label">#{messages.order_fare_by_customer}</ui:define>
+                 <h:selectBooleanCheckbox value="#{orderCreate.needRes.fareByCustomer}"/>
+             </s:decorate>
 
 
             <a:outputPanel id="farePayTypeField">
-                <h:panelGrid columns="2">
-                <rich:select value="#{orderCreate.needRes.farePayType}"
-                             styleClass="payTypeSelectWidth" listWidth="93px"
-                             label="#{messages.order_field_farePayType}"
-                             required="true" id="farePayTypeSelect"
-                             rendered="#{(not empty orderCreate.needRes.deliveryType) and (orderCreate.needRes.deliveryType.haveFare) }">
-                    <s:selectItems value="#{farePayTypes}" var="_farePayType"
-                                   noSelectionLabel="#{messages.noSelectLabel}"
-                                   label="#{messages[_farePayType.name()]}"/>
-                    <rich:validator event="selectitem"/>
-                    <s:convertEnum/>
-                    <rich:placeholder value="#{messages.order_field_farePayType}"/>
-                </rich:select>
-
-                <rich:message for="farePayTypeSelect" styleClass="message-icon"
-                              rendered="#{(not empty orderCreate.needRes.deliveryType) and (orderCreate.needRes.deliveryType.haveFare) }"
-                              showDetail="true" showSummary="true" tooltip="true"/>
-                </h:panelGrid>
+                <s:decorate template="/layout/edit.xhtml"
+                        rendered="#{(not empty orderCreate.instance.payType) and (orderCreate.instance.payType.canExpressReceive)}">
+                    <ui:define name="label">#{messages.order_express_receive_money}</ui:define>
+                    <h:selectBooleanCheckbox value="#{orderCreate.needRes.receiveMoney}"/>
+                </s:decorate>
             </a:outputPanel>
+
             <rich:calendar id="orderSendLimitDateField"
                            enableManualInput="true"
                            inputSize="10"

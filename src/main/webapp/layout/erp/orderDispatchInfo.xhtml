@@ -1,0 +1,58 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <s:decorate template="/layout/display.xhtml">
+        <ui:define name="label">#{messages.dispatch_field_store}</ui:define>
+        <h:outputText value="#{dispatch.store.name}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/dispaly.xhtml">
+        <ui:define name="label">#{messages.State}</ui:define>
+        <h:outputText value="#{messages[dispatch.state.name()]}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml">
+        <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
+        #{messages[dispatch.delivryType.name()]}
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliverType eq 'CUSTOMER_SELF'))}">
+        <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
+        <h:outputText value="#{dispatch.sendTime}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliverType.haveFare) and (not (dispatch.deliverType eq 'CUSTOMER_SELF'))}">
+        <ui:define name="label">#{messages.order_fare}</ui:define>
+        <h:outputText value="#{dispatch.fare}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliverType eq 'CUSTOMER_SELF'))}">
+        <ui:define name="label">#{messages.order_field_sendEmployee}</ui:define>
+        <h:outputText value="#{dictionary.getEmpNameById(dispatch.sendEmp)}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliverType eq 'CUSTOMER_SELF')}">
+        <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
+        <h:outputText value="#{dispatch.outCustomer}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml">
+        <ui:define name="label">#{messages.field_memo}</ui:define>
+        <h:outputText value="#{dispatch.memo}"/>
+    </s:decorate>
+
+
+
+</ui:composition>

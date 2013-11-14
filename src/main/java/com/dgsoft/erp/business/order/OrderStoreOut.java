@@ -3,6 +3,7 @@ package com.dgsoft.erp.business.order;
 import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.DispatchHome;
+import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
@@ -82,37 +83,44 @@ public class OrderStoreOut extends OrderTaskHandle {
         for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {
             //TODO noConvertRate Unit
             StockChangeItem stockChangeItem = new StockChangeItem(dispatchHome.getInstance().getStockChange(),
-                    item.getStock(),item.getResCount().getMasterCount(),true);
+                    item.getStock(), item.getResCount().getMasterCount(), true);
             dispatchHome.getInstance().getStockChange().getStockChangeItems()
                     .add(stockChangeItem);
             item.getStock().setCount(stockChangeItem.getAfterCount());
             //TODO UseSelectBatch
             //TODO StoreArea Count subtract
             BigDecimal count = stockChangeItem.getCount();
-            for (BatchStoreCount bsc: item.getStock().getBatchStoreCountList()){
-                if (bsc.getCount().compareTo(count) >= 0){
+            for (BatchStoreCount bsc : item.getStock().getBatchStoreCountList()) {
+                if (bsc.getCount().compareTo(count) >= 0) {
                     bsc.setCount(bsc.getCount().subtract(count));
                     count = BigDecimal.ZERO;
 
                     break;
-                }else{
+                } else {
                     count = count.subtract(bsc.getCount());
                     bsc.setCount(BigDecimal.ZERO);
 
                     //TODO Del Batch StoreCount if not Default; but save Batch info
                 }
             }
-            if (count.compareTo(BigDecimal.ZERO) != 0){
+            if (count.compareTo(BigDecimal.ZERO) != 0) {
                 throw new IllegalStateException("batch count error, not equals stock count");
             }
         }
 
-        dispatchHome.getInstance().setState(Dispatch.DispatchState.DISPATCH_STORE_OUT);
-         if (dispatchHome.update().equals("updated")){
-             return "taskComplete";
-         }else{
-             return "updateFail";
-         }
+
+        if (dispatchHome.getInstance().getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
+            dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
+            dispatchHome.getInstance().setSendTime(storeOutDate);
+            dispatchHome.getInstance().setFare(BigDecimal.ZERO);
+        } else {
+            dispatchHome.getInstance().setState(Dispatch.DispatchState.DISPATCH_STORE_OUT);
+        }
+        if (dispatchHome.update().equals("updated")) {
+            return "taskComplete";
+        } else {
+            return "updateFail";
+        }
 
 
     }
@@ -131,6 +139,7 @@ public class OrderStoreOut extends OrderTaskHandle {
                     if (dispatch.getStore().getId().equals(storeId) &&
                             dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_COMPLETE)) {
                         dispatchHome.setId(dispatch.getId());
+
                         return "success";
                     }
                 }

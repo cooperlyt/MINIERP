@@ -1,8 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.erp.model.api.DeliveryType;
-import com.dgsoft.erp.model.api.FarePayType;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -19,8 +17,27 @@ import javax.validation.constraints.Size;
 		"NEED_RES", "STORE"}))
 public class Dispatch implements java.io.Serializable {
 
+    public enum DeliveryType {
+
+        FULL_CAR_SEND(true),
+        EXPRESS_SEND(true),
+        SEND_TO_DOOR(false),
+        CUSTOMER_SELF(false);
+
+        private boolean haveFare;
+
+        public boolean isHaveFare() {
+            return haveFare;
+        }
+
+        private DeliveryType(boolean haveFare){
+            this.haveFare = haveFare;
+        }
+
+    }
+
     public enum DispatchState{
-        DISPATCH_COMPLETE,DISPATCH_STORE_OUT,SEND_COMPLETE,ALL_COMPLETE;
+        DISPATCH_COMPLETE,DISPATCH_STORE_OUT,ALL_COMPLETE;
     }
 
 	private String id;
@@ -32,7 +49,6 @@ public class Dispatch implements java.io.Serializable {
 	private NeedRes needRes;
 	private DeliveryType deliveryType;
 	private Date sendTime;
-	private FarePayType farePayType;
 	private BigDecimal fare;
 	private String sendEmp;
 	private DispatchState state;
@@ -44,14 +60,12 @@ public class Dispatch implements java.io.Serializable {
 	public Dispatch() {
 	}
 
-    public Dispatch(NeedRes needRes, Store store,
-                    DeliveryType deliveryType, FarePayType farePayType,  String memo, DispatchState state) {
-        this.deliveryType = deliveryType;
-        this.farePayType = farePayType;
+    public Dispatch(NeedRes needRes, Store store, DeliveryType deliveryType, String memo, DispatchState state) {
         this.store = store;
         this.memo = memo;
         this.state = state;
         this.needRes = needRes;
+        this.deliveryType = deliveryType;
     }
 
     @Id
@@ -151,16 +165,6 @@ public class Dispatch implements java.io.Serializable {
 		this.sendTime = sendTime;
 	}
 
-    @Enumerated(EnumType.STRING)
-	@Column(name = "FARE_PAY_TYPE", nullable = true, length = 32)
-	public FarePayType getFarePayType() {
-		return this.farePayType;
-	}
-
-	public void setFarePayType(FarePayType farePayType) {
-		this.farePayType = farePayType;
-	}
-
 	@Column(name = "FARE", scale = 3)
 	public BigDecimal getFare() {
 		return this.fare;
@@ -231,4 +235,5 @@ public class Dispatch implements java.io.Serializable {
         });
         return result;
     }
+
 }

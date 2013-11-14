@@ -11,21 +11,60 @@
     <ui:param name="functionTitle" value="#{messages.orderStoreOut}"/>
 
     <ui:define name="func-body">
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup location="right">
+                    <h:panelGroup id="orderDispatchTaskAction">
+                        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                        <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                                  action="#{orderStoreOut.complete}"/>
+                    </h:panelGroup>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
 
-        <rich:toolbar>
-            <rich:toolbarGroup location="right">
-                <h:panelGroup id="orderDispatchTaskAction">
-                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-                    <s:button styleClass="toolBarBtn" value="#{messages.complete}"
-                              action="#{orderStoreOut.complete}" />
-                </h:panelGroup>
-            </rich:toolbarGroup>
-        </rich:toolbar>
-        <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <rich:panel >
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.storeOut_field_dateTime}</ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="20"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datetimepattern}"
+                        defaultTime="#{currentTime}"
+                        defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                        required="true"
+                        label="#{messages.storeOut_field_dateTime}"
+                        value="#{orderStoreOut.storeOutDate}"/>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">
+                    #{messages.dispatch_field_outCustomer}
+                </ui:define>
+                <h:inputText size="27" value="#{dispatchHome.instance.outCustomer}"
+                             maxlength="50" label="#{messages.dispatch_field_outCustomer}" />
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+                <h:inputTextarea value="#{orderStoreOut.memo}" label="#{messages.field_memo}"
+                                 rows="2" cols="40"/>
+            </s:decorate>
+
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
+            </rich:panel>
 
 
-        <rich:dataTable value="#{dispatchHome.instance.dispatchItemList}" var="_dispatchItem">
+        </h:form>
+        <br/>
+
+        <rich:dataTable style="width: 100%" value="#{dispatchHome.instance.dispatchItemList}" var="_dispatchItem">
             <f:facet name="header">
                 #{messages.order_item_storeOut_items}
             </f:facet>
@@ -73,6 +112,14 @@
                 #{_dispatchItem.resCount.displayAuxCount}
             </rich:column>
         </rich:dataTable>
+
+        <br/>
+        <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
+            <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+
+
+            </s:decorate>
+        </rich:collapsiblePanel>
     </ui:define>
 
 </ui:composition>
