@@ -77,7 +77,7 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         dispatchHome.getInstance().setStockChange(
-                new StockChange(dispatchHome.getInstance().getStore(), storeOutDate,
+                new StockChange(orderHome.getInstance().getId(),dispatchHome.getInstance().getStore(), storeOutDate,
                         credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo));
 
         for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {

@@ -15,22 +15,8 @@ import javax.validation.constraints.Size;
 public class CustomerOrder implements java.io.Serializable {
 
     public enum OrderState{
-        WAITING_PAY_SEND(false), WAITING_PAY_FIRST(false),WAITING_SEND(false),SENDING(false),
-        ORDER_ACCOUNT(true),ORDER_ALL_COMPLETE(true),ORDER_OVERDRAFT_COMPLETE(true);
+        ORDER_RUNNING,ORDER_SETTLEMENT, ORDER_COMPLETED;
 
-        private boolean completed;
-
-        public boolean isCompleted() {
-            return completed;
-        }
-
-        public void setCompleted(boolean completed) {
-            this.completed = completed;
-        }
-
-        private OrderState(boolean completed){
-           this.completed = completed;
-        }
     }
 
     public enum OrderPayType{
@@ -76,6 +62,8 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal middleTotal;
 
 	private boolean includeMiddleMan;
+    private Boolean overdraft;
+
     private MiddleMoneyCalcType middleMoneyCalcType;
 	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
 	private Set<MiddleMoneyPay> middleMoneyPays = new HashSet<MiddleMoneyPay>(0);
@@ -307,6 +295,15 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setTel(String tel) {
         this.tel = tel;
+    }
+
+    @Column(name="OVERDRAFT")
+    public Boolean getOverdraft() {
+        return overdraft;
+    }
+
+    public void setOverdraft(Boolean overdraft) {
+        this.overdraft = overdraft;
     }
 
     @Column(name="ADDRESS",length = 200,nullable = false)

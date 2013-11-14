@@ -17,42 +17,43 @@
                     <h:panelGroup id="orderDispatchTaskAction">
                         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                                   view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-                        <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
                                   action="#{orderStoreOut.complete}"/>
                     </h:panelGroup>
                 </rich:toolbarGroup>
             </rich:toolbar>
             <rich:messages ajaxRendered="true" globalOnly="true"/>
 
-            <rich:panel >
-            <s:decorate template="/layout/seam-edit.xhtml">
-                <ui:define name="label">#{messages.storeOut_field_dateTime}</ui:define>
-                <rich:calendar
-                        enableManualInput="true"
-                        inputSize="20"
-                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                        datePattern="#{messages.datetimepattern}"
-                        defaultTime="#{currentTime}"
-                        defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
-                        required="true"
-                        label="#{messages.storeOut_field_dateTime}"
-                        value="#{orderStoreOut.storeOutDate}"/>
-            </s:decorate>
+            <rich:panel>
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.storeOut_field_dateTime}</ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="20"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datetimepattern}"
+                            defaultTime="#{currentTime}"
+                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                            required="true"
+                            label="#{messages.storeOut_field_dateTime}"
+                            value="#{orderStoreOut.storeOutDate}"/>
+                </s:decorate>
 
-            <s:decorate template="/layout/seam-edit.xhtml">
-                <ui:define name="label">
-                    #{messages.dispatch_field_outCustomer}
-                </ui:define>
-                <h:inputText size="27" value="#{dispatchHome.instance.outCustomer}"
-                             maxlength="50" label="#{messages.dispatch_field_outCustomer}" />
-            </s:decorate>
+                <s:decorate template="/layout/seam-edit.xhtml"
+                            rendered="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}">
+                    <ui:define name="label">
+                        #{messages.dispatch_field_outCustomer}
+                    </ui:define>
+                    <h:inputText size="27" value="#{dispatchHome.instance.outCustomer}"
+                                 maxlength="50" label="#{messages.dispatch_field_outCustomer}"/>
+                </s:decorate>
 
-            <s:decorate template="/layout/seam-edit.xhtml">
-                <ui:define name="label">#{messages.field_memo}</ui:define>
-                <h:inputTextarea value="#{orderStoreOut.memo}" label="#{messages.field_memo}"
-                                 rows="2" cols="40"/>
-            </s:decorate>
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea value="#{orderStoreOut.memo}" label="#{messages.field_memo}"
+                                     rows="2" cols="40"/>
+                </s:decorate>
 
                 <div style="clear:both">
                     <span class="required">*</span>
@@ -112,6 +113,21 @@
                 #{_dispatchItem.resCount.displayAuxCount}
             </rich:column>
         </rich:dataTable>
+
+        <br/>
+        <rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
+
+            <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
+                <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>
+            </ui:include>
+
+            <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
+                <ui:param name="dispatch" value="#{dispatchHome.instance}"/>
+            </ui:include>
+
+            <div style="clear: both"/>
+
+        </rich:collapsiblePanel>
 
         <br/>
         <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">

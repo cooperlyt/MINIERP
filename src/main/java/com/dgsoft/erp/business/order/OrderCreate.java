@@ -223,7 +223,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public String beginCreateOrder() {
         businessDefineHome.setId("erp.business.order");
-        startData.generateKey();
+        startData.generateKey("O");
         needRes = new NeedRes(getInstance(),
                 NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(),false);
         orderNeedItems = new ArrayList<OrderNeedItem>();

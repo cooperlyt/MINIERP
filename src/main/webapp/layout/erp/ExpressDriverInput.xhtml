@@ -44,7 +44,9 @@
     </s:decorate>
     <rich:panel id="expressDriverDetails">
         <h:panelGrid columns="1" rendered="#{expressDriverHome.managed}">
-              <ui:include src="/layout/erp/ExpressDriverDetailsView.xhtml"/>
+              <ui:include src="/layout/erp/ExpressDriverDetailsView.xhtml">
+                  <ui:param name="expressDriver" value="#{expressDriverHome.instance}"/>
+              </ui:include>
         </h:panelGrid>
 
         <h:panelGrid columns="1" rendered="#{not expressDriverHome.managed}">

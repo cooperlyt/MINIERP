@@ -80,11 +80,13 @@
                                  value="#{stockChangeHome.instance.id}">
                         <rich:placeholder value="#{messages.storeIn_field_id}"/>
                     </h:inputText>
+
                     <ui:insert name="cancelButton">
+                    </ui:insert>
+
                     <h:commandButton value="#{messages.storeIn}" action="#{sotreInAction.saveStoreChange}"/>
 
 
-                    </ui:insert>
                 </h:panelGrid>
             </h:form>
 

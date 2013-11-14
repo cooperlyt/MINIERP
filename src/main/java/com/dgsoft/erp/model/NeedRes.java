@@ -191,4 +191,14 @@ public class NeedRes implements java.io.Serializable {
         }
         return true;
     }
+
+    @Transient
+    public boolean isAllDispatchComplete(){
+        for (Dispatch dispatch: getDispatches()){
+            if (!dispatch.getState().equals(Dispatch.DispatchState.ALL_COMPLETE)){
+                return false;
+            }
+        }
+        return true;
+    }
 }

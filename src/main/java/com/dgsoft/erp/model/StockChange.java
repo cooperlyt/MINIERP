@@ -98,6 +98,12 @@ public class StockChange implements java.io.Serializable {
         this.memo = memo;
     }
 
+    public StockChange(String id,Store store, Date operDate, String operEmp,
+                       StoreChangeType operType, String memo) {
+        this(store,operDate,operEmp,operType,memo);
+        this.id = id;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @NotNull

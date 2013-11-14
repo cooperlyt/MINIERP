@@ -54,4 +54,8 @@ public class StartData {
     public void generateKey(){
         businessKey = numberBuilder.getDateNumber("businessKeyCode");
     }
+
+    public void generateKey(String prefix){
+        businessKey = prefix + numberBuilder.getDateNumber("businessKeyCode");
+    }
 }

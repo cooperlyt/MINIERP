@@ -8,23 +8,23 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.transCorp_field_name}</ui:define>
-        <h:outputText value="#{transCorpHome.instance.name}"/>
+        <h:outputText value="#{transCorp.name}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.Tel}</ui:define>
-        <h:outputText value="#{transCorpHome.instance.tel}"/>
+        <h:outputText value="#{transCorp.tel}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.Contact}</ui:define>
-        <h:outputText value="#{transCorpHome.instance.contact}"/>
+        <h:outputText value="#{transCorp.contact}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
-        <h:outputText value="#{transCorpHome.instance.memo}"/>
+        <h:outputText value="#{transCorp.memo}"/>
     </s:decorate>
 </ui:composition>

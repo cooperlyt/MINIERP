@@ -28,4 +28,5 @@ public class NeedResHome extends ErpEntityHome<NeedRes>{
         log.debug("call need store out return false:" + storeId);
         return false;
     }
+
 }

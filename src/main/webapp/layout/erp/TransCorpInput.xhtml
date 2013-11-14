@@ -45,7 +45,9 @@
         </s:decorate>
         <rich:panel id="transCorpDetails">
             <h:panelGrid columns="1" rendered="#{transCorpHome.managed}">
-                <ui:include src="/layout/erp/TransCorpDetailsView.xhtml"/>
+                <ui:include src="/layout/erp/TransCorpDetailsView.xhtml">
+                    <ui:param name="transCorp" value="#{transCorpHome.instance}"/>
+                </ui:include>
             </h:panelGrid>
 
             <h:panelGrid columns="1" rendered="#{not transCorpHome.managed}">

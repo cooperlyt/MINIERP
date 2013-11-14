@@ -9,50 +9,79 @@
                 xmlns:rich="http://richfaces.org/rich">
 
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.dispatch_field_store}</ui:define>
         <h:outputText value="#{dispatch.store.name}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/dispaly.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.State}</ui:define>
         <h:outputText value="#{messages[dispatch.state.name()]}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
-        #{messages[dispatch.delivryType.name()]}
+        #{messages[dispatch.deliveryType.name()]}
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliverType eq 'CUSTOMER_SELF'))}">
+    <s:decorate template="/layout/seam-display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
         <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
         <h:outputText value="#{dispatch.sendTime}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliverType.haveFare) and (not (dispatch.deliverType eq 'CUSTOMER_SELF'))}">
+    <s:decorate template="/layout/seam-display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliveryType.haveFare) and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
         <ui:define name="label">#{messages.order_fare}</ui:define>
         <h:outputText value="#{dispatch.fare}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliverType eq 'CUSTOMER_SELF'))}">
+    <s:decorate template="/layout/seam-display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
         <ui:define name="label">#{messages.order_field_sendEmployee}</ui:define>
         <h:outputText value="#{dictionary.getEmpNameById(dispatch.sendEmp)}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliverType eq 'CUSTOMER_SELF')}">
+    <s:decorate template="/layout/seam-display.xhtml"
+                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliveryType eq 'CUSTOMER_SELF')}">
         <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
         <h:outputText value="#{dispatch.outCustomer}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <div style="clear: both"/>
+    <a:outputPanel rendered="#{dispatch.deliveryType eq 'FULL_CAR_SEND'}">
+        <rich:panel>
+            <ui:include src="/layout/erp/ExpressDriverDetailsView.xhtml">
+                <ui:param name="expressDriver" value="#{dispatch.expressCar.expressDriver}"/>
+            </ui:include>
+
+            <div style="clear: both"/>
+        </rich:panel>
+    </a:outputPanel>
+
+    <div style="clear: both"/>
+    <a:outputPanel rendered="#{dispatch.deliveryType eq 'EXPRESS_SEND'}">
+        <rich:panel>
+            <ui:include src="/layout/erp/TransCorpDetailsView.xhtml">
+                <ui:param name="transCorp" value="#{dispatch.expressInfo.transCorp}"/>
+            </ui:include>
+
+            <div style="clear: both"/>
+        </rich:panel>
+    </a:outputPanel>
+
+
+    <s:decorate template="/layout/seam-display.xhtml" rendered="#{dispatch.deliveryType eq 'SEND_TO_DOOR'}">
+        <ui:define name="label">#{messages.dispatch_field_toDoorCar}</ui:define>
+        <h:outputText value="#{dispatch.productToDoor.cars.id}"/>
+    </s:decorate>
+
+
+
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
         <h:outputText value="#{dispatch.memo}"/>
     </s:decorate>
-
 
 
 </ui:composition>
