@@ -1,12 +1,78 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{messages.orderCommodityConfirm}"/>
+
+    <ui:define name="func-body">
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup>
+                    <h:inputText label="#{messages.order_fare}" required="true"
+                                 value="#{orderCommodityConfirm.fare}"
+                                 rendered="#{orderHome.masterNeedRes.receiveMoney and (not orderHome.masterNeedRes.fareByCustomer)}">
+                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                         type="currency" groupingUsed="false"/>
+                        <rich:placeholder value="#{messages.order_fare}"/>
+                    </h:inputText>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup location="right">
+                    <h:panelGroup id="orderDispatchTaskAction">
+                        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                         action="#{orderCommodityConfirm.complete}"/>
+                    </h:panelGroup>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+
+        </h:form>
+        <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+
+        <br/>
+        <rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
+
+
+            <a:repeat value="#{orderHome.instance.needReses}" var="_needRed">
+
+                <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
+                    <ui:param name="needRes" value="#{_needRed}"/>
+                </ui:include>
+
+
+                <a:repeat value="#{_needRed.dispatches}" var="_dispatch">
+                    <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                    <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
+                        <ui:param name="dispatch" value="#{_dispatch}"/>
+                    </ui:include>
+                </a:repeat>
+
+
+            </a:repeat>
+
+
+            <div style="clear: both"/>
+
+        </rich:collapsiblePanel>
+
+        <br/>
+        <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
+            <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+
+
+            </s:decorate>
+        </rich:collapsiblePanel>
+
+
+    </ui:define>
+
+</ui:composition>

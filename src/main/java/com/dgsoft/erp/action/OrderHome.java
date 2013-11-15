@@ -4,6 +4,7 @@ import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.Dispatch;
 import com.dgsoft.erp.model.NeedRes;
+import com.dgsoft.erp.model.OrderFee;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -62,6 +63,15 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             }
         }
         return null;
+    }
+
+    public boolean isHavePayFee(){
+        for (OrderFee fee: getInstance().getOrderFees()){
+            if (!fee.isPay()){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
