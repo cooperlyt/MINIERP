@@ -21,9 +21,6 @@ import java.math.BigDecimal;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
-    @In(required = false)
-    private NeedResHome needResHome;
-
     @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)
     public Dispatch.DeliveryType[] getDeliveryTypes() {
         return Dispatch.DeliveryType.values();
@@ -44,18 +41,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-//    public BigDecimal getTotalFare() {
-//        BigDecimal result = BigDecimal.ZERO;
-//        for (NeedRes nr : getInstance().getNeedReses()) {
-//            for (Dispatch dispatch : nr.getDispatches()) {
-//                if (dispatch.getFare() != null) {
-//                    result = result.add(dispatch.getFare());
-//                }
-//            }
-//        }
-//        return result;
-//    }
-
     public NeedRes getMasterNeedRes() {
         for (NeedRes nr : getInstance().getNeedReses()) {
             if (nr.getType().equals(NeedRes.NeedResType.ORDER_SEND)) {
@@ -73,5 +58,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
         return false;
     }
+
 
 }
