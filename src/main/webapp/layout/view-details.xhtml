@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ct="http://www.dgsoft.com/custom"
+                xmlns:a="http://richfaces.org/a4j">
+
+    <f:subview>
+        <h:outputStylesheet>
+            .sourceView {
+                padding-top: 5px;
+                padding-bottom: 10px;
+            }
+
+
+            a.show-details, a.hide-details {
+                font: bold 12px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
+                color: #5F9CD0;
+                display: block;
+
+                padding: 5px;
+                margin-top: 3px;
+
+            }
+            .source-details{
+
+                padding-left: 15px;
+                clear: left;
+            }
+        </h:outputStylesheet>
+        <a:outputPanel styleClass="sourceView" layout="block">
+            <a:outputPanel layout="block" id="show">
+
+
+
+                <h:outputLink value="#"
+                              onclick="jQuery(#{rich:element('hide')}).slideDown(); jQuery(#{rich:element('show')}).hide(); return false;"
+                              id="sh1" styleClass="show-details">
+                    <h:outputText value="#{empty openLabel?'View Source' : openLabel }"/>
+                </h:outputLink>
+
+            </a:outputPanel>
+
+            <a:outputPanel id="hide" layout="block" style="display:none">
+                <h:outputLink styleClass="hide-details" value="#"
+                              onclick="jQuery(#{rich:element('hide')}).slideUp(); jQuery(#{rich:element('show')}).show(500); return false;">
+                    <h:outputText value="#{empty hideLabel?'Hide Source' : hideLabel }"/>
+                </h:outputLink>
+
+                <hr style="width: 97%; border:1px dashed #{a4jSkin.panelBorderColor};" size="1"/>
+
+                <div class="source-details">
+                        <ui:insert/>
+
+                </div>
+
+                <hr style="width: 97%; border:1px dashed #{a4jSkin.panelBorderColor};" size="1"/>
+
+                <h:outputLink styleClass="hide-details" value="#"
+                              onclick="jQuery(#{rich:element('hide')}).slideUp(); jQuery(#{rich:element('show')}).show(500); return false;">
+                    <h:outputText value="#{empty hideLabel?'Hide Source' : hideLabel }"/>
+                </h:outputLink>
+            </a:outputPanel>
+        </a:outputPanel>
+    </f:subview>
+
+</ui:composition>

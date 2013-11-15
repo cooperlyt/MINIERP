@@ -260,6 +260,18 @@ public class CustomerOrder implements java.io.Serializable {
         this.needReses = needReses;
     }
 
+    @Transient
+    public List<NeedRes> getNeedResList(){
+        List<NeedRes> result = new ArrayList<NeedRes>(getNeedReses());
+        Collections.sort(result,new Comparator<NeedRes>() {
+            @Override
+            public int compare(NeedRes o1, NeedRes o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+        return result;
+    }
+
     @Column(name="CONTACT",length = 50,nullable = false)
     @NotNull
     @Size(max = 50)

@@ -18,7 +18,7 @@
                         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                                   view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
                         <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                                  action="#{orderStoreOut.complete}"/>
+                                         action="#{orderStoreOut.complete}"/>
                     </h:panelGroup>
                 </rich:toolbarGroup>
             </rich:toolbar>
@@ -95,14 +95,19 @@
                                     value="/img/not_full_tip.png"/>
                     <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
                                   layout="block">
-                            <span style="white-space: nowrap;color: #FF0000;">
-                            #{messages.order_item_not_full} #{messages.InventoryCount}:
+                        <span style="white-space: nowrap;color: #FF0000;">
+                                    #{messages.order_item_not_full}
+                                </span>     <br/>
+
+                            <span style="white-space: nowrap;">
+                           #{messages.InventoryCount}:
                                 #{_dispatchItem.stockCount.masterDisplayCount}
-                                (#{_dispatchItem.stockCount.displayAuxCount}) <br/>
+                                (#{_dispatchItem.stockCount.displayAuxCount})  </span> <br/>
+                        <span style="white-space: nowrap;color: #FF0000;">
                                 #{messages.stockDisparity}:
-                                #{_dispatchItem.disparity.masterDisplayCount}
-                                (#{_dispatchItem.disparity.displayAuxCount})
-                            </span>
+                            #{_dispatchItem.disparity.masterDisplayCount}
+                            (#{_dispatchItem.disparity.displayAuxCount})
+                               </span>
                     </rich:tooltip>
                 </a:outputPanel>
             </rich:column>
@@ -115,7 +120,7 @@
         </rich:dataTable>
 
         <br/>
-        <rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
+        <rich:collapsiblePanel switchType="client" header="#{messages.order_ship_infoorder_ship_info}">
 
             <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
                 <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>

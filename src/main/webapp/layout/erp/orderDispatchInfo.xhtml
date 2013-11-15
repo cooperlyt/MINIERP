@@ -19,14 +19,10 @@
         <h:outputText value="#{messages[dispatch.state.name()]}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
-        #{messages[dispatch.deliveryType.name()]}
-    </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml"
                 rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
-        <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
+        <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
         <h:outputText value="#{dispatch.sendTime}"/>
     </s:decorate>
 
@@ -42,38 +38,56 @@
         <h:outputText value="#{dictionary.getEmpNameById(dispatch.sendEmp)}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/seam-display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliveryType eq 'CUSTOMER_SELF')}">
-        <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
-        <h:outputText value="#{dispatch.outCustomer}"/>
-    </s:decorate>
 
     <div style="clear: both"/>
-    <a:outputPanel rendered="#{dispatch.deliveryType eq 'FULL_CAR_SEND'}">
-        <rich:panel>
+
+    <s:decorate template="/layout/view-details.xhtml">
+        <ui:param name="openLabel"
+                  value="#{messages.order_field_deliveryType}: #{'   '}#{messages[dispatch.deliveryType.name()]}"/>
+        <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.order_field_deliveryType}"/>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
+            <h:outputText value="#{messages[dispatch.deliveryType.name()]}" />
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml"
+                    rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliveryType eq 'CUSTOMER_SELF')}">
+            <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
+            <h:outputText value="#{dispatch.outCustomer}"/>
+        </s:decorate>
+
+        <a:outputPanel rendered="#{dispatch.deliveryType eq 'FULL_CAR_SEND'}">
+            <s:decorate template="/layout/seam-display.xhtml"
+                        rendered="#{dispatch.state eq 'ALL_COMPLETE'}">
+                <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
+                <h:outputText value="#{dispatch.expressCar.carCode}"/>
+            </s:decorate>
+
             <ui:include src="/layout/erp/ExpressDriverDetailsView.xhtml">
                 <ui:param name="expressDriver" value="#{dispatch.expressCar.expressDriver}"/>
             </ui:include>
+        </a:outputPanel>
 
-            <div style="clear: both"/>
-        </rich:panel>
-    </a:outputPanel>
+        <a:outputPanel rendered="#{dispatch.deliveryType eq 'EXPRESS_SEND'}">
+            <s:decorate template="/layout/seam-display.xhtml"
+                        rendered="#{dispatch.state eq 'ALL_COMPLETE'}">
+                <ui:define name="label">#{messages.dispatch_field_expressNumber}</ui:define>
+                <h:outputText value="#{dispatch.expressInfo.number}"/>
+            </s:decorate>
 
-    <div style="clear: both"/>
-    <a:outputPanel rendered="#{dispatch.deliveryType eq 'EXPRESS_SEND'}">
-        <rich:panel>
+
             <ui:include src="/layout/erp/TransCorpDetailsView.xhtml">
                 <ui:param name="transCorp" value="#{dispatch.expressInfo.transCorp}"/>
             </ui:include>
 
-            <div style="clear: both"/>
-        </rich:panel>
-    </a:outputPanel>
+        </a:outputPanel>
 
 
-    <s:decorate template="/layout/seam-display.xhtml" rendered="#{dispatch.deliveryType eq 'SEND_TO_DOOR'}">
-        <ui:define name="label">#{messages.dispatch_field_toDoorCar}</ui:define>
-        <h:outputText value="#{dispatch.productToDoor.cars.id}"/>
+        <s:decorate template="/layout/seam-display.xhtml" rendered="#{dispatch.deliveryType eq 'SEND_TO_DOOR'}">
+            <ui:define name="label">#{messages.dispatch_field_toDoorCar}</ui:define>
+            <h:outputText value="#{dispatch.productToDoor.cars.id}"/>
+        </s:decorate>
     </s:decorate>
 
 
@@ -83,7 +97,7 @@
     </s:decorate>
 
 
-    <a:outputPanel rendered="#{dispatch.state eq 'DISPATCH_STORE_OUT'}">
+    <a:outputPanel rendered="#{(dispatch.state eq 'DISPATCH_STORE_OUT') or (dispatch.state eq 'ALL_COMPLETE')}">
 
 
         <div style="clear: both"/>

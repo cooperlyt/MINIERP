@@ -14,13 +14,16 @@
         <h:form>
             <rich:toolbar>
                 <rich:toolbarGroup>
-                    <h:inputText label="#{messages.order_fare}" required="true"
-                                 value="#{orderCommodityConfirm.fare}"
+                    <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
+                                 value="#{orderCommodityConfirm.fare}" size="10"
                                  rendered="#{orderHome.masterNeedRes.receiveMoney and (not orderHome.masterNeedRes.fareByCustomer)}">
                         <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                          type="currency" groupingUsed="false"/>
                         <rich:placeholder value="#{messages.order_fare}"/>
+                        <rich:validator/>
                     </h:inputText>
+                    <rich:message for="reveiveFareField" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
                 </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
@@ -39,21 +42,29 @@
 
 
         <br/>
-        <rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
+        <rich:collapsiblePanel switchType="client" header="#{messages.order_ship_info}">
 
 
-            <a:repeat value="#{orderHome.instance.needReses}" var="_needRed">
+            <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
 
                 <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
-                    <ui:param name="needRes" value="#{_needRed}"/>
+                    <ui:param name="needRes" value="#{_needRes}"/>
                 </ui:include>
 
 
-                <a:repeat value="#{_needRed.dispatches}" var="_dispatch">
-                    <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-                    <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
-                        <ui:param name="dispatch" value="#{_dispatch}"/>
-                    </ui:include>
+                <a:repeat value="#{_needRes.dispatchList}" var="_dispatch">
+
+                    <div style="clear: both"/>
+                    <s:decorate template="/layout/view-details.xhtml">
+                        <ui:param name="openLabel"
+                                  value="#{messages.dispatch_field_store}: #{'   '}#{_dispatch.store.name}"/>
+                        <ui:param name="hideLabel"
+                                  value="#{messages.detailsHide}#{' '}#{messages.dispatch_field_store}"/>
+
+                        <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
+                            <ui:param name="dispatch" value="#{_dispatch}"/>
+                        </ui:include>
+                    </s:decorate>
                 </a:repeat>
 
 

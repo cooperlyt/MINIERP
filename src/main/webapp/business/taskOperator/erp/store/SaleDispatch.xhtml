@@ -326,14 +326,20 @@
                                         value="/img/not_full_tip.png"/>
                         <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
                                       layout="block">
-                            <span style="white-space: nowrap;color: #FF0000;">
-                            #{messages.order_item_not_full} #{messages.InventoryCount}:
+
+                                  <span style="white-space: nowrap;color: #FF0000;">
+                                    #{messages.order_item_not_full}
+                                </span>     <br/>
+
+                            <span style="white-space: nowrap;">
+                           #{messages.InventoryCount}:
                                 #{_dispatchItem.stockCount.masterDisplayCount}
-                                (#{_dispatchItem.stockCount.displayAuxCount}) <br/>
+                                (#{_dispatchItem.stockCount.displayAuxCount})  </span> <br/>
+                        <span style="white-space: nowrap;color: #FF0000;">
                                 #{messages.stockDisparity}:
-                                #{_dispatchItem.disparity.masterDisplayCount}
-                                (#{_dispatchItem.disparity.displayAuxCount})
-                            </span>
+                            #{_dispatchItem.disparity.masterDisplayCount}
+                            (#{_dispatchItem.disparity.displayAuxCount})
+                               </span>
                         </rich:tooltip>
                     </a:outputPanel>
                 </rich:column>

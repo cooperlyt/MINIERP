@@ -7,6 +7,7 @@ import com.dgsoft.erp.model.Dispatch;
 import com.dgsoft.erp.model.NeedRes;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 
@@ -24,6 +25,9 @@ public class OrderShip extends OrderTaskHandle {
 
     @In(create = true)
     private DispatchHome dispatchHome;
+
+    @In
+    private Credentials credentials;
 
     protected String initOrderTask(){
         String storeId = taskDescription.getValue(OrderStoreOut.TASK_STORE_ID_KEY);
@@ -50,6 +54,7 @@ public class OrderShip extends OrderTaskHandle {
                                 break;
 
                         }
+
                         dispatchHome.getInstance().setFare(BigDecimal.ZERO);
                         return "success";
                     }
@@ -64,6 +69,7 @@ public class OrderShip extends OrderTaskHandle {
     protected String completeOrderTask(){
 
         dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
+        dispatchHome.getInstance().setSendEmp(credentials.getUsername());
         if (dispatchHome.update().equals("updated")){
             return "taskComplete";
         }else{

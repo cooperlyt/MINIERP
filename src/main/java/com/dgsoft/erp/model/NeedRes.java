@@ -4,9 +4,7 @@ package com.dgsoft.erp.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -177,6 +175,18 @@ public class NeedRes implements java.io.Serializable {
 
     public void setDispatches(Set<Dispatch> dispatches) {
         this.dispatches = dispatches;
+    }
+
+    @Transient
+    public List<Dispatch> getDispatchList(){
+        List<Dispatch> result = new ArrayList<Dispatch>(getDispatches());
+        Collections.sort(result,new Comparator<Dispatch>() {
+            @Override
+            public int compare(Dispatch o1, Dispatch o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+        return result;
     }
 
     @Column(name = "TOTAL_FARE",nullable = true,scale = 3)
