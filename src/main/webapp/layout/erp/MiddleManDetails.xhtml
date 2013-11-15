@@ -98,7 +98,15 @@
 
     </h:panelGrid>
 
+
+
     <h:panelGrid columns="1">
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.field_bankInfo}</ui:define>
+            <h:inputText value="#{middleManHome.instance.bankInfo}"
+                         maxlength="100" size="66" label="#{messages.field_bankInfo}"/>
+        </s:decorate>
+
         <s:decorate template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.field_memo}</ui:define>
             <h:inputTextarea label="#{messages.field_memo}"

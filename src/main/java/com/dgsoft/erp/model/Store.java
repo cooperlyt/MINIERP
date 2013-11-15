@@ -26,6 +26,7 @@ public class Store implements java.io.Serializable, TreeNode {
     private boolean open;
     private Integer version;
     private String roleId;
+    private String shipRole;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
     private Set<Inventory> inventories = new HashSet<Inventory>(0);
     private Set<StockChange> stockChanges = new HashSet<StockChange>(0);
@@ -139,6 +140,17 @@ public class Store implements java.io.Serializable, TreeNode {
 
     public void setRoleId(String roleId) {
         this.roleId = roleId;
+    }
+
+    @Column(name = "SHIP_ROLE",nullable = false,length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getShipRole() {
+        return shipRole;
+    }
+
+    public void setShipRole(String shipRole) {
+        this.shipRole = shipRole;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "store", orphanRemoval = true, cascade = {CascadeType.ALL})

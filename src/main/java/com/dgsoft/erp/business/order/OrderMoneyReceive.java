@@ -36,6 +36,7 @@ public class OrderMoneyReceive extends FinanceReceivables {
     protected String completeOrderTask() {
         if (getTotalReveiveMoney().compareTo(orderHome.getInstance().getEarnest()) < 0) {
 
+
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_money_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
@@ -46,6 +47,11 @@ public class OrderMoneyReceive extends FinanceReceivables {
 
         }
 
-        return "taskComplete";
+        orderHome.getInstance().setMoneyComplete(true);
+        if (orderHome.update().equals("updated")){
+            return "taskComplete";
+        }else
+            return null;
+
     }
 }

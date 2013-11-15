@@ -25,6 +25,7 @@ public class MiddleMan implements java.io.Serializable, NamedEntity {
 	private String bankNumber;
     private String bank;
 	private String tel;
+    private String bankInfo;
 	private Set<Customer> customers = new HashSet<Customer>(0);
 	private Set<MiddleMoneyPay> middleMoneys = new HashSet<MiddleMoneyPay>(0);
 
@@ -154,5 +155,15 @@ public class MiddleMan implements java.io.Serializable, NamedEntity {
 
     public void setBank(String bank) {
         this.bank = bank;
+    }
+
+    @Column(name = "BANK_INFO", length = 100)
+    @Size(max = 100)
+    public String getBankInfo() {
+        return bankInfo;
+    }
+
+    public void setBankInfo(String bankInfo) {
+        this.bankInfo = bankInfo;
     }
 }

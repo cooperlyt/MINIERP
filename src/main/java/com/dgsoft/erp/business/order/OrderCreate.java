@@ -223,7 +223,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public String beginCreateOrder() {
         businessDefineHome.setId("erp.business.order");
-        startData.generateKey("O");
+        startData.generateKey();
         needRes = new NeedRes(getInstance(),
                 NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(),false);
         orderNeedItems = new ArrayList<OrderNeedItem>();
@@ -245,12 +245,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
         //TODO cost calc for  BOM table
         getInstance().setTotalCost(new BigDecimal(0));
-
-        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
-            getInstance().setState(CustomerOrder.OrderState.WAITING_PAY_FIRST);
-        } else {
-            getInstance().setState(CustomerOrder.OrderState.WAITING_SEND);
-        }
+        getInstance().setMoneyComplete(false);
+        getInstance().setOrderComplete(false);
 
         getInstance().setCreateDate(new Date());
         getInstance().setOrderEmp(credentials.getUsername());
@@ -264,8 +260,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
             getInstance().setContact(customerHome.getInstance().getContact());
             getInstance().setTel(customerHome.getInstance().getTel());
-            getInstance().setAddress(customerHome.getInstance().getAddress());
-            getInstance().setPostCode(customerHome.getInstance().getPostCode());
+            needRes.setAddress(customerHome.getInstance().getAddress());
+            needRes.setPostCode(customerHome.getInstance().getPostCode());
         }
 
         if (getInstance().isIncludeMiddleMan()) {
@@ -299,13 +295,13 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         if (customerHome.isIdDefined()) {
             getInstance().setContact(customerHome.getInstance().getContact());
             getInstance().setTel(customerHome.getInstance().getTel());
-            getInstance().setAddress(customerHome.getInstance().getAddress());
-            getInstance().setPostCode(customerHome.getInstance().getPostCode());
+            needRes.setAddress(customerHome.getInstance().getAddress());
+            needRes.setPostCode(customerHome.getInstance().getPostCode());
         } else {
             getInstance().setContact(null);
             getInstance().setTel(null);
-            getInstance().setPostCode(null);
-            getInstance().setAddress(null);
+            needRes.setPostCode(null);
+            needRes.setAddress(null);
         }
     }
 

@@ -36,6 +36,17 @@ public class StoreHome extends ErpEntityHome<Store> {
         }
     }
 
+    @Transactional
+    public synchronized String getStoreShipRole(String id){
+        this.setId(id);
+        try {
+            return getInstance().getShipRole();
+        } catch (EntityNotFoundException e) {
+            setId(null);
+            return "erp.storage.manager";
+        }
+    }
+
     @In
     private Identity identity;
 

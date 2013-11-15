@@ -105,6 +105,7 @@
         <class>com.dgsoft.erp.model.DispatchItem</class>
         <class>com.dgsoft.erp.model.OrderItem</class>
         <class>com.dgsoft.erp.model.NeedRes</class>
+        <class>com.dgsoft.erp.model.OrderFee</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

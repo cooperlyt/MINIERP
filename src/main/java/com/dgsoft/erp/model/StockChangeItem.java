@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -161,4 +162,9 @@ public class StockChangeItem implements java.io.Serializable {
         this.noConvertCounts = noConvertCounts;
     }
 
+
+    @Transient
+    public ResCount getResCount(){
+       return getStoreRes().getResCount(getCount());
+    }
 }

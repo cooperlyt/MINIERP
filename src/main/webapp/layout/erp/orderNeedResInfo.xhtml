@@ -38,4 +38,16 @@
                                  value="#{needRes.receiveMoney}"/>
     </s:decorate>
 
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_postCode}</ui:define>
+        <h:outputText value="#{needRes.postCode}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_address}</ui:define>
+        <h:outputText value="#{needRes.address}"/>
+    </s:decorate>
+
+
+
 </ui:composition>

@@ -14,11 +14,6 @@ import javax.validation.constraints.Size;
 @Table(name = "CUSTOMER_ORDER", catalog = "MINI_ERP")
 public class CustomerOrder implements java.io.Serializable {
 
-    public enum OrderState{
-        ORDER_RUNNING,ORDER_SETTLEMENT, ORDER_COMPLETED;
-
-    }
-
     public enum OrderPayType{
         COMPLETE_PAY(true),PAY_FIRST(false),EARNEST_FIRST(true),OVERDRAFT(false);
 
@@ -40,7 +35,6 @@ public class CustomerOrder implements java.io.Serializable {
 	private String id;
 	private Integer version;
 	private Customer customer;
-	private OrderState state;
     private String orderEmp;
 	private OrderPayType payType;
 	private Date createDate;
@@ -50,8 +44,7 @@ public class CustomerOrder implements java.io.Serializable {
 	private String memo;
     private String contact;
     private String tel;
-    private String address;
-    private String postCode;
+
 
     private BigDecimal totalMoney;
     private BigDecimal earnest;
@@ -63,6 +56,8 @@ public class CustomerOrder implements java.io.Serializable {
 
 	private boolean includeMiddleMan;
     private Boolean overdraft;
+    private boolean moneyComplete;
+    private boolean orderComplete;
 
     private MiddleMoneyCalcType middleMoneyCalcType;
 	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
@@ -70,6 +65,7 @@ public class CustomerOrder implements java.io.Serializable {
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
+    private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
 
 	public CustomerOrder() {
 	}
@@ -105,17 +101,6 @@ public class CustomerOrder implements java.io.Serializable {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
-	}
-
-    @Enumerated(EnumType.STRING)
-	@Column(name = "STATE", nullable = false, length = 20)
-	@NotNull
-	public OrderState getState() {
-		return this.state;
-	}
-
-	public void setState(OrderState state) {
-		this.state = state;
 	}
 
     @Enumerated(EnumType.STRING)
@@ -306,27 +291,24 @@ public class CustomerOrder implements java.io.Serializable {
         this.overdraft = overdraft;
     }
 
-    @Column(name="ADDRESS",length = 200,nullable = false)
-    @NotNull
-    @Size(max = 200)
-    public String getAddress() {
-        return address;
+    @Column(name = "MONEY_COMPLETE", nullable = false)
+    public boolean isMoneyComplete() {
+        return moneyComplete;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setMoneyComplete(boolean moneyComplete) {
+        this.moneyComplete = moneyComplete;
     }
 
-    @Column(name = "POST_CODE",length = 10, nullable = false)
-    @Size(max = 10)
-    @NotNull
-    public String getPostCode() {
-        return postCode;
+    @Column(name = "ORDER_COMPLETE", nullable = false)
+    public boolean isOrderComplete() {
+        return orderComplete;
     }
 
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
+    public void setOrderComplete(boolean orderComplete) {
+        this.orderComplete = orderComplete;
     }
+
 
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
 	public boolean isIncludeMiddleMan() {
@@ -364,6 +346,16 @@ public class CustomerOrder implements java.io.Serializable {
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
     }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+    public Set<OrderFee> getOrderFees() {
+        return orderFees;
+    }
+
+    public void setOrderFees(Set<OrderFee> orderFees) {
+        this.orderFees = orderFees;
+    }
+
 
     @Transient
     public List<AccountOper> getAccountOperList(){

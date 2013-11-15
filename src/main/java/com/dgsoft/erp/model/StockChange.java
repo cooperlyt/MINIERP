@@ -1,10 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -188,6 +185,18 @@ public class StockChange implements java.io.Serializable {
 
     public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
         this.stockChangeItems = stockChangeItems;
+    }
+
+    @Transient
+    public List<StockChangeItem> getStockChangeItemList(){
+        List<StockChangeItem> result = new ArrayList<StockChangeItem>(getStockChangeItems());
+        Collections.sort(result,new Comparator<StockChangeItem>() {
+            @Override
+            public int compare(StockChangeItem o1, StockChangeItem o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+        return result;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")

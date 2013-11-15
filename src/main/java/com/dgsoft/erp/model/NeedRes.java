@@ -33,6 +33,8 @@ public class NeedRes implements java.io.Serializable {
     private BigDecimal totalFare;
     private boolean receiveMoney;
     private boolean fareByCustomer;
+    private String address;
+    private String postCode;
 
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
@@ -124,6 +126,28 @@ public class NeedRes implements java.io.Serializable {
 
     public void setDispatched(boolean dispatched) {
         this.dispatched = dispatched;
+    }
+
+    @Column(name="ADDRESS",length = 200,nullable = false)
+    @NotNull
+    @Size(max = 200)
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Column(name = "POST_CODE",length = 10, nullable = false)
+    @Size(max = 10)
+    @NotNull
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
     }
 
     @Temporal(TemporalType.TIMESTAMP)

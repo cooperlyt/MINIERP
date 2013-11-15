@@ -124,6 +124,17 @@
                         </h:selectOneMenu>
                     </s:decorate>
 
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.store_field_shipRole}</ui:define>
+                        <h:selectOneMenu value="#{storeHome.instance.shipRole}" required="true"
+                                         disabled="#{not storeHome.editing}"
+                                         label="#{messages.store_field_shipRole}" style="width: 185px;">
+                            <s:selectItems value="#{roleList.resultList}" var="_role"
+                                           noSelectionLabel="#{messages.noSelectLabel}"
+                                           label="#{_role.name}(#{_role.id})" itemValue="#{_role.id}"/>
+                        </h:selectOneMenu>
+                    </s:decorate>
+
                     <s:decorate id="telField" template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{messages.Tel}</ui:define>
                         <h:inputText id="tel"

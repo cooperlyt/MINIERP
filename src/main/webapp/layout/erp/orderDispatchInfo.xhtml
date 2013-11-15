@@ -77,11 +77,49 @@
     </s:decorate>
 
 
-
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
         <h:outputText value="#{dispatch.memo}"/>
     </s:decorate>
+
+
+    <a:outputPanel rendered="#{dispatch.state eq 'DISPATCH_STORE_OUT'}">
+
+
+        <div style="clear: both"/>
+        <br/>
+        <rich:dataTable value="#{dispatch.stockChange.stockChangeItemList}"
+                        var="_sotckItem">
+            <f:facet name="header">
+                #{messages.order_item_storeOut_items}
+            </f:facet>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.StoreRes}
+                </f:facet>
+
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_sotckItem.storeRes}"/>
+                </ui:include>
+
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.stockOutCount}
+                </f:facet>
+                #{_sotckItem.resCount.masterDisplayCount}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.AuxUnitCount}
+                </f:facet>
+                #{_sotckItem.resCount.displayAuxCount}
+            </rich:column>
+        </rich:dataTable>
+
+
+    </a:outputPanel>
 
 
 </ui:composition>

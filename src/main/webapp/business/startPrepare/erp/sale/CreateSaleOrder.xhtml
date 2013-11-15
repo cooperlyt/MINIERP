@@ -169,7 +169,7 @@
 
             <s:decorate template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
                 <ui:define name="label">#{messages.order_field_postCode}</ui:define>
-                <h:inputText value="#{orderCreate.instance.postCode}" label="#{messages.order_field_postCode}"
+                <h:inputText value="#{orderCreate.needRes.postCode}" label="#{messages.order_field_postCode}"
                              required="true" size="10" maxlength="10"/>
             </s:decorate>
 
@@ -180,7 +180,7 @@
 
             <s:decorate template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
                 <ui:define name="label">#{messages.order_field_address}</ui:define>
-                <h:inputText value="#{orderCreate.instance.address}" label="#{messages.order_field_address}"
+                <h:inputText value="#{orderCreate.needRes.address}" label="#{messages.order_field_address}"
                              required="true" size="81" maxlength="200"/>
             </s:decorate>
         </h:panelGrid>

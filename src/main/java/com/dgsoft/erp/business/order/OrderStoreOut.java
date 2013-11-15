@@ -1,6 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessDefineException;
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.DispatchHome;
 import com.dgsoft.erp.action.NeedResHome;
@@ -23,7 +24,7 @@ import java.util.Date;
 @Name("orderStoreOut")
 public class OrderStoreOut extends OrderTaskHandle {
 
-    private final static String TASK_STORE_ID_KEY = "storeId";
+    public final static String TASK_STORE_ID_KEY = "storeId";
 
     @In
     private TaskDescription taskDescription;
@@ -33,6 +34,9 @@ public class OrderStoreOut extends OrderTaskHandle {
 
     @In
     private ResHelper resHelper;
+
+    @In
+    protected NumberBuilder numberBuilder;
 
     @In
     private org.jboss.seam.security.Credentials credentials;
@@ -77,7 +81,7 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         dispatchHome.getInstance().setStockChange(
-                new StockChange(orderHome.getInstance().getId(),dispatchHome.getInstance().getStore(), storeOutDate,
+                new StockChange(orderHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"),dispatchHome.getInstance().getStore(), storeOutDate,
                         credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo));
 
         for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {
