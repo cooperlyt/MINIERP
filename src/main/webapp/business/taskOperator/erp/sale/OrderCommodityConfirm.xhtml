@@ -15,11 +15,11 @@
             <rich:toolbar>
                 <rich:toolbarGroup>
                     <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
-                                 value="#{orderCommodityConfirm.fare}" size="10"
-                                 rendered="#{orderHome.masterNeedRes.receiveMoney and (not orderHome.masterNeedRes.fareByCustomer)}">
+                                 value="#{orderHome.masterNeedRes.proxyFare}" size="10"
+                                 rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
                         <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                          type="currency" groupingUsed="false"/>
-                        <rich:placeholder value="#{messages.order_fare}"/>
+                        <rich:placeholder value="#{messages.order_proxy_fare}"/>
                         <rich:validator/>
                     </h:inputText>
                     <rich:message for="reveiveFareField" styleClass="message-icon"
@@ -39,6 +39,30 @@
 
         </h:form>
         <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+        <br/>
+
+        <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
+            <f:facet name="header">#{messages.order_ship_all_storeRes}</f:facet>
+
+            <rich:column>
+                <f:facet name="header"> #{messages.StoreRes}</f:facet>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_entry.key}"/>
+                </ui:include>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">#{messages.stockOutCount}</f:facet>
+                #{_entry.value.masterDisplayCount}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header"> #{messages.AuxUnitCount}</f:facet>
+                #{_entry.value.displayAuxCount}
+            </rich:column>
+        </rich:dataTable>
 
 
         <br/>

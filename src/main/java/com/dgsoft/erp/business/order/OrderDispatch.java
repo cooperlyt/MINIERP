@@ -457,7 +457,23 @@ public class OrderDispatch extends OrderTaskHandle {
 
     @Override
     protected String completeOrderTask() {
+
+
+        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+            boolean allCustomerSelf = true;
+            for (Dispatch dispatch : dispatchList) {
+                if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
+                    allCustomerSelf = false;
+                    break;
+                }
+            }
+            if (allCustomerSelf) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "canotAllCustomerSelf");
+                return "falil";
+            }
+        }
         needResHome.getInstance().getDispatches().addAll(dispatchList);
+
         needResHome.getInstance().setDispatched(true);
 
         if (needResHome.update().equals("updated")) {

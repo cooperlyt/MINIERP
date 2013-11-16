@@ -260,6 +260,11 @@ public class StoreRes implements java.io.Serializable {
             return false;
         }
         StoreRes other = (StoreRes) obj;
+
+        if ((id != null) && (!"".equals(id.trim()))){
+            return id.equals(other.id);
+        }
+
         if (!getRes().getId().equals(other.getRes().getId())) {
             return false;
         }
@@ -272,6 +277,10 @@ public class StoreRes implements java.io.Serializable {
     @Override
     @Transient
     public int hashCode() {
+        if ((id != null) && (!"".equals(id.trim()))){
+            return id.hashCode();
+        }
+
         String result = getRes().getId();
         for (Format format : getFormatList()) {
             result += "_" + format.getFormatDefine().getId() + ":" + format.getFormatValue();

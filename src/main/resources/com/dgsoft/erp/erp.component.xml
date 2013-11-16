@@ -95,4 +95,9 @@
         <property name="ejbql">select cars from Cars cars where enable=true</property>
     </component>
 
+    <event type="org.jboss.seam.afterTransactionSuccess.AccountOper">
+        <action execute="#{orderHome.refresh}"/>
+    </event>
+
+
 </components>

@@ -251,6 +251,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         getInstance().setCreateDate(new Date());
         getInstance().setOrderEmp(credentials.getUsername());
         getInstance().setId(startData.getBusinessKey());
+        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)){
+            getInstance().setEarnestFirst(false);
+        }
         if (customerHome.isIdDefined()) {
             customerHome.refresh();
             getInstance().setCustomer(customerHome.getInstance());

@@ -30,6 +30,19 @@ public abstract class OrderTaskHandle extends TaskHandle {
         return "taskComplete";
     }
 
+
+    public BigDecimal getTotalReveiveMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (AccountOper oper : orderHome.getInstance().getAccountOpers()) {
+            result = result.add(oper.getOperMoney());
+        }
+        return result;
+    }
+
+    public BigDecimal getShortageMoney(){
+        return orderHome.getInstance().getMoney().subtract(getTotalReveiveMoney());
+    }
+
     @Override
     protected final String completeTask() {
 

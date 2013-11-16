@@ -1,6 +1,8 @@
 package com.dgsoft.erp.business.order;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 
 import java.math.BigDecimal;
 
@@ -11,26 +13,23 @@ import java.math.BigDecimal;
  * Time: 4:24 PM
  */
 @Name("orderCommodityConfirm")
-public class OrderCommodityConfirm extends OrderTaskHandle{
+public class OrderCommodityConfirm extends OrderTaskHandle {
 
-    private BigDecimal fare;
-
-    public BigDecimal getFare() {
-        return fare;
-    }
-
-    public void setFare(BigDecimal fare) {
-        this.fare = fare;
-    }
+    @Out(value = "orderConfirmed", scope = ScopeType.CONVERSATION, required = false)
+    private Boolean orderconfirmed;
 
 
+    protected String completeOrderTask() {
 
-    protected String initOrderTask(){
-        return "success";
-    }
+        //TODO set orderconfirmed to false
+        orderconfirmed = true;
+        orderHome.getInstance().setResReceived(true);
+        if ("updated".equals(orderHome.update())) {
+            return "taskComplete";
+        } else {
+            return "fail";
+        }
 
-    protected String completeOrderTask(){
-        return "taskComplete";
     }
 
 }

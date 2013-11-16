@@ -1,6 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.model.AccountOper;
+import com.dgsoft.erp.model.CustomerOrder;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.international.StatusMessage;
 
@@ -26,8 +27,8 @@ public class OrderMoneyReceive extends FinanceReceivables {
     @Override
     public BigDecimal getShortageMoney() {
         BigDecimal result = orderHome.getInstance().getMoney().subtract(getTotalReveiveMoney());
-        if (orderHome.getMasterNeedRes().isReceiveMoney()){
-            result = result.subtract(orderHome.getMasterNeedRes().getTotalFare());
+        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
+            result = result.subtract(orderHome.getMasterNeedRes().getProxyFare());
         }
         return result;
     }

@@ -15,17 +15,8 @@ import javax.validation.constraints.Size;
 public class CustomerOrder implements java.io.Serializable {
 
     public enum OrderPayType{
-        COMPLETE_PAY(true),PAY_FIRST(false),EARNEST_FIRST(true),OVERDRAFT(false);
+        COMPLETE_PAY,PAY_FIRST,EXPRESS_PROXY,OVERDRAFT;
 
-        private boolean canExpressReceive;
-
-        public boolean isCanExpressReceive() {
-            return canExpressReceive;
-        }
-
-        private OrderPayType(boolean canExpressReceive){
-           this.canExpressReceive = canExpressReceive;
-        }
     }
 
     public enum MiddleMoneyCalcType{
@@ -46,6 +37,7 @@ public class CustomerOrder implements java.io.Serializable {
     private String tel;
 
 
+    private boolean resReceived;
     private BigDecimal totalMoney;
     private BigDecimal earnest;
     private BigDecimal totalRebate;
@@ -58,6 +50,7 @@ public class CustomerOrder implements java.io.Serializable {
     private Boolean overdraft;
     private boolean moneyComplete;
     private boolean orderComplete;
+    private boolean earnestFirst;
 
     private MiddleMoneyCalcType middleMoneyCalcType;
 	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
@@ -368,6 +361,23 @@ public class CustomerOrder implements java.io.Serializable {
         this.orderFees = orderFees;
     }
 
+    @Column(name = "RES_RECEIVED", nullable = false)
+    public boolean isResReceived() {
+        return resReceived;
+    }
+
+    public void setResReceived(boolean resReceived) {
+        this.resReceived = resReceived;
+    }
+
+    @Column(name="EARNEST_FIRST",nullable = false)
+    public boolean isEarnestFirst() {
+        return earnestFirst;
+    }
+
+    public void setEarnestFirst(boolean earnestFirst) {
+        this.earnestFirst = earnestFirst;
+    }
 
     @Transient
     public List<AccountOper> getAccountOperList(){

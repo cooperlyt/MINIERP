@@ -56,6 +56,20 @@
 
         <h:form>
             <rich:toolbar>
+                <rich:toolbarGroup>
+                        <h:panelGrid columns="2">
+                        <h:outputText value="#{messages.EXPRESS_PROXY}:"
+                                      rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}"/>
+
+                        <h:outputText value="#{orderStoreOut.shortageMoney}"
+                                      rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
+                            <f:convertNumber locale="#{calendarBean.locale}"
+                                             type="currency" groupingUsed="true"/>
+                        </h:outputText>
+                        </h:panelGrid>
+
+                </rich:toolbarGroup>
+
                 <rich:toolbarGroup location="right">
                     <h:panelGroup id="orderDispatchTaskAction">
                         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"

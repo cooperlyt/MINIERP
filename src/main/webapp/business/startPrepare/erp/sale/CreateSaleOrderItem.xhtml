@@ -111,7 +111,7 @@
                     <rich:message for="orderMoneyField" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
 
-                    <a:outputPanel rendered="#{orderCreate.instance.payType eq 'EARNEST_FIRST'}">
+                    <a:outputPanel rendered="#{orderCreate.instance.earnestFirst}">
                         <h:inputText id="orderEarnestScaleField" value="#{orderCreate.earnestScale}" rendered="true"
                                      size="5" label="#{messages.earnestScale}">
                             <f:convertNumber pattern="#0.##" groupingUsed="false"/>

@@ -28,8 +28,7 @@ public class NeedRes implements java.io.Serializable {
     private String memo;
     private Date createDate;
     private boolean dispatched;
-    private BigDecimal totalFare;
-    private boolean receiveMoney;
+    private BigDecimal proxyFare;
     private boolean fareByCustomer;
     private String address;
     private String postCode;
@@ -189,22 +188,13 @@ public class NeedRes implements java.io.Serializable {
         return result;
     }
 
-    @Column(name = "TOTAL_FARE",nullable = true,scale = 3)
-    public BigDecimal getTotalFare() {
-        return totalFare;
+    @Column(name = "PROXY_FARE",nullable = true,scale = 3)
+    public BigDecimal getProxyFare() {
+        return proxyFare;
     }
 
-    public void setTotalFare(BigDecimal fare) {
-        this.totalFare = fare;
-    }
-
-    @Column(name="RECEIVE_MONEY", nullable = false)
-    public boolean isReceiveMoney() {
-        return receiveMoney;
-    }
-
-    public void setReceiveMoney(boolean receiveMoney) {
-        this.receiveMoney = receiveMoney;
+    public void setProxyFare(BigDecimal fare) {
+        this.proxyFare = fare;
     }
 
     @Column(name="FARE_BY_CUSTOMER", nullable = false)
@@ -235,4 +225,5 @@ public class NeedRes implements java.io.Serializable {
         }
         return true;
     }
+
 }

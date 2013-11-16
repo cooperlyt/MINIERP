@@ -23,13 +23,17 @@
     <s:decorate template="/layout/seam-display.xhtml"
                 rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
         <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
-        <h:outputText value="#{dispatch.sendTime}"/>
+        <h:outputText value="#{dispatch.sendTime}">
+            <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+        </h:outputText>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml"
                 rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliveryType.haveFare) and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
         <ui:define name="label">#{messages.order_fare}</ui:define>
-        <h:outputText value="#{dispatch.fare}"/>
+        <h:outputText value="#{dispatch.fare}">
+            <f:convertNumber locale="#{calendarBean.locale}"  type="currency" />
+        </h:outputText>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml"

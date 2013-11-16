@@ -246,5 +246,37 @@ public class Res implements java.io.Serializable {
         this.accounting = accounting;
     }
 
+    @Override
+    @Transient
+    public boolean equals(Object other){
+        if (other == null){
+            return false;
+        }
+        if (other == this){
+            return true;
+        }
+
+        if (!(other instanceof Res)){
+            return false;
+        }
+
+        Res otherRes = (Res) other;
+
+        if ((otherRes.id != null) && (!"".equals(otherRes.id.trim()))){
+           return otherRes.id.equals(id);
+        }
+
+        if (otherRes.code != null && (!"".equals(otherRes.code.trim()))){
+            return otherRes.code.equals(code);
+        }
+
+        return false;
+    }
+
+    @Override
+    @Transient
+    public int hashCode(){
+        return (id + code).hashCode();
+    }
 
 }

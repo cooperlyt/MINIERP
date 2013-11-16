@@ -15,28 +15,42 @@
     <ui:define name="toolbarContext">
         <rich:toolbarGroup>
             <a:outputPanel ajaxRendered="true">
-                #{messages.order_money}
+                #{' '}#{messages.order_money}:
 
                 <h:outputText value="#{orderHome.instance.money}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
-                #{messages.order_money_real}
+
+
+            </a:outputPanel>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
+            <a:outputPanel ajaxRendered="true">
+                #{' '} #{messages.order_money_real}:
                 <h:outputText value="#{orderMoneyReceive.totalReveiveMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
+            </a:outputPanel>
+        </rich:toolbarGroup>
 
-                <h:outputText value="#{messages.order_fare}" rendered="#{orderHome.masterNeedRes.receiveMoney}"/>
+        <rich:toolbarGroup rendered="#{orderHome.instance.payType eq 'EXPRESS_PROXY'}">
+            #{' '} #{messages.order_fare}:
 
-                <h:outputText value="#{orderHome.masterNeedRes.totalFare}" rendered="#{orderHome.masterNeedRes.receiveMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-
-                #{messages.order_money_lacking}
+            <h:outputText value="#{orderHome.masterNeedRes.proxyFare}"
+                          rendered="#{orderHome.instance.payType eq 'EXPRESS_PROXY'}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:toolbarGroup>
+        <rich:toolbarGroup>
+            <a:outputPanel ajaxRendered="true">
+                #{' '}#{messages.order_money_lacking}:
                 <h:outputText value="#{orderMoneyReceive.shortageMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </a:outputPanel>
         </rich:toolbarGroup>
+
     </ui:define>
     <ui:define name="commpleteBtn">
 

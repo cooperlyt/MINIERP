@@ -44,7 +44,7 @@
                     <s:convertEnum/>
                     <rich:validator/>
                     <rich:placeholder value="#{messages.order_field_payType}"/>
-                    <a:ajax event="selectitem" render="farePayTypeField"/>
+                    <a:ajax event="selectitem" render="earnestFirstField"/>
                 </rich:select>
                 <rich:message for="payTypeField" styleClass="message-icon"
                               showDetail="true" showSummary="true" tooltip="true"/>
@@ -67,10 +67,10 @@
                     #{messages.order_fare_by_customer}
                 </h:selectBooleanCheckbox>
 
-                <a:outputPanel id="farePayTypeField">
-                    <h:selectBooleanCheckbox value="#{orderCreate.needRes.receiveMoney}"
-                                             rendered="#{(not empty orderCreate.instance.payType) and (orderCreate.instance.payType.canExpressReceive)}">
-                        #{messages.order_express_receive_money}
+                <a:outputPanel id="earnestFirstField">
+                    <h:selectBooleanCheckbox value="#{orderCreate.instance.earnestFirst}"
+                                             rendered="#{(not empty orderCreate.instance.payType) and (not (orderCreate.instance.payType eq 'PAY_FIRST'))}">
+                        #{messages.order_field_earnestFirst}
                     </h:selectBooleanCheckbox>
 
                 </a:outputPanel>

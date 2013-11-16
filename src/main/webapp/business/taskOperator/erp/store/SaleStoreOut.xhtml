@@ -120,7 +120,16 @@
         </rich:dataTable>
 
         <br/>
-        <rich:collapsiblePanel switchType="client" header="#{messages.order_ship_infoorder_ship_info}">
+        <rich:collapsiblePanel switchType="client" header="#{messages.order_ship_info}">
+
+            <s:decorate template="/layout/seam-edit.xhtml"
+                        rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
+                <ui:define name="label">#{messages.EXPRESS_PROXY}</ui:define>
+                <h:outputText value="#{orderStoreOut.shortageMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </s:decorate>
 
             <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
                 <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>
