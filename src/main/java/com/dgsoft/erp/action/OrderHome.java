@@ -22,6 +22,11 @@ import java.util.Set;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
+    @Factory(value = "middleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
+    public CustomerOrder.MiddleMoneyCalcType[] getMiddleMoneyCalcTypes(){
+        return CustomerOrder.MiddleMoneyCalcType.values();
+    }
+
     @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)
     public Dispatch.DeliveryType[] getDeliveryTypes() {
         return Dispatch.DeliveryType.values();

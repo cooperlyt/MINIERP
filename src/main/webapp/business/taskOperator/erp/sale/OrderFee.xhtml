@@ -1,12 +1,146 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{messages.orderFee}"/>
+
+    <ui:define name="func-body">
+        <rich:toolbar>
+            <rich:toolbarGroup>
+                <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
+                             value="#{orderHome.masterNeedRes.proxyFare}" size="10"
+                             rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
+                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                     type="currency" groupingUsed="false"/>
+                    <rich:placeholder value="#{messages.order_proxy_fare}"/>
+                    <rich:validator/>
+                </h:inputText>
+                <rich:message for="reveiveFareField" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+                <h:panelGroup>
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                    <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                              action="#{orderCommodityConfirm.complete}"/>
+                </h:panelGroup>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+
+        <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+        <br/>
+
+        <s:decorate id="includeMiddleManField" template="/layout/seam-edit.xhtml">
+            <ui:define name="label">
+
+                <h:selectBooleanCheckbox value="#{orderHome.instance.includeMiddleMan}">
+                    <a:ajax event="click" render="includeMiddleManField"/>
+                </h:selectBooleanCheckbox>
+                #{messages.includeMiddleMan}
+
+            </ui:define>
+            <h:selectOneMenu value="#{orderHome.instance.middleMoneyCalcType}"
+                             required="true" label="#{messages.includeMiddleMan}"
+                             rendered="#{orderHome.instance.includeMiddleMan}">
+                <s:selectItems value="#{middleMoneyCalcTypes}" var="_calcType"
+                               label="#{messages[_calcType.name()]}"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                <s:convertEnum/>
+                <a:ajax event="valueChange" render="middleMoneyCalcDetails"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <rich:panel id="middleMoneyCalcDetails">
+
+            <a:outputPanel
+                    rendered="#{orderHome.instance.includeMiddleMan and (not empty orderHome.instance.middleMoneyCalcType) }">
+                <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'CONSULT_FIX'}">
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.order_field_middleMoney}</ui:define>
+                        <h:inputText value="#{orderHome.instance.middleMoney}"
+                                     label="#{messages.order_field_middleMoney}"
+                                     required="true" size="20">
+                            <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                             type="currency" groupingUsed="false"/>
+                        </h:inputText>
+                    </s:decorate>
+                </a:outputPanel>
+
+                <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'TOTAL_MONEY_RATE'}">
+
+
+                    <s:label styleClass="name">
+                        #{messages.order_field_middleMoney}
+                        <s:span styleClass="required">*</s:span>
+                    </s:label>
+
+                    <span class="value">
+                        <h:outputText value="#{orderHome.instance.money}">
+                            <f:convertNumber locale="#{calendarBean.locale}" type="currency"/>
+                        </h:outputText>
+
+                        *#{' '}%
+                        <h:inputText id="middleRateInput" rendered="true"
+                                     label="#{messages.order_field_middleRate}"
+                                     value="#{orderHome.instance.middleRate}">
+                            <f:validateDoubleRange minimum="0" maximum="100"/>
+                            <f:convertNumber pattern="#0.##"/>
+                            <rich:validator/>
+                            <a:ajax listener="#{orderFee.middleMoneyRateChangeListener}" event="blur"
+                                    render="middleMoneyInput"/>
+                        </h:inputText>
+                        <rich:message for="middleRateInput" styleClass="message-icon"
+                                      showDetail="true" showSummary="true" tooltip="true"/>
+
+                        #{' '}=#{' '}
+                        <h:inputText id="middleMoneyInput" rendered="true"
+                                     converter="javax.faces.BigDecimal"
+                                     label="#{messages.order_field_middleMoney}"
+                                     value="#{orderHome.instance.middleMoney}">
+                            <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                             type="currency" groupingUsed="false"/>
+                            <f:validateDoubleRange minimum="0"/>
+                            <rich:validator/>
+                            <a:ajax listener="#{orderFee.middleMoneyChangeListener}" event="blur"
+                                    render="middleRateInput"/>
+                        </h:inputText>
+                        <rich:message for="middleMoneyInput" styleClass="message-icon"
+                                      showDetail="true" showSummary="true" tooltip="true"/>
+
+                    </span>
+
+                </a:outputPanel>
+
+                <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'ITEM_RATE'}">
+
+                    <rich:dataTable value="#{orderHome.masterNeedRes.orderItemList}"
+                                    var="_orderItem">
+                        <rich:column>
+                            <f:facet name="header">#{messages.StoreRes}</f:facet>
+                            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                                <ui:param name="storeRes" value="#{_orderItem.storeRes}"
+                            </ui:include>
+                        </rich:column>
+
+                    </rich:dataTable>
+
+                </a:outputPanel>
+
+
+            </a:outputPanel>
+
+        </rich:panel>
+
+    </ui:define>
+
+</ui:composition>

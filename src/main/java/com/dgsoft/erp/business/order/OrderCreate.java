@@ -246,7 +246,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         //TODO cost calc for  BOM table
         getInstance().setTotalCost(new BigDecimal(0));
         getInstance().setMoneyComplete(false);
-        getInstance().setOrderComplete(false);
+        getInstance().setState(CustomerOrder.OrderState.ORDER_RUNNING);
 
         getInstance().setCreateDate(new Date());
         getInstance().setOrderEmp(credentials.getUsername());

@@ -167,6 +167,19 @@ public class NeedRes implements java.io.Serializable {
         this.orderItems = orderItems;
     }
 
+    @Transient
+    public List<OrderItem> getOrderItemList(){
+        List<OrderItem> result = new ArrayList<OrderItem>(getOrderItems());
+        Collections.sort(result, new Comparator<OrderItem>() {
+            @Override
+            public int compare(OrderItem o1, OrderItem o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+
+        return result;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", cascade = {CascadeType.ALL})
     public Set<Dispatch> getDispatches() {
         return this.dispatches;

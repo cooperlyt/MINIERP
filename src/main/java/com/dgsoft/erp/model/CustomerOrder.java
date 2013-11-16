@@ -20,7 +20,16 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     public enum MiddleMoneyCalcType{
-       CONSULT_FIX,MIDDLE_RATE;
+       CONSULT_FIX,ITEM_RATE,ITEM_COUNT_FIX,TOTAL_MONEY_RATE;
+    }
+
+    public enum OrderState{
+        ORDER_RUNNING,
+        ORDER_COMPLETE,
+        ORDER_OVERDRAFT_COMPLETE,
+        ORDER_PART_BACK,
+        ORDER_ALL_BACK,
+        ORDER_CANCEL;
     }
 
 	private String id;
@@ -46,10 +55,10 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal middleRate;
     private BigDecimal middleTotal;
 
+    private OrderState state;
+
 	private boolean includeMiddleMan;
-    private Boolean overdraft;
     private boolean moneyComplete;
-    private boolean orderComplete;
     private boolean earnestFirst;
 
     private MiddleMoneyCalcType middleMoneyCalcType;
@@ -287,14 +296,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.tel = tel;
     }
 
-    @Column(name="OVERDRAFT")
-    public Boolean getOverdraft() {
-        return overdraft;
-    }
-
-    public void setOverdraft(Boolean overdraft) {
-        this.overdraft = overdraft;
-    }
 
     @Column(name = "MONEY_COMPLETE", nullable = false)
     public boolean isMoneyComplete() {
@@ -305,15 +306,16 @@ public class CustomerOrder implements java.io.Serializable {
         this.moneyComplete = moneyComplete;
     }
 
-    @Column(name = "ORDER_COMPLETE", nullable = false)
-    public boolean isOrderComplete() {
-        return orderComplete;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATE", nullable = false)
+    @NotNull
+    public OrderState getState() {
+        return state;
     }
 
-    public void setOrderComplete(boolean orderComplete) {
-        this.orderComplete = orderComplete;
+    public void setState(OrderState state) {
+        this.state = state;
     }
-
 
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
 	public boolean isIncludeMiddleMan() {
@@ -352,7 +354,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.accountOpers = accountOpers;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder",orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<OrderFee> getOrderFees() {
         return orderFees;
     }

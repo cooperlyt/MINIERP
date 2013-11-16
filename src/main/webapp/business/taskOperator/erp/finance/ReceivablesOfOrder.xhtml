@@ -9,9 +9,16 @@
                 template="/layout/erp/OrderFinanceReceive.xhtml">
 
 
+
+
     <ui:param name="functionTitle" value="#{messages.orderMoneyPay}"/>
 
     <ui:param name="orderFinanceReveiveAction" value="#{orderMoneyReceive}"/>
+
+    <ui:define name="tipMessages">
+        <h:outputText value="#{messages.order_OVERDRAFT_tip}"
+                      rendered="#{orderHome.instance.payType eq 'OVERDRAFT'}"/>
+    </ui:define>
     <ui:define name="toolbarContext">
         <rich:toolbarGroup>
             <a:outputPanel ajaxRendered="true">

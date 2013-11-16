@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Nov 15, 2013 4:00:38 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,6 +30,7 @@ public class OrderFee implements java.io.Serializable {
 	private String credit;
 	private String reveiveInfo;
 	private String bank;
+    private String payDate;
 
 	public OrderFee() {
 	}
@@ -35,6 +38,8 @@ public class OrderFee implements java.io.Serializable {
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -187,4 +192,13 @@ public class OrderFee implements java.io.Serializable {
 		this.bank = bank;
 	}
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "PAY_DATE", length = 19)
+    public String getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(String payDate) {
+        this.payDate = payDate;
+    }
 }
