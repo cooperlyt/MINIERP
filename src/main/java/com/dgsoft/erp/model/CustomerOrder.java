@@ -14,16 +14,16 @@ import javax.validation.constraints.Size;
 @Table(name = "CUSTOMER_ORDER", catalog = "MINI_ERP")
 public class CustomerOrder implements java.io.Serializable {
 
-    public enum OrderPayType{
-        COMPLETE_PAY,PAY_FIRST,EXPRESS_PROXY,OVERDRAFT;
+    public enum OrderPayType {
+        COMPLETE_PAY, PAY_FIRST, EXPRESS_PROXY, OVERDRAFT;
 
     }
 
-    public enum MiddleMoneyCalcType{
-       CONSULT_FIX,ITEM_RATE,ITEM_COUNT_FIX,TOTAL_MONEY_RATE;
+    public enum MiddleMoneyCalcType {
+        NOT_CALC, CONSULT_FIX, TOTAL_MONEY_RATE;
     }
 
-    public enum OrderState{
+    public enum OrderState {
         ORDER_RUNNING,
         ORDER_COMPLETE,
         ORDER_OVERDRAFT_COMPLETE,
@@ -32,16 +32,16 @@ public class CustomerOrder implements java.io.Serializable {
         ORDER_CANCEL;
     }
 
-	private String id;
-	private Integer version;
-	private Customer customer;
+    private String id;
+    private Integer version;
+    private Customer customer;
     private String orderEmp;
-	private OrderPayType payType;
-	private Date createDate;
-	private BigDecimal money;
-	private Date completeDate;
-	private BigDecimal profit;
-	private String memo;
+    private OrderPayType payType;
+    private Date createDate;
+    private BigDecimal money;
+    private Date completeDate;
+    private BigDecimal profit;
+    private String memo;
     private String contact;
     private String tel;
 
@@ -57,75 +57,75 @@ public class CustomerOrder implements java.io.Serializable {
 
     private OrderState state;
 
-	private boolean includeMiddleMan;
+    private boolean includeMiddleMan;
     private boolean moneyComplete;
     private boolean earnestFirst;
 
     private MiddleMoneyCalcType middleMoneyCalcType;
-	private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
-	private Set<MiddleMoneyPay> middleMoneyPays = new HashSet<MiddleMoneyPay>(0);
+    private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
+    private Set<MiddleMoneyPay> middleMoneyPays = new HashSet<MiddleMoneyPay>(0);
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
     private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
 
-	public CustomerOrder() {
-	}
+    public CustomerOrder() {
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@Version
-	@Column(name = "VERSION")
-	public Integer getVersion() {
-		return this.version;
-	}
+    @Version
+    @Column(name = "VERSION")
+    public Integer getVersion() {
+        return this.version;
+    }
 
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
-	@NotNull
-	public Customer getCustomer() {
-		return this.customer;
-	}
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "CUSTOMER_ID", nullable = false)
+    @NotNull
+    public Customer getCustomer() {
+        return this.customer;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
     @Enumerated(EnumType.STRING)
-	@Column(name = "PAY_TYPE", nullable = false, length = 32)
-	@NotNull
-	public OrderPayType getPayType() {
-		return this.payType;
-	}
+    @Column(name = "PAY_TYPE", nullable = false, length = 32)
+    @NotNull
+    public OrderPayType getPayType() {
+        return this.payType;
+    }
 
-	public void setPayType(OrderPayType payType) {
-		this.payType = payType;
-	}
+    public void setPayType(OrderPayType payType) {
+        this.payType = payType;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATE_DATE", nullable = false, length = 19)
-	@NotNull
-	public Date getCreateDate() {
-		return this.createDate;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATE_DATE", nullable = false, length = 19)
+    @NotNull
+    public Date getCreateDate() {
+        return this.createDate;
+    }
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
     @Column(name = "ORDER_EMPLOYEE", nullable = false, length = 32)
     @NotNull
@@ -139,16 +139,16 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Column(name = "MONEY", nullable = false, scale = 3)
-	@NotNull
-	public BigDecimal getMoney() {
-		return this.money;
-	}
+    @NotNull
+    public BigDecimal getMoney() {
+        return this.money;
+    }
 
-	public void setMoney(BigDecimal money) {
-		this.money = money;
-	}
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
 
-    @Column(name="TOTAL_MONEY", nullable = false, scale = 3)
+    @Column(name = "TOTAL_MONEY", nullable = false, scale = 3)
     @NotNull
     public BigDecimal getTotalMoney() {
         return totalMoney;
@@ -215,7 +215,7 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "MIDDLE_CALC_TYPE",nullable = true)
+    @Column(name = "MIDDLE_CALC_TYPE", nullable = true)
     public MiddleMoneyCalcType getMiddleMoneyCalcType() {
         return middleMoneyCalcType;
     }
@@ -225,33 +225,33 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "COMPLETE_DATE", length = 19)
-	public Date getCompleteDate() {
-		return this.completeDate;
-	}
+    @Column(name = "COMPLETE_DATE", length = 19)
+    public Date getCompleteDate() {
+        return this.completeDate;
+    }
 
-	public void setCompleteDate(Date completeDate) {
-		this.completeDate = completeDate;
-	}
+    public void setCompleteDate(Date completeDate) {
+        this.completeDate = completeDate;
+    }
 
-	@Column(name = "PROFIT", scale = 3)
-	public BigDecimal getProfit() {
-		return this.profit;
-	}
+    @Column(name = "PROFIT", scale = 3)
+    public BigDecimal getProfit() {
+        return this.profit;
+    }
 
-	public void setProfit(BigDecimal profit) {
-		this.profit = profit;
-	}
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
+    }
 
-	@Column(name = "MEMO", length = 200)
-	@Size(max = 200)
-	public String getMemo() {
-		return this.memo;
-	}
+    @Column(name = "MEMO", length = 200)
+    @Size(max = 200)
+    public String getMemo() {
+        return this.memo;
+    }
 
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<NeedRes> getNeedReses() {
@@ -263,9 +263,9 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Transient
-    public List<NeedRes> getNeedResList(){
+    public List<NeedRes> getNeedResList() {
         List<NeedRes> result = new ArrayList<NeedRes>(getNeedReses());
-        Collections.sort(result,new Comparator<NeedRes>() {
+        Collections.sort(result, new Comparator<NeedRes>() {
             @Override
             public int compare(NeedRes o1, NeedRes o2) {
                 return o1.getId().compareTo(o2.getId());
@@ -274,7 +274,7 @@ public class CustomerOrder implements java.io.Serializable {
         return result;
     }
 
-    @Column(name="CONTACT",length = 50,nullable = false)
+    @Column(name = "CONTACT", length = 50, nullable = false)
     @NotNull
     @Size(max = 50)
     public String getContact() {
@@ -285,7 +285,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.contact = contact;
     }
 
-    @Column(name="TEL",length = 50,nullable = false)
+    @Column(name = "TEL", length = 50, nullable = false)
     @NotNull
     @Size(max = 50)
     public String getTel() {
@@ -318,31 +318,31 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
-	public boolean isIncludeMiddleMan() {
-		return this.includeMiddleMan;
-	}
+    public boolean isIncludeMiddleMan() {
+        return this.includeMiddleMan;
+    }
 
-	public void setIncludeMiddleMan(boolean middleManPay) {
-		this.includeMiddleMan = middleManPay;
-	}
+    public void setIncludeMiddleMan(boolean middleManPay) {
+        this.includeMiddleMan = middleManPay;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-	public Set<OrderBack> getOrderBacks() {
-		return this.orderBacks;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+    public Set<OrderBack> getOrderBacks() {
+        return this.orderBacks;
+    }
 
-	public void setOrderBacks(Set<OrderBack> orderBacks) {
-		this.orderBacks = orderBacks;
-	}
+    public void setOrderBacks(Set<OrderBack> orderBacks) {
+        this.orderBacks = orderBacks;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-	public Set<MiddleMoneyPay> getMiddleMoneyPays() {
-		return this.middleMoneyPays;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
+    public Set<MiddleMoneyPay> getMiddleMoneyPays() {
+        return this.middleMoneyPays;
+    }
 
-	public void setMiddleMoneyPays(Set<MiddleMoneyPay> middleMoneys) {
-		this.middleMoneyPays = middleMoneys;
-	}
+    public void setMiddleMoneyPays(Set<MiddleMoneyPay> middleMoneys) {
+        this.middleMoneyPays = middleMoneys;
+    }
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
@@ -354,7 +354,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.accountOpers = accountOpers;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder",orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<OrderFee> getOrderFees() {
         return orderFees;
     }
@@ -372,7 +372,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.resReceived = resReceived;
     }
 
-    @Column(name="EARNEST_FIRST",nullable = false)
+    @Column(name = "EARNEST_FIRST", nullable = false)
     public boolean isEarnestFirst() {
         return earnestFirst;
     }
@@ -382,9 +382,9 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Transient
-    public List<AccountOper> getAccountOperList(){
+    public List<AccountOper> getAccountOperList() {
         List<AccountOper> result = new ArrayList<AccountOper>(getAccountOpers());
-        Collections.sort(result,new Comparator<AccountOper>() {
+        Collections.sort(result, new Comparator<AccountOper>() {
             @Override
             public int compare(AccountOper o1, AccountOper o2) {
                 return o1.getOperDate().compareTo(o2.getOperDate());

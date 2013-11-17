@@ -165,6 +165,13 @@ select {
 	padding: 5px;
 }
 
+.tipError{
+    float: left;
+    padding: 5px;
+    min-width: 26px;
+    max-width: 26px;
+}
+
 .tail{
     float: left;
 }

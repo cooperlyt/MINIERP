@@ -8,81 +8,103 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-    <ui:param name="functionTitle" value="#{messages.orderFee}"/>
+<ui:param name="functionTitle" value="#{messages.orderFee}"/>
 
-    <ui:define name="func-body">
-        <rich:toolbar>
-            <rich:toolbarGroup>
-                <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
-                             value="#{orderHome.masterNeedRes.proxyFare}" size="10"
-                             rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
+<ui:define name="func-body">
+
+<h:form>
+<rich:toolbar>
+
+    <rich:toolbarGroup>
+
+        <h:graphicImage value="/img/create.gif"/>
+
+        <a:commandLink value="#{messages.addNewOrderFee}" execute="@this"
+                       immediate="true" action="#{orderFeeItemEdit.createNewOrderFee}"
+                       render="orderFeeEditPanel_form"
+                       oncomplete="#{rich:component('orderFeeEditPanel')}.show()">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandLink>
+    </rich:toolbarGroup>
+
+    <rich:toolbarGroup location="right">
+        <h:panelGroup>
+            <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                      view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                             action="#{orderCommodityConfirm.complete}"/>
+        </h:panelGroup>
+    </rich:toolbarGroup>
+</rich:toolbar>
+
+<br/>
+
+<rich:messages ajaxRendered="true" globalOnly="true"/>
+
+<h:panelGrid columns="2" rendered="#{empty orderHome.instance.customer}">
+    <h:graphicImage value="/img/msginfo.png" title="#{messages.infoMessage}" alt="#{messages.infoMessage}:"/>
+    <h:outputText
+            value="#{messages.customerNotHasMiddleMan} #{messages.ifNeedCustomerMiddleMan} #{messages.customerNotHasMiddleManHelper}"/>
+</h:panelGrid>
+
+<br/>
+
+<s:decorate template="/layout/seam-edit.xhtml"
+            rendered="#{not empty orderHome.instance.customer}">
+    <ui:define name="label">
+        #{messages.includeMiddleMan}
+    </ui:define>
+    <h:selectBooleanCheckbox value="#{orderHome.instance.includeMiddleMan}">
+        <a:ajax event="click" listener="#{orderFee.middleManIncludeLisntener}"
+                render="middleMoneyCalcDetails"/>
+    </h:selectBooleanCheckbox>
+</s:decorate>
+
+
+<a:outputPanel id="middleMoneyCalcDetails">
+
+
+<rich:panel style="clear: both"
+            rendered="#{orderHome.instance.includeMiddleMan}">
+
+<s:decorate template="/layout/seam-edit.xhtml">
+    <ui:define name="label">#{messages.orderMoneyMiddleMoney}</ui:define>
+    <h:selectOneMenu value="#{orderHome.instance.middleMoneyCalcType}"
+                     required="true" label="#{messages.orderMoneyMiddleMoney}">
+
+
+        <s:selectItems value="#{middleMoneyCalcTypes}" var="_calcType"
+                       label="#{messages[_calcType.name()]}"
+                       noSelectionLabel="#{messages.noSelectLabel}"/>
+        <s:convertEnum/>
+        <a:ajax event="valueChange" render="totalMiddleMoneyCalcDetails"
+                listener="#{orderFee.middleMoneyCalcTypeChangeListener}"/>
+    </h:selectOneMenu>
+</s:decorate>
+
+<a:outputPanel style="clear: both;" id="totalMiddleMoneyCalcDetails">
+    <a:outputPanel rendered="#{not empty orderHome.instance.middleMoneyCalcType}">
+
+
+        <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'CONSULT_FIX'}">
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.order_field_middleMoney}</ui:define>
+                <h:inputText value="#{orderHome.instance.middleMoney}"
+                             label="#{messages.order_field_middleMoney}"
+                             required="true" size="20">
                     <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                      type="currency" groupingUsed="false"/>
-                    <rich:placeholder value="#{messages.order_proxy_fare}"/>
-                    <rich:validator/>
                 </h:inputText>
-                <rich:message for="reveiveFareField" styleClass="message-icon"
-                              showDetail="true" showSummary="true" tooltip="true"/>
-            </rich:toolbarGroup>
+            </s:decorate>
+        </a:outputPanel>
 
-            <rich:toolbarGroup location="right">
-                <h:panelGroup>
-                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-                    <s:button styleClass="toolBarBtn" value="#{messages.complete}"
-                              action="#{orderCommodityConfirm.complete}"/>
-                </h:panelGroup>
-            </rich:toolbarGroup>
-        </rich:toolbar>
+        <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'TOTAL_MONEY_RATE'}">
 
 
-        <rich:messages ajaxRendered="true" globalOnly="true"/>
-
-        <br/>
-
-        <s:decorate id="includeMiddleManField" template="/layout/seam-edit.xhtml">
-            <ui:define name="label">
-
-                <h:selectBooleanCheckbox value="#{orderHome.instance.includeMiddleMan}">
-                    <a:ajax event="click" render="includeMiddleManField"/>
-                </h:selectBooleanCheckbox>
-                #{messages.includeMiddleMan}
-
-            </ui:define>
-            <h:selectOneMenu value="#{orderHome.instance.middleMoneyCalcType}"
-                             required="true" label="#{messages.includeMiddleMan}"
-                             rendered="#{orderHome.instance.includeMiddleMan}">
-                <s:selectItems value="#{middleMoneyCalcTypes}" var="_calcType"
-                               label="#{messages[_calcType.name()]}"
-                               noSelectionLabel="#{messages.noSelectLabel}"/>
-                <s:convertEnum/>
-                <a:ajax event="valueChange" render="middleMoneyCalcDetails"/>
-            </h:selectOneMenu>
-        </s:decorate>
-
-        <rich:panel id="middleMoneyCalcDetails">
-
-            <a:outputPanel
-                    rendered="#{orderHome.instance.includeMiddleMan and (not empty orderHome.instance.middleMoneyCalcType) }">
-                <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'CONSULT_FIX'}">
-                    <s:decorate template="/layout/seam-edit.xhtml">
-                        <ui:define name="label">#{messages.order_field_middleMoney}</ui:define>
-                        <h:inputText value="#{orderHome.instance.middleMoney}"
-                                     label="#{messages.order_field_middleMoney}"
-                                     required="true" size="20">
-                            <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                             type="currency" groupingUsed="false"/>
-                        </h:inputText>
-                    </s:decorate>
-                </a:outputPanel>
-
-                <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'TOTAL_MONEY_RATE'}">
-
-
-                    <s:label styleClass="name">
-                        #{messages.order_field_middleMoney}
-                        <s:span styleClass="required">*</s:span>
-                    </s:label>
+            <s:label styleClass="name">
+                #{messages.order_field_middleMoney}
+                <s:span styleClass="required">*</s:span>
+            </s:label>
 
                     <span class="value">
                         <h:outputText value="#{orderHome.instance.money}">
@@ -91,6 +113,7 @@
 
                         *#{' '}%
                         <h:inputText id="middleRateInput" rendered="true"
+                                     size="8"
                                      label="#{messages.order_field_middleRate}"
                                      value="#{orderHome.instance.middleRate}">
                             <f:validateDoubleRange minimum="0" maximum="100"/>
@@ -104,7 +127,7 @@
 
                         #{' '}=#{' '}
                         <h:inputText id="middleMoneyInput" rendered="true"
-                                     converter="javax.faces.BigDecimal"
+                                     converter="javax.faces.BigDecimal" size="12"
                                      label="#{messages.order_field_middleMoney}"
                                      value="#{orderHome.instance.middleMoney}">
                             <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
@@ -119,28 +142,476 @@
 
                     </span>
 
-                </a:outputPanel>
+        </a:outputPanel>
 
-                <a:outputPanel rendered="#{orderHome.instance.middleMoneyCalcType eq 'ITEM_RATE'}">
-
-                    <rich:dataTable value="#{orderHome.masterNeedRes.orderItemList}"
-                                    var="_orderItem">
-                        <rich:column>
-                            <f:facet name="header">#{messages.StoreRes}</f:facet>
-                            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                                <ui:param name="storeRes" value="#{_orderItem.storeRes}"
-                            </ui:include>
-                        </rich:column>
-
-                    </rich:dataTable>
-
-                </a:outputPanel>
+    </a:outputPanel>
+</a:outputPanel>
 
 
+<s:decorate template="/layout/seam-edit.xhtml">
+    <ui:define name="label">#{messages.ItemMiddleMoneyCalcType}</ui:define>
+
+    <h:selectOneMenu value="#{orderFee.itemMiddleMoneyCalcType}"
+                     required="true" label="#{messages.ItemMiddleMoneyCalcType}">
+
+
+        <s:selectItems value="#{itemMiddleMoneyCalcTypes}" var="_calcType"
+                       label="#{messages[_calcType.name()]}"
+                       noSelectionLabel="#{messages.noSelectLabel}"/>
+        <s:convertEnum/>
+        <a:ajax event="valueChange" render="orderItemMiddleMoneyCalcDetails"
+                listener="#{orderFee.middleMoneyAllItemCalcTypeChangeListener}"/>
+    </h:selectOneMenu>
+</s:decorate>
+
+<a:outputPanel id="orderItemMiddleMoneyCalcDetails">
+
+<a:outputPanel
+        rendered="#{not (orderFee.itemMiddleMoneyCalcType eq 'NOT_CALC') }">
+
+    <rich:dataTable value="#{orderItemsByFee}" style="width: 100%"
+                    var="_orderItem" id="middleMoneyCalcInputTable">
+        <rich:column>
+            <f:facet name="header">#{messages.StoreRes}/#{messages.res}</f:facet>
+            <a:outputPanel rendered="#{_orderItem.storeResItem}">
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_orderItem.storeRes}"/>
+                </ui:include>
+            </a:outputPanel>
+            <a:outputPanel rendered="#{not _orderItem.storeResItem}">
+                #{_orderItem.res.name}(#{_orderItem.res.code})
             </a:outputPanel>
 
-        </rich:panel>
+            <f:facet name="footer">
+                #{messages.recordTotal} #{orderItemsByFee.size} #{messages.item}
+            </f:facet>
+        </rich:column>
 
+        <rich:column>
+            <f:facet name="header"> #{messages.orderItemCount}</f:facet>
+
+            <a:outputPanel>
+                <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                              layout="block"
+                              rendered="#{(_orderItem.storeResItem) or (_orderItem.useRes.unitGroup.type eq 'FIX_CONVERT') }">
+                    <span style="white-space: nowrap"> #{messages.MasterUnitCount}:#{_orderItem.storeResCount.masterDisplayCount}</span>
+                    <br/>
+                    <span style="white-space: nowrap">#{messages.AuxUnitCount}: #{_orderItem.storeResCount.displayAuxCount}</span>
+                    <br/>
+                </rich:tooltip>
+                <h:outputText value="#{_orderItem.count}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+                #{_orderItem.moneyUnit.name}
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">#{messages.orderItemUnitPrice}</f:facet>
+            <h:outputText value="#{_orderItem.money}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">#{messages.orderItemPriceRebate}</f:facet>
+            #{'%'}
+            <h:outputText value="#{_orderItem.rebate}">
+                <f:convertNumber pattern="#0.####"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">#{messages.orderItemTotalPrice}</f:facet>
+            <h:outputText value="#{_orderItem.totalMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{orderHome.instance.money}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">#{messages.order_middle_money_itemCalcType}</f:facet>
+            <s:decorate template="/layout/single-edit.xhtml">
+                <h:selectOneMenu value="#{_orderItem.middleMoneyCalcType}" required="true"
+                                 label="#{messages.order_middle_money_itemCalcType}"
+                                 disabled="#{not (orderFee.itemMiddleMoneyCalcType eq 'CROSS_CALC')}">
+
+                    <s:selectItems value="#{itemMiddleMoneyCalcTypes}" var="_itemCalcType"
+                                   label="#{messages[_itemCalcType.name()]}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <s:convertEnum/>
+                    <a:ajax event="valueChange" render="middleMoneyCalcInputTable"
+                            listener="#{orderFee.middleMoneyItemCalcTypeChangeListener}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">#{messages.order_middle_money_unit}</f:facet>
+
+            <a:outputPanel
+                    rendered="#{(not empty _orderItem.middleMoneyCalcType) and (_orderItem.middleMoneyCalcType eq 'COUNT_FIX')}">
+                <s:decorate template="/layout/single-edit.xhtml">
+                    <h:selectOneMenu value="#{_orderItem.middleUnit}" required="true"
+                                     label="#{messages.order_middle_money_unit}"
+                                     rendered="#{_orderItem.storeResItem or not (_orderItem.moneyUnit.unitGroup.type eq 'FLOAT_CONVERT')}">
+                        <s:selectItems value="#{_orderItem.moneyUnit.unitGroup.resUnitList}" var="_unit"
+                                       label="#{_unit.name}" noSelectionLabel="#{messages.noSelectLabelShort}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                        <a:ajax event="valueChange" render="middleMoneyCalcInputTable"
+                                listener="#{orderFee.orderItemFeeUnitChangeListener}"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+                <h:outputText value="#{_orderItem.moneyUnit.name}"
+                              rendered="#{(not _orderItem.storeResItem) and (_orderItem.moneyUnit.unitGroup.type eq 'FLOAT_CONVERT')}"/>
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.order_field_middleMoney_Rate}
+            </f:facet>
+            <s:decorate template="/layout/single-edit.xhtml"
+                        rendered="#{not empty _orderItem.middleMoneyCalcType}">
+                <h:inputText value="#{_orderItem.middleRate}" required="true" size="10"
+                             rendered="#{(_orderItem.middleMoneyCalcType eq 'COUNT_FIX')}"
+                             label="#{messages.order_field_middleMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                     type="currency" groupingUsed="false"/>
+                    <a:ajax event="blur" render="middleMoneyCalcInputTable"
+                            listener="#{orderFee.orderItemFeeRateChangeListener}"/>
+                </h:inputText>
+
+                <h:inputText value="#{_orderItem.middleRate}" required="true" size="10"
+                             rendered="#{(_orderItem.middleMoneyCalcType eq 'MONEY_RATE')}"
+                             label="#{messages.order_field_middleMoney}">
+                    <f:convertNumber pattern="#0.##"/>
+                    <f:validateDoubleRange minimum="0" maximum="100"/>
+                    <a:ajax event="blur" render="middleMoneyCalcInputTable"
+                            listener="#{orderFee.orderItemFeeRateChangeListener}"/>
+                </h:inputText>
+            </s:decorate>
+        </rich:column>
+
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">#{messages.order_field_middleMoney}</f:facet>
+            <h:outputText value="#{_orderItem.middleMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency"/>
+            </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderFee.totalMiddleMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+    </rich:dataTable>
+
+</a:outputPanel>
+
+</a:outputPanel>
+
+<div style="clear: both"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+
+    <ui:param name="openLabel" value="#{messages.MiddleMan}:#{' '}#{orderHome.instance.customer.middleMan.name}"/>
+
+    <ui:param name="hideLabel"
+              value="#{messages.detailsHide}#{' '}#{messages.MiddleMan}"/>
+    <ui:include src="/layout/erp/MiddleManDetails.xhtml">
+        <ui:param name="readonly" value="true"/>
+    </ui:include>
+
+</s:decorate>
+
+<s:decorate template="/layout/seam-edit.xhtml">
+    <ui:define name="label">#{messages.orderFee_field_receiveName}</ui:define>
+    <h:inputText value="#{orderFee.middleManFee.receiveName}" required="true"
+                 label="#{messages.orderFee_field_receiveName}"
+                 size="20" maxlength="50">
+
+    </h:inputText>
+</s:decorate>
+
+
+<s:decorate id="middleManPayTypeField" template="/layout/seam-edit.xhtml">
+    <ui:define name="label">#{messages.orderFee_field_payType}</ui:define>
+    <h:selectOneMenu value="#{orderFee.middleManFee.payType}" required="true" style="width: 150px"
+                     label="#{messages.orderFee_field_payType}">
+        <s:selectItems value="#{feePayTypes}" var="_type"
+                       label="#{messages[_type.name()]}" noSelectionLabel="#{messages.noSelectLabel}"/>
+        <s:convertEnum/>
+        <a:ajax event="valueChange" render="middleMoneyBankPayInfos,middleManPayTypeField"/>
+    </h:selectOneMenu>
+</s:decorate>
+
+<a:outputPanel id="middleMoneyBankPayInfos">
+    <a:outputPanel
+            rendered="#{(not empty orderFee.middleManFee.payType) and (orderFee.middleManFee.payType eq 'BANK_TRANSFER')}">
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.bank}</ui:define>
+            <h:selectOneMenu value="#{orderFee.middleManFee.bank}" style="width: 150px"
+                             label="#{messages.bank}" required="true">
+                <s:selectItems var="_word" label="#{_word.value}"
+                               itemValue="#{_word.id}"
+                               value="#{dictionary.getWordList('erp.bank')}"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.orderFee_field_bankNumber}</ui:define>
+            <h:inputText value="#{orderFee.middleManFee.bankNumber}"
+                         label="#{messages.orderFee_field_bankNumber}"
+                         required="true" size="31" maxlength="50"/>
+
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.orderFee_field_bankInfo}</ui:define>
+            <h:inputText label="#{messages.orderFee_field_bankInfo}" size="31"
+                         maxlength="100" value="#{orderFee.middleManFee.bankInfo}"/>
+        </s:decorate>
+
+
+    </a:outputPanel>
+
+</a:outputPanel>
+
+<s:decorate template="/layout/seam-edit.xhtml">
+    <ui:define name="label">#{messages.orderFee_field_receiveInfo}</ui:define>
+    <h:inputTextarea value="#{orderFee.middleManFee.receiveInfo}"
+                     label="#{messages.orderFee_field_receiveInfo}"
+                     cols="30" rows="2"/>
+</s:decorate>
+
+<s:decorate template="/layout/seam-edit.xhtml">
+    <ui:define name="label">#{messages.description}</ui:define>
+    <h:inputTextarea value="#{orderFee.middleManFee.description}"
+                     label="#{messages.description}" cols="30" rows="2"/>
+</s:decorate>
+
+<div style="clear:both">
+    <span class="required">*</span>
+    #{messages.requiredFields}
+</div>
+</rich:panel>
+
+</a:outputPanel>
+
+
+</h:form>
+
+<h:form>
+    <rich:dataTable id="orderFeeDataTable" style="width: 100%" value="#{editOrderFee}" var="_fee"
+                    noDataLabel="#{messages.orderFee_empty}">
+        <rich:column>
+            <f:facet name="header">#{messages.orderFee_field_receiveName}</f:facet>
+
+            #{_fee.receiveName}
+
+
+            <f:facet name="footer">
+                #{messages.recordTotal} #{editOrderFee.size} #{messages.item}
+            </f:facet>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">#{messages.description}</f:facet>
+            #{_fee.description}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">#{messages.orderFee_field_payType}</f:facet>
+            <a:outputPanel>
+                <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                              layout="block">
+                    <span style="white-space: nowrap">#{messages.orderFee_field_receiveInfo}:#{_fee.receiveInfo}</span>
+                    <br/>
+
+                    <s:span style="white-space: nowrap" rendered="#{_fee.payType eq 'BANK_TRANSFER'}">
+                        #{messages.bank}: #{dictionary.getWordValue(_fee.bank)}</s:span>
+                    <br/>
+
+                    <s:span style="white-space: nowrap" rendered="#{_fee.payType eq 'BANK_TRANSFER'}">
+                        #{messages.orderFee_field_bankNumber}: #{_fee.bankNumber}</s:span>
+
+                    <br/>
+
+                    <s:span style="white-space: nowrap" rendered="#{_fee.payType eq 'BANK_TRANSFER'}">
+                        #{messages.orderFee_field_bankInfo}: #{_fee.bankInfo}</s:span>
+
+                    <br/>
+
+
+                </rich:tooltip>
+
+                #{messages[_fee.payType.name()]}
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">#{messages.orderFee_field_money}</f:facet>
+            <h:outputText value="#{_fee.money}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency"/>
+            </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderFeeItemEdit.totalFeeMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+        <rich:column style="text-align: center">
+            <f:facet name="header">#{messages.action}</f:facet>
+
+            <a:commandButton image="/img/edit.png" title="#{messages.edit}"
+                             immediate="true" action="#{orderFeeItemEdit.editOrderFee}"
+                             render="orderFeeEditPanel_form"
+                             oncomplete="#{rich:component('orderFeeEditPanel')}.show()">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+            <a:commandButton image="/img/delete.png" title="#{messages.delete}"
+                             immediate="true" action="#{orderFeeItemEdit.removeOrderFee}"
+                             onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                             render="orderFeeDataTable">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </rich:column>
+
+    </rich:dataTable>
+</h:form>
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="orderFeeEditPanel"/>
+    <ui:param name="panelTitle" value="#{messages.orderFee}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
     </ui:define>
+
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.orderFee_field_money}</ui:define>
+        <h:inputText label="#{messages.orderFee_field_money}" rendered="true"
+                     size="15" value="#{orderFeeItemEdit.editingOrderFee.money}">
+            <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                             type="currency" groupingUsed="false"/>
+        </h:inputText>
+    </s:decorate>
+
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.orderFee_field_receiveName}</ui:define>
+        <h:inputText value="#{orderFeeItemEdit.editingOrderFee.receiveName}" required="true"
+                     label="#{messages.orderFee_field_receiveName}"
+                     size="20" maxlength="50">
+
+        </h:inputText>
+    </s:decorate>
+
+
+    <s:decorate id="orderFeePayTypeField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.orderFee_field_payType}</ui:define>
+        <h:selectOneMenu value="#{orderFeeItemEdit.editingOrderFee.payType}" required="true" style="width: 150px"
+                         label="#{messages.orderFee_field_payType}">
+            <s:selectItems value="#{feePayTypes}" var="_type"
+                           label="#{messages[_type.name()]}" noSelectionLabel="#{messages.noSelectLabel}"/>
+            <s:convertEnum/>
+            <a:ajax event="valueChange" render="orderFeeBankPayInfos,orderFeePayTypeField"/>
+        </h:selectOneMenu>
+    </s:decorate>
+
+
+    <a:outputPanel id="orderFeeBankPayInfos">
+        <a:outputPanel
+                rendered="#{(not empty orderFeeItemEdit.editingOrderFee.payType) and (orderFeeItemEdit.editingOrderFee.payType eq 'BANK_TRANSFER')}">
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.bank}</ui:define>
+                <h:selectOneMenu value="#{orderFeeItemEdit.editingOrderFee.bank}" style="width: 150px"
+                                 label="#{messages.bank}" required="true">
+                    <s:selectItems var="_word" label="#{_word.value}"
+                                   itemValue="#{_word.id}"
+                                   value="#{dictionary.getWordList('erp.bank')}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.orderFee_field_bankNumber}</ui:define>
+                <h:inputText value="#{orderFeeItemEdit.editingOrderFee.bankNumber}"
+                             label="#{messages.orderFee_field_bankNumber}"
+                             required="true" size="31" maxlength="50"/>
+
+            </s:decorate>
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.orderFee_field_bankInfo}</ui:define>
+                <h:inputText label="#{messages.orderFee_field_bankInfo}" size="31"
+                             maxlength="100" value="#{orderFeeItemEdit.editingOrderFee.bankInfo}"/>
+            </s:decorate>
+
+
+        </a:outputPanel>
+
+    </a:outputPanel>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.orderFee_field_receiveInfo}</ui:define>
+        <h:inputTextarea value="#{orderFeeItemEdit.editingOrderFee.receiveInfo}"
+                         label="#{messages.orderFee_field_receiveInfo}"
+                         cols="30" rows="2"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.description}</ui:define>
+        <h:inputTextarea value="#{orderFeeItemEdit.editingOrderFee.description}"
+                         label="#{messages.description}" cols="30" rows="2"/>
+    </s:decorate>
+
+    <ui:define name="actionButtons">
+
+        <a:commandButton rendered="#{orderFeeItemEdit.editingNewFee}" value="#{messages.cancel}" immediate="true"
+                         onclick="#{rich:component('orderFeeEditPanel')}.hide(); return false;"/>
+
+        <a:commandButton rendered="#{orderFeeItemEdit.editingNewFee}" value="#{messages.ok}" execute="@form"
+                         data="#{actionExecuteState.lastState}"
+                         oncomplete="if (event.data == 'success')#{rich:component('orderFeeEditPanel')}.hide();"
+                         render="orderFeeEditPanel_inputs,orderFeeDataTable"
+                         action="#{orderFeeItemEdit.addNewOrderFee}">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+
+        <a:commandButton rendered="#{not orderFeeItemEdit.editingNewFee}" value="#{messages.ok}" execute="@form"
+                         data="#{actionExecuteState.lastState}"
+                         oncomplete="if (event.data == 'success')#{rich:component('orderFeeEditPanel')}.hide();"
+                         render="orderFeeEditPanel_inputs,orderFeeDataTable"
+                         action="#{actionExecuteState.actionExecute}">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+</s:decorate>
+
+</ui:define>
 
 </ui:composition>

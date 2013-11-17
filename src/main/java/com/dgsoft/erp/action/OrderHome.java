@@ -2,6 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
@@ -9,6 +10,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,9 +24,19 @@ import java.util.Set;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
+    @Factory(value = "feePayTypes",scope = ScopeType.CONVERSATION)
+    public PayType[] getFeePayTypes(){
+        return new PayType[]{PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK};
+    }
+
     @Factory(value = "middleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
     public CustomerOrder.MiddleMoneyCalcType[] getMiddleMoneyCalcTypes(){
         return CustomerOrder.MiddleMoneyCalcType.values();
+    }
+
+    @Factory (value ="itemMiddleMoneyCalcTypes" , scope = ScopeType.CONVERSATION)
+    public OrderItem.MiddleMoneyCalcType[] getItemMiddleMoneyCalcTypes(){
+        return OrderItem.MiddleMoneyCalcType.values();
     }
 
     @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)

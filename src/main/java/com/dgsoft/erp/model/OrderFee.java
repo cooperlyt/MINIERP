@@ -1,9 +1,11 @@
 package com.dgsoft.erp.model;
 // Generated Nov 15, 2013 4:00:38 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.PayType;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,7 +22,7 @@ public class OrderFee implements java.io.Serializable {
 	private String description;
 	private boolean pay;
 	private CustomerOrder customerOrder;
-	private String payType;
+	private PayType payType;
 	private String checkNumber;
 	private String receiveName;
 	private String bankNumber;
@@ -28,15 +30,34 @@ public class OrderFee implements java.io.Serializable {
 	private boolean middleMoney;
 	private String debit;
 	private String credit;
-	private String reveiveInfo;
+	private String receiveInfo;
 	private String bank;
-    private String payDate;
+    private Date payDate;
+    private Date applyDate;
 
 	public OrderFee() {
 	}
 
+    public OrderFee(boolean middleMoney,boolean pay,Date applyDate){
+        this.middleMoney = middleMoney;
+        this.pay = pay;
+        this.applyDate = applyDate;
+    }
 
-	@Id
+    public OrderFee(CustomerOrder customerOrder, String bankNumber,
+                    String bankInfo, boolean middleMoney,
+                    String bank, String receiveName,boolean pay,Date applyDate) {
+        this.customerOrder = customerOrder;
+        this.bankNumber = bankNumber;
+        this.bankInfo = bankInfo;
+        this.middleMoney = middleMoney;
+        this.bank = bank;
+        this.receiveName = receiveName;
+        this.pay = pay;
+        this.applyDate = applyDate;
+    }
+
+    @Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
@@ -91,14 +112,14 @@ public class OrderFee implements java.io.Serializable {
         this.customerOrder = customerOrder;
     }
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "PAY_TYPE", nullable = false, length = 32)
 	@NotNull
-	@Size(max = 32)
-	public String getPayType() {
+	public PayType getPayType() {
 		return this.payType;
 	}
 
-	public void setPayType(String payType) {
+	public void setPayType(PayType payType) {
 		this.payType = payType;
 	}
 
@@ -172,14 +193,14 @@ public class OrderFee implements java.io.Serializable {
 		this.credit = credit;
 	}
 
-	@Column(name = "REVEIVE_INFO", length = 300)
-	@Size(max = 300)
-	public String getReveiveInfo() {
-		return this.reveiveInfo;
+	@Column(name = "RECEIVE_INFO", length = 200)
+	@Size(max = 200)
+	public String getReceiveInfo() {
+		return this.receiveInfo;
 	}
 
-	public void setReveiveInfo(String reveiveInfo) {
-		this.reveiveInfo = reveiveInfo;
+	public void setReceiveInfo(String reveiveInfo) {
+		this.receiveInfo = reveiveInfo;
 	}
 
 	@Column(name = "BANK", length = 32)
@@ -194,11 +215,22 @@ public class OrderFee implements java.io.Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "PAY_DATE", length = 19)
-    public String getPayDate() {
+    public Date getPayDate() {
         return payDate;
     }
 
-    public void setPayDate(String payDate) {
+    public void setPayDate(Date payDate) {
         this.payDate = payDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="APPLY_DATE",length = 19,nullable = false)
+    @NotNull
+    public Date getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
     }
 }

@@ -1,6 +1,7 @@
 package com.dgsoft.common.system.business;
 
 import com.dgsoft.common.exception.ProcessDefineException;
+import org.jboss.seam.annotations.FlushModeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.bpm.BeginTask;
@@ -24,7 +25,7 @@ public class TaskPrepare {
     private String taskId;
 
 
-    @BeginTask
+    @BeginTask(flushMode = FlushModeType.MANUAL)
     public String beginTask() {
         return getTaskDescription(Long.parseLong(taskId)).getTaskOperationPage();
     }

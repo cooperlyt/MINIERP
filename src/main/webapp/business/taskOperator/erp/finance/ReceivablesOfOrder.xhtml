@@ -16,8 +16,10 @@
     <ui:param name="orderFinanceReveiveAction" value="#{orderMoneyReceive}"/>
 
     <ui:define name="tipMessages">
-        <h:outputText value="#{messages.order_OVERDRAFT_tip}"
-                      rendered="#{orderHome.instance.payType eq 'OVERDRAFT'}"/>
+        <h:panelGrid columns="2" rendered="#{orderHome.instance.payType eq 'OVERDRAFT'}">
+            <h:graphicImage value="/img/msginfo.png" title="#{messages.infoMessage}" alt="#{messages.infoMessage}:"/>
+            <h:outputText value="#{messages.order_OVERDRAFT_tip}"/>
+        </h:panelGrid>
     </ui:define>
     <ui:define name="toolbarContext">
         <rich:toolbarGroup>

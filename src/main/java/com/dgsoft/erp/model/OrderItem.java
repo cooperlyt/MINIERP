@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -213,9 +214,9 @@ public class OrderItem implements java.io.Serializable {
 
     @Transient
     public ResCount getStoreResCount() {
-        if (!isStoreResItem()) {
+        if (!isStoreResItem() && !UnitGroup.UnitGroupType.FIX_CONVERT.equals(getMoneyUnit().getUnitGroup().getType())) {
 
-            throw new IllegalArgumentException("must storeRes can call this method");
+            throw new IllegalArgumentException("Res unit must be FIX_CONVERT");
         }
         if (resCount == null) {
             generateResCount();
@@ -224,12 +225,29 @@ public class OrderItem implements java.io.Serializable {
     }
 
     @Transient
+    public Res getUseRes(){
+        if (isStoreResItem()) {
+            return getStoreRes().getRes();
+        } else {
+            return getRes();
+        }
+    }
+
+    @Transient
     public void generateResCount() {
-        if (getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+        if (!isStoreResItem() && !UnitGroup.UnitGroupType.FIX_CONVERT.equals(getMoneyUnit().getUnitGroup().getType())) {
+
+            throw new IllegalArgumentException("Res unit must be FIX_CONVERT");
+        }
+
+
+
+        if (getUseRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             resCount = new ResCount(getCount(), getMoneyUnit(), getStoreRes().getFloatConversionRate());
         } else {
-            resCount =  new ResCount(getCount(), getMoneyUnit());
+            resCount = new ResCount(getCount(), getMoneyUnit());
         }
+
     }
 
     @Transient
@@ -239,7 +257,7 @@ public class OrderItem implements java.io.Serializable {
             if (!getStoreRes().getId().equals(orderItem.getStoreRes().getId())) {
                 throw new IllegalArgumentException("only same storeRes item can add!");
             }
-            if (resCount == null){
+            if (resCount == null) {
                 generateResCount();
             }
             resCount.add(orderItem.getStoreResCount());
@@ -247,5 +265,10 @@ public class OrderItem implements java.io.Serializable {
         } else {
             throw new IllegalArgumentException("only storeRes item can add!");
         }
+    }
+
+    @Transient
+    public BigDecimal getTotalMoney() {
+        return BigDecimalFormat.halfUpCurrency(getMoney().multiply(getCount()).multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
     }
 }

@@ -7,7 +7,7 @@
 
     <div>
 
-        <s:label styleClass="small_name #{invalid?'errors':''}">
+        <s:label styleClass="auto_width_name #{invalid?'errors':''}">
             <ui:insert name="label"/>
             <s:span styleClass="required" rendered="#{required}">*</s:span>
         </s:label>
@@ -21,8 +21,8 @@
             <ui:insert name="tail"/>
         </span>
 
-        <span class="error">
-            <s:div style="width:22px;height:14px" rendered="#{not invalid}"/>
+        <s:div styleClass="tipError">
+
 
             <a:outputPanel rendered="#{invalid}">
                 <h:graphicImage value="/img/error.gif" rendered="#{invalid}" styleClass="errors">
@@ -32,7 +32,7 @@
                 </rich:tooltip>
             </a:outputPanel>
 
-        </span>
+        </s:div>
 
     </div>
 </ui:composition>

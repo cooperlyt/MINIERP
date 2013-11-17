@@ -118,7 +118,7 @@
                          readonly="#{empty readonly?'false':readonly}"
                          label="#{messages.person_field_address}"
                          value="#{personHome.instance.address}">
-                <a:ajax event="blur" listener="" render="addressField" disabled="#{empty readonly?'false':readonly}"/>
+                <a:ajax event="blur" render="addressField" disabled="#{empty readonly?'false':readonly}"/>
             </h:inputText>
         </s:decorate>
 
