@@ -63,7 +63,7 @@ public class CustomerOrder implements java.io.Serializable {
 
     private MiddleMoneyCalcType middleMoneyCalcType;
     private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
-    private Set<MiddleMoneyPay> middleMoneyPays = new HashSet<MiddleMoneyPay>(0);
+    private MiddleMoneyPay middleMoneyPay;
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
@@ -335,13 +335,13 @@ public class CustomerOrder implements java.io.Serializable {
         this.orderBacks = orderBacks;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<MiddleMoneyPay> getMiddleMoneyPays() {
-        return this.middleMoneyPays;
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "customerOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    public MiddleMoneyPay getMiddleMoneyPay() {
+        return this.middleMoneyPay;
     }
 
-    public void setMiddleMoneyPays(Set<MiddleMoneyPay> middleMoneys) {
-        this.middleMoneyPays = middleMoneys;
+    public void setMiddleMoneyPay(MiddleMoneyPay middleMoneys) {
+        this.middleMoneyPay = middleMoneys;
     }
 
 
@@ -361,6 +361,18 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setOrderFees(Set<OrderFee> orderFees) {
         this.orderFees = orderFees;
+    }
+
+    @Transient
+    public List<OrderFee> getOrderFeeList() {
+        List<OrderFee> result = new ArrayList<OrderFee>(getOrderFees());
+        Collections.sort(result, new Comparator<OrderFee>() {
+            @Override
+            public int compare(OrderFee o1, OrderFee o2) {
+                return o1.getApplyDate().compareTo(o2.getApplyDate());
+            }
+        });
+        return result;
     }
 
     @Column(name = "RES_RECEIVED", nullable = false)

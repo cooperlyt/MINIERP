@@ -13,6 +13,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -46,7 +47,7 @@ public class OrderFeeApply extends OrderTaskHandle {
         return orderHome.getMasterNeedRes().getOrderItemList();
     }
 
-    @Factory(value = "itemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
+    @Factory(value = "allItemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
     public ItemMiddleMoneyCalcType[] getItemMiddleMoneyCalcTypes() {
         return ItemMiddleMoneyCalcType.values();
     }
@@ -93,6 +94,7 @@ public class OrderFeeApply extends OrderTaskHandle {
                     middleManHome.getInstance().getBankInfo(),
                     true, middleManHome.getInstance().getBank(), middleManHome.getInstance().getContact(), false, new Date());
         }
+        calcMiddleMoney();
     }
 
     public void orderItemFeeUnitChangeListener() {
@@ -116,10 +118,13 @@ public class OrderFeeApply extends OrderTaskHandle {
             }
 
         }
+        calcMiddleMoney();
     }
 
     public void orderItemFeeRateChangeListener() {
 
+        if (selectOrderItem.getMiddleRate() == null)
+            return;
 
         if (selectOrderItem.getMiddleRate().compareTo(BigDecimal.ZERO) == 0) {
             selectOrderItem.setMiddleMoney(BigDecimal.ZERO);
@@ -135,6 +140,7 @@ public class OrderFeeApply extends OrderTaskHandle {
             }
 
         }
+        calcMiddleMoney();
     }
 
     public void middleMoneyAllItemCalcTypeChangeListener() {
@@ -158,11 +164,13 @@ public class OrderFeeApply extends OrderTaskHandle {
             }
 
         }
+        calcMiddleMoney();
     }
 
     public void middleMoneyCalcTypeChangeListener() {
         orderHome.getInstance().setMiddleMoney(null);
         orderHome.getInstance().setMiddleRate(null);
+        calcMiddleMoney();
     }
 
     public void middleMoneyItemCalcTypeChangeListener() {
@@ -186,6 +194,7 @@ public class OrderFeeApply extends OrderTaskHandle {
                 }
             }
         }
+        calcMiddleMoney();
     }
 
 
@@ -201,6 +210,7 @@ public class OrderFeeApply extends OrderTaskHandle {
                 item.setMiddleMoney(BigDecimalFormat.halfUpCurrency(item.getTotalMoney().multiply(item.getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
             }
         }
+
     }
 
     public void middleMoneyRateChangeListener() {
@@ -212,6 +222,7 @@ public class OrderFeeApply extends OrderTaskHandle {
         orderHome.getInstance().setMiddleMoney(
                 orderHome.getInstance().getMoney().multiply(
                         orderHome.getInstance().getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
+        calcMiddleMoney();
     }
 
     public void middleMoneyChangeListener() {
@@ -222,32 +233,44 @@ public class OrderFeeApply extends OrderTaskHandle {
         }
         orderHome.getInstance().setMiddleRate(
                 orderHome.getInstance().getMiddleMoney().divide(orderHome.getInstance().getMoney(), 20, BigDecimal.ROUND_HALF_UP).subtract(new BigDecimal("100")));
+
+        calcMiddleMoney();
+    }
+
+    public void calcMiddleMoney() {
+
+        if (orderHome.getInstance().isIncludeMiddleMan() && (middleManFee != null)) {
+            BigDecimal result = BigDecimal.ZERO;
+
+            if ((itemMiddleMoneyCalcType != null) && !ItemMiddleMoneyCalcType.NOT_CALC.equals(itemMiddleMoneyCalcType)) {
+                result = result.add(getTotalMiddleMoney());
+            }
+
+            if ((orderHome.getInstance().getMiddleMoneyCalcType() != null) &&
+                    !CustomerOrder.MiddleMoneyCalcType.NOT_CALC.equals(orderHome.getInstance().getMiddleMoneyCalcType())
+                    && (orderHome.getInstance().getMiddleMoney() != null)) {
+                result = result.add(orderHome.getInstance().getMiddleMoney());
+            }
+
+            middleManFee.setMoney(result);
+        }
     }
 
 
+    @Override
     protected String completeOrderTask() {
         //orderHome.getInstance().getOrderFees().clear();
         if (orderHome.getInstance().isIncludeMiddleMan()) {
 
-            orderHome.getInstance().setMiddleTotal(BigDecimal.ZERO);
-            if (!itemMiddleMoneyCalcType.equals(ItemMiddleMoneyCalcType.NOT_CALC)) {
-                orderHome.getInstance().setMiddleTotal(getTotalMiddleMoney());
-            }
+            calcMiddleMoney();
 
-            if (!CustomerOrder.MiddleMoneyCalcType.NOT_CALC.equals(orderHome.getInstance().getMiddleMoneyCalcType())
-                    && (orderHome.getInstance().getMiddleMoney() != null)) {
-                orderHome.getInstance().setMiddleTotal(
-                        orderHome.getInstance().getMiddleTotal().add(orderHome.getInstance().getMiddleMoney()));
-            }
-
-
-            if ((orderHome.getInstance().getMiddleTotal() == null) ||
-                    (BigDecimal.ZERO.compareTo(orderHome.getInstance().getMiddleTotal()) == 0)) {
+            if ((middleManFee.getMoney() == null) ||
+                    (BigDecimal.ZERO.compareTo(middleManFee.getMoney()) == 0)) {
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "includeMiddleManButMoneyIsZero");
                 return "fail";
             }
 
-            middleManFee.setMoney(orderHome.getInstance().getMiddleTotal());
+            orderHome.getInstance().setMiddleTotal(middleManFee.getMoney());
             orderHome.getInstance().getOrderFees().add(middleManFee);
 
         }
@@ -257,11 +280,13 @@ public class OrderFeeApply extends OrderTaskHandle {
             orderHome.getInstance().getOrderFees().add(orderFee);
         }
 
+        Logging.getLog(this.getClass()).debug("order fee call complete! fee size:" + orderHome.getInstance().getOrderFees().size() );
 
         //TODO move to Last task
         if (!orderHome.isHavePayFee()) {
             //TODO if   ORDER_OVERDRAFT_COMPLETE,
             orderHome.getInstance().setState(CustomerOrder.OrderState.ORDER_COMPLETE);
+            Logging.getLog(this.getClass()).debug("set order state to complete");
         }
 
         if ("updated".equals(orderHome.update())) {

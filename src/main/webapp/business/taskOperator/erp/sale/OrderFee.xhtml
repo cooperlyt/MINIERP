@@ -32,7 +32,7 @@
             <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                       view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
             <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                             action="#{orderCommodityConfirm.complete}"/>
+                             action="#{orderFee.complete}"/>
         </h:panelGroup>
     </rich:toolbarGroup>
 </rich:toolbar>
@@ -77,7 +77,7 @@
                        label="#{messages[_calcType.name()]}"
                        noSelectionLabel="#{messages.noSelectLabel}"/>
         <s:convertEnum/>
-        <a:ajax event="valueChange" render="totalMiddleMoneyCalcDetails"
+        <a:ajax event="valueChange" render="totalMiddleMoneyCalcDetails,payMiddleMoneyField"
                 listener="#{orderFee.middleMoneyCalcTypeChangeListener}"/>
     </h:selectOneMenu>
 </s:decorate>
@@ -91,9 +91,10 @@
                 <ui:define name="label">#{messages.order_field_middleMoney}</ui:define>
                 <h:inputText value="#{orderHome.instance.middleMoney}"
                              label="#{messages.order_field_middleMoney}"
-                             required="true" size="20">
+                             required="true" size="14">
                     <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                      type="currency" groupingUsed="false"/>
+                    <a:ajax event="blur" listener="#{orderFee.calcMiddleMoney}" render="payMiddleMoneyField"/>
                 </h:inputText>
             </s:decorate>
         </a:outputPanel>
@@ -120,7 +121,7 @@
                             <f:convertNumber pattern="#0.##"/>
                             <rich:validator/>
                             <a:ajax listener="#{orderFee.middleMoneyRateChangeListener}" event="blur"
-                                    render="middleMoneyInput"/>
+                                    render="middleMoneyInput,payMiddleMoneyField"/>
                         </h:inputText>
                         <rich:message for="middleRateInput" styleClass="message-icon"
                                       showDetail="true" showSummary="true" tooltip="true"/>
@@ -135,7 +136,7 @@
                             <f:validateDoubleRange minimum="0"/>
                             <rich:validator/>
                             <a:ajax listener="#{orderFee.middleMoneyChangeListener}" event="blur"
-                                    render="middleRateInput"/>
+                                    render="middleRateInput,payMiddleMoneyField"/>
                         </h:inputText>
                         <rich:message for="middleMoneyInput" styleClass="message-icon"
                                       showDetail="true" showSummary="true" tooltip="true"/>
@@ -155,11 +156,11 @@
                      required="true" label="#{messages.ItemMiddleMoneyCalcType}">
 
 
-        <s:selectItems value="#{itemMiddleMoneyCalcTypes}" var="_calcType"
+        <s:selectItems value="#{allItemMiddleMoneyCalcTypes}" var="_calcType"
                        label="#{messages[_calcType.name()]}"
                        noSelectionLabel="#{messages.noSelectLabel}"/>
         <s:convertEnum/>
-        <a:ajax event="valueChange" render="orderItemMiddleMoneyCalcDetails"
+        <a:ajax event="valueChange" render="orderItemMiddleMoneyCalcDetails,payMiddleMoneyField"
                 listener="#{orderFee.middleMoneyAllItemCalcTypeChangeListener}"/>
     </h:selectOneMenu>
 </s:decorate>
@@ -167,7 +168,7 @@
 <a:outputPanel id="orderItemMiddleMoneyCalcDetails">
 
 <a:outputPanel
-        rendered="#{not (orderFee.itemMiddleMoneyCalcType eq 'NOT_CALC') }">
+        rendered="#{(not empty orderFee.itemMiddleMoneyCalcType) and not (orderFee.itemMiddleMoneyCalcType eq 'NOT_CALC') }">
 
     <rich:dataTable value="#{orderItemsByFee}" style="width: 100%"
                     var="_orderItem" id="middleMoneyCalcInputTable">
@@ -247,7 +248,7 @@
                                    label="#{messages[_itemCalcType.name()]}"
                                    noSelectionLabel="#{messages.noSelectLabel}"/>
                     <s:convertEnum/>
-                    <a:ajax event="valueChange" render="middleMoneyCalcInputTable"
+                    <a:ajax event="valueChange" render="middleMoneyCalcInputTable,payMiddleMoneyField"
                             listener="#{orderFee.middleMoneyItemCalcTypeChangeListener}"/>
                 </h:selectOneMenu>
             </s:decorate>
@@ -265,7 +266,7 @@
                         <s:selectItems value="#{_orderItem.moneyUnit.unitGroup.resUnitList}" var="_unit"
                                        label="#{_unit.name}" noSelectionLabel="#{messages.noSelectLabelShort}"/>
                         <f:converter converterId="erpEntityConverter"/>
-                        <a:ajax event="valueChange" render="middleMoneyCalcInputTable"
+                        <a:ajax event="valueChange" render="middleMoneyCalcInputTable,payMiddleMoneyField"
                                 listener="#{orderFee.orderItemFeeUnitChangeListener}"/>
                     </h:selectOneMenu>
                 </s:decorate>
@@ -285,7 +286,7 @@
                              label="#{messages.order_field_middleMoney}">
                     <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                      type="currency" groupingUsed="false"/>
-                    <a:ajax event="blur" render="middleMoneyCalcInputTable"
+                    <a:ajax event="blur" render="middleMoneyCalcInputTable,payMiddleMoneyField"
                             listener="#{orderFee.orderItemFeeRateChangeListener}"/>
                 </h:inputText>
 
@@ -294,7 +295,7 @@
                              label="#{messages.order_field_middleMoney}">
                     <f:convertNumber pattern="#0.##"/>
                     <f:validateDoubleRange minimum="0" maximum="100"/>
-                    <a:ajax event="blur" render="middleMoneyCalcInputTable"
+                    <a:ajax event="blur" render="middleMoneyCalcInputTable,payMiddleMoneyField"
                             listener="#{orderFee.orderItemFeeRateChangeListener}"/>
                 </h:inputText>
             </s:decorate>
@@ -324,6 +325,8 @@
 
 <div style="clear: both"/>
 
+
+
 <s:decorate template="/layout/view-details.xhtml">
 
     <ui:param name="openLabel" value="#{messages.MiddleMan}:#{' '}#{orderHome.instance.customer.middleMan.name}"/>
@@ -334,6 +337,14 @@
         <ui:param name="readonly" value="true"/>
     </ui:include>
 
+</s:decorate>
+
+<s:decorate id="payMiddleMoneyField" template="/layout/seam-display.xhtml">
+    <ui:define name="label">#{messages.order_field_middleMoney}</ui:define>
+    <h:outputText value="#{orderFee.middleManFee.money}">
+        <f:convertNumber locale="#{calendarBean.locale}"
+                         type="currency"/>
+    </h:outputText>
 </s:decorate>
 
 <s:decorate template="/layout/seam-edit.xhtml">
@@ -413,7 +424,7 @@
 
 
 </h:form>
-
+       <br/>
 <h:form>
     <rich:dataTable id="orderFeeDataTable" style="width: 100%" value="#{editOrderFee}" var="_fee"
                     noDataLabel="#{messages.orderFee_empty}">

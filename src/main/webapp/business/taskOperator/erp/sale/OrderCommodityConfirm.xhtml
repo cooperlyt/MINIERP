@@ -11,9 +11,22 @@
     <ui:param name="functionTitle" value="#{messages.orderCommodityConfirm}"/>
 
     <ui:define name="func-body">
+
+        <h:outputStylesheet>
+            .rf-tb-emp {
+                border: 0 none !important;
+                width:100% !important;
+            }
+        </h:outputStylesheet>
         <h:form>
+
             <rich:toolbar>
                 <rich:toolbarGroup>
+                    <h:outputText value="#{messages.order_proxy_fare}"
+                                  rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}"/>
+
+                    <h:outputText value="#{messages[orderHome.lastNeedRes.type.name()]}"
+                                  rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}"/>
                     <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
                                  value="#{orderHome.masterNeedRes.proxyFare}" size="10"
                                  rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
@@ -38,6 +51,8 @@
 
 
         </h:form>
+
+        <br/>
         <rich:messages ajaxRendered="true" globalOnly="true"/>
 
         <br/>

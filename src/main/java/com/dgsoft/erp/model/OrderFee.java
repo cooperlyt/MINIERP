@@ -34,6 +34,7 @@ public class OrderFee implements java.io.Serializable {
 	private String bank;
     private Date payDate;
     private Date applyDate;
+    private String payEmp;
 
 	public OrderFee() {
 	}
@@ -232,5 +233,15 @@ public class OrderFee implements java.io.Serializable {
 
     public void setApplyDate(Date applyDate) {
         this.applyDate = applyDate;
+    }
+
+    @Column(name = "PAY_EMP",length = 32)
+    @Size(max = 32)
+    public String getPayEmp() {
+        return payEmp;
+    }
+
+    public void setPayEmp(String payEmp) {
+        this.payEmp = payEmp;
     }
 }

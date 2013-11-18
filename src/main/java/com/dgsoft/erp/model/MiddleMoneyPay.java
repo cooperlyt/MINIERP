@@ -1,17 +1,11 @@
 package com.dgsoft.erp.model;
 // Generated Nov 5, 2013 1:32:07 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -37,40 +31,23 @@ public class MiddleMoneyPay implements java.io.Serializable {
 	public MiddleMoneyPay() {
 	}
 
-	public MiddleMoneyPay(String id, Accounting accountingByCreditAccount,
-			Accounting accountingByDebitAccount, CustomerOrder customerOrder,
-			MiddleMan middleMan, BigDecimal money, Date operDate,
-			String operEmp, String payType) {
-		this.id = id;
-		this.accountingByCreditAccount = accountingByCreditAccount;
-		this.accountingByDebitAccount = accountingByDebitAccount;
-		this.customerOrder = customerOrder;
-		this.middleMan = middleMan;
-		this.money = money;
-		this.operDate = operDate;
-		this.operEmp = operEmp;
-		this.payType = payType;
-	}
-	public MiddleMoneyPay(String id, Accounting accountingByCreditAccount,
-			Accounting accountingByDebitAccount, CustomerOrder customerOrder,
-			MiddleMan middleMan, BigDecimal money, Date operDate,
-			String operEmp, String description, String payType,
-			String checkNumber) {
-		this.id = id;
-		this.accountingByCreditAccount = accountingByCreditAccount;
-		this.accountingByDebitAccount = accountingByDebitAccount;
-		this.customerOrder = customerOrder;
-		this.middleMan = middleMan;
-		this.money = money;
-		this.operDate = operDate;
-		this.operEmp = operEmp;
-		this.description = description;
-		this.payType = payType;
-		this.checkNumber = checkNumber;
-	}
+    public MiddleMoneyPay(Accounting accountingByCreditAccount, Accounting accountingByDebitAccount, CustomerOrder customerOrder, MiddleMan middleMan, BigDecimal money, Date operDate, String operEmp, String description, String payType, String checkNumber) {
+        this.accountingByCreditAccount = accountingByCreditAccount;
+        this.accountingByDebitAccount = accountingByDebitAccount;
+        this.customerOrder = customerOrder;
+        this.middleMan = middleMan;
+        this.money = money;
+        this.operDate = operDate;
+        this.operEmp = operEmp;
+        this.description = description;
+        this.payType = payType;
+        this.checkNumber = checkNumber;
+    }
 
-	@Id
+    @Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -104,7 +81,7 @@ public class MiddleMoneyPay implements java.io.Serializable {
 		this.accountingByDebitAccount = accountingByDebitAccount;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
 	@NotNull
 	public CustomerOrder getCustomerOrder() {
