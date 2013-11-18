@@ -28,13 +28,15 @@ public class OrderFee implements java.io.Serializable {
 	private String bankNumber;
 	private String bankInfo;
 	private boolean middleMoney;
-	private String debit;
-	private String credit;
+
 	private String receiveInfo;
 	private String bank;
     private Date payDate;
     private Date applyDate;
     private String payEmp;
+
+    private Accounting debitAccounting;
+    private Accounting creditAccounting;
 
 	public OrderFee() {
 	}
@@ -174,27 +176,28 @@ public class OrderFee implements java.io.Serializable {
 		this.middleMoney = middleMoney;
 	}
 
-	@Column(name = "DEBIT", length = 32)
-	@Size(max = 32)
-	public String getDebit() {
-		return this.debit;
-	}
 
-	public void setDebit(String debit) {
-		this.debit = debit;
-	}
+    @ManyToOne(optional = true,fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEBIT")
+    public Accounting getDebitAccounting() {
+        return debitAccounting;
+    }
 
-	@Column(name = "CREDIT", length = 32)
-	@Size(max = 32)
-	public String getCredit() {
-		return this.credit;
-	}
+    public void setDebitAccounting(Accounting debitAccounting) {
+        this.debitAccounting = debitAccounting;
+    }
 
-	public void setCredit(String credit) {
-		this.credit = credit;
-	}
+    @ManyToOne(optional = true,fetch = FetchType.LAZY)
+    @JoinColumn(name = "CREDIT")
+    public Accounting getCreditAccounting() {
+        return creditAccounting;
+    }
 
-	@Column(name = "RECEIVE_INFO", length = 200)
+    public void setCreditAccounting(Accounting creditAccounting) {
+        this.creditAccounting = creditAccounting;
+    }
+
+    @Column(name = "RECEIVE_INFO", length = 200)
 	@Size(max = 200)
 	public String getReceiveInfo() {
 		return this.receiveInfo;

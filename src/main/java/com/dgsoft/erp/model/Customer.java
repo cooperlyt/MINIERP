@@ -5,6 +5,7 @@ import com.dgsoft.common.NamedEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
@@ -35,6 +36,7 @@ public class Customer implements java.io.Serializable, NamedEntity {
     private boolean enable;
     private String postCode;
     private int provinceCode;
+    private Date createDate;
     private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
 
@@ -247,4 +249,14 @@ public class Customer implements java.io.Serializable, NamedEntity {
         this.accountOpers = accountOpers;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATE_DATE", nullable = false, length = 19)
+    @NotNull
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 }

@@ -18,21 +18,55 @@
             vertical-align: top;
         }
     </h:outputStylesheet>
-    
+
     <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
     <ui:param name="dataList" value="#{customerAreaList.resultList}"/>
     <ui:param name="dataListHeaderTitle" value="#{messages.CustomerArea}"/>
     <ui:param name="dataHome" value="#{customerAreaHome}"/>
 
     <ui:define name="editFields">
-           <s:decorate template="/layout/seam-edit.xhtml">
-               <ui:define name="label">#{messages.CustomerArea_field_name}</ui:define>
-               <h:inputText value="#{customerAreaHome.instance.name}"
-                            label="#{messages.CustomerArea_field_name}"
-                            readonly="#{not customerAreaHome.editing}"
-                            required="true"
-                            size="27"
-                            maxlength="50"/>
-           </s:decorate>
+        <s:decorate id="idField" template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.CustomerArea_field_id}</ui:define>
+            <h:inputText required="true" label="#{messagse.CustomerArea_field_id}"
+                         readonly="#{not customerAreaHome.editing }"
+                         disabled="#{customerAreaHome.managed}"
+                         valueChangeListener="#{customerAreaHome.verifyIdAvailable}"
+                         value="#{customerAreaHome.instance.id}" size="20" maxlength="20">
+                <a:ajax event="blur" render="idField"/>
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.CustomerArea_field_name}</ui:define>
+            <h:inputText value="#{customerAreaHome.instance.name}"
+                         label="#{messages.CustomerArea_field_name}"
+                         readonly="#{not customerAreaHome.editing}"
+                         required="true"
+                         size="27"
+                         maxlength="50"/>
+        </s:decorate>
+
+
+        <s:decorate id="roleField" template="/layout/seam-edit.xhtml">
+            <ui:define name="label">
+                <h:selectBooleanCheckbox value="#{customerAreaHome.autoGenerateRole}" title="#{messages.autoGenerAreaRole}"
+                                         rendered="#{customerAreaHome.editing and not customerAreaHome.managed}">
+                       <a:ajax event="click" render="roleField"/>
+                </h:selectBooleanCheckbox>
+                #{messages.CustomerArea_field_role}
+            </ui:define>
+
+
+            <h:selectOneMenu value="#{customerAreaHome.instance.role}" required="true"
+                             disabled="#{not customerAreaHome.editing or (not customerAreaHome.managed and customerAreaHome.autoGenerateRole) }"
+                             label="#{messages.CustomerArea_field_role}" style="width: 185px;">
+                <s:selectItems value="#{roleList.resultList}" var="_role"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{_role.name}(#{_role.id})" itemValue="#{_role.id}"/>
+            </h:selectOneMenu>
+
+
+        </s:decorate>
+
     </ui:define>
 </ui:composition>

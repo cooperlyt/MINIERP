@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Nov 5, 2013 1:32:07 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.PayType;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -17,23 +18,22 @@ import javax.validation.constraints.Size;
 public class MiddleMoneyPay implements java.io.Serializable {
 
 	private String id;
-	private Accounting accountingByCreditAccount;
-	private Accounting accountingByDebitAccount;
 	private CustomerOrder customerOrder;
 	private MiddleMan middleMan;
 	private BigDecimal money;
 	private Date operDate;
 	private String operEmp;
 	private String description;
-	private String payType;
+	private PayType payType;
 	private String checkNumber;
 
 	public MiddleMoneyPay() {
 	}
 
-    public MiddleMoneyPay(Accounting accountingByCreditAccount, Accounting accountingByDebitAccount, CustomerOrder customerOrder, MiddleMan middleMan, BigDecimal money, Date operDate, String operEmp, String description, String payType, String checkNumber) {
-        this.accountingByCreditAccount = accountingByCreditAccount;
-        this.accountingByDebitAccount = accountingByDebitAccount;
+    public MiddleMoneyPay(CustomerOrder customerOrder, MiddleMan middleMan,
+                          BigDecimal money, Date operDate, String operEmp,
+                          String description, PayType payType, String checkNumber) {
+
         this.customerOrder = customerOrder;
         this.middleMan = middleMan;
         this.money = money;
@@ -56,29 +56,6 @@ public class MiddleMoneyPay implements java.io.Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CREDIT_ACCOUNT", nullable = false)
-	@NotNull
-	public Accounting getAccountingByCreditAccount() {
-		return this.accountingByCreditAccount;
-	}
-
-	public void setAccountingByCreditAccount(
-			Accounting accountingByCreditAccount) {
-		this.accountingByCreditAccount = accountingByCreditAccount;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DEBIT_ACCOUNT", nullable = false)
-	@NotNull
-	public Accounting getAccountingByDebitAccount() {
-		return this.accountingByDebitAccount;
-	}
-
-	public void setAccountingByDebitAccount(Accounting accountingByDebitAccount) {
-		this.accountingByDebitAccount = accountingByDebitAccount;
 	}
 
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
@@ -145,14 +122,14 @@ public class MiddleMoneyPay implements java.io.Serializable {
 		this.description = description;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "PAY_TYPE", nullable = false, length = 32)
 	@NotNull
-	@Size(max = 32)
-	public String getPayType() {
+	public PayType getPayType() {
 		return this.payType;
 	}
 
-	public void setPayType(String payType) {
+	public void setPayType(PayType payType) {
 		this.payType = payType;
 	}
 

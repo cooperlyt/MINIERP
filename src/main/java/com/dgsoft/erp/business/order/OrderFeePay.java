@@ -83,7 +83,10 @@ public class OrderFeePay extends OrderTaskHandle {
 
         for (OrderFee orderFee: orderHome.getInstance().getOrderFees()){
             if (orderFee.isMiddleMoney()){
-                orderHome.getInstance().setMiddleMoneyPay(new MiddleMoneyPay());
+                orderHome.getInstance().setMiddleMoneyPay(new MiddleMoneyPay(orderHome.getInstance(),
+                        orderHome.getInstance().getCustomer().getMiddleMan(),
+                        orderFee.getMoney(),orderFee.getPayDate(),orderFee.getPayEmp(),
+                        orderFee.getDescription(),orderFee.getPayType(),orderFee.getCheckNumber()));
 
                 break;
             }
@@ -95,6 +98,7 @@ public class OrderFeePay extends OrderTaskHandle {
         //TODO if   ORDER_OVERDRAFT_COMPLETE,
         orderHome.getInstance().setState(CustomerOrder.OrderState.ORDER_COMPLETE);
         Logging.getLog(this.getClass()).debug("set order state to complete");
+
         orderHome.update();
 
         //----------------------

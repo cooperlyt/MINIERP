@@ -7,6 +7,8 @@ import com.dgsoft.erp.model.Customer;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
+import java.util.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: cooper
@@ -56,6 +58,10 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
             }
         } else {
             getInstance().setMiddleMan(null);
+        }
+
+        if(!isManaged()){
+            getInstance().setCreateDate(new Date());
         }
         return true;
     }

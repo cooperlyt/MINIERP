@@ -17,12 +17,12 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ACCOUNTING", catalog = "MINI_ERP")
-@UniqueVerify(name = "Name",severity = StatusMessage.Severity.WARN,field={"name"})
-@NamedQuery(name = "findAccountingByName",query = "select accounting from Accounting accounting where accounting.name=:name")
+@UniqueVerify(name = "Name", severity = StatusMessage.Severity.WARN, field = {"name"})
+@NamedQuery(name = "findAccountingByName", query = "select accounting from Accounting accounting where accounting.name=:name")
 public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
 
     public enum Direction {
-        CREDIT,DBEDIT;
+        CREDIT, DBEDIT;
     }
 
     private String id;
@@ -33,15 +33,11 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
     private Direction direction;
     private boolean root;
     private Res res;
-    private Set<AccountOper> accountOpersForDebitAccount = new HashSet<AccountOper>(
-            0);
+    private Set<AccountOper> accountOpersForDebitAccount = new HashSet<AccountOper>(0);
     private Set<Accounting> accountings = new HashSet<Accounting>(0);
-    private Set<MiddleMoneyPay> middleMoneyPaysForCreditAccount = new HashSet<MiddleMoneyPay>(
-            0);
-    private Set<MiddleMoneyPay> middleMoneyPaysForDebitAccount = new HashSet<MiddleMoneyPay>(
-            0);
-    private Set<AccountOper> accountOpersForCreditAccount = new HashSet<AccountOper>(
-            0);
+    private Set<AccountOper> accountOpersForCreditAccount = new HashSet<AccountOper>(0);
+    private Set<OrderFee> orderFeesForDebit = new HashSet<OrderFee>(0);
+    private Set<OrderFee> orderFeesForCredit = new HashSet<OrderFee>(0);
 
     public Accounting() {
     }
@@ -133,6 +129,24 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
         this.accountOpersForDebitAccount = accountOpersForDebitAccount;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "debitAccounting")
+    public Set<OrderFee> getOrderFeesForDebit() {
+        return orderFeesForDebit;
+    }
+
+    public void setOrderFeesForDebit(Set<OrderFee> orderFeesForDebit) {
+        this.orderFeesForDebit = orderFeesForDebit;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "creditAccounting")
+    public Set<OrderFee> getOrderFeesForCredit() {
+        return orderFeesForCredit;
+    }
+
+    public void setOrderFeesForCredit(Set<OrderFee> orderFeesForCredit) {
+        this.orderFeesForCredit = orderFeesForCredit;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "accounting")
     public Set<Accounting> getAccountings() {
         return this.accountings;
@@ -140,27 +154,6 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
 
     public void setAccountings(Set<Accounting> accountings) {
         this.accountings = accountings;
-    }
-
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCreditAccount")
-    public Set<MiddleMoneyPay> getMiddleMoneyPaysForCreditAccount() {
-        return this.middleMoneyPaysForCreditAccount;
-    }
-
-    public void setMiddleMoneyPaysForCreditAccount(
-            Set<MiddleMoneyPay> middleMoneyPaysForCreditAccount) {
-        this.middleMoneyPaysForCreditAccount = middleMoneyPaysForCreditAccount;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByDebitAccount")
-    public Set<MiddleMoneyPay> getMiddleMoneyPaysForDebitAccount() {
-        return this.middleMoneyPaysForDebitAccount;
-    }
-
-    public void setMiddleMoneyPaysForDebitAccount(
-            Set<MiddleMoneyPay> middleMoneyPaysForDebitAccount) {
-        this.middleMoneyPaysForDebitAccount = middleMoneyPaysForDebitAccount;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "accounting")

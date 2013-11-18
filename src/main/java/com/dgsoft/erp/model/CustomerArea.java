@@ -19,6 +19,7 @@ public class CustomerArea implements java.io.Serializable,NamedEntity {
 
 	private String id;
 	private String name;
+    private String role;
 	private Set<Customer> customers = new HashSet<Customer>(0);
 
 	public CustomerArea() {
@@ -35,11 +36,9 @@ public class CustomerArea implements java.io.Serializable,NamedEntity {
 	}
 
 	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
+	@Column(name = "ID", unique = true, nullable = false, length = 20)
 	@NotNull
-	@Size(max = 32)
+	@Size(max = 20)
 	public String getId() {
 		return this.id;
 	}
@@ -59,7 +58,18 @@ public class CustomerArea implements java.io.Serializable,NamedEntity {
 		this.name = name;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerArea")
+    @Column(name="AREA_ROLE",nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerArea")
 	public Set<Customer> getCustomers() {
 		return this.customers;
 	}

@@ -80,7 +80,7 @@
         <property name="ejbql">select roleCategory from RoleCategory roleCategory order by roleCategory.priority</property>
     </component>
 
-    <component name="roleList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
+    <component name="roleList" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
         <property name="ejbql">select role from Role role order by role.name</property>
     </component>
 
