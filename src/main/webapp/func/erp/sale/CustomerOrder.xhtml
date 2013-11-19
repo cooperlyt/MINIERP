@@ -238,11 +238,11 @@
         <a:commandButton rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}"
                          image="/img/print.png" title="#{messages.orderSalePaperPrint}" immediate="true"/>
 
-        <s:button value="#{messages.viewDetails}" view="/func/erp/sale/OrderDetails.xhtml"
-                  rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}">
+        <s:link view="/func/erp/sale/OrderDetails.xhtml">
+            <s:graphicImage value="/img/view.png" title="#{messages.viewDetails}"/>
             <f:param name="orderId" value="#{_order.id}"/>
             <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-        </s:button>
+        </s:link>
 
     </rich:column>
 

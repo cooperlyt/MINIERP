@@ -23,6 +23,13 @@
                 padding: 5px;
                 margin-top: 3px;
 
+
+                vertical-align: top;
+                font-weight: bold;
+                width: 115px;
+                float: left;
+                clear: left;
+
             }
             .source-details{
 
@@ -40,6 +47,11 @@
                               id="sh1" styleClass="show-details">
                     <h:outputText value="#{empty openLabel?'View Source' : openLabel }"/>
                 </h:outputLink>
+                <s:span styleClass="value" rendered="#{not empty labelValue}">
+                       <h:outputText  value="#{labelValue}"/>
+                </s:span>
+
+
 
             </a:outputPanel>
 

@@ -8,12 +8,12 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_id}</ui:define>
         <h:outputText value="#{orderHome.id}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_emp}</ui:define>
         <h:outputText
                 value="#{dictionary.getEmpNameById(orderHome.instance.orderEmp)}"/>
@@ -21,28 +21,36 @@
         <!-- TODO QQ -->
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.payType}</ui:define>
+         #{messages[orderHome.instance.payType.name()]}
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_createDate}</ui:define>
         <h:outputText value="#{orderHome.instance.createDate}">
             <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
         </h:outputText>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
-        <ui:define name="label">#{messages.order_field_contact}</ui:define>
-        <h:outputText value="#{orderHome.instance.contact}"/>
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_completeDate}</ui:define>
+        <h:outputText value="#{orderHome.instance.completeDate}"
+                      rendered="#{not empty orderHome.instance.completeDate}">
+            <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+        </h:outputText>
     </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
-        <ui:define name="label">#{messages.order_field_tel}</ui:define>
-        <h:outputText value="#{orderHome.instance.tel}"/>
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.orderState}</ui:define>
+        #{messages[orderHome.instance.state.name()]}
     </s:decorate>
+
 
     <s:decorate template="/layout/display.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
         <h:outputText value="#{orderHome.instance.memo}"/>
     </s:decorate>
-
 
     <ui:insert/>
     <div style="clear:both"/>

@@ -12,6 +12,14 @@
     <ui:param name="functionTitle" value="#{messages.OrderDetails}"/>
 
     <ui:define name="func-body">
+
+        <rich:toolbar>
+            <rich:toolbarGroup location="right">
+                <s:button styleClass="toolBarBtn" value="#{messages.return}" view="#{empty from ? '/home.xhtml' : from}"/>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+
         <ui:include src="/layout/erp/OrderInfo.xhtml"/>
     </ui:define>
 
