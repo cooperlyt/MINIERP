@@ -44,6 +44,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return Dispatch.DeliveryType.values();
     }
 
+    @Factory(value = "orderStates", scope = ScopeType.CONVERSATION)
+    public CustomerOrder.OrderState[] getOrderStates(){
+        return CustomerOrder.OrderState.values();
+    }
+
     public BigDecimal getAllProxyFare() {
         BigDecimal result = BigDecimal.ZERO;
         if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY))
@@ -103,6 +108,25 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     @DataModel
     public Set<Map.Entry<StoreRes, ResCount>> getAllShipStoreResEntrySet() {
         return allShipStoreReses().entrySet();
+    }
+
+    public BigDecimal getTotalItemMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderItem orderItem: getMasterNeedRes().getOrderItems()){
+            result = result.add(orderItem.getTotalMoney());
+        }
+        return result;
+
+    }
+
+    public BigDecimal getTotalItemMiddleMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderItem orderItem: getMasterNeedRes().getOrderItems()){
+            if ((orderItem.getMiddleMoneyCalcType() != null) &&
+                    (orderItem.getMiddleMoney() != null))
+            result = result.add(orderItem.getMiddleMoney());
+        }
+        return result;
     }
 
     public Map<StoreRes, ResCount> allShipStoreReses() {

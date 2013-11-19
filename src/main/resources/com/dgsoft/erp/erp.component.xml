@@ -75,10 +75,6 @@
         <property name="ejbql">select middleMan from MiddleMan middleMan</property>
     </component>
 
-    <component name="customerAreaList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
-        <property name="ejbql">select customerArea from CustomerArea customerArea</property>
-    </component>
-
     <component name="customerLevelList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
         <property name="ejbql">select customerLevel from CustomerLevel customerLevel order by customerLevel.priority</property>
     </component>
@@ -95,9 +91,14 @@
         <property name="ejbql">select cars from Cars cars where enable=true</property>
     </component>
 
+    <component name="customerNameList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
+        <property name="ejbql">select distinct customer.name from Customer customer</property>
+    </component>
+
     <event type="org.jboss.seam.afterTransactionSuccess.AccountOper">
         <action execute="#{orderHome.refresh}"/>
     </event>
+
 
 
 </components>

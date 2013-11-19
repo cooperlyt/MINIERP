@@ -8,21 +8,245 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
-    <ui:define name="toolbar">
-        <rich:toolbar height="34" itemSeparator="line">
+<ui:define name="toolbar">
+    <rich:toolbar height="34" itemSeparator="line">
 
-            <rich:toolbarGroup location="right">
-                <s:button value="#{messages.newOrder}"
-                          view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml" propagation="begin">
-                     <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-                </s:button>
-            </rich:toolbarGroup>
-        </rich:toolbar>
+        <rich:toolbarGroup location="right">
+            <s:button value="#{messages.newOrder}" styleClass="toolBarBtn"
+                      view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml" propagation="begin">
+                <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+            </s:button>
+        </rich:toolbarGroup>
+    </rich:toolbar>
 
 
-    </ui:define>
+</ui:define>
 
-    <ui:define name="body">
+<ui:define name="body">
 
-    </ui:define>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+
+
+<h:form styleClass="edit">
+
+    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+        <h:form>
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.order_search_onlyMyOrder}</ui:define>
+                <h:selectBooleanCheckbox value="#{orderList.onlyMyOrder}"/>
+            </s:decorate>
+
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.CustomerArea}</ui:define>
+
+                <h:selectOneMenu value="#{orderList.customerAreaId}">
+                    <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"
+                                   label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.orderCustomer}</ui:define>
+
+                <rich:autocomplete mode="client" minChars="1" autofill="false"
+                                   showButton="true"
+                                   selectFirst="true"
+                                   label="#{messages.orderCustomer}"
+                                   clientFilterFunction="pinyinFilter"
+                                   autocompleteList="#{customerNameList.resultList}"
+                                   value="#{orderList.customerName}"
+                                   fetchValue="#{_customer}" var="_customer">
+
+                    <h:outputText value="#{_customer}"/>
+
+                </rich:autocomplete>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.order_search_BETWEEN_createDate}</ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        label="#{messages.order_search_BETWEEN_createDate}"
+                        value="#{orderList.createDateFrom}">
+                </rich:calendar>
+
+                --
+
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        label="#{messages.order_search_BETWEEN_createDate}"
+                        value="#{orderList.createDateTo}">
+                </rich:calendar>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.orderState}</ui:define>
+
+
+                <a:repeat value="#{orderList.searchStateChecks}" var="_state">
+                    <h:selectBooleanCheckbox value="#{_state.check}">
+                        #{messages[_state.state.name()]}
+                    </h:selectBooleanCheckbox>
+                </a:repeat>
+            </s:decorate>
+
+
+            <div style="clear:both"/>
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+            <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                <a:outputPanel id="#{panelId}_buttons">
+                    <div class="actionButtons">
+
+                        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                        <a:outputPanel id="searchButton">
+                            <a:commandButton value="#{messages.search}"
+                                             execute="@form" render="dataListResult" action="#{orderList.first}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </a:outputPanel>
+                    </div>
+                </a:outputPanel>
+            </h:panelGrid>
+        </h:form>
+    </rich:collapsiblePanel>
+
+
+</h:form>
+
+<br/>
+<rich:dataTable id="dataListResult" style="width: 100%" value="#{orderList.resultList}" var="_order"
+                noDataLabel="#{messages.emptyResult}">
+    <f:facet name="footer">
+        <a:outputPanel rendered="#{not empty orderList.resultList}">
+            <ui:include src="/layout/pageA4jNavigation.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+            </ui:include>
+        </a:outputPanel>
+    </f:facet>
+    <rich:column>
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
+                <ui:param name="propertyPath" value="customerOrder.customer.customerArea.name"/>
+            </ui:include>
+        </f:facet>
+        #{_order.customer.customerArea.name}
+        <f:facet name="footer">
+            #{messages.recordTotal} #{orderList.resultCount} #{messages.item}
+        </f:facet>
+    </rich:column>
+
+    <rich:column>
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.orderCustomer}"/>
+                <ui:param name="propertyPath" value="customerOrder.customer.name"/>
+            </ui:include>
+
+        </f:facet>
+        #{_order.customer.name}
+    </rich:column>
+
+    <rich:column>
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.order_field_createDate}"/>
+                <ui:param name="propertyPath" value="customerOrder.createDate"/>
+            </ui:include>
+        </f:facet>
+        <h:outputText value="#{_order.createDate}">
+            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+        </h:outputText>
+    </rich:column>
+
+    <rich:column>
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.order_field_emp}"/>
+                <ui:param name="propertyPath" value="customerOrder.orderEmp"/>
+            </ui:include>
+        </f:facet>
+        #{dictionary.getEmpNameById(_order.orderEmp)}
+    </rich:column>
+
+    <rich:column>
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.orderState}"/>
+                <ui:param name="propertyPath" value="customerOrder.state"/>
+            </ui:include>
+        </f:facet>
+        #{messages[_order.state.name()]}
+    </rich:column>
+
+
+    <rich:column rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.order_field_payType}"/>
+                <ui:param name="propertyPath" value="customerOrder.payType"/>
+            </ui:include>
+        </f:facet>
+        #{messages[_order.payType.name()]}
+
+    </rich:column>
+
+    <rich:column style="text-align: right" footerClass="moneyTableFooter"
+                 rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
+
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.orderMoney}"/>
+                <ui:param name="propertyPath" value="customerOrder.money"/>
+            </ui:include>
+        </f:facet>
+
+        <h:outputText value="#{_order.money}">
+            <f:convertNumber locale="#{calendarBean.locale}"
+                             type="currency" groupingUsed="true"/>
+        </h:outputText>
+
+        <f:facet name="footer">
+            <h:outputText value="#{orderList.totalMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+
+        </f:facet>
+    </rich:column>
+
+    <rich:column style="text-align: center;">
+        <a:commandButton rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}"
+                         image="/img/print.png" title="#{messages.orderSalePaperPrint}" immediate="true"/>
+
+        <s:button value="#{messages.viewDetails}" view="/func/erp/sale/OrderDetails.xhtml"
+                  rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}">
+            <f:param name="orderId" value="#{_order.id}"/>
+            <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+        </s:button>
+
+    </rich:column>
+
+</rich:dataTable>
+
+</ui:define>
 </ui:composition>

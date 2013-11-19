@@ -2,7 +2,6 @@ package com.dgsoft.erp.model;
 // Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.NamedEntity;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -58,7 +57,7 @@ public class CustomerArea implements java.io.Serializable,NamedEntity {
 		this.name = name;
 	}
 
-    @Column(name="AREA_ROLE",nullable = false, length = 32)
+    @Column(name= "AREA_ROLE",nullable = false, length = 32)
     @NotNull
     @Size(max = 32)
     public String getRole() {

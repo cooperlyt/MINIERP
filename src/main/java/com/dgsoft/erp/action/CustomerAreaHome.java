@@ -3,12 +3,14 @@ package com.dgsoft.erp.action;
 import com.dgsoft.common.system.action.RoleHome;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.CustomerArea;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.FlushModeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.security.Identity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +24,9 @@ public class CustomerAreaHome extends ErpSimpleEntityHome<CustomerArea> {
 
     @In
     private FacesMessages facesMessages;
+
+    @In
+    private Identity identity;
 
     @In(create = true)
     private RoleHome roleHome;
@@ -66,6 +71,17 @@ public class CustomerAreaHome extends ErpSimpleEntityHome<CustomerArea> {
             return false;
         }
         return true;
+    }
+
+    @Factory(value = "mySaleArea",scope = ScopeType.CONVERSATION)
+    public List<CustomerArea> getMySaleArea(){
+        List<CustomerArea> result = new ArrayList<CustomerArea>();
+        for (CustomerArea customerArea: getEntityManager().createQuery("select customerArea from CustomerArea customerArea",CustomerArea.class).getResultList()){
+            if (identity.hasRole(customerArea.getRole())){
+                result.add(customerArea);
+            }
+        }
+        return result;
     }
 
 }

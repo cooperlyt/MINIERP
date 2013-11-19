@@ -97,7 +97,7 @@
             <rich:select value="#{customerAreaHome.id}" required="true"
                          label="#{messages.CustomerArea}"
                          styleClass="saleAreaSelect" listWidth="132px">
-                <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                <s:selectItems value="#{mySaleArea}" var="_customerArea"
                                noSelectionLabel="#{messages.noSelectLabel}"
                                label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
                 <a:ajax event="selectitem" execute="@this"
@@ -199,7 +199,6 @@
                 <ui:param name="allowSwitchMiddleMan" value="false"/>
                 <ui:param name="middleMainChangeRender" value="includeMiddleManField"/>
             </ui:include>
-
 
             <h:outputText value="#{messages.customerNotHasMiddleMan}"
                           rendered="#{customerHome.idDefined and (empty customerHome.instance.middleMan)}"/>

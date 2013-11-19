@@ -344,3 +344,7 @@ table.radio input[type=radio] {
 .toolBarPic {
     margin-right: 2px;
 }
+
+.moneyTableFooter {
+   text-align: right;
+}

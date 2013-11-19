@@ -1,0 +1,148 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+
+
+    </s:decorate>
+
+
+    <rich:dataTable style="width: 100%" value="#{orderHome.masterNeedRes.orderItemList}" var="_item">
+
+        <f:facet name="header">
+            #{messages.orderItems}
+        </f:facet>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderItem}
+            </f:facet>
+            <a:outputPanel rendered="#{_item.storeResItem}">
+                #{messages.StoreRes}:
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                </ui:include>
+            </a:outputPanel>
+            <a:outputPanel rendered="#{not _item.storeResItem}">
+                #{messages.res}:
+
+                #{_item.res.name}(#{_item.res.code})
+
+            </a:outputPanel>
+            <f:facet name="footer">
+                #{messages.recordTotal} #{orderHome.masterNeedRes.orderItemList.size} #{messages.item}
+            </f:facet>
+
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderItemCount}
+            </f:facet>
+            <h:outputText value="#{_item.count}">
+                <f:convertNumber pattern="#0.####"/>
+            </h:outputText>
+            #{_item.moneyUnit.name}
+
+
+        </rich:column>
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.orderItemUnitPrice}
+            </f:facet>
+            <h:outputText value="#{_item.money}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderItemPriceRebate}
+            </f:facet>
+            #{'%'}
+            <h:outputText value="#{_item.rebate}">
+                <f:convertNumber pattern="#0.####"/>
+            </h:outputText>
+
+        </rich:column>
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.orderItemTotalPrice}
+            </f:facet>
+            <h:outputText value="#{_item.totalMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{orderHome.totalItemMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+
+        <rich:column rendered="#{s:hasRole('erp.sale.manager')}">
+            <f:facet name="header">#{messages.order_middle_money_itemCalcType}</f:facet>
+
+            <h:outputText value="#{messages[_item.middleMoneyCalcType.name()]}"
+                          rendered="#{not empty _item.middleMoneyCalcType}"/>
+
+
+        </rich:column>
+
+        <rich:column rendered="#{s:hasRole('erp.sale.manager')}">
+            <f:facet name="header">#{messages.order_middle_money_unit}</f:facet>
+
+            <h:outputText value="#{_item.middleUnit.name}"
+                          rendered="#{(not empty _item.middleMoneyCalcType) and (_item.middleMoneyCalcType eq 'COUNT_FIX') and (not empty _item.middleUnit)}"/>
+        </rich:column>
+
+        <rich:column rendered="#{s:hasRole('erp.sale.manager')}">
+            <f:facet name="header">
+                #{messages.order_field_middleMoney_Rate}
+            </f:facet>
+
+            <a:outputPanel rendered="#{(not empty _item.middleMoneyCalcType) and (not empty _item.middleRate)}">
+
+                <h:outputText value="#{_item.middleRate}"
+                              rendered="#{_item.middleMoneyCalcType eq 'COUNT_FIX'}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency"/>
+                </h:outputText>
+
+                <h:outputText value="%#{_item.middleRate}"
+                              rendered="#{_item.middleMoneyCalcType eq 'MONEY_RATE'}">
+                    <f:convertNumber pattern="#0.##"/>
+                </h:outputText>
+
+
+            </a:outputPanel>
+        </rich:column>
+
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">#{messages.order_field_middleMoney}</f:facet>
+            <h:outputText value="#{_item.middleMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency"/>
+            </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderHome.totalItemMiddleMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+
+    </rich:dataTable>
+
+</ui:composition>

@@ -175,12 +175,13 @@
         <rich:column>
             <f:facet name="header">#{messages.StoreRes}/#{messages.res}</f:facet>
             <a:outputPanel rendered="#{_orderItem.storeResItem}">
+                #{messages.StoreRes}:
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
                     <ui:param name="storeRes" value="#{_orderItem.storeRes}"/>
                 </ui:include>
             </a:outputPanel>
             <a:outputPanel rendered="#{not _orderItem.storeResItem}">
-                #{_orderItem.res.name}(#{_orderItem.res.code})
+                #{messages.res}:#{_orderItem.res.name}(#{_orderItem.res.code})
             </a:outputPanel>
 
             <f:facet name="footer">
