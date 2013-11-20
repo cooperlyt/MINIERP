@@ -28,102 +28,101 @@
 <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
 
 
-<h:form styleClass="edit">
-
-    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
-        <h:form>
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.order_search_onlyMyOrder}</ui:define>
-                <h:selectBooleanCheckbox value="#{orderList.onlyMyOrder}"/>
-            </s:decorate>
+<rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+    <h:form>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_search_onlyMyOrder}</ui:define>
+            <h:selectBooleanCheckbox value="#{orderList.onlyMyOrder}"/>
+        </s:decorate>
 
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.CustomerArea}</ui:define>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.CustomerArea}</ui:define>
 
-                <h:selectOneMenu value="#{orderList.customerAreaId}">
-                    <s:selectItems value="#{mySaleArea}" var="_customerArea"
-                                   noSelectionLabel="#{messages.searchNoSelectLabel}"
-                                   label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
-                </h:selectOneMenu>
-            </s:decorate>
+            <h:selectOneMenu value="#{orderList.customerAreaId}">
+                <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"
+                               label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+            </h:selectOneMenu>
+        </s:decorate>
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.orderCustomer}</ui:define>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.orderCustomer}</ui:define>
 
-                <rich:autocomplete mode="client" minChars="1" autofill="false"
-                                   showButton="true"
-                                   selectFirst="true"
-                                   label="#{messages.orderCustomer}"
-                                   clientFilterFunction="pinyinNameFilter"
-                                   autocompleteList="#{customerNameList.resultList}"
-                                   value="#{orderList.customerName}"
-                                   fetchValue="#{_customer}" var="_customer">
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.orderCustomer}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerNameList.resultList}"
+                               value="#{orderList.customerName}"
+                               fetchValue="#{_customer}" var="_customer">
 
-                    <h:outputText value="#{_customer}"/>
+                <h:outputText value="#{_customer}"/>
 
-                </rich:autocomplete>
-            </s:decorate>
+            </rich:autocomplete>
+        </s:decorate>
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.order_search_BETWEEN_createDate}</ui:define>
-                <rich:calendar
-                        enableManualInput="true"
-                        inputSize="10"
-                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                        datePattern="#{messages.datePattern}"
-                        label="#{messages.order_search_BETWEEN_createDate}"
-                        value="#{orderList.createDateFrom}">
-                </rich:calendar>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_search_BETWEEN_createDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{orderList.createDateFrom}">
+            </rich:calendar>
 
-                --
+            --
 
-                <rich:calendar
-                        enableManualInput="true"
-                        inputSize="10"
-                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                        datePattern="#{messages.datePattern}"
-                        label="#{messages.order_search_BETWEEN_createDate}"
-                        value="#{orderList.createDateTo}">
-                </rich:calendar>
-            </s:decorate>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{orderList.createDateTo}">
+            </rich:calendar>
+        </s:decorate>
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.orderState}</ui:define>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.orderState}</ui:define>
 
+            <h:selectOneMenu value="#{orderList.state}">
+                <s:selectItems value="#{orderStates}" var="_state"
+                               label="#{messages[_state.name()]}"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}">
 
-                <a:repeat value="#{orderList.searchStateChecks}" var="_state">
-                    <h:selectBooleanCheckbox value="#{_state.check}">
-                        #{messages[_state.state.name()]}
-                    </h:selectBooleanCheckbox>
-                </a:repeat>
-            </s:decorate>
+                </s:selectItems>
+                <s:convertEnum/>
 
-
-            <div style="clear:both"/>
-            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-            <h:panelGrid columns="1" style="width: 100%; text-align: right">
-                <a:outputPanel id="#{panelId}_buttons">
-                    <div class="actionButtons">
-
-                        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
-
-                        <a:outputPanel id="searchButton">
-                            <a:commandButton value="#{messages.search}"
-                                             execute="@form" render="dataListResult" action="#{orderList.first}">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:commandButton>
-                        </a:outputPanel>
-                    </div>
-                </a:outputPanel>
-            </h:panelGrid>
-        </h:form>
-    </rich:collapsiblePanel>
+            </h:selectOneMenu>
+        </s:decorate>
 
 
-</h:form>
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="#{panelId}_buttons">
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="dataListResult" action="#{orderList.first}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </h:form>
+</rich:collapsiblePanel>
+
 
 <br/>
 <rich:dataTable id="dataListResult" style="width: 100%" value="#{orderList.resultList}" var="_order"
@@ -191,10 +190,10 @@
         </f:facet>
         <h:selectBooleanCheckbox disabled="true" value="#{_order.resReceived}"/>
     </rich:column>
-    <rich:column  style="text-align: center">
-          <f:facet name="header">
-              #{messages.order_field_moneyComplete}
-          </f:facet>
+    <rich:column style="text-align: center">
+        <f:facet name="header">
+            #{messages.order_field_moneyComplete}
+        </f:facet>
         <h:selectBooleanCheckbox disabled="true" value="#{_order.moneyComplete}"/>
     </rich:column>
 

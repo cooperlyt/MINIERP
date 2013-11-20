@@ -67,7 +67,7 @@
         <property name="ejbql">select ca from CustomerArea ca</property>
     </component>
 
-    <component name="customerList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+    <component name="customerSelectList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
         <property name="ejbql">select customer from Customer customer where customer.enable = true and customer.customerArea.id = &apos;#{customerAreaHome.id}&apos;</property>
     </component>
 

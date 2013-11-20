@@ -26,7 +26,7 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
             "lower(customerOrder.customer.name) like lower(concat(#{orderList.customerName},'%'))",
             "customerOrder.createDate >= #{orderList.createDateFrom}",
             "customerOrder.createDate <= #{orderList.dateTo}",
-            "customerOrder.state in (#{orderList.acceptStates})"};
+            "customerOrder.state = #{orderList.state}"};
 
     @In
     private Credentials credentials;
@@ -41,7 +41,9 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
 
     private Date createDateTo;
 
-    private List<SearchStateCheck> searchStateChecks;
+    private CustomerOrder.OrderState state;
+
+
 
     //private Map<CustomerOrder.OrderState, Boolean> checkStates;
 
@@ -53,24 +55,14 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
         setMaxResults(25);
         customerOrder.setOrderEmp(((Credentials) Component.getInstance("org.jboss.seam.security.credentials")).getUsername());
 
-        searchStateChecks = new ArrayList<SearchStateCheck>();
-        for (CustomerOrder.OrderState state : EnumSet.allOf(CustomerOrder.OrderState.class)) {
-            searchStateChecks.add(new SearchStateCheck(state,true));
-        }
     }
 
-    public Set<CustomerOrder.OrderState> getAcceptStates() {
-        Set<CustomerOrder.OrderState> result = new HashSet<CustomerOrder.OrderState>();
-        for (SearchStateCheck ssc : searchStateChecks) {
-            if (ssc.isCheck()) {
-                result.add(ssc.getState());
-            }
-        }
-        return result;
+    public CustomerOrder.OrderState getState() {
+        return state;
     }
 
-    public List<SearchStateCheck> getSearchStateChecks() {
-        return searchStateChecks;
+    public void setState(CustomerOrder.OrderState state) {
+        this.state = state;
     }
 
     public String getCustomerAreaId() {
@@ -132,29 +124,4 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
         return getResultTotalSum("customerOrder.money");
     }
 
-    public static class SearchStateCheck {
-        private CustomerOrder.OrderState state;
-        private boolean check;
-
-        public SearchStateCheck(CustomerOrder.OrderState state, boolean check) {
-            this.state = state;
-            this.check = check;
-        }
-
-        public CustomerOrder.OrderState getState() {
-            return state;
-        }
-
-        public void setState(CustomerOrder.OrderState state) {
-            this.state = state;
-        }
-
-        public boolean isCheck() {
-            return check;
-        }
-
-        public void setCheck(boolean check) {
-            this.check = check;
-        }
-    }
 }

@@ -1,0 +1,246 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="toolbar">
+
+
+</ui:define>
+
+<ui:define name="body">
+
+<h:form styleClass="edit">
+
+    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+        <h:form>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.CustomerArea}</ui:define>
+
+                <h:selectOneMenu value="#{customerList.customerAreaId}">
+                    <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"
+                                   label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.customer_field_name}</ui:define>
+                <h:inputText value="#{customerList.customer.name}"/>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.customer_field_contact}</ui:define>
+                <h:inputText value="#{customerList.customer.contact}"/>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.customer_field_tel}</ui:define>
+                <h:inputText value="#{customerList.customer.tel}"/>
+            </s:decorate>
+
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.customer_field_type}</ui:define>
+
+                <h:selectOneMenu  value="#{customerList.type}" >
+
+                    <s:selectItems var="_word" label="#{_word.value}"
+                                   itemValue="#{_word.id}"
+                                   value="#{dictionary.getWordList('erp.customerType')}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.customer_field_level}</ui:define>
+                <h:panelGroup>
+                    <h:inputText value="#{customerList.levelFrom}" size="5"
+                                 converter="javax.faces.Integer"/>
+
+
+                    --
+
+                    <h:inputText value="#{customerList.levelTo}"  size="5"  converter="javax.faces.Integer"/>
+
+                </h:panelGroup>
+
+            </s:decorate>
+
+            <div style="clear:both"/>
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+            <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                <a:outputPanel id="#{panelId}_buttons">
+                    <div class="actionButtons">
+
+                        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                        <a:outputPanel id="searchButton">
+                            <a:commandButton value="#{messages.search}"
+                                             execute="@form" render="dataListResult"
+                                             action="#{customerList.first}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </a:outputPanel>
+                    </div>
+                </a:outputPanel>
+            </h:panelGrid>
+        </h:form>
+    </rich:collapsiblePanel>
+
+
+</h:form>
+
+        <br/>
+<h:form>
+    <rich:dataTable style="width: 100%" id="dataListResult" value="#{customerList.resultList}"
+                    var="_customer" noDataLabel="#{messags.emptyResult}">
+        <f:facet name="footer">
+            <a:outputPanel rendered="#{not empty customerList.resultList}">
+                <ui:include src="/layout/pageA4jNavigation.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                </ui:include>
+            </a:outputPanel>
+        </f:facet>
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_name}"/>
+                    <ui:param name="propertyPath" value="customer.name"/>
+                </ui:include>
+
+            </f:facet>
+            #{_customer.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_type}"/>
+                    <ui:param name="propertyPath" value="customer.type"/>
+                </ui:include>
+
+            </f:facet>
+            #{dictionary.getWordValue(_customer.type)}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
+                    <ui:param name="propertyPath" value="customer.customerArea.name"/>
+                </ui:include>
+
+            </f:facet>
+
+            #{_customer.customerArea.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_level}"/>
+                    <ui:param name="propertyPath" value="customer.customerLevel.priority"/>
+                </ui:include>
+
+            </f:facet>
+            #{_customer.customerLevel.name}(#{_customer.customerLevel.priority})
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_contact}"/>
+                    <ui:param name="propertyPath" value="customer.contact"/>
+                </ui:include>
+
+            </f:facet>
+            #{_customer.contact}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_tel}"/>
+                    <ui:param name="propertyPath" value="customer.tel"/>
+                </ui:include>
+
+            </f:facet>
+            #{_customer.tel}
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_province}"/>
+                    <ui:param name="propertyPath" value="customer.provinceCode"/>
+                </ui:include>
+
+            </f:facet>
+            #{dictionary.getCityName(_customer.provinceCode)}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_field_createDate}"/>
+                    <ui:param name="propertyPath" value="customer.createDate"/>
+                </ui:include>
+
+            </f:facet>
+            <h:outputText value="#{_customer.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column style="text-align: right;">
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{customerList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_balance}"/>
+                    <ui:param name="propertyPath" value="customer.balance"/>
+                </ui:include>
+
+            </f:facet>
+            <h:outputText value="#{_customer.balance}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header"></f:facet>
+
+            <s:link view="/func/erp/sale/CustomerEdit.xhtml" propagation="begin">
+                <s:graphicImage value="/img/edit.png" title="#{messages.edit}"/>
+                <f:param name="customerId" value="#{_customer.id}"/>
+                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
+                <f:param name="readonly" value="false"/>
+            </s:link>
+
+            <s:link view="/func/erp/sale/CustomerView.xhtml">
+                <s:graphicImage value="/img/view.png" title="#{messages.edit}"/>
+                <f:param name="customerId" value="#{_customer.id}"/>
+                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
+            </s:link>
+        </rich:column>
+
+    </rich:dataTable>
+</h:form>
+
+</ui:define>
+
+</ui:composition>

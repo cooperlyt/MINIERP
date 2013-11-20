@@ -12,7 +12,7 @@
     <param name="customerAreaId" value="#{orderList.customerAreaId}"/>
 
     <param name="customerName" value="#{orderList.customerName}"/>
-    <param name="customerOrderState" value="#{orderList.customerOrder.state}"/>
+    <param name="customerOrderState" value="#{orderList.state}"/>
     <param name="createDateFrom" value="#{orderList.createDateFrom}"  converterId="searchDateConverter"/>
     <param name="createDateTo" value="#{orderList.createDateTo}"  converterId="searchDateConverter"/>
 

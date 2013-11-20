@@ -1,0 +1,113 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.OrderDetails}"/>
+
+    <ui:define name="func-body">
+
+        <rich:toolbar>
+            <rich:toolbarGroup location="right">
+
+
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+        <ui:include src="/layout/erp/CustomerView.xhtml">
+            <ui:param name="customer" value="#{customerHome.instance}"/>
+        </ui:include>
+
+
+        <a:outputPanel rendered="#{(not empty customerHome.instance.middleMan) and s:hasRole('erp.sale.manager')}">
+
+            <ui:include src="/layout/erp/MiddleManView.xhtml"/>
+        </a:outputPanel>
+
+
+        accountOper_field_operEmp=操作人
+        accountOper_field_operMoney=金额
+
+        accountOper_field_payType=支付方式
+        accountOper_field_checkNumber=支票号
+        accountOper_field_beforBalance=操作前帐户余额
+        accountOper_field_afterBanance=操作后帐户余额
+        <rich:dataTable value="#{customerHome.instance.accountOpers}"
+                        var="_oper" noDataLabel="#{messags.customer_no_accountOpers}">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.accountOper_field_operType}
+                </f:facet>
+                #{messages[_oper.operType]}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.accountOper_field_operDate}
+                </f:facet>
+                <h:outputText value="#{_oper.operDate}">
+                    <s:convertDateTime
+                            pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.accountOper_field_operEmp}
+                </f:facet>
+                #{dictionary.getEmpNameById(_oper.operEmp)}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messags.accountOper_field_payType}
+                </f:facet>
+                #{messages[_oper.payType]}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.accountOper_field_checkNumber}
+                </f:facet>
+               <h:outputText value="#{_oper.checkNumber}" rendered="#{_oper.payType eq 'CHECK'}"/>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.accountOper_field_beforBalance}
+                </f:facet>
+                <h:outputText value="#{_oper.beforMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                        #{messages.accountOper_field_operMoney}
+                </f:facet>
+                <h:outputText value="#{_oper.operMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </rich:column>
+
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.accountOper_field_afterBanance}
+                </f:facet>
+                <h:outputText value="#{_oper.afterMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </rich:column>
+
+
+        </rich:dataTable>
+
+    </ui:define>
+</ui:composition>
