@@ -15,8 +15,7 @@
 
         <rich:toolbar>
             <rich:toolbarGroup location="right">
-
-
+                <s:button styleClass="toolBarBtn" value="#{messages.return}" view="#{empty from ? '/home.xhtml' : from}"/>
             </rich:toolbarGroup>
         </rich:toolbar>
 
@@ -25,26 +24,30 @@
         </ui:include>
 
 
-        <a:outputPanel rendered="#{(not empty customerHome.instance.middleMan) and s:hasRole('erp.sale.manager')}">
+        <div style="clear: both"/>
 
-            <ui:include src="/layout/erp/MiddleManView.xhtml"/>
-        </a:outputPanel>
+        <s:decorate template="/layout/view-details.xhtml"
+                    rendered="#{(not empty customerHome.instance.middleMan) and s:hasRole('erp.sale.manager')}">
+            <ui:include src="/layout/erp/MiddleManView.xhtml">
+
+                <ui:param name="middleMan" value="#{customerHome.instance.middleMan}"/>
+
+            </ui:include>
+            <ui:param name="labelValue" value="#{customerHome.instance.middleMan.name}"/>
+            <ui:param name="openLabel" value="#{messages.MiddleMan}"/>
+            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.MiddleMan}"/>
+        </s:decorate>
 
 
-        accountOper_field_operEmp=操作人
-        accountOper_field_operMoney=金额
-
-        accountOper_field_payType=支付方式
-        accountOper_field_checkNumber=支票号
-        accountOper_field_beforBalance=操作前帐户余额
-        accountOper_field_afterBanance=操作后帐户余额
-        <rich:dataTable value="#{customerHome.instance.accountOpers}"
-                        var="_oper" noDataLabel="#{messags.customer_no_accountOpers}">
+        <div style="clear: both"/>
+        <br/>
+        <rich:dataTable style="width: 100%" value="#{customerHome.instance.accountOperList}"
+                        var="_oper" noDataLabel="#{messages.customer_no_accountOpers}">
             <rich:column>
                 <f:facet name="header">
                     #{messages.accountOper_field_operType}
                 </f:facet>
-                #{messages[_oper.operType]}
+                #{messages[_oper.operType.name()]}
             </rich:column>
             <rich:column>
                 <f:facet name="header">
@@ -64,15 +67,13 @@
             </rich:column>
             <rich:column>
                 <f:facet name="header">
-                    #{messags.accountOper_field_payType}
+                    #{messages.accountOper_field_payType}
                 </f:facet>
-                #{messages[_oper.payType]}
-            </rich:column>
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.accountOper_field_checkNumber}
-                </f:facet>
-               <h:outputText value="#{_oper.checkNumber}" rendered="#{_oper.payType eq 'CHECK'}"/>
+                <h:outputText value="#{messages[_oper.payType.name()]}"
+                              rendered="#{not empty _oper.payType}"/>
+                <h:outputText value="(#{_oper.checkNumber})"
+                              rendered="#{(not empty _oper.payType) and (_oper.payType eq 'CHECK')}"/>
+
             </rich:column>
 
             <rich:column style="text-align: right;">
@@ -87,7 +88,7 @@
 
             <rich:column style="text-align: right;">
                 <f:facet name="header">
-                        #{messages.accountOper_field_operMoney}
+                    #{messages.accountOper_field_operMoney}
                 </f:facet>
                 <h:outputText value="#{_oper.operMoney}">
                     <f:convertNumber locale="#{calendarBean.locale}"

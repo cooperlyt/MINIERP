@@ -20,17 +20,14 @@ import javax.validation.constraints.Size;
 public class AccountOper implements java.io.Serializable {
 
     public enum AccountOperType {
-        ORDER_PAY(false), PRE_DEPOSIT(true), DEPOSIT_BACK(false),
-        ORDER_BACK(true), ORDER_ARREARS(false), ORDER_EARNEST(false);
+        ORDER_SAVINGS(true), ORDER_PAY(false), ORDER_EARNEST(false),
+        PRE_DEPOSIT(true),DEPOSIT_BACK(false),
+        ORDER_BACK_SAVINGS(true),ORDER_BACK(false);
 
         private boolean add;
 
         public boolean isAdd() {
             return add;
-        }
-
-        public void setAdd(boolean add) {
-            this.add = add;
         }
 
         private AccountOperType(boolean add) {
@@ -60,14 +57,16 @@ public class AccountOper implements java.io.Serializable {
     public AccountOper() {
     }
 
-    public AccountOper(PayType payType) {
+    public AccountOper(PayType payType,String operEmp) {
         this.payType = payType;
+        this.operEmp = operEmp;
     }
 
     public AccountOper(Customer customer, String operEmp,
                        BigDecimal operMoney, AccountOperType operType,
                        Date operDate, BigDecimal beforMoney, BigDecimal afterMoney,
-                       String description, PayType payType, CustomerOrder customerOrder) {
+                       String description, PayType payType, CustomerOrder customerOrder,
+                       String checkNumber) {
         this.customer = customer;
         this.operEmp = operEmp;
         this.operMoney = operMoney;
@@ -78,6 +77,7 @@ public class AccountOper implements java.io.Serializable {
         this.description = description;
         this.payType = payType;
         this.customerOrder = customerOrder;
+        this.checkNumber = checkNumber;
     }
 
     @Id
@@ -95,8 +95,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CREDIT_ACCOUNT", nullable = false)
-    @NotNull
+    @JoinColumn(name = "CREDIT_ACCOUNT")
     public Accounting getAccountingByCreditAccount() {
         return this.accountingByCreditAccount;
     }
@@ -107,8 +106,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DEBIT_ACCOUNT", nullable = false)
-    @NotNull
+    @JoinColumn(name = "DEBIT_ACCOUNT")
     public Accounting getAccountingByDebitAccount() {
         return this.accountingByDebitAccount;
     }
@@ -202,7 +200,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "PAY_TYPE", nullable = false, length = 32)
+    @Column(name = "PAY_TYPE",nullable = false,length = 32)
     @NotNull
     public PayType getPayType() {
         return this.payType;

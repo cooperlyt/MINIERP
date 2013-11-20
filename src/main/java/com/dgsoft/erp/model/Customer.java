@@ -5,9 +5,7 @@ import com.dgsoft.common.NamedEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -240,13 +238,25 @@ public class Customer implements java.io.Serializable, NamedEntity {
         this.customerOrders = customerOrders;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer",orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<AccountOper> getAccountOpers() {
         return this.accountOpers;
     }
 
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
+    }
+
+    @Transient
+    public List<AccountOper> getAccountOperList(){
+        List<AccountOper> result = new ArrayList<AccountOper>(getAccountOpers());
+        Collections.sort(result,new Comparator<AccountOper>() {
+            @Override
+            public int compare(AccountOper o1, AccountOper o2) {
+                return o1.getOperDate().compareTo(o2.getOperDate());
+            }
+        });
+        return result;
     }
 
     @Temporal(TemporalType.TIMESTAMP)

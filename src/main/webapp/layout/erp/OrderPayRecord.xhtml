@@ -16,15 +16,21 @@
                 </f:facet>
 
                 <rich:column>
+                    <f:facet name="header">#{messages.accountOperType}</f:facet>
+                    #{messages[_oper.operType.name()]}
+                    <f:facet name="footer">
+                        #{messages.recordTotal}#{order.accountOperList.size}#{messages.item}
+                    </f:facet>
+                </rich:column>
+
+                <rich:column>
                     <f:facet name="header">
                         #{messages.accountOper_field_operDate}
                     </f:facet>
                     <h:outputText value="#{_oper.operDate}">
                         <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
                     </h:outputText>
-                    <f:facet name="footer">
-                        #{messages.recordTotal}#{order.accountOperList.size}#{messages.item}
-                    </f:facet>
+
                 </rich:column>
 
 
@@ -39,14 +45,18 @@
                     <f:facet name="header">
                         #{messages.accountOper_field_payType}
                     </f:facet>
+                    <a:outputPanel rendered="#{not empty _oper.payType}">
                     <h:outputText value="#{messages[_oper.payType.name()]}"/>
+                        <h:outputText value="(#{_oper.checkNumber})" rendered="#{_oper.payType eq 'CHECK'}"/>
+
+                    </a:outputPanel>
                 </rich:column>
 
                 <rich:column style="text-align: right">
                     <f:facet name="header">
                         #{messages.accountOper_field_beforBalance}
                     </f:facet>
-                    <h:outputText value="#{_oper.beforMoney}" rendered="#{_oper.payType eq 'FROM_PRE_DEPOSIT'}">
+                    <h:outputText value="#{_oper.beforMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -73,23 +83,14 @@
                     <f:facet name="header">
                         #{messages.accountOper_field_afterBanance}
                     </f:facet>
-                    <h:outputText value="#{_oper.afterMoney}" rendered="#{_oper.payType eq 'FROM_PRE_DEPOSIT'}">
+                    <h:outputText value="#{_oper.afterMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
                 </rich:column>
 
 
-                <rich:column rendered="#{not readOnly}" style="text-align: center">
-                    <f:facet name="header"></f:facet>
-                    <a:commandButton render="accountOperTable" action="#{accountOperHome.removeAndClear}"
-                                     execute="@this" immediate="true" title="#{messages.remove}"
-                                     onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
-                                     image="/img/delete.png">
-                        <a:attachQueue requestDelay="0"/>
-                        <a:param value="#{_oper.id}" assignTo="#{accountOperHome.id}"/>
-                    </a:commandButton>
-                </rich:column>
+
 
             </rich:dataTable>
         </h:form>
