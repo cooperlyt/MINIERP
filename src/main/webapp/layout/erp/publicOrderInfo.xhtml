@@ -41,6 +41,17 @@
         </h:outputText>
     </s:decorate>
 
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_resReceived}</ui:define>
+        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.resReceived}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_moneyComplete}</ui:define>
+        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.moneyComplete}"/>
+    </s:decorate>
+
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.orderState}</ui:define>
         #{messages[orderHome.instance.state.name()]}

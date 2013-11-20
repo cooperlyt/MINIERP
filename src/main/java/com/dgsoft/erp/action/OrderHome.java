@@ -10,10 +10,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 
 import java.math.BigDecimal;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -106,8 +103,16 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
     @DataModel
-    public Set<Map.Entry<StoreRes, ResCount>> getAllShipStoreResEntrySet() {
-        return allShipStoreReses().entrySet();
+    public List<Map.Entry<StoreRes, ResCount>> getAllShipStoreResEntrySet() {
+        List<Map.Entry<StoreRes, ResCount>> result = new ArrayList<Map.Entry<StoreRes, ResCount>>(allShipStoreReses().entrySet());
+
+        Collections.sort(result,new Comparator<Map.Entry<StoreRes, ResCount>>() {
+            @Override
+            public int compare(Map.Entry<StoreRes, ResCount> o1, Map.Entry<StoreRes, ResCount> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+        return result;
     }
 
     public BigDecimal getTotalItemMoney(){
@@ -125,6 +130,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             if ((orderItem.getMiddleMoneyCalcType() != null) &&
                     (orderItem.getMiddleMoney() != null))
             result = result.add(orderItem.getMiddleMoney());
+        }
+        return result;
+    }
+
+    public BigDecimal getTotalCustomerPayMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (AccountOper accountOper: getInstance().getAccountOpers()){
+            result = result.add(accountOper.getOperMoney());
         }
         return result;
     }

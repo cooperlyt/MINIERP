@@ -10,15 +10,15 @@
 
 
     <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.order_field_limitDate}</ui:define>
-        <h:outputText value="#{needRes.limitTime}">
-            <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
-        </h:outputText>
+        <ui:define name="label">#{messages.NeedRes_SENT_TYPE}</ui:define>
+        <h:outputText value="#{messages[needRes.type.name()]}"/>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.NeedRes_SENT_TYPE}</ui:define>
-        <h:outputText value="#{messages[needRes.type.name()]}"/>
+        <ui:define name="label">#{messages.order_field_limitDate}</ui:define>
+        <h:outputText value="#{needRes.limitTime}">
+            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+        </h:outputText>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml" rendered="#{needRes.type eq 'SUPPLEMENT_SEND'}">

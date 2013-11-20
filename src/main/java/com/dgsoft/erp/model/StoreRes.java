@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "STORE_RES", catalog = "MINI_ERP",uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
-public class StoreRes implements java.io.Serializable {
+public class StoreRes implements java.io.Serializable,Comparable<StoreRes> {
 
     private String id;
     private Res res;
@@ -288,4 +288,13 @@ public class StoreRes implements java.io.Serializable {
         return result.hashCode();
     }
 
+    @Override
+    @Transient
+    public int compareTo(StoreRes o) {
+        int result = getRes().getId().compareTo(o.getRes().getId());
+        if (result == 0){
+          result = o.getId().compareTo(id);
+        }
+        return result;
+    }
 }

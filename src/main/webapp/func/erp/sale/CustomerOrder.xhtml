@@ -55,7 +55,7 @@
                                    showButton="true"
                                    selectFirst="true"
                                    label="#{messages.orderCustomer}"
-                                   clientFilterFunction="pinyinFilter"
+                                   clientFilterFunction="pinyinNameFilter"
                                    autocompleteList="#{customerNameList.resultList}"
                                    value="#{orderList.customerName}"
                                    fetchValue="#{_customer}" var="_customer">
@@ -183,6 +183,19 @@
             </ui:include>
         </f:facet>
         #{dictionary.getEmpNameById(_order.orderEmp)}
+    </rich:column>
+
+    <rich:column style="text-align: center">
+        <f:facet name="header">
+            #{messages.order_field_resReceived}
+        </f:facet>
+        <h:selectBooleanCheckbox disabled="true" value="#{_order.resReceived}"/>
+    </rich:column>
+    <rich:column  style="text-align: center">
+          <f:facet name="header">
+              #{messages.order_field_moneyComplete}
+          </f:facet>
+        <h:selectBooleanCheckbox disabled="true" value="#{_order.moneyComplete}"/>
     </rich:column>
 
     <rich:column>

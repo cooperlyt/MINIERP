@@ -79,7 +79,8 @@
                     </h:outputText>
                 </rich:column>
 
-                <rich:column style="text-align: center">
+
+                <rich:column rendered="#{not readOnly}" style="text-align: center">
                     <f:facet name="header"></f:facet>
                     <a:commandButton render="accountOperTable" action="#{accountOperHome.removeAndClear}"
                                      execute="@this" immediate="true" title="#{messages.remove}"

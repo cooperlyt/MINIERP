@@ -131,8 +131,26 @@ function pinyinFilter(subString, value){
 
         var pinyinValue = pinyin.getCamelChars(nameValue);
 
-        if ((pinyinValue.toLowerCase().indexOf(subString.toLowerCase()) != -1) || (nameValue.indexOf(subString) != -1))
+        if ((pinyinValue.toLowerCase().indexOf(subString.toLowerCase()) != -1) ||
+            (nameValue.toLowerCase().indexOf(subString).toLowerCase() != -1))
             return true;
     } else
         return false;
 };
+
+
+function pinyinNameFilter(subString, value) {
+    if (subString.length >= 1) {
+        var pinyin = new Pinyin();
+
+        var pinyinValue = pinyin.getCamelChars(value);
+
+        if ((pinyinValue.toLowerCase().indexOf(subString.toLowerCase()) != -1) ||
+            (value.toLowerCase().indexOf(subString.toLowerCase()) != -1))
+            return true;
+
+    } else
+        return false;
+};
+
+

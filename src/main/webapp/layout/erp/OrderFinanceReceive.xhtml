@@ -214,6 +214,7 @@
     <ui:include src="/layout/erp/OrderPayRecord.xhtml">
         <ui:param name="order" value="#{orderHome.instance}"/>
         <ui:param name="totalMoney" value="#{orderFinanceReveiveAction.totalReveiveMoney}"/>
+        <ui:param name="readOnly" value="false"/>
     </ui:include>
 </a:outputPanel>
 

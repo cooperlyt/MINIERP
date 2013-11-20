@@ -10,6 +10,7 @@ import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -97,6 +98,7 @@ public class OrderFeePay extends OrderTaskHandle {
 
         //TODO if   ORDER_OVERDRAFT_COMPLETE,
         orderHome.getInstance().setState(CustomerOrder.OrderState.ORDER_COMPLETE);
+        orderHome.getInstance().setCompleteDate(new Date());
         Logging.getLog(this.getClass()).debug("set order state to complete");
 
         orderHome.update();
