@@ -13,7 +13,7 @@
 
     <ui:define name="func-body">
 
-        <rich:toolbar>
+        <rich:toolbar rendered="#{not empty from }">
             <rich:toolbarGroup location="right">
                 <s:button styleClass="toolBarBtn" value="#{messages.return}" view="#{empty from ? '/home.xhtml' : from}"/>
             </rich:toolbarGroup>

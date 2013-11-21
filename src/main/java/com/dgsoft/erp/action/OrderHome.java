@@ -142,6 +142,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+    public BigDecimal getTotalOrderFeeMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderFee orderFee: getInstance().getOrderFees()){
+            result = result.add(orderFee.getMoney());
+        }
+        return result;
+    }
+
     public Map<StoreRes, ResCount> allShipStoreReses() {
         Map<StoreRes, ResCount> result = new HashMap<StoreRes, ResCount>();
 

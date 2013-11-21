@@ -5,17 +5,19 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
 
-    <ui:param name="functionTitle" value="#{messages.OrderDetails}"/>
+    <ui:param name="functionTitle" value="#{messages.customerDetails}"/>
 
     <ui:define name="func-body">
 
-        <rich:toolbar>
+        <rich:toolbar rendered="#{not empty from}">
             <rich:toolbarGroup location="right">
-                <s:button styleClass="toolBarBtn" value="#{messages.return}" view="#{empty from ? '/home.xhtml' : from}"/>
+                <s:button styleClass="toolBarBtn" value="#{messages.return}"
+                          view="#{empty from ? '/home.xhtml' : from}"/>
             </rich:toolbarGroup>
         </rich:toolbar>
 
@@ -43,11 +45,27 @@
         <br/>
         <rich:dataTable style="width: 100%" value="#{customerHome.instance.accountOperList}"
                         var="_oper" noDataLabel="#{messages.customer_no_accountOpers}">
+
             <rich:column>
                 <f:facet name="header">
                     #{messages.accountOper_field_operType}
                 </f:facet>
-                #{messages[_oper.operType.name()]}
+                <a:outputPanel>
+                    <rich:tooltip followMouse="false" showDelay="900" styleClass="tooltip-custom-body"
+                                  layout="block"
+                                  rendered="#{not empty _oper.customerOrder}">
+                        <span style="white-space: nowrap">#{messages.OrderCode}: #{_oper.customerOrder.id}</span>
+
+                    </rich:tooltip>
+                    <s:link target="_blank" value="#{messages[_oper.operType.name()]}" view="/func/erp/sale/OrderDetails.xhtml"
+                            rendered="#{(_oper.operType eq 'ORDER_PAY') or (_oper.operType eq 'ORDER_EARNEST')}">
+                        <f:param name="orderId" value="#{_oper.customerOrder.id}"/>
+                        <f:param name="from" value=""/>
+                    </s:link>
+                    <h:outputText value="#{messages[_oper.operType.name()]}"
+                                  rendered="#{not((_oper.operType eq 'ORDER_PAY') or (_oper.operType eq 'ORDER_EARNEST'))}"/>
+                </a:outputPanel>
+
             </rich:column>
             <rich:column>
                 <f:facet name="header">

@@ -120,7 +120,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
         debitAccountOper.setPayType(PayType.FROM_PRE_DEPOSIT);
         debitAccountOper.setCheckNumber(null);
-        debitAccountOper.setOperDate(new Date(debitAccountOper.getOperDate().getTime() + 1));
+        debitAccountOper.setOperDate(new Date(debitAccountOper.getOperDate().getTime() + 1001));
 
         customerHome.getInstance().getAccountOpers().add(debitAccountOper);
 

@@ -240,7 +240,7 @@
     </rich:column>
 
 
-    <rich:column style="text-align: right">
+    <rich:column style="text-align: right" rendered="#{s:hasRole('erp.sale.manager')}">
         <f:facet name="header">#{messages.order_field_middleMoney}</f:facet>
         <h:outputText value="#{_item.middleMoney}">
             <f:convertNumber locale="#{calendarBean.locale}"
@@ -257,7 +257,6 @@
 
 
 </rich:dataTable>
-
 
 
 <a:outputPanel
@@ -314,11 +313,11 @@
                 </s:decorate>
             </a:repeat>
             <br/>
+
             <div style="clear: both"/>
         </rich:panel>
 
     </a:repeat>
-
 
 
     <div style="clear: both"/>
@@ -332,6 +331,75 @@
         <ui:param name="totalMoney" value="#{orderHome.totalCustomerPayMoney}"/>
 
     </ui:include>
+
+
+    <br/>
+    <rich:dataTable style="width: 100%" value="#{orderHome.instance.orderFeeList}" var="_fee"
+                    noDataLabel="#{messages.orderFee_empty}">
+
+        <f:facet name="header">
+            #{messages.orderOrderFeePay}
+        </f:facet>
+        <rich:column>
+            <f:facet name="header">#{messages.orderFee_field_receiveName}</f:facet>
+
+            #{_fee.receiveName}
+
+
+            <f:facet name="footer">
+                #{messages.recordTotal} #{orderHome.instance.orderFeeList.size} #{messages.item}
+            </f:facet>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">#{messages.description}</f:facet>
+            #{_fee.description}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">#{messages.orderFee_field_payType}</f:facet>
+            <a:outputPanel>
+                <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                              layout="block">
+                    <span style="white-space: nowrap">#{messages.orderFee_field_receiveInfo}:#{_fee.receiveInfo}</span>
+                    <br/>
+
+                    <s:span style="white-space: nowrap" rendered="#{_fee.payType eq 'BANK_TRANSFER'}">
+                        #{messages.bank}: #{dictionary.getWordValue(_fee.bank)}</s:span>
+                    <br/>
+
+                    <s:span style="white-space: nowrap" rendered="#{_fee.payType eq 'BANK_TRANSFER'}">
+                        #{messages.orderFee_field_bankNumber}: #{_fee.bankNumber}</s:span>
+
+                    <br/>
+
+                    <s:span style="white-space: nowrap" rendered="#{_fee.payType eq 'BANK_TRANSFER'}">
+                        #{messages.orderFee_field_bankInfo}: #{_fee.bankInfo}</s:span>
+
+                    <br/>
+
+
+                </rich:tooltip>
+
+                #{messages[_fee.payType.name()]}
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">#{messages.orderFee_field_money}</f:facet>
+            <h:outputText value="#{_fee.money}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency"/>
+            </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderHome.totalOrderFeeMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+    </rich:dataTable>
 </a:outputPanel>
 
 </ui:composition>

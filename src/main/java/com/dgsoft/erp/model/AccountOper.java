@@ -221,7 +221,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "CUSTOMER_ORDER", nullable = true)
     public CustomerOrder getCustomerOrder() {
         return this.customerOrder;
