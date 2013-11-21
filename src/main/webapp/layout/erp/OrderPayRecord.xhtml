@@ -18,9 +18,7 @@
                 <rich:column>
                     <f:facet name="header">#{messages.accountOperType}</f:facet>
                     #{messages[_oper.operType.name()]}
-                    <f:facet name="footer">
-                        #{messages.recordTotal}#{order.accountOperList.size}#{messages.item}
-                    </f:facet>
+
                 </rich:column>
 
                 <rich:column>
@@ -71,12 +69,7 @@
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
-                    <f:facet name="footer">
-                        <h:outputText value="#{totalMoney}">
-                            <f:convertNumber locale="#{calendarBean.locale}"
-                                             type="currency" groupingUsed="true"/>
-                        </h:outputText>
-                    </f:facet>
+
                 </rich:column>
 
                 <rich:column style="text-align: right">

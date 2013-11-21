@@ -134,14 +134,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getTotalCustomerPayMoney(){
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper accountOper: getInstance().getAccountOpers()){
-            result = result.add(accountOper.getOperMoney());
-        }
-        return result;
-    }
-
     public BigDecimal getTotalOrderFeeMoney(){
         BigDecimal result = BigDecimal.ZERO;
         for (OrderFee orderFee: getInstance().getOrderFees()){
