@@ -20,7 +20,7 @@
             </rich:toolbarGroup>
         </rich:toolbar>
 
-        <ui:include src="/layout/erp/CustomerDetails.xhtml">
+        <ui:include src="/layout/erp/CustomerEdit.xhtml">
             <ui:param name="readonly" value="#{readonly or (not (s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')))}" />
             <ui:param name="balanceReadonly" value="#{customerHome.managed or (not s:hasRole('erp.sale.manager'))}"/>
             <ui:param name="showMiddleMan" value="#{s:hasRole('erp.sale.manager')}"/>

@@ -15,6 +15,7 @@ public class SimpleEntityHome<E extends NamedEntity> extends EntityHomeAdapter<E
 
     public void setPinyinSearchName(String searchStr) {
         String id = PinyinTools.splitPinyinId(searchStr);
+        log.debug("setPinyinSearchName id is:" + searchStr + "|" + id);
         if (id == null) {
             if ((searchStr == null) || searchStr.trim().equals("")) {
                 setId(null);
@@ -24,6 +25,7 @@ public class SimpleEntityHome<E extends NamedEntity> extends EntityHomeAdapter<E
         try {
             setId(id);
         } catch (javax.persistence.EntityNotFoundException e) {
+            log.debug("id not found",e);
             setId(null);
         }
     }

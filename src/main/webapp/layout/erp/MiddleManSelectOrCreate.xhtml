@@ -1,0 +1,58 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.MiddleMan}</ui:define>
+        <rich:autocomplete id="pinyinSearchMiddleMan" mode="client" minChars="1"
+                           autofill="false" showButton="true"
+                           selectFirst="true"
+                           label="#{messages.MiddleMan}"
+                           clientFilterFunction="pinyinFilter"
+                           autocompleteList="#{middleManList.resultList}"
+                           value="#{middleManHome.pinyinSearchName}"
+                           fetchValue="[#{_middleMan.name}][id:#{_middleMan.id}]"
+                           var="_middleMan">
+
+            <h:outputText value="#{_middleMan.name}"/>
+            <a:ajax event="selectitem"
+                    render="pinyinSearchMiddleMan" execute="@this">
+                <a:attachQueue requestDelay="0"/>
+            </a:ajax>
+            <a:ajax event="blur" execute="@this"
+                    render="middleManDetails">
+                <a:attachQueue requestDelay="0"/>
+            </a:ajax>
+        </rich:autocomplete>
+
+        <ui:define name="tail">
+            <a:commandButton image="/img/refresh.png" action="#{middleManHome.clearinstance}"
+                             execute="@this"
+                             render="pinyinSearchMiddleMan">
+                <a:attachQueue requestdelay="0"/>
+            </a:commandButton>
+        </ui:define>
+    </s:decorate>
+
+    <div style="clear:both"/>
+
+    <a:outputPanel id="middleManDeatilsFields">
+        <ui:include src="/layout/erp/MiddleManEdit.xhtml">
+            <ui:param name="readonly" value="#{middleManHome.idDefined}"/>
+        </ui:include>
+    </a:outputPanel>
+
+
+    <div style="clear:both"/>
+
+</ui:composition>

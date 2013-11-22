@@ -9,14 +9,14 @@
                 xmlns:rich="http://richfaces.org/rich">
 
 
-    <s:decorate id="customerNameField" template="/layout/seam-display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_name}</ui:define>
 
         <h:outputText value="#{customer.name}"/>
 
     </s:decorate>
 
-    <s:decorate id="levelField" template="/layout/seam-display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_level}</ui:define>
         #{customer.customerLevel.name}
     </s:decorate>
@@ -27,20 +27,20 @@
         <h:outputText value="#{cityList.getCityById(customer.provinceCode)}"/>
     </s:decorate>
 
-    <s:decorate id="typeField" template="/layout/seam-display.xhtml">
+    <s:decorate  template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_type}</ui:define>
         #{dictionary.getWordValue(customer.type)}
 
     </s:decorate>
 
 
-    <s:decorate id="customerContactField" template="/layout/seam-display.xhtml">
+    <s:decorate  template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_contact}</ui:define>
         <h:outputText value="#{customer.contact}"/>
     </s:decorate>
 
 
-    <s:decorate id="telField" template="/layout/seam-display.xhtml">
+    <s:decorate  template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_tel}</ui:define>
 
         #{customer.tel}
@@ -48,19 +48,19 @@
     </s:decorate>
 
 
-    <s:decorate id="balanceField" template="/layout/seam-display.xhtml">
+    <s:decorate  template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_balance}</ui:define>
         <h:outputText value="#{customer.balance}"/>
 
     </s:decorate>
 
 
-    <s:decorate id="mailField" template="/layout/seam-display.xhtml">
+    <s:decorate  template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_mail}</ui:define>
         <h:outputText value="#{customer.mail}"/>
     </s:decorate>
 
-    <s:decorate id="faxField" template="/layout/seam-display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_fax}</ui:define>
         <h:outputText value="#{customer.fax}"/>
     </s:decorate>
@@ -72,16 +72,33 @@
     </s:decorate>
 
 
-    <s:decorate id="addressField" template="/layout/seam-display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_address}</ui:define>
 
         <h:outputText value="#{customer.address}"/>
     </s:decorate>
 
-    <s:decorate id="memoField" template="/layout/seam-display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
         <h:outputText value="#{customer.memo}"/>
     </s:decorate>
 
 
+    <div style="clear: both"/>
+
+
+    <h:outputText value="#{messages.customerNotHasMiddleMan}"
+                  rendered="#{empty customer.middleMan}"/>
+    <s:decorate rendered="#{not empty customer.middleMan}"
+                template="/layout/view-details.xhtml">
+        <ui:param name="labelValue" value="#{customer.middleMan.name}"/>
+        <ui:param name="openLabel" value="#{messages.MiddleMan}"/>
+        <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.MiddleMan}" />
+        <ui:include src="/layout/erp/MiddleManView.xhtml">
+            <ui:param name="middleMan" value="#{customer.middleMan}"/>
+        </ui:include>
+    </s:decorate>
+
+
+    <br/>
 </ui:composition>

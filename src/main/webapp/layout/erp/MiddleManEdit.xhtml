@@ -27,7 +27,7 @@
                          required="true"
                          size="27"
                          maxlength="50"
-                         readonly="#{readonly}"
+
                          value="#{middleManHome.instance.name}">
                 <a:ajax event="blur" render="middleManField"/>
             </h:inputText>
@@ -38,7 +38,7 @@
             <ui:define name="label">#{messages.middleMan_field_type}</ui:define>
             <rich:select value="#{middleManHome.instance.type}"
                          styleClass="middleManTypeSelectWidth" listWidth="154px"
-                         required="true" disabled="#{readonly}"
+                         required="true"
                          label="#{messages.middleMan_field_type}">
                 <s:selectItems var="_word" label="#{_word.value}"
                                itemValue="#{_word.id}"
@@ -54,7 +54,7 @@
                          required="true"
                          size="27"
                          maxlength="50"
-                         readonly="#{readonly}"
+
                          value="#{middleManHome.instance.contact}">
             </h:inputText>
         </s:decorate>
@@ -65,7 +65,7 @@
             <h:inputText label="#{messages.middleMan_field_tel}"
                          size="20"
                          maxlength="50"
-                         readonly="#{readonly}"
+
                          value="#{middleManHome.instance.tel}">
             </h:inputText>
         </s:decorate>
@@ -75,7 +75,7 @@
             <ui:define name="label">#{messages.middleMan_field_bankNumber}</ui:define>
             <h:inputText label="#{messages.middleMan_field_bankNumber}"
                          size="27"
-                         readonly="#{readonly}"
+
                          maxlength="50"
                          value="#{middleManHome.instance.bankNumber}">
             </h:inputText>
@@ -85,7 +85,7 @@
             <ui:define name="label">#{messages.middleMan_field_bank}</ui:define>
             <rich:select value="#{middleManHome.instance.bank}"
                          styleClass="bankSelectWidth" listWidth="154px"
-                         label="#{messages.middleMan_field_bank}" disabled="#{readonly}">
+                         label="#{messages.middleMan_field_bank}">
                 <s:selectItems var="_word" label="#{_word.value}"
                                itemValue="#{_word.id}"
                                value="#{dictionary.getWordList('erp.bank')}"
@@ -112,7 +112,6 @@
             <h:inputTextarea label="#{messages.field_memo}"
                              cols="66"
                              rows="2"
-                             readonly="#{readonly}"
                              value="#{middleManHome.instance.memo}"/>
         </s:decorate>
     </h:panelGrid>
