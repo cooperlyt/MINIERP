@@ -87,7 +87,7 @@
     <div style="clear: both"/>
 
 
-    <h:outputText value="#{messages.customerNotHasMiddleMan}"
+    <h:outputText styleClass="auto_width_name" value="#{messages.customerNotHasMiddleMan}"
                   rendered="#{empty customer.middleMan}"/>
     <s:decorate rendered="#{not empty customer.middleMan}"
                 template="/layout/view-details.xhtml">

@@ -109,7 +109,6 @@
     </s:decorate>
 
 
-
     <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.Customer}</ui:define>
         <rich:autocomplete id="pinyinSearchCustomer"
@@ -135,7 +134,7 @@
         </rich:autocomplete>
         <ui:define name="tail">
             <a:commandButton immediate="true" image="/img/refresh.png"
-                             action="#{customerHome.clearInstance}"
+                             action="#{orderCreate.clearCustomerAndMiddleMan}"
                              execute="@this"
                              render="customerInfo,customerSelectNameField,orderContactFields">
                 <a:attachQueue requestDelay="0"/>
@@ -191,34 +190,44 @@
 <div style="clear:both"/>
 
 <a:outputPanel id="customerInfo">
+     <a:outputPanel rendered="#{customerAreaHome.idDefined}">
+    <rich:panel>
 
-    <rich:collapsiblePanel
-            header="#{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}"
-            switchType="client">
+        <f:facet name="header" >
+            #{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}
+        </f:facet>
 
         <a:outputPanel rendered="#{customerHome.idDefined}">
-             <ui:include src="/layout/erp/CustomerView.xhtml">
-                 <ui:param name="customer" value="#{customerHome.instance}"/>
-             </ui:include>
-        </a:outputPanel>
-
-        <a:outputPanel rendered="#{not customerHome.idDefined}">
-            <ui:include src="/layout/erp/CustomerEdit.xhtml">
-                <ui:param name="balanceReadonly" value="true"/>
+            <ui:include src="/layout/erp/CustomerView.xhtml">
+                <ui:param name="customer" value="#{customerHome.instance}"/>
             </ui:include>
         </a:outputPanel>
 
-
-
-        <a:outputPanel id="middleSelectOrCreate">
-
-            <a:outputPanel rendered="#{not customerHome.idDefined}">
-                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-                <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
-            </a:outputPanel>
+        <a:outputPanel rendered="#{not customerHome.idDefined}">
+            <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
         </a:outputPanel>
 
-    </rich:collapsiblePanel>
+
+    </rich:panel>
+
+    <br/>
+    <a:outputPanel id="middleManSelectOrCreate" rendered="#{not customerHome.idDefined}">
+        <s:span styleClass="small_name">
+            <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
+                <a:ajax event="click" render="middleManSelectOrCreate"
+                        listener="#{customerHome.middleManPayChangeListener}"/>
+            </h:selectBooleanCheckbox>
+            #{messages.MiddleMan}
+        </s:span>
+
+        <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
+            <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        </a:outputPanel>
+    </a:outputPanel>
+
+    <div style="clear: both"/>
+     </a:outputPanel>
 </a:outputPanel>
 
 <s:decorate template="/layout/edit.xhtml">

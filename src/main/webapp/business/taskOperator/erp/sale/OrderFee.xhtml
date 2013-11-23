@@ -330,7 +330,8 @@
 
 <s:decorate template="/layout/view-details.xhtml">
 
-    <ui:param name="openLabel" value="#{messages.MiddleMan}:#{' '}#{orderHome.instance.customer.middleMan.name}"/>
+    <ui:param name="openLabel" value="#{messages.MiddleMan}"/>
+    <ui:param name="labelValue"  value="#{orderHome.instance.customer.middleMan.name}"/>
 
     <ui:param name="hideLabel"
               value="#{messages.detailsHide}#{' '}#{messages.MiddleMan}"/>

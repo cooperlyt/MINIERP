@@ -92,6 +92,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         this.needRes = needRes;
     }
 
+    public void clearCustomerAndMiddleMan(){
+        customerHome.clearInstance();
+        middleManHome.clearInstance();
+    }
+
     private BigDecimal earnestScale = BigDecimal.ZERO;
 
     public BigDecimal getEarnestScale() {

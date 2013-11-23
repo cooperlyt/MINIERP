@@ -12,7 +12,7 @@
     <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
     <h:panelGrid style="clear: left; " columns="1">
 
-    <s:decorate template="/layout/seam-edit.xhtml">
+    <s:decorate template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.ExpressDriver}</ui:define>
         <rich:autocomplete id="expressDriverPySearch" mode="client" minChars="1" autofill="false"
                            showButton="true"
@@ -34,7 +34,7 @@
             </a:ajax>
         </rich:autocomplete>
         <ui:define name="tail">
-            <a:commandButton immediate="true" image="/img/reset_btn.png"
+            <a:commandButton immediate="true" image="/img/refresh.png"
                              action="#{expressDriverHome.clearInstance}"
                              execute="@this"
                              render="expressDriverPySearch,expressDriverDetails">
