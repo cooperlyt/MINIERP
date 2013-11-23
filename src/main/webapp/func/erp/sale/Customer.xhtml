@@ -49,7 +49,7 @@
             <s:decorate template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.customer_field_type}</ui:define>
 
-                <h:selectOneMenu  value="#{customerList.type}" >
+                <h:selectOneMenu value="#{customerList.type}">
 
                     <s:selectItems var="_word" label="#{_word.value}"
                                    itemValue="#{_word.id}"
@@ -67,7 +67,7 @@
 
                     --
 
-                    <h:inputText value="#{customerList.levelTo}"  size="5"  converter="javax.faces.Integer"/>
+                    <h:inputText value="#{customerList.levelTo}" size="5" converter="javax.faces.Integer"/>
 
                 </h:panelGroup>
 
@@ -97,7 +97,7 @@
 
 </h:form>
 
-        <br/>
+<br/>
 <h:form>
     <rich:dataTable style="width: 100%" id="dataListResult" value="#{customerList.resultList}"
                     var="_customer" noDataLabel="#{messags.emptyResult}">
@@ -224,12 +224,21 @@
         <rich:column>
             <f:facet name="header"></f:facet>
 
-            <s:link view="/func/erp/sale/CustomerEdit.xhtml" propagation="begin">
-                <s:graphicImage value="/img/edit.png" title="#{messages.edit}"/>
-                <f:param name="customerId" value="#{_customer.id}"/>
-                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
-                <f:param name="readonly" value="false"/>
-            </s:link>
+            <a:commandButton image="/img/edit.png" title="#{messages.edit}" immediate="true"
+                             render="customerEditPanel_form,customerEditPanel_title"
+                             oncomplete="#{rich:component('customerEditPanel')}.show()">
+                <s:conversationPropagation type="begin"/>
+                <a:attachQueue requestDelay="0"/>
+                <a:param value="#{_customer_id}" assignTo="#{customerHome.id}"/>
+            </a:commandButton>
+
+            <a:commandButton image="/img/person_edit.png" title="#{messages.MiddleMan}"
+                             render="middleManEditPanel_form" immediate="true"
+                             oncomplete="#{rich:component('middleManEditPanel')}.show()">
+                <s:conversationPropagation type="begin"/>
+                <a:attachQueue requestDelay="0"/>
+                <a:param value="#{_customer_id}" assignTo="#{customerHome.id}"/>
+            </a:commandButton>
 
             <s:link view="/func/erp/sale/CustomerView.xhtml">
                 <s:graphicImage value="/img/view.png" title="#{messages.edit}"/>
@@ -240,6 +249,74 @@
 
     </rich:dataTable>
 </h:form>
+
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="customerEditPanel"/>
+    <ui:param name="panelTitle" value="#{customerHome.managed ? messages.edit : messages.add}#{messages.Customer}"/>
+    <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
+    <ui:define name="actionButtons">
+        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                         oncomplete="#{rich:component('customerEditPanel')}.hide();">
+            <s:conversationPropagation type="end"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.updateEnd}"
+                         rendered="#{customerHome.managed}"
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'updated'){#{rich:component('customerEditPanel')}.hide(); return true;} else return false;"
+                         render="customerEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.persistEnd}"
+                         rendered="#{not customerHome.managed}"
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'persisted'){#{rich:component('customerEditPanel')}.hide(); return true;} else return false;"
+                         render="customerEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+    </ui:define>
+</s:decorate>
+
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="middleManEditPanel"/>
+    <ui:param name="panelTitle" value="#{messages.MiddleMan}"/>
+
+    <s:span styleClass="small_name">
+        <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
+            <a:ajax event="click" render="middleManEditPanel_inputs"
+                    listener="#{customerHome.middleManPayChangeListener}"/>
+        </h:selectBooleanCheckbox>
+        #{messages.MiddleMan}
+    </s:span>
+
+    <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
+        <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+    </a:outputPanel>
+
+    <ui:define name="actionButtons">
+        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                         oncomplete="#{rich:component('middleManEditPanel')}.hide();">
+            <s:conversationPropagation type="end"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.updateEnd}"
+
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'updated'){#{rich:component('middleManEditPanel')}.hide(); return true;} else return false;"
+                         render="middleManEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+    </ui:define>
+</s:decorate>
 
 </ui:define>
 
