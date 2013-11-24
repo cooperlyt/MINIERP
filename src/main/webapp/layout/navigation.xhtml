@@ -8,44 +8,22 @@
 
 
     <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/messagetip.js"/>
-    <h:outputStylesheet>
-        .roleCategorSelectWidth input[type="text"]{
-            width: 120px;
-        }
-    </h:outputStylesheet>
 
-    <rich:panel rendered="#{identity.loggedIn}">
-        <h:form>
-            <a:push id="pushTask" address="pushPooledTaskChange">
-                <a:ajax event="dataavailable" render="taskOperLink"/>
-            </a:push>
-            <a:push id="pushOwnerTask" address="pushTaskChange">
-                <a:ajax event="dataavailable" render="taskOperLink"/>
-            </a:push>
-        </h:form>
+    <a:outputPanel rendered="#{identity.loggedIn}">
 
-        <li>
-            <s:link propagation="end" value="#{messages.createNewBusiness}"
-                    view="/func/system/business/start.xhtml" disabled="#{authInfo.loginEmployee.id eq 'root'}"/>
-        </li>
-        <li><s:link id="taskOperLink" propagation="end"
-                    view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceListener.taskInstanceCreateList.size}</strong>]#{messages.ownerTask}[<strong>#{ownerTaskInstanceListener.taskInstanceCreateList.size}</strong>]</s:link>
-        </li>
-
-        <h:form>
-            <rich:select value="#{authInfo.currRoleCategoryId}" styleClass="roleCategorSelectWidth"
-                         listWidth="140px">
+        <h:form styleClass="menuContainerTop">
+            <h:selectOneMenu value="#{authInfo.currRoleCategoryId}" style="width: 100%">
                 <s:selectItems value="#{authInfo.functionRoleList}" var="_roleCategory"
                                noSelectionLabel="#{messages.roleFilter}"
                                label="#{_roleCategory.name}" itemValue="#{_roleCategory.id}"/>
 
                 <a:ajax execute="@form" listener="#{authInfo.generateFuncCategorys}"
-                        event="selectitem" render="navigationMenuForm"/>
+                        event="valueChange" render="navigationMenuForm"/>
 
-            </rich:select>
+            </h:selectOneMenu>
         </h:form>
-    </rich:panel>
-    <br/>
+
+    </a:outputPanel>
     <f:subview id="navigation">
         <h:form id="navigationMenuForm">
             <rich:panelMenu activeItem="#{currentFunction.id}" rendered="#{identity.loggedIn}"

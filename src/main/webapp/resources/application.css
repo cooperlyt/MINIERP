@@ -1,92 +1,198 @@
-html {
-    height: 100%;
-    overflow:hidden;
-}
+
 
 body {
-    margin: 0;
-    padding: 0;
-    background: #94aebc url('#{facesContext.externalContext.requestContextPath}/img/body-bg.jpg') left bottom repeat;
-    font: normal 12px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
-    height: 100%;
-    overflow:hidden;
-    position:relative;
+    font-family: "Arial","Helvetica",sans-serif;
+
 }
 
-.wrapper { height:100%; overflow:scroll; overflow-x:hidden;}
 
 
-fieldset {
-    margin: 0;
-}
+.full-width { width:100%; }
+.text-center { text-align:center; }
 
-ul.layout {
-    list-style: none;
-}
-
-a {
-    outline: none;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-p {
-    margin: 0;
-    padding: 0 0 10px;
-}
-
-#page {
+.container {
+    width: 1020px;
     margin: 0 auto;
-    width: 987px;
 }
 
-#header {
-    background: url('#{facesContext.externalContext.requestContextPath}/img/header-bg.png') no-repeat top left;
-    height: 90px;
+.mid, .footer { text-align: left; }
+.mid ul { list-style: none outside none; }
+
+.mid  { padding-top: 18px; overflow:hidden; }
+
+.primary {
+    display: inline-block;
+    width: 775px;
 }
 
-#header .logo {
+.menu {
+    vertical-align: top;
+    display: inline-block;
+    margin-right: 10px;
+    width: 230px;
+    font-size: 10pt;
+}
+
+.menuContainer {
+    -moz-border-radius: 5px;
+    border-radius:5px;
+    background-color: #F1F1F1;
+    margin-bottom: 10px;
+    padding: 16px 19px;
+}
+.menuContainerTop {
+    border-bottom: 1px solid #DEDEDB;
+    color: #333333;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+}
+.menuContainer li a { line-height: 19px; }
+.menuContainer li span[disabled='true'] { line-height: 19px; text-decoration:line-through; margin:0; }
+.menu .selected { font-weight:bold; }
+
+
+
+.breadCrumbs, .themeSelect{
+    color: #ccc;
+    font-size: 12px;
+}
+.breadCrumbs{ float: left; }
+.themeSelect{ float: right; }
+
+
+
+.footer {
+    border-top: 1px solid #EAEAEA;
+    margin: 40px 0 10px;
+    padding: 8px 0 8px;
+    font-size: 11px;
+    color: #666666;
+}
+.footer p { float: left; }
+.footer ul.footer-nav { float: right; }
+.footer ul.footer-nav li { display: inline; padding: 0 6px; }
+
+
+/*HEADER STYLES BEGIN*/
+.header
+{
+    background: url('#{facesContext.externalContext.requestContextPath}/img/headerBlank.png') no-repeat;
+    background-color: transparent;
+    background-position: top center;
+    width: 100%;
+    height: 123px;
+}
+
+.headerCenter
+{
+    background-color: transparent;
+    width: 1020px;
+    height: 110px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.headerLogo
+{
+    overflow: hidden;
     float: left;
-    margin-left: 7px;
+    padding-top: 8px;
+}
+
+.headerTabs
+{
+    text-align: right;
+    overflow: hidden;
+    padding-top: 29px;
+}
+
+.linkTableStyle
+{
+    float:right;
+}
+.linksHolder
+{
+    display: inline-block;
+    background-color: transparent;
+}
+
+.aceSuiteLink
+{
+    margin-right: 0px;
+}
+
+.iceSuiteLink
+{
+    margin-right: 0px;
+}
+
+.suiteLinkImageStyle
+{
+    background-color: transparent;
+    border-style:  none;
+}
+
+
+.top_bar {
+
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background: url('#{facesContext.externalContext.requestContextPath}/img/loginbar.png') no-repeat;
+    background-origin: padding-box;
+    background-position: 0 0;
+    background-size: 595px 38px;
+    float: right;
+    height: 38px;
+    margin: 0 0 2px;
+    width: 610px;
+}
+
+.top_bar .func ul {
+    float: left;
+    margin: 0;
+    padding: 9px 0 0 29px;
+    width: 200px;
+}
+
+.top_bar li {
+    list-style: none;
+    float: left;
+    padding: 0 10px;
+    height: 15px;
+    line-height: 15px;
+    border-right: 1px solid #a6a6a6;
+    font-size: 11px;
+    color: #d1d3d4;
+    margin: 0;
+}
+
+.top_bar li.last {
+    border: 0;
+}
+
+.top_bar a {
+    color: #D1D3D4;
+    font-weight: 200;
+    letter-spacing: 0.8px;
     text-decoration: none;
 }
 
-#header .logo img {
-    border: none;
+.top_bar a:hover {
+    text-decoration: none;
+    color: #27AAE1;
 }
 
-#header .right-controls {
+.top_bar .task ul {
     float: right;
+    margin: 0;
+    padding: 9px 0 0 29px;
+    width: 300px;
 }
 
-#header ul.top-links {
-    margin: 5px 15px 0 0;
-    text-align: right;
-}
-
-#header ul.top-links li {
-    display: inline;
-    font-size: 11px;
-}
-
-#header ul.top-links li a {
-    background: url('#{facesContext.externalContext.requestContextPath}/img/sep.gif') center right no-repeat;
-    color: #fff;
-    padding: 0 8px 0 3px;
-    font: 11px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
-}
-
-#header ul.top-links li.last a {
-    background: none;
-    padding: 0 0 0 3px;
-}
-
-#header ul.top-links li.download-link a {
-    color: #eccb7b;
-}
+/*HEADER STYLES END*/
 
 #header ul#skin-menu {
     color: #89a0be;
@@ -148,45 +254,36 @@ p {
     text-decoration: none;
 }
 
-#page-content {
-    background: url('#{facesContext.externalContext.requestContextPath}/img/page-bg.png') 0 0 repeat-y;
-    height: 100%;
-    min-height: 520px;
-    padding: 13px 20px 13px;
-}
-
-#page-content .left-menu {
-    float: left;
-    margin-right: 10px;
-    min-height: 450px;
-    width: 180px;
-}
-
-#page-content .content-container {
-    float: right;
-    width: 755px;
-}
-
-#page-content .content-container fieldset.example-cnt {
-    background: #ffffff;
-    border: 1px solid #dddddd;
-    border-top: 0;
+fieldset {
     margin: 0;
-    min-height: 470px;
-    padding: 15px 20px 10px;
 }
+
+ul.layout {
+    list-style: none;
+}
+
+a {
+    outline: none;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+p {
+    margin: 0;
+    padding: 0 0 10px;
+}
+
+
 
 .clear {
     clear: both;
     height: 0%;
 }
 
-#footer {
-    background: url('#{facesContext.externalContext.requestContextPath}/img/footer.png') top left no-repeat;
-    color: #000000;
-    text-align: center;
-    padding: 15px 20px 10px;
-}
+
 
 .source, div.rf-log {
     width: 650px;
