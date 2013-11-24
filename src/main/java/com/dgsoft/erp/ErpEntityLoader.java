@@ -1,8 +1,11 @@
 package com.dgsoft.erp;
 
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.ui.JpaEntityLoader;
+
+import javax.persistence.EntityManager;
 
 import static org.jboss.seam.ScopeType.STATELESS;
 
@@ -20,5 +23,14 @@ public class ErpEntityLoader extends JpaEntityLoader {
     protected String getPersistenceContextName()
     {
         return "erpEntityManager";
+    }
+
+    @In
+    private EntityManager erpEntityManager;
+
+    @Override
+    public EntityManager getPersistenceContext(){
+
+        return erpEntityManager;
     }
 }

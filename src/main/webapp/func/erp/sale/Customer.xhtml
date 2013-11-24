@@ -229,15 +229,16 @@
                              oncomplete="#{rich:component('customerEditPanel')}.show()">
                 <s:conversationPropagation type="begin"/>
                 <a:attachQueue requestDelay="0"/>
-                <a:param value="#{_customer_id}" assignTo="#{customerHome.id}"/>
+                <a:param value="#{_customer.id}" assignTo="#{customerHome.id}"/>
             </a:commandButton>
 
             <a:commandButton image="/img/person_edit.png" title="#{messages.MiddleMan}"
+                             execute="@this,customerEditPanel_form"
                              render="middleManEditPanel_form" immediate="true"
                              oncomplete="#{rich:component('middleManEditPanel')}.show()">
                 <s:conversationPropagation type="begin"/>
                 <a:attachQueue requestDelay="0"/>
-                <a:param value="#{_customer_id}" assignTo="#{customerHome.id}"/>
+                <a:param value="#{_customer.id}" assignTo="#{customerHome.id}"/>
             </a:commandButton>
 
             <s:link view="/func/erp/sale/CustomerView.xhtml">
@@ -248,13 +249,20 @@
         </rich:column>
 
     </rich:dataTable>
+
+
+
+
 </h:form>
 
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="customerEditPanel"/>
     <ui:param name="panelTitle" value="#{customerHome.managed ? messages.edit : messages.add}#{messages.Customer}"/>
+
+
     <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
+
     <ui:define name="actionButtons">
         <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
                          oncomplete="#{rich:component('customerEditPanel')}.hide();">
@@ -280,6 +288,7 @@
         </a:commandButton>
 
     </ui:define>
+
 </s:decorate>
 
 

@@ -92,6 +92,8 @@ persistence-unit-name="house_owner"
 
     </bpm:jbpm>
 
+
+
     <!--
     <component name="persistenceContextValidator">
         <property name="entityManager">#{systemEntityManager}</property>
