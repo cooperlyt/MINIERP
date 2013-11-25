@@ -26,9 +26,12 @@
 
 
 <h:form>
-    <a:push id="pushPooledTaskCome" address="pushPooledTaskCome"
-            ondataavailable="startObjMessage('newTaskToast')"/>
-    <a:push id="pushOwnerTaskCome" address="pushTaskCome" ondataavailable="startObjMessage('newTaskToast')"/>
+    <a:push id="pushPooledTaskCome" address="pushPooledTaskCome" >
+        <a:ajax event="dataavailable" render="netTaskComeNotify"/>
+    </a:push>
+    <a:push id="pushOwnerTaskCome" address="pushTaskCome">
+        <a:ajax event="dataavailable" render="netTaskComeNotify"/>
+    </a:push>
 </h:form>
 
 <h:form>
@@ -85,6 +88,17 @@
 
 </rich:popupPanel>
 
+<a:outputPanel id="netTaskComeNotify">
+
+    <rich:notify stayTime="1500" sticky="false" nonblocking="false"
+                 nonblockingOpacity="0.5" showShadow="true"
+                 rendered="#{identity.loggedIn and (ownerTaskInstanceListener.haveNewTask or pooledTaskInstanceListener.haveNewTask)}"
+                 detail="test" showCloseButton="true" escape="false">
+        <f:facet name="summary">
+            Notification
+        </f:facet>
+    </rich:notify>
+</a:outputPanel>
 
 <h:panelGroup styleClass="header" layout="block">
 
@@ -101,36 +115,34 @@
                     <li class="first">
                         <s:link id="menuLoginId" view="/login.xhtml" value="#{messages.login}"
                                 rendered="#{not identity.loggedIn}" propagation="none"/>
-                        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout()}"
-                                value="#{authInfo.loginEmployee.person.name} #{messages.logout}"
-                                rendered="#{identity.loggedIn}" propagation="none"/>
-                    </li>
-                    <li class="last">
-                        <h:outputLink id="showchangePasslink" value="#">#{messages.changePassowrd}
-                            <rich:componentControl for="changePass"
-                                                   attachTo="showchangePasslink" operation="show"
-                                                   event="onclick"/>
-                        </h:outputLink>
+                        <s:link id="accountLink" view="/#" rendered="#{identity.loggedIn}"
+                                value="#{messages.Welcome}#{' '}#{authInfo.loginEmployee.person.name}"/>
 
+                    </li>
+
+                    <li class="last">
+                        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout()}"
+                                value="#{messages.logout}"
+                                rendered="#{identity.loggedIn}" propagation="none"/>
                     </li>
 
                 </ul>
 
             </div>
 
-            <div class="task">
+            <s:div rendered="#{identity.loggedIn}" styleClass="task">
                 <ul>
                     <li class="first">
-                        <s:link propagation="end" value="#{messages.createNewBusiness}" rendered="#{identity.loggedIn}"
+                        <s:link propagation="end" value="#{messages.createNewBusiness}"
                                 view="/func/system/business/start.xhtml"
                                 disabled="#{authInfo.loginEmployee.id eq 'root'}"/>
                     </li>
-                    <li class="last"><s:link id="taskOperLink" propagation="end" rendered="#{identity.loggedIn}"
+                    <li class="last"><s:link id="taskOperLink" propagation="end"
                                              view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceListener.taskInstanceCreateList.size}</strong>]#{messages.ownerTask}[<strong>#{ownerTaskInstanceListener.taskInstanceCreateList.size}</strong>]</s:link>
                     </li>
 
                 </ul>
-            </div>
+            </s:div>
 
         </h:panelGroup>
 

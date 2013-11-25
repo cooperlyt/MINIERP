@@ -48,6 +48,16 @@ body {
     margin-bottom: 8px;
     padding-bottom: 8px;
 }
+
+.menuContainer h2 {
+    border-bottom: 1px solid #DEDEDB;
+    color: #333333;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+}
+
 .menuContainer li a { line-height: 19px; }
 .menuContainer li span[disabled='true'] { line-height: 19px; text-decoration:line-through; margin:0; }
 .menu .selected { font-weight:bold; }
@@ -154,7 +164,7 @@ body {
     float: left;
     margin: 0;
     padding: 9px 0 0 29px;
-    width: 200px;
+    width: 240px;
 }
 
 .top_bar li {

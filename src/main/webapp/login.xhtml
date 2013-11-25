@@ -14,7 +14,7 @@
                     errorClass="errormsg" infoClass="infomsg" warnClass="warnmsg"
                     rendered="#{showGlobalMessages != 'false'}"/>
 
-        <h1>Welcome ! Please login here</h1>
+        <h1>#{messages.Welcome} ! #{messages.PleaseLoginHere}</h1>
         <rich:panel>
             <h:panelGrid columns="2">
                 <h:graphicImage style="padding-left: 20px; padding-right: 20px" width="190px" height="190px" value="/img/seamlogo.png" alt="Seam logo"/>
@@ -27,9 +27,7 @@
                             <h:outputLabel for="password">#{messages.login_password}</h:outputLabel>
                             <h:inputSecret id="password"
                                            value="#{credentials.password}"/>
-                            <h:outputLabel for="rememberMe">Remember me</h:outputLabel>
-                            <h:selectBooleanCheckbox id="rememberMe"
-                                                     value="#{rememberMe.enabled}"/>
+
                         </h:panelGrid>
                     </div>
                     <div class="actionButtons">

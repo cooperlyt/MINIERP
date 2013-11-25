@@ -110,6 +110,10 @@ public abstract class TaskInstanceListener {
         return newTaskIds.contains(taskId);
     }
 
+    public boolean isHaveNewTask(){
+        return !newTaskIds.isEmpty();
+    }
+
     public void checkTask() {
         log.debug("-------check Task:" + this);
         compareTaskInstances();
