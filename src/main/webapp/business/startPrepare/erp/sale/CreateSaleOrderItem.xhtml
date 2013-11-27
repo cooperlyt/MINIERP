@@ -156,8 +156,11 @@
                         <rich:placeholder value="#{messages.OrderCode}"/>
                     </h:inputText>
 
+
                     <s:button value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
+
+                    <a:commandButton onclick="popPrintPage('#{facesContext.externalContext.requestContextPath}','report/salePage.rptdesign')"/>
 
                     <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
                 </h:panelGroup>

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <data-sources>
+        <script-data-source name="Data Source" id="9">
+            <method name="open"><![CDATA[importPackage(Packages.org.apache.commons.logging);
+importPackage(Packages.org.jboss.seam);  
+orderItems = Component.getInstance("orderCreate", false).getOrderNeedItems();
+]]></method>
+        </script-data-source>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="Data Set" id="10">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">PRICE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">TOTAL_PRICE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">UNIT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">PRICE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">TOTAL_PRICE</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">PRICE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">TOTAL_PRICE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[i=0;]]></method>
+            <method name="fetch"><![CDATA[if (i < orderItems.size()){
+	item = orderItems.get(i)
+	if (item.isStoreResItem()){
+		row['NAME'] = item.getStoreRes().getRes().getName();
+	}else{
+		row['NAME'] = item.getRes().getName();
+	}
+    row['COUNT'] = item.getCount();
+    row['UNIT']= item.getUseUnit().getName();
+    row['TOTAL_PRICE'] = item.getTotalPrice();
+	i++;
+
+	return true;
+}else{
+	return false;
+}]]></method>
+        </script-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="销售单" id="2">
+            <property name="type">custom</property>
+            <property name="orientation">portrait</property>
+            <property name="topMargin">0.25in</property>
+            <property name="leftMargin">0in</property>
+            <property name="bottomMargin">0in</property>
+            <property name="rightMargin">0in</property>
+            <property name="height">11in</property>
+            <property name="width">58mm</property>
+            <property name="headerHeight">0.5in</property>
+            <property name="footerHeight">0in</property>
+            <page-header>
+                <text id="8">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<H1>
+销售单
+</H1>
+<br/>
+<H6>
+<value-of>new Date()</value-of>
+</H6>]]></text-property>
+                </text>
+            </page-header>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="11">
+            <property name="dataSet">Data Set</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">NAME</property>
+                    <text-property name="displayName">NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">COUNT</property>
+                    <text-property name="displayName">COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">UNIT</property>
+                    <text-property name="displayName">UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">TOTAL_PRICE</property>
+                    <text-property name="displayName">TOTAL_PRICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["TOTAL_PRICE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <column id="35"/>
+            <column id="36"/>
+            <column id="37"/>
+            <column id="38"/>
+            <header>
+                <row id="12">
+                    <cell id="13">
+                        <label id="14">
+                            <text-property name="text">NAME</text-property>
+                        </label>
+                    </cell>
+                    <cell id="15">
+                        <label id="16">
+                            <text-property name="text">COUNT</text-property>
+                        </label>
+                    </cell>
+                    <cell id="17">
+                        <label id="18">
+                            <text-property name="text">UNIT</text-property>
+                        </label>
+                    </cell>
+                    <cell id="19">
+                        <label id="20">
+                            <text-property name="text">TOTAL_PRICE</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="21">
+                    <cell id="22">
+                        <data id="23">
+                            <property name="resultSetColumn">NAME</property>
+                        </data>
+                    </cell>
+                    <cell id="24">
+                        <data id="25">
+                            <property name="resultSetColumn">COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="26">
+                        <data id="27">
+                            <property name="resultSetColumn">UNIT</property>
+                        </data>
+                    </cell>
+                    <cell id="28">
+                        <data id="29">
+                            <property name="resultSetColumn">TOTAL_PRICE</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="30">
+                    <cell id="31"/>
+                    <cell id="32"/>
+                    <cell id="33"/>
+                    <cell id="34"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

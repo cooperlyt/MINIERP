@@ -39,7 +39,7 @@
 
     <web:ajax4jsf-filter force-parser="true" enable-cache="false" url-pattern="*.seam"/>
 
-
+    <web:context-filter regex-url-pattern="/frameset.*|/document.*|/download.*|/parameter.*|/extract.*|/run.*|/preview.*|/output.*|/embed.*"/>
     <!-- If you are still using JBoss 4, uncomment this to have your PU started -->
     <!-- <persistence:entity-manager-factory name="entityManagerFactory"
 persistence-unit-name="house_owner"

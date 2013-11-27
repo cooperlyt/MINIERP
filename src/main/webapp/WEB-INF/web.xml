@@ -364,6 +364,6 @@
             <taglib-location>/WEB-INF/tlds/birt.tld</taglib-location>
         </taglib>
     </jsp-config>
-</web-app>
+
 
 </web-app>

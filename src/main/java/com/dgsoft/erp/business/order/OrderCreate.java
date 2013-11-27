@@ -76,6 +76,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     private OrderNeedItem editingItem;
 
+    public List<OrderNeedItem> getOrderNeedItems() {
+        return orderNeedItems;
+    }
+
     public OrderNeedItem getEditingItem() {
         return editingItem;
     }
