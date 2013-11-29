@@ -160,7 +160,7 @@
                     <s:button value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
-                    <a:commandButton onclick="popPrintPage('#{facesContext.externalContext.requestContextPath}','report/salePage.rptdesign')"/>
+                    <s:button value="print" view="/reportpage/orderPaper.xhtml"/>
 
                     <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
                 </h:panelGroup>

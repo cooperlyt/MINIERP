@@ -61,6 +61,12 @@
             </snapshots>
         </repository>
 
+
+        <repository>
+            <id>in-project</id>
+            <name>In Project Repo</name>
+            <url>file://${project.basedir}/lib</url>
+        </repository>
     </repositories>
 
     <developers>
@@ -268,6 +274,19 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>local.birt</groupId>
+            <artifactId>servlet</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>local.birt</groupId>
+            <artifactId>jbossseambirt</artifactId>
+            <version>1.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.eclipse.birt.runtime</groupId>

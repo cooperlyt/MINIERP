@@ -365,5 +365,14 @@
         </taglib>
     </jsp-config>
 
+    <servlet>
+        <servlet-name>JBoss BIRT Servlet</servlet-name>
+        <servlet-class>org.jboss.tools.birt.servlet.JBossBirtServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JBoss BIRT Servlet</servlet-name>
+        <url-pattern>/embed</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>

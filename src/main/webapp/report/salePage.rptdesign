@@ -5,6 +5,21 @@
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="aa" id="39">
+            <text-property name="helpText">Help text</text-property>
+            <text-property name="promptText">dfadaf</text-property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
     <data-sources>
         <script-data-source name="Data Source" id="9">
             <method name="open"><![CDATA[importPackage(Packages.org.apache.commons.logging);
@@ -98,7 +113,8 @@ orderItems = Component.getInstance("orderCreate", false).getOrderNeedItems();
 		row['NAME'] = item.getRes().getName();
 	}
     row['COUNT'] = item.getCount();
-    row['UNIT']= item.getUseUnit().getName();
+    row['UNIT'] = item.getUseUnit().getName();
+    row['UNIT'] = params["aa"];
     row['TOTAL_PRICE'] = item.getTotalPrice();
 	i++;
 
