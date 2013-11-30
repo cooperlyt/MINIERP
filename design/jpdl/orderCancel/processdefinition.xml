@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns=""  name="orderCancel">
+
+
+	<start-state name="取消定单">
+		<transition to="审核"></transition>
+	</start-state>
+
+
+	<decision name="定单状态判断">
+		<transition to="fork1" name="同时退款退货"></transition>
+		<transition to="退款" name="仅退款"></transition>
+		<transition to="end-state1" name="驳回申请"></transition>
+		<transition to="退货入库" name="仅退货"></transition>
+	</decision>
+
+	<task-node name="审核">
+		<transition to="定单状态判断"></transition>
+	</task-node>
+
+	<task-node name="退货入库">
+		<transition to="退货完成"></transition>
+	</task-node>
+
+	<task-node name="退款">
+		<transition to="退款完成"></transition>
+	</task-node>
+
+	<fork name="fork1">
+		<transition to="退款" name="退款"></transition>
+		<transition to="退货入库" name="退货"></transition>
+	</fork>
+
+	<join name="join1">
+		<transition to="end-state1" name="完成"></transition>
+	</join>
+
+	<decision name="退款完成">
+		<transition to="join1"></transition>
+		<transition to="end-state1" name="结束仅退款"></transition>
+	</decision>
+
+	<decision name="退货完成">
+		<transition to="join1"></transition>
+		<transition to="end-state1" name="结束仅退货"></transition>
+	</decision>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>

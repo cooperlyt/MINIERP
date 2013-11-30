@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root-container name="stockChange" width="942" height="410">
+  <node name="库存更改申请" x="96" y="45" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="审核" x="95" y="106" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="end-state1" x="98" y="169" width="132" height="36"/>
+</root-container>

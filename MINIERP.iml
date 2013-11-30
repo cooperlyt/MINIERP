@@ -51,6 +51,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: local.birt:servlet:1.0" level="project" />
     <orderEntry type="library" name="Maven: local.birt:jbossseambirt:1.0" level="project" />
+    <orderEntry type="library" name="Maven: local.birt:servlet:1.0" level="project" />
+    <orderEntry type="library" name="Maven: local.birt:jbossseambirt:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.birt.runtime:viewservlets:4.3.1" level="project" />
     <orderEntry type="library" name="Maven: commons-discovery:commons-discovery:0.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />

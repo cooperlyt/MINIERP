@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root-container name="order" width="910" height="730">
+  <node name="生成订单" x="43" y="15" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="订单出库(1库)" x="298" y="443" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="订单收款" x="501" y="81" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="客户收货确认" x="500" y="327" width="132" height="36">
+    <edge>
+      <label x="-18" y="-4"/>
+    </edge>
+  </node>
+  <node name="订单出库(2库)" x="131" y="560" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="订单出库(天津)" x="45" y="693" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="发货确认" x="684" y="486" width="132" height="36">
+    <edge>
+      <label x="-35" y="7"/>
+    </edge>
+    <edge>
+      <label x="-22" y="38"/>
+    </edge>
+    <edge>
+      <label x="-53" y="-16"/>
+    </edge>
+  </node>
+  <node name="join2" x="649" y="169" width="109" height="24">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="join3" x="676" y="628" width="142" height="24">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="fork2" x="54" y="394" width="109" height="24">
+    <edge>
+      <label x="-48" y="9"/>
+    </edge>
+    <edge>
+      <label x="-19" y="-13"/>
+    </edge>
+    <edge>
+      <label x="-69" y="-94"/>
+    </edge>
+  </node>
+  <node name="出库确认(1库)" x="299" y="360" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+    <edge>
+      <label x="-40" y="-11"/>
+    </edge>
+  </node>
+  <node name="订单调度" x="43" y="248" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="出库确认(2库)" x="131" y="465" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="出库确认(天津)" x="43" y="622" width="132" height="36">
+    <edge>
+      <label x="6" y="-15"/>
+    </edge>
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="出库完成(1库)" x="463" y="446" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="出库完成(2库)" x="310" y="561" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="出库完成(天津)" x="213" y="693" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="发货完成" x="637" y="327" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="fork1" x="274" y="311" width="90" height="24">
+    <edge>
+      <label x="-118" y="63"/>
+    </edge>
+    <edge>
+      <label x="33" y="-25"/>
+    </edge>
+  </node>
+  <node name="付款方式" x="44" y="82" width="132" height="36">
+    <edge>
+      <label x="-52" y="-22"/>
+    </edge>
+    <edge>
+      <label x="-35" y="-55"/>
+    </edge>
+    <edge>
+      <label x="-29" y="-13"/>
+    </edge>
+  </node>
+  <node name="付款确认" x="43" y="305" width="132" height="36">
+    <edge>
+      <label x="-64" y="-15"/>
+    </edge>
+    <edge>
+      <label x="-45" y="-21"/>
+    </edge>
+  </node>
+  <node name="收货确认" x="501" y="248" width="132" height="36">
+    <edge>
+      <label x="-29" y="-15"/>
+    </edge>
+    <edge>
+      <label x="-53" y="-25"/>
+    </edge>
+    <edge>
+      <label x="-10" y="40"/>
+    </edge>
+  </node>
+  <node name="发货判断" x="275" y="164" width="132" height="36">
+    <edge>
+      <label x="-110" y="-16"/>
+    </edge>
+    <edge>
+      <label x="5" y="-17"/>
+    </edge>
+    <edge>
+      <label x="-177" y="-25"/>
+    </edge>
+  </node>
+  <node name="订金收款" x="131" y="164" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="订单完成" x="777" y="247" width="132" height="36"/>
+</root-container>

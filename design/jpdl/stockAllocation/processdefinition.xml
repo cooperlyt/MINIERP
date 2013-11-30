@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns=""  name="stockAllocation">
+
+
+	<start-state name="调拨申请">
+		<transition to="调拨出库"></transition>
+	</start-state>
+
+
+	<task-node name="调拨出库">
+		<transition to="出库判断"></transition>
+	</task-node>
+
+	<task-node name="调拨入库">
+		<transition to="end-state1"></transition>
+	</task-node>
+
+	<decision name="出库判断">
+		<transition to="end-state1" name="取消调拨"></transition>
+		<transition to="调拨入库" name="调拨已出库"></transition>
+	</decision>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>

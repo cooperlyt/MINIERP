@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns=""  name="order">
+
+
+	<start-state name="生成订单">
+		<transition to="付款方式"></transition>
+	</start-state>
+
+
+	<task-node name="订单出库(1库)">
+		<task name="订单出库(1库)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
+		</task>
+		<transition to="出库完成(1库)"></transition>
+	</task-node>
+
+	<task-node name="订单收款">
+		<task name="订单收款">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceivablesOfOrder.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.finance.cashier"></assignment>
+		</task>
+		<transition to="发货判断"></transition>
+	</task-node>
+
+	<task-node name="客户收货确认">
+		<task name="客户收货确认">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/OrderCommodityConfirm.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
+		</task>
+		<event type="process-start">
+			<mail actors=""></mail>
+		</event>
+		<transition to="收货确认"></transition>
+	</task-node>
+
+	<task-node name="订单出库(2库)">
+		<task name="订单出库(2库)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
+		</task>
+		<transition to="出库完成(2库)"></transition>
+	</task-node>
+
+	<task-node name="订单出库(天津)">
+		<task name="订单出库(天津)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('C')}"></assignment>
+		</task>
+		<transition to="出库完成(天津)"></transition>
+	</task-node>
+
+	<decision name="发货确认">
+		<transition to="客户收货确认" name="非自提">
+			<condition expression="#{(not orderHome.masterNeedRes.allCustomerSelfTake)}"></condition>
+		</transition>
+		<transition to="订单完成" name="已付款自提">
+			<condition expression="#{orderHome.lastNeedRes.allCustomerSelfTake  and (orderHome.instance.payType eq 'PAY_FIRST') }"></condition>
+		</transition>
+		<transition to="发货完成" name="未(欠)付款自提">
+			<condition expression="#{orderHome.lastNeedRes.allCustomerSelfTake  and (not (orderHome.instance.payType eq 'PAY_FIRST')) }"></condition>
+		</transition>
+	</decision>
+
+	<join name="join2">
+		<transition to="订单完成"></transition>
+	</join>
+
+	<join name="join3">
+		<transition to="发货确认"></transition>
+	</join>
+
+	<fork name="fork2">
+		<transition to="出库确认(1库)" name="出库(1库)"></transition>
+		<transition to="出库确认(2库)" name="出库(2库)"></transition>
+		<transition to="出库确认(天津)" name="出库(天冿)"></transition>
+	</fork>
+
+	<decision name="出库确认(1库)">
+		<transition to="出库完成(1库)">
+			<condition expression="#{not needResHome.needStoreOut('A')}"></condition>
+		</transition>
+		<transition to="订单出库(1库)" name="出库">
+			<condition expression="#{needResHome.needStoreOut('A')}"></condition>
+		</transition>
+	</decision>
+
+	<task-node name="订单调度">
+		<task name="订单调度">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleDispatch.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.storage.dispatch"></assignment>
+		</task>
+		<transition to="付款确认"></transition>
+	</task-node>
+
+	<decision name="出库确认(2库)">
+		<transition to="订单出库(2库)" name="出库">
+			<condition expression="#{needResHome.needStoreOut('B')}"></condition>
+		</transition>
+		<transition to="出库完成(2库)">
+			<condition expression="#{not needResHome.needStoreOut('B')}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="出库确认(天津)">
+		<transition to="订单出库(天津)" name="出库">
+			<condition expression="#{needResHome.needStoreOut('C')}"></condition>
+		</transition>
+		<transition to="出库完成(天津)">
+			<condition expression="#{not needResHome.needStoreOut('C')}"></condition>
+		</transition>
+	</decision>
+
+	<node name="出库完成(1库)">
+		<transition to="join3"></transition>
+	</node>
+
+	<node name="出库完成(2库)">
+		<transition to="join3"></transition>
+	</node>
+
+	<node name="出库完成(天津)">
+		<transition to="join3"></transition>
+	</node>
+
+	<node name="发货完成">
+		<transition to="join2"></transition>
+	</node>
+
+	<fork name="fork1">
+		<transition to="订单收款" name="收款"></transition>
+		<transition to="fork2" name="出库"></transition>
+	</fork>
+
+	<decision name="付款方式">
+		<transition to="订单收款" name="款到发货">
+			<condition expression="#{orderHome.instance.payType eq 'PAY_FIRST'}"></condition>
+		</transition>
+		<transition to="订单调度" name="先货">
+			<condition expression="#{not (orderHome.instance.payType eq 'PAY_FIRST') and (not orderHome.instance.earnestFirst)}"></condition>
+		</transition>
+		<transition to="订金收款" name="订金发货">
+			<condition expression="#{not (orderHome.instance.payType eq 'PAY_FIRST') and (orderHome.instance.earnestFirst)}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="付款确认">
+		<transition to="fork2" name="补发/已付款/代办货款">
+			<condition expression="#{(needResHome.instance.type eq 'SUPPLEMENT_SEND' ) or (orderHome.instance.payType eq 'PAY_FIRST') or (orderHome.instance.payType eq 'EXPRESS_PROXY') }"></condition>
+		</transition>
+		<transition to="fork1" name="未(欠)付款">
+			<condition expression="#{ not ((needResHome.instance.type eq 'SUPPLEMENT_SEND' ) or (orderHome.instance.payType eq 'PAY_FIRST') or (orderHome.instance.payType eq 'EXPRESS_PROXY') )}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="收货确认">
+		<transition to="发货完成" name="未(欠)付款">
+			<condition expression="#{ orderConfirmed  and  ( (not (orderHome.instance.payType eq 'PAY_FIRST')   and not (orderHome.instance.payType eq 'EXPRESS_PROXY')) or ((orderHome.instance.payType eq 'EXPRESS_PROXY') and ( not (orderHome.lastNeedRes.type eq 'ORDER_SEND') ) ) )}"></condition>
+		</transition>
+		<transition to="订单完成" name="已付款">
+			<condition expression="#{ orderConfirmed  and (orderHome.instance.payType eq 'PAY_FIRST')}"></condition>
+		</transition>
+		<transition to="订单收款" name="代办货款">
+			<condition expression="#{ orderConfirmed  and (orderHome.instance.payType eq 'EXPRESS_PROXY') and (orderHome.lastNeedRes.type eq 'ORDER_SEND')}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="发货判断">
+		<transition to="join2" name="已发货">
+			<condition expression="#{not (orderHome.instance.payType eq 'PAY_FIRST') and not ((orderHome.instance.payType eq 'EXPRESS_PROXY')  and (orderHome.lastNeedRes.type eq 'ORDER_SEND' )) }"></condition>
+		</transition>
+		<transition to="订单调度" name="未发货">
+			<condition expression="#{orderHome.instance.payType eq 'PAY_FIRST' }"></condition>
+		</transition>
+		<transition to="订单完成" name="代收货款">
+			<condition expression="#{(orderHome.instance.payType eq 'EXPRESS_PROXY')  and (orderHome.lastNeedRes.type eq 'ORDER_SEND' )}"></condition>
+		</transition>
+	</decision>
+
+	<task-node name="订金收款">
+		<task name="订金收款">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceiveOrderEarnest.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.finance.cashier"></assignment>
+		</task>
+		<transition to="订单调度"></transition>
+	</task-node>
+
+
+	<end-state name="订单完成"></end-state>
+
+
+</process-definition>

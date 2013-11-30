@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root-container name="orderCancel" width="804" height="410">
+  <node name="取消定单" x="23" y="7" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="定单状态判断" x="24" y="226" width="132" height="36">
+    <edge>
+      <label x="-48" y="-20"/>
+    </edge>
+    <edge>
+      <label x="-26" y="-12"/>
+    </edge>
+    <edge>
+      <label x="-182" y="23"/>
+    </edge>
+    <edge>
+      <label x="-16" y="-12"/>
+    </edge>
+  </node>
+  <node name="审核" x="23" y="102" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="退货入库" x="335" y="148" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="退款" x="339" y="300" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="end-state1" x="571" y="7" width="132" height="36"/>
+  <node name="fork1" x="270" y="230" width="109" height="24">
+    <edge>
+      <label x="-18" y="-14"/>
+    </edge>
+    <edge>
+      <label x="-12" y="-11"/>
+    </edge>
+  </node>
+  <node name="join1" x="582" y="220" width="110" height="24">
+    <edge>
+      <label x="0" y="59"/>
+    </edge>
+  </node>
+  <node name="退款完成" x="671" y="300" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+    <edge>
+      <label x="39" y="88"/>
+    </edge>
+  </node>
+  <node name="退货完成" x="488" y="146" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+    <edge>
+      <label x="-83" y="11"/>
+    </edge>
+  </node>
+</root-container>
