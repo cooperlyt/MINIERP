@@ -37,16 +37,9 @@ public class StockChange implements java.io.Serializable {
             return resTypes;
         }
 
-        public void setResTypes(EnumSet<ResCategory.ResType> resTypes) {
-            this.resTypes = resTypes;
-        }
 
         public boolean isOut() {
             return out;
-        }
-
-        public void setOut(boolean out) {
-            this.out = out;
         }
 
         private StoreChangeType(EnumSet<ResCategory.ResType> resTypes, boolean out){
@@ -61,6 +54,7 @@ public class StockChange implements java.io.Serializable {
     private String operEmp;
     private StoreChangeType operType;
     private String memo;
+    private boolean verify;
 
     private Inventory inventoryAdd;
     private Inventory inventoryLoss;
@@ -81,7 +75,7 @@ public class StockChange implements java.io.Serializable {
     private Dispatch orderDispatch;
 
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
-
+    private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
 
     public StockChange() {
     }
@@ -111,6 +105,15 @@ public class StockChange implements java.io.Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Column(name="VERIFY",nullable = false)
+    public boolean isVerify() {
+        return verify;
+    }
+
+    public void setVerify(boolean verify) {
+        this.verify = verify;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -185,6 +188,15 @@ public class StockChange implements java.io.Serializable {
 
     public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
         this.stockChangeItems = stockChangeItems;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange", orphanRemoval = true, cascade = {CascadeType.ALL})
+    public Set<PrepareStockChange> getPrepareStockChanges() {
+        return prepareStockChanges;
+    }
+
+    public void setPrepareStockChanges(Set<PrepareStockChange> prepareStockChanges) {
+        this.prepareStockChanges = prepareStockChanges;
     }
 
     @Transient

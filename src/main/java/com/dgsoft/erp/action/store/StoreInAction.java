@@ -59,93 +59,37 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
 
 
     @Override
-    protected String storeChange() {
+    protected String storeChange(boolean verify) {
 
         boolean haveItem = false;
         for (StoreInItem storeInItem : storeInItems) {
 
-            if (storeInItem.getStoreResCountInupt().getMasterCount().floatValue() == 0){
+            if (storeInItem.getStoreResCountInupt().getMasterCount().compareTo(BigDecimal.ZERO) == 0) {
 
                 continue;
             }
 
-            if (storeInItem.getStoreRes() == null){
+            if (storeInItem.getStoreRes() == null) {
                 storeResHome.setRes(storeInItem.getRes(), storeInItem.getFormats(), storeInItem.getStoreResCountInupt().getFloatConvertRate());
-            }else{
+            } else {
                 storeResHome.setId(storeInItem.getStoreRes().getId());
             }
-            StockChangeItem stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
-                    storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount(), false);
-            stockChangeItem.setNoConvertCounts(storeInItem.getStoreResCountInupt().getNoConvertCounts(stockChangeItem));
 
-
-            if (storeResHome.isIdDefined()) {
-                Stock stock = storeResHome.getStock(stockChangeHome.getInstance().getStore());
-                if (stock != null) {
-                    stockChangeItem.setStock(stock);
-                    stockChangeItem.setBefortCount(stockChangeItem.getStock().getCount());
-                    stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
-                    stockChangeItem.setAfterCount(stockChangeItem.getStock().getCount());
-                }
-            } else {
+            if (!storeResHome.isIdDefined()) {
                 storeResHome.getInstance().setCode(storeInItem.getStoreResCode());
             }
-            if (stockChangeItem.getStock() == null) {
-                stockChangeItem.setStock(new Stock(storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount()));
-                stockChangeItem.setBefortCount(new BigDecimal(0));
-                stockChangeItem.setAfterCount(storeInItem.getStoreResCountInupt().getMasterCount());
-            }
-            stockChangeItem.getStock().setStore(stockChangeHome.getInstance().getStore());
 
-            if (storeInItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
-                for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
-                    boolean added = false;
-                    for (NoConvertCount stockCount : stockChangeItem.getStock().getNoConvertCounts()) {
-                        if (stockCount.getResUnit().equals(noConvertCount.getResUnit())) {
-                            stockCount.setCount(stockCount.getCount().add(noConvertCount.getCount()));
-                            added = true;
-                            break;
-                        }
-                    }
-                    if (!added) {
-                        stockChangeItem.getStock().getNoConvertCounts().add(new NoConvertCount(stockChangeItem.getStock(), noConvertCount.getResUnit(), noConvertCount.getCount()));
-                    }
-                }
-            }
-
-            Batch batch = storeInItem.getBatch();
-            if (batch == null) {
-                for (BatchStoreCount batchStoreCount : stockChangeItem.getStock().getBatchStoreCounts()) {
-                    if (batchStoreCount.getBatch().isDefaultBatch()) {
-                        batch = batchStoreCount.getBatch();
-                        break;
-                    }
-                }
-
-            }
-            if (batch == null) {
-                batch = new Batch(UUID.randomUUID().toString().replace("-", ""), storeInItem.getRes(), true, false, true, stockChangeHome.getInstance().getOperDate());
-            }
-
-            if (batch.getBatchStoreCount() == null) {
-                batch.setBatchStoreCount(new BatchStoreCount(batch, stockChangeItem.getStock(), storeInItem.getStoreResCountInupt().getMasterCount()));
-                batch.getBatchStoreCount().setBatch(batch);
-                stockChangeItem.getStock().getBatchStoreCounts().add(batch.getBatchStoreCount());
+            if (verify) {
+                storeInNow(storeInItem);
             } else {
-                batch.getBatchStoreCount().setCount(batch.getBatchStoreCount().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
+                prepareStoreIn(storeInItem);
             }
 
-            batch.getStockChangeItems().add(stockChangeItem);
-            stockChangeItem.setBatch(batch);
 
-
-            //stockChangeItem.getStock().getBatchStoreCounts()
-
-            stockChangeHome.getInstance().getStockChangeItems().add(stockChangeItem);
             haveItem = true;
         }
-        if (!haveItem){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeInNotItem");
+        if (!haveItem) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeInNotItem");
             return null;
         }
         getInstance().setStockChange(stockChangeHome.getInstance());
@@ -154,14 +98,96 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         return storeIn();
     }
 
+    private void prepareStoreIn(StoreInItem storeInItem) {
+        PrepareStockChange prepareStockChange = new PrepareStockChange(stockChangeHome.getInstance(),
+                storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount());
+        prepareStockChange.setNoConvertCounts(storeInItem.getStoreResCountInupt().getNoConvertCounts());
+        for (NoConvertCount noConvertCount : prepareStockChange.getNoConvertCounts()) {
+            noConvertCount.setPrepareStockChange(prepareStockChange);
+        }
+        stockChangeHome.getInstance().getPrepareStockChanges().add(prepareStockChange);
 
-    @Observer(value = "erp.resLocateSelected",create = false)
+    }
+
+    private void storeInNow(StoreInItem storeInItem) {
+        StockChangeItem stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
+                storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount(), false);
+        stockChangeItem.setNoConvertCounts(storeInItem.getStoreResCountInupt().getNoConvertCounts());
+        for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
+            noConvertCount.setStockChangeItem(stockChangeItem);
+        }
+
+        if (storeResHome.isIdDefined()) {
+            Stock stock = storeResHome.getStock(stockChangeHome.getInstance().getStore());
+            if (stock != null) {
+                stockChangeItem.setStock(stock);
+                stockChangeItem.setBefortCount(stockChangeItem.getStock().getCount());
+                stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
+                stockChangeItem.setAfterCount(stockChangeItem.getStock().getCount());
+            }
+        }
+        if (stockChangeItem.getStock() == null) {
+            stockChangeItem.setStock(new Stock(storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount()));
+            stockChangeItem.setBefortCount(new BigDecimal(0));
+            stockChangeItem.setAfterCount(storeInItem.getStoreResCountInupt().getMasterCount());
+        }
+        stockChangeItem.getStock().setStore(stockChangeHome.getInstance().getStore());
+
+        if (storeInItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
+            for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
+                boolean added = false;
+                for (NoConvertCount stockCount : stockChangeItem.getStock().getNoConvertCounts()) {
+                    if (stockCount.getResUnit().equals(noConvertCount.getResUnit())) {
+                        stockCount.setCount(stockCount.getCount().add(noConvertCount.getCount()));
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    stockChangeItem.getStock().getNoConvertCounts().add(new NoConvertCount(stockChangeItem.getStock(), noConvertCount.getResUnit(), noConvertCount.getCount()));
+                }
+            }
+        }
+
+        Batch batch = storeInItem.getBatch();
+        if (batch == null) {
+            for (BatchStoreCount batchStoreCount : stockChangeItem.getStock().getBatchStoreCounts()) {
+                if (batchStoreCount.getBatch().isDefaultBatch()) {
+                    batch = batchStoreCount.getBatch();
+                    break;
+                }
+            }
+
+        }
+        if (batch == null) {
+            batch = new Batch(UUID.randomUUID().toString().replace("-", ""), storeInItem.getRes(), true, false, true, stockChangeHome.getInstance().getOperDate());
+        }
+
+        if (batch.getBatchStoreCount() == null) {
+            batch.setBatchStoreCount(new BatchStoreCount(batch, stockChangeItem.getStock(), storeInItem.getStoreResCountInupt().getMasterCount()));
+            batch.getBatchStoreCount().setBatch(batch);
+            stockChangeItem.getStock().getBatchStoreCounts().add(batch.getBatchStoreCount());
+        } else {
+            batch.getBatchStoreCount().setCount(batch.getBatchStoreCount().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
+        }
+
+        batch.getStockChangeItems().add(stockChangeItem);
+        stockChangeItem.setBatch(batch);
+
+
+        //stockChangeItem.getStock().getBatchStoreCounts()
+
+        stockChangeHome.getInstance().getStockChangeItems().add(stockChangeItem);
+    }
+
+
+    @Observer(value = "erp.resLocateSelected", create = false)
     public void generateStoreInItemByRes(Res res) {
         editingItem = new StoreInItem(res);
         addItemLastState = "";
     }
 
-    @Observer(value = "erp.storeResLocateSelected",create = false)
+    @Observer(value = "erp.storeResLocateSelected", create = false)
     public void generateStoreInItemByStoreRes(StoreRes storeRes) {
         editingItem = new StoreInItem(storeRes.getRes(), storeRes.getFloatConversionRate());
         addItemLastState = "";
@@ -194,14 +220,12 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         }
 
 
-
-
         editingItem.setFormats(storeResFormatFilter.getResFormatList());
         for (StoreInItem storeInItem : storeInItems) {
             if (storeInItem.same(editingItem)) {
                 storeInItem.merger(editingItem);
                 editingItem = null;
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,"");
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "");
                 break;
             }
         }
@@ -232,7 +256,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
                 }
 
                 if (!getEntityManager().createQuery("select storeRes from StoreRes storeRes where code = :code")
-                        .setParameter("code",editingItem.getStoreResCode()).getResultList().isEmpty()){
+                        .setParameter("code", editingItem.getStoreResCode()).getResultList().isEmpty()) {
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                             "storeResCodeExists", editingItem.getStoreResCode());
                     addItemLastState = "code_exists";

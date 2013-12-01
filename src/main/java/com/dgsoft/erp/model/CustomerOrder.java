@@ -23,15 +23,6 @@ public class CustomerOrder implements java.io.Serializable {
         NOT_CALC, CONSULT_FIX, TOTAL_MONEY_RATE;
     }
 
-    public enum OrderState {
-        ORDER_RUNNING,
-        ORDER_COMPLETE,
-        ORDER_OVERDRAFT_COMPLETE,
-        ORDER_PART_BACK,
-        ORDER_ALL_BACK,
-        ORDER_CANCEL;
-    }
-
     private String id;
     private Integer version;
     private Customer customer;
@@ -39,7 +30,6 @@ public class CustomerOrder implements java.io.Serializable {
     private OrderPayType payType;
     private Date createDate;
     private BigDecimal money;
-    private Date completeDate;
     private BigDecimal profit;
     private String memo;
     private String contact;
@@ -47,6 +37,9 @@ public class CustomerOrder implements java.io.Serializable {
 
 
     private boolean resReceived;
+    private boolean canceled;
+    private boolean allStoreOut;
+    private Boolean arrears;
     private BigDecimal totalMoney;
     private BigDecimal earnest;
     private BigDecimal totalRebate;
@@ -54,8 +47,6 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal totalCost;
     private BigDecimal middleRate;
     private BigDecimal middleTotal;
-
-    private OrderState state;
 
     private boolean includeMiddleMan;
     private boolean moneyComplete;
@@ -70,6 +61,12 @@ public class CustomerOrder implements java.io.Serializable {
     private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
 
     public CustomerOrder() {
+        arrears = null;
+        resReceived = false;
+        canceled = false;
+        allStoreOut = false;
+        moneyComplete = false;
+
     }
 
     @Id
@@ -224,16 +221,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.middleMoneyCalcType = middleMoneyCalcType;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "COMPLETE_DATE", length = 19)
-    public Date getCompleteDate() {
-        return this.completeDate;
-    }
-
-    public void setCompleteDate(Date completeDate) {
-        this.completeDate = completeDate;
-    }
-
     @Column(name = "PROFIT", scale = 3)
     public BigDecimal getProfit() {
         return this.profit;
@@ -306,17 +293,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.moneyComplete = moneyComplete;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "STATE", nullable = false)
-    @NotNull
-    public OrderState getState() {
-        return state;
-    }
-
-    public void setState(OrderState state) {
-        this.state = state;
-    }
-
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
     public boolean isIncludeMiddleMan() {
         return this.includeMiddleMan;
@@ -382,6 +358,33 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setResReceived(boolean resReceived) {
         this.resReceived = resReceived;
+    }
+
+    @Column(name = "CANCELED", nullable = false)
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    @Column(name = "ALL_STORE_OUT", nullable = false)
+    public boolean setAllStoreOut() {
+        return allStoreOut;
+    }
+
+    public void setAllStoreOut(boolean shiped) {
+        this.allStoreOut = shiped;
+    }
+
+    @Column(name = "ARREARS")
+    public Boolean getArrears() {
+        return arrears;
+    }
+
+    public void setArrears(Boolean arrears) {
+        this.arrears = arrears;
     }
 
     @Column(name = "EARNEST_FIRST", nullable = false)

@@ -9,7 +9,8 @@
                 template="/layout/erp/beginStoreChange.xhtml">
     <ui:define name="rightAction">
         <h:commandButton value="#{messages.beginStoreIn}" action="#{produceStoreInHome.begin}">
-            <f:param name="multiBatch" value="#{true}"/>
+
+            <f:param name="from" value="/func/erp/store/storeChange/ProduceIn.xhtml"/>
         </h:commandButton>
 
     </ui:define>

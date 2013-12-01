@@ -153,7 +153,7 @@ public class StockChangeItem implements java.io.Serializable {
         this.afterCount = afterCount;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeItem", orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeItem", cascade = {CascadeType.ALL})
     public Set<NoConvertCount> getNoConvertCounts() {
         return this.noConvertCounts;
     }

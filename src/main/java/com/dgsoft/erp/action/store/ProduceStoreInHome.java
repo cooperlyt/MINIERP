@@ -40,7 +40,6 @@ public class ProduceStoreInHome extends StoreInAction<ProductStoreIn> {
 
     @Override
     public String beginStoreIn() {
-        stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.PRODUCE_IN);
         return "ProcduceBeginStoreIn";
     }
 
@@ -56,4 +55,8 @@ public class ProduceStoreInHome extends StoreInAction<ProductStoreIn> {
         return "ProcduceStoreInCancel";
     }
 
+    @Override
+    protected StockChange.StoreChangeType getStoreChangeType() {
+        return StockChange.StoreChangeType.PRODUCE_IN;
+    }
 }

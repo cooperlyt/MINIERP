@@ -49,6 +49,16 @@ public class OrderMoneyReceive extends FinanceReceivables {
         }
 
         orderHome.getInstance().setMoneyComplete(true);
+        BigDecimal receiveMoney = BigDecimal.ZERO;
+        BigDecimal payMoney = BigDecimal.ZERO;
+        for (AccountOper accountOper: orderHome.getInstance().getAccountOpers()){
+            if (accountOper.getOperType().isAdd()){
+                receiveMoney = receiveMoney.add(accountOper.getOperMoney());
+            }else{
+                payMoney = payMoney.add(accountOper.getOperMoney());
+            }
+        }
+        orderHome.getInstance().setArrears(payMoney.compareTo(receiveMoney) > 0);
         if (orderHome.update().equals("updated")){
             return "taskComplete";
         }else

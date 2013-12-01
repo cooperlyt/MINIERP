@@ -33,4 +33,9 @@ public class MaterialStoreInHome extends StoreInAction<MaterialStoreIn>{
     public String cancel() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    protected StockChange.StoreChangeType getStoreChangeType() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

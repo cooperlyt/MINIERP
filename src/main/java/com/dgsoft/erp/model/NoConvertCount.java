@@ -26,12 +26,12 @@ public class NoConvertCount implements java.io.Serializable, OrderModel {
 	private ResUnit resUnit;
 	private BatchStoreCount batchStoreCount;
 	private BigDecimal count;
+    private PrepareStockChange prepareStockChange;
 
 	public NoConvertCount() {
 	}
 
-	public NoConvertCount(StockChangeItem stockChangeItem,
-                          ResUnit resUnit, BigDecimal count) {
+	public NoConvertCount(ResUnit resUnit, BigDecimal count) {
         this.stockChangeItem = stockChangeItem;
 		this.resUnit = resUnit;
 		this.count = count;
@@ -79,7 +79,17 @@ public class NoConvertCount implements java.io.Serializable, OrderModel {
 		this.stockChangeItem = stockChangeItem;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PREPARE_CHANGE", nullable = true)
+    public PrepareStockChange getPrepareStockChange() {
+        return prepareStockChange;
+    }
+
+    public void setPrepareStockChange(PrepareStockChange prepareStockChange) {
+        this.prepareStockChange = prepareStockChange;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STOCK", nullable = true)
 	public Stock getStock() {
 		return this.stock;

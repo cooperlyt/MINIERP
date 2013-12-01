@@ -83,6 +83,20 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+    public BigDecimal getLastNeedResTotalFare(){
+        BigDecimal result = BigDecimal.ZERO;
+        NeedRes lastNeedRes = getLastNeedRes();
+        if (lastNeedRes == null){
+            return result;
+        }
+        for (Dispatch dispatch: lastNeedRes.getDispatches()){
+            if (dispatch.getFare() != null){
+                result = result.add(dispatch.getFare());
+            }
+        }
+        return result;
+    }
+
     public NeedRes getMasterNeedRes() {
         for (NeedRes nr : getInstance().getNeedReses()) {
             if (nr.getType().equals(NeedRes.NeedResType.ORDER_SEND)) {

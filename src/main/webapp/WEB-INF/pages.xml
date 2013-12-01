@@ -119,10 +119,13 @@
 
     <page view-id="/func/erp/store/storeChange/*" login-required="true">
         <restrict>#{s:hasRole('erp.storage.store')}</restrict>
+
+        <param name="from"/>
+
         <navigation>
             <rule if-outcome="ProcduceBeginStoreIn">
 
-                <begin-conversation/>
+                <begin-conversation join="true"/>
                 <redirect view-id="/func/erp/store/storeChange/ProduceStoreIn.xhtml"/>
             </rule>
             <rule if-outcome="ProcduceStoreInComplete">
@@ -133,6 +136,21 @@
 
                 <end-conversation/>
                 <redirect view-id="/func/erp/store/storeChange/ProduceIn.xhtml"/>
+            </rule>
+
+            <rule if-outcome="businessCreated" if="#{empty from}">
+                <end-conversation/>
+
+                <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
+
+                </redirect>
+            </rule>
+            <rule if-outcome="businessCreated" if="#{not empty from}">
+                <end-conversation/>
+
+                <redirect include-page-params="true" view-id="#{from}">
+
+                </redirect>
             </rule>
         </navigation>
     </page>

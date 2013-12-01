@@ -102,11 +102,11 @@ public class StoreResCountInupt extends ResCount {
 
 
 
-    public Set<NoConvertCount> getNoConvertCounts(StockChangeItem stockChangeItem) {
+    public Set<NoConvertCount> getNoConvertCounts() {
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
             Set<NoConvertCount> result = new HashSet<NoConvertCount>(noConvertCountList.size());
             for (NoConverCountEntry entry : noConvertCountList) {
-                result.add(new NoConvertCount(stockChangeItem, entry.getResUnit(), entry.getCount()));
+                result.add(new NoConvertCount(entry.getResUnit(), entry.getCount()));
             }
             return result;
         } else
