@@ -88,20 +88,6 @@
             </rich:calendar>
         </s:decorate>
 
-        <s:decorate template="/layout/seam-display.xhtml">
-            <ui:define name="label">#{messages.orderState}</ui:define>
-
-            <h:selectOneMenu value="#{orderList.state}">
-                <s:selectItems value="#{orderStates}" var="_state"
-                               label="#{messages[_state.name()]}"
-                               noSelectionLabel="#{messages.searchNoSelectLabel}">
-
-                </s:selectItems>
-                <s:convertEnum/>
-
-            </h:selectOneMenu>
-        </s:decorate>
-
 
         <div style="clear:both"/>
         <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
@@ -134,6 +120,13 @@
             </ui:include>
         </a:outputPanel>
     </f:facet>
+
+    <rich:column style="text-align: center">
+        <f:facet name="header">
+            #{messages.order_field_canceled}
+        </f:facet>
+        <h:selectBooleanCheckbox disabled="true" value="#{_order.canceled}"/>
+    </rich:column>
     <rich:column>
         <f:facet name="header">
             <ui:include src="/layout/a4jSort.xhtml">
@@ -147,6 +140,8 @@
             #{messages.recordTotal} #{orderList.resultCount} #{messages.item}
         </f:facet>
     </rich:column>
+
+
 
     <rich:column>
         <f:facet name="header">
@@ -186,26 +181,15 @@
 
     <rich:column style="text-align: center">
         <f:facet name="header">
-            #{messages.order_field_resReceived}
+            #{messages.order_field_allStoreOut}
         </f:facet>
-        <h:selectBooleanCheckbox disabled="true" value="#{_order.resReceived}"/>
+        <h:selectBooleanCheckbox disabled="true" value="#{_order.allStoreOut}"/>
     </rich:column>
     <rich:column style="text-align: center">
         <f:facet name="header">
             #{messages.order_field_moneyComplete}
         </f:facet>
         <h:selectBooleanCheckbox disabled="true" value="#{_order.moneyComplete}"/>
-    </rich:column>
-
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.orderState}"/>
-                <ui:param name="propertyPath" value="customerOrder.state"/>
-            </ui:include>
-        </f:facet>
-        #{messages[_order.state.name()]}
     </rich:column>
 
 

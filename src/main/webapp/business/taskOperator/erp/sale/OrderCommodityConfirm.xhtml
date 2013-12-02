@@ -140,9 +140,9 @@
                                        disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
                                        label="#{messages.dispatch_field_shipDate}"
                                        value="#{_dispatch.sendTime}">
-                            <rich:validator event="change"/>
+
                             <rich:placeholder
-                                    value="#{_needRes.fareByCustomer ? messages.order_fare_by_customer : (_dispatch.deliveryType.haveFare ? messages.dispatch_field_shipDate : messages[_dispatch.deliveryType.name()])}"/>
+                                    value="#{_dispatch.needRes.fareByCustomer ? messages.order_fare_by_customer : (_dispatch.deliveryType.haveFare ? messages.dispatch_field_shipDate : messages[_dispatch.deliveryType.name()])}"/>
                         </rich:calendar>
                     </s:decorate>
 

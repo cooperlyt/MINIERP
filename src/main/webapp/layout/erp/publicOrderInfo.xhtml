@@ -8,6 +8,16 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
+    <a:outputPanel rendered="#{orderHome.instance.canceled}">
+
+        <h:outputText value="#{messages.order_is_canceled}" style="color: red;"/>
+
+        <!--TODO cancel info -->
+
+    </a:outputPanel>
+
+
+
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_id}</ui:define>
         <h:outputText value="#{orderHome.id}"/>
@@ -34,15 +44,6 @@
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.order_field_completeDate}</ui:define>
-        <h:outputText value="#{orderHome.instance.completeDate}"
-                      rendered="#{not empty orderHome.instance.completeDate}">
-            <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
-        </h:outputText>
-    </s:decorate>
-
-
-    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_resReceived}</ui:define>
         <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.resReceived}"/>
     </s:decorate>
@@ -52,16 +53,22 @@
         <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.moneyComplete}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.orderState}</ui:define>
-        #{messages[orderHome.instance.state.name()]}
+    <s:decorate template="/layout/seam-display.xhtml" rendered="#{not empty orderHome.instance.arrears}">
+        <ui:define name="label">#{messages.order_field_arrears}</ui:define>
+        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.arrears}"/>
     </s:decorate>
 
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_allStoreOut}</ui:define>
+        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.allStoreOut}"/>
+    </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
         <h:outputText value="#{orderHome.instance.memo}"/>
     </s:decorate>
+
+
 
     <ui:insert/>
     <div style="clear:both"/>

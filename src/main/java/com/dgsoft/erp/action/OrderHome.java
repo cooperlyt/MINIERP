@@ -41,11 +41,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return Dispatch.DeliveryType.values();
     }
 
-    @Factory(value = "orderStates", scope = ScopeType.CONVERSATION)
-    public CustomerOrder.OrderState[] getOrderStates(){
-        return CustomerOrder.OrderState.values();
-    }
-
     public BigDecimal getAllProxyFare() {
         BigDecimal result = BigDecimal.ZERO;
         if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY))

@@ -282,14 +282,6 @@ public class OrderFeeApply extends OrderTaskHandle {
 
         Logging.getLog(this.getClass()).debug("order fee call complete! fee size:" + orderHome.getInstance().getOrderFees().size() );
 
-        //TODO move to Last task
-        if (!orderHome.isHavePayFee()) {
-            //TODO if   ORDER_OVERDRAFT_COMPLETE,
-            orderHome.getInstance().setState(CustomerOrder.OrderState.ORDER_COMPLETE);
-            orderHome.getInstance().setCompleteDate(new Date());
-            Logging.getLog(this.getClass()).debug("set order state to complete");
-        }
-
         if ("updated".equals(orderHome.update())) {
             return "taskComplete";
         } else

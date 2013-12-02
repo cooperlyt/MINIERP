@@ -112,6 +112,19 @@ public class OrderStoreOut extends OrderTaskHandle {
             }
         }
 
+        boolean allStoreOut = true;
+        for(Dispatch dispatch:  orderHome.getMasterNeedRes().getDispatches()){
+            if (!dispatch.getId().equals(dispatchHome.getInstance().getId())){
+                if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_COMPLETE)){
+                    allStoreOut = false;
+                    break;
+                }
+            }
+        }
+
+        if (allStoreOut){
+            orderHome.getInstance().setAllStoreOut(allStoreOut);
+        }
 
         if (dispatchHome.getInstance().getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
             dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);

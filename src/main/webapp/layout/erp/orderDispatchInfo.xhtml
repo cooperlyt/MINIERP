@@ -21,25 +21,26 @@
 
 
     <s:decorate template="/layout/seam-display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
+                rendered="#{not (dispatch.deliveryType eq 'CUSTOMER_SELF')}">
         <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
-        <h:outputText value="#{dispatch.sendTime}">
+        <h:outputText value="#{dispatch.sendTime}" rendered="#{not empty dispatch.sendTime}">
             <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
         </h:outputText>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliveryType.haveFare) and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
+                rendered="#{(dispatch.deliveryType.haveFare) and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
         <ui:define name="label">#{messages.order_fare}</ui:define>
         <h:outputText value="#{dispatch.fare}">
-            <f:convertNumber locale="#{calendarBean.locale}"  type="currency" />
+            <f:convertNumber locale="#{calendarBean.locale}" type="currency"/>
         </h:outputText>
     </s:decorate>
 
+
     <s:decorate template="/layout/seam-display.xhtml"
-                rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (not (dispatch.deliveryType eq 'CUSTOMER_SELF'))}">
+                rendered="#{not (dispatch.deliveryType eq 'CUSTOMER_SELF')}">
         <ui:define name="label">#{messages.order_field_sendEmployee}</ui:define>
-        <h:outputText value="#{dictionary.getEmpNameById(dispatch.sendEmp)}"/>
+        <h:outputText value="#{dictionary.getEmpNameById(dispatch.sendEmp)}" rendered="#{not empty dispatch.sendEmp}"/>
     </s:decorate>
 
 
@@ -47,12 +48,14 @@
 
     <s:decorate template="/layout/view-details.xhtml">
         <ui:param name="openLabel"
-                  value="#{messages.order_field_deliveryType}: #{'   '}#{messages[dispatch.deliveryType.name()]}"/>
+                  value="#{messages.order_field_deliveryType}:"/>
         <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.order_field_deliveryType}"/>
+
+        <ui:param name="labelValue" value="#{messages[dispatch.deliveryType.name()]}"/>
 
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
-            <h:outputText value="#{messages[dispatch.deliveryType.name()]}" />
+            <h:outputText value="#{messages[dispatch.deliveryType.name()]}"/>
         </s:decorate>
 
         <s:decorate template="/layout/seam-display.xhtml"
@@ -93,6 +96,7 @@
             <h:outputText value="#{dispatch.productToDoor.cars.id}"/>
         </s:decorate>
     </s:decorate>
+    <div style="clear: both"/>
 
 
     <s:decorate template="/layout/seam-display.xhtml">

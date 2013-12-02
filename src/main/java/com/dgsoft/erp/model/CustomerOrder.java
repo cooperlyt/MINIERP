@@ -370,12 +370,12 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Column(name = "ALL_STORE_OUT", nullable = false)
-    public boolean setAllStoreOut() {
+    public boolean isAllStoreOut() {
         return allStoreOut;
     }
 
-    public void setAllStoreOut(boolean shiped) {
-        this.allStoreOut = shiped;
+    public void setAllStoreOut(boolean allStoreOut) {
+        this.allStoreOut = allStoreOut;
     }
 
     @Column(name = "ARREARS")

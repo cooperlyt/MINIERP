@@ -25,8 +25,7 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
             "customerOrder.customer.customerArea.id = #{orderList.customerAreaId}",
             "lower(customerOrder.customer.name) like lower(concat(#{orderList.customerName},'%'))",
             "customerOrder.createDate >= #{orderList.createDateFrom}",
-            "customerOrder.createDate <= #{orderList.dateTo}",
-            "customerOrder.state = #{orderList.state}"};
+            "customerOrder.createDate <= #{orderList.dateTo}"};
 
     @In
     private Credentials credentials;
@@ -41,8 +40,6 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
 
     private Date createDateTo;
 
-    private CustomerOrder.OrderState state;
-
 
 
     //private Map<CustomerOrder.OrderState, Boolean> checkStates;
@@ -53,16 +50,10 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
         setMaxResults(25);
+        setOrder("customerOrder.createDate");
+        //setOrderDirection();
         customerOrder.setOrderEmp(((Credentials) Component.getInstance("org.jboss.seam.security.credentials")).getUsername());
 
-    }
-
-    public CustomerOrder.OrderState getState() {
-        return state;
-    }
-
-    public void setState(CustomerOrder.OrderState state) {
-        this.state = state;
     }
 
     public String getCustomerAreaId() {
