@@ -14,6 +14,9 @@
     <param name="customerName" value="#{orderList.customerName}"/>
     <param name="createDateFrom" value="#{orderList.createDateFrom}"  converterId="searchDateConverter"/>
     <param name="createDateTo" value="#{orderList.createDateTo}"  converterId="searchDateConverter"/>
-
+    <param name="orderId" value="#{orderList.orderId}"/>
+    <param name="canceled" value="#{orderList.canceled}"/>
+    <param name="allStoreOut" value="#{orderList.allStoreOut}"/>
+    <param name="moneyComplete" value="#{orderList.moneyComplete}"/>
 
 </page>

@@ -25,7 +25,11 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
             "customerOrder.customer.customerArea.id = #{orderList.customerAreaId}",
             "lower(customerOrder.customer.name) like lower(concat(#{orderList.customerName},'%'))",
             "customerOrder.createDate >= #{orderList.createDateFrom}",
-            "customerOrder.createDate <= #{orderList.dateTo}"};
+            "customerOrder.createDate <= #{orderList.dateTo}",
+            "lower(customerOrder.id)  like lower(concat('%',#{orderList.orderId}))",
+            "customerOrder.canceled = #{orderList.canceled}",
+            "customerOrder.allStoreOut = #{orderList.allStoreOut}",
+            "customerOrder.moneyComplete = #{orderList.moneyComplete}"};
 
     @In
     private Credentials credentials;
@@ -40,9 +44,13 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
 
     private Date createDateTo;
 
+    private String orderId;
 
+    private Boolean canceled;
 
-    //private Map<CustomerOrder.OrderState, Boolean> checkStates;
+    private Boolean allStoreOut;
+
+    private Boolean moneyComplete;
 
 
     public OrderList() {
@@ -50,8 +58,8 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
         setMaxResults(25);
-        setOrder("customerOrder.createDate");
-        //setOrderDirection();
+        setOrderColumn("customerOrder.createDate");
+        setOrderDirection("desc");
         customerOrder.setOrderEmp(((Credentials) Component.getInstance("org.jboss.seam.security.credentials")).getUsername());
 
     }
@@ -115,4 +123,35 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
         return getResultTotalSum("customerOrder.money");
     }
 
+    public Boolean getMoneyComplete() {
+        return moneyComplete;
+    }
+
+    public void setMoneyComplete(Boolean moneyComplete) {
+        this.moneyComplete = moneyComplete;
+    }
+
+    public Boolean getAllStoreOut() {
+        return allStoreOut;
+    }
+
+    public void setAllStoreOut(Boolean allStoreOut) {
+        this.allStoreOut = allStoreOut;
+    }
+
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 }

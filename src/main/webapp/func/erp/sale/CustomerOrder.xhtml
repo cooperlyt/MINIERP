@@ -35,6 +35,35 @@
             <h:selectBooleanCheckbox value="#{orderList.onlyMyOrder}"/>
         </s:decorate>
 
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_id}</ui:define>
+            <h:inputText value="#{orderList.orderId}" size="15"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_state}</ui:define>
+            <h:panelGrid columns="90">
+                <h:selectOneMenu value="#{orderList.canceled}">
+                    <f:selectItem itemLabel="#{messages.order_search_canceled_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_canceled_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_canceled_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+                <h:selectOneMenu value="#{orderList.moneyComplete}">
+                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+
+                <h:selectOneMenu value="#{orderList.allStoreOut}">
+                    <f:selectItem itemLabel="#{messages.order_search_allStoreOut_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_allStoreOut_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_allStoreOut_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+            </h:panelGrid>
+        </s:decorate>
 
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.CustomerArea}</ui:define>
@@ -121,12 +150,21 @@
         </a:outputPanel>
     </f:facet>
 
-    <rich:column style="text-align: center">
+    <rich:column>
         <f:facet name="header">
-            #{messages.order_field_canceled}
+
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{orderList}"/>
+                <ui:param name="propertyLabel" value="#{messages.order_field_id}"/>
+                <ui:param name="propertyPath" value="customerOrder.id"/>
+            </ui:include>
         </f:facet>
-        <h:selectBooleanCheckbox disabled="true" value="#{_order.canceled}"/>
+        <h:outputText style="text-decoration:line-through; color: red;" value=" #{_order.id}"
+                      rendered="#{_order.canceled}"/>
+        <h:outputText  value=" #{_order.id}"
+                      rendered="#{not _order.canceled}"/>
     </rich:column>
+
     <rich:column>
         <f:facet name="header">
             <ui:include src="/layout/a4jSort.xhtml">
@@ -140,7 +178,6 @@
             #{messages.recordTotal} #{orderList.resultCount} #{messages.item}
         </f:facet>
     </rich:column>
-
 
 
     <rich:column>
