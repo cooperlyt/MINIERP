@@ -2,6 +2,8 @@
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[
+]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -20,6 +22,17 @@
             <property name="controlType">check-box</property>
             <structure name="format"/>
         </scalar-parameter>
+        <scalar-parameter name="orderId" id="149">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <script-data-source name="Data Source" id="9">
@@ -28,11 +41,9 @@ importPackage(Packages.org.jboss.seam);
 importPackage(Packages.com.dgsoft.erp.model); 
 importPackage(Packages.com.dgsoft.common.utils.math); 
 dictionary = Component.getInstance("dictionary", false)
-System.out.println("----------------------------------------------------" + params["first"]);
 first = params["first"].value;
 if (first)
 {
-	System.out.println("1");
 	salerName = Component.getInstance("authInfo", false).getLoginEmployee().getPerson().getName(); 
 	orderItems = Component.getInstance("orderCreate", false).getOrderNeedItems();
 	saleDate = new Date();
@@ -40,19 +51,19 @@ if (first)
 	saleAreaName = Component.getInstance("customerAreaHome", false).getInstance().getName();
 	customerName = Component.getInstance("customerHome", false).getInstance().getName();
 }else{
-
+	
 	orderHome = Component.getInstance("orderHome",false);
-
+	if (orderHome == null){
+		orderHome = Component.getInstance("orderHome",true);
+		orderHome.setId(params["orderId"].value);
+	}
 	orderItems = Component.getInstance("orderHome",false).getMasterNeedRes().getOrderItemList();
 	salerName = dictionary.getEmpNameById(orderHome.getInstance().getOrderEmp());
 	saleDate = orderHome.getInstance().getCreateDate();
 	orderNumber = orderHome.getInstance().getId();
 	saleAreaName = orderHome.getInstance().getCustomer().getCustomerArea().getName();
 	customerName = orderHome.getInstance().getCustomer().getName();
-}
-
-
-]]></method>
+}]]></method>
         </script-data-source>
     </data-sources>
     <data-sets>
@@ -173,22 +184,23 @@ it=orderItems.iterator();]]></method>
 	}
 	
 	row['NAME'] = itemTitle;
-    row['COUNT'] = item.getCount();
-	System.out.println("" + first);
+    
 
     if (first){
     	row['UNIT'] = item.getUseUnit().getName();
+    	row['COUNT'] = BigDecimalFormat.format(item.getCount(),item.getUseUnit().getCountFormate());
     	row['TOTAL_PRICE'] = item.getTotalPrice();
     	row['PRICE'] = item.getUnitPrice();
     }else{
     	row['UNIT'] = item.getMoneyUnit().getName();
+    	row['COUNT'] = BigDecimalFormat.format(item.getCount(),item.getMoneyUnit().getCountFormate());
     	row['TOTAL_PRICE'] = item.getTotalMoney();
     	row['PRICE'] = item.getMoney();
     }
     
     
     
-    row['ITEM_INFO'] = itemTitle + "  " + item.getCount() + "  " + row['UNIT'];
+    row['ITEM_INFO'] = itemTitle + "  " + row['COUNT'] + "  " + row['UNIT'];
 
 	return true;
 }else{
@@ -240,6 +252,9 @@ it=orderItems.iterator();]]></method>
             <property name="rightMargin">0in</property>
             <property name="height">11in</property>
             <property name="width">58mm</property>
+            <method name="onPageStart"><![CDATA[
+
+]]></method>
             <property name="headerHeight">1cm</property>
             <property name="footerHeight">0in</property>
             <page-header>

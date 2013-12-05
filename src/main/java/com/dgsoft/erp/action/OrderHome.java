@@ -6,6 +6,7 @@ import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -53,6 +54,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+
     public BigDecimal getAllFare() {
         BigDecimal result = getAllProxyFare();
 
@@ -94,14 +96,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     public NeedRes getMasterNeedRes() {
-        log.debug("call getMasterNeedRes! for:" + getId());
-
         for (NeedRes nr : getInstance().getNeedReses()) {
             if (nr.getType().equals(NeedRes.NeedResType.ORDER_SEND)) {
                 return nr;
             }
         }
-        log.debug("call getMasterNeedRes! reutrn null" + getInstance().getNeedReses().size());
         return null;
     }
 

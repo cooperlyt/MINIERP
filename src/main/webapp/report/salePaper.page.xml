@@ -4,6 +4,6 @@
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
     <param name="first"/>
-    <param name="orderId" value="#{orderHome.id}"/>
+    <param name="orderId"/>
 
 </page>

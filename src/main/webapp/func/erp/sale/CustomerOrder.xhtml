@@ -269,7 +269,7 @@
 
     <rich:column style="text-align: center;">
 
-        <s:link target="_blank" view="/report/salePaper.xhtml"  propagation="begin"
+        <s:link target="_blank" view="/report/salePaper.xhtml"
                 rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}">
             <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
             <f:param name="first" value="#{false}"/>

@@ -3,7 +3,8 @@
         xmlns:p="http://jboss.com/products/seam/birt"
         designType="frameset"
         designName="report/salePaper.rptdesign"
-
-        title="#{orderHome.id}">
+        showtitle="false"
+        title="#{orderId}">
     <p:param name="first" value="#{first}"/>
+    <p:param name="orderId" value="#{orderId}"/>
 </p:birt>
