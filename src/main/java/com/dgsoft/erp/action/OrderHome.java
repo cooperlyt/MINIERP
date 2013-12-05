@@ -4,6 +4,7 @@ import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.ResCount;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Name;
@@ -93,11 +94,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     public NeedRes getMasterNeedRes() {
+        log.debug("call getMasterNeedRes! for:" + getId());
+
         for (NeedRes nr : getInstance().getNeedReses()) {
             if (nr.getType().equals(NeedRes.NeedResType.ORDER_SEND)) {
                 return nr;
             }
         }
+        log.debug("call getMasterNeedRes! reutrn null" + getInstance().getNeedReses().size());
         return null;
     }
 
@@ -107,6 +111,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                 return true;
             }
         }
+
         return false;
     }
 

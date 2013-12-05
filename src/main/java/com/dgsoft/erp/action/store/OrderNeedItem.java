@@ -42,6 +42,16 @@ public class OrderNeedItem extends StoreChangeItem {
 
     private BigDecimal resCount;
 
+
+    public Res getUseRes(){
+        if (isStoreResItem()) {
+            return getStoreRes().getRes();
+        } else {
+            return getRes();
+        }
+    }
+
+
     public boolean isStoreResItem() {
         return storeResItem;
     }

@@ -62,6 +62,7 @@ public class StockChange implements java.io.Serializable {
 
     private Assembly assemblyForStoreOut;
     private Assembly assemblyForStoreIn;
+    private Assembly assemblyForLoseOut;
     private ProductStoreIn productStoreIn;
     private MaterialStoreOut materialStoreOut;
     private Allocation allocationForStoreOut;
@@ -218,6 +219,15 @@ public class StockChange implements java.io.Serializable {
 
     public void setAssemblyForStoreIn(Assembly assemblyForStoreIn) {
         this.assemblyForStoreIn = assemblyForStoreIn;
+    }
+
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByLoseOut")
+    public Assembly getAssemblyForLoseOut() {
+        return assemblyForLoseOut;
+    }
+
+    public void setAssemblyForLoseOut(Assembly assemblyForLoseOut) {
+        this.assemblyForLoseOut = assemblyForLoseOut;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")

@@ -21,6 +21,7 @@
         <h:outputText value="#{_format.formatValue}"
                       rendered="#{not (_format.formatDefine.dataType.name() eq 'WORD')}"/>
 
+
     </a:repeat>
     <h:outputText value="#{storeRes.res.unitGroup.name}:" rendered="#{storeRes.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
     <h:outputText value="#{storeRes.floatConversionRate}"

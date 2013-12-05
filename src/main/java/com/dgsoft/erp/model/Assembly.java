@@ -19,6 +19,7 @@ public class Assembly implements java.io.Serializable {
 	private String reason;
 	private String memo;
 	private String assemblyEmp;
+    private StockChange stockChangeByLoseOut;
     private BigDecimal loseCount;
 
 	public Assembly() {
@@ -75,7 +76,17 @@ public class Assembly implements java.io.Serializable {
 		this.stockChangeByStoreOut = stockChangeByStoreOut;
 	}
 
-	@Column(name = "REASON", nullable = false, length = 32)
+    @OneToOne(optional = false,fetch = FetchType.LAZY)
+    @JoinColumn(name = "LOSE_OUT",nullable = true)
+    public StockChange getStockChangeByLoseOut() {
+        return stockChangeByLoseOut;
+    }
+
+    public void setStockChangeByLoseOut(StockChange stockChangeByLoseOut) {
+        this.stockChangeByLoseOut = stockChangeByLoseOut;
+    }
+
+    @Column(name = "REASON", nullable = false, length = 32)
 	@NotNull
 	@Size(max = 32)
 	public String getReason() {
@@ -106,13 +117,4 @@ public class Assembly implements java.io.Serializable {
 		this.assemblyEmp = assemblyEmp;
 	}
 
-    @Column(name = "LOSE_COUNT", nullable = false, scale = 4)
-    @NotNull
-    public BigDecimal getLoseCount() {
-        return loseCount;
-    }
-
-    public void setLoseCount(BigDecimal loseCount) {
-        this.loseCount = loseCount;
-    }
 }

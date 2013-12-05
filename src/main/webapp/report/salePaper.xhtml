@@ -2,9 +2,8 @@
         xmlns:s="http://jboss.org/schema/seam/taglib"
         xmlns:p="http://jboss.com/products/seam/birt"
         designType="frameset"
-
         designName="report/salePaper.rptdesign"
-        title="JBoss Birt Test">
-    <p:param name="sample" value="sample param"/>
-        <p:param name="aa" value="bb"/>
+
+        title="#{orderHome.id}">
+    <p:param name="first" value="#{first}"/>
 </p:birt>

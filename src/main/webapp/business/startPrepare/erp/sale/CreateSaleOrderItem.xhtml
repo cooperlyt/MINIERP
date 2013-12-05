@@ -157,10 +157,9 @@
                     </h:inputText>
 
 
+
                     <s:button value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
-
-                    <s:button target="contentWindow" value="#{messages.print_sale_paper}" view="/report/salePaper.xhtml"/>
 
 
                     <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
@@ -387,6 +386,14 @@
         </rich:column>
         <rich:column style="text-align: center">
             <f:facet name="header">
+
+                <s:link target="_blank" view="/report/salePaper.xhtml">
+                    <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
+                    <f:param name="first" value="true"/>
+                </s:link>
+
+
+
             </f:facet>
             <a:commandButton image="/img/delete.png" render="orderItemListTable"
                              title="#{messages.remove}"

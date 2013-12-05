@@ -14,6 +14,15 @@
     <ui:define name="func-body">
 
         <rich:toolbar rendered="#{not empty from }">
+            <rich:toolbarGroup>
+                <s:link target="_blank" view="/report/salePaper.xhtml"
+                        rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}">
+                    <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
+                    <f:param name="first" value="false"/>
+                    <f:param name="orderId" value="#{orderHome.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
             <rich:toolbarGroup location="right">
                 <s:button styleClass="toolBarBtn" value="#{messages.return}" view="#{empty from ? '/home.xhtml' : from}"/>
             </rich:toolbarGroup>

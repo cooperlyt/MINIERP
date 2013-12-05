@@ -253,6 +253,7 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
                 return new Integer(o1.getFormatDefine().getPriority()).compareTo(o2.getFormatDefine().getPriority());
             }
         });
+
         return result;
     }
 
