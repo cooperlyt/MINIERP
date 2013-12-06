@@ -1,0 +1,10 @@
+<p:birt xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:s="http://jboss.org/schema/seam/taglib"
+        xmlns:p="http://jboss.com/products/seam/birt"
+        designType="frameset"
+        designName="report/saleStoreOutPaper.rptdesign"
+        showtitle="false"
+        title="#{orderId}">
+    <p:param name="storeId" value="#{storeId}"/>
+    <p:param name="orderId" value="#{orderId}"/>
+</p:birt>
