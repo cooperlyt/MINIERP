@@ -23,10 +23,10 @@
 
 
     </a:repeat>
-    <h:outputText value="#{storeRes.res.unitGroup.name}:" rendered="#{storeRes.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
+    #{' '}
     <h:outputText value="#{storeRes.floatConversionRate}"
                   rendered="#{storeRes.res.unitGroup.type == 'FLOAT_CONVERT'}">
         <f:convertNumber pattern="#{storeRes.res.unitGroup.floatConvertRateFormat}"/>
     </h:outputText>
-
+    <h:outputText value="#{storeRes.res.unitGroup.name}" rendered="#{storeRes.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
 </ui:composition>

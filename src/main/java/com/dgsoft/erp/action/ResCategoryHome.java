@@ -332,6 +332,20 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
+
+    @Factory(value = "allStoreResTree", scope = ScopeType.CONVERSATION)
+    public List<ResCategoryNode> getAllStoreResTree(){
+        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
+        for (ResCategory resCategory : rootCategories) {
+            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+            generateChildrenNode(rootNode, true, true, false,  EnumSet.allOf(ResCategory.ResType.class));
+            result.add(rootNode);
+        }
+        return result;
+    }
+
+
     private List<ResCategoryNode> getStoreChangeResLimitTree(StockChange.StoreChangeType changeType, boolean addStoreRes){
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)").setParameter("changeTypes",changeType.getResTypes()).getResultList();
@@ -362,7 +376,6 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
     public List<ResCategoryNode> getSaleStoreTree(){
         return  getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,true);
     }
-
 
     @Override
     protected boolean wire() {

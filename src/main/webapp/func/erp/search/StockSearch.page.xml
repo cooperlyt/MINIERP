@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="firstResult" value="#{stockList.firstResult}"/>
+    <param name="sort" value="#{stockList.orderColumn}"/>
+    <param name="dir" value="#{stockList.orderDirection}"/>
+
+
+    <param name="storeId" value="#{stockList.storeId}"/>
+    <param name="resCategoryId" value="#{stockList.resCategoryId}"/>
+    <param name="resId" value="#{stockList.resId}"/>
+    <param name="storeResId" value="#{stockList.storeResId}" />
+    <param name="selectTitle" value="#{stockList.selectedTitle}"/>
+
+
+
+
+</page>
