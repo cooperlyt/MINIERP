@@ -1,5 +1,7 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StockChangeItemModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,7 +21,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "PREPARE_STOCK_CHANGE", catalog = "MINI_ERP")
-public class PrepareStockChange implements java.io.Serializable {
+public class PrepareStockChange implements StockChangeItemModel, java.io.Serializable {
 
     private String id;
     private BigDecimal count;
@@ -92,6 +94,11 @@ public class PrepareStockChange implements java.io.Serializable {
 
     public void setStoreRes(StoreRes storeRes) {
         this.storeRes = storeRes;
+    }
+
+    @Transient
+    public ResCount getResCount(){
+        return getStoreRes().getResCount(getCount());
     }
 
 }

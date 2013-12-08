@@ -1,12 +1,25 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.model.Inventory;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.Name;
+
 /**
  * Created with IntelliJ IDEA.
  * User: cooperlee
  * Date: 10/15/13
  * Time: 3:32 PM
  */
-public class InventoryHome {
+
+@Name("inventoryHome")
+public class InventoryHome extends ErpEntityHome<Inventory>{
+
+    @Factory(value = "inventoryTypes",scope = ScopeType.CONVERSATION)
+    public Inventory.InventoryType[] getInventoryTypes(){
+        return Inventory.InventoryType.values();
+    }
 
     //定期盘点: 月度盘点 年度大盘
     //不定期盘点:

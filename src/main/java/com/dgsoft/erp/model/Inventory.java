@@ -13,12 +13,17 @@ import javax.validation.constraints.Size;
 @Table(name = "INVENTORY", catalog = "MINI_ERP")
 public class Inventory implements java.io.Serializable {
 
+    public enum InventoryType{
+        INIT_INVENTORY,MONTH_INVENTORY,YEAR_INVENTORY,RANDOM_INVENTORY;
+    }
+
 	private String id;
 	private Store store;
 	private StockChange stockChangeLoss;
 	private StockChange stockChangeAdd;
 	private Date checkDate;
 	private String memo;
+    private InventoryType type;
 
 	public Inventory() {
 	}
@@ -103,4 +108,15 @@ public class Inventory implements java.io.Serializable {
 		this.memo = memo;
 	}
 
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE",nullable = false,length = 32)
+    @NotNull
+    public InventoryType getType() {
+        return type;
+    }
+
+    public void setType(InventoryType type) {
+        this.type = type;
+    }
 }
