@@ -2,10 +2,12 @@ package com.dgsoft.erp.business.inventory;
 
 import com.dgsoft.common.system.business.TaskHandle;
 import com.dgsoft.erp.action.InventoryHome;
+import com.dgsoft.erp.model.PrepareStockChange;
 import com.dgsoft.erp.model.Stock;
 import com.dgsoft.erp.model.api.StockChangeItemModel;
 import org.jboss.seam.annotations.In;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,15 +24,18 @@ public abstract class InventoryTaskHandle extends TaskHandle {
 
     private List<InventoryItem> inventoryItems;
 
-    protected String initInventoryTask(){
+    protected String initInventoryTask() {
         return "success";
     }
 
-    protected String completeInventoryTask(){
+    protected String completeInventoryTask() {
         return "taskComplete";
     }
 
     public List<InventoryItem> getInventoryItems() {
+        if (inventoryItems == null){
+            generateItems();
+        }
         return inventoryItems;
     }
 
@@ -45,15 +50,44 @@ public abstract class InventoryTaskHandle extends TaskHandle {
         return initInventoryTask();
     }
 
-    private void generateItems(){
-        for(Stock stock: inventoryHome.getInstance().getStore().getStocks()){
+    private void generateItems() {
 
+        inventoryItems = new ArrayList<InventoryItem>();
+        List<PrepareStockChange> addStocks;
+        List<PrepareStockChange> loseStocks;
+
+        if (inventoryHome.getInstance().getStockChangeAdd() != null) {
+            addStocks = inventoryHome.getInstance().getStockChangeAdd().getPrepareStockChangeList();
+        } else {
+            addStocks = new ArrayList<PrepareStockChange>(0);
+        }
+
+        if (inventoryHome.getInstance().getStockChangeLoss() != null) {
+            loseStocks = inventoryHome.getInstance().getStockChangeLoss().getPrepareStockChangeList();
+        } else {
+            loseStocks = new ArrayList<PrepareStockChange>(0);
+        }
+
+        for (Stock stock : inventoryHome.getInstance().getStore().getStocks()) {
+            InventoryItem item = new InventoryItem(stock);
+            for (PrepareStockChange changeItem: addStocks){
+                if (changeItem.getStoreRes().equals(stock.getStoreRes())){
+                    item.setAddStock(changeItem);
+                    break;
+                }
+            }
+            for (PrepareStockChange changeItem: loseStocks){
+                if (changeItem.getStoreRes().equals(stock.getStoreRes())){
+                    item.setLoseStock(changeItem);
+                    break;
+                }
+            }
+            inventoryItems.add(item);
         }
     }
 
 
-
-    public static class InventoryItem{
+    public static class InventoryItem {
 
         private Stock stock;
 
@@ -61,7 +95,33 @@ public abstract class InventoryTaskHandle extends TaskHandle {
 
         private StockChangeItemModel loseStock;
 
+        public InventoryItem(Stock stock) {
+            this.stock = stock;
+        }
 
+        public Stock getStock() {
+            return stock;
+        }
+
+        public void setStock(Stock stock) {
+            this.stock = stock;
+        }
+
+        public StockChangeItemModel getAddStock() {
+            return addStock;
+        }
+
+        public void setAddStock(StockChangeItemModel addStock) {
+            this.addStock = addStock;
+        }
+
+        public StockChangeItemModel getLoseStock() {
+            return loseStock;
+        }
+
+        public void setLoseStock(StockChangeItemModel loseStock) {
+            this.loseStock = loseStock;
+        }
     }
 
 }

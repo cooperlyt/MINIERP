@@ -201,12 +201,24 @@ public class StockChange implements java.io.Serializable {
     }
 
     @Transient
+    public List<PrepareStockChange> getPrepareStockChangeList(){
+        List<PrepareStockChange> result = new ArrayList<PrepareStockChange>(getPrepareStockChanges());
+        Collections.sort(result, new Comparator<PrepareStockChange>() {
+            @Override
+            public int compare(PrepareStockChange o1, PrepareStockChange o2) {
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            }}
+        );
+        return result;
+    }
+
+    @Transient
     public List<StockChangeItem> getStockChangeItemList(){
         List<StockChangeItem> result = new ArrayList<StockChangeItem>(getStockChangeItems());
         Collections.sort(result,new Comparator<StockChangeItem>() {
             @Override
             public int compare(StockChangeItem o1, StockChangeItem o2) {
-                return o1.getId().compareTo(o2.getId());
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
             }
         });
         return result;
