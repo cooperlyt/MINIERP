@@ -13,13 +13,9 @@ import org.jboss.seam.annotations.Scope;
  * Time: 10:42 PM
  * To change this template use File | Settings | File Templates.
  */
-@Name("InventoryFirst")
+@Name("inventoryFirst")
 @Scope(ScopeType.CONVERSATION)
 public class InventoryFirst extends InventoryTaskHandle {
-
-    @In(create=true)
-    public InventoryHome inventoryHome;
-
 
 
 }

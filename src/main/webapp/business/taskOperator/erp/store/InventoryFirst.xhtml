@@ -11,15 +11,126 @@
     <ui:param name="functionTitle" value="#{messages.Inventory}"/>
 
     <ui:define name="func-body">
-        <rich:toolbar>
 
+        <h:outputStylesheet>
+            .barsearch {
+                height: 14px;
+                width: 100px;
+            }
+        </h:outputStylesheet>
+
+        <rich:toolbar>
+            <rich:toolbarGroup>
+                <h:form>
+                    <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocate.code}"
+                                 required="true">
+                        <rich:placeholder value="#{messages.res_field_code}"/>
+                    </h:inputText>
+
+                    <a:commandButton value="#{messages.search}" execute="@region"
+                                     render="storeInItem,resSearchForm"
+                                     action="#{resLocate.locateByCode(storeChangeType)}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                     title="#{messages.resSelect}"
+                                     onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                     title="#{messages.storeResSelect}"
+                                     onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </h:form>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+                <h:panelGroup>
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                    <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                              action="#{inventoryFirst.complete}"/>
+
+                </h:panelGroup>
+            </rich:toolbarGroup>
         </rich:toolbar>
         <br/>
         <rich:messages ajaxRendered="true" globalOnly="true"/>
         <br/>
 
-        <rich:dataTable>
+        <rich:dataTable id="inventoryTable" style="width: 100%" value="#{inventoryFirst.inventoryItems}" var="_item">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column colspan="3">
+                        #{messages.Stock}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.STORE_CHECK_ADD}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.STORE_CHECK_LOSS}
+                    </rich:column>
+                    <rich:column rowspan="2">
 
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        #{messages.StoreRes}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+
+            <rich:column>
+
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.stock.storeRes}"/>
+                </ui:include>
+            </rich:column>
+            <rich:column>
+                #{_item.stock.resCount.masterDisplayCount}
+            </rich:column>
+            <rich:column>
+                #{_item.stock.resCount.displayAuxCount}
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.addStock.resCount.masterDisplayCount}"
+                              rendered="#{not empty _item.addStock}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.addStock.resCount.displayAuxCount}"
+                              rendered="#{not empty _item.addStock}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.loseStock.resCount.masterDisplayCount}"
+                              rendered="#{not empty _item.loseStock}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.loseStock.resCount.displayAuxCount}"
+                              rendered="#{not empty _item.loseStock}"/>
+            </rich:column>
+            <rich:column>
+
+            </rich:column>
         </rich:dataTable>
 
     </ui:define>
