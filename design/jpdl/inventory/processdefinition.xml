@@ -19,12 +19,22 @@
 	</task-node>
 
 	<task-node name="盘点审核">
-		<transition to="decision1"></transition>
+		<task name="盘点审核">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/InventoryCheck.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.finance.accountancy"></assignment>
+		</task>
+		<transition to="审核结果"></transition>
 	</task-node>
 
-	<decision name="decision1">
-		<transition to="盘点结束"></transition>
-		<transition to="盘点" name="to 盘点"></transition>
+	<decision name="审核结果">
+		<transition to="盘点结束" name="通过">
+			<condition expression="#{inventoryHome.instance.stockChanged}"></condition>
+		</transition>
+		<transition to="盘点" name="不通过">
+			<condition expression="#{inventoryHome.instance.}"></condition>
+		</transition>
 	</decision>
 
 

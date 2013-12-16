@@ -24,24 +24,14 @@ public class Inventory implements java.io.Serializable {
 	private Date checkDate;
 	private String memo;
     private InventoryType type;
+    private boolean stockChanged;
 
 	public Inventory() {
 	}
 
-	public Inventory(String id, Store store, Date checkDate) {
-		this.id = id;
-		this.store = store;
-		this.checkDate = checkDate;
-	}
-	public Inventory(String id, Store store, StockChange stockChangeLoss,
-			StockChange stockChangeAdd, Date checkDate, String memo) {
-		this.id = id;
-		this.store = store;
-		this.stockChangeLoss = stockChangeLoss;
-		this.stockChangeAdd = stockChangeAdd;
-		this.checkDate = checkDate;
-		this.memo = memo;
-	}
+    public Inventory(boolean stockChanged){
+        stockChanged = false;
+    }
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -118,5 +108,14 @@ public class Inventory implements java.io.Serializable {
 
     public void setType(InventoryType type) {
         this.type = type;
+    }
+
+    @Column(name = "STOCK_CHANGED",nullable = false)
+    public boolean isStockChanged() {
+        return stockChanged;
+    }
+
+    public void setStockChanged(boolean stockChanged) {
+        this.stockChanged = stockChanged;
     }
 }

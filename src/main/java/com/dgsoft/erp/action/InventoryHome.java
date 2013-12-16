@@ -132,6 +132,11 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         }
     }
 
+    @Override
+    public Inventory createInstance(){
+        return new Inventory(false);
+    }
+
     public void checkLose() {
         addStock = false;
         beginCheckItem();

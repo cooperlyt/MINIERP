@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="inventory" width="725" height="737">
+<root-container name="inventory" width="766" height="533">
   <node name="开始盘点" x="83" y="50" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -16,12 +16,12 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="decision1" x="184" y="247" width="132" height="36">
+  <node name="审核结果" x="184" y="247" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
     <edge>
-      <label x="5" y="-10"/>
+      <label x="-43" y="5"/>
     </edge>
   </node>
   <node name="盘点结束" x="185" y="327" width="132" height="36"/>
