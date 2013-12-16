@@ -2,7 +2,6 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.erp.model.api.ResCount;
-import com.dgsoft.erp.model.api.StockChangeItemModel;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -17,7 +16,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "STOCK_CHANGE_ITEM", catalog = "MINI_ERP")
-public class StockChangeItem implements StockChangeItemModel,java.io.Serializable {
+public class StockChangeItem implements java.io.Serializable {
 
     private String id;
     private StoreRes storeRes;

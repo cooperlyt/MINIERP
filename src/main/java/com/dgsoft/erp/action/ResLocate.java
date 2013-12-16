@@ -134,7 +134,7 @@ public class ResLocate {
         if (storeChangeType != null) {
             query = query.setParameter("resType", storeChangeType.getResTypes());
         } else {
-            query = query.setParameter("resType", EnumSet.allOf(StockChange.StoreChangeType.class));
+            query = query.setParameter("resType", EnumSet.allOf(ResCategory.ResType.class));
         }
 
 
@@ -159,7 +159,7 @@ public class ResLocate {
         if (storeChangeType != null) {
             query = query.setParameter("resType", storeChangeType.getResTypes());
         } else {
-            query = query.setParameter("resType", EnumSet.allOf(StockChange.StoreChangeType.class));
+            query = query.setParameter("resType", EnumSet.allOf(ResCategory.ResType.class));
         }
         List<StoreRes> resultList = query.getResultList();
         if (resultList.isEmpty()) {
@@ -174,6 +174,7 @@ public class ResLocate {
         storeResHome.setId(resultStoreRes.getId());
         resHome.setId(resultStoreRes.getRes().getId());
         Events.instance().raiseEvent("erp.storeResLocateSelected",resultStoreRes);
+
     }
 
     private String localedId;
@@ -199,5 +200,6 @@ public class ResLocate {
         resultStoreRes = storeResHome.getInstance();
         resHome.setId(resultStoreRes.getRes().getId());
         Events.instance().raiseEvent("erp.storeResLocateSelected",resultStoreRes);
+
     }
 }

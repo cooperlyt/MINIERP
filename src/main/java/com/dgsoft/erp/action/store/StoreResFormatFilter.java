@@ -88,7 +88,7 @@ public class StoreResFormatFilter {
             resFormatList.add(new Format(format.getFormatDefine(),format.getFormatValue()));
             historyValues.put(format.getFormatDefine().getId(), searchHistoryValues(format.getFormatDefine()));
         }
-
+        log.debug("storeResFormatFilter resSelect event comp");
     }
 
 

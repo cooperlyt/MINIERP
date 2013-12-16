@@ -67,7 +67,7 @@ public class Inventory implements java.io.Serializable {
 	}
 
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "LOSS_RES", unique = true, nullable = true, updatable = true)
 	public StockChange getStockChangeLoss() {
 		return this.stockChangeLoss;
@@ -77,7 +77,7 @@ public class Inventory implements java.io.Serializable {
 		this.stockChangeLoss = stockChangeByLossRes;
 	}
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "ADD_RES", unique = true, nullable = true, updatable = true)
 	public StockChange getStockChangeAdd() {
 		return this.stockChangeAdd;

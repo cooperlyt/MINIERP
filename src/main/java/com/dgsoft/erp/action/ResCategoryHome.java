@@ -345,6 +345,17 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
+    @Factory(value = "allResTree", scope = ScopeType.CONVERSATION)
+    public List<ResCategoryNode> getAllResTree(){
+        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
+        for (ResCategory resCategory : rootCategories) {
+            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+            generateChildrenNode(rootNode, true, false, false,  EnumSet.allOf(ResCategory.ResType.class));
+            result.add(rootNode);
+        }
+        return result;
+    }
 
     private List<ResCategoryNode> getStoreChangeResLimitTree(StockChange.StoreChangeType changeType, boolean addStoreRes){
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
