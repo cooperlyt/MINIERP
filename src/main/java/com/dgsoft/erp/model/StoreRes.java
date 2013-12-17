@@ -272,7 +272,7 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
         StoreRes other = (StoreRes) obj;
 
         if ((id != null) && (!"".equals(id.trim()))) {
-            return id.equals(other.id);
+            return id.equals(other.getId());
         }
 
         if (!getRes().getId().equals(other.getRes().getId())) {

@@ -216,7 +216,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             if (!addStock){
                 if (loseStockChange == null){
                     stockChange = new StockChange("L" + getInstance().getId(), getInstance().getStore(),
-                            new Date(),credentials.getUsername(),StockChange.StoreChangeType.STORE_CHECK_LOSS,null);
+                            new Date(),credentials.getUsername(),StockChange.StoreChangeType.STORE_CHECK_LOSS,null,false);
                     stockChange.setInventoryLoss(getInstance());
                     getInstance().setStockChangeLoss(stockChange);
                     loseStockChange = stockChange;
@@ -228,7 +228,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             }else{
                 if (addStockChange == null){
                     stockChange = new StockChange("A" + getInstance().getId(),getInstance().getStore(),
-                            new Date(),credentials.getUsername(),StockChange.StoreChangeType.STORE_CHECK_ADD,null);
+                            new Date(),credentials.getUsername(),StockChange.StoreChangeType.STORE_CHECK_ADD,null,false);
                     stockChange.setInventoryAdd(getInstance());
                     getInstance().setStockChangeAdd(stockChange);
                     addStockChange = stockChange;
@@ -312,7 +312,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
                 addStockChange = new StockChange("A_" + getInstance().getId(),
                         getInstance().getStore(), new Date(),
                         credentials.getUsername(),
-                        StockChange.StoreChangeType.STORE_CHECK_ADD, null);
+                        StockChange.StoreChangeType.STORE_CHECK_ADD, null,false);
                 addStockChange.setInventoryAdd(getInstance());
                 getInstance().setStockChangeAdd(addStockChange);
                 log.debug("instance is add addStockChange");

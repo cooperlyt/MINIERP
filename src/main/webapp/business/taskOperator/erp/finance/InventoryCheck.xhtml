@@ -1,12 +1,132 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{messages.Inventory}"/>
+
+    <ui:define name="func-body">
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup>
+                    <s:link target="_blank" view="/report/inventory.xhtml">
+                        <s:graphicImage value="/img/print.png" title="#{messages.print_inventory_paper}"/>
+                        <f:param name="inventoryComponentName" value="inventoryLastCheck"/>
+                    </s:link>
+
+                    <s:link value="#{messages.print_inventory_paper}" target="_blank" view="/report/inventory.xhtml">
+                        <f:param name="inventoryComponentName" value="inventoryLastCheck"/>
+                    </s:link>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup location="right">
+                    <h:panelGroup>
+                        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                         action="#{inventoryLastCheck.complete}"/>
+                    </h:panelGroup>
+                </rich:toolbarGroup>
+
+            </rich:toolbar>
+
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
+            <rich:panel>
+
+                 <s:decorate template="/layout/seam-edit.xhtml">
+                     <ui:define name="label">#{messages.check_pass}</ui:define>
+                     <h:selectBooleanCheckbox value="#{inventoryLastCheck.pass}"/>
+                 </s:decorate>
+
+                <div style="clear: both"/>
+
+            </rich:panel>
+            <br/>
+        </h:form>
+
+        <rich:panel>
+           <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
+               <ui:param name="inventory" value="#{inventoryHome.instance}"/>
+           </ui:include>
+           <div style="clear: both"/>
+        </rich:panel>
+        <br/>
+        <rich:dataTable id="inventoryTable" style="width: 100%" value="#{inventoryLastCheck.inventoryItems}"
+                        var="_item">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column rowspan="2">
+                        #{messages.StoreRes}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.Stock}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.STORE_CHECK_ADD}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.STORE_CHECK_LOSS}
+                    </rich:column>
+
+                    <rich:column breakRowBefore="true">
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+
+            <rich:column>
+
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                </ui:include>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.stockCount.masterDisplayCount}" rendered="#{not empty _item.stockCount}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.stockCount.displayAuxCount}" rendered="#{not empty _item.stockCount}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.addCount.masterDisplayCount}"
+                              rendered="#{not empty _item.addCount}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.addCount.displayAuxCount}"
+                              rendered="#{not empty _item.addCount}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.loseCount.masterDisplayCount}"
+                              rendered="#{not empty _item.loseCount}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.loseCount.displayAuxCount}"
+                              rendered="#{not empty _item.loseCount}"/>
+            </rich:column>
+        </rich:dataTable>
+    </ui:define>
+
+</ui:composition>

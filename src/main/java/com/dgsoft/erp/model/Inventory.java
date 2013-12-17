@@ -24,6 +24,7 @@ public class Inventory implements java.io.Serializable {
 	private Date checkDate;
 	private String memo;
     private InventoryType type;
+    private String applyEmp;
     private boolean stockChanged;
 
 	public Inventory() {
@@ -103,6 +104,7 @@ public class Inventory implements java.io.Serializable {
     @Column(name = "TYPE",nullable = false,length = 32)
     @NotNull
     public InventoryType getType() {
+
         return type;
     }
 
@@ -117,5 +119,16 @@ public class Inventory implements java.io.Serializable {
 
     public void setStockChanged(boolean stockChanged) {
         this.stockChanged = stockChanged;
+    }
+
+    @Column(name="APPLY_EMP",nullable = false,length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getApplyEmp() {
+        return applyEmp;
+    }
+
+    public void setApplyEmp(String applyEmp) {
+        this.applyEmp = applyEmp;
     }
 }

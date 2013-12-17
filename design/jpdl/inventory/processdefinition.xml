@@ -33,7 +33,7 @@
 			<condition expression="#{inventoryHome.instance.stockChanged}"></condition>
 		</transition>
 		<transition to="盘点" name="不通过">
-			<condition expression="#{inventoryHome.instance.}"></condition>
+			<condition expression="#{not inventoryHome.instance.stockChanged}"></condition>
 		</transition>
 	</decision>
 

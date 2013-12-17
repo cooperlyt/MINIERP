@@ -28,20 +28,6 @@
 
         <div style="clear: both"/>
 
-        <s:decorate template="/layout/view-details.xhtml"
-                    rendered="#{(not empty customerHome.instance.middleMan) and s:hasRole('erp.sale.manager')}">
-            <ui:include src="/layout/erp/MiddleManView.xhtml">
-
-                <ui:param name="middleMan" value="#{customerHome.instance.middleMan}"/>
-
-            </ui:include>
-            <ui:param name="labelValue" value="#{customerHome.instance.middleMan.name}"/>
-            <ui:param name="openLabel" value="#{messages.MiddleMan}"/>
-            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.MiddleMan}"/>
-        </s:decorate>
-
-
-        <div style="clear: both"/>
         <br/>
         <rich:dataTable style="width: 100%" value="#{customerHome.instance.accountOperList}"
                         var="_oper" noDataLabel="#{messages.customer_no_accountOpers}">

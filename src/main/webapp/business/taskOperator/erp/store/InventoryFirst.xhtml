@@ -69,14 +69,6 @@
 
 <rich:toolbar>
     <rich:toolbarGroup>
-        <s:link target="_blank" view="/report/inventory.xhtml">
-            <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
-            <f:param name="inventoryComponentName" value="inventoryFirst"/>
-        </s:link>
-
-    </rich:toolbarGroup>
-
-    <rich:toolbarGroup>
         <h:form>
             <h:panelGrid id="resSearchForm" columns="4">
                 <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocate.code}"
@@ -184,7 +176,10 @@
                 #{messages.STORE_CHECK_LOSS}
             </rich:column>
             <rich:column rowspan="2">
-
+                <s:link target="_blank" view="/report/inventory.xhtml">
+                    <s:graphicImage value="/img/print.png" title="#{messages.print_inventory_paper}"/>
+                    <f:param name="inventoryComponentName" value="inventoryFirst"/>
+                </s:link>
             </rich:column>
             <rich:column breakRowBefore="true">
                 #{messages.MasterUnitCount}
@@ -236,13 +231,14 @@
                       rendered="#{not empty _item.loseCount}"/>
     </rich:column>
     <rich:column style="text-align: center">
-         <a:commandButton image="/img/addItem.png" title="#{messages.STORE_CHECK_ADD}"
+         <a:commandButton image="/img/item_add.png" title="#{messages.STORE_CHECK_ADD}"
                           oncomplete="#{rich:component('checkItemChangePanel')}.show()"
                           immediate="true" execute="@this" render="checkItemChangePanel_inputs,checkItemChangePanel_title"
                           action="#{inventoryHome.checkAdd}">
             <a:param value="#{_item.storeRes.id}" assignTo="#{storeResHome.id}"/>
          </a:commandButton>
-        <a:commandButton image="/img/delete.png" title="#{messages.STORE_CHECK_LOSS}"
+        #{' '}
+        <a:commandButton image="/img/item_remove.png" title="#{messages.STORE_CHECK_LOSS}"
                          oncomplete="#{rich:component('checkItemChangePanel')}.show()"
                          render="checkItemChangePanel_inputs,checkItemChangePanel_title"
                          immediate="true" execute="@this"
@@ -252,7 +248,14 @@
     </rich:column>
 </rich:dataTable>
 </h:form>
-
+<br/>
+<rich:panel>
+    <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
+        
+        <ui:param name="inventory" value="#{inventoryHome.instance}"/>
+    </ui:include>
+    <div style="clear: both"/>
+</rich:panel>
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:define name="panelTitle">

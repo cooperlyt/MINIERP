@@ -3,7 +3,7 @@
 <process-definition  xmlns=""  name="orderCancel">
 
 
-	<start-state name="取消定单">
+	<start-state name="取消订单">
 		<transition to="审核"></transition>
 	</start-state>
 
@@ -16,6 +16,7 @@
 	</decision>
 
 	<task-node name="审核">
+		<task name="审核"></task>
 		<transition to="定单状态判断"></transition>
 	</task-node>
 

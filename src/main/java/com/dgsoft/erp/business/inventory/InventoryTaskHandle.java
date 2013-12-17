@@ -84,6 +84,7 @@ public abstract class InventoryTaskHandle extends TaskHandle {
         for (Stock stock : inventoryHome.getInstance().getStore().getStocks()) {
             InventoryItem item = new InventoryItem(stock.getStoreRes(), stock.getResCount());
             for (PrepareStockChange changeItem : addStocks) {
+
                 if (changeItem.getStoreRes().equals(stock.getStoreRes())) {
                     item.setAddCount(changeItem.getResCount());
                     newStocks.remove(changeItem);

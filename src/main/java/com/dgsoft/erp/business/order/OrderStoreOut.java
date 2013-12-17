@@ -82,7 +82,7 @@ public class OrderStoreOut extends OrderTaskHandle {
 
         dispatchHome.getInstance().setStockChange(
                 new StockChange(orderHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"),dispatchHome.getInstance().getStore(), storeOutDate,
-                        credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo));
+                        credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo,true));
 
         for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {
             //TODO noConvertRate Unit

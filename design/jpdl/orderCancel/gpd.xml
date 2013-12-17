@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="orderCancel" width="804" height="410">
-  <node name="取消定单" x="23" y="7" width="132" height="36">
+<root-container name="orderCancel" width="804" height="515">
+  <node name="取消订单" x="23" y="7" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -35,7 +35,6 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="end-state1" x="571" y="7" width="132" height="36"/>
   <node name="fork1" x="270" y="230" width="109" height="24">
     <edge>
       <label x="-18" y="-14"/>
@@ -65,4 +64,5 @@
       <label x="-83" y="11"/>
     </edge>
   </node>
+  <node name="end-state1" x="571" y="7" width="132" height="36"/>
 </root-container>

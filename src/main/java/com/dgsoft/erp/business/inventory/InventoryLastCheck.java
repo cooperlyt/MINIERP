@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 @Scope(ScopeType.CONVERSATION)
 public class InventoryLastCheck extends InventoryTaskHandle {
 
-    private boolean pass;
+    private boolean pass = true;
 
     public boolean isPass() {
         return pass;
@@ -57,6 +57,7 @@ public class InventoryLastCheck extends InventoryTaskHandle {
                     addStockChange.getStockChangeItems().add(item);
                     stock.setCount(item.getAfterCount());
                 }
+                addStockChange.setVerify(true);
             }
 
             StockChange loseStockChange = inventoryHome.getInstance().getStockChangeLoss();
@@ -86,8 +87,11 @@ public class InventoryLastCheck extends InventoryTaskHandle {
                     loseStockChange.getStockChangeItems().add(item);
                     stock.setCount(item.getAfterCount());
                 }
+                loseStockChange.setVerify(true);
             }
             inventoryHome.getInstance().setStockChanged(true);
+            inventoryHome.getInstance().getStore().setEnable(true);
+
             if ("updated".equals(inventoryHome.update())){
                 return "taskComplete";
             }else{

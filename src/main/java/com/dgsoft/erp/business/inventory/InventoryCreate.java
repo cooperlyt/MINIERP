@@ -6,6 +6,7 @@ import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.erp.action.InventoryHome;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.security.Credentials;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +29,9 @@ public class InventoryCreate {
     @In(required = false)
     private InventoryHome inventoryHome;
 
+    @In
+    private Credentials credentials;
+
 
     public void init(){
         startData.generateKey();
@@ -39,6 +43,7 @@ public class InventoryCreate {
     public void beginInventory(){
         inventoryHome.getInstance().getStore().setEnable(false);
         inventoryHome.getInstance().setId(startData.getBusinessKey());
+        inventoryHome.getInstance().setApplyEmp(credentials.getUsername());
         if (!"persisted".equals(inventoryHome.persist())) {
             throw new ProcessCreatePrepareException("inventory persist fail");
         }

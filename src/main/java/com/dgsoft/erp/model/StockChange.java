@@ -82,17 +82,18 @@ public class StockChange implements java.io.Serializable {
     }
 
     public StockChange(Store store, Date operDate, String operEmp,
-                       StoreChangeType operType, String memo) {
+                       StoreChangeType operType, String memo,boolean verify) {
         this.store = store;
         this.operDate = operDate;
         this.operEmp = operEmp;
         this.operType = operType;
         this.memo = memo;
+        this.verify = verify;
     }
 
     public StockChange(String id,Store store, Date operDate, String operEmp,
-                       StoreChangeType operType, String memo) {
-        this(store,operDate,operEmp,operType,memo);
+                       StoreChangeType operType, String memo,boolean verify) {
+        this(store,operDate,operEmp,operType,memo,verify);
         this.id = id;
     }
 
