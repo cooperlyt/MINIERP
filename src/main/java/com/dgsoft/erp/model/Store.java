@@ -36,6 +36,7 @@ public class Store implements java.io.Serializable, TreeNode {
     private Set<Allocation> allocationsForApplyStore = new HashSet<Allocation>(0);
     private Set<Allocation> allocationsForTargetStore = new HashSet<Allocation>(0);
     private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
+    private Set<ProductBackStoreIn> productBackStoreIns = new HashSet<ProductBackStoreIn>(0);
 
     public Store() {
     }
@@ -216,6 +217,15 @@ public class Store implements java.io.Serializable, TreeNode {
 
     public void setDispatches(Set<Dispatch> dispatches) {
         this.dispatches = dispatches;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "store")
+    public Set<ProductBackStoreIn> getProductBackStoreIns() {
+        return productBackStoreIns;
+    }
+
+    public void setProductBackStoreIns(Set<ProductBackStoreIn> productBackStoreIns) {
+        this.productBackStoreIns = productBackStoreIns;
     }
 
     @Transient

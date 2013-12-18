@@ -19,9 +19,11 @@ INSERT INTO DG_SYSTEM.BUSINESS_CATEGORY(ID, NAME, PRIORITY) VALUES('erp.sale','�
 INSERT INTO DG_SYSTEM.BUSINESS_CATEGORY(ID, NAME, PRIORITY) VALUES('erp.storage','仓储业务',2);
 
 
--- 业务种类
+-- 业务
 
 INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.order','销售订单','order','/business/startPrepare/erp/sale/CreateSaleOrder.xhtml','','','erp.sale','销售订单',0);
+INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.orderCancel','撤消订单','orderCancel','/business/startPrepare/erp/sale/CancelOrder.xhtml','','','erp.sale','撤消订单',0);
+
 
 INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.inventory','盘点','inventory','/business/startPrepare/erp/store/Inventory.xhtml','','','erp.storage','盘点',0);
 

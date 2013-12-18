@@ -4,51 +4,150 @@
 
 
 	<start-state name="取消订单">
-		<transition to="审核"></transition>
+		<transition to="定单状态判断"></transition>
 	</start-state>
 
 
 	<decision name="定单状态判断">
-		<transition to="fork1" name="同时退款退货"></transition>
-		<transition to="退款" name="仅退款"></transition>
-		<transition to="end-state1" name="驳回申请"></transition>
-		<transition to="退货入库" name="仅退货"></transition>
+		<transition to="fork1" name="同时退款退货">
+			<condition expression="#{orderHome.anyOneStoreOut and orderHome.instance.moneyComplete}"></condition>
+		</transition>
+		<transition to="退款" name="仅退款">
+			<condition expression="#{(not orderHome.anyOneStoreOut) and orderHome.instance.moneyComplete}"></condition>
+		</transition>
+		<transition to="调度" name="仅退货">
+			<condition expression="#{orderHome.anyOneStoreOut and (not orderHome.instance.moneyComplete)}"></condition>
+		</transition>
 	</decision>
 
-	<task-node name="审核">
-		<task name="审核"></task>
-		<transition to="定单状态判断"></transition>
-	</task-node>
-
-	<task-node name="退货入库">
-		<transition to="退货完成"></transition>
+	<task-node name="退货入库(1库)">
+		<task name="退货入库">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderStoreIn.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
+		</task>
+		<transition to="入库完成(1库)"></transition>
 	</task-node>
 
 	<task-node name="退款">
+		<task name="退款">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/CancelOrderMoneyBack.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.finance.cashier"></assignment>
+		</task>
 		<transition to="退款完成"></transition>
 	</task-node>
 
 	<fork name="fork1">
 		<transition to="退款" name="退款"></transition>
-		<transition to="退货入库" name="退货"></transition>
+		<transition to="调度" name="退货"></transition>
 	</fork>
 
 	<join name="join1">
-		<transition to="end-state1" name="完成"></transition>
+		<transition to="结束" name="完成"></transition>
 	</join>
 
 	<decision name="退款完成">
-		<transition to="join1"></transition>
-		<transition to="end-state1" name="结束仅退款"></transition>
+		<transition to="join1">
+			<condition expression="#{orderHome.anyOneStoreOut}"></condition>
+		</transition>
+		<transition to="结束" name="结束仅退款">
+			<condition expression="#{not orderHome.anyOneStoreOut}"></condition>
+		</transition>
 	</decision>
 
 	<decision name="退货完成">
-		<transition to="join1"></transition>
-		<transition to="end-state1" name="结束仅退货"></transition>
+		<transition to="join1">
+			<condition expression="#{orderHome.instance.moneyComplete}"></condition>
+		</transition>
+		<transition to="结束" name="结束仅退货">
+			<condition expression="#{not orderHome.instance.moneyComplete}"></condition>
+		</transition>
 	</decision>
 
+	<fork name="fork2">
+		<transition to="入库确认(1库)" name="入库(1库)"></transition>
+		<transition to="入库确认(2库)" name="入库(2库)"></transition>
+		<transition to="入库确认(天津)" name="入库(天津)"></transition>
+	</fork>
 
-	<end-state name="end-state1"></end-state>
+	<join name="join2">
+		<transition to="退货完成"></transition>
+	</join>
+
+	<node name="入库完成(1库)">
+		<transition to="join2"></transition>
+	</node>
+
+	<node name="入库完成(2库)">
+		<transition to="join2"></transition>
+	</node>
+
+	<node name="入库完成(天津)">
+		<transition to="join2"></transition>
+	</node>
+
+	<decision name="入库确认(1库)">
+		<transition to="退货入库(1库)" name="入库">
+			<condition expression="#{orderBackHome.needStoreIn('A')}"></condition>
+		</transition>
+		<transition to="入库完成(1库)">
+			<condition expression="#{not orderBackHome.needStoreIn('A')}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="入库确认(2库)">
+		<transition to="入库完成(2库)">
+			<condition expression="#{not orderBackHome.needStoreIn('B')}"></condition>
+		</transition>
+		<transition to="退货入库(2库)" name="入库">
+			<condition expression="#{orderBackHome.needStoreIn('B')}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="入库确认(天津)">
+		<transition to="退货入库(天津)" name="入库">
+			<condition expression="#{orderBackHome.needStoreIn('C')}"></condition>
+		</transition>
+		<transition to="入库完成(天津)">
+			<condition expression="#{not orderBackHome.needStoreIn('C')}"></condition>
+		</transition>
+	</decision>
+
+	<task-node name="退货入库(2库)">
+		<task name="退货入库(2库)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderStoreIn.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
+		</task>
+		<transition to="入库完成(2库)"></transition>
+	</task-node>
+
+	<task-node name="退货入库(天津)">
+		<task name="退货入库(天津)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderStoreIn.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('C')}"></assignment>
+		</task>
+		<transition to="入库完成(天津)"></transition>
+	</task-node>
+
+	<task-node name="调度">
+		<task name="调度">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderDispatch.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.storage.dispatch"></assignment>
+		</task>
+		<transition to="fork2"></transition>
+	</task-node>
+
+
+	<end-state name="结束"></end-state>
 
 
 </process-definition>

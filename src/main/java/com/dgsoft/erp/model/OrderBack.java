@@ -15,6 +15,15 @@ import javax.validation.constraints.Size;
 @Table(name = "ORDER_BACK", catalog = "MINI_ERP")
 public class OrderBack implements java.io.Serializable {
 
+    public enum OrderBackType{
+        ALL_ORDER_CANCEL,PART_ORDER_BACK;
+    }
+
+    public enum OrderBackReason{
+        RES_CHANGE,INPUT_ERROR,CUSTOMER_CANCEL;
+    }
+
+
 	private String id;
 	private Integer version;
 	private CustomerOrder customerOrder;
@@ -22,9 +31,18 @@ public class OrderBack implements java.io.Serializable {
 	private Date createDate;
 	private String memo;
 
-	private Set<ProductBackStoreIn> productBackReses = new HashSet<ProductBackStoreIn>(0);
+    private OrderBackType orderBackType;
+    private boolean moneyComplete;
+    private boolean resComplete;
+    private String applyEmp;
+
+
+
+	private Set<ProductBackStoreIn> productBackStoreIn = new HashSet<ProductBackStoreIn>(0);
 
 	private AccountOper accountOper;
+
+
 
 	public OrderBack() {
 	}
@@ -103,12 +121,12 @@ public class OrderBack implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack")
-	public Set<ProductBackStoreIn> getProductBackReses() {
-		return this.productBackReses;
+	public Set<ProductBackStoreIn> getProductBackStoreIn() {
+		return this.productBackStoreIn;
 	}
 
-	public void setProductBackReses(Set<ProductBackStoreIn> productBackReses) {
-		this.productBackReses = productBackReses;
+	public void setProductBackStoreIn(Set<ProductBackStoreIn> productBackReses) {
+		this.productBackStoreIn = productBackReses;
 	}
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY, targetEntity = AccountOper.class)
@@ -121,4 +139,43 @@ public class OrderBack implements java.io.Serializable {
 		this.accountOper = backMoneys;
 	}
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="BACK_TYPE",nullable = false,length = 32)
+    @NotNull
+    public OrderBackType getOrderBackType() {
+        return orderBackType;
+    }
+
+    public void setOrderBackType(OrderBackType orderBackType) {
+        this.orderBackType = orderBackType;
+    }
+
+    @Column(name="MONEY_COMPLETE",nullable = false)
+    public boolean isMoneyComplete() {
+        return moneyComplete;
+    }
+
+    public void setMoneyComplete(boolean moneyComplete) {
+        this.moneyComplete = moneyComplete;
+    }
+
+    @Column(name="RES_COMPLETE",nullable = false)
+    public boolean isResComplete() {
+        return resComplete;
+    }
+
+    public void setResComplete(boolean resComplete) {
+        this.resComplete = resComplete;
+    }
+
+    @Column(name = "APPLY_EMP",nullable = false,length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getApplyEmp() {
+        return applyEmp;
+    }
+
+    public void setApplyEmp(String applyEmp) {
+        this.applyEmp = applyEmp;
+    }
 }

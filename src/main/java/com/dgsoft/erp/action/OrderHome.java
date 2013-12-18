@@ -174,5 +174,16 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+    public boolean isAnyOneStoreOut(){
+        for(NeedRes needRes:getInstance().getNeedReses()){
+           for (Dispatch dispatch: needRes.getDispatches()){
+               if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_STORE_OUT)){
+                   return true;
+               }
+           }
+        }
+        return false;
+    }
+
 
 }
