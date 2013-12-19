@@ -19,10 +19,6 @@ public class OrderBack implements java.io.Serializable {
         ALL_ORDER_CANCEL,PART_ORDER_BACK;
     }
 
-    public enum OrderBackReason{
-        RES_CHANGE,INPUT_ERROR,CUSTOMER_CANCEL;
-    }
-
 
 	private String id;
 	private Integer version;

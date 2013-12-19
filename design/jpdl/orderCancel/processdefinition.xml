@@ -10,13 +10,13 @@
 
 	<decision name="定单状态判断">
 		<transition to="fork1" name="同时退款退货">
-			<condition expression="#{orderHome.anyOneStoreOut and orderHome.instance.moneyComplete}"></condition>
+			<condition expression="#{false}"></condition>
 		</transition>
 		<transition to="退款" name="仅退款">
-			<condition expression="#{(not orderHome.anyOneStoreOut) and orderHome.instance.moneyComplete}"></condition>
+			<condition expression="#{true  or  ((not orderHome.anyOneStoreOut) and orderHome.instance.moneyComplete)}"></condition>
 		</transition>
 		<transition to="调度" name="仅退货">
-			<condition expression="#{orderHome.anyOneStoreOut and (not orderHome.instance.moneyComplete)}"></condition>
+			<condition expression="#{false}"></condition>
 		</transition>
 	</decision>
 
@@ -51,10 +51,10 @@
 
 	<decision name="退款完成">
 		<transition to="join1">
-			<condition expression="#{orderHome.anyOneStoreOut}"></condition>
+			<condition expression="#{false}"></condition>
 		</transition>
 		<transition to="结束" name="结束仅退款">
-			<condition expression="#{not orderHome.anyOneStoreOut}"></condition>
+			<condition expression="#{true}"></condition>
 		</transition>
 	</decision>
 

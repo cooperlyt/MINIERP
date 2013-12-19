@@ -22,7 +22,7 @@ INSERT INTO DG_SYSTEM.BUSINESS_CATEGORY(ID, NAME, PRIORITY) VALUES('erp.storage'
 -- 业务
 
 INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.order','销售订单','order','/business/startPrepare/erp/sale/CreateSaleOrder.xhtml','','','erp.sale','销售订单',0);
-INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.orderCancel','撤消订单','orderCancel','/business/startPrepare/erp/sale/CancelOrder.xhtml','','','erp.sale','撤消订单',0);
+INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION, START_PROPAGATION) VALUES('erp.business.orderCancel','撤消订单','orderCancel','/func/erp/sale/CustomerOrder.xhtml','','','erp.sale','撤消订单',0,'');
 
 
 INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.inventory','盘点','inventory','/business/startPrepare/erp/store/Inventory.xhtml','','','erp.storage','盘点',0);
@@ -202,7 +202,14 @@ INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, EN
 INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.needResReason','产品需求原因','',b'1');
 
 INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.needResReason.order','order','订单','erp.needResReason','',1, b'1');
-INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.needResReason.supplement','supplement','订单补发','erp.needResReason','',1, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.needResReason.supplement','supplement','订单补发','erp.needResReason','',2, b'1');
+
+INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.orderBackReason','订单撤消原因','',b'1');
+
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.orderBackReason.resChange','resChange','订单需求更改','erp.orderBackReason','',1, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.orderBackReason.inputError','inputError','输入错误','erp.orderBackReason','',2, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.orderBackReason.byCustomer','byCustomer','客户退单','erp.orderBackReason','',3, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.orderBackReason.other','other','其它','erp.orderBackReason','',4, b'1');
 
 INSERT INTO DG_SYSTEM.PROVINCE(PID,NAME,SORT)VALUES(11,'北京市',0);
 INSERT INTO DG_SYSTEM.PROVINCE(PID,NAME,SORT)VALUES(12,'天津市',0);

@@ -11,31 +11,65 @@
     <ui:param name="functionTitle" value="#{messages.CancelOrder}"/>
 
     <ui:define name="func-body">
-          <h:form>
-              <rich:toolbar>
-                  <rich:toolbarGroup>
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup>
 
-                  </rich:toolbarGroup>
+                </rich:toolbarGroup>
 
-                  <rich:toolbarGroup location="right">
-                      <s:button value="#{messages.cancel}" propagation="end"
-                                view="/func/erp/sale/CustomerOrder.xhtml"/>
+                <rich:toolbarGroup location="right">
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="/func/erp/sale/CustomerOrder.xhtml"/>
 
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.CancelOrder}" action="#{orderBackHome.cancelSimpleOrder}" rendered="#{orderBackHome.simpleCancel}"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.CancelOrder}" action="#{businessCreate.create}" rendered="#{not orderBackHome.simpleCancel}"/>
+                </rich:toolbarGroup>
+            </rich:toolbar>
 
-                      <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
-                  </rich:toolbarGroup>
-              </rich:toolbar>
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
 
-              <br/>
-              <rich:messages ajaxRendered="true" globalOnly="true"/>
-              <br/>
+            <rich:panel>
 
-              <s:decorate template="/layout/seam-edit.xhtml">
-                  <ui:define name="label">#{messages.}</ui:define>
-              </s:decorate>
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.OrderBack_field_BackType}</ui:define>
+                    <h:selectOneMenu value="#{orderBackHome.instance.orderBackType}"
+                                     label="#{orderBackHome.instance.orderBackType}" required="true">
+                        <s:selectItems value="#{orderBackTypes}" var="_type" label="#{messages[_type.name()]}"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <s:convertEnum/>
+                    </h:selectOneMenu>
+                </s:decorate>
 
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.OrderBack_field_reason}</ui:define>
+                    <h:selectOneMenu value="#{orderBackHome.instance.reason}"
+                                     label="#{messages.OrderBack_field_reason}" required="true">
+                        <s:selectItems var="_word" label="#{_word.value}"
+                                       itemValue="#{_word.id}"
+                                       value="#{dictionary.getWordList('erp.orderBackReason')}"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                    </h:selectOneMenu>
+                </s:decorate>
 
-          </h:form>
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea label="#{messages.field_memo}" value="#{orderBackHome.instance.memo}" cols="20"
+                                     rows="2"/>
+                </s:decorate>
 
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
+            </rich:panel>
+        </h:form>
+            <br/>
+        <h:form>
+            <rich:collapsiblePanel switchType="client" header="#{messages.order_info} - #{orderHome.instance.id}">
+                <ui:include src="/layout/erp/OrderInfo.xhtml"/>
+            </rich:collapsiblePanel>
+        </h:form>
     </ui:define>
 </ui:composition>

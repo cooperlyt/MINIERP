@@ -33,4 +33,9 @@
         <action execute="#{bpmTaskChangePublish.onBusinessTaskChange}"/>
     </event>
 
+
+    <event type="org.jboss.seam.processStoped">
+        <action execute="#{bpmTaskChangePublish.onBusinessTaskChange}"/>
+    </event>
+
 </components>

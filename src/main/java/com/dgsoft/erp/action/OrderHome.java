@@ -23,18 +23,18 @@ import java.util.*;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
-    @Factory(value = "feePayTypes",scope = ScopeType.CONVERSATION)
-    public PayType[] getFeePayTypes(){
-        return new PayType[]{PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK};
+    @Factory(value = "feePayTypes", scope = ScopeType.CONVERSATION)
+    public PayType[] getFeePayTypes() {
+        return new PayType[]{PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK};
     }
 
     @Factory(value = "middleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
-    public CustomerOrder.MiddleMoneyCalcType[] getMiddleMoneyCalcTypes(){
+    public CustomerOrder.MiddleMoneyCalcType[] getMiddleMoneyCalcTypes() {
         return CustomerOrder.MiddleMoneyCalcType.values();
     }
 
-    @Factory (value ="itemMiddleMoneyCalcTypes" , scope = ScopeType.CONVERSATION)
-    public OrderItem.MiddleMoneyCalcType[] getItemMiddleMoneyCalcTypes(){
+    @Factory(value = "itemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
+    public OrderItem.MiddleMoneyCalcType[] getItemMiddleMoneyCalcTypes() {
         return OrderItem.MiddleMoneyCalcType.values();
     }
 
@@ -71,7 +71,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public NeedRes getLastNeedRes(){
+    public NeedRes getLastNeedRes() {
         NeedRes result = null;
         for (NeedRes nr : getInstance().getNeedReses()) {
             if ((result == null) ||
@@ -81,14 +81,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getLastNeedResTotalFare(){
+    public BigDecimal getLastNeedResTotalFare() {
         BigDecimal result = BigDecimal.ZERO;
         NeedRes lastNeedRes = getLastNeedRes();
-        if (lastNeedRes == null){
+        if (lastNeedRes == null) {
             return result;
         }
-        for (Dispatch dispatch: lastNeedRes.getDispatches()){
-            if (dispatch.getFare() != null){
+        for (Dispatch dispatch : lastNeedRes.getDispatches()) {
+            if (dispatch.getFare() != null) {
                 result = result.add(dispatch.getFare());
             }
         }
@@ -119,7 +119,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     public List<Map.Entry<StoreRes, ResCount>> getAllShipStoreResEntrySet() {
         List<Map.Entry<StoreRes, ResCount>> result = new ArrayList<Map.Entry<StoreRes, ResCount>>(allShipStoreReses().entrySet());
 
-        Collections.sort(result,new Comparator<Map.Entry<StoreRes, ResCount>>() {
+        Collections.sort(result, new Comparator<Map.Entry<StoreRes, ResCount>>() {
             @Override
             public int compare(Map.Entry<StoreRes, ResCount> o1, Map.Entry<StoreRes, ResCount> o2) {
                 return o1.getKey().compareTo(o2.getKey());
@@ -128,28 +128,33 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getTotalItemMoney(){
+    public BigDecimal getTotalItemMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem orderItem: getMasterNeedRes().getOrderItems()){
-            result = result.add(orderItem.getTotalMoney());
-        }
+        NeedRes needRes = getMasterNeedRes();
+        if (needRes != null)
+            for (OrderItem orderItem : needRes.getOrderItems()) {
+                result = result.add(orderItem.getTotalMoney());
+            }
         return result;
 
     }
 
-    public BigDecimal getTotalItemMiddleMoney(){
+    public BigDecimal getTotalItemMiddleMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem orderItem: getMasterNeedRes().getOrderItems()){
-            if ((orderItem.getMiddleMoneyCalcType() != null) &&
-                    (orderItem.getMiddleMoney() != null))
-            result = result.add(orderItem.getMiddleMoney());
-        }
+        NeedRes needRes = getMasterNeedRes();
+        if (needRes != null)
+            for (OrderItem orderItem : needRes.getOrderItems()) {
+                if ((orderItem.getMiddleMoneyCalcType() != null) &&
+                        (orderItem.getMiddleMoney() != null))
+                    result = result.add(orderItem.getMiddleMoney());
+            }
+
         return result;
     }
 
-    public BigDecimal getTotalOrderFeeMoney(){
+    public BigDecimal getTotalOrderFeeMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (OrderFee orderFee: getInstance().getOrderFees()){
+        for (OrderFee orderFee : getInstance().getOrderFees()) {
             result = result.add(orderFee.getMoney());
         }
         return result;
@@ -174,16 +179,20 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public boolean isAnyOneStoreOut(){
-        for(NeedRes needRes:getInstance().getNeedReses()){
-           for (Dispatch dispatch: needRes.getDispatches()){
-               if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_STORE_OUT)){
-                   return true;
-               }
-           }
+    public boolean isAnyOneStoreOut() {
+        for (NeedRes needRes : getInstance().getNeedReses()) {
+            for (Dispatch dispatch : needRes.getDispatches()) {
+                if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_STORE_OUT)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
 
+
+    public boolean isAnyOneMoneyPay(){
+        return  !getInstance().getAccountOpers().isEmpty();
+    }
 
 }

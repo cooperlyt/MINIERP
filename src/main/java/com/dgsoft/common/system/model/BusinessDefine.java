@@ -23,6 +23,7 @@ public class BusinessDefine implements java.io.Serializable {
     private String taskService;
     private String memo;
     private Integer version;
+    private String startPropagation;
     private Set<ComplexVarSubscribe> complexVarSubscribes = new HashSet<ComplexVarSubscribe>(0);
     private Set<FileSubscribe> fileSubscribes = new HashSet<FileSubscribe>(0);
     private Set<SimpleVarSubscribe> simpleVarSubscribes = new HashSet<SimpleVarSubscribe>(0);
@@ -192,6 +193,16 @@ public class BusinessDefine implements java.io.Serializable {
 
     public void setReportSubscribes(Set<ReportSubscribe> reportSubscribes) {
         this.reportSubscribes = reportSubscribes;
+    }
+
+    @Column(name = "START_PROPAGATION",nullable = true,length = 10)
+    @Size(max = 10)
+    public String getStartPropagation() {
+        return startPropagation;
+    }
+
+    public void setStartPropagation(String startPropagation) {
+        this.startPropagation = startPropagation;
     }
 
     @Version

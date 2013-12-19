@@ -56,7 +56,6 @@
       <label x="0" y="76"/>
     </edge>
   </node>
-  <node name="结束" x="571" y="7" width="132" height="36"/>
   <node name="fork2" x="138" y="382" width="99" height="24">
     <edge>
       <label x="-26" y="-6"/>
@@ -127,4 +126,5 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
+  <node name="结束" x="571" y="7" width="132" height="36"/>
 </root-container>

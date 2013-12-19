@@ -10,6 +10,13 @@ import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Logging;
+import org.jbpm.graph.def.ProcessDefinition;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.graph.exe.Token;
+import org.jbpm.taskmgmt.exe.TaskInstance;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
@@ -45,4 +52,38 @@ public class BussinessProcessUtils extends BusinessProcess{
         Logging.getLog(getClass()).debug("call endTask:" + transitionName);
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.endTask");
     }
+
+    public void stopProcess(String processDefinitionName, String businessKey){
+        ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition(processDefinitionName);
+        ProcessInstance processInstance = definition==null ?
+                null : ManagedJbpmContext.instance().getProcessInstanceForUpdate(definition, businessKey);
+
+
+        Collection listTasks = processInstance.getTaskMgmtInstance().getTaskInstances();
+        if (listTasks.size()>0) {
+            for (Iterator iter = listTasks.iterator(); iter.hasNext(); ) {
+                TaskInstance ti = (TaskInstance) iter.next();
+                if (!ti.hasEnded()) {
+                    ti.setSignalling(false);
+                    ti.cancel();
+                    ti.setEnd(new java.util.Date());
+
+
+                    Logging.getLog(getClass()).debug("task instance " + ti.getName() + " has ended");
+                    Token tk = ti.getToken();
+                    tk.end();
+                    Logging.getLog(getClass()).debug("token " + tk.getName() + " has ended");
+                }
+            }
+        }
+        if (!processInstance.hasEnded()) {
+            processInstance.end();
+            Logging.getLog(getClass()).debug("process instance " + processInstance.getId() + " has ended");
+        }
+
+        Events.instance().raiseEvent("org.jboss.seam.stopProcess",processInstance);
+
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processStoped");
+    }
+
 }
