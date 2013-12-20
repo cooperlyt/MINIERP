@@ -73,7 +73,7 @@ public class OrderBack implements java.io.Serializable {
 		this.version = version;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(optional = false,fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
 	@NotNull
 	public CustomerOrder getCustomerOrder() {

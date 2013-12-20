@@ -12,10 +12,18 @@
 
         <h:outputText value="#{messages.order_is_canceled}" style="color: red;"/>
 
-        <!--TODO cancel info -->
+        <s:decorate template="/layout/view-details.xhtml">
+
+            <ui:include src="/layout/erp/OrderBackDetails.xhtml">
+                <ui:param name="orderBack" value="#{orderHome.instance.orderBack}"/>
+            </ui:include>
+
+            <ui:param name="labelValue" value="#{dictionary.getWordValue(orderHome.instance.orderBack.reason)}"/>
+            <ui:param name="openLabel" value="#{messages.OrderBack_field_reason}"/>
+            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.CancelOrder}"/>
+        </s:decorate>
 
     </a:outputPanel>
-
 
 
     <s:decorate template="/layout/seam-display.xhtml">
@@ -33,7 +41,7 @@
 
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.payType}</ui:define>
-         #{messages[orderHome.instance.payType.name()]}
+        #{messages[orderHome.instance.payType.name()]}
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
@@ -69,7 +77,7 @@
     </s:decorate>
 
 
-
     <ui:insert/>
+
     <div style="clear:both"/>
 </ui:composition>

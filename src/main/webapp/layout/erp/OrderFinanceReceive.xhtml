@@ -166,9 +166,11 @@
     <br/>
     <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
         <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
-            <s:decorate template="/layout/display.xhtml">
+            <s:decorate template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.order_field_totalMoney}</ui:define>
-                <h:outputText value="#{orderHome.instance.money}"/>
+                <h:outputText value="#{orderHome.instance.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
             </s:decorate>
         </s:decorate>
     </rich:collapsiblePanel>

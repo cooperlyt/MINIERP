@@ -80,9 +80,9 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
             getInstance().setApplyEmp(credentials.getUsername());
             getInstance().setCustomerOrder(orderHome.getInstance());
             getInstance().setCreateDate(new Date());
-            getInstance().setMoneyComplete(!orderHome.getInstance().isMoneyComplete());
+            getInstance().setMoneyComplete(!orderHome.isAnyOneMoneyPay());
             getInstance().setResComplete(!orderHome.isAnyOneStoreOut());
-
+            getInstance().getCustomerOrder().setCanceled(true);
 
         }
         return true;
@@ -93,11 +93,15 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
     @Transactional
     public void createOrder(BusinessDefine businessDefine) {
 
-
-
         if (!"persisted".equals(persist())) {
             throw new ProcessCreatePrepareException("inventory persist fail");
         }
+
+        ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition("order");
+        ProcessInstance processInstance = definition==null ?
+                null : ManagedJbpmContext.instance().getProcessInstanceForUpdate(definition, orderHome.getInstance().getId());
+
+        processInstance.suspend();
 
         startData.setDescription(orderHome.getInstance().getCustomer().getName() + "[" + orderHome.getInstance().getId()  + "]");
     }
@@ -105,12 +109,16 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
 
 
+    @End
     public String cancelSimpleOrder(){
 
         businessProcess.stopProcess("order",orderHome.getInstance().getId());
+        if ("persisted".equals(persist())){
+            return "/func/erp/sale/CustomerOrder.xhtml";
+        } else
+            return null;
 
 
-        return "/func/erp/sale/CustomerOrder.xhtml";
     }
 
 

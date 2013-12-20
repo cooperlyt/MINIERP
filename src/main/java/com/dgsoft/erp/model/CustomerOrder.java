@@ -53,7 +53,7 @@ public class CustomerOrder implements java.io.Serializable {
     private boolean earnestFirst;
 
     private MiddleMoneyCalcType middleMoneyCalcType;
-    private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
+    private OrderBack orderBack;
     private MiddleMoneyPay middleMoneyPay;
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
@@ -302,13 +302,13 @@ public class CustomerOrder implements java.io.Serializable {
         this.includeMiddleMan = middleManPay;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public Set<OrderBack> getOrderBacks() {
-        return this.orderBacks;
+    @OneToOne(optional = true,fetch = FetchType.LAZY,mappedBy = "customerOrder")
+    public OrderBack getOrderBack() {
+        return orderBack;
     }
 
-    public void setOrderBacks(Set<OrderBack> orderBacks) {
-        this.orderBacks = orderBacks;
+    public void setOrderBack(OrderBack orderBack) {
+        this.orderBack = orderBack;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "customerOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})

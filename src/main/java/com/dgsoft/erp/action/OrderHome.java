@@ -160,6 +160,27 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+
+    public BigDecimal getTotalReveiveMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (AccountOper oper : getInstance().getAccountOpers()) {
+            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST) ||
+                    oper.getOperType().equals(AccountOper.AccountOperType.ORDER_PAY))
+                result = result.add(oper.getOperMoney());
+        }
+        return result;
+    }
+
+    public BigDecimal getReveiveEarnest(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (AccountOper oper : getInstance().getAccountOpers()) {
+            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST))
+                result = result.add(oper.getOperMoney());
+        }
+        return result;
+    }
+
+
     public Map<StoreRes, ResCount> allShipStoreReses() {
         Map<StoreRes, ResCount> result = new HashMap<StoreRes, ResCount>();
 

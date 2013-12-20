@@ -1,12 +1,103 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{messages.CancelOrderBackMoney}"/>
+
+    <ui:define name="func-body">
+
+        <h:form>
+            <rich:toolbar>
+
+                <rich:toolbarGroup>
+                    <h:outputText value="#{messages.OrderReveiveMoney}"/>
+                    <h:outputText value="#{orderHome.totalReveiveMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup>
+
+                    <h:outputText value="#{messages.order_field_earnest}"/>
+                    <h:outputText value="#{orderHome.reveiveEarnest}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup>
+
+                    <s:decorate id="backMoneyField" template="/layout/single-edit.xhtml">
+
+
+                        <h:inputText label="#{messages.OrderBackMoney}" value="#{orderBackMoney.backMoney}" required="true"
+                                     converter="javax.faces.Number">
+                        </h:inputText>
+                    </s:decorate>
+
+                    <a:commandButton value="#{messages.backAllMoney}" action="#{orderBackMoney.calcAllMoney}"
+                                     execute="@this"  immediate="true" render="backMoneyField">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    <a:commandButton value="#{messages.backPartMoney}" execute="@this"
+                                     action="#{orderBackMoney.calcNoEarnestMoney}" immediate="true" render="backMoneyField">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup location="right">
+                    <h:panelGroup>
+                        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                         action="#{orderBackMoney.complete}"/>
+                    </h:panelGroup>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+        </h:form>
+        <br/>
+        <rich:messages ajaxRendered="true" globalOnly="true"/>
+        <br/>
+
+        <a:outputPanel id="orderPayRecord">
+            <ui:include src="/layout/erp/OrderPayRecord.xhtml">
+                <ui:param name="order" value="#{orderHome.instance}"/>
+            </ui:include>
+        </a:outputPanel>
+
+
+        <h:form>
+            <br/>
+            <rich:collapsiblePanel switchType="client" expanded="#{false}"
+                                   header="#{messages.Customer}: #{customerHome.instance.name}">
+
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{customerHome.instance}"/>
+                </ui:include>
+
+            </rich:collapsiblePanel>
+
+            <br/>
+            <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
+                <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+                    <s:decorate template="/layout/seam-display.xhtml">
+                        <ui:define name="label">#{messages.order_field_totalMoney}</ui:define>
+                        <h:outputText value="#{orderHome.instance.money}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </s:decorate>
+                </s:decorate>
+            </rich:collapsiblePanel>
+            <br/>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

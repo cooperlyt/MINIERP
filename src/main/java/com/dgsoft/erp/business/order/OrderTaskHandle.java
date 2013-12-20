@@ -32,13 +32,14 @@ public abstract class OrderTaskHandle extends TaskHandle {
 
 
     public BigDecimal getTotalReveiveMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper oper : orderHome.getInstance().getAccountOpers()) {
-            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST) ||
-                    oper.getOperType().equals(AccountOper.AccountOperType.ORDER_PAY))
-            result = result.add(oper.getOperMoney());
-        }
-        return result;
+        return orderHome.getTotalReveiveMoney();
+//        BigDecimal result = BigDecimal.ZERO;
+//        for (AccountOper oper : orderHome.getInstance().getAccountOpers()) {
+//            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST) ||
+//                    oper.getOperType().equals(AccountOper.AccountOperType.ORDER_PAY))
+//            result = result.add(oper.getOperMoney());
+//        }
+//        return result;
     }
 
     public BigDecimal getShortageMoney(){

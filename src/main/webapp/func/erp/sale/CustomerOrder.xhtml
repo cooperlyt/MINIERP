@@ -159,6 +159,7 @@
                 <ui:param name="propertyPath" value="customerOrder.id"/>
             </ui:include>
         </f:facet>
+
         <h:outputText style="text-decoration:line-through; color: red;" value=" #{_order.id}"
                       rendered="#{_order.canceled}"/>
         <h:outputText  value=" #{_order.id}"
