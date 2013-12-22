@@ -1,7 +1,9 @@
 package com.dgsoft.erp.model;
 // Generated Oct 20, 2013 6:30:11 PM by Hibernate Tools 4.0.0
 
-import java.util.Date;
+import com.dgsoft.erp.model.api.StockChangeModel;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,32 +13,28 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "STORE_CHANGE", catalog = "MINI_ERP")
-public class StoreChange implements java.io.Serializable {
+public class StoreChange implements java.io.Serializable, StockChangeModel {
 
-    public enum StoreChangeType{
+    public enum StoreChangeReason {
 
-        BORROW_OUT_OUT(true),BORROW_OUT_IN(false),
-        BORROW_IN_IN(false),BORROW_IN_OUT(true),
-        OTHER_IN(false),OTHER_OUT(true);
+        BORROW_OUT_OUT(StockChange.StoreChangeType.STORE_CHANGE_OUT),BORROW_OUT_IN(StockChange.StoreChangeType.STORE_CHANGE_IN),
+        BORROW_IN_IN(StockChange.StoreChangeType.STORE_CHANGE_IN),BORROW_IN_OUT(StockChange.StoreChangeType.STORE_CHANGE_OUT),
+        OTHER_IN(StockChange.StoreChangeType.STORE_CHANGE_IN),OTHER_OUT(StockChange.StoreChangeType.STORE_CHANGE_OUT);
 
-        private boolean out;
+        private StockChange.StoreChangeType storeChangeType;
 
-        public boolean isOut() {
-            return out;
+        public StockChange.StoreChangeType getStoreChangeType() {
+            return storeChangeType;
         }
 
-        public void setOut(boolean out) {
-            this.out = out;
-        }
-
-        private StoreChangeType(boolean out){
-           this.out = out;
+        private StoreChangeReason(StockChange.StoreChangeType storeChangeType){
+           this.storeChangeType = storeChangeType;
         }
     }
 
 	private String id;
 	private StockChange stockChange;
-	private StoreChangeType type;
+	private StoreChangeReason reason;
 	private String memo;
 
 	public StoreChange() {
@@ -44,6 +42,8 @@ public class StoreChange implements java.io.Serializable {
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {
@@ -55,7 +55,7 @@ public class StoreChange implements java.io.Serializable {
 	}
 
 
-    @OneToOne(optional = false,fetch = FetchType.LAZY)
+    @OneToOne(optional = false,fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "STORE_CHANGE", nullable = false)
     @NotNull
     public StockChange getStockChange() {
@@ -69,12 +69,12 @@ public class StoreChange implements java.io.Serializable {
     @Enumerated(EnumType.STRING)
 	@Column(name = "TYPE", nullable = false, length = 32)
 	@NotNull
-	public StoreChangeType getType() {
-		return this.type;
+	public StoreChangeReason getReason() {
+		return this.reason;
 	}
 
-	public void setType(StoreChangeType type) {
-		this.type = type;
+	public void setReason(StoreChangeReason type) {
+		this.reason = type;
 	}
 
 	@Column(name = "MEMO", length = 200)

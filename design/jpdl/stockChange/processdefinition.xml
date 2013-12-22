@@ -9,7 +9,12 @@
 
 
 	<task-node name="审核">
-		<task name="库存变动审核"></task>
+		<task name="库存变动审核">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StockChangeCheck.xhtml&quot;}
+			</description>
+			<assignment pooled-actors=""></assignment>
+		</task>
 		<transition to="end-state1"></transition>
 	</task-node>
 

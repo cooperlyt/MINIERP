@@ -166,7 +166,7 @@ public class StoreOutAction  {
 //        if (isIdAvailable(getInstance().getId())) {
 //
 //
-//            getInstance().setStockChange(new StockChange(selectStore, storeOutDate, credentials.getUsername(), StockChange.StoreChangeType.STORE_IN, memo));
+//            getInstance().setStockChange(new StockChange(selectStore, storeOutDate, credentials.getUsername(), StockChange.StoreChangeReason.STORE_IN, memo));
 //            for (StoreOutItem storeInItem : storeOutItems) {
 //
 //                StockChangeItem stockChangeItem = new StockChangeItem(getInstance().getStockChange(), storeInItem.getStock(), storeInItem.getCount(),true);

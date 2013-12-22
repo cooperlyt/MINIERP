@@ -29,7 +29,7 @@
 
 
 <h:form>
-    <a:push id="pushPooledTaskCome" address="pushPooledTaskCome" >
+    <a:push id="pushPooledTaskCome" address="pushPooledTaskCome">
         <a:ajax event="dataavailable" render="netTaskComeNotify"/>
     </a:push>
     <a:push id="pushOwnerTaskCome" address="pushTaskCome">
@@ -193,12 +193,14 @@
 
 
                 <rich:panel styleClass="func-body">
-                    <ui:insert name="toolbar"/>
+                    <ui:insert name="func-body">
+                        <ui:insert name="toolbar"/>
 
-                    <rich:messages ajaxRendered="true" globalOnly="true"/>
-                    <br/>
-                    <ui:insert name="body">
-                        Body content missed
+                        <rich:messages ajaxRendered="true" globalOnly="true"/>
+                        <br/>
+                        <ui:insert name="body">
+                            Body content missed
+                        </ui:insert>
                     </ui:insert>
                 </rich:panel>
             </h:panelGroup>

@@ -9,18 +9,19 @@
                 template="/layout/erp/storeIn.xhtml">
 
 
-    <ui:param name="resTreeValue" value="#{produceInResTree}"/>
-    <ui:param name="storeResTreeValue" value="#{produceInStoreResTree}"/>
+    <ui:param name="resTreeValue" value="#{allResTree}"/>
 
-    <ui:param name="storeChangeType" value="PRODUCE_IN"/>
+    <ui:param name="storeResTreeValue" value="#{allStoreResTree}"/>
 
-    <ui:param name="functionTitle" value="#{messages.PRODUCE_IN}"/>
+    <ui:param name="storeChangeType" value="STORE_CHANGE_IN"/>
 
-    <ui:param name="sotreInAction" value="#{produceStoreInHome}"/>
-    
-    <ui:param name="storeInItemsDataModal" value="#{porduceStoreInItems}"/>
+    <ui:param name="functionTitle" value="#{messages.StockInOrOutChange}-#{messages[otherStockIn.instance.reason.name()]}"/>
 
-     <ui:define name="cancelButton">
-         <s:button value="#{messages.cancel}" action="#{produceStoreInHome.cancel}"/>
-     </ui:define>
+    <ui:param name="sotreInAction" value="#{otherStockIn}"/>
+
+    <ui:param name="storeInItemsDataModal" value="#{otherStoreInItems}"/>
+
+    <ui:define name="cancelButton">
+        <s:button value="#{messages.cancel}" action="#{otherStockIn.cancel}"/>
+    </ui:define>
 </ui:composition>

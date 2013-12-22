@@ -14,7 +14,7 @@
         <h:form id="beginActions">
             <rich:toolbar height="26">
                 <rich:toolbarGroup location="right">
-                    <h:commandButton value="#{messages.beginStoreIn}" action="#{produceStoreInHome.begin}">
+                    <h:commandButton value="#{messages.ok}" action="#{otherStockChange.begin}">
 
                         <f:param name="from" value="/func/erp/store/storeChange/ProduceIn.xhtml"/>
                     </h:commandButton>
@@ -24,6 +24,16 @@
             <br/>
             <rich:messages ajaxRendered="true" globalOnly="true"/>
             <br/>
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.OtherStockChangeReason}</ui:define>
+                <h:selectOneMenu value="#{otherStockChange.storeChangeReason}"
+                                 required="true" label="#{messages.OtherStockChangeReason}">
+                    <s:selectItems value="#{stockChangeReasons}" var="_reason" label="#{messages[_reason.name()]}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <s:convertEnum/>
+                </h:selectOneMenu>
+            </s:decorate>
 
             <ui:include src="/layout/erp/StockChangeEdit.xhtml"/>
 

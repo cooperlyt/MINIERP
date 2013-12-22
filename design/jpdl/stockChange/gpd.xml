@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="stockChange" width="942" height="410">
+<root-container name="stockChange" width="725" height="677">
   <node name="库存更改申请" x="96" y="45" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>

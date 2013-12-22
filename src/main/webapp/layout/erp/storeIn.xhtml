@@ -129,9 +129,10 @@
         </ui:define>
 
     </s:decorate>
-
+    <br/>
     <h:form id="storeInItem">
         <rich:panel rendered="#{resHome.idDefined}">
+
 
             <h:panelGrid columns="1">
                 <h:outputText value="#{resHome.resTitle}" styleClass="name"/>
@@ -168,7 +169,7 @@
                                  render="storeInItem,storeInItems,newStoreResCodeInputPanel_inputs"
                                  data="#{sotreInAction.addItemLastState}"
                                  oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
-                                 action="#{produceStoreInHome.addItem}">
+                                 action="#{sotreInAction.addItem}">
                     <a:attachQueue requestDelay="0"/>
 
                 </a:commandButton>
@@ -183,10 +184,10 @@
         </rich:panel>
     </h:form>
 
-
+    <br/>
     <ui:insert name="storeInItemList">
         <h:form id="storeInItems">
-            <rich:dataTable style="width: 100%" value="#{porduceStoreInItems}"
+            <rich:dataTable style="width: 100%" value="#{storeInItemsDataModal}"
                             var="_item">
                 <rich:column>
                     <f:facet name="header">

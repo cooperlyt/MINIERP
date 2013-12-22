@@ -66,6 +66,7 @@ public abstract class StoreChangeHelper<E extends StockChangeModel> extends ErpE
 
     @Override
     public String begin() {
+
         stockChangeHome.getInstance().setOperEmp(credentials.getUsername());
         stockChangeHome.getInstance().setOperType(getStoreChangeType());
         BusinessDefine bd = systemEntityManager.find(BusinessDefine.class,BUSINESS_DEFINE_ID_PREFIX + getStoreChangeType().name());

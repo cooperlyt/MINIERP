@@ -146,6 +146,26 @@
                 <redirect view-id="/func/erp/store/storeChange/ProduceIn.xhtml"/>
             </rule>
 
+            <rule if-outcome="BeginOtherStockIn">
+                <begin-conversation join="true"/>
+                <redirect view-id="/func/erp/store/storeChange/OtherStoreIn.xhtml"/>
+            </rule>
+
+            <rule if-outcome="BeginOtherStockOut">
+                <begin-conversation join="true"/>
+                <redirect view-id="/func/erp/store/storeChange/OtherStockChange.xhtml"/>
+            </rule>
+
+            <rule if-outcome="OtherStockChangeComplete">
+                <end-conversation/>
+                <redirect view-id="/func/erp/store/storeChange/OtherStockChange.xhtml"/>
+            </rule>
+
+            <rule if-outcome="OtherStockChangeCancel">
+                <end-conversation/>
+                <redirect view-id="/func/erp/store/storeChange/OtherStockChange.xhtml"/>
+            </rule>
+
             <rule if-outcome="businessCreated" if="#{empty from}">
                 <end-conversation/>
 
