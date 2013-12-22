@@ -50,7 +50,10 @@
 
     <s:decorate  template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_balance}</ui:define>
-        <h:outputText value="#{customer.balance}"/>
+        <h:outputText value="#{customer.balance}">
+            <f:convertNumber locale="#{calendarBean.locale}"
+                             type="currency" groupingUsed="true"/>
+        </h:outputText>
 
     </s:decorate>
 

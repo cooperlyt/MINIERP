@@ -63,6 +63,8 @@ public class AccountOper implements java.io.Serializable {
         this.operEmp = operEmp;
     }
 
+
+
     public AccountOper(Customer customer, String operEmp,
                        BigDecimal operMoney, AccountOperType operType,
                        Date operDate, BigDecimal beforMoney, BigDecimal afterMoney,
@@ -79,6 +81,23 @@ public class AccountOper implements java.io.Serializable {
         this.payType = payType;
         this.customerOrder = customerOrder;
         this.checkNumber = checkNumber;
+    }
+
+
+    public AccountOper(PreparePay preparePay,Customer customer,String operEmp){
+        this.operType = AccountOperType.PRE_DEPOSIT;
+        this.preparePay = preparePay;
+        this.customer = customer;
+        this.beforMoney = customer.getBalance();
+        this.operEmp = operEmp;
+    }
+
+    public AccountOper(BackPrepareMoney backPrepareMoney,Customer customer,String operEmp){
+        this.operType = AccountOperType.DEPOSIT_BACK;
+        this.backPrepareMoney = backPrepareMoney;
+        this.customer = customer;
+        this.beforMoney = customer.getBalance();
+        this.operEmp = operEmp;
     }
 
 

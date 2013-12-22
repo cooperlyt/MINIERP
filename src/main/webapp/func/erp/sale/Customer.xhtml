@@ -231,7 +231,7 @@
                 <a:attachQueue requestDelay="0"/>
                 <a:param value="#{_customer.id}" assignTo="#{customerHome.id}"/>
             </a:commandButton>
-
+            #{' '}
             <a:commandButton image="/img/person_edit.png" title="#{messages.MiddleMan}"
                              execute="@this,customerEditPanel_form"
                              render="middleManEditPanel_form" immediate="true"
@@ -240,12 +240,26 @@
                 <a:attachQueue requestDelay="0"/>
                 <a:param value="#{_customer.id}" assignTo="#{customerHome.id}"/>
             </a:commandButton>
-
+            #{' '}
             <s:link view="/func/erp/sale/CustomerView.xhtml">
-                <s:graphicImage value="/img/view.png" title="#{messages.edit}"/>
+                <s:graphicImage value="/img/view.png" title="#{messages.viewDetails}"/>
                 <f:param name="customerId" value="#{_customer.id}"/>
                 <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
             </s:link>
+              #{' '}
+
+            <s:link view="/func/erp/finance/cashier/CustomerMoneySavings.xhtml"
+                    propagation="begin" rendered="#{s:hasRole('erp.finance.cashier')}">
+                <s:graphicImage value="/img/savingsMoney.png" title="#{messages.CustomerMoneySavings}"/>
+                <f:param name="customerId" value="#{_customer.id}"/>
+            </s:link>
+              #{' '}
+            <s:link view="/func/erp/finance/cashier/CustomerMoneyRefund.xhtml"
+                    propagation="begin" rendered="#{s:hasRole('erp.finance.cashier')}">
+                <s:graphicImage value="/img/refundMoney.png" title="#{messages.CustomerMoneySavings}"/>
+                <f:param name="customerId" value="#{_customer.id}"/>
+            </s:link>
+
         </rich:column>
 
     </rich:dataTable>

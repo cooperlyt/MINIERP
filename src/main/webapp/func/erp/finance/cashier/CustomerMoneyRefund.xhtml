@@ -12,7 +12,125 @@
     <ui:param name="functionTitle" value="#{messages.CustomerMoneyRefund}"/>
 
     <ui:define name="func-body">
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup>
+                    #{messages.customer_field_balance}:
+                    <h:outputText value="#{customerHome.instance.balance}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
 
+                <rich:toolbarGroup location="right">
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" view="/func/erp/sale/Customer.xhtml"
+                              propagation="end"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}"
+                                     action="#{backPrepareMoneyHome.persist}"/>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
+            <rich:panel>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.accountOper_field_operDate}</ui:define>
+                    <rich:calendar id="orderSendLimitDateField"
+                                   enableManualInput="true"
+                                   inputSize="20"
+                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                   datePattern="#{messages.datetimepattern}"
+                                   required="true"
+                                   defaultTime="#{currentTime}"
+                                   defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                                   label="#{messages.accountOper_field_operDate}"
+                                   value="#{backPrepareMoneyHome.instance.accountOper.operDate}">
+                    </rich:calendar>
+                </s:decorate>
+
+
+                <s:decorate id="payTypeField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
+                    <h:selectOneMenu style="width: 120px" label="#{messages.accountOper_field_payType}" required="true"
+                                     value="#{backPrepareMoneyHome.instance.accountOper.payType}">
+
+                        <s:selectItems value="#{moneyPayTypes}" var="_payType"
+                                       label="#{messages[_payType.name()]}"/>
+                        <s:convertEnum/>
+                        <a:ajax event="valueChange" execute="@this"
+                                render="payTypeField">
+                            <a:attachQueue requestDelay="0"/>
+
+                        </a:ajax>
+                    </h:selectOneMenu>
+
+                    <ui:define name="tail">
+
+
+                        <h:outputText value="#{messages.accountOper_field_checkNumber}#{' '}"
+                                      rendered="#{backPrepareMoneyHome.instance.accountOper.payType eq 'CHECK'}"/>
+                        <h:inputText rendered="#{backPrepareMoneyHome.instance.accountOper.payType eq 'CHECK'}"
+                                     label="#{messages.accountOper_field_checkNumber}"
+                                     value="#{backPrepareMoneyHome.instance.accountOper.checkNumber}">
+                        </h:inputText>
+                    </ui:define>
+                </s:decorate>
+
+
+                <s:decorate id="refundMoneyField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.refundMoney}</ui:define>
+                    <h:inputText value="#{backPrepareMoneyHome.instance.accountOper.operMoney}"
+                                 label="#{messages.refundMoney}"
+                                 validator="javax.faces.validator.GtZeroNumberValidator"
+                                 converter="javax.faces.BigDecimal" required="true">
+                        <f:validateDoubleRange maximum="#{customerHome.instance.balance}"/>
+                    </h:inputText>
+
+                    <ui:define name="tail">
+                        <a:commandButton value="#{messages.backAllMoney}" render="refundMoneyField"
+                                         action="#{backPrepareMoneyHome.backAllMoney}" immediate="true" execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </ui:define>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.description}</ui:define>
+                    <h:inputTextarea label="#{messages.description}"
+                                     value="#{backPrepareMoneyHome.instance.accountOper.description}"
+                                     rows="2" cols="100"/>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea label="#{messages.field_memo}" value="#{backPrepareMoneyHome.instance.memo}"
+                                     rows="2" cols="100"/>
+                </s:decorate>
+
+
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
+            </rich:panel>
+
+
+        </h:form>
+        <br/>
+        <h:form>
+            <rich:collapsiblePanel switchType="client"
+                                   header="#{messages.Customer}: #{customerHome.instance.name}">
+
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{customerHome.instance}"/>
+                </ui:include>
+
+            </rich:collapsiblePanel>
+        </h:form>
     </ui:define>
 
 </ui:composition>

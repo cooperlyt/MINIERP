@@ -3,5 +3,12 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-       <param name="customerId" value="#{customerHome.id}"/>
+    <param name="customerId" value="#{customerHome.id}"/>
+
+    <navigation from-action="#{backPrepareMoneyHome.persist}">
+        <rule if-outcome="persisted">
+            <end-conversation/>
+            <redirect view-id="/func/erp/sale/Customer.xhtml"/>
+        </rule>
+    </navigation>
 </page>

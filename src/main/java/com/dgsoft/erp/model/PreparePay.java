@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,18 +21,18 @@ public class PreparePay implements java.io.Serializable {
 	public PreparePay() {
 	}
 
-	public PreparePay(String id, AccountOper accountOper) {
-		this.id = id;
+	public PreparePay(AccountOper accountOper) {
 		this.accountOper = accountOper;
 	}
-	public PreparePay(String id, AccountOper accountOper, String memo) {
-		this.id = id;
+	public PreparePay(AccountOper accountOper, String memo) {
 		this.accountOper = accountOper;
 		this.memo = memo;
 	}
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
 	@NotNull
 	@Size(max = 32)
 	public String getId() {

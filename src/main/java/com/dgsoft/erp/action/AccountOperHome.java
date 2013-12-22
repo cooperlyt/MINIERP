@@ -11,6 +11,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Role;
 import org.jboss.seam.security.Credentials;
 
+import java.util.EnumSet;
+
 /**
  * Created with IntelliJ IDEA.
  * User: cooperlee
@@ -23,6 +25,11 @@ public class AccountOperHome extends ErpEntityHome<AccountOper> {
     @Factory(value = "accountPayTypes",scope = ScopeType.CONVERSATION)
     public PayType[] getAccountPayTypes() {
         return PayType.values();
+    }
+
+    @Factory(value ="moneyPayTypes", scope = ScopeType.CONVERSATION)
+    public PayType[] getMoneyPayTypes(){
+        return EnumSet.of(PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK).toArray(new PayType[0]);
     }
 
     @In
