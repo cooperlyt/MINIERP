@@ -54,6 +54,8 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
     private StoreResCountInupt storeResCountInupt;
 
+    private StoreResCountInupt itemCheckCount;
+
     private StockChange loseStockChange;
 
     private StockChange addStockChange;
@@ -62,7 +64,9 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
     private String newItemCode = null;
 
-    private boolean addStock;
+    private boolean checkLose = false;
+
+    private boolean haveStock = false;
 
     @In
     private FacesMessages facesMessages;
@@ -75,6 +79,14 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
     public void setAddItemLastState(String addItemLastState) {
         this.addItemLastState = addItemLastState;
+    }
+
+    public StoreResCountInupt getItemCheckCount() {
+        return itemCheckCount;
+    }
+
+    public void setItemCheckCount(StoreResCountInupt itemCheckCount) {
+        this.itemCheckCount = itemCheckCount;
     }
 
     public StoreResCountInupt getStoreResCountInupt() {
@@ -93,12 +105,20 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         this.newItemCode = newItemCode;
     }
 
-    public boolean isAddStock() {
-        return addStock;
+    public boolean isCheckLose() {
+        return checkLose;
     }
 
-    public void setAddStock(boolean addStock) {
-        this.addStock = addStock;
+    public void setCheckLose(boolean checkLose) {
+        this.checkLose = checkLose;
+    }
+
+    public boolean isHaveStock() {
+        return haveStock;
+    }
+
+    public void setHaveStock(boolean haveStock) {
+        this.haveStock = haveStock;
     }
 
     @Observer(value = "erp.resLocateSelected", create = false)
@@ -133,74 +153,96 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     }
 
     @Override
-    public Inventory createInstance(){
+    public Inventory createInstance() {
         return new Inventory(false);
     }
 
-    public void checkLose() {
-        addStock = false;
-        beginCheckItem();
-    }
 
-    public void checkAdd() {
-        addStock = true;
-        beginCheckItem();
-    }
+    public void beginCheckItem() {
 
-    private void beginCheckItem() {
-
-        storeResCountInupt = new StoreResCountInupt(storeResHome.getInstance().getRes(),storeResHome.getInstance().getRes().getResUnitByMasterUnit());
+        itemCheckCount = new StoreResCountInupt(storeResHome.getInstance().getRes(), storeResHome.getInstance().getRes().getResUnitByMasterUnit());
 
 
         if (storeResHome.getInstance().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            storeResCountInupt.setFloatConvertRate(storeResHome.getInstance().getFloatConversionRate());
+            itemCheckCount.setFloatConvertRate(storeResHome.getInstance().getFloatConversionRate());
         }
 
 
         Set<PrepareStockChange> findItems = null;
 
-        if (addStock) {
-            if (addStockChange != null)
-                findItems = addStockChange.getPrepareStockChanges();
-        } else {
-            if (loseStockChange != null)
-                findItems = loseStockChange.getPrepareStockChanges();
-        }
+        if (addStockChange != null) {
 
-
-        if (findItems != null) {
-            for (PrepareStockChange prepareStockChange : findItems) {
+            for (PrepareStockChange prepareStockChange : addStockChange.getPrepareStockChanges()) {
                 if (prepareStockChange.getStoreRes().equals(storeResHome.getInstance())) {
 
-                    storeResCountInupt.setCount(prepareStockChange.getCount());
-
+                    itemCheckCount.setCount(prepareStockChange.getCount());
+                    checkLose = false;
                     break;
                 }
             }
-
         }
+
+
+        haveStock = false;
+        for (Stock stock: getInstance().getStore().getStocks()){
+            if (stock.getStoreRes().equals(storeResHome.getInstance())){
+                haveStock = true;
+                break;
+            }
+        }
+
+        if (!haveStock){
+            checkLose = false;
+        } else if ((findItems == null) && (loseStockChange != null)) {
+            for (PrepareStockChange prepareStockChange : loseStockChange.getPrepareStockChanges()) {
+                if (prepareStockChange.getStoreRes().equals(storeResHome.getInstance())) {
+
+                    itemCheckCount.setCount(prepareStockChange.getCount());
+                    checkLose = true;
+                    break;
+                }
+            }
+        }
+        lastState = "";
+
     }
 
 
+    private void removePrepareStockChange(StockChange stockChange) {
+        for (PrepareStockChange prepareStockChange : stockChange.getPrepareStockChanges()) {
+            if (prepareStockChange.getStoreRes().equals(storeResHome.getInstance())) {
+
+                stockChange.getPrepareStockChanges().remove(prepareStockChange);
+                break;
+            }
+        }
+    }
+
     public void saveCheckItem() {
-        boolean haveStroeRes = false;
+
 
         Set<PrepareStockChange> findItems = null;
 
-        if (addStock) {
+        if (checkLose) {
             if (addStockChange != null)
-                findItems = addStockChange.getPrepareStockChanges();
-        } else {
+                removePrepareStockChange(addStockChange);
             if (loseStockChange != null)
                 findItems = loseStockChange.getPrepareStockChanges();
+
+        } else {
+            if (loseStockChange != null)
+                removePrepareStockChange(loseStockChange);
+            if (addStockChange != null)
+                findItems = addStockChange.getPrepareStockChanges();
         }
 
+        boolean haveStroeRes = false;
 
         if (findItems != null) {
             for (PrepareStockChange prepareStockChange : findItems) {
                 if (prepareStockChange.getStoreRes().equals(storeResHome.getInstance())) {
 
-                    prepareStockChange.setCount(storeResCountInupt.getMasterCount());
+                    prepareStockChange.setCount(itemCheckCount.getMasterCount());
                     haveStroeRes = true;
                     break;
                 }
@@ -208,31 +250,29 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
         }
 
-        if (!haveStroeRes){
+        if (!haveStroeRes) {
 
 
             PrepareStockChange prepareStockChange = new PrepareStockChange();
             StockChange stockChange;
-            if (!addStock){
-                if (loseStockChange == null){
+            if (checkLose) {
+                if (loseStockChange == null) {
                     stockChange = new StockChange("L" + getInstance().getId(), getInstance().getStore(),
-                            new Date(),credentials.getUsername(),StockChange.StoreChangeType.STORE_CHECK_LOSS,null,false);
-                    stockChange.setInventoryLoss(getInstance());
+                            new Date(), credentials.getUsername(), StockChange.StoreChangeType.STORE_CHECK_LOSS, null, false);
                     getInstance().setStockChangeLoss(stockChange);
                     loseStockChange = stockChange;
-                }else{
+                } else {
                     stockChange = loseStockChange;
                 }
                 stockChange.setInventoryLoss(getInstance());
 
-            }else{
-                if (addStockChange == null){
-                    stockChange = new StockChange("A" + getInstance().getId(),getInstance().getStore(),
-                            new Date(),credentials.getUsername(),StockChange.StoreChangeType.STORE_CHECK_ADD,null,false);
-                    stockChange.setInventoryAdd(getInstance());
+            } else {
+                if (addStockChange == null) {
+                    stockChange = new StockChange("A" + getInstance().getId(), getInstance().getStore(),
+                            new Date(), credentials.getUsername(), StockChange.StoreChangeType.STORE_CHECK_ADD, null, false);
                     getInstance().setStockChangeAdd(stockChange);
                     addStockChange = stockChange;
-                }else{
+                } else {
                     stockChange = addStockChange;
                 }
                 stockChange.setInventoryAdd(getInstance());
@@ -241,13 +281,13 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
             prepareStockChange.setStockChange(stockChange);
             prepareStockChange.setStoreRes(storeResHome.getInstance());
-            prepareStockChange.setCount(storeResCountInupt.getMasterCount());
+            prepareStockChange.setCount(itemCheckCount.getMasterCount());
             stockChange.getPrepareStockChanges().add(prepareStockChange);
 
         }
         update();
         storeResHome.clearInstance();
-
+        resHome.clearInstance();
     }
 
 
@@ -272,6 +312,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             }
 
         }
+
 
         if (!haveStroeRes) {
 
@@ -304,7 +345,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
                 return addItemLastState;
             }
 
-            if (!storeResHome.isManaged()){
+            if (!storeResHome.isManaged()) {
                 storeResHome.getInstance().setCode(newItemCode);
             }
 
@@ -312,7 +353,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
                 addStockChange = new StockChange("A_" + getInstance().getId(),
                         getInstance().getStore(), new Date(),
                         credentials.getUsername(),
-                        StockChange.StoreChangeType.STORE_CHECK_ADD, null,false);
+                        StockChange.StoreChangeType.STORE_CHECK_ADD, null, false);
                 addStockChange.setInventoryAdd(getInstance());
                 getInstance().setStockChangeAdd(addStockChange);
                 log.debug("instance is add addStockChange");
@@ -324,6 +365,10 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             editingItem.setStockChange(addStockChange);
             addStockChange.getPrepareStockChanges().add(editingItem);
         }
+
+        if (loseStockChange != null)
+            removePrepareStockChange(loseStockChange);
+
         addItemLastState = update();
 
         resHome.clearInstance();

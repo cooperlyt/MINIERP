@@ -63,7 +63,8 @@ public class BussinessProcessUtils extends BusinessProcess{
         if (listTasks.size()>0) {
             for (Iterator iter = listTasks.iterator(); iter.hasNext(); ) {
                 TaskInstance ti = (TaskInstance) iter.next();
-                if (!ti.hasEnded()) {
+                if (!ti.hasEnded() && !ti.isSuspended()) {
+
                     ti.setSignalling(false);
                     ti.cancel();
                     ti.setEnd(new java.util.Date());
@@ -78,6 +79,7 @@ public class BussinessProcessUtils extends BusinessProcess{
         }
         if (!processInstance.hasEnded()) {
             processInstance.end();
+
             Logging.getLog(getClass()).debug("process instance " + processInstance.getId() + " has ended");
         }
 

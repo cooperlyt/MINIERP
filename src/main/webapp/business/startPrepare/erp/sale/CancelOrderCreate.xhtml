@@ -13,16 +13,28 @@
     <ui:define name="func-body">
         <h:form>
             <rich:toolbar>
+
+                <rich:toolbarGroup>
+                    <h:outputText value="#{messages.OrderReveiveMoney}"/>
+                    <h:outputText value="#{orderHome.totalReveiveMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+
+                </rich:toolbarGroup>
+
                 <rich:toolbarGroup>
 
+                    <h:outputText value="#{messages.order_field_earnest}"/>
+                    <h:outputText value="#{orderHome.reveiveEarnest}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
                 </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
                     <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                               view="/func/erp/sale/CustomerOrder.xhtml"/>
 
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.CancelOrder}" action="#{orderBackHome.cancelSimpleOrder}" rendered="#{orderBackHome.simpleCancel}"/>
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.CancelOrder}" action="#{businessCreate.create}" rendered="#{not orderBackHome.simpleCancel}"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.CancelOrder}" action="#{cancelOrderCreate.cancelOrder}" />
                 </rich:toolbarGroup>
             </rich:toolbar>
 
@@ -51,6 +63,31 @@
                                        value="#{dictionary.getWordList('erp.orderBackReason')}"
                                        noSelectionLabel="#{messages.noSelectLabel}"/>
                     </h:selectOneMenu>
+                </s:decorate>
+
+                <s:decorate id="backMoneyField" template="/layout/seam-edit.xhtml" rendered="#{orderHome.anyOneMoneyPay}">
+                    <ui:define name="label">#{messages.OrderBackMoney}</ui:define>
+                    <h:inputText label="#{messages.OrderBackMoney}" value="#{orderBackHome.instance.money}"
+                                 required="true"
+                                 converter="javax.faces.Number">
+                        <f:validateDoubleRange minimum="0"/>
+                    </h:inputText>
+
+                    <ui:define name="tail">
+                        <a:commandButton value="#{messages.backAllMoney}"
+                                         action="#{orderBackHome.backAllMoney}"
+                                         execute="@this" immediate="true" render="backMoneyField">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+
+                        <a:commandButton value="#{messages.backPartMoney}" execute="@this"
+                                         action="#{orderBackHome.backNoEarnestMoney}" immediate="true"
+                                         render="backMoneyField">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+
+
+                    </ui:define>
                 </s:decorate>
 
                 <s:decorate template="/layout/seam-edit.xhtml">

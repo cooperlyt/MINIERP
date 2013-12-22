@@ -20,8 +20,6 @@
 </h:outputStylesheet>
 
 
-
-
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelTitle" value="#{messages.storeRes_field_code}"/>
     <ui:param name="panelId" value="newStoreResCodeInputPanel"/>
@@ -76,7 +74,7 @@
                     <rich:placeholder value="#{messages.res_field_code}"/>
                 </h:inputText>
 
-                <a:commandButton value="#{messages.search}" execute="@region"
+                <a:commandButton value="#{messages.search}" execute="@form"
                                  render="storeInItem,resSearchForm"
                                  action="#{resLocate.locateByCode}">
                     <a:attachQueue requestDelay="0"/>
@@ -160,137 +158,140 @@
 </h:form>
 <br/>
 <h:form>
-<rich:dataTable id="inventoryTable" style="width: 100%" value="#{inventoryFirst.inventoryItems}" var="_item">
-    <f:facet name="header">
-        <rich:columnGroup>
-            <rich:column rowspan="2">
-                #{messages.StoreRes}
-            </rich:column>
-            <rich:column colspan="2">
-                #{messages.Stock}
-            </rich:column>
-            <rich:column colspan="2">
-                #{messages.STORE_CHECK_ADD}
-            </rich:column>
-            <rich:column colspan="2">
-                #{messages.STORE_CHECK_LOSS}
-            </rich:column>
-            <rich:column rowspan="2">
-                <s:link target="_blank" view="/report/inventory.xhtml">
-                    <s:graphicImage value="/img/print.png" title="#{messages.print_inventory_paper}"/>
-                    <f:param name="inventoryComponentName" value="inventoryFirst"/>
-                </s:link>
-            </rich:column>
-            <rich:column breakRowBefore="true">
-                #{messages.MasterUnitCount}
-            </rich:column>
-            <rich:column>
-                #{messages.AuxUnitCount}
-            </rich:column>
-            <rich:column>
-                #{messages.MasterUnitCount}
-            </rich:column>
-            <rich:column>
-                #{messages.AuxUnitCount}
-            </rich:column>
-            <rich:column>
-                #{messages.MasterUnitCount}
-            </rich:column>
-            <rich:column>
-                #{messages.AuxUnitCount}
-            </rich:column>
-        </rich:columnGroup>
-    </f:facet>
+    <rich:dataTable id="inventoryTable" style="width: 100%" value="#{inventoryFirst.inventoryItems}" var="_item">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column rowspan="2">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.Stock}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.STORE_CHECK_ADD}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.STORE_CHECK_LOSS}
+                </rich:column>
+                <rich:column rowspan="2">
+                    <s:link target="_blank" view="/report/inventory.xhtml">
+                        <s:graphicImage value="/img/print.png" title="#{messages.print_inventory_paper}"/>
+                        <f:param name="inventoryComponentName" value="inventoryFirst"/>
+                    </s:link>
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
 
-    <rich:column>
+        <rich:column>
 
-        <ui:include src="/layout/erp/StoreResTitle.xhtml">
-            <ui:param name="storeRes" value="#{_item.storeRes}"/>
-        </ui:include>
-    </rich:column>
-    <rich:column>
-        <h:outputText value="#{_item.stockCount.masterDisplayCount}" rendered="#{not empty _item.stockCount}"/>
-    </rich:column>
-    <rich:column>
-        <h:outputText value="#{_item.stockCount.displayAuxCount}" rendered="#{not empty _item.stockCount}"/>
-    </rich:column>
-    <rich:column>
-        <h:outputText value="#{_item.addCount.masterDisplayCount}"
-                      rendered="#{not empty _item.addCount}"/>
-    </rich:column>
-    <rich:column>
-        <h:outputText value="#{_item.addCount.displayAuxCount}"
-                      rendered="#{not empty _item.addCount}"/>
-    </rich:column>
-    <rich:column>
-        <h:outputText value="#{_item.loseCount.masterDisplayCount}"
-                      rendered="#{not empty _item.loseCount}"/>
-    </rich:column>
-    <rich:column>
-        <h:outputText value="#{_item.loseCount.displayAuxCount}"
-                      rendered="#{not empty _item.loseCount}"/>
-    </rich:column>
-    <rich:column style="text-align: center">
-         <a:commandButton image="/img/item_add.png" title="#{messages.STORE_CHECK_ADD}"
-                          oncomplete="#{rich:component('checkItemChangePanel')}.show()"
-                          immediate="true" execute="@this" render="checkItemChangePanel_inputs,checkItemChangePanel_title"
-                          action="#{inventoryHome.checkAdd}">
-            <a:param value="#{_item.storeRes.id}" assignTo="#{storeResHome.id}"/>
-         </a:commandButton>
-        #{' '}
-        <a:commandButton image="/img/item_remove.png" title="#{messages.STORE_CHECK_LOSS}"
-                         oncomplete="#{rich:component('checkItemChangePanel')}.show()"
-                         render="checkItemChangePanel_inputs,checkItemChangePanel_title"
-                         immediate="true" execute="@this"
-                         action="#{inventoryHome.checkLose}">
-            <a:param value="#{_item.storeRes.id}" assignTo="#{storeResHome.id}"/>
-        </a:commandButton>
-    </rich:column>
-</rich:dataTable>
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="#{_item.storeRes}"/>
+            </ui:include>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.stockCount.masterDisplayCount}" rendered="#{not empty _item.stockCount}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.stockCount.displayAuxCount}" rendered="#{not empty _item.stockCount}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.addCount.masterDisplayCount}"
+                          rendered="#{not empty _item.addCount}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.addCount.displayAuxCount}"
+                          rendered="#{not empty _item.addCount}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.loseCount.masterDisplayCount}"
+                          rendered="#{not empty _item.loseCount}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.loseCount.displayAuxCount}"
+                          rendered="#{not empty _item.loseCount}"/>
+        </rich:column>
+        <rich:column style="text-align: center">
+
+            <a:commandButton image="/img/edit.png" title="#{messages.STORE_CHECK_ADD}"
+                             oncomplete="#{rich:component('checkItemChangePanel')}.show()"
+                             immediate="true" execute="@this"
+                             render="checkItemChangePanel_inputs,checkItemChangePanel_title"
+                             action="#{inventoryHome.beginCheckItem}">
+                <a:param value="#{_item.storeRes.id}" assignTo="#{storeResHome.id}"/>
+            </a:commandButton>
+
+        </rich:column>
+    </rich:dataTable>
 </h:form>
 <br/>
 <rich:panel>
     <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
-        
+
         <ui:param name="inventory" value="#{inventoryHome.instance}"/>
     </ui:include>
+
     <div style="clear: both"/>
 </rich:panel>
 
-<s:decorate template="/layout/edit-modalpanel.xhtml">
-    <ui:define name="panelTitle">
-        <h:outputText value="#{inventoryHome.addStock ? messages.STORE_CHECK_ADD : messages.STORE_CHECK_LOSS}"/>
-    </ui:define>
 
-    <ui:param name="panelId" value="checkItemChangePanel"/>
-    <ui:define name="controls">
-        <a:commandButton immediate="true"
-                         execute="@this" image="/img/close.png"
-                         onclick="#{rich:component(panelId)}.hide(); return false;">
-        </a:commandButton>
-    </ui:define>
+    <s:decorate template="/layout/edit-modalpanel.xhtml">
+        <ui:define name="panelTitle">
+            <h:outputText value="#{messages.STORE_CHECK_ADD}#{messages.STORE_CHECK_LOSS}"/>
+        </ui:define>
 
-    <ui:include src="/layout/erp/ResCountInput.xhtml">
-        <ui:param name="resCountBean" value="#{inventoryHome.storeResCountInupt}"/>
-    </ui:include>
+        <ui:param name="panelId" value="checkItemChangePanel"/>
+        <ui:define name="controls">
+            <a:commandButton immediate="true"
+                             execute="@this" image="/img/close.png"
+                             onclick="#{rich:component(panelId)}.hide(); return false;">
+            </a:commandButton>
+        </ui:define>
+
+        <h:selectOneRadio value="#{inventoryHome.checkLose}" disabled="#{not inventoryHome.haveStock}">
+            <f:selectItem itemLabel="#{messages.STORE_CHECK_ADD}" itemValue="#{false}"/>
+            <f:selectItem itemLabel="#{messages.STORE_CHECK_LOSS}" itemValue="#{true}"/>
+        </h:selectOneRadio>
+
+        <ui:include src="/layout/erp/ResCountInput.xhtml">
+            <ui:param name="disabledFloatRate" value="true"/>
+            <ui:param name="resCountBean" value="#{inventoryHome.itemCheckCount}"/>
+        </ui:include>
 
 
-    <ui:define name="actionButtons">
-        <a:commandButton immediate="true"
-                         execute="@this" value="#{messages.cancel}"
-                         onclick="#{rich:component('checkItemChangePanel')}.hide(); return false;">
+        <ui:define name="actionButtons">
+            <a:commandButton immediate="true"
+                             execute="@this" value="#{messages.cancel}"
+                             onclick="#{rich:component('checkItemChangePanel')}.hide(); return false;">
 
-        </a:commandButton>
-        <a:commandButton value="#{messages.addItem}" execute="@form"
-                         action="#{inventoryHome.saveCheckItem}" data="#{inventoryHome.lastState}"
-                         oncomplete="if (event.data == 'updated')#{rich:component('checkItemChangePanel')}.hide();"
-                         render="checkItemChangePanel_inputs,inventoryTable">
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
+            </a:commandButton>
+            <a:commandButton value="#{messages.save}" execute="@form"
+                             action="#{inventoryHome.saveCheckItem}" data="#{inventoryHome.lastState}"
+                             oncomplete="if (event.data == 'updated')#{rich:component('checkItemChangePanel')}.hide();"
+                             render="checkItemChangePanel_inputs,inventoryTable,storeInItem">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
 
-    </ui:define>
+        </ui:define>
 
-</s:decorate>
+    </s:decorate>
 
 </ui:define>
 

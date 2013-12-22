@@ -41,7 +41,7 @@ public class EntityHomeAdapter<E> extends EntityHome<E> {
     @Logger
     protected Log log;
 
-    private String lastState = "";
+    protected String lastState = "";
 
     private Expressions.ValueExpression conflictMessage;
 

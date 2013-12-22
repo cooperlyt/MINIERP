@@ -1,10 +1,7 @@
 package com.dgsoft.erp.action.store;
 
 import com.dgsoft.common.utils.math.BigDecimalFormat;
-import com.dgsoft.erp.model.Format;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.ResUnit;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.model.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,11 +27,36 @@ public class OrderNeedItem extends StoreChangeItem {
         storeResCountInupt.setFloatConvertRate(floatConvertRate);
     }
 
-    private BigDecimal unitPrice = new BigDecimal("0");
+    public OrderNeedItem(StoreRes storeRes, ResUnit useUnit,
+                         BigDecimal resCount, BigDecimal unitPrice, BigDecimal rebate) {
+        super(storeRes.getRes(), useUnit);
+        storeResCountInupt.setFloatConvertRate(storeRes.getFloatConversionRate());
+        storeResCountInupt.setCount(resCount);
+        storeResItem = true;
+        this.storeRes = storeRes;
+        this.useUnit = useUnit;
+
+        this.unitPrice = unitPrice;
+        this.rebate = rebate;
+        calcByCU();
+    }
+
+    public OrderNeedItem(Res res, ResUnit useUnit,
+                         BigDecimal resCount, BigDecimal unitPrice, BigDecimal rebate) {
+        super(res, useUnit);
+        storeResItem = false;
+        this.useUnit = useUnit;
+        this.resCount = resCount;
+        this.unitPrice = unitPrice;
+        this.rebate = rebate;
+        calcByCU();
+    }
+
+    private BigDecimal unitPrice = BigDecimal.ZERO;
 
     private BigDecimal rebate = new BigDecimal("100");
 
-    private BigDecimal totalPrice = new BigDecimal("0");
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
     private boolean storeResItem;
 
@@ -43,7 +65,7 @@ public class OrderNeedItem extends StoreChangeItem {
     private BigDecimal resCount;
 
 
-    public Res getUseRes(){
+    public Res getUseRes() {
         if (isStoreResItem()) {
             return getStoreRes().getRes();
         } else {

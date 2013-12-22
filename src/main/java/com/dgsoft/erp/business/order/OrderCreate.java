@@ -96,7 +96,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         this.needRes = needRes;
     }
 
-    public void clearCustomerAndMiddleMan(){
+    public void clearCustomerAndMiddleMan() {
         customerHome.clearInstance();
         middleManHome.clearInstance();
     }
@@ -117,11 +117,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public void calcEarnestScale() {
-        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) == 1){
+        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) == 1) {
             earnestScale = getInstance().getEarnest()
                     .divide(getInstance().getMoney(), 4, BigDecimal.ROUND_HALF_UP)
                     .multiply(new BigDecimal("100"));
-        }else{
+        } else {
             earnestScale = BigDecimal.ZERO;
         }
     }
@@ -136,11 +136,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public void calcOrderTotalRebate() {
-        if (getOrderTotalPrice().compareTo(BigDecimal.ZERO) == 1){
+        if (getOrderTotalPrice().compareTo(BigDecimal.ZERO) == 1) {
             getInstance().setTotalRebate(getInstance().getMoney()
                     .divide(getOrderTotalPrice(), 4, BigDecimal.ROUND_HALF_UP)
                     .multiply(new BigDecimal("100")));
-        }else{
+        } else {
             getInstance().setTotalRebate(BigDecimal.ZERO);
         }
     }
@@ -234,13 +234,66 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         businessDefineHome.setId("erp.business.order");
         startData.generateKey();
         needRes = new NeedRes(getInstance(),
-                NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(),false);
+                NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), false);
         orderNeedItems = new ArrayList<OrderNeedItem>();
         //toDO read from customer level
+
         getInstance().setTotalRebate(new BigDecimal("100"));
         getInstance().setMoney(BigDecimal.ZERO);
         getInstance().setTotalMoney(BigDecimal.ZERO);
         getInstance().setEarnest(BigDecimal.ZERO);
+        return "beginning";
+    }
+
+    public String createCloneOrder() {
+        if (orderHome.isIdDefined()) {
+
+            businessDefineHome.setId("erp.business.order");
+            startData.generateKey();
+            needRes = new NeedRes(getInstance(),
+                    NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), false);
+
+
+            orderNeedItems = new ArrayList<OrderNeedItem>();
+
+            for (OrderItem orderItem : orderHome.getMasterNeedRes().getOrderItems()) {
+                OrderNeedItem cloneItem;
+                if (orderItem.isStoreResItem()) {
+                    cloneItem = new OrderNeedItem(orderItem.getStoreRes(), orderItem.getMoneyUnit(),
+                            orderItem.getCount(), orderItem.getMoney(), orderItem.getRebate());
+                } else {
+                    cloneItem = new OrderNeedItem(orderItem.getRes(), orderItem.getMoneyUnit(),
+                            orderItem.getCount(), orderItem.getMoney(), orderItem.getRebate());
+                }
+                orderNeedItems.add(cloneItem);
+            }
+
+            getInstance().setPayType(orderHome.getInstance().getPayType());
+            //customerAreaHome.setId(orderHome.getInstance().getCustomer().getCustomerArea().getId());
+            customerHome.setId(orderHome.getInstance().getCustomer().getId());
+            getInstance().setContact(orderHome.getInstance().getContact());
+            getInstance().setTel(orderHome.getInstance().getTel());
+            needRes.setFareByCustomer(orderHome.getMasterNeedRes().isFareByCustomer());
+            needRes.setPostCode(orderHome.getMasterNeedRes().getPostCode());
+            needRes.setAddress(orderHome.getMasterNeedRes().getAddress());
+            getInstance().setIncludeMiddleMan(orderHome.getInstance().isIncludeMiddleMan());
+            if (getInstance().isIncludeMiddleMan()){
+                middleManHome.setId(orderHome.getInstance().getCustomer().getMiddleMan().getId());
+            }
+
+            getInstance().setTotalRebate(orderHome.getInstance().getTotalRebate());
+            getInstance().setEarnestFirst(orderHome.getInstance().isEarnestFirst());
+            getInstance().setEarnest(orderHome.getInstance().getEarnest());
+            getInstance().setMoney(orderHome.getInstance().getMoney());
+            getInstance().setTotalMoney(orderHome.getInstance().getTotalMoney());
+            calcEarnestScale();
+
+
+
+        } else {
+           return beginCreateOrder();
+        }
+
         return "beginning";
     }
 
@@ -259,7 +312,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         getInstance().setCreateDate(new Date());
         getInstance().setOrderEmp(credentials.getUsername());
         getInstance().setId(startData.getBusinessKey());
-        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)){
+        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
             getInstance().setEarnestFirst(false);
         }
         if (customerHome.isIdDefined()) {
@@ -287,11 +340,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             if (orderNeedItem.isStoreResItem()) {
                 //TODO cost from BOM
                 needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getStoreRes(),
-                        new BigDecimal("0"), orderNeedItem.getUseUnit(),
+                        BigDecimal.ZERO, orderNeedItem.getUseUnit(),
                         orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate()));
             } else {
                 needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getRes(),
-                        new BigDecimal("0"), orderNeedItem.getUseUnit(),
+                        BigDecimal.ZERO, orderNeedItem.getUseUnit(),
                         orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate()));
             }
         }
@@ -321,6 +374,16 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     @Transactional
     public void createOrder(BusinessDefine businessDefine) {
 
+
+        if (orderNeedItems.isEmpty()) {
+            getStatusMessages().addFromResourceBundle(StatusMessage.Severity.ERROR, "createOrderItemIsEmptyError");
+            throw new ProcessCreatePrepareException("order create item is empty");
+        }
+
+        if (getInstance().isEarnestFirst() && (getInstance().getEarnest().compareTo(BigDecimal.ZERO) <= 0)) {
+            getStatusMessages().addFromResourceBundle(StatusMessage.Severity.ERROR, "createOrderEarnestIsZero");
+            throw new ProcessCreatePrepareException("order create Earnest is Zero");
+        }
 
         if (!"persisted".equals(persist())) {
             throw new ProcessCreatePrepareException("create order persist fail");

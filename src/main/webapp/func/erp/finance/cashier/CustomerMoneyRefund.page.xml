@@ -3,8 +3,5 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-    <param name="newOrder"/>
-    <param name="from"/>
-
-    <action execute="#{orderCreate.beginCreateOrder}" if="#{empty newOrder ? true : newOrder}" on-postback="false"/>
+       <param name="customerId" value="#{customerHome.id}"/>
 </page>

@@ -55,8 +55,8 @@
             <span class="value">
             <h:inputText id="masterUnitCount" required="true" style="width: 70px"
                          label="#{messages.storeResCountInupt}"
+                         validator="javax.faces.validator.GtZeroNumberValidator"
                          value="#{resCountBean.count}" converter="javax.faces.BigDecimal">
-                <f:validateDoubleRange minimum="0"/>
                 <rich:validator/>
                 <a:ajax event="change" execute="@region"
                         render="floatConvertAuxUnitFields,masterUnitCount,#{countChangeRender}"
@@ -110,6 +110,7 @@
                     <span class="value">
                     <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
                                        popupClass="floatConvertRatePopupHeight"
+                                       disabled="#{empty disabledFloatRate ? false : disabledFloatRate}"
                                        value="#{resCountBean.floatConvertRate}"
                                        layout="div"
                                        label="#{resCountBean.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
@@ -139,7 +140,6 @@
                                 listener="#{resCountBean.calcFloatQuantityByAuxUnit}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
-                        <f:validateDoubleRange minimum="0"/>
                         <rich:validator/>
                     </h:inputText>
                         <rich:message for="floatConvertAuxCount" styleClass="message-icon"

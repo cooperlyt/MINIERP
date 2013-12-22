@@ -112,6 +112,7 @@
                                   showDetail="true" showSummary="true" tooltip="true"/>
 
                     <a:outputPanel rendered="#{orderCreate.instance.earnestFirst}">
+                        #{messages.order_field_earnest}%
                         <h:inputText id="orderEarnestScaleField" value="#{orderCreate.earnestScale}" rendered="true"
                                      size="5" label="#{messages.earnestScale}">
                             <f:convertNumber pattern="#0.##" groupingUsed="false"/>
@@ -120,7 +121,7 @@
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
                             <rich:placeholder value="#{messages.earnestScale}"/>
-                            <f:validateDoubleRange minimum="1" maximum="100"/>
+                            <f:validateDoubleRange minimum="0" maximum="100"/>
                             <rich:validator/>
                         </h:inputText>
                         <rich:message for="orderEarnestScaleField" styleClass="message-icon"
@@ -136,7 +137,7 @@
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
                             <rich:validator/>
-                            <f:validateDoubleRange minimum="1"/>
+                            <f:validateDoubleRange minimum="0"/>
 
                         </h:inputText>
                         <rich:message for="orderEarnestField" styleClass="message-icon"

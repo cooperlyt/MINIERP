@@ -15,6 +15,7 @@
             <s:button value="#{messages.newOrder}" styleClass="toolBarBtn"
                       view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml" propagation="begin">
                 <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+                <f:param name="orderId" value=""/>
             </s:button>
         </rich:toolbarGroup>
     </rich:toolbar>
@@ -285,12 +286,18 @@
 
         <s:link view="/business/startPrepare/erp/sale/CancelOrderCreate.xhtml" propagation="begin"
                 rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
-            <s:graphicImage value="/img/undo.png" title="#{messages.CancelOrder}"/>
+            <s:graphicImage value="/img/delete.png" title="#{messages.CancelOrder}"/>
             <f:param name="orderId" value="#{_order.id}"/>
             <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
         </s:link>
 
 
+        <s:link action="#{orderCreate.createCloneOrder}" propagation="begin" includePageParams="true"
+                rendered="#{_order.canceled and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+            <s:graphicImage value="/img/undo.png" title="#{messages.reCreateOrder}"/>
+            <f:param name="cloneOrderId" value="#{_order.id}"/>
+            <f:param name="cloneCustomerAreaId" value="#{_order.customer.customerArea.id}"/>
+        </s:link>
 
     </rich:column>
 

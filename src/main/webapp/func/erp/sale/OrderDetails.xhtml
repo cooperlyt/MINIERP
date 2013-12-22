@@ -21,6 +21,12 @@
                     <f:param name="first" value="false"/>
                     <f:param name="orderId" value="#{orderHome.id}"/>
                 </s:link>
+                <s:link target="_blank" view="/report/salePaper.xhtml"  value="#{messages.print_sale_paper}"
+                        rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}">
+                    <f:param name="first" value="false"/>
+                    <f:param name="orderId" value="#{orderHome.id}"/>
+                </s:link>
+
             </rich:toolbarGroup>
 
             <rich:toolbarGroup location="right">

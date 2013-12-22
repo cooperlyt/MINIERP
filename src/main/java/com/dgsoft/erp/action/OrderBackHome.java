@@ -3,6 +3,7 @@ package com.dgsoft.erp.action;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.jbpm.BussinessProcessUtils;
 import com.dgsoft.common.system.action.BusinessDefineHome;
+import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
@@ -17,6 +18,7 @@ import org.jboss.seam.security.Credentials;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -65,9 +67,12 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         throw new IllegalThreadStateException("business not init;");
     }
 
-    public boolean isSimpleCancel(){
-        //TODO: (!orderHome.isAnyOneStoreOut()) && (!orderHome.isAnyOneMoneyPay());
-        return  (!orderHome.isAnyOneMoneyPay());
+    public void backAllMoney(){
+        getInstance().setMoney(orderHome.getTotalReveiveMoney());
+    }
+
+    public void backNoEarnestMoney(){
+        getInstance().setMoney(orderHome.getTotalReveiveMoney().subtract(orderHome.getReveiveEarnest()));
     }
 
     @Override
@@ -117,9 +122,8 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
             return "/func/erp/sale/CustomerOrder.xhtml";
         } else
             return null;
-
-
     }
+
 
 
 

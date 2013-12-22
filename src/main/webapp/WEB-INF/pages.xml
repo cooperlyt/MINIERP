@@ -110,7 +110,15 @@
     </page>
 
     <page view-id="/func/erp/sale/*" login-required="true">
-        <restrict>#{s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}</restrict>
+        <restrict>#{s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler') or s:hasRole('erp.finance.cashier') or s:hasRole('erp.finance.accountancy') }</restrict>
+    </page>
+
+    <page view-id="/func/erp/finance/accountancy/*" login-required="true">
+        <restrict>#{s:hasRole('erp.finance.accountancy')}</restrict>
+    </page>
+
+    <page view-id="/func/erp/finance/cashier/*" login-required="true">
+        <restrict>#{s:hasRole('erp.finance.cashier')}</restrict>
     </page>
 
     <page view-id="/func/erp/sale/mgr/*" login-required="true">

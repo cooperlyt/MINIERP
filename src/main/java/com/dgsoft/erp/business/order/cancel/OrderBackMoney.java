@@ -1,10 +1,16 @@
 package com.dgsoft.erp.business.order.cancel;
 
+import com.dgsoft.common.jbpm.BussinessProcessUtils;
 import com.dgsoft.erp.action.CustomerHome;
+import com.dgsoft.erp.model.AccountOper;
+import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.core.Events;
+import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,39 +21,56 @@ import java.math.BigDecimal;
 @Name("orderBackMoney")
 public class OrderBackMoney extends CancelOrderTaskHandle {
 
-    private BigDecimal backMoney;
+    private AccountOper accountOper;
 
-    public BigDecimal getBackMoney() {
-        return backMoney;
-    }
+    @In(create = true)
+    private BussinessProcessUtils businessProcess;
 
-    public void setBackMoney(BigDecimal backMoney) {
-        this.backMoney = backMoney;
-    }
+    @In
+    private Credentials credentials;
 
     @In(create = true)
     protected CustomerHome customerHome;
 
     @Override
     protected String initCancelOrderTask() {
+
+
         customerHome.setId(orderHome.getInstance().getCustomer().getId());
+
+        accountOper = new AccountOper(orderBackHome.getInstance(),
+                credentials.getUsername());
         return "success";
     }
 
-
-    public void calcAllMoney(){
-        backMoney = orderHome.getTotalReveiveMoney();
+    public AccountOper getAccountOper() {
+        return accountOper;
     }
 
-    public void calcNoEarnestMoney(){
-        backMoney = orderHome.getTotalReveiveMoney().subtract(orderHome.getReveiveEarnest());
+    public void setAccountOper(AccountOper accountOper) {
+        this.accountOper = accountOper;
+    }
+
+    public void clacAfterBalance(){
+        accountOper.setAfterMoney(accountOper.getBeforMoney().add(accountOper.getOperMoney()));
     }
 
     @Override
     protected String completeOrderTask() {
+        if (accountOper.getOperMoney().compareTo(BigDecimal.ZERO) <= 0){
+            return super.completeOrderTask();
+        }
+        clacAfterBalance();
+        accountOper.setOperDate(new Date());
 
-
-        return "taskComplete";
+        orderBackHome.getInstance().setAccountOper(accountOper);
+        orderBackHome.getInstance().getCustomerOrder().getCustomer().setBalance(accountOper.getAfterMoney());
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
+        businessProcess.stopProcess("order",orderHome.getInstance().getId());
+        if ("updated".equals(orderBackHome.update())) {
+            return super.completeOrderTask();
+        } else
+            return "fail";
     }
 
 }

@@ -7,4 +7,23 @@
     <action execute="#{orderBackHome.init}" on-postback="false"/>
 
     <param name="orderId" value="#{orderHome.id}"/>
+
+    <param name="from"/>
+    <navigation from-action="#{cancelOrderCreate.cancelOrder}">
+        <rule if-outcome="businessCreated" if="#{empty from}">
+            <end-conversation/>
+
+            <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
+
+            </redirect>
+        </rule>
+        <rule if-outcome="businessCreated" if="#{not empty from}">
+            <end-conversation/>
+
+            <redirect include-page-params="true" view-id="#{from}">
+
+            </redirect>
+        </rule>
+
+    </navigation>
 </page>

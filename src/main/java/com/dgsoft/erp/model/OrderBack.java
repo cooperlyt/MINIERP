@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class OrderBack implements java.io.Serializable {
 	private CustomerOrder customerOrder;
 	private String reason;
 	private Date createDate;
+    private BigDecimal money;
 	private String memo;
 
     private OrderBackType orderBackType;
@@ -125,7 +127,7 @@ public class OrderBack implements java.io.Serializable {
 		this.productBackStoreIn = productBackReses;
 	}
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY, targetEntity = AccountOper.class)
+    @OneToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
     @JoinColumn(name = "BACK_MONEY", nullable = true)
     public AccountOper getAccountOper() {
 		return this.accountOper;
@@ -173,5 +175,15 @@ public class OrderBack implements java.io.Serializable {
 
     public void setApplyEmp(String applyEmp) {
         this.applyEmp = applyEmp;
+    }
+
+    @Column(name = "MONEY", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
     }
 }
