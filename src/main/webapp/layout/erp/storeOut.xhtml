@@ -7,166 +7,277 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
+<ui:define name="toolbar">
+    <rich:toolbar>
+        <rich:toolbarGroup>
 
-    <ui:define name="body">
+        </rich:toolbarGroup>
+    </rich:toolbar>
 
-
-        <h:outputStylesheet>
-            .leftColumn {
-                vertical-align: top;
-                width: 200px;
-            }
-
-            .rightColumn {
-                vertical-align: top;
-            }
-        </h:outputStylesheet>
+</ui:define>
 
 
-        <h:panelGrid width="100%" columns="2" columnClasses="leftColumn,rightColumn">
-
-            <rich:panel>
+<ui:define name="body">
 
 
-                <h:form>
-                    <rich:tree
-                            var="_node"
-                            value="#{allStoreResTree}"
-                            nodeType="#{_node.type}"
-                            selectionChangeListener="#{stockList.treeSectionChanged}"
-                            onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
-                            render="dataListResult"
-                            toggleType="client"
-                            selectionType="ajax">
-                        <rich:treeNode type="category">
-                            #{_node.resCategory.name}
-                        </rich:treeNode>
-                        <rich:treeNode type="res">
-                            #{_node.res.name}(#{_node.res.code})
-                        </rich:treeNode>
-                        <rich:treeNode type="storeRes">
-                            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                                <ui:param name="storeRes" value="#{_node.storeRes}"/>
-                            </ui:include>
-                        </rich:treeNode>
-                    </rich:tree>
+<h:outputStylesheet>
+    .leftColumn {
+        vertical-align: top;
+        width: 200px;
+    }
 
-                </h:form>
-            </rich:panel>
-
-            <h:panelGrid width="100%" columns="2" columnClasses="leftColumn,rightColumn">
-                <h:form>
-                    <rich:dataTable id="dataListResult" style="width: 100%" value="#{stockList.resultList}" var="_stock"
-                                    noDataLabel="#{messages.emptyResult}">
-
-                        <f:facet name="header">
-                            <h:outputText value="#{stockList.selectedTitle}"
-                                          rendered="#{empty stockList.selectedStoreRes}"/>
-                            <a:outputPanel rendered="#{not empty stockList.selectedStoreRes}">
-                                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                                    <ui:param name="storeRes" value="#{stockList.selectedStoreRes}"/>
-                                </ui:include>
-                            </a:outputPanel>
-                        </f:facet>
-
-                        <f:facet name="footer">
-                            <a:outputPanel rendered="#{not empty stockList.resultList}">
-                                <ui:include src="/layout/pageA4jNavigation.xhtml">
-                                    <ui:param name="entityList" value="#{stockList}"/>
-                                </ui:include>
-                            </a:outputPanel>
-
-                        </f:facet>
-
-                        <rich:column>
-                            <f:facet name="header">
-
-                                <ui:include src="/layout/a4jSort.xhtml">
-                                    <ui:param name="entityList" value="#{stockList}"/>
-                                    <ui:param name="propertyLabel" value="#{messages.Store}"/>
-                                    <ui:param name="propertyPath" value="stock.store.id"/>
-                                </ui:include>
+    .rightColumn {
+        vertical-align: top;
+    }
+</h:outputStylesheet>
 
 
-                            </f:facet>
-                            #{_stock.store.name}(#{_stock.store.id})
-                            <f:facet name="footer">
-                                #{messages.recordTotal}#{stockList.resultCount}#{messages.item}
-                            </f:facet>
-                        </rich:column>
+<h:panelGrid width="100%" columns="2" columnClasses="leftColumn,rightColumn">
 
-                        <rich:column>
-                            <f:facet name="header">
-
-                                <ui:include src="/layout/a4jSort.xhtml">
-                                    <ui:param name="entityList" value="#{stockList}"/>
-                                    <ui:param name="propertyLabel" value="#{messages.StoreRes}"/>
-                                    <ui:param name="propertyPath" value="stock.storeRes.id"/>
-                                </ui:include>
-                            </f:facet>
+<rich:panel style="height: 100%;min-height: 460px;">
 
 
-                            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                                <ui:param name="storeRes" value="#{_stock.storeRes}"/>
-                            </ui:include>
+    <h:form>
+        <rich:tree
+                var="_node"
+                value="#{allStoreResTree}"
+                nodeType="#{_node.type}"
+                selectionChangeListener="#{stockList.treeSectionChanged}"
+                onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                render="dataListResult"
+                toggleType="client"
+                selectionType="ajax">
+            <rich:treeNode type="category">
+                #{_node.resCategory.name}
+            </rich:treeNode>
+            <rich:treeNode type="res">
+                #{_node.res.name}(#{_node.res.code})
+            </rich:treeNode>
+            <rich:treeNode type="storeRes">
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_node.storeRes}"/>
+                </ui:include>
+            </rich:treeNode>
+        </rich:tree>
+
+    </h:form>
+</rich:panel>
+
+<h:panelGroup>
+
+<a:outputPanel id="outCountInput">
+    <rich:panel rendered="#{not empty otherStockOut.editingItem}">
+        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+            <ui:param name="storeRes" value="#{otherStockOut.editingItem.stock.storeRes}"/>
+        </ui:include>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.InventoryCount}</ui:define>
+            #{otherStockOut.editingItem.stock.resCount.masterDisplayCount}
+            (#{otherStockOut.editingItem.stock.resCount.displayAuxCount})
+        </s:decorate>
+
+        <ui:include src="/layout/erp/ResCountInput.xhtml">
+            <ui:param name="resCountBean" value="#{otherStockOut.editingItem.storeResCountInupt}"/>
+        </ui:include>
 
 
-                        </rich:column>
+        <a:commandButton value="#{messages.ok}" render="storeOutItems,outCountInput"
+                         action="#{otherStockOut.addItem}">
 
-                        <rich:column>
-                            <f:facet name="header">
-                                <ui:include src="/layout/a4jSort.xhtml">
-                                    <ui:param name="entityList" value="#{stockList}"/>
-                                    <ui:param name="propertyLabel" value="#{messages.MasterUnitCount}"/>
-                                    <ui:param name="propertyPath" value="stock.count"/>
-                                </ui:include>
-                            </f:facet>
-                            #{_stock.resCount.masterDisplayCount}
-                            <f:facet name="footer">
-                                <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
-                                    <f:convertNumber pattern="#0.#####"
-                                                     groupingUsed="false"/>
-                                </h:outputText>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
 
-                            </f:facet>
-                        </rich:column>
+    </rich:panel>
+</a:outputPanel>
+<h:panelGrid width="100%" columns="2" columnClasses="rightColumn,rightColumn">
+<h:form>
+    <rich:dataTable id="dataListResult" style="width: 100%" value="#{stockList.resultList}" var="_stock"
+                    noDataLabel="#{messages.emptyResult}">
 
-                        <rich:column>
-                            <f:facet name="header">
-                                #{messages.AuxUnitCount}
-                            </f:facet>
-                            #{_stock.resCount.displayAuxCount}
+        <f:facet name="header">
+            <h:outputText value="#{stockList.selectedTitle}"
+                          rendered="#{empty stockList.selectedStoreRes}"/>
+            <a:outputPanel rendered="#{not empty stockList.selectedStoreRes}">
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{stockList.selectedStoreRes}"/>
+                </ui:include>
+            </a:outputPanel>
+        </f:facet>
 
-                            <f:facet name="footer">
-                                <h:outputText value="#{stockList.totalAuxCount}">
-                                    <f:convertNumber pattern="#0.#####"
-                                                     groupingUsed="false"/>
-                                </h:outputText>
+        <f:facet name="footer">
+            <a:outputPanel rendered="#{not empty stockList.resultList}">
+                <ui:include src="/layout/pageA4jNavigation.xhtml">
+                    <ui:param name="entityList" value="#{stockList}"/>
+                </ui:include>
+            </a:outputPanel>
 
-                            </f:facet>
+        </f:facet>
 
-                        </rich:column>
+        <rich:column>
+            <f:facet name="header">
 
-                        <rich:column style="width: 20px;text-align: center;">
-                            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{stockList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.StoreRes}"/>
+                    <ui:param name="propertyPath" value="stock.storeRes.id"/>
+                </ui:include>
+            </f:facet>
 
-                            </f:facet>
-                            <a:commandButton image="/img/out_edit.png" render="storeOutItems">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:commandButton>
-                        </rich:column>
-                    </rich:dataTable>
-                </h:form>
 
-                <h:form>
-                    <rich:dataTable id="storeOutItems">
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="#{_stock.storeRes}"/>
+            </ui:include>
 
-                    </rich:dataTable>
-                </h:form>
 
-            </h:panelGrid>
-        </h:panelGrid>
-    </ui:define>
+        </rich:column>
 
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{stockList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.MasterUnitCount}"/>
+                    <ui:param name="propertyPath" value="stock.count"/>
+                </ui:include>
+            </f:facet>
+            #{_stock.resCount.masterDisplayCount}
+            <f:facet name="footer">
+                <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
+                    <f:convertNumber pattern="#0.#####"
+                                     groupingUsed="false"/>
+                </h:outputText>
+
+            </f:facet>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.AuxUnitCount}
+            </f:facet>
+            #{_stock.resCount.displayAuxCount}
+
+            <f:facet name="footer">
+                <h:outputText value="#{stockList.totalAuxCount}">
+                    <f:convertNumber pattern="#0.#####"
+                                     groupingUsed="false"/>
+                </h:outputText>
+
+            </f:facet>
+
+        </rich:column>
+
+        <rich:column style="width: 20px;text-align: center;">
+            <f:facet name="header">
+
+            </f:facet>
+            <a:commandButton image="/img/out_edit.png" render="outCountInput" immediate="true"
+                             action="#{otherStockOut.beginAddItem}">
+                <a:attachQueue requestDelay="0"/>
+                <a:param value="#{_stock.id}" assignTo="#{otherStockOut.selectStockId}"/>
+            </a:commandButton>
+        </rich:column>
+    </rich:dataTable>
+</h:form>
+
+<h:form>
+    <rich:dataTable id="storeOutItems" style="width: 100%"
+                    value="#{otherStockOut.storeOutItemGroups}" var="_outItemGroup">
+
+        <f:facet name="header">
+            <rich:columnGroup>
+
+                <rich:column rowspan="2">
+                    <h:outputText value="#{messages.res}"/>
+                </rich:column>
+
+                <rich:column colspan="2">
+                    <h:outputText value="#{messages.InventoryCount}"/>
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.storeOutCount}
+                </rich:column>
+
+                <rich:column rowspan="2">
+
+                </rich:column>
+
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+
+            </rich:columnGroup>
+        </f:facet>
+
+
+        <rich:column colspan="6">
+            <h:outputText value="#{_outItemGroup.title}" rendered="#{otherStockOut.groupByRes}"/>
+            <a:outputPanel rendered="#{not otherStockOut.groupByRes}">
+
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_outItemGroup.storeRes}"/>
+                </ui:include>
+            </a:outputPanel>
+            <rich:collapsibleSubTableToggler for="sbtbl"/>
+        </rich:column>
+
+
+        <rich:collapsibleSubTable value="#{_outItemGroup.items}" var="_item" id="sbtbl"
+                                  expandMode="client">
+            <rich:column>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.stock.storeRes}"/>
+                </ui:include>
+            </rich:column>
+            <rich:column>
+                #{_item.stock.resCount.masterDisplayCount}
+            </rich:column>
+            <rich:column>
+                #{_item.stock.resCount.displayAuxCount}
+            </rich:column>
+            <rich:column>
+                #{_item.storeResCountInupt.masterDisplayCount}
+            </rich:column>
+            <rich:column>
+                #{_item.storeResCountInupt.displayAuxCount}
+            </rich:column>
+            <rich:column style="text-align: center;">
+
+                <a:commandButton image="/layout/edit.png" immediate="true" action="#{otherStockOut.beginAddItem}"
+                                 render="outCountInput"
+                                 oncomplete="jQuery('body').scrollTop().animate({scrollTop:'200px'},1000,'easeInOutExpo')">
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{_item.stock.id}" assignTo="#{otherStockOut.selectStockId}"/>
+                </a:commandButton>
+                #{' '}
+
+                <a:commandButton image="/layout/delete.png" action="#{otherStockOut.removeItem}"
+                                 immediate="true" title="#{messages.remove}" render="storeOutItems">
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{_item.stock.id}" assignTo="#{otherStockOut.selectStockId}"/>
+                </a:commandButton>
+            </rich:column>
+        </rich:collapsibleSubTable>
+
+    </rich:dataTable>
+</h:form>
+
+</h:panelGrid>
+</h:panelGroup>
+</h:panelGrid>
+
+</ui:define>
 
 </ui:composition>

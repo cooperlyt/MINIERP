@@ -1,17 +1,15 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.Stock;
-import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.common.system.NumberBuilder;
+import com.dgsoft.common.system.RunParam;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StockChangeModel;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,11 +19,19 @@ import java.util.Map;
  */
 public abstract class StoreOutAction<E extends StockChangeModel> extends StoreChangeHelper<E> implements StoreChangeAction {
 
+    @In
+    protected RunParam runParam;
+
+    @In
+    protected NumberBuilder numberBuilder;
+
     protected abstract String storeOut();
+
+    protected abstract String beginStoreOut();
 
     private boolean groupByRes = true;
 
-    private List<StoreOutItem> storeOutItems = new ArrayList<StoreOutItem>();
+    protected List<StoreOutItem> storeOutItems = new ArrayList<StoreOutItem>();
 
     private String selectStockId;
 
@@ -64,22 +70,106 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
     }
 
     public void beginAddItem(){
-      // getEntityManager().find()
+        editingItem = null;
+        for (StoreOutItem outItem: storeOutItems){
+            if (outItem.getStock().getId().equals(selectStockId)){
+                editingItem = outItem;
+                break;
+            }
+        }
+        if (editingItem == null){
+            editingItem = new StoreOutItem(getEntityManager().find(Stock.class,selectStockId));
+            storeOutItems.add(editingItem);
+        }
+
     }
 
     @Override
     public String addItem() {
-        return null;
+        if (editingItem.getStoreResCountInupt().getMasterCount().compareTo(editingItem.getStock().getCount()) > 0){
+            editingItem.getStoreResCountInupt().setMasterCount(editingItem.getStock().getCount());
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN,"storeOutCountNotEnough");
+        }
+        editingItem = null;
+        return "added";
     }
 
 
     @Override
     public void removeItem() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        for (StoreOutItem outItem: storeOutItems){
+            if (outItem.getStock().getId().equals(selectStockId)){
+                storeOutItems.remove(outItem);
+                break;
+            }
+        }
+    }
+
+    private void storeOutNow(StoreOutItem outItem) {
+
+        StockChangeItem stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
+                outItem.getStock(), outItem.getStoreResCountInupt().getMasterCount(), true);
+        stockChangeItem.setNoConvertCounts(outItem.getStoreResCountInupt().getNoConvertCounts());
+        for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
+            noConvertCount.setStockChangeItem(stockChangeItem);
+        }
+        stockChangeItem.getStock().setCount(stockChangeItem.getAfterCount());
+
+
+        if (stockChangeItem.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
+            for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
+                for (NoConvertCount stockCount : stockChangeItem.getStock().getNoConvertCounts()) {
+                    if (stockCount.getResUnit().equals(noConvertCount.getResUnit())) {
+                        stockCount.setCount(stockCount.getCount().subtract(noConvertCount.getCount()));
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        //TODO batch
+
+        stockChangeHome.getInstance().getStockChangeItems().add(stockChangeItem);
     }
 
     @Override
+    public String beginStoreChange() {
+        if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
+            stockChangeHome.getInstance().setId("O" + numberBuilder.getDateNumber("storeOutCode"));
+        }
+        return beginStoreOut();
+    }
+
+
+    @Override
     protected String storeChange(boolean verify) {
+
+        boolean haveItem = false;
+        for (StoreOutItem outItem : storeOutItems) {
+
+            if (outItem.getStoreResCountInupt().getMasterCount().compareTo(BigDecimal.ZERO) == 0) {
+
+                continue;
+            }
+
+
+            if (verify) {
+                storeOutNow(outItem);
+            } else {
+                throw new IllegalStateException("not implement");
+            }
+
+
+            haveItem = true;
+        }
+        if (!haveItem) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeOutNotItem");
+            return null;
+        }
+        getInstance().setStockChange(stockChangeHome.getInstance());
+        persist();
+        clearInstance();
 
         return storeOut();
     }

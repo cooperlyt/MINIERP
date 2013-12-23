@@ -114,6 +114,17 @@ public class StoreResCountInupt extends ResCount {
     }
 
 
+    public void setMasterCount(BigDecimal count){
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)){
+            this.count = BigDecimalFormat.format(count.divide(useUnit.getConversionRate(),FLOAT_CONVERT_SCALE,BigDecimal.ROUND_HALF_UP),useUnit.getCountFormate());
+        }else{
+            this.count = count;
+        }
+
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            calcFloatAuxUnit();
+        }
+    }
 
     public void init() {
         count = new BigDecimal(0);

@@ -14,24 +14,26 @@ import org.jboss.seam.annotations.Name;
 @Name("otherStockOut")
 public class OtherStockOut extends StoreOutAction<StoreChange> {
 
+    @Override
+    protected String storeOut() {
+        return "OtherStockChangeComplete";
+    }
 
     @Override
-    protected String beginStoreChange() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    protected String beginStoreOut() {
+        return "BeginOtherStockOut";
     }
 
     @Override
     protected StockChange.StoreChangeType getStoreChangeType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getInstance().getReason().getStoreChangeType();
     }
 
     @Override
     public String cancel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    protected String storeOut() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        storeOutItems.clear();
+        clearInstance();
+        stockChangeHome.clearInstance();
+        return "OtherStockChangeCancel";
     }
 }
