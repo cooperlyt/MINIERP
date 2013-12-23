@@ -21,27 +21,17 @@ public class OtherStockOut extends StoreOutAction<StoreChange> {
     }
 
     @Override
-    protected String storeChange(boolean verify) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     protected StockChange.StoreChangeType getStoreChangeType() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String addItem() {
+    public String cancel() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void removeItem() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String cancel() {
+    protected String storeOut() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

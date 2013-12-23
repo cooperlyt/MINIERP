@@ -1,9 +1,12 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.erp.action.StockChangeHome;
+import com.dgsoft.erp.action.StockList;
 import com.dgsoft.erp.model.StoreChange;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 /**
@@ -15,6 +18,9 @@ import org.jboss.seam.annotations.Name;
  */
 @Name("otherStockChange")
 public class OtherStockChange {
+
+    @In(required = false)
+    private StockChangeHome stockChangeHome;
 
     @Factory(value = "stockChangeReasons" ,scope = ScopeType.CONVERSATION)
     public  StoreChange.StoreChangeReason[] getStockChangeReasons(){
@@ -40,6 +46,7 @@ public class OtherStockChange {
          }else{
              OtherStockOut otherStockOut = (OtherStockOut) Component.getInstance("otherStockOut", true, true);
              otherStockOut.getInstance().setReason(storeChangeReason);
+             ((StockList)Component.getInstance("stockList", true, true)).setStoreId(stockChangeHome.getInstance().getStore().getId());
              return otherStockOut.begin();
          }
     }

@@ -100,38 +100,7 @@ public class StoreOutAction  {
 //        this.groupByRes = groupByRes;
 //    }
 //
-//    public List<StoreOutItemGroup> getStoreOutItemGroups() {
-//        List<StoreOutItemGroup> result = new ArrayList<StoreOutItemGroup>();
-//        if (groupByRes) {
-//            Map<Res, List<StoreOutItem>> resGroup = new HashMap<Res, List<StoreOutItem>>();
-//            for (StoreOutItem storeOutItem : storeOutItems) {
-//                List<StoreOutItem> temp = resGroup.get(storeOutItem.getStock().getStoreRes().getRes());
-//                if (temp == null) {
-//                    temp = new ArrayList<StoreOutItem>();
-//                    resGroup.put(storeOutItem.getStock().getStoreRes().getRes(), temp);
-//                }
-//                temp.add(storeOutItem);
-//            }
-//            for (Res res : resGroup.keySet()) {
-//                result.add(new StoreOutItemGroup(res.getName() + "(" + res.getCode() + ")", resGroup.get(res)));
-//            }
-//        } else {
-//            Map<StoreRes, List<StoreOutItem>> storeResGroup = new HashMap<StoreRes, List<StoreOutItem>>();
-//            for (StoreOutItem storeOutItem : storeOutItems) {
-//                List<StoreOutItem> temp = storeResGroup.get(storeOutItem.getStock().getStoreRes());
-//                if (temp == null) {
-//                    temp = new ArrayList<StoreOutItem>();
-//                    storeResGroup.put(storeOutItem.getStock().getStoreRes(), temp);
-//                }
-//                temp.add(storeOutItem);
-//            }
-//            for (StoreRes storeRes : storeResGroup.keySet()) {
-//                result.add(new StoreOutItemGroup(resHelper.generateStoreResTitle(storeRes), storeResGroup.get(storeRes)));
-//            }
-//
-//        }
-//        return result;
-//    }
+
 //
 //
 //    @Observer("erp.resLocateSelected")
@@ -213,77 +182,6 @@ public class StoreOutAction  {
 //        return false;
 //    }
 //
-//
-//    public static class StoreOutItemGroup {
-//
-//        private String title;
-//
-//        private List<StoreOutItem> items;
-//
-//
-//        public StoreOutItemGroup(String title, List<StoreOutItem> items) {
-//            this.title = title;
-//            this.items = items;
-//        }
-//
-//        public String getTitle() {
-//            return title;
-//        }
-//
-//        public void setTitle(String title) {
-//            this.title = title;
-//        }
-//
-//        public List<StoreOutItem> getItems() {
-//            return items;
-//        }
-//
-//        public void setItems(List<StoreOutItem> items) {
-//            this.items = items;
-//        }
-//
-//        public int getTotalCount() {
-//            int result = 0;
-//            for (StoreOutItem storeOutItem : items) {
-//                result += storeOutItem.getCount().toBigInteger().intValue();
-//            }
-//            return result;
-//        }
-//    }
-//
-//    public static class StoreOutItem {
-//
-//        private BigDecimal count;
-//
-//        private Stock stock;
-//
-//        public StoreOutItem(Stock stock) {
-//            this.count = new BigDecimal(0);
-//            this.stock = stock;
-//        }
-//
-//        public BigDecimal getCount() {
-//            return count;
-//        }
-//
-//        public void setCount(BigDecimal count) {
-//            this.count = count;
-//        }
-//
-//        public Stock getStock() {
-//            return stock;
-//        }
-//
-//        public void setStock(Stock stock) {
-//            this.stock = stock;
-//        }
-//
-//        public boolean sameInventory(Stock other) {
-//            if (other == null || stock == null) {
-//                return false;
-//            }
-//            return other.getId().equals(stock.getId());
-//        }
-//    }
+
 
 }
