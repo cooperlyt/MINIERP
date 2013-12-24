@@ -5,11 +5,12 @@ import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StockChangeModel;
-import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.Observer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -79,13 +80,56 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
         }
         if (editingItem == null){
             editingItem = new StoreOutItem(getEntityManager().find(Stock.class,selectStockId));
-            storeOutItems.add(editingItem);
+
         }
 
     }
 
+    @org.jboss.seam.annotations.Observer(value = "erp.resLocateSelected", create = false)
+    public void codeTypeByRes(Res res) {
+        editingItem = null;
+        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeOutOnlySelectStoreRes");
+    }
+
+    @org.jboss.seam.annotations.Observer(value = "erp.storeResLocateSelected", create = false)
+    public void generateStoreInItemByStoreRes(StoreRes storeRes) {
+
+        for (StoreOutItem item: storeOutItems){
+            if (item.getStock().getStoreRes().getId().equals(storeRes.getId())){
+                editingItem = item;
+                return;
+            }
+        }
+
+        for (Stock stock: stockChangeHome.getInstance().getStore().getStocks()){
+             if (stock.getStoreRes().getId().equals(storeRes.getId())){
+
+                 editingItem = new StoreOutItem(stock);
+                 return;
+             }
+        }
+
+        editingItem = null;
+        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeResNotInStore");
+
+    }
+
+
     @Override
     public String addItem() {
+
+        boolean inItems =false;
+        for (StoreOutItem outItem: storeOutItems){
+            if (outItem.getStock().getId().equals(editingItem.getStock().getId())){
+                inItems = true;
+                break;
+            }
+        }
+
+        if (!inItems){
+            storeOutItems.add(editingItem);
+        }
+
         if (editingItem.getStoreResCountInupt().getMasterCount().compareTo(editingItem.getStock().getCount()) > 0){
             editingItem.getStoreResCountInupt().setMasterCount(editingItem.getStock().getCount());
             facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN,"storeOutCountNotEnough");

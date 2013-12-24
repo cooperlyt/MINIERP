@@ -7,6 +7,19 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/erp/storeOut.xhtml">
+     <ui:define name="rightToolbarGroup">
+         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" action="#{otherStockOut.cancel}"/>
 
+         <s:button styleClass="toolBarBtn" value="#{messages.storeOut}" action="#{otherStockOut.saveStoreChange}"/>
+
+     </ui:define>
+
+
+    <ui:param name="storeChangeType" value="STORE_CHANGE_OUT"/>
+
+    <ui:param name="functionTitle" value="#{messages.StockInOrOutChange}-#{messages[otherStockOut.instance.reason.name()]}"/>
+
+
+    <ui:param name="sotreOutAction" value="#{otherStockOut}"/>
 
 </ui:composition>

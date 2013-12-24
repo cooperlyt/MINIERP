@@ -77,7 +77,9 @@ public class CustomerAreaHome extends ErpSimpleEntityHome<CustomerArea> {
     public List<CustomerArea> getMySaleArea(){
         List<CustomerArea> result = new ArrayList<CustomerArea>();
         for (CustomerArea customerArea: getEntityManager().createQuery("select customerArea from CustomerArea customerArea",CustomerArea.class).getResultList()){
-            if (identity.hasRole(customerArea.getRole())){
+
+            if (identity.hasRole("erp.finance.cashier") || identity.hasRole("erp.sale.manager") ||
+                    identity.hasRole("erp.finance.accountancy") || identity.hasRole(customerArea.getRole())){
                 result.add(customerArea);
             }
         }

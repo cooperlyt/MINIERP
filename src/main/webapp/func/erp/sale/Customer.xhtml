@@ -15,6 +15,21 @@
 
 <ui:define name="body">
 
+
+<h:form>
+    <h:panelGrid columns="2">
+        <h:graphicImage value="/img/create.gif"/>
+        <a:commandLink value="#{messages.createNewCustomer}" immediate="true"
+                       render="customerEditPanel_form,customerEditPanel_title"
+                       oncomplete="#{rich:component('customerEditPanel')}.show()">
+            <a:attachQueue requestDelay="0"/>
+            <s:conversationPropagation type="begin"/>
+            <a:param value="" assignTo="#{customerHome.id}"/>
+        </a:commandLink>
+    </h:panelGrid>
+</h:form>
+
+
 <h:form styleClass="edit">
 
     <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
@@ -246,14 +261,14 @@
                 <f:param name="customerId" value="#{_customer.id}"/>
                 <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
             </s:link>
-              #{' '}
+            #{' '}
 
             <s:link view="/func/erp/finance/cashier/CustomerMoneySavings.xhtml"
                     propagation="begin" rendered="#{s:hasRole('erp.finance.cashier')}">
                 <s:graphicImage value="/img/savingsMoney.png" title="#{messages.CustomerMoneySavings}"/>
                 <f:param name="customerId" value="#{_customer.id}"/>
             </s:link>
-              #{' '}
+            #{' '}
             <s:link view="/func/erp/finance/cashier/CustomerMoneyRefund.xhtml"
                     propagation="begin" rendered="#{s:hasRole('erp.finance.cashier')}">
                 <s:graphicImage value="/img/refundMoney.png" title="#{messages.CustomerMoneySavings}"/>
@@ -265,8 +280,6 @@
     </rich:dataTable>
 
 
-
-
 </h:form>
 
 
@@ -274,6 +287,27 @@
     <ui:param name="panelId" value="customerEditPanel"/>
     <ui:param name="panelTitle" value="#{customerHome.managed ? messages.edit : messages.add}#{messages.Customer}"/>
 
+    <h:panelGrid columns="2">
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.CustomerArea}</ui:define>
+            <h:selectOneMenu value="#{customerHome.instance.customerArea}" required="true"
+                         label="#{messages.CustomerArea}">
+                <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{_customerArea.name}"/>
+
+                <f:converter converterId="erpEntityConverter"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <s:decorate rendered="#{not customerHome.managed}" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_balance}</ui:define>
+            <h:inputText required="true" value="#{customerHome.instance.balance}" converter="javax.faces.BigDecimal">
+
+            </h:inputText>
+        </s:decorate>
+
+    </h:panelGrid>
 
     <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
 
