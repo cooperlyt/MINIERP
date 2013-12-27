@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="order" width="910" height="730">
+<root-container name="order" width="910" height="784">
   <node name="生成订单" x="43" y="15" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="订单出库(1库)" x="298" y="443" width="132" height="36">
+  <node name="订单出库(1库)" x="298" y="424" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -26,7 +26,7 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="订单出库(天津)" x="45" y="693" width="132" height="36">
+  <node name="订单出库(天津)" x="43" y="692" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -92,17 +92,17 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="出库完成(1库)" x="463" y="446" width="132" height="36">
+  <node name="出库完成(1库)" x="529" y="478" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="出库完成(2库)" x="310" y="561" width="132" height="36">
+  <node name="出库完成(2库)" x="294" y="553" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="出库完成(天津)" x="213" y="693" width="132" height="36">
+  <node name="出库完成(天津)" x="323" y="690" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -167,4 +167,43 @@
     </edge>
   </node>
   <node name="订单完成" x="777" y="247" width="132" height="36"/>
+  <node name="发货(1库)" x="462" y="547" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="发货方式(1库)" x="300" y="477" width="132" height="36">
+    <edge>
+      <label x="-27" y="-5"/>
+    </edge>
+    <edge>
+      <label x="-17" y="-12"/>
+    </edge>
+  </node>
+  <node name="发货方式(2库)" x="207" y="622" width="132" height="36">
+    <edge>
+      <label x="-16" y="-5"/>
+    </edge>
+    <edge>
+      <label x="-19" y="-14"/>
+    </edge>
+  </node>
+  <node name="发货方式(天津)" x="46" y="747" width="132" height="36">
+    <edge>
+      <label x="-16" y="-11"/>
+    </edge>
+    <edge>
+      <label x="-21" y="-10"/>
+    </edge>
+  </node>
+  <node name="发货(2库)" x="391" y="619" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="发货(天津)" x="322" y="744" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
 </root-container>

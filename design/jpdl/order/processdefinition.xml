@@ -15,7 +15,7 @@
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
 		</task>
-		<transition to="出库完成(1库)"></transition>
+		<transition to="发货方式(1库)"></transition>
 	</task-node>
 
 	<task-node name="订单收款">
@@ -48,7 +48,7 @@
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
 		</task>
-		<transition to="出库完成(2库)"></transition>
+		<transition to="发货方式(2库)"></transition>
 	</task-node>
 
 	<task-node name="订单出库(天津)">
@@ -58,7 +58,7 @@
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('C')}"></assignment>
 		</task>
-		<transition to="出库完成(天津)"></transition>
+		<transition to="发货方式(天津)"></transition>
 	</task-node>
 
 	<decision name="发货确认">
@@ -198,6 +198,63 @@
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>
 		<transition to="订单调度"></transition>
+	</task-node>
+
+	<task-node name="发货(1库)">
+		<task name="发货(一库)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
+		</task>
+		<transition to="出库完成(1库)"></transition>
+	</task-node>
+
+	<decision name="发货方式(1库)">
+		<transition to="出库完成(1库)" name="自提">
+			<condition expression="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}"></condition>
+		</transition>
+		<transition to="发货(1库)" name="发货">
+			<condition expression="#{not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF')}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="发货方式(2库)">
+		<transition to="出库完成(2库)" name="自提">
+			<condition expression="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}"></condition>
+		</transition>
+		<transition to="发货(2库)" name="发货">
+			<condition expression="#{not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF')}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="发货方式(天津)">
+		<transition to="出库完成(天津)" name="自提">
+			<condition expression="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}"></condition>
+		</transition>
+		<transition to="发货(天津)" name="发货">
+			<condition expression="#{not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF')}"></condition>
+		</transition>
+	</decision>
+
+	<task-node name="发货(2库)">
+		<task name="发货(2库)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
+		</task>
+		<transition to="出库完成(2库)"></transition>
+	</task-node>
+
+	<task-node name="发货(天津)">
+		<task name="发货(天津)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
+		</task>
+		<transition to="出库完成(天津)"></transition>
 	</task-node>
 
 

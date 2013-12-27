@@ -47,7 +47,7 @@
 
                     <rich:treeNode type="emp">
 
-                        <a:commandLink value="#{_node.emp.person.name})(#{_node.emp.id})" execute="@this" immediate="true"
+                        <a:commandLink value="#{_node.emp.person.name}(#{_node.emp.id})" execute="@this" immediate="true"
                                        render="sendInfos" action="#{orderCommodityConfirm.selectSendEmployee}"
                                        oncomplete="#{rich:component('sendEmpSelectPanel')}.hide();">
                             <a:attachQueue requestDelay="0"/>
@@ -159,6 +159,15 @@
                         <a:attachQueue requestDelay="0"/>
                         <a:param value="#{_dispatch.id}" assignTo="#{orderCommodityConfirm.selectDispatchId}"/>
                     </a:commandLink>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.dispatch_field_expressNumber}
+                    </f:facet>
+                    <h:inputText rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"
+                                 label="#{messages.dispatch_field_expressNumber}"
+                                 size="15" value="#{_dispatch.expressInfo.number}"/>
                 </rich:column>
 
                 <rich:column>
