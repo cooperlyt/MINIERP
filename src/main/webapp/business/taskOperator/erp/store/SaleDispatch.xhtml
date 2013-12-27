@@ -268,7 +268,7 @@
                         <s:div id="clip-container-id" style="float: left">
 
                             <a id="clip-button-id" href="#" data-clipboard-text="#{orderDispatch.toastMessages}" class="clipboard">
-                                 QQ
+                                 #{messages.toastQQ}
                             </a>
 
                         </s:div>
@@ -375,7 +375,7 @@
 
 
 
-    ZeroClipboard.setDefaults( { moviePath: 'http://localhost:8080/MINIERP_SNAPSHOT/js/ZeroClipboard.swf' } );
+    ZeroClipboard.setDefaults( { moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' } );
 
     $('a.clipboard').each(function(){
     var clip=new ZeroClipboard($(this));
