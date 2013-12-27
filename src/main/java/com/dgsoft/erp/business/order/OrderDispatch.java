@@ -1,6 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.helper.ActionExecuteState;
+import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.erp.action.CarsHome;
 import com.dgsoft.erp.action.ExpressDriverHome;
 import com.dgsoft.erp.action.NeedResHome;
@@ -18,6 +19,7 @@ import org.jboss.seam.log.Logging;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,6 +45,12 @@ public class OrderDispatch extends OrderTaskHandle {
 
     @In(create = true)
     private NeedResHome needResHome;
+
+    @In
+    private DictionaryWord dictionary;
+
+    @In(create=true)
+    private Map<String, String> messages;
 
     public static class ResOrderItem {
 
@@ -103,6 +111,22 @@ public class OrderDispatch extends OrderTaskHandle {
         transCorpHome.clearInstance();
         carsHome.clearInstance();
         selectDispatch = null;
+    }
+
+    public String getToastMessages(){
+        StringBuffer result = new StringBuffer();
+        result.append(messages.get("OrderCode") +  ":" + orderHome.getInstance().getId() + "\n");
+
+        for (Dispatch dispatch:dispatchList){
+            result.append(dispatch.getStore().getName() + "\n");
+            for(DispatchItem item: dispatch.getDispatchItemList()){
+                result.append("\t" + item.getStoreRes().getTitle(dictionary) + " ");
+                result.append(item.getResCount().getMasterDisplayCount());
+                result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
+            }
+        }
+
+        return result.toString();
     }
 
     public String getStoreId() {

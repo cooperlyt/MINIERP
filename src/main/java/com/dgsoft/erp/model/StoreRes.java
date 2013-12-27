@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.system.DictionaryWord;
+import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
 import com.dgsoft.erp.model.api.ResCount;
@@ -306,5 +308,29 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
             result = o.getId().compareTo(id);
         }
         return result;
+    }
+
+
+    public String getTitle(DictionaryWord dictionary) {
+        String result = getRes().getName() + "(" + getCode() + ")" + " ";
+
+        for (Format format : getFormatList()) {
+            result += format.getFormatDefine().getName() + ":";
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
+                result += dictionary.getWordValue(format.getFormatValue()) + " ";
+            } else {
+                result += format.getFormatValue() + " ";
+            }
+        }
+
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            result += BigDecimalFormat.format(getFloatConversionRate(),
+                    getRes().getUnitGroup().getFloatConvertRateFormat()).toString();
+            result += getRes().getUnitGroup().getName();
+        }
+
+        return result;
+
+
     }
 }

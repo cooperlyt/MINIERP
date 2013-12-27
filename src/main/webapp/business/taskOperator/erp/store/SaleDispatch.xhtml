@@ -12,6 +12,12 @@
 
 <ui:define name="func-body">
 
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>
+
+
+
+
+
 <h:outputStylesheet>
     .leftColumn {
         vertical-align: top;
@@ -259,11 +265,12 @@
                         #{messages.Dispatch}
 
                         <s:button style="float: right" value="#{messages.reset}" includePageParams="true"/>
-                        <s:div style="float: left">
-                            <a target="_blank"
-                               href="http://wpa.qq.com/msgrd?v=3&amp;uin=2751194453&amp;site=qq&amp;menu=yes">
-                                <img border="0" src="http://wpa.qq.com/pa?p=1:271569542:1" alt="点击这里给我发消息"
-                                     title="点击这里给我发消息"/></a>
+                        <s:div id="clip-container-id" style="float: left">
+
+                            <a id="clip-button-id" href="#" data-clipboard-text="#{orderDispatch.toastMessages}" class="clipboard">
+                                 QQ
+                            </a>
+
                         </s:div>
                     </rich:column>
                     <rich:column breakRowBefore="true">
@@ -363,5 +370,34 @@
 </rich:collapsiblePanel>
 
 
+<a:outputPanel ajaxRendered="true">
+<h:outputScript >
+
+
+
+    ZeroClipboard.setDefaults( { moviePath: 'http://localhost:8080/MINIERP_SNAPSHOT/js/ZeroClipboard.swf' } );
+
+    $('a.clipboard').each(function(){
+    var clip=new ZeroClipboard($(this));
+
+
+    clip.on('complete',function(client,args){
+
+
+    window.open(
+    "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
+    ,
+    'newwindow',
+    ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen yes'
+    );
+
+
+    });
+    });
+
+
+
+</h:outputScript>
+</a:outputPanel>
 </ui:define>
 </ui:composition>
