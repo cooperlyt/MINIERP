@@ -124,9 +124,14 @@
                     </li>
 
                     <li class="last">
-                        <s:link id="menuLogoutId" view="/home.xhtml" action="#{identity.logout()}"
+
+                        <s:link
+                                id="menuLogoutId"
+                                view="/logout.xhtml"
                                 value="#{messages.logout}"
-                                rendered="#{identity.loggedIn}" propagation="none"/>
+                                rendered="#{identity.loggedIn}"
+                                propagation="none"
+                                />
                     </li>
 
                 </ul>

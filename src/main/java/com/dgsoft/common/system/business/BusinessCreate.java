@@ -77,7 +77,10 @@ public class BusinessCreate {
             if (verifyMsg == null) verifyMsg = "";
         }
         if (verifyMsg.equals("fail")) {
-            return null;
+            businessDefineId = "";
+            businessDescription = "";
+            businessName = "";
+            return "verify_fail";
         } else {
 
             log.debug("define Id:" + businessDefineHome.getInstance().getId());
@@ -87,7 +90,10 @@ public class BusinessCreate {
                         businessDefineHome.getInstance());
             }catch (ProcessCreatePrepareException e){
                 log.debug("prepare other business data exception",e);
-                return null;
+                businessDefineId = "";
+                businessDescription = "";
+                businessName = "";
+                return "prepare_fail";
             }
 
             businessInstanceHome.clearInstance();

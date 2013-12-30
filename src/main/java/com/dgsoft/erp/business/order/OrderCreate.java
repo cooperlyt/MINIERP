@@ -377,15 +377,24 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
         if (orderNeedItems.isEmpty()) {
             getStatusMessages().addFromResourceBundle(StatusMessage.Severity.ERROR, "createOrderItemIsEmptyError");
+            editingItem = null;
+            resHome.clearInstance();
+            storeResHome.clearInstance();
             throw new ProcessCreatePrepareException("order create item is empty");
         }
 
         if (getInstance().isEarnestFirst() && (getInstance().getEarnest().compareTo(BigDecimal.ZERO) <= 0)) {
             getStatusMessages().addFromResourceBundle(StatusMessage.Severity.ERROR, "createOrderEarnestIsZero");
+            editingItem = null;
+            resHome.clearInstance();
+            storeResHome.clearInstance();
             throw new ProcessCreatePrepareException("order create Earnest is Zero");
         }
 
         if (!"persisted".equals(persist())) {
+            editingItem = null;
+            resHome.clearInstance();
+            storeResHome.clearInstance();
             throw new ProcessCreatePrepareException("create order persist fail");
         }
 

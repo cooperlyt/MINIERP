@@ -394,11 +394,14 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         if (getInstance().isRoot()) {
             getInstance().setResCategory(null);
         } else if (!isManaged()) {
+
             if (parentId == null || "".equals(parentId.trim())) {
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "category_not_have_parent");
                 return false;
             }
-            getInstance().setResCategory(getEntityManager().find(ResCategory.class, parentId));
+            ResCategory parentResCategory = getEntityManager().find(ResCategory.class, parentId);
+            getInstance().setResCategory(parentResCategory);
+            getInstance().setType(parentResCategory.getType());
         }
         return true;
     }
