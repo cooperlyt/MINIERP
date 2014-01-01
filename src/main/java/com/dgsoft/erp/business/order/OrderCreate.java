@@ -1,6 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
+import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -57,6 +59,12 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     @In(create = true)
     protected ResHome resHome;
+
+    @In(create=true)
+    private Map<String, String> messages;
+
+    @In
+    private DictionaryWord dictionary;
 
     @In
     private FacesMessages facesMessages;
@@ -189,6 +197,25 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                 }
             }
         }
+    }
+
+    public String getToastMessages(){
+        StringBuffer result = new StringBuffer();
+        result.append(messages.get("OrderCode") +  ":" + startData.getBusinessKey() + "\n");
+
+        for (OrderNeedItem item: orderNeedItems){
+            if (item.isStoreResItem()){
+                result.append("\t" + item.getStoreRes().getTitle(dictionary) + ": ");
+                result.append(item.getStoreResCountInupt().getMasterDisplayCount());
+                result.append("(" + item.getStoreResCountInupt().getDisplayAuxCount() + ")\n");
+            }else{
+                result.append("\t" + item.getRes().getName() + ": ");
+                result.append(BigDecimalFormat.format(item.getResCount(),item.getUseUnit().getCountFormate()) );
+                result.append( item.getUseUnit().getName() + "\n");
+            }
+        }
+
+        return result.toString();
     }
 
     @Observer(value = "storeResCountIsChanged", create = false)

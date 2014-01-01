@@ -1,6 +1,9 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.system.DictionaryWord;
+import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.action.store.OrderNeedItem;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.ResCount;
@@ -8,6 +11,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 
@@ -22,6 +26,12 @@ import java.util.*;
  */
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
+
+    @In(create=true)
+    private Map<String, String> messages;
+
+    @In
+    private DictionaryWord dictionary;
 
     @Factory(value = "feePayTypes", scope = ScopeType.CONVERSATION)
     public PayType[] getFeePayTypes() {
@@ -41,6 +51,41 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)
     public Dispatch.DeliveryType[] getDeliveryTypes() {
         return Dispatch.DeliveryType.values();
+    }
+
+    public String getToastMessages(){
+
+
+        StringBuffer result = new StringBuffer();
+        result.append(messages.get("OrderCode") +  ":" + getInstance().getId() + "\n");
+
+        if (getMasterNeedRes().isDispatched()){
+            for (Dispatch dispatch: getMasterNeedRes().getDispatches()){
+                result.append(dispatch.getStore().getName() + "\n");
+                for(DispatchItem item: dispatch.getDispatchItemList()){
+                    result.append("\t" + item.getStoreRes().getTitle(dictionary) + " ");
+                    result.append(item.getResCount().getMasterDisplayCount());
+                    result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
+                }
+            }
+
+        }else{
+            for (OrderItem item: getMasterNeedRes().getOrderItems()){
+                if (item.isStoreResItem()){
+                    result.append("\t" + item.getStoreRes().getTitle(dictionary) + ": ");
+                    result.append(item.getStoreResCount().getMasterDisplayCount());
+                    result.append("(" + item.getStoreResCount().getDisplayAuxCount() + ")\n");
+                }else{
+                    result.append("\t" + item.getRes().getName() + ": ");
+                    result.append(BigDecimalFormat.format(item.getCount(), item.getMoneyUnit().getCountFormate()) );
+                    result.append( item.getMoneyUnit().getName() + "\n");
+                }
+            }
+        }
+
+
+
+        return result.toString();
     }
 
     public BigDecimal getAllProxyFare() {

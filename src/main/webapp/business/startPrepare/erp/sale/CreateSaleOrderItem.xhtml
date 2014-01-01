@@ -12,6 +12,8 @@
 <ui:param name="functionTitle" value="#{messages.createOrder}-#{messages.orderItem}"/>
 
 <ui:define name="func-body">
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>
+
 
 <h:outputStylesheet>
     .barOrderNumber {
@@ -388,10 +390,11 @@
         <rich:column style="text-align: center">
             <f:facet name="header">
 
-                <s:link target="_blank" view="/report/salePaper.xhtml">
-                    <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
-                    <f:param name="first" value="true"/>
-                </s:link>
+
+
+                    <a id="clip-button-id" href="#" data-clipboard-text="#{orderCreate.toastMessages}" class="clipboard">
+                        #{messages.toastQQ}
+                    </a>
 
 
 
@@ -404,6 +407,39 @@
         </rich:column>
     </rich:dataTable>
 </h:form>
+
+
+
+<a:outputPanel ajaxRendered="true">
+    <h:outputScript >
+
+
+
+        ZeroClipboard.setDefaults( { moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' } );
+
+        $('a.clipboard').each(function(){
+        var clip=new ZeroClipboard($(this));
+
+
+        clip.on('complete',function(client,args){
+
+
+        window.open(
+        "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
+        ,
+        'newwindow',
+        ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen yes'
+        );
+
+
+        });
+        });
+
+
+
+    </h:outputScript>
+</a:outputPanel>
+
 </ui:define>
 
 </ui:composition>
