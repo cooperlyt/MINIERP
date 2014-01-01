@@ -454,6 +454,13 @@
             <artifactId>jboss-seam-resteasy</artifactId>
         </dependency>
 
+
+
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-debug</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

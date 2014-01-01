@@ -17,6 +17,10 @@ import javax.validation.constraints.Size;
 @Table(name = "TRANS_CORP", catalog = "MINI_ERP")
 public class TransCorp implements java.io.Serializable,NamedEntity {
 
+    public enum TransCorpType{
+        TRANS_STATION,TRANS_EXPRESS,TRANS_OTHER;
+    }
+
 	private String id;
 	private String name;
 	private String tel;
@@ -24,6 +28,7 @@ public class TransCorp implements java.io.Serializable,NamedEntity {
 	private String contact;
 	private boolean enable;
 	private Set<ExpressInfo> expressInfos = new HashSet<ExpressInfo>(0);
+    private TransCorpType transCorpType;
 
 	public TransCorp() {
         enable = true;
@@ -117,4 +122,14 @@ public class TransCorp implements java.io.Serializable,NamedEntity {
         this.memo = memo;
     }
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE", nullable = false, length = 32)
+    @NotNull
+    public TransCorpType getTransCorpType() {
+        return transCorpType;
+    }
+
+    public void setTransCorpType(TransCorpType transCorpType) {
+        this.transCorpType = transCorpType;
+    }
 }

@@ -24,9 +24,7 @@ public class Customer implements java.io.Serializable, NamedEntity {
     private MiddleMan middleMan;
     private String name;
     private String type;
-    private String contact;
     private BigDecimal balance;
-    private String tel;
     private String fax;
     private String memo;
     private String mail;
@@ -37,6 +35,7 @@ public class Customer implements java.io.Serializable, NamedEntity {
     private Date createDate;
     private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
+    private Set<CustomerContact> customerContacts = new HashSet<CustomerContact>(0);
 
     public Customer() {
         balance = BigDecimal.ZERO;
@@ -127,16 +126,6 @@ public class Customer implements java.io.Serializable, NamedEntity {
         this.type = type;
     }
 
-    @Column(name = "CONTACT", nullable = false, length = 50)
-    @NotNull
-    @Size(max = 50)
-    public String getContact() {
-        return this.contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
 
     @Column(name = "BALANCE", scale = 3, nullable = false)
     @NotNull
@@ -146,17 +135,6 @@ public class Customer implements java.io.Serializable, NamedEntity {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
-    }
-
-    @Column(name = "TEL", nullable = false, length = 50)
-    @Size(max = 50)
-    @NotNull
-    public String getTel() {
-        return this.tel;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
     }
 
     @Column(name = "FAX", length = 50)
@@ -245,6 +223,35 @@ public class Customer implements java.io.Serializable, NamedEntity {
 
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", orphanRemoval = true, cascade = {CascadeType.ALL})
+    public Set<CustomerContact> getCustomerContacts() {
+        return customerContacts;
+    }
+
+    public void setCustomerContacts(Set<CustomerContact> customerContacts) {
+        this.customerContacts = customerContacts;
+    }
+
+    @Transient
+    public List<CustomerContact> getCustomerContactList(){
+        List<CustomerContact> result = new ArrayList<CustomerContact>(getCustomerContacts());
+        Collections.sort(result,new Comparator<CustomerContact>() {
+            @Override
+            public int compare(CustomerContact o1, CustomerContact o2) {
+                if ((o1.getId()) == null || (o2.getId() == null)){
+                    return 0;
+                }
+                int r = o1.getType().compareTo(o2.getType());
+                if (r == 0){
+                    return o1.getName().compareTo(o2.getName());
+                }else
+                    return r;
+
+            }
+        });
+        return result;
     }
 
     @Transient

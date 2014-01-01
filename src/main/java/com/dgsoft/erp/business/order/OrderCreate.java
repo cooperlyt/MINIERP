@@ -322,8 +322,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
             getInstance().setCustomer(customerHome.getReadyInstance());
             getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
-            getInstance().setContact(customerHome.getInstance().getContact());
-            getInstance().setTel(customerHome.getInstance().getTel());
+            //getInstance().setContact(customerHome.getInstance().getContact());
+            //getInstance().setTel(customerHome.getInstance().getTel());
             needRes.setAddress(customerHome.getInstance().getAddress());
             needRes.setPostCode(customerHome.getInstance().getPostCode());
         }
@@ -357,8 +357,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public void customerChangeListener() {
         if (customerHome.isIdDefined()) {
-            getInstance().setContact(customerHome.getInstance().getContact());
-            getInstance().setTel(customerHome.getInstance().getTel());
+            //getInstance().setContact(customerHome.getInstance().getContact());
+            //getInstance().setTel(customerHome.getInstance().getTel());
             needRes.setAddress(customerHome.getInstance().getAddress());
             needRes.setPostCode(customerHome.getInstance().getPostCode());
         } else {

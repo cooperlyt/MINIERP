@@ -17,16 +17,13 @@ import javax.validation.constraints.Size;
 public class ExpressCar implements java.io.Serializable {
 
 	private String id;
-	private ExpressDriver expressDriver;
 	private String carCode;
 	private Dispatch dispatch;
+    private String driver;
+    private String tel;
+    private TransCorp transCorp;
 
 	public ExpressCar() {
-	}
-
-	public ExpressCar(Dispatch dispatch, ExpressDriver expressDriver) {
-		this.expressDriver = expressDriver;
-        this.dispatch = dispatch;
 	}
 
 
@@ -44,16 +41,6 @@ public class ExpressCar implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
-	@JoinColumn(name = "DRIVER", nullable = false)
-	@NotNull
-	public ExpressDriver getExpressDriver() {
-		return this.expressDriver;
-	}
-
-	public void setExpressDriver(ExpressDriver expressDriver) {
-		this.expressDriver = expressDriver;
-	}
 
 	@Column(name = "CAR_CODE", length = 20)
 	@Size(max = 20)
@@ -74,4 +61,34 @@ public class ExpressCar implements java.io.Serializable {
 		this.dispatch = dispatches;
 	}
 
+    @Column(name = "DRIVER", length = 50)
+    @Size(max = 50)
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
+    }
+
+    @Column(name = "TEL", length = 50)
+    @Size(max = 50)
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "CORP", nullable = false)
+    @NotNull
+    public TransCorp getTransCorp() {
+        return this.transCorp;
+    }
+
+    public void setTransCorp(TransCorp transCorp) {
+        this.transCorp = transCorp;
+    }
 }

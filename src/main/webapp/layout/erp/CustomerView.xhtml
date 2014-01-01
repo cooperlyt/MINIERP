@@ -33,21 +33,6 @@
 
     </s:decorate>
 
-
-    <s:decorate  template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.customer_field_contact}</ui:define>
-        <h:outputText value="#{customer.contact}"/>
-    </s:decorate>
-
-
-    <s:decorate  template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.customer_field_tel}</ui:define>
-
-        #{customer.tel}
-
-    </s:decorate>
-
-
     <s:decorate  template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_balance}</ui:define>
         <h:outputText value="#{customer.balance}">
@@ -89,6 +74,33 @@
 
     <div style="clear: both"/>
 
+    <br/>
+
+    <rich:dataTable value="#{customer.customerContactList}" var="_contact">
+        <f:facet name="header">
+            #{messages.CustomerContact}
+        </f:facet>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.customer_contact_type}
+            </f:facet>
+            <h:outputText value="#{dictionary.getWordValue(_contact.type)}"/>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.customer_contact_name}
+            </f:facet>
+            #{_contact.name}
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.customer_contact_tel}
+            </f:facet>
+            #{_contact.tel}
+        </rich:column>
+    </rich:dataTable>
+
+    <br/>
 
     <h:outputText styleClass="auto_width_name" value="#{messages.customerNotHasMiddleMan}"
                   rendered="#{empty customer.middleMan}"/>

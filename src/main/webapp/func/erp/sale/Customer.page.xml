@@ -10,10 +10,8 @@
 
     <param name="customerAreaId" value="#{customerList.customerAreaId}"/>
 
-    <param name="contact" value="#{customerList.customer.contact}"/>
     <param name="customerName" value="#{customerList.customer.name}"/>
 
-    <param name="customerTel" value="#{customerList.customer.tel}"/>
     <param name="customerType" value="#{customerList.type}"/>
 
     <param name="customerLevelFrom" value="#{customerList.levelFrom}" />

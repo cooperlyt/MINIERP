@@ -29,9 +29,7 @@ public class CustomerList extends ErpEntityQuery<Customer> {
             "customer.customerArea.id in (#{customerList.resultAcceptAreaIds})",
             "customer.customerLevel.priority >= #{customerList.levelFrom}",
             "customer.customerLevel.priority <= #{customerList.levelTo}",
-            "lower(customer.contact) like lower(concat(#{customerList.customer.contact},'%'))",
             "lower(customer.name) like lower(concat(#{customerList.customer.name},'%'))",
-            "lower(customer.tel) like lower(concat('%',concat(#{customerList.customer.tel},'%')))",
             "customer.type = #{customerList.type}"};
 
 

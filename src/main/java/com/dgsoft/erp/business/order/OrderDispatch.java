@@ -3,18 +3,14 @@ package com.dgsoft.erp.business.order;
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.erp.action.CarsHome;
-import com.dgsoft.erp.action.ExpressDriverHome;
 import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
 import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,9 +29,6 @@ public class OrderDispatch extends OrderTaskHandle {
 
     @In
     private ActionExecuteState actionExecuteState;
-
-    @In(create = true)
-    private ExpressDriverHome expressDriverHome;
 
     @In(create = true)
     private TransCorpHome transCorpHome;
@@ -107,7 +100,6 @@ public class OrderDispatch extends OrderTaskHandle {
 
         dispatchStoreExists = false;
 
-        expressDriverHome.clearInstance();
         transCorpHome.clearInstance();
         carsHome.clearInstance();
         selectDispatch = null;
@@ -250,7 +242,7 @@ public class OrderDispatch extends OrderTaskHandle {
                 deliveryType = selectDispatch.getDeliveryType();
                 memo = selectDispatch.getMemo();
 
-                expressDriverHome.clearInstance();
+
                 carsHome.clearInstance();
                 transCorpHome.clearInstance();
 
@@ -259,7 +251,7 @@ public class OrderDispatch extends OrderTaskHandle {
                         carsHome.setInstance(selectDispatch.getProductToDoor().getCars());
                         break;
                     case FULL_CAR_SEND:
-                        expressDriverHome.setInstance(selectDispatch.getExpressCar().getExpressDriver());
+                       // expressDriverHome.setInstance(selectDispatch.getExpressCar().getExpressDriver());
                         break;
                     case EXPRESS_SEND:
                         transCorpHome.setInstance(selectDispatch.getExpressInfo().getTransCorp());
@@ -362,7 +354,7 @@ public class OrderDispatch extends OrderTaskHandle {
     private void setSendInfo(Dispatch dispatch) {
         switch (deliveryType) {
             case FULL_CAR_SEND:
-                dispatch.setExpressCar(new ExpressCar(dispatch, expressDriverHome.getReadyInstance()));
+                //dispatch.setExpressCar(new ExpressCar(dispatch, expressDriverHome.getReadyInstance()));
                 dispatch.setExpressInfo(null);
                 dispatch.setProductToDoor(null);
                 break;

@@ -44,8 +44,8 @@ public class OrderShip extends OrderTaskHandle {
 
                         switch (dispatchHome.getInstance().getDeliveryType()){
                             case FULL_CAR_SEND:
-                                dispatchHome.getInstance().getExpressCar().
-                                        setCarCode(dispatchHome.getInstance().getExpressCar().getExpressDriver().getCarCode());
+                                //dispatchHome.getInstance().getExpressCar().
+                                //        setCarCode(dispatchHome.getInstance().getExpressCar().getExpressDriver().getCarCode());
                                 break;
 
                             case SEND_TO_DOOR:

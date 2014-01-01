@@ -50,16 +50,6 @@
                 <h:inputText value="#{customerList.customer.name}"/>
             </s:decorate>
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.customer_field_contact}</ui:define>
-                <h:inputText value="#{customerList.customer.contact}"/>
-            </s:decorate>
-
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.customer_field_tel}</ui:define>
-                <h:inputText value="#{customerList.customer.tel}"/>
-            </s:decorate>
-
 
             <s:decorate template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.customer_field_type}</ui:define>
@@ -91,7 +81,7 @@
             <div style="clear:both"/>
             <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
             <h:panelGrid columns="1" style="width: 100%; text-align: right">
-                <a:outputPanel id="#{panelId}_buttons">
+                <a:outputPanel id="search_buttons">
                     <div class="actionButtons">
 
                         <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
@@ -115,7 +105,7 @@
 <br/>
 <h:form>
     <rich:dataTable style="width: 100%" id="dataListResult" value="#{customerList.resultList}"
-                    var="_customer" noDataLabel="#{messags.emptyResult}">
+                    var="_customer" noDataLabel="#{messages.emptyResult}">
         <f:facet name="footer">
             <a:outputPanel rendered="#{not empty customerList.resultList}">
                 <ui:include src="/layout/pageA4jNavigation.xhtml">
@@ -172,29 +162,6 @@
             #{_customer.customerLevel.name}(#{_customer.customerLevel.priority})
         </rich:column>
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_contact}"/>
-                    <ui:param name="propertyPath" value="customer.contact"/>
-                </ui:include>
-
-            </f:facet>
-            #{_customer.contact}
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_tel}"/>
-                    <ui:param name="propertyPath" value="customer.tel"/>
-                </ui:include>
-
-            </f:facet>
-            #{_customer.tel}
-        </rich:column>
         <rich:column>
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
@@ -285,6 +252,7 @@
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="customerEditPanel"/>
+    <ui:param name="width" value="800"/>
     <ui:param name="panelTitle" value="#{customerHome.managed ? messages.edit : messages.add}#{messages.Customer}"/>
 
     <h:panelGrid columns="2">
