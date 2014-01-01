@@ -32,6 +32,8 @@ public class NeedRes implements java.io.Serializable {
     private boolean fareByCustomer;
     private String address;
     private String postCode;
+    private String receivePerson;
+    private String receiveTel;
 
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
@@ -136,15 +138,34 @@ public class NeedRes implements java.io.Serializable {
         this.address = address;
     }
 
-    @Column(name = "POST_CODE",length = 10, nullable = false)
+    @Column(name = "POST_CODE",length = 10, nullable = true)
     @Size(max = 10)
-    @NotNull
     public String getPostCode() {
         return postCode;
     }
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
+    }
+
+    @Column(name = "RECEIVE_PERSON",length = 50)
+    @Size(max = 50)
+    public String getReceivePerson() {
+        return receivePerson;
+    }
+
+    public void setReceivePerson(String receivePerson) {
+        this.receivePerson = receivePerson;
+    }
+
+    @Column(name = "RECEIVE_TEL",length = 50)
+    @Size(max = 50)
+    public String getReceiveTel() {
+        return receiveTel;
+    }
+
+    public void setReceiveTel(String receiveTel) {
+        this.receiveTel = receiveTel;
     }
 
     @Temporal(TemporalType.TIMESTAMP)

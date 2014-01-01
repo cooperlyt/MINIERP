@@ -55,7 +55,6 @@
             <span class="value">
             <h:inputText id="masterUnitCount" required="true" style="width: 70px"
                          label="#{messages.storeResCountInupt}"
-                         validator="javax.faces.validator.GtZeroNumberValidator"
                          value="#{resCountBean.count}" converter="javax.faces.BigDecimal">
                 <rich:validator/>
                 <a:ajax event="change" execute="@region"

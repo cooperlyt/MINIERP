@@ -13,9 +13,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -67,6 +65,21 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
         }
     }
 
+    public List<String> getAllTelList(){
+        Set<String> result = new HashSet<String>();
+        for (CustomerContact contact: getInstance().getCustomerContacts()){
+            result.add(contact.getTel());
+        }
+        return new ArrayList<String>(result);
+    }
+
+    public List<String> getAllContactList(){
+        Set<String> result = new HashSet<String>();
+        for (CustomerContact contact: getInstance().getCustomerContacts()){
+            result.add(contact.getName());
+        }
+        return new ArrayList<String>(result);
+    }
 
     @Override
     protected Customer createInstance() {

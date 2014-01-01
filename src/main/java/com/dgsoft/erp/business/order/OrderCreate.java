@@ -4,6 +4,7 @@ import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
+import com.dgsoft.common.utils.StringUtil;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.*;
@@ -98,6 +99,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public void clearCustomerAndMiddleMan() {
         customerHome.clearInstance();
+        customerHome.setHaveMiddleMan(false);
         middleManHome.clearInstance();
     }
 
@@ -142,6 +144,50 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                     .multiply(new BigDecimal("100")));
         } else {
             getInstance().setTotalRebate(BigDecimal.ZERO);
+        }
+    }
+
+    public void orderTelChanged() {
+        if ( (!StringUtil.isEmpty(getInstance().getTel())) && (StringUtil.isEmpty(getInstance().getContact()))) {
+            for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
+                if ((contact.getTel() != null) && contact.getTel().equals(getInstance().getTel())) {
+                    getInstance().setContact(contact.getName());
+                    break;
+                }
+            }
+        }
+    }
+
+    public void orderContactChanged() {
+        if ((StringUtil.isEmpty(getInstance().getTel())) && (!StringUtil.isEmpty(getInstance().getContact()))) {
+            for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
+                if ((contact.getName() != null) && contact.getName().equals(getInstance().getContact())) {
+                    getInstance().setTel(contact.getTel());
+                    break;
+                }
+            }
+        }
+    }
+
+    public void orderReceivceTelChanged() {
+        if ((!StringUtil.isEmpty(getNeedRes().getReceiveTel())) && (StringUtil.isEmpty(getNeedRes().getReceivePerson()))) {
+            for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
+                if ((contact.getTel() != null) && contact.getTel().equals(getNeedRes().getReceiveTel())) {
+                    getNeedRes().setReceivePerson(contact.getName());
+                    break;
+                }
+            }
+        }
+    }
+
+    public void orderReceivceContactChanged() {
+        if ((!StringUtil.isEmpty(getNeedRes().getReceivePerson())) && (StringUtil.isEmpty(getNeedRes().getReceiveTel()))) {
+            for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
+                if ((contact.getName() != null) && contact.getName().equals(getNeedRes().getReceivePerson())) {
+                    getNeedRes().setReceiveTel(contact.getTel());
+                    break;
+                }
+            }
         }
     }
 
@@ -277,7 +323,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             needRes.setPostCode(orderHome.getMasterNeedRes().getPostCode());
             needRes.setAddress(orderHome.getMasterNeedRes().getAddress());
             getInstance().setIncludeMiddleMan(orderHome.getInstance().isIncludeMiddleMan());
-            if (getInstance().isIncludeMiddleMan()){
+            if (getInstance().isIncludeMiddleMan()) {
                 middleManHome.setId(orderHome.getInstance().getCustomer().getMiddleMan().getId());
             }
 
@@ -289,9 +335,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             calcEarnestScale();
 
 
-
         } else {
-           return beginCreateOrder();
+            return beginCreateOrder();
         }
 
         return "beginning";

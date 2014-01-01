@@ -142,36 +142,144 @@
         </ui:define>
     </s:decorate>
 </h:panelGrid>
-<a:outputPanel id="orderContactFields">
+
+
+<div style="clear:both"/>
+
+<a:outputPanel id="customerInfo">
+    <a:outputPanel rendered="#{customerAreaHome.idDefined}">
+        <rich:panel>
+
+            <f:facet name="header">
+                #{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}
+            </f:facet>
+
+            <a:outputPanel rendered="#{customerHome.idDefined}">
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{customerHome.instance}"/>
+                </ui:include>
+            </a:outputPanel>
+
+            <a:outputPanel rendered="#{not customerHome.idDefined}">
+                <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
+            </a:outputPanel>
+
+            <div style="clear:both"/>
+
+        </rich:panel>
+
+        <br/>
+        <a:outputPanel id="middleManSelectOrCreate" rendered="#{not customerHome.idDefined}">
+            <s:span styleClass="small_name">
+                <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
+                    <a:ajax event="click" render="middleManSelectOrCreate"
+                            listener="#{customerHome.middleManPayChangeListener}"/>
+                </h:selectBooleanCheckbox>
+                #{messages.MiddleMan}
+            </s:span>
+
+            <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
+                <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+            </a:outputPanel>
+        </a:outputPanel>
+
+        <div style="clear: both"/>
+    </a:outputPanel>
+</a:outputPanel>
+
+
+<a:outputPanel ajaxRendered="true" id="orderContactFields">
     <h:panelGrid columns="3">
 
-        <s:decorate id="contactField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
-            <ui:define name="label">#{messages.order_field_contact}</ui:define>
-            <h:inputText label="#{messages.order_field_contact}"
-                         required="true"
-                         size="17"
-                         maxlength="50"
-                         value="#{orderCreate.instance.contact}">
-                <a:ajax event="blur" render="contactField"/>
-            </h:inputText>
-        </s:decorate>
 
-
-        <s:decorate id="orderTelField" template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+        <s:decorate id="orderTelField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.order_field_tel}</ui:define>
-            <h:inputText label="#{messages.order_field_tel}"
-                         required="true"
-                         size="14"
-                         maxlength="50"
-                         value="#{orderCreate.instance.tel}">
-                <a:ajax event="blur" render="orderTelField"/>
-            </h:inputText>
+
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               required="true"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.order_field_tel}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allTelList}"
+                               value="#{orderCreate.instance.tel}"
+                               fetchValue="#{_tel}" var="_tel">
+
+                <h:outputText value="#{_tel}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderTelChanged}" render="orderTelField,contactField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderTelChanged}"
+                        render="orderTelField,contactField"/>
+            </rich:autocomplete>
         </s:decorate>
 
-        <s:decorate template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+        <s:decorate id="contactField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_contact}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               required="true"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.order_field_contact}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allContactList}"
+                               value="#{orderCreate.instance.contact}"
+                               fetchValue="#{_contact}" var="_contact">
+
+                <h:outputText value="#{_contact}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderContactChanged}" render="orderTelField,contactField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderContactChanged}"
+                        render="orderTelField,contactField"/>
+            </rich:autocomplete>
+
+        </s:decorate>
+
+        <s:decorate template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.order_field_postCode}</ui:define>
             <h:inputText value="#{orderCreate.needRes.postCode}" label="#{messages.order_field_postCode}"
-                         required="true" size="10" maxlength="10"/>
+                         size="10" maxlength="10"/>
+        </s:decorate>
+
+        <s:decorate id="receiveTelField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.order_field_reveiveTel}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allTelList}"
+                               value="#{orderCreate.needRes.receiveTel}"
+                               fetchValue="#{_tel}" var="_tel">
+
+                <h:outputText value="#{_tel}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderReceivceTelChanged}"
+                        render="receiveContactField,receiveTelField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceTelChanged}"
+                        render="receiveContactField,receiveTelField"/>
+            </rich:autocomplete>
+
+        </s:decorate>
+
+        <s:decorate id="receiveContactField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.order_field_reveiveContact}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allContactList}"
+                               value="#{orderCreate.needRes.receivePerson}"
+                               fetchValue="#{_contact}" var="_contact">
+
+                <h:outputText value="#{_contact}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderReceivceContactChanged}" render="receiveContactField,receiveTelField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceContactChanged}"
+                        render="receiveContactField,receiveTelField"/>
+            </rich:autocomplete>
+
         </s:decorate>
 
     </h:panelGrid>
@@ -179,7 +287,7 @@
     <h:panelGrid columns="2">
 
 
-        <s:decorate template="/layout/edit.xhtml" rendered="#{customerHome.idDefined}">
+        <s:decorate template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.order_field_address}</ui:define>
             <h:inputText value="#{orderCreate.needRes.address}" label="#{messages.order_field_address}"
                          required="true" size="81" maxlength="200"/>
@@ -187,54 +295,12 @@
     </h:panelGrid>
 </a:outputPanel>
 
-<div style="clear:both"/>
-
-<a:outputPanel id="customerInfo">
-     <a:outputPanel rendered="#{customerAreaHome.idDefined}">
-    <rich:panel>
-
-        <f:facet name="header" >
-            #{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}
-        </f:facet>
-
-        <a:outputPanel rendered="#{customerHome.idDefined}">
-            <ui:include src="/layout/erp/CustomerView.xhtml">
-                <ui:param name="customer" value="#{customerHome.instance}"/>
-            </ui:include>
-        </a:outputPanel>
-
-        <a:outputPanel rendered="#{not customerHome.idDefined}">
-            <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
-        </a:outputPanel>
-        <div style="clear:both"/>
-
-    </rich:panel>
-
-    <br/>
-    <a:outputPanel id="middleManSelectOrCreate" rendered="#{not customerHome.idDefined}">
-        <s:span styleClass="small_name">
-            <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
-                <a:ajax event="click" render="middleManSelectOrCreate"
-                        listener="#{customerHome.middleManPayChangeListener}"/>
-            </h:selectBooleanCheckbox>
-            #{messages.MiddleMan}
-        </s:span>
-
-        <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
-            <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
-            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-        </a:outputPanel>
-    </a:outputPanel>
-
-    <div style="clear: both"/>
-     </a:outputPanel>
-</a:outputPanel>
 
 <s:decorate template="/layout/edit.xhtml">
     <ui:define name="label">#{messages.field_memo}</ui:define>
     <h:inputTextarea label="#{messages.field_memo}"
                      value="#{orderCreate.instance.memo}"
-                     cols="60" rows="2"/>
+                     cols="81" rows="2"/>
 </s:decorate>
 
 <div style="clear:both">
