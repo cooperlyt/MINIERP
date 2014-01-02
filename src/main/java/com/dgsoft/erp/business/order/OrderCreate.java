@@ -60,7 +60,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     @In(create = true)
     protected ResHome resHome;
 
-    @In(create=true)
+    @In(create = true)
+    private OrderDispatch orderDispatch;
+
+    @In(create = true)
     private Map<String, String> messages;
 
     @In
@@ -156,7 +159,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public void orderTelChanged() {
-        if ( (!StringUtil.isEmpty(getInstance().getTel())) && (StringUtil.isEmpty(getInstance().getContact()))) {
+        if ((!StringUtil.isEmpty(getInstance().getTel())) && (StringUtil.isEmpty(getInstance().getContact()))) {
             for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
                 if ((contact.getTel() != null) && contact.getTel().equals(getInstance().getTel())) {
                     getInstance().setContact(contact.getName());
@@ -199,19 +202,19 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         }
     }
 
-    public String getToastMessages(){
+    public String getToastMessages() {
         StringBuffer result = new StringBuffer();
-        result.append(messages.get("OrderCode") +  ":" + startData.getBusinessKey() + "\n");
+        result.append(messages.get("OrderCode") + ":" + startData.getBusinessKey() + "\n");
 
-        for (OrderNeedItem item: orderNeedItems){
-            if (item.isStoreResItem()){
+        for (OrderNeedItem item : orderNeedItems) {
+            if (item.isStoreResItem()) {
                 result.append("\t" + item.getStoreRes().getTitle(dictionary) + ": ");
                 result.append(item.getStoreResCountInupt().getMasterDisplayCount());
                 result.append("(" + item.getStoreResCountInupt().getDisplayAuxCount() + ")\n");
-            }else{
+            } else {
                 result.append("\t" + item.getRes().getName() + ": ");
-                result.append(BigDecimalFormat.format(item.getResCount(),item.getUseUnit().getCountFormate()) );
-                result.append( item.getUseUnit().getName() + "\n");
+                result.append(BigDecimalFormat.format(item.getResCount(), item.getUseUnit().getCountFormate()));
+                result.append(item.getUseUnit().getName() + "\n");
             }
         }
 
@@ -298,10 +301,24 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public String saveOrderCustomer() {
-
-
         return "/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml";
     }
+
+    public String saveOrderItem() {
+
+        if (verifyItem()) {
+            if (wireOrder()) {
+                orderDispatch.init(needRes);
+                return "/business/startPrepare/erp/sale/CreateSaleOrderDispatch.xhtml";
+            } else
+                return "fail";
+        }
+
+        return "fail";
+    }
+
+
+
 
     public String beginCreateOrder() {
         businessDefineHome.setId("erp.business.order");
@@ -313,7 +330,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
         getInstance().setTotalRebate(new BigDecimal("100"));
         getInstance().setMoney(BigDecimal.ZERO);
-        getInstance().setTotalMoney(BigDecimal.ZERO);
+        //getInstance().setTotalMoney(BigDecimal.ZERO);
         getInstance().setEarnest(BigDecimal.ZERO);
         return "beginning";
     }
@@ -358,7 +375,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             getInstance().setEarnestFirst(orderHome.getInstance().isEarnestFirst());
             getInstance().setEarnest(orderHome.getInstance().getEarnest());
             getInstance().setMoney(orderHome.getInstance().getMoney());
-            getInstance().setTotalMoney(orderHome.getInstance().getTotalMoney());
+            //getInstance().setTotalMoney(orderHome.getInstance().getTotalMoney());
             calcEarnestScale();
 
 
@@ -374,8 +391,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         return CustomerOrder.OrderPayType.values();
     }
 
-    @Override
-    protected boolean wire() {
+
+    private boolean orderWired = false;
+
+    protected boolean wireOrder() {
 
         //TODO cost calc for  BOM table
         getInstance().setTotalCost(new BigDecimal(0));
@@ -423,7 +442,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
 
         getInstance().getNeedReses().add(needRes);
-        getInstance().setTotalMoney(getOrderTotalPrice());
+        //getInstance().setTotalMoney(getOrderTotalPrice());
+        orderWired = true;
         return true;
     }
 
@@ -441,18 +461,14 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         }
     }
 
-
-    @Observer("com.dgsoft.BusinessCreatePrepare.order")
-    @Transactional
-    public void createOrder(BusinessDefine businessDefine) {
-
+    private boolean verifyItem() {
 
         if (orderNeedItems.isEmpty()) {
             getStatusMessages().addFromResourceBundle(StatusMessage.Severity.ERROR, "createOrderItemIsEmptyError");
             editingItem = null;
             resHome.clearInstance();
             storeResHome.clearInstance();
-            throw new ProcessCreatePrepareException("order create item is empty");
+            return false;
         }
 
         if (getInstance().isEarnestFirst() && (getInstance().getEarnest().compareTo(BigDecimal.ZERO) <= 0)) {
@@ -460,7 +476,45 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             editingItem = null;
             resHome.clearInstance();
             storeResHome.clearInstance();
-            throw new ProcessCreatePrepareException("order create Earnest is Zero");
+            return false;
+        }
+        return true;
+    }
+
+
+    @Observer("com.dgsoft.BusinessCreatePrepare.order")
+    @Transactional
+    public void createOrder(BusinessDefine businessDefine) {
+
+
+        if (!verifyItem()) {
+            throw new ProcessCreatePrepareException("order item verify fail");
+        }
+
+        if (!orderWired) {
+            if (!wireOrder()) {
+                throw new ProcessCreatePrepareException("create order wire fail");
+            }
+        }else{
+
+
+            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                boolean allCustomerSelf = true;
+                for (Dispatch dispatch : orderDispatch.getDispatchList()) {
+                    if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
+                        allCustomerSelf = false;
+                        break;
+                    }
+                }
+                if (allCustomerSelf) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "canotAllCustomerSelf");
+                    throw new ProcessCreatePrepareException("dispatch error");
+                }
+            }
+            needRes.getDispatches().addAll(orderDispatch.getDispatchList());
+
+            needRes.setDispatched(true);
+
         }
 
         if (!"persisted".equals(persist())) {

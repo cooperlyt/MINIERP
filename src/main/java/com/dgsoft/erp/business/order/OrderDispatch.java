@@ -1,31 +1,32 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.helper.ActionExecuteState;
-import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.erp.action.CarsHome;
-import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
- * User: cooper
- * Date: 11/9/13
- * Time: 4:15 PM
- * To change this template use File | Settings | File Templates.
+ * User: cooperlee
+ * Date: 1/2/14
+ * Time: 2:52 PM
  */
 @Name("orderDispatch")
-public class OrderDispatch extends OrderTaskHandle {
+@Scope(ScopeType.CONVERSATION)
+public class OrderDispatch {
+
 
     @In
     private ActionExecuteState actionExecuteState;
@@ -36,14 +37,9 @@ public class OrderDispatch extends OrderTaskHandle {
     @In(create = true)
     private CarsHome carsHome;
 
-    @In(create = true)
-    private NeedResHome needResHome;
 
     @In
-    private DictionaryWord dictionary;
-
-    @In(create=true)
-    private Map<String, String> messages;
+    protected FacesMessages facesMessages;
 
     public static class ResOrderItem {
 
@@ -105,21 +101,6 @@ public class OrderDispatch extends OrderTaskHandle {
         selectDispatch = null;
     }
 
-    public String getToastMessages(){
-        StringBuffer result = new StringBuffer();
-        result.append(messages.get("OrderCode") +  ":" + orderHome.getInstance().getId() + "\n");
-
-        for (Dispatch dispatch:dispatchList){
-            result.append(dispatch.getStore().getName() + "\n");
-            for(DispatchItem item: dispatch.getDispatchItemList()){
-                result.append("\t" + item.getStoreRes().getTitle(dictionary) + " ");
-                result.append(item.getResCount().getMasterDisplayCount());
-                result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
-            }
-        }
-
-        return result.toString();
-    }
 
     public String getStoreId() {
         return storeId;
@@ -251,7 +232,7 @@ public class OrderDispatch extends OrderTaskHandle {
                         carsHome.setInstance(selectDispatch.getProductToDoor().getCars());
                         break;
                     case FULL_CAR_SEND:
-                       // expressDriverHome.setInstance(selectDispatch.getExpressCar().getExpressDriver());
+                        // expressDriverHome.setInstance(selectDispatch.getExpressCar().getExpressDriver());
                         break;
                     case EXPRESS_SEND:
                         transCorpHome.setInstance(selectDispatch.getExpressInfo().getTransCorp());
@@ -314,7 +295,7 @@ public class OrderDispatch extends OrderTaskHandle {
         Dispatch dispatch = getStoreDispatch();
 
         if (dispatch == null) {
-            dispatch = new Dispatch(needResHome.getInstance(), store, deliveryType,
+            dispatch = new Dispatch(needRes, store, deliveryType,
                     memo, Dispatch.DispatchState.DISPATCH_COMPLETE);
             setSendInfo(dispatch);
 
@@ -432,71 +413,34 @@ public class OrderDispatch extends OrderTaskHandle {
         actionExecuteState.actionExecute();
     }
 
-    @Override
-    protected String initOrderTask() {
 
-        dispatchList = new ArrayList<Dispatch>();
-        for (NeedRes nr : orderHome.getInstance().getNeedReses()) {
-            if (nr.getDispatches().isEmpty()) {
-                //needRes = nr;
-                needResHome.setId(nr.getId());
-                break;
-            }
-        }
+    private NeedRes needRes;
+
+    public void init(NeedRes needRes) {
+
+        this.needRes = needRes;
 
         storeResOrderItems = new ArrayList<OrderItem>();
-        for (OrderItem oi : needResHome.getInstance().getOrderItems()) {
-
-            if (oi.isStoreResItem()) {
-                oi.generateResCount();
-                boolean added = false;
-                for (OrderItem doi : storeResOrderItems) {
-                    if (doi.getStoreRes().getId().equals(oi.getStoreRes().getId())) {
-                        doi.addCount(oi);
-                        added = true;
-                        break;
-                    }
-                }
-                if (!added)
-                    storeResOrderItems.add(oi);
-            }
-        }
+        for (OrderItem oi : needRes.getOrderItems()) {
 
 
-        dispatchList = new ArrayList<Dispatch>();
-
-        clearDispatch();
-
-        return "success";
-    }
-
-
-    @Override
-    protected String completeOrderTask() {
-
-
-        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-            boolean allCustomerSelf = true;
-            for (Dispatch dispatch : dispatchList) {
-                if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
-                    allCustomerSelf = false;
+            oi.generateResCount();
+            boolean added = false;
+            for (OrderItem doi : storeResOrderItems) {
+                if (doi.getStoreRes().getId().equals(oi.getStoreRes().getId())) {
+                    doi.addCount(oi);
+                    added = true;
                     break;
                 }
             }
-            if (allCustomerSelf) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "canotAllCustomerSelf");
-                return "falil";
-            }
-        }
-        needResHome.getInstance().getDispatches().addAll(dispatchList);
+            if (!added)
+                storeResOrderItems.add(oi);
 
-        needResHome.getInstance().setDispatched(true);
-
-        if (needResHome.update().equals("updated")) {
-            return "taskComplete";
-        } else {
-            return "updateFail";
         }
+
+        dispatchList = new ArrayList<Dispatch>();
+        clearDispatch();
     }
+
 
 }

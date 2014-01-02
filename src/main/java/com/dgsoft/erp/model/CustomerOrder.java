@@ -29,7 +29,7 @@ public class CustomerOrder implements java.io.Serializable {
     private String orderEmp;
     private OrderPayType payType;
     private Date createDate;
-    private BigDecimal money;
+
     private BigDecimal profit;
     private String memo;
     private String contact;
@@ -40,13 +40,14 @@ public class CustomerOrder implements java.io.Serializable {
     private boolean canceled;
     private boolean allStoreOut;
     private Boolean arrears;
-    private BigDecimal totalMoney;
+
     private BigDecimal earnest;
     private BigDecimal totalRebate;
     private BigDecimal middleMoney;
     private BigDecimal totalCost;
     private BigDecimal middleRate;
-    private BigDecimal middleTotal;
+    private BigDecimal money;
+
 
     private boolean includeMiddleMan;
     private boolean moneyComplete;
@@ -135,26 +136,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.orderEmp = orderEmp;
     }
 
-    @Column(name = "MONEY", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getMoney() {
-        return this.money;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
-    @Column(name = "TOTAL_MONEY", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getTotalMoney() {
-        return totalMoney;
-    }
-
-    public void setTotalMoney(BigDecimal totalMoney) {
-        this.totalMoney = totalMoney;
-    }
-
     @Column(name = "EARNEST", scale = 3)
     public BigDecimal getEarnest() {
         return this.earnest;
@@ -181,15 +162,6 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setMiddleMoney(BigDecimal middleMoney) {
         this.middleMoney = middleMoney;
-    }
-
-    @Column(name = "MIDDLE_TOTAL", scale = 3)
-    public BigDecimal getMiddleTotal() {
-        return middleTotal;
-    }
-
-    public void setMiddleTotal(BigDecimal middleTotal) {
-        this.middleTotal = middleTotal;
     }
 
     @Column(name = "TOTAL_COST", nullable = false, scale = 3)
@@ -396,6 +368,16 @@ public class CustomerOrder implements java.io.Serializable {
         this.earnestFirst = earnestFirst;
     }
 
+    @Column(name = "MIDDLE_MONEY", scale = 3, nullable = false)
+    @NotNull
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
+
     @Transient
     public List<AccountOper> getAccountOperList() {
         List<AccountOper> result = new ArrayList<AccountOper>(getAccountOpers());
@@ -407,5 +389,7 @@ public class CustomerOrder implements java.io.Serializable {
         });
         return result;
     }
+
+
 
 }

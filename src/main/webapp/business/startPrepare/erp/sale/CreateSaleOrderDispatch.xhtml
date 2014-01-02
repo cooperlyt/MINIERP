@@ -1,0 +1,65 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.createOrder}-#{messages.orderItem}"/>
+
+    <ui:define name="func-body">
+
+        <h:outputStylesheet>
+            .leftColumn {
+                vertical-align: top;
+                width: 50%;
+            }
+
+            .rightColumn {
+                width: 50%;
+                vertical-align: top;
+            }
+        </h:outputStylesheet>
+
+
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup>
+
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup location="right">
+
+                    <h:inputText required="true"
+                                 maxlength="32"
+                                 styleClass="barOrderNumber"
+                                 label="#{messages.OrderCode}"
+                                 value="#{startData.businessKey}">
+                        <rich:placeholder value="#{messages.OrderCode}"/>
+                    </h:inputText>
+
+
+                    <s:button value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
+
+
+                    <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+        </h:form>
+
+        <br/>
+
+        <rich:messages ajaxRendered="true" globalOnly="false"/>
+
+        <br/>
+
+        <ui:include src="/layout/erp/NeedResDispatch.xhtml"/>
+    </ui:define>
+
+
+</ui:composition>

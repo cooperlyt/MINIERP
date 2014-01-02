@@ -164,8 +164,12 @@
                     <s:button value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
+                    <h:commandButton styleClass="toolBarBtn"
+                                     action="#{orderCreate.saveOrderItem}" value="#{messages.orderDispatch}">
+                        <f:param name="from" value="#{from}"/>
+                    </h:commandButton>
 
-                    <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.createOrder}" action="#{businessCreate.create}"/>
                 </h:panelGroup>
             </h:panelGrid>
         </h:form>
