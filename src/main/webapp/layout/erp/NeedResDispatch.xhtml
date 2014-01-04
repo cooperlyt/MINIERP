@@ -36,6 +36,7 @@
             <ui:include src="/layout/erp/ResCountInput.xhtml">
                 <ui:param name="resCountBean" value="#{orderDispatch.storeResCountInupt}"/>
                 <ui:param name="lableStyleClass" value="small_name"/>
+                <ui:param name="disabledFloatRate" value="true"/>
             </ui:include>
         </a:outputPanel>
         <a:outputPanel id="newDispatchFields">
@@ -54,31 +55,55 @@
                             <a:ajax event="valueChange" render="deliveryTypeField,expressInfoField">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
+
                         </h:selectOneMenu>
+
+                        <ui:define name="tail">
+                            <h:selectBooleanCheckbox value="#{orderDispatch.shipDetails}">
+                                #{messages.order_dispatch_detail}
+                                <a:ajax event="click" render="expressInfoField">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                            </h:selectBooleanCheckbox>
+                        </ui:define>
                     </s:decorate>
+
 
                 </h:panelGrid>
 
 
                 <a:outputPanel id="expressInfoField">
                     <a:outputPanel
-                            rendered="#{ (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'FULL_CAR_SEND')}">
-                        <ui:include src="/layout/erp/ExpressDriverInput.xhtml">
-
-                        </ui:include>
-
+                            rendered="#{orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and ((orderDispatch.deliveryType eq 'FULL_CAR_SEND') or (orderDispatch.deliveryType eq 'EXPRESS_SEND'))}">
+                        <ui:include src="/layout/erp/TransCorpInput.xhtml"/>
 
                     </a:outputPanel>
 
                     <a:outputPanel
-                            rendered="#{ (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'EXPRESS_SEND')}">
-                        <ui:include src="/layout/erp/TransCorpInput.xhtml">
+                            rendered="#{orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'FULL_CAR_SEND')}">
 
-                        </ui:include>
+                        <s:decorate template="/layout/edit.xhtml">
+                            <ui:define name="label">#{messages.ExpressDriver}</ui:define>
+                            <h:inputText value="#{expressCarHome.instance.driver}" label="#{messages.ExpressDriver}"
+                                         maxlength="50" size="20"/>
+                        </s:decorate>
+
+                        <s:decorate template="/layout/edit.xhtml">
+                            <ui:define name="label">#{messages.expressDriver_field_tel}</ui:define>
+                            <h:inputText value="#{expressCarHome.instance.tel}" label="#{messages.expressDriver_field_tel}"
+                                         maxlength="50" size="20"/>
+                        </s:decorate>
+
+                        <s:decorate template="/layout/edit.xhtml">
+                            <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
+                            <h:inputText value="#{expressCarHome.instance.carCode}" maxlength="20" size="20"
+                                         label="#{messages.dispatch_field_expressCarCode}"/>
+                        </s:decorate>
                     </a:outputPanel>
 
+
                     <s:decorate
-                            rendered="#{ (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'SEND_TO_DOOR')}"
+                            rendered="#{ orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'SEND_TO_DOOR')}"
                             template="/layout/edit.xhtml">
                         <ui:define name="label">#{messages.Cars}</ui:define>
                         <rich:autocomplete id="carsInputField" mode="client" minChars="1" autofill="true"
@@ -92,7 +117,7 @@
 
                             <h:outputText value="#{_car.id}(#{dictionary.getEmpNameById(_car.employeeId)})"/>
                             <a:ajax event="selectitem"
-                                    render="carsInputField,transCorpDetails" execute="@this">
+                                    render="carsInputField" execute="@this">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
                             <a:ajax event="blur" execute="@this"
@@ -101,6 +126,7 @@
                             </a:ajax>
                         </rich:autocomplete>
                     </s:decorate>
+
 
                 </a:outputPanel>
 
@@ -134,7 +160,7 @@
 
 <h:panelGrid style="width:100%" columns="2" columnClasses="leftColumn,rightColumn">
     <h:form>
-        <rich:dataTable style="width: 100%" id="orderStoreResOrderItems" value="#{orderDispatch.storeResOrderItems}"
+        <rich:dataTable style="width: 100%" id="orderStoreResOrderItems" value="#{dispatchOrderItems}"
                         var="_orderItem"
                         noDataLabel="#{messages.emptyResult}">
             <f:facet name="header">
@@ -145,7 +171,7 @@
                         <rich:column>
                             <a:commandButton style="float: right" value="#{messages.dispatch_all}" execute="@this"
                                              immediate="true" render="singleDispatchPanel_inputs"
-                                             rendered="#{not empty orderDispatch.storeResOrderItems}"
+                                             rendered="#{not empty dispatchOrderItems}"
                                              action="#{orderDispatch.beginDispatchAll}"
                                              oncomplete="#{rich:component('singleDispatchPanel')}.show();return false;">
                                 <a:attachQueue requestDelay="0"/>
@@ -177,10 +203,9 @@
 
                 <a:commandButton style="float: right" value="#{messages.dispatch_item}" execute="@this"
                                  immediate="true" render="singleDispatchPanel_inputs"
-                                 rendered="#{not empty orderDispatch.storeResOrderItems}"
                                  action="#{orderDispatch.beginDispatchItem}"
                                  oncomplete="#{rich:component('singleDispatchPanel')}.show();return false;">
-                    <a:param value="#{_orderItem.id}" assignTo="#{orderDispatch.orderItemId}"/>
+
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
 
@@ -218,7 +243,7 @@
                     <rich:column colspan="4">
                         #{messages.Dispatch}
 
-                        <s:button style="float: right" value="#{messages.reset}" includePageParams="true"/>
+                        <s:button style="float: right" action="#{orderDispatch.reset}" value="#{messages.reset}" includePageParams="true"/>
 
                     </rich:column>
                     <rich:column breakRowBefore="true">
@@ -242,7 +267,7 @@
 
                 [
                 #{messages.order_field_deliveryType}:#{messages[_dispatch.deliveryType.name()]}(
-                <h:outputText value="#{_dispatch.expressCar.expressDriver.name}"
+                <h:outputText value="#{_dispatch.expressCar.transCorp.name} - #{_dispatch.expressCar.driver}"
                               rendered="#{_dispatch.deliveryType eq 'FULL_CAR_SEND'}"/>
                 <h:outputText value="#{_dispatch.expressInfo.transCorp.name}"
                               rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"/>

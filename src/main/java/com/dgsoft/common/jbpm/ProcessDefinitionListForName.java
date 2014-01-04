@@ -4,7 +4,10 @@ import org.jboss.seam.annotations.*;
 import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jbpm.graph.def.ProcessDefinition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static org.jboss.seam.ScopeType.APPLICATION;
 

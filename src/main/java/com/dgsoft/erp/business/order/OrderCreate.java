@@ -64,6 +64,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     private OrderDispatch orderDispatch;
 
     @In(create = true)
+    private NeedResHome needResHome;
+
+    @In(create = true)
     private Map<String, String> messages;
 
     @In
@@ -318,8 +321,6 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
 
-
-
     public String beginCreateOrder() {
         businessDefineHome.setId("erp.business.order");
         startData.generateKey();
@@ -413,10 +414,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
             getInstance().setCustomer(customerHome.getReadyInstance());
             getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
-            //getInstance().setContact(customerHome.getInstance().getContact());
-            //getInstance().setTel(customerHome.getInstance().getTel());
-            needRes.setAddress(customerHome.getInstance().getAddress());
-            needRes.setPostCode(customerHome.getInstance().getPostCode());
+
         }
 
         if (getInstance().isIncludeMiddleMan()) {
@@ -449,15 +447,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public void customerChangeListener() {
         if (customerHome.isIdDefined()) {
-            //getInstance().setContact(customerHome.getInstance().getContact());
-            //getInstance().setTel(customerHome.getInstance().getTel());
             needRes.setAddress(customerHome.getInstance().getAddress());
             needRes.setPostCode(customerHome.getInstance().getPostCode());
-        } else {
-            getInstance().setContact(null);
-            getInstance().setTel(null);
-            needRes.setPostCode(null);
-            needRes.setAddress(null);
         }
     }
 
@@ -495,10 +486,14 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             if (!wireOrder()) {
                 throw new ProcessCreatePrepareException("create order wire fail");
             }
-        }else{
+        } else {
 
+            if (!orderDispatch.dispatchComplete()){
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"dispatch_not_complete");
+                throw new ProcessCreatePrepareException("dispatch not complete");
+            }
 
-            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+            if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                 boolean allCustomerSelf = true;
                 for (Dispatch dispatch : orderDispatch.getDispatchList()) {
                     if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
@@ -521,11 +516,14 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             editingItem = null;
             resHome.clearInstance();
             storeResHome.clearInstance();
+
+
             throw new ProcessCreatePrepareException("create order persist fail");
         }
 
         startData.setDescription(getInstance().getCustomer().getName());
         orderHome.setId(getInstance().getId());
+        needResHome.setId(getInstance().getNeedResList().get(0).getId());
     }
 
 }

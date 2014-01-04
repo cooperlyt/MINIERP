@@ -1,10 +1,7 @@
 package com.dgsoft.erp.business.inventory;
 
-import com.dgsoft.erp.action.InventoryHome;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 
 /**

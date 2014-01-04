@@ -2,6 +2,7 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.action.CarsHome;
+import com.dgsoft.erp.action.ExpressCarHome;
 import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
@@ -10,6 +11,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
@@ -35,8 +38,12 @@ public class OrderDispatch {
     private TransCorpHome transCorpHome;
 
     @In(create = true)
+    private ExpressCarHome expressCarHome;
+
+    @In(create = true)
     private CarsHome carsHome;
 
+    private boolean shipDetails;
 
     @In
     protected FacesMessages facesMessages;
@@ -49,7 +56,11 @@ public class OrderDispatch {
 
     }
 
+    @DataModel("dispatchOrderItems")
     private List<OrderItem> storeResOrderItems;
+
+    @DataModelSelection
+    private OrderItem selectedOrderItem;
 
     private List<ResOrderItem> resOrderItemList;
 
@@ -83,8 +94,6 @@ public class OrderDispatch {
 
 
     //----------------------------
-
-    private String selectOrderItemId;
 
     //private NeedRes needRes;
 
@@ -174,14 +183,21 @@ public class OrderDispatch {
         this.deliveryType = deliveryType;
     }
 
-
-    public List<OrderItem> getStoreResOrderItems() {
-        return storeResOrderItems;
+    public boolean isShipDetails() {
+        return shipDetails;
     }
 
-    public void setStoreResOrderItems(List<OrderItem> storeResOrderItems) {
-        this.storeResOrderItems = storeResOrderItems;
+    public void setShipDetails(boolean shipDetails) {
+        this.shipDetails = shipDetails;
     }
+
+//    public List<OrderItem> getStoreResOrderItems() {
+//        return storeResOrderItems;
+//    }
+//
+//    public void setStoreResOrderItems(List<OrderItem> storeResOrderItems) {
+//        this.storeResOrderItems = storeResOrderItems;
+//    }
 
     public List<Dispatch> getDispatchList() {
         return dispatchList;
@@ -189,15 +205,6 @@ public class OrderDispatch {
 
     public void setDispatchList(List<Dispatch> dispatchList) {
         this.dispatchList = dispatchList;
-    }
-
-    public String getSelectOrderItemId() {
-        return selectOrderItemId;
-    }
-
-    public void setSelectOrderItemId(String selectOrderItemId) {
-
-        this.selectOrderItemId = selectOrderItemId;
     }
 
     public Store getStore() {
@@ -229,13 +236,18 @@ public class OrderDispatch {
 
                 switch (deliveryType) {
                     case SEND_TO_DOOR:
-                        carsHome.setInstance(selectDispatch.getProductToDoor().getCars());
+                        if (selectDispatch.getProductToDoor() != null)
+                            carsHome.setInstance(selectDispatch.getProductToDoor().getCars());
                         break;
                     case FULL_CAR_SEND:
-                        // expressDriverHome.setInstance(selectDispatch.getExpressCar().getExpressDriver());
+                        if (selectDispatch.getExpressCar() != null) {
+                            expressCarHome.setInstance(selectDispatch.getExpressCar());
+                            transCorpHome.setInstance(selectDispatch.getExpressCar().getTransCorp());
+                        }
                         break;
                     case EXPRESS_SEND:
-                        transCorpHome.setInstance(selectDispatch.getExpressInfo().getTransCorp());
+                        if (selectDispatch.getExpressInfo() != null)
+                            transCorpHome.setInstance(selectDispatch.getExpressInfo().getTransCorp());
                         break;
                 }
 
@@ -250,13 +262,13 @@ public class OrderDispatch {
     public void beginDispatchItem() {
 
 
-        for (OrderItem oi : storeResOrderItems) {
-            if (oi.getId().equals(orderItemId)) {
-                selectOrderItem = oi;
-                break;
-            }
-        }
-
+//        for (OrderItem oi : storeResOrderItems) {
+//            if (oi.getId().equals(orderItemId)) {
+//                selectOrderItem = oi;
+//                break;
+//            }
+//        }
+        selectOrderItem = selectedOrderItem;
 
         storeResCountInupt = new StoreResCountInupt(selectOrderItem.getStoreRes().getRes(),
                 selectOrderItem.getStoreRes().getRes().getResUnitByOutDefault());
@@ -267,10 +279,12 @@ public class OrderDispatch {
 
         actionExecuteState.clearState();
         clearDispatch();
+        shipDetails = false;
     }
 
     public void beginDispatchAll() {
         clearDispatch();
+        shipDetails = false;
         selectOrderItem = null;
         actionExecuteState.clearState();
     }
@@ -278,9 +292,12 @@ public class OrderDispatch {
     public void dispatchAllStoreRes() {
 
         if (selectDispatch != null) {
+
             setSendInfo(selectDispatch);
+
             selectDispatch.setDeliveryType(deliveryType);
             selectDispatch = null;
+            actionExecuteState.actionExecute();
             return;
         }
 
@@ -297,6 +314,7 @@ public class OrderDispatch {
         if (dispatch == null) {
             dispatch = new Dispatch(needRes, store, deliveryType,
                     memo, Dispatch.DispatchState.DISPATCH_COMPLETE);
+
             setSendInfo(dispatch);
 
             dispatchList.add(dispatch);
@@ -333,22 +351,32 @@ public class OrderDispatch {
     }
 
     private void setSendInfo(Dispatch dispatch) {
-        switch (deliveryType) {
-            case FULL_CAR_SEND:
-                //dispatch.setExpressCar(new ExpressCar(dispatch, expressDriverHome.getReadyInstance()));
-                dispatch.setExpressInfo(null);
-                dispatch.setProductToDoor(null);
-                break;
-            case EXPRESS_SEND:
-                dispatch.setExpressInfo(new ExpressInfo(dispatch, transCorpHome.getReadyInstance()));
-                dispatch.setProductToDoor(null);
-                dispatch.setExpressCar(null);
-                break;
-            case SEND_TO_DOOR:
-                dispatch.setProductToDoor(new ProductToDoor(dispatch, carsHome.getReadyInstance()));
-                dispatch.setExpressCar(null);
-                dispatch.setExpressInfo(null);
-                break;
+
+        if (shipDetails) {
+
+
+            switch (deliveryType) {
+                case FULL_CAR_SEND:
+                    dispatch.setExpressCar(expressCarHome.getReadyInstance());
+                    //dispatch.setExpressCar(new ExpressCar(dispatch, expressDriverHome.getReadyInstance()));
+                    dispatch.setExpressInfo(null);
+                    dispatch.setProductToDoor(null);
+                    break;
+                case EXPRESS_SEND:
+                    dispatch.setExpressInfo(new ExpressInfo(dispatch, transCorpHome.getReadyInstance()));
+                    dispatch.setProductToDoor(null);
+                    dispatch.setExpressCar(null);
+                    break;
+                case SEND_TO_DOOR:
+                    dispatch.setProductToDoor(new ProductToDoor(dispatch, carsHome.getReadyInstance()));
+                    dispatch.setExpressCar(null);
+                    dispatch.setExpressInfo(null);
+                    break;
+            }
+        } else {
+            dispatch.setExpressCar(null);
+            dispatch.setExpressInfo(null);
+            dispatch.setProductToDoor(null);
         }
     }
 
@@ -442,5 +470,13 @@ public class OrderDispatch {
         clearDispatch();
     }
 
+    public void reset() {
+        init(needRes);
+    }
+
+
+    public boolean dispatchComplete(){
+        return storeResOrderItems.isEmpty();
+    }
 
 }

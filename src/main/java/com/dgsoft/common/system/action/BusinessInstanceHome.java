@@ -8,7 +8,6 @@ import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.framework.EntityHome;
 
 /**
  * Created with IntelliJ IDEA.

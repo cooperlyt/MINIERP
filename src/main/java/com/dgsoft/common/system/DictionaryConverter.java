@@ -10,8 +10,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.FacesConverter;
-
 import java.io.Serializable;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;

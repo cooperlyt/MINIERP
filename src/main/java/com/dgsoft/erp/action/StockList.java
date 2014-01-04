@@ -1,10 +1,10 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.action.store.StoreResFormatFilter;
-import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.Stock;
+import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.UnitGroup;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;

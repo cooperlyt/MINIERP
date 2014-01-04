@@ -1,9 +1,6 @@
 package com.dgsoft.common.system;
 
 import com.dgsoft.common.EntityQueryAdapter;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.framework.EntityQuery;
-import org.jboss.seam.log.Log;
 
 /**
  * Created with IntelliJ IDEA.

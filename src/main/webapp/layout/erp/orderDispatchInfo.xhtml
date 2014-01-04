@@ -64,19 +64,31 @@
             <h:outputText value="#{dispatch.outCustomer}"/>
         </s:decorate>
 
-        <a:outputPanel rendered="#{dispatch.deliveryType eq 'FULL_CAR_SEND'}">
+        <a:outputPanel rendered="#{(not empty dispatch.expressCar) and (dispatch.deliveryType eq 'FULL_CAR_SEND')}">
             <s:decorate template="/layout/seam-display.xhtml"
                         rendered="#{dispatch.state eq 'ALL_COMPLETE'}">
                 <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
                 <h:outputText value="#{dispatch.expressCar.carCode}"/>
             </s:decorate>
 
-            <ui:include src="/layout/erp/ExpressDriverDetailsView.xhtml">
-                <ui:param name="expressDriver" value="#{dispatch.expressCar.expressDriver}"/>
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.ExpressDriver}</ui:define>
+                #{dispatch.expressCar.driver}
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.expressDriver_field_tel}</ui:define>
+                #{dispatch.expressCar.tel}
+            </s:decorate>
+
+            <ui:include src="/layout/erp/TransCorpDetailsView.xhtml">
+                <ui:param name="transCorp" value="#{dispatch.expressCar.transCorp}"/>
             </ui:include>
+
+
         </a:outputPanel>
 
-        <a:outputPanel rendered="#{dispatch.deliveryType eq 'EXPRESS_SEND'}">
+        <a:outputPanel rendered="#{(not empty dispatch.expressInfo) and (dispatch.deliveryType eq 'EXPRESS_SEND')}">
             <s:decorate template="/layout/seam-display.xhtml"
                         rendered="#{dispatch.state eq 'ALL_COMPLETE'}">
                 <ui:define name="label">#{messages.dispatch_field_expressNumber}</ui:define>

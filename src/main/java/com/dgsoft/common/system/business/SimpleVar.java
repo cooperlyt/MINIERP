@@ -4,7 +4,6 @@ import com.dgsoft.common.system.model.SimpleVarDefine;
 import com.dgsoft.common.system.model.SimpleVarSubscribe;
 import com.dgsoft.common.system.model.Word;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 

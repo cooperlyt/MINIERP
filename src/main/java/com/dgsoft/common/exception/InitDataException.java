@@ -1,7 +1,6 @@
 package com.dgsoft.common.exception;
 
 import org.jboss.seam.annotations.ApplicationException;
-import org.jboss.seam.annotations.exception.Redirect;
 
 /**
  * Created with IntelliJ IDEA.

@@ -10,9 +10,8 @@
 -----------------------------------------------------------------------------%>
 <%@ page contentType="text/html; charset=utf-8" %>
 <%@ page session="false" buffer="none" %>
-<%@ page import="org.eclipse.birt.core.exception.BirtException,
+<%@ page import="org.eclipse.birt.report.resource.BirtResources,
 				 org.eclipse.birt.report.utility.ParameterAccessor,
-				 org.eclipse.birt.report.resource.BirtResources,
 				 java.io.PrintWriter" %>
 
 <%-----------------------------------------------------------------------------

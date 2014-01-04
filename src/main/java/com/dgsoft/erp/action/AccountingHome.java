@@ -1,10 +1,11 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.system.model.Organization;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.Accounting;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
+import org.jboss.seam.annotations.FlushModeType;
+import org.jboss.seam.annotations.Name;
 import org.richfaces.component.UITree;
 import org.richfaces.event.TreeSelectionChangeEvent;
 

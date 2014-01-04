@@ -1,20 +1,15 @@
 package com.dgsoft.erp.business.order;
 
-import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.DictionaryWord;
-import com.dgsoft.erp.action.CarsHome;
 import com.dgsoft.erp.action.NeedResHome;
-import com.dgsoft.erp.action.TransCorpHome;
-import com.dgsoft.erp.action.store.StoreResCountInupt;
-import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.CustomerOrder;
+import com.dgsoft.erp.model.Dispatch;
+import com.dgsoft.erp.model.DispatchItem;
+import com.dgsoft.erp.model.NeedRes;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.international.StatusMessage;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**

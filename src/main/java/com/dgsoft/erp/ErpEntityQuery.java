@@ -1,7 +1,6 @@
 package com.dgsoft.erp;
 
 import com.dgsoft.common.EntityQueryAdapter;
-import org.jboss.seam.framework.EntityQuery;
 
 /**
  * Created with IntelliJ IDEA.

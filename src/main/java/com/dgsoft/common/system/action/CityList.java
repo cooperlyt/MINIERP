@@ -2,7 +2,6 @@ package com.dgsoft.common.system.action;
 
 import com.dgsoft.common.system.SystemEntityQuery;
 import com.dgsoft.common.system.model.City;
-import com.dgsoft.common.system.model.Person;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;

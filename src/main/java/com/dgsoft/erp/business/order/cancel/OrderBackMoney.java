@@ -3,7 +3,6 @@ package com.dgsoft.erp.business.order.cancel;
 import com.dgsoft.common.jbpm.BussinessProcessUtils;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
-import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;

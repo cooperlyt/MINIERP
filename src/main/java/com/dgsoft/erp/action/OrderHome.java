@@ -3,13 +3,10 @@ package com.dgsoft.erp.action;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.action.store.OrderNeedItem;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.ResCount;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -259,6 +256,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public boolean isAnyOneMoneyPay(){
         return  !getInstance().getAccountOpers().isEmpty();
+    }
+
+    public BigDecimal getResTotalMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderItem item: getMasterNeedRes().getOrderItems()){
+            result = result.add(item.getTotalMoney());
+        }
+        return result;
     }
 
 }

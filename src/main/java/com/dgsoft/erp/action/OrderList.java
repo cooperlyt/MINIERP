@@ -7,7 +7,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.Credentials;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.

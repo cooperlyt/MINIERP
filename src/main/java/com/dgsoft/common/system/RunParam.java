@@ -1,16 +1,12 @@
 package com.dgsoft.common.system;
 
-import com.dgsoft.common.system.action.SystemParamHome;
 import com.dgsoft.common.system.model.SystemParam;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.framework.EntityQuery;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

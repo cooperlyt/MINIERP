@@ -1,7 +1,6 @@
 package com.dgsoft.common.system.business;
 
 import com.dgsoft.common.system.NumberBuilder;
-import com.dgsoft.common.system.model.BusinessDefine;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

@@ -6,14 +6,10 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.bpm.Actor;
-import org.jboss.seam.bpm.Jbpm;
-import org.jbpm.JbpmContext;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.richfaces.application.push.TopicKey;
 import org.richfaces.application.push.TopicsContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

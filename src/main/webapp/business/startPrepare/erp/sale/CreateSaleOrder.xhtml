@@ -235,10 +235,12 @@
 
         </s:decorate>
 
-        <s:decorate template="/layout/edit.xhtml">
+        <s:decorate id="orderPostCodeField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.order_field_postCode}</ui:define>
             <h:inputText value="#{orderCreate.needRes.postCode}" label="#{messages.order_field_postCode}"
-                         size="10" maxlength="10"/>
+                         size="10" maxlength="10">
+                <a:ajax event="blur" render="orderPostCodeField" />
+            </h:inputText>
         </s:decorate>
 
         <s:decorate id="receiveTelField" template="/layout/edit.xhtml">
@@ -275,7 +277,8 @@
                                fetchValue="#{_contact}" var="_contact">
 
                 <h:outputText value="#{_contact}"/>
-                <a:ajax event="blur" listener="#{orderCreate.orderReceivceContactChanged}" render="receiveContactField,receiveTelField"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderReceivceContactChanged}"
+                        render="receiveContactField,receiveTelField"/>
                 <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceContactChanged}"
                         render="receiveContactField,receiveTelField"/>
             </rich:autocomplete>
@@ -287,10 +290,12 @@
     <h:panelGrid columns="2">
 
 
-        <s:decorate template="/layout/edit.xhtml">
+        <s:decorate id="receiveAddressField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.order_field_address}</ui:define>
             <h:inputText value="#{orderCreate.needRes.address}" label="#{messages.order_field_address}"
-                         required="true" size="81" maxlength="200"/>
+                         required="true" size="81" maxlength="200">
+                <a:ajax event="blur" render="receiveAddressField"/>
+            </h:inputText>
         </s:decorate>
     </h:panelGrid>
 </a:outputPanel>

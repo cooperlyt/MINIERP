@@ -6,7 +6,8 @@ import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.Name;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

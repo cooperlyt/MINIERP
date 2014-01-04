@@ -1,8 +1,6 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.system.model.Organization;
 import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.ResCategory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

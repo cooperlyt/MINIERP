@@ -3,9 +3,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:s="http://jboss.org/schema/seam/taglib"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
                 template="/layout/full-template.xhtml">
 
 
@@ -43,11 +42,12 @@
                     </h:inputText>
 
 
-                    <s:button value="#{messages.cancel}" propagation="end"
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
 
-                    <h:commandButton value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+                    <h:commandButton styleClass="toolBarBtn"  value="#{messages.createOrder}" action="#{businessCreate.create}"/>
                 </rich:toolbarGroup>
             </rich:toolbar>
         </h:form>

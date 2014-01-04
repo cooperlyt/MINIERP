@@ -2,7 +2,6 @@ package com.dgsoft.erp.model.api;
 
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.NoConvertCount;
-import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResUnit;
 import com.dgsoft.erp.model.UnitGroup;
 import org.jboss.seam.log.Logging;

@@ -3,7 +3,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:s="http://jboss.org/schema/seam/taglib"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
@@ -77,7 +76,6 @@
             <h:outputScript>
 
 
-                ZeroClipboard.setDefaults( { moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' } );
 
                 $('a.clipboard').each(function(){
                 var clip=new ZeroClipboard($(this));

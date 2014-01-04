@@ -3,8 +3,9 @@ package com.dgsoft.common.jbpm;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.async.Asynchronous;
+import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.log.Log;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 

@@ -4,9 +4,7 @@ import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.StoreArea;
 import org.jboss.seam.annotations.Name;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

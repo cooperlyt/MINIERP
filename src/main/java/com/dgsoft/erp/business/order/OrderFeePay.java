@@ -1,16 +1,13 @@
 package com.dgsoft.erp.business.order;
 
-import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.MiddleMoneyPay;
 import com.dgsoft.erp.model.OrderFee;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

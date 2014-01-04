@@ -4,13 +4,11 @@ import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.DispatchHome;
-import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.util.Date;

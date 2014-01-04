@@ -10,12 +10,9 @@
 -----------------------------------------------------------------------------%>
 <%@ page contentType="text/html; charset=utf-8" %>
 <%@ page session="false" buffer="none" %>
-<%@ page import="java.util.Iterator,
-				 java.util.Collection,
- 				 org.eclipse.birt.report.utility.ParameterAccessor,
- 				 org.eclipse.birt.report.context.ParameterGroupBean,
-				 org.eclipse.birt.report.context.BaseAttributeBean,
- 				 org.eclipse.birt.report.presentation.aggregation.IFragment" %>
+<%@ page import="org.eclipse.birt.report.context.ParameterGroupBean,
+				 org.eclipse.birt.report.presentation.aggregation.IFragment,
+ 				 java.util.Iterator" %>
 
 <%-----------------------------------------------------------------------------
 	Expected java beans

@@ -1,17 +1,14 @@
 package com.dgsoft.common.system.action;
 
-import javax.faces.event.ValueChangeEvent;
-
 import com.dgsoft.common.system.SystemEntityHome;
 import com.dgsoft.common.system.SystemEntityQuery;
-import com.dgsoft.common.system.model.*;
-
+import com.dgsoft.common.system.model.FuncCategory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
-import java.util.List;
+import javax.faces.event.ValueChangeEvent;
 
 
 @Name("funcCategoryHome")

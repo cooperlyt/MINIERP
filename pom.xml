@@ -564,6 +564,8 @@
         <defaultGoal>package</defaultGoal>
 
         <plugins>
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -572,6 +574,18 @@
                         <resource>
                             <directory>src/main/webapp</directory>
                             <filtering>true</filtering>
+                            <excludes>
+                                <exclude>**/*.swf</exclude>
+                            </excludes>
+                        </resource>
+
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>false</filtering>
+
+                            <includes>
+                                <include>**/*.swf</include>
+                            </includes>
                         </resource>
                     </webResources>
                     <warName>MINIERP</warName>

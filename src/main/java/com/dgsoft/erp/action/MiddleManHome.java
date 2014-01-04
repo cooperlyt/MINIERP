@@ -1,6 +1,5 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.MiddleMan;
 import org.jboss.seam.annotations.Name;

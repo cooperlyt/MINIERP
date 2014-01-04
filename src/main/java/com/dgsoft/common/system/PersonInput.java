@@ -9,7 +9,6 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 
-import javax.faces.event.ValueChangeEvent;
 import java.util.List;
 
 /**

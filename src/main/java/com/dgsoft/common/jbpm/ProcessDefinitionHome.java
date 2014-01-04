@@ -1,19 +1,12 @@
 package com.dgsoft.common.jbpm;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jboss.seam.log.Log;
-import org.jbpm.JbpmContext;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.richfaces.event.FileUploadEvent;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipInputStream;
 

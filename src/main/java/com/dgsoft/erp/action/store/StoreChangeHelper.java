@@ -1,6 +1,5 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.common.system.AuthenticationInfo;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.common.system.business.StartData;
@@ -10,7 +9,6 @@ import com.dgsoft.erp.action.StockChangeHome;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.api.StockChangeModel;
-import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;

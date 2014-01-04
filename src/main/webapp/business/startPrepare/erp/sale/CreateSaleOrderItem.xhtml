@@ -160,7 +160,6 @@
                     </h:inputText>
 
 
-
                     <s:button value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
@@ -169,7 +168,8 @@
                         <f:param name="from" value="#{from}"/>
                     </h:commandButton>
 
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.createOrder}"
+                                     action="#{businessCreate.create}"/>
                 </h:panelGroup>
             </h:panelGrid>
         </h:form>
@@ -395,11 +395,9 @@
             <f:facet name="header">
 
 
-
-                    <a id="clip-button-id" href="#" data-clipboard-text="#{orderCreate.toastMessages}" class="clipboard">
-                        #{messages.toastQQ}
-                    </a>
-
+                <a id="clip-button-id" href="#" data-clipboard-text="#{orderCreate.toastMessages}" class="clipboard">
+                    #{messages.toastQQ}
+                </a>
 
 
             </f:facet>
@@ -413,35 +411,31 @@
 </h:form>
 
 
-
 <a:outputPanel ajaxRendered="true">
-    <h:outputScript >
+    <script type="text/javascript">
+
+        ZeroClipboard.setDefaults({ moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' });
+
+        $('a.clipboard').each(function () {
+            var clip = new ZeroClipboard($(this));
 
 
-
-        ZeroClipboard.setDefaults( { moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' } );
-
-        $('a.clipboard').each(function(){
-        var clip=new ZeroClipboard($(this));
+            clip.on('complete', function (client, args) {
 
 
-        clip.on('complete',function(client,args){
+                window.open(
+                        "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
+                        ,
+                        'newwindow',
+                        ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen no'
+                );
 
 
-        window.open(
-        "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
-        ,
-        'newwindow',
-        ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen yes'
-        );
-
-
-        });
+            });
         });
 
 
-
-    </h:outputScript>
+    </script>
 </a:outputPanel>
 
 </ui:define>

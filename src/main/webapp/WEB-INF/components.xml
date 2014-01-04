@@ -2,7 +2,6 @@
 <components xmlns="http://jboss.org/schema/seam/components"
             xmlns:core="http://jboss.org/schema/seam/core"
             xmlns:persistence="http://jboss.org/schema/seam/persistence"
-            xmlns:drools="http://jboss.org/schema/seam/drools"
             xmlns:bpm="http://jboss.org/schema/seam/bpm"
             xmlns:security="http://jboss.org/schema/seam/security"
             xmlns:mail="http://jboss.org/schema/seam/mail"
@@ -11,7 +10,7 @@
             xsi:schemaLocation=
                     "http://jboss.org/schema/seam/core http://jboss.org/schema/seam/core-2.3.xsd
                  http://jboss.org/schema/seam/persistence http://jboss.org/schema/seam/persistence-2.3.xsd
-                 http://jboss.org/schema/seam/drools http://jboss.org/schema/seam/drools-2.3.xsd
+
                  http://jboss.org/schema/seam/bpm http://jboss.org/schema/seam/bpm-2.3.xsd
                  http://jboss.org/schema/seam/security http://jboss.org/schema/seam/security-2.3.xsd
                  http://jboss.org/schema/seam/mail http://jboss.org/schema/seam/mail-2.3.xsd

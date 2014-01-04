@@ -3,15 +3,11 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerArea;
-import com.dgsoft.erp.model.CustomerOrder;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.security.Credentials;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 /**

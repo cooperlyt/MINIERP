@@ -12,7 +12,7 @@
     <ui:param name="functionTitle" value="#{messages.OrderDetails}"/>
 
     <ui:define name="func-body">
-        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>
+
 
         <h:outputStylesheet>
             .rf-tb-emp {
@@ -52,36 +52,35 @@
         <br/>
         <ui:include src="/layout/erp/OrderInfo.xhtml"/>
 
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>
 
-        <a:outputPanel ajaxRendered="true">
-            <h:outputScript >
+        <script type="text/javascript">
 
 
+            ZeroClipboard.setDefaults( { moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' } );
 
-                ZeroClipboard.setDefaults( { moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' } );
-
-                $('a.clipboard').each(function(){
+            $('a.clipboard').each(function(){
                 var clip=new ZeroClipboard($(this));
 
 
                 clip.on('complete',function(client,args){
 
 
-                window.open(
-                "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
-                ,
-                'newwindow',
-                ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen yes'
-                );
+                    window.open(
+                            "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
+                            ,
+                            'newwindow',
+                            ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen no'
+                    );
 
 
                 });
-                });
+            });
 
 
 
-            </h:outputScript>
-        </a:outputPanel>
+        </script>
+
     </ui:define>
 
 </ui:composition>

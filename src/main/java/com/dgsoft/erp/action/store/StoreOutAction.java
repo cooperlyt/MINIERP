@@ -5,12 +5,14 @@ import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StockChangeModel;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.Observer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

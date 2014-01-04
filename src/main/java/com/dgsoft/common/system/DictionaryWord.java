@@ -1,13 +1,16 @@
 package com.dgsoft.common.system;
 
-import com.dgsoft.common.OrderBeanComparator;
-import com.dgsoft.common.system.model.*;
+import com.dgsoft.common.system.model.City;
+import com.dgsoft.common.system.model.Employee;
+import com.dgsoft.common.system.model.Word;
+import com.dgsoft.common.system.model.WordCategory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.log.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.

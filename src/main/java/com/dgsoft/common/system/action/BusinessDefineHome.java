@@ -3,7 +3,6 @@ package com.dgsoft.common.system.action;
 import com.dgsoft.common.OrderBeanComparator;
 import com.dgsoft.common.system.SystemEntityHome;
 import com.dgsoft.common.system.model.BusinessDefine;
-import com.dgsoft.common.system.model.SimpleVarDefine;
 import com.dgsoft.common.system.model.SimpleVarSubscribe;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

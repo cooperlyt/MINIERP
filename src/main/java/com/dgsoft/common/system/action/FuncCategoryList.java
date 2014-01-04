@@ -1,9 +1,9 @@
 package com.dgsoft.common.system.action;
 
-import com.dgsoft.common.system.model.*;
+import com.dgsoft.common.system.model.FuncCategory;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.core.SeamResourceBundle;
 import org.jboss.seam.framework.EntityQuery;
+
 import java.util.Arrays;
 
 @Name("funcCategoryList")

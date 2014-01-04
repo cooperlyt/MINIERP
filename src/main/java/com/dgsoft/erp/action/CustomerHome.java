@@ -1,8 +1,5 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.PinyinTools;
-import com.dgsoft.common.helper.ActionExecuteState;
-import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerContact;

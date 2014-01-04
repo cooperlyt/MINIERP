@@ -1,17 +1,10 @@
 package com.dgsoft.common.jbpm;
 
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.bpm.BeginTask;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.log.Log;
-import org.jbpm.JbpmConfiguration;
-import org.jbpm.JbpmContext;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.Token;
 import org.jbpm.taskmgmt.exe.TaskInstance;
-
-import static org.jboss.seam.annotations.Install.BUILT_IN;
 
 /**
  * Created by IntelliJ IDEA.

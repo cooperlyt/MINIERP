@@ -3,7 +3,6 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.BackPrepareMoney;
-import com.dgsoft.erp.model.PreparePay;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.Credentials;

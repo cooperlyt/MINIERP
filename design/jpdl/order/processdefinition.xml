@@ -149,7 +149,7 @@
 		<transition to="订单收款" name="款到发货">
 			<condition expression="#{orderHome.instance.payType eq 'PAY_FIRST'}"></condition>
 		</transition>
-		<transition to="订单调度" name="先货">
+		<transition to="调度判断" name="先货">
 			<condition expression="#{not (orderHome.instance.payType eq 'PAY_FIRST') and (not orderHome.instance.earnestFirst)}"></condition>
 		</transition>
 		<transition to="订金收款" name="订金发货">
@@ -182,7 +182,7 @@
 		<transition to="join2" name="已发货">
 			<condition expression="#{not (orderHome.instance.payType eq 'PAY_FIRST') and not ((orderHome.instance.payType eq 'EXPRESS_PROXY')  and (orderHome.lastNeedRes.type eq 'ORDER_SEND' )) }"></condition>
 		</transition>
-		<transition to="订单调度" name="未发货">
+		<transition to="调度判断" name="未发货">
 			<condition expression="#{orderHome.instance.payType eq 'PAY_FIRST' }"></condition>
 		</transition>
 		<transition to="订单完成" name="代收货款">
@@ -197,7 +197,7 @@
 			</description>
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>
-		<transition to="订单调度"></transition>
+		<transition to="调度判断"></transition>
 	</task-node>
 
 	<task-node name="发货(1库)">
@@ -256,6 +256,15 @@
 		</task>
 		<transition to="出库完成(天津)"></transition>
 	</task-node>
+
+	<decision name="调度判断">
+		<transition to="付款确认" name="已调度">
+			<condition expression="#{orderHome.lastNeedRes.dispatched}"></condition>
+		</transition>
+		<transition to="订单调度">
+			<condition expression="#{not orderHome.lastNeedRes.dispatched}"></condition>
+		</transition>
+	</decision>
 
 
 	<end-state name="订单完成"></end-state>

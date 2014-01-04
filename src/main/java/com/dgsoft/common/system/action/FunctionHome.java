@@ -1,14 +1,11 @@
 package com.dgsoft.common.system.action;
 
 
+import com.dgsoft.common.system.SystemEntityHome;
 import com.dgsoft.common.system.SystemEntityQuery;
-import com.dgsoft.common.system.model.FuncCategory;
+import com.dgsoft.common.system.model.Function;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-
-
-import com.dgsoft.common.system.SystemEntityHome;
-import com.dgsoft.common.system.model.Function;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 

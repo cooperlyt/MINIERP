@@ -7,7 +7,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Unwrap;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
-
 import org.jboss.seam.log.Logging;
 import org.json.JSONException;
 import org.json.JSONObject;

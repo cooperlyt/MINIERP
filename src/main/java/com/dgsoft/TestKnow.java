@@ -1,18 +1,11 @@
 package com.dgsoft;
 
-import com.dgsoft.common.utils.persistence.UniqueVerify;
-
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.bpm.BeginTask;
-import org.jboss.seam.annotations.bpm.ResumeProcess;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesPage;
 
-import javax.persistence.NamedQueries;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

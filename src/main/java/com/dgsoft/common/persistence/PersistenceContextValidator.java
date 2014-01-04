@@ -1,7 +1,10 @@
 package com.dgsoft.common.persistence;
 
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.core.Expressions;
 
 import javax.persistence.EntityManager;

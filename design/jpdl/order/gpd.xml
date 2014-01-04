@@ -71,7 +71,7 @@
       <label x="-40" y="-11"/>
     </edge>
   </node>
-  <node name="订单调度" x="43" y="248" width="132" height="36">
+  <node name="订单调度" x="208" y="233" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -133,7 +133,7 @@
   </node>
   <node name="付款确认" x="43" y="305" width="132" height="36">
     <edge>
-      <label x="-64" y="-15"/>
+      <label x="-62" y="-10"/>
     </edge>
     <edge>
       <label x="-45" y="-21"/>
@@ -166,7 +166,6 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="订单完成" x="777" y="247" width="132" height="36"/>
   <node name="发货(1库)" x="462" y="547" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -204,6 +203,15 @@
   <node name="发货(天津)" x="322" y="744" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="订单完成" x="777" y="247" width="132" height="36"/>
+  <node name="调度判断" x="43" y="231" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+    <edge>
+      <label x="-20" y="-7"/>
     </edge>
   </node>
 </root-container>

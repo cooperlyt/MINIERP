@@ -1,6 +1,8 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.Batch;
+import com.dgsoft.erp.model.Format;
+import com.dgsoft.erp.model.Res;
 
 import java.math.BigDecimal;
 import java.util.List;

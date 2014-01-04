@@ -5,19 +5,14 @@ import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.ResUnit;
 import com.dgsoft.erp.model.UnitGroup;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
-import org.richfaces.component.UIExtendedDataTable;
 
-import javax.faces.event.AjaxBehaviorEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**

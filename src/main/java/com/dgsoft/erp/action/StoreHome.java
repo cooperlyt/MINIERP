@@ -1,18 +1,14 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.system.AuthenticationInfo;
-import com.dgsoft.common.system.action.RoleHome;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.Store;
 import com.dgsoft.erp.model.StoreArea;
 import com.google.common.collect.Iterators;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityNotFoundException;
 import org.jboss.seam.security.Identity;
 
-import javax.persistence.EntityManager;
 import javax.swing.tree.TreeNode;
 import java.util.*;
 

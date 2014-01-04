@@ -2,10 +2,7 @@ package com.dgsoft.common.system;
 
 import com.dgsoft.common.OrderBeanComparator;
 import com.dgsoft.common.system.model.*;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.log.Log;
 
-import javax.faces.event.ValueChangeEvent;
 import java.util.*;
 
 /**

@@ -1,6 +1,5 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.erp.model.MaterialStoreIn;
 import com.dgsoft.erp.model.ProductStoreIn;
 import com.dgsoft.erp.model.StockChange;
 import org.jboss.seam.annotations.Name;

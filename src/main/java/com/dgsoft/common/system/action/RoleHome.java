@@ -3,8 +3,10 @@ package com.dgsoft.common.system.action;
 import com.dgsoft.common.system.SystemEntityHome;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.common.system.model.Role;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
+import org.jboss.seam.annotations.FlushModeType;
+import org.jboss.seam.annotations.Name;
 
 import java.util.ArrayList;
 import java.util.List;

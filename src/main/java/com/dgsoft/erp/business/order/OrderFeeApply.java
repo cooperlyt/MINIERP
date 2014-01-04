@@ -270,7 +270,7 @@ public class OrderFeeApply extends OrderTaskHandle {
                 return "fail";
             }
 
-            orderHome.getInstance().setMiddleTotal(middleManFee.getMoney());
+            //orderHome.getInstance().setMiddleTotal(middleManFee.getMoney());
             orderHome.getInstance().getOrderFees().add(middleManFee);
 
         }

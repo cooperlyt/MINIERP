@@ -2,6 +2,8 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.TransCorp;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Name;
 
 /**
@@ -12,4 +14,9 @@ import org.jboss.seam.annotations.Name;
  */
 @Name("transCorpHome")
 public class TransCorpHome extends ErpSimpleEntityHome<TransCorp>{
+
+    @Factory(value="transCorpTypes",scope = ScopeType.CONVERSATION)
+    public TransCorp.TransCorpType[] getTransCorpTypes(){
+        return TransCorp.TransCorpType.values();
+    }
 }
