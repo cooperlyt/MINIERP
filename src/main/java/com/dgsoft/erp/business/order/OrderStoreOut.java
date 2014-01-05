@@ -6,12 +6,17 @@ import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.DispatchHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +44,14 @@ public class OrderStoreOut extends OrderTaskHandle {
     @In
     private org.jboss.seam.security.Credentials credentials;
 
+    @DataModel("orderStoreOutItems")
+    private List<OrderStoreOutItem> orderStoreOutItems;
+
+    private List<DispatchItem> noAssignedItems;
+
+    @DataModelSelection
+    private OrderStoreOutItem selectedOutItem;
+
     //private String storeId;
 
     private String memo;
@@ -61,66 +74,76 @@ public class OrderStoreOut extends OrderTaskHandle {
         this.memo = memo;
     }
 
+    public List<DispatchItem> getNoAssignedItems() {
+        return noAssignedItems;
+    }
+
+    public void setNoAssignedItems(List<DispatchItem> noAssignedItems) {
+        this.noAssignedItems = noAssignedItems;
+    }
+
     @Override
     protected String completeOrderTask() {
-        for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {
-            if (!item.isEnough()) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                        "orderStockNotEnoughCantStoreOut",
-                        resHelper.generateStoreResTitle(item.getStoreRes()),
-                        item.getResCount().getMasterDisplayCount() + "(" +
-                                item.getResCount().getDisplayAuxCount() + ")",
-                        item.getStockCount().getMasterDisplayCount() + "(" +
-                                item.getStockCount().getDisplayAuxCount() + ")",
-                        item.getDisparity().getMasterDisplayCount() + "(" +
-                                item.getDisparity().getDisplayAuxCount() + ")");
-                return "storeNotEnough";
-            }
+
+        if (!noAssignedItems.isEmpty()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                    "dispatch_res_item_not_assigned", noAssignedItems.get(0).getRes().getName() + " ...");
+            return "resItemNotAssigned";
         }
+//
+//        for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {
+//            if (!item.isEnough()) {
+//                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+//                        "orderStockNotEnoughCantStoreOut",
+//                        resHelper.generateStoreResTitle(item.getStoreRes()),
+//                        item.getResCount().getMasterDisplayCount() + "(" +
+//                                item.getResCount().getDisplayAuxCount() + ")",
+//                        item.getStockCount().getMasterDisplayCount() + "(" +
+//                                item.getStockCount().getDisplayAuxCount() + ")",
+//                        item.getDisparity().getMasterDisplayCount() + "(" +
+//                                item.getDisparity().getDisplayAuxCount() + ")");
+//                return "storeNotEnough";
+//            }
+//        }
 
         dispatchHome.getInstance().setStockChange(
-                new StockChange(orderHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"),dispatchHome.getInstance().getStore(), storeOutDate,
-                        credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo,true));
+                new StockChange(orderHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"), dispatchHome.getInstance().getStore(), storeOutDate,
+                        credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo, true));
 
-        for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {
+        for (OrderStoreOutItem item : orderStoreOutItems) {
             //TODO noConvertRate Unit
+            Stock stock = item.getStock();
+            if (stock == null) {
+                stock = new Stock(dispatchHome.getInstance().getStore(), item.getStoreRes(), BigDecimal.ZERO);
+            }
+
             StockChangeItem stockChangeItem = new StockChangeItem(dispatchHome.getInstance().getStockChange(),
-                    item.getStock(), item.getResCount().getMasterCount(), true);
+                    stock, item.getResCount().getMasterCount(), true);
             dispatchHome.getInstance().getStockChange().getStockChangeItems()
                     .add(stockChangeItem);
-            item.getStock().setCount(stockChangeItem.getAfterCount());
-            //TODO UseSelectBatch
-            //TODO StoreArea Count subtract
-            BigDecimal count = stockChangeItem.getCount();
-            for (BatchStoreCount bsc : item.getStock().getBatchStoreCountList()) {
-                if (bsc.getCount().compareTo(count) >= 0) {
-                    bsc.setCount(bsc.getCount().subtract(count));
-                    count = BigDecimal.ZERO;
+            stock.setCount(stockChangeItem.getAfterCount());
 
-                    break;
-                } else {
-                    count = count.subtract(bsc.getCount());
-                    bsc.setCount(BigDecimal.ZERO);
-
-                    //TODO Del Batch StoreCount if not Default; but save Batch info
-                }
+            if ((item.getOverlyOut() != null) && (item.getOverlyOut().getCount().compareTo(BigDecimal.ZERO) > 0)){
+                dispatchHome.getInstance().getOverlyOuts().add(item.getOverlyOut());
             }
-            if (count.compareTo(BigDecimal.ZERO) != 0) {
-                throw new IllegalStateException("batch count error, not equals stock count");
+
+            if (item.getStoreRes().getRes().isBatchMgr()){
+                //TODO UseSelectBatch
+                //TODO StoreArea Count subtract
             }
         }
 
         boolean allStoreOut = true;
-        for(Dispatch dispatch:  orderHome.getMasterNeedRes().getDispatches()){
-            if (!dispatch.getId().equals(dispatchHome.getInstance().getId())){
-                if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_COMPLETE)){
+        for (Dispatch dispatch : orderHome.getMasterNeedRes().getDispatches()) {
+            if (!dispatch.getId().equals(dispatchHome.getInstance().getId())) {
+                if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_COMPLETE)) {
                     allStoreOut = false;
                     break;
                 }
             }
         }
 
-        if (allStoreOut){
+        if (allStoreOut) {
             orderHome.getInstance().setAllStoreOut(allStoreOut);
         }
 
@@ -136,8 +159,6 @@ public class OrderStoreOut extends OrderTaskHandle {
         } else {
             return "updateFail";
         }
-
-
     }
 
     @Override
@@ -154,6 +175,17 @@ public class OrderStoreOut extends OrderTaskHandle {
                     if (dispatch.getStore().getId().equals(storeId) &&
                             dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_COMPLETE)) {
                         dispatchHome.setId(dispatch.getId());
+                        dispatchHome.getInstance().getOverlyOuts().clear();
+                        orderStoreOutItems = new ArrayList<OrderStoreOutItem>();
+                        noAssignedItems = new ArrayList<DispatchItem>();
+                        for (DispatchItem dispatchItem : dispatchHome.getInstance().getDispatchItems()) {
+                            if (dispatchItem.isStoreResItem()) {
+                                addDispatchItem(dispatchItem);
+                            } else {
+                                noAssignedItems.add(dispatchItem);
+                            }
+
+                        }
 
                         return "success";
                     }
@@ -163,6 +195,143 @@ public class OrderStoreOut extends OrderTaskHandle {
 
 
         return "fail";
+    }
+
+    private void addDispatchItem(DispatchItem dispatchItem) {
+        if (!dispatchItem.isStoreResItem()) {
+            throw new IllegalArgumentException("dispatchItem must a StoreRes item");
+        }
+        boolean find = false;
+        for (OrderStoreOutItem item : orderStoreOutItems) {
+            if (item.getStoreRes().getId().equals(dispatchItem.getStoreRes().getId())) {
+                item.addDispatchItem(dispatchItem);
+                find = true;
+                break;
+            }
+        }
+        if (!find) {
+            orderStoreOutItems.add(new OrderStoreOutItem(dispatchItem));
+        }
+    }
+
+    private void addDispatchItem(DispatchItem dispatchItem, StoreRes storeRes) {
+        if (dispatchItem.isStoreResItem()) {
+            throw new IllegalArgumentException("dispatchItem must a Res item");
+        }
+        boolean find = false;
+        for (OrderStoreOutItem item : orderStoreOutItems) {
+            if (item.getStoreRes().getId().equals(storeRes.getId())) {
+                item.addDispatchItem(dispatchItem);
+                find = true;
+                break;
+            }
+        }
+        if (!find) {
+            orderStoreOutItems.add(new OrderStoreOutItem(dispatchItem, storeRes));
+        }
+    }
+
+
+    public class OrderStoreOutItem {
+
+        private List<DispatchItem> dispatchItems = new ArrayList<DispatchItem>();
+
+        private OverlyOut overlyOut;
+
+        private StoreRes storeRes;
+
+        public StoreRes getStoreRes() {
+            return storeRes;
+        }
+
+        public OverlyOut getOverlyOut() {
+            return overlyOut;
+        }
+
+        public OrderStoreOutItem(DispatchItem dispatchItem) {
+            if (!dispatchItem.isStoreResItem())
+                throw new IllegalArgumentException("plase call other constructor put storeRes");
+            dispatchItems.add(dispatchItem);
+            storeRes = dispatchItem.getStoreRes();
+        }
+
+        public OrderStoreOutItem(DispatchItem dispatchItem, StoreRes storeRes) {
+            if (dispatchItem.isStoreResItem() && !dispatchItem.getStoreRes().getId().equals(storeRes.getId())) {
+                throw new IllegalArgumentException("dispatchItem stores not eq storeRes");
+            }
+            dispatchItems.add(dispatchItem);
+            this.storeRes = storeRes;
+        }
+
+        public void addDispatchItem(DispatchItem dispatchItem) {
+            if (dispatchItem.isStoreResItem()) {
+                if (!dispatchItem.getStoreRes().getId().equals(storeRes.getId())) {
+                    throw new IllegalArgumentException("not same storeRes can't add");
+                }
+            } else {
+                if (!dispatchItem.getRes().equals(storeRes.getRes())) {
+                    throw new IllegalArgumentException("not same Res can't add");
+                }
+            }
+
+            dispatchItems.add(dispatchItem);
+        }
+
+
+        public void addOverly(OverlyOut overlyOut) {
+            if (overlyOut == null) {
+                this.overlyOut = overlyOut;
+            } else {
+                this.overlyOut.setCount(this.overlyOut.getCount().add(overlyOut.getCount()));
+            }
+        }
+
+
+        public ResCount getResCount() {
+            BigDecimal masterCount = BigDecimal.ZERO;
+            for (DispatchItem dispatchItem : dispatchItems) {
+                masterCount = masterCount.add(storeRes.getResCount(dispatchItem.getCount(), dispatchItem.getResUnit()).getMasterCount());
+            }
+            if (overlyOut != null) {
+                masterCount = masterCount.add(overlyOut.getCount());
+            }
+
+            return storeRes.getResCount(masterCount);
+        }
+
+        private Dispatch getDispatch() {
+            return dispatchItems.get(0).getDispatch();
+        }
+
+        public Stock getStock() {
+            for (Stock stock : storeRes.getStocks()) {
+                if (stock.getStore().getId().equals(getDispatch().getStore().getId())) {
+                    return stock;
+                }
+            }
+            return null;
+        }
+
+        public ResCount getStockCount() {
+            Stock stock = getStock();
+            if (stock != null) {
+                return stock.getResCount();
+            } else
+                return storeRes.getResCount(BigDecimal.ZERO);
+        }
+
+        public boolean isEnough() {
+            return getStockCount().getMasterCount().compareTo(getResCount().getMasterCount()) >= 0;
+        }
+
+
+        public ResCount getDisparity() {
+
+            ResCount result = getResCount();
+            result.subtract(getStockCount());
+            return result;
+        }
+
     }
 
 

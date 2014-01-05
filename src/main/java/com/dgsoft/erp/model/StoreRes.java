@@ -317,27 +317,27 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
         return result;
     }
 
-
-    public String getTitle(DictionaryWord dictionary) {
-        String result = getRes().getName() + "(" + getCode() + ")" + " ";
-
-        for (Format format : getFormatList()) {
-            result += format.getFormatDefine().getName() + ":";
-            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
-                result += dictionary.getWordValue(format.getFormatValue()) + " ";
-            } else {
-                result += format.getFormatValue() + " ";
-            }
-        }
-
-        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            result += BigDecimalFormat.format(getFloatConversionRate(),
-                    getRes().getUnitGroup().getFloatConvertRateFormat()).toString();
-            result += getRes().getUnitGroup().getName();
-        }
-
-        return result;
-
-
-    }
+//
+//    public String getTitle(DictionaryWord dictionary) {
+//        String result = getRes().getName() + "(" + getCode() + ")" + " ";
+//
+//        for (Format format : getFormatList()) {
+//            result += format.getFormatDefine().getName() + ":";
+//            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
+//                result += dictionary.getWordValue(format.getFormatValue()) + " ";
+//            } else {
+//                result += format.getFormatValue() + " ";
+//            }
+//        }
+//
+//        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+//            result += BigDecimalFormat.format(getFloatConversionRate(),
+//                    getRes().getUnitGroup().getFloatConvertRateFormat()).toString();
+//            result += getRes().getUnitGroup().getName();
+//        }
+//
+//        return result;
+//
+//
+//    }
 }

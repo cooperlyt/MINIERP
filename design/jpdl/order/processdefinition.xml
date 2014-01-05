@@ -61,24 +61,12 @@
 		<transition to="发货方式(天津)"></transition>
 	</task-node>
 
-	<decision name="发货确认">
-		<transition to="客户收货确认" name="非自提">
-			<condition expression="#{(not orderHome.masterNeedRes.allCustomerSelfTake)}"></condition>
-		</transition>
-		<transition to="订单完成" name="已付款自提">
-			<condition expression="#{orderHome.lastNeedRes.allCustomerSelfTake  and (orderHome.instance.payType eq 'PAY_FIRST') }"></condition>
-		</transition>
-		<transition to="发货完成" name="未(欠)付款自提">
-			<condition expression="#{orderHome.lastNeedRes.allCustomerSelfTake  and (not (orderHome.instance.payType eq 'PAY_FIRST')) }"></condition>
-		</transition>
-	</decision>
-
 	<join name="join2">
 		<transition to="订单完成"></transition>
 	</join>
 
 	<join name="join3">
-		<transition to="发货确认"></transition>
+		<transition to="付款判断"></transition>
 	</join>
 
 	<fork name="fork2">
@@ -103,7 +91,7 @@
 			</description>
 			<assignment pooled-actors="erp.storage.dispatch"></assignment>
 		</task>
-		<transition to="付款确认"></transition>
+		<transition to="fork2"></transition>
 	</task-node>
 
 	<decision name="出库确认(2库)">
@@ -136,13 +124,9 @@
 		<transition to="join3"></transition>
 	</node>
 
-	<node name="发货完成">
-		<transition to="join2"></transition>
-	</node>
-
 	<fork name="fork1">
 		<transition to="订单收款" name="收款"></transition>
-		<transition to="fork2" name="出库"></transition>
+		<transition to="客户收货确认" name="收货确认"></transition>
 	</fork>
 
 	<decision name="付款方式">
@@ -157,17 +141,8 @@
 		</transition>
 	</decision>
 
-	<decision name="付款确认">
-		<transition to="fork2" name="补发/已付款/代办货款">
-			<condition expression="#{(needResHome.instance.type eq 'SUPPLEMENT_SEND' ) or (orderHome.instance.payType eq 'PAY_FIRST') or (orderHome.instance.payType eq 'EXPRESS_PROXY') }"></condition>
-		</transition>
-		<transition to="fork1" name="未(欠)付款">
-			<condition expression="#{ not ((needResHome.instance.type eq 'SUPPLEMENT_SEND' ) or (orderHome.instance.payType eq 'PAY_FIRST') or (orderHome.instance.payType eq 'EXPRESS_PROXY') )}"></condition>
-		</transition>
-	</decision>
-
 	<decision name="收货确认">
-		<transition to="发货完成" name="未(欠)付款">
+		<transition to="join2" name="未(欠)付款">
 			<condition expression="#{ orderConfirmed  and  ( (not (orderHome.instance.payType eq 'PAY_FIRST')   and not (orderHome.instance.payType eq 'EXPRESS_PROXY')) or ((orderHome.instance.payType eq 'EXPRESS_PROXY') and ( not (orderHome.lastNeedRes.type eq 'ORDER_SEND') ) ) )}"></condition>
 		</transition>
 		<transition to="订单完成" name="已付款">
@@ -180,13 +155,13 @@
 
 	<decision name="发货判断">
 		<transition to="join2" name="已发货">
-			<condition expression="#{not (orderHome.instance.payType eq 'PAY_FIRST') and not ((orderHome.instance.payType eq 'EXPRESS_PROXY')  and (orderHome.lastNeedRes.type eq 'ORDER_SEND' )) }"></condition>
+			<condition expression="#{(not orderHome.lastNeedRes.allCustomerSelfTake) and (not (orderHome.instance.payType eq 'PAY_FIRST')) and (not (orderHome.instance.payType eq 'EXPRESS_PROXY')  and (orderHome.lastNeedRes.type eq 'ORDER_SEND' ) }"></condition>
 		</transition>
-		<transition to="调度判断" name="未发货">
+		<transition to="调度判断" name="款到发货">
 			<condition expression="#{orderHome.instance.payType eq 'PAY_FIRST' }"></condition>
 		</transition>
-		<transition to="订单完成" name="代收货款">
-			<condition expression="#{(orderHome.instance.payType eq 'EXPRESS_PROXY')  and (orderHome.lastNeedRes.type eq 'ORDER_SEND' )}"></condition>
+		<transition to="订单完成" name="代收货款或自提">
+			<condition expression="#{((orderHome.instance.payType eq 'EXPRESS_PROXY') or (orderHome.lastNeedRes.allCustomerSelfTake)) and (orderHome.lastNeedRes.type eq 'ORDER_SEND' )}"></condition>
 		</transition>
 	</decision>
 
@@ -200,8 +175,8 @@
 		<transition to="调度判断"></transition>
 	</task-node>
 
-	<task-node name="发货(1库)">
-		<task name="发货(一库)">
+	<task-node name="发货确认(1库)">
+		<task name="发货确认(一库)">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
@@ -211,34 +186,34 @@
 	</task-node>
 
 	<decision name="发货方式(1库)">
-		<transition to="出库完成(1库)" name="自提">
-			<condition expression="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}"></condition>
+		<transition to="出库完成(1库)" name="自提无更改">
+			<condition expression="#{(dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF') and (dispatchHome.instance.overlyOuts.empty) }"></condition>
 		</transition>
-		<transition to="发货(1库)" name="发货">
-			<condition expression="#{not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF')}"></condition>
+		<transition to="发货确认(1库)">
+			<condition expression="#{(not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'))  or (not dispatchHome.instance.overlyOuts.empty) }"></condition>
 		</transition>
 	</decision>
 
 	<decision name="发货方式(2库)">
-		<transition to="出库完成(2库)" name="自提">
-			<condition expression="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}"></condition>
+		<transition to="出库完成(2库)" name="自提无更改">
+			<condition expression="#{(dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF') and (dispatchHome.instance.overlyOuts.empty) }"></condition>
 		</transition>
-		<transition to="发货(2库)" name="发货">
-			<condition expression="#{not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF')}"></condition>
+		<transition to="发货确认(2库)">
+			<condition expression="#{(not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'))  or (not dispatchHome.instance.overlyOuts.empty) }"></condition>
 		</transition>
 	</decision>
 
 	<decision name="发货方式(天津)">
-		<transition to="出库完成(天津)" name="自提">
-			<condition expression="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}"></condition>
+		<transition to="出库完成(天津)" name="自提无更改">
+			<condition expression="#{(dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF') and (dispatchHome.instance.overlyOuts.empty) }"></condition>
 		</transition>
-		<transition to="发货(天津)" name="发货">
-			<condition expression="#{not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF')}"></condition>
+		<transition to="发货确认(天津)">
+			<condition expression="#{(not (dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'))  or (not dispatchHome.instance.overlyOuts.empty) }"></condition>
 		</transition>
 	</decision>
 
-	<task-node name="发货(2库)">
-		<task name="发货(2库)">
+	<task-node name="发货确认(2库)">
+		<task name="发货确认(2库)">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
@@ -247,8 +222,8 @@
 		<transition to="出库完成(2库)"></transition>
 	</task-node>
 
-	<task-node name="发货(天津)">
-		<task name="发货(天津)">
+	<task-node name="发货确认(天津)">
+		<task name="发货确认(天津)">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
@@ -258,11 +233,22 @@
 	</task-node>
 
 	<decision name="调度判断">
-		<transition to="付款确认" name="已调度">
+		<transition to="fork2" name="已调度">
 			<condition expression="#{orderHome.lastNeedRes.dispatched}"></condition>
 		</transition>
 		<transition to="订单调度">
 			<condition expression="#{not orderHome.lastNeedRes.dispatched}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="付款判断">
+		<transition to="fork1">
+			<condition expression="#{(not orderHome.lastNeedRes.allCustomerSelfTake) and (not (orderHome.instance.payType eq 'PAY_FIRST')) and (not (orderHome.instance.payType eq 'EXPRESS_PROXY'))}"></condition>
+		</transition>
+		<transition to="订单完成" name="已付款自提"></transition>
+		<transition to="订单收款" name="未(欠)付款自提"></transition>
+		<transition to="客户收货确认" name="已付款或代办货款">
+			<condition expression="#{not orderHome.lastNeedRes.allCustomerSelfTake and ( (orderHome.instance.payType eq 'PAY_FIRST') or (orderHome.instance.payType eq 'EXPRESS_PROXY')) }"></condition>
 		</transition>
 	</decision>
 

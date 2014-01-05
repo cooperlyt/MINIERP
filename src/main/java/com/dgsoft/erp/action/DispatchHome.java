@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.Dispatch;
 import org.jboss.seam.annotations.Name;
 
@@ -12,4 +13,10 @@ import org.jboss.seam.annotations.Name;
  */
 @Name("dispatchHome")
 public class DispatchHome extends ErpEntityHome<Dispatch> {
+
+    public boolean isCanAddRes(){
+        return  getInstance().getNeedRes().getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.OVERDRAFT) ||
+                getInstance().getNeedRes().getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.COMPLETE_PAY);
+    }
+
 }

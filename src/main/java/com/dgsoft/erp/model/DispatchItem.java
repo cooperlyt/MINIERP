@@ -115,53 +115,5 @@ public class DispatchItem implements java.io.Serializable {
         this.res = res;
     }
 
-    @Transient
-    public ResCount getResCount() {
-        if (getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            return new ResCount(getCount(), getResUnit(), getStoreRes().getFloatConversionRate());
-        } else {
-            return new ResCount(getCount(), getResUnit());
-        }
-    }
-
-    @Transient
-    public void addResCount(ResCount addCount) {
-        if (!addCount.canMerger(getResCount()))
-            throw new IllegalArgumentException("Res count cant add");
-        setCount(getCount().add(addCount.getCountByResUnit(getResUnit())));
-    }
-
-    @Transient
-    public Stock getStock() {
-        for (Stock stock : getStoreRes().getStocks()) {
-            if (stock.getStore().getId().equals(getDispatch().getStore().getId())) {
-                return stock;
-            }
-        }
-        return null;
-    }
-
-    @Transient
-    public ResCount getStockCount() {
-        Stock stock = getStock();
-        if (stock != null) {
-            return stock.getResCount();
-        } else
-            return getStoreRes().getResCount(BigDecimal.ZERO, getStoreRes().getRes().getUnitGroup().getMasterUnit());
-    }
-
-    @Transient
-    public boolean isEnough() {
-        return getStockCount().getMasterCount().compareTo(getResCount().getMasterCount()) >= 0;
-    }
-
-    @Transient
-    public ResCount getDisparity() {
-
-        ResCount result = getResCount();
-        result.subtract(getStockCount());
-        return getStoreRes().getResCount(result.getMasterCount(), getStoreRes().getRes().getUnitGroup().getMasterUnit());
-    }
-
 
 }

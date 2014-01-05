@@ -1,9 +1,11 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.common.system.DictionaryWord;
+import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.FormatDefine;
 import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.UnitGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -38,6 +40,15 @@ public class ResHelper {
                 result += format.getFormatValue();
             }
         }
+
+
+        if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            result += BigDecimalFormat.format(storeRes.getFloatConversionRate(),
+                    storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString();
+            result += storeRes.getRes().getUnitGroup().getName();
+        }
+
+
         return result;
     }
 

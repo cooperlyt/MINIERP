@@ -1,9 +1,9 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.persistence.criteria.Order;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -24,6 +24,11 @@ public class OverlyOut {
     private OrderItem orderItem;
 
     public OverlyOut() {
+    }
+
+    public OverlyOut(StoreRes storeRes,BigDecimal count){
+        this.storeRes = storeRes;
+        this.count = count;
     }
 
     @Id
@@ -97,6 +102,11 @@ public class OverlyOut {
 
     public void setDispatch(Dispatch dispatch) {
         this.dispatch = dispatch;
+    }
+
+    @Transient
+    public ResCount getResCount(){
+        return storeRes.getResCount(getCount());
     }
 
 }
