@@ -66,8 +66,7 @@
       <parameter name="className" value="org.eclipse.birt.report.soapengine.endpoint.BirtSoapBindingImpl"/>
       <parameter name="wsdlPortType" value="BirtSoapPort"/>
       <parameter name="typeMappingVersion" value="1.2"/>
-      <operation name="getUpdatedObjects" qname="getUpdatedObjects" returnQName="retNS:GetUpdatedObjectsResponse"
-                 returnType="rtns:GetUpdatedObjectsResponse">
+      <operation name="getUpdatedObjects" qname="getUpdatedObjects" returnQName="retNS:GetUpdatedObjectsResponse" xmlns:retNS="http://schemas.eclipse.org/birt" returnType="rtns:GetUpdatedObjectsResponse" xmlns:rtns="http://schemas.eclipse.org/birt" >
         <parameter qname="pns:GetUpdatedObjects" xmlns:pns="http://schemas.eclipse.org/birt" type="tns:GetUpdatedObjects" xmlns:tns="http://schemas.eclipse.org/birt"/>
       </operation>
       <parameter name="allowedMethods" value="getUpdatedObjects"/>

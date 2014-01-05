@@ -1,7 +1,6 @@
-<%@ page import="org.eclipse.birt.report.IBirtConstants,
-				 org.eclipse.birt.report.session.IViewingSession,
-				 org.eclipse.birt.report.session.ViewingSessionUtil" %>
-<%@ page import="org.eclipse.birt.report.utility.ParameterAccessor" %>
+<%@ page import="org.eclipse.birt.report.utility.ParameterAccessor,
+				 org.eclipse.birt.report.IBirtConstants,
+				 org.eclipse.birt.report.session.*" %>
 
 <%-- Map Java attributes to Javascript constants --%>
 <script type="text/javascript">

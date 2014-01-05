@@ -61,7 +61,9 @@ if (first)
 	orderNumber = orderHome.getInstance().getId();
 	saleAreaName = orderHome.getInstance().getCustomer().getCustomerArea().getName();
 	customerName = orderHome.getInstance().getCustomer().getName();
-}]]></method>
+}
+
+]]></method>
         </script-data-source>
     </data-sources>
     <data-sets>
@@ -155,9 +157,11 @@ if (first)
             <property name="dataSource">Data Source</property>
             <method name="open"><![CDATA[
 
-it=orderItems.iterator();]]></method>
+it=orderItems.iterator();
+]]></method>
             <method name="fetch"><![CDATA[if (it.hasNext()){
 	item = it.next();
+
 	itemTitle = item.getUseRes().getName() + " ";
 	
 	
@@ -202,6 +206,8 @@ it=orderItems.iterator();]]></method>
 
 	return true;
 }else{
+
+
 	return false;
 }]]></method>
         </script-data-set>
@@ -253,6 +259,8 @@ it=orderItems.iterator();]]></method>
             <method name="onPageStart"><![CDATA[
 
 ]]></method>
+            <property name="showHeaderOnFirst">true</property>
+            <property name="showFooterOnLast">false</property>
             <property name="headerHeight">1cm</property>
             <property name="footerHeight">0in</property>
             <page-header>

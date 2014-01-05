@@ -50,7 +50,7 @@ public class OrderShip extends OrderTaskHandle {
 
                             case SEND_TO_DOOR:
                                 dispatchHome.getInstance().getProductToDoor().
-                                        setEmployeeId(dispatchHome.getInstance().getProductToDoor().getCars().getEmployeeId());
+                                        setToDoorDriver(dispatchHome.getInstance().getProductToDoor().getCars().getDefaultDriver());
                                 break;
 
                         }

@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 public class ProductToDoor implements java.io.Serializable {
 
 	private String id;
-    private String employeeId;
+    private String toDoorDriver;
 	private Cars cars;
 
 	private Dispatch dispatch;
@@ -62,14 +62,14 @@ public class ProductToDoor implements java.io.Serializable {
 		this.dispatch = dispatches;
 	}
 
-    @Column(name = "EMP_DRIVER", nullable = true, length = 32)
+    @Column(name = "EMP_DRIVER", length = 32)
     @Size(max = 32)
-    public String getEmployeeId() {
-        return employeeId;
+    public String getToDoorDriver() {
+        return toDoorDriver;
     }
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
+    public void setToDoorDriver(String employeeId) {
+        this.toDoorDriver = employeeId;
     }
 
 }

@@ -10,9 +10,10 @@
 -----------------------------------------------------------------------------%>
 <%@ page contentType="text/html; charset=utf-8" %>
 <%@ page session="false" buffer="none" %>
-<%@ page import="org.eclipse.birt.report.presentation.aggregation.IFragment,
-				 org.eclipse.birt.report.resource.BirtResources,
- 				 java.util.Iterator" %>
+<%@ page import="java.util.Iterator,
+				 java.util.Collection,
+ 				 org.eclipse.birt.report.resource.BirtResources,
+ 				 org.eclipse.birt.report.presentation.aggregation.IFragment" %>
 
 <%-----------------------------------------------------------------------------
 	Expected java beans

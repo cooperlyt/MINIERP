@@ -52,6 +52,7 @@ INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('er
 
 INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('finance.config','财务设置','',100,'');
 
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.transport','运输管理','',200,'');
 
 -- 功能
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.param', '系统参数管理', 'system.config', '', '/func/system/config/SystemParams.seam', '', '2', '系统运行方式设置');
@@ -88,6 +89,9 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('finance.config.accounting','科目设置','finance.config','','/func/erp/finance/AccountingMgr.seam','','1','');
 
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.transport.carMgr','车辆管理','erp.transport','','/func/erp/transport/CarsMgr.seam','','1','');
+
+
 -- 角色
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('system.config', '系统设置', '调整系统运行方式', 1);
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('system.manager', '系统管理', '系统管理', 2);
@@ -101,6 +105,8 @@ INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.storage
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.sale.saler','销售员','销售员',21);
 
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.produce.manager','生产管理','',30);
+
+INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.transport.manager','运输管理','',31);
 
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('erp.storage.dispatch','订单调度','业务流中的调度阶段',40);
 
@@ -151,6 +157,9 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager',
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.sale.customerContact');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.accountancy','finance.config.accounting');
+
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.transport.manager','erp.transport.carMgr');
+
 -- ADMIN INSERY
 -- INSERT INTO DG_SYSTEM.PERSON (ID,NAME,CREDENTIALS_TYPE,_FOREIGN,CREDENTIALS_NUMBER,DATE_OF_BIRTH) VALUES ('admin','admin','OTHER',1,'1','2013-07-15 10:27:08');
 -- INSERT INTO DG_SYSTEM.EMPLOYEE(ID,ENABLE,PERSON_ID,PASSWORD,ORGANIZATION) VALUES ('admin',b'1','admin','admin','0');

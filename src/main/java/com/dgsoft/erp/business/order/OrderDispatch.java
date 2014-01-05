@@ -237,7 +237,7 @@ public class OrderDispatch {
                 switch (deliveryType) {
                     case SEND_TO_DOOR:
                         if (selectDispatch.getProductToDoor() != null)
-                            carsHome.setInstance(selectDispatch.getProductToDoor().getCars());
+                            carsHome.setId(selectDispatch.getProductToDoor().getCars().getId());
                         break;
                     case FULL_CAR_SEND:
                         if (selectDispatch.getExpressCar() != null) {
@@ -368,7 +368,8 @@ public class OrderDispatch {
                     dispatch.setExpressCar(null);
                     break;
                 case SEND_TO_DOOR:
-                    dispatch.setProductToDoor(new ProductToDoor(dispatch, carsHome.getReadyInstance()));
+
+                    dispatch.setProductToDoor(new ProductToDoor(dispatch, carsHome.getInstance()));
                     dispatch.setExpressCar(null);
                     dispatch.setExpressInfo(null);
                     break;

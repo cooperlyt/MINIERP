@@ -35,6 +35,7 @@ public class OrderItem implements java.io.Serializable {
     private MiddleMoneyCalcType middleMoneyCalcType;
     private boolean storeResItem;
     private Res res;
+    private OverlyOut overlyOut;
 
     public OrderItem() {
     }
@@ -196,6 +197,16 @@ public class OrderItem implements java.io.Serializable {
 
     public void setStoreResItem(boolean storeResItem) {
         this.storeResItem = storeResItem;
+    }
+
+    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "OVERLY_OUT", unique = true, nullable = true)
+    public OverlyOut getOverlyOut() {
+        return overlyOut;
+    }
+
+    public void setOverlyOut(OverlyOut overlyOut) {
+        this.overlyOut = overlyOut;
     }
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY)

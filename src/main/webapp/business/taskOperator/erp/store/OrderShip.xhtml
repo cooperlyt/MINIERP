@@ -37,12 +37,12 @@
                               #{_node.org.name}
                         </rich:treeNode>
 
-                        <rich:treeNode type="storeRes">
+                        <rich:treeNode type="emp">
 
-                            <a:commandLink value="#{_node.emp.name})(_node.emp.id)" execute="@this" immediate="true"
+                            <a:commandLink value="#{_node.emp.person.name}(#{_node.emp.id})" execute="@this" immediate="true"
                                            render="shipDriverField"
                                            oncomplete="#{rich:component('toDoorDriverSelectPanel')}.hide();">
-                                <a:param value="#{_node.emp.id}" assignTo="#{dispatchHome.instance.productToDoor.employeeId}"/>
+                                <a:param value="#{_node.emp.id}" assignTo="#{dispatchHome.instance.productToDoor.toDoorDriver}"/>
                                 <a:attachQueue requestDelay="0"/>
                                 <s:conversationId/>
                             </a:commandLink>
@@ -127,9 +127,9 @@
                 <s:decorate template="/layout/seam-edit.xhtml"
                             rendered="#{dispatchHome.instance.deliveryType eq 'SEND_TO_DOOR'}">
                     <ui:define name="label">#{messages.dispatch_field_toDoorDriver}</ui:define>
-                    <h:outputText value="#{dictionary.getEmpNameById(dispatchHome.instance.productToDoor.employeeId)}"
-                                  rendered="#{not empty dispatchHome.instance.productToDoor.employeeId}"/>
-                    <h:inputText value="#{messages.plaseSelectToDoorDriver}" rendered="#{empty dispatchHome.instance.productToDoor.employeeId}"/>
+                    <h:outputText value="#{dictionary.getEmpNameById(dispatchHome.instance.productToDoor.toDoorDriver)}"
+                                  rendered="#{not empty dispatchHome.instance.productToDoor.toDoorDriver}"/>
+                    <h:inputText value="#{messages.plaseSelectToDoorDriver}" rendered="#{empty dispatchHome.instance.productToDoor.toDoorDriver}"/>
                     <ui:define name="tail">
                         <a:commandButton title="#{messages.plaseSelectToDoorDriver}" image="/img/onetomany.gif"
                                          render="shipDriverField" immediate="true"

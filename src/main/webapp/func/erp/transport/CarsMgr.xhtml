@@ -1,0 +1,132 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="body">
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:graphicImage value="/img/create.gif"/>
+                <s:link value="#{messages.create_new_car}" view="/func/erp/transport/CarsEdit.xhtml"
+                        propagation="begin">
+                    <f:param name="carId" value=""/>
+                </s:link>
+            </h:panelGrid>
+        </h:form>
+
+        <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+            <h:form>
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.cars_field_id}</ui:define>
+                    <h:inputText value="#{carsList.searchCarCode}" size="20"/>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.cars_field_emp}</ui:define>
+                    <h:inputText value="#{carsList.searchDriverName}" size="20"/>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.search_match}</ui:define>
+                    <h:selectOneRadio id="logic" value="#{carsList.restrictionLogicOperator}"
+                                      styleClass="radio">
+                        <f:selectItem itemLabel="#{messages.search_match_and}" itemValue="and"/>
+                        <f:selectItem itemLabel="#{messages.search_match_or}" itemValue="or"/>
+                    </h:selectOneRadio>
+                </s:decorate>
+
+
+                <div style="clear:both"/>
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                    <a:outputPanel id="search_buttons">
+                        <div class="actionButtons">
+
+                            <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                            <a:outputPanel id="searchButton">
+                                <a:commandButton value="#{messages.search}"
+                                                 execute="@form" render="dataListResult"
+                                                 action="#{carsList.first}">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandButton>
+                            </a:outputPanel>
+                        </div>
+                    </a:outputPanel>
+                </h:panelGrid>
+            </h:form>
+        </rich:collapsiblePanel>
+
+
+        <br/>
+
+        <h:form>
+            <rich:dataTable style="width: 100%" id="dataListResult" value="#{carsList.resultList}"
+                            var="_car" noDataLabel="#{messages.emptyResult}">
+                <f:facet name="footer">
+                    <a:outputPanel rendered="#{not empty carsList.resultList}">
+                        <ui:include src="/layout/pageA4jNavigation.xhtml">
+                            <ui:param name="entityList" value="#{carsList}"/>
+                        </ui:include>
+                    </a:outputPanel>
+                </f:facet>
+
+
+                <rich:column>
+                    <f:facet name="header">
+                        <ui:include src="/layout/a4jSort.xhtml">
+                            <ui:param name="entityList" value="#{carsList}"/>
+                            <ui:param name="propertyLabel" value="#{messages.cars_field_id}"/>
+                            <ui:param name="propertyPath" value="cars.id"/>
+                        </ui:include>
+                    </f:facet>
+                    #{_car.id}
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        <ui:include src="/layout/a4jSort.xhtml">
+                            <ui:param name="entityList" value="#{carsList}"/>
+                            <ui:param name="propertyLabel" value="#{messages.cars_field_emp}"/>
+                            <ui:param name="propertyPath" value="cars.defaultDriver"/>
+                        </ui:include>
+                    </f:facet>
+                    <h:outputText value="#{dictionary.getEmpNameById(_car.defaultDriver)}(#{_car.defaultDriver})"
+                                  rendered="#{not empty _car.defaultDriver}"/>
+                </rich:column>
+
+                <rich:column style="text-align: center">
+                    <f:facet name="header">
+                        #{messages.field_enable}
+                    </f:facet>
+                    <h:selectBooleanCheckbox disabled="true" value="#{_car.enable}"/>
+                </rich:column>
+
+                <rich:column style="text-align: center">
+                    <s:link propagation="begin" view="/func/erp/transport/CarsEdit.xhtml">
+                        <f:param name="carId" value="#{_car.id}"/>
+                        <s:graphicImage value="/img/edit.png" title="#{messages.edit}"/>
+                    </s:link>
+
+                    #{' '}
+
+                    <a:commandButton execute="@this" immediate="true" image="/img/delete.png"
+                                     title="#{messages.delete}"
+                                     onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                                     action="#{carsHome.remove}" render="dataListResult">
+                        <a:param value="#{_car.id}" assignTo="#{carsHome.id}"/>
+                        <a:param value="0" assignTo="#{carsList.firstResult}"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </rich:column>
+
+            </rich:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

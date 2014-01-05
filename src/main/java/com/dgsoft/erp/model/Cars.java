@@ -16,12 +16,16 @@ public class Cars implements java.io.Serializable {
 
 	private String id;
     private boolean enable;
-	private String employeeId;
+	private String defaultDriver;
 	private Set<ProductToDoor> productToDoors = new HashSet<ProductToDoor>(0);
 
 	public Cars() {
-        enable = true;
+
 	}
+
+    public Cars(boolean enable){
+        this.enable = enable;
+    }
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -35,15 +39,14 @@ public class Cars implements java.io.Serializable {
 		this.id = id;
 	}
 
-    @Column(name = "EMP_DRIVER", nullable = false, length = 32)
-    @NotNull
+    @Column(name = "EMP_DRIVER", length = 32)
     @Size(max = 32)
-    public String getEmployeeId() {
-        return employeeId;
+    public String getDefaultDriver() {
+        return defaultDriver;
     }
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
+    public void setDefaultDriver(String employeeId) {
+        this.defaultDriver = employeeId;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cars")

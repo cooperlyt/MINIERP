@@ -34,6 +34,7 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
+    private Set<OverlyOut> overlyOuts = new HashSet<OverlyOut>(0);
 
     private Set<Stock> stocks = new HashSet<Stock>(0);
     private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
@@ -174,6 +175,15 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
 
     public void setOrderItems(Set<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "storeRes")
+    public Set<OverlyOut> getOverlyOuts() {
+        return overlyOuts;
+    }
+
+    public void setOverlyOuts(Set<OverlyOut> overlyOuts) {
+        this.overlyOuts = overlyOuts;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")

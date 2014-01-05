@@ -7,7 +7,8 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
-
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="singleDispatchPanel"/>
@@ -90,7 +91,8 @@
 
                         <s:decorate template="/layout/edit.xhtml">
                             <ui:define name="label">#{messages.expressDriver_field_tel}</ui:define>
-                            <h:inputText value="#{expressCarHome.instance.tel}" label="#{messages.expressDriver_field_tel}"
+                            <h:inputText value="#{expressCarHome.instance.tel}"
+                                         label="#{messages.expressDriver_field_tel}"
                                          maxlength="50" size="20"/>
                         </s:decorate>
 
@@ -102,32 +104,37 @@
                     </a:outputPanel>
 
 
-                    <s:decorate
-                            rendered="#{ orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'SEND_TO_DOOR')}"
-                            template="/layout/edit.xhtml">
-                        <ui:define name="label">#{messages.Cars}</ui:define>
-                        <rich:autocomplete id="carsInputField" mode="client" minChars="1" autofill="true"
-                                           showButton="true"
-                                           selectFirst="true"
-                                           label="#{messages.Cars}"
-                                           clientFilterFunction="pinyinFilter"
-                                           autocompleteList="#{validCarsList.resultList}"
-                                           value="#{carsHome.searchId}"
-                                           fetchValue="#{_car.id}" var="_car">
+                    <a:outputPanel id="toDoorInfo"
+                                   rendered="#{ orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'SEND_TO_DOOR')}"
+                            >
 
-                            <h:outputText value="#{_car.id}(#{dictionary.getEmpNameById(_car.employeeId)})"/>
-                            <a:ajax event="selectitem"
-                                    render="carsInputField" execute="@this">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                            <a:ajax event="blur" execute="@this"
-                                    render="carsInputField">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                        </rich:autocomplete>
-                    </s:decorate>
+                        <s:decorate
+                                template="/layout/edit.xhtml">
+                            <ui:define name="label">#{messages.Cars}</ui:define>
+                            <rich:autocomplete id="carsInputField" mode="client" autofill="true"
+                                               showButton="true"
+                                               selectFirst="true"
+                                               label="#{messages.Cars}"
+                                               clientFilterFunction="pinyinFilter"
+                                               autocompleteList="#{validCarsList.resultList}"
+                                               value="#{carsHome.searchId}"
+                                               fetchValue="#{_car.id}" var="_car">
+
+                                <h:outputText value="#{_car.id}(#{dictionary.getEmpNameById(_car.defaultDriver)})"/>
+                                <a:ajax event="selectitem"
+                                        render="toDoorInfo" execute="@this">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                                <a:ajax event="blur" execute="@this"
+                                        render="toDoorInfo">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                            </rich:autocomplete>
+                        </s:decorate>
 
 
+
+                    </a:outputPanel>
                 </a:outputPanel>
 
 
@@ -243,7 +250,8 @@
                     <rich:column colspan="4">
                         #{messages.Dispatch}
 
-                        <s:button style="float: right" action="#{orderDispatch.reset}" value="#{messages.reset}" includePageParams="true"/>
+                        <s:button style="float: right" action="#{orderDispatch.reset}" value="#{messages.reset}"
+                                  includePageParams="true"/>
 
                     </rich:column>
                     <rich:column breakRowBefore="true">

@@ -56,6 +56,7 @@ public class Dispatch implements java.io.Serializable {
 	private String memo;
 
     private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
+    private Set<OverlyOut> overlyOuts = new HashSet<OverlyOut>(0);
 
 	public Dispatch() {
 	}
@@ -222,6 +223,15 @@ public class Dispatch implements java.io.Serializable {
 
     public void setDispatchItems(Set<DispatchItem> dispatchItems) {
         this.dispatchItems = dispatchItems;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch",orphanRemoval = true,cascade = {CascadeType.ALL})
+    public Set<OverlyOut> getOverlyOuts() {
+        return overlyOuts;
+    }
+
+    public void setOverlyOuts(Set<OverlyOut> overlyOuts) {
+        this.overlyOuts = overlyOuts;
     }
 
     @Transient

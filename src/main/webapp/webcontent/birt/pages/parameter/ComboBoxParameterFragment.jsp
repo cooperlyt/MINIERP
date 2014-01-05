@@ -10,11 +10,12 @@
 -----------------------------------------------------------------------------%>
 <%@ page contentType="text/html; charset=utf-8" %>
 <%@ page session="false" buffer="none" %>
-<%@ page import="org.eclipse.birt.report.IBirtConstants,
-				 org.eclipse.birt.report.context.ScalarParameterBean,
+<%@ page import="org.eclipse.birt.report.context.ScalarParameterBean,
+				 org.eclipse.birt.report.context.BaseAttributeBean,
+				 org.eclipse.birt.report.IBirtConstants,
 				 org.eclipse.birt.report.service.api.ParameterSelectionChoice,
-				 org.eclipse.birt.report.utility.DataUtil,
 				 org.eclipse.birt.report.utility.ParameterAccessor,
+				 org.eclipse.birt.report.utility.DataUtil,
 				 java.util.List" %>
 
 <%-----------------------------------------------------------------------------

@@ -47,6 +47,7 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal totalCost;
     private BigDecimal middleRate;
     private BigDecimal money;
+    private BigDecimal middleTotal;
 
 
     private boolean middlePayed;
@@ -182,6 +183,15 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setMiddleRate(BigDecimal middleRate) {
         this.middleRate = middleRate;
+    }
+
+    @Column(name = "MIDDLE_TOTAL", nullable = true, scale = 3)
+    public BigDecimal getMiddleTotal() {
+        return middleTotal;
+    }
+
+    public void setMiddleTotal(BigDecimal middleTotal) {
+        this.middleTotal = middleTotal;
     }
 
     @Enumerated(EnumType.STRING)
