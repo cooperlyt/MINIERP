@@ -115,5 +115,19 @@ public class DispatchItem implements java.io.Serializable {
         this.res = res;
     }
 
+    @Transient
+    public ResCount getResCount() {
+        if (getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            return new ResCount(getCount(), getResUnit(), getStoreRes().getFloatConversionRate());
+        } else {
+            return new ResCount(getCount(), getResUnit());
+        }
+    }
 
+    @Transient
+    public void addResCount(ResCount addCount) {
+        if (!addCount.canMerger(getResCount()))
+            throw new IllegalArgumentException("Res count cant add");
+        setCount(getCount().add(addCount.getCountByResUnit(getResUnit())));
+    }
 }

@@ -4,7 +4,7 @@ import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.DispatchHome;
-import com.dgsoft.erp.action.ResHelper;
+import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.annotations.In;
@@ -36,9 +36,6 @@ public class OrderStoreOut extends OrderTaskHandle {
     private DispatchHome dispatchHome;
 
     @In
-    private ResHelper resHelper;
-
-    @In
     protected NumberBuilder numberBuilder;
 
     @In
@@ -50,7 +47,7 @@ public class OrderStoreOut extends OrderTaskHandle {
     private List<DispatchItem> noAssignedItems;
 
     @DataModelSelection
-    private OrderStoreOutItem selectedOutItem;
+    private OrderStoreOutItem selectOutItem;
 
     //private String storeId;
 
@@ -80,6 +77,18 @@ public class OrderStoreOut extends OrderTaskHandle {
 
     public void setNoAssignedItems(List<DispatchItem> noAssignedItems) {
         this.noAssignedItems = noAssignedItems;
+    }
+
+    public OrderStoreOutItem getSelectOutItem() {
+        return selectOutItem;
+    }
+
+    public void setSelectOutItem(OrderStoreOutItem selectOutItem) {
+        this.selectOutItem = selectOutItem;
+    }
+
+    public void editOverlay() {
+        selectOutItem.generateOverlayInput();
     }
 
     @Override
@@ -123,11 +132,11 @@ public class OrderStoreOut extends OrderTaskHandle {
                     .add(stockChangeItem);
             stock.setCount(stockChangeItem.getAfterCount());
 
-            if ((item.getOverlyOut() != null) && (item.getOverlyOut().getCount().compareTo(BigDecimal.ZERO) > 0)){
+            if ((item.getOverlyOut() != null) && (item.getOverlyOut().getCount().compareTo(BigDecimal.ZERO) > 0)) {
                 dispatchHome.getInstance().getOverlyOuts().add(item.getOverlyOut());
             }
 
-            if (item.getStoreRes().getRes().isBatchMgr()){
+            if (item.getStoreRes().getRes().isBatchMgr()) {
                 //TODO UseSelectBatch
                 //TODO StoreArea Count subtract
             }
@@ -240,6 +249,8 @@ public class OrderStoreOut extends OrderTaskHandle {
 
         private StoreRes storeRes;
 
+        private StoreResCountInupt overlayCount;
+
         public StoreRes getStoreRes() {
             return storeRes;
         }
@@ -248,11 +259,26 @@ public class OrderStoreOut extends OrderTaskHandle {
             return overlyOut;
         }
 
+        public StoreResCountInupt getOverlayCount() {
+            return overlayCount;
+        }
+
+        public void generateOverlayInput() {
+            overlayCount = new StoreResCountInupt(storeRes);
+            overlayCount.setMasterCount(overlyOut.getCount());
+        }
+
+        public void assignOverlayCount() {
+            overlyOut.setCount(overlayCount.getMasterCount());
+        }
+
         public OrderStoreOutItem(DispatchItem dispatchItem) {
             if (!dispatchItem.isStoreResItem())
                 throw new IllegalArgumentException("plase call other constructor put storeRes");
             dispatchItems.add(dispatchItem);
             storeRes = dispatchItem.getStoreRes();
+
+            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO);
         }
 
         public OrderStoreOutItem(DispatchItem dispatchItem, StoreRes storeRes) {
@@ -261,6 +287,8 @@ public class OrderStoreOut extends OrderTaskHandle {
             }
             dispatchItems.add(dispatchItem);
             this.storeRes = storeRes;
+
+            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO);
         }
 
         public void addDispatchItem(DispatchItem dispatchItem) {
@@ -278,20 +306,25 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
 
-        public void addOverly(OverlyOut overlyOut) {
-            if (overlyOut == null) {
-                this.overlyOut = overlyOut;
-            } else {
-                this.overlyOut.setCount(this.overlyOut.getCount().add(overlyOut.getCount()));
-            }
+        public void addOverly(BigDecimal count) {
+            this.overlyOut.setCount(this.overlyOut.getCount().add(count));
         }
 
-
-        public ResCount getResCount() {
+        private BigDecimal getDispatchMaterCount() {
             BigDecimal masterCount = BigDecimal.ZERO;
             for (DispatchItem dispatchItem : dispatchItems) {
                 masterCount = masterCount.add(storeRes.getResCount(dispatchItem.getCount(), dispatchItem.getResUnit()).getMasterCount());
             }
+            return masterCount;
+        }
+
+        public ResCount getDispatchCount() {
+
+            return storeRes.getResCount(getDispatchMaterCount());
+        }
+
+        public ResCount getResCount() {
+            BigDecimal masterCount = getDispatchMaterCount();
             if (overlyOut != null) {
                 masterCount = masterCount.add(overlyOut.getCount());
             }

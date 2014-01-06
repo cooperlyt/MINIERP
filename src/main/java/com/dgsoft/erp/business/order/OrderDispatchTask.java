@@ -2,6 +2,7 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.erp.action.NeedResHome;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.Dispatch;
 import com.dgsoft.erp.model.DispatchItem;
@@ -27,6 +28,9 @@ public class OrderDispatchTask extends OrderTaskHandle {
 
     @In(create = true)
     private Map<String, String> messages;
+
+    @In
+    private ResHelper resHelper;
 
 
     @In(create = true)
@@ -88,7 +92,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
         for (Dispatch dispatch : orderDispatch.getDispatchList()) {
             result.append(dispatch.getStore().getName() + "\n");
             for (DispatchItem item : dispatch.getDispatchItemList()) {
-                result.append("\t" + item.getStoreRes().getTitle(dictionary) + " ");
+                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
                 result.append(item.getResCount().getMasterDisplayCount());
                 result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
             }

@@ -30,6 +30,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     @In
     private DictionaryWord dictionary;
 
+    @In
+    private ResHelper resHelper;
+
     @Factory(value = "feePayTypes", scope = ScopeType.CONVERSATION)
     public PayType[] getFeePayTypes() {
         return new PayType[]{PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK};
@@ -60,7 +63,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             for (Dispatch dispatch: getMasterNeedRes().getDispatches()){
                 result.append(dispatch.getStore().getName() + "\n");
                 for(DispatchItem item: dispatch.getDispatchItemList()){
-                    result.append("\t" + item.getStoreRes().getTitle(dictionary) + " ");
+                    result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
                     result.append(item.getResCount().getMasterDisplayCount());
                     result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
                 }
@@ -69,7 +72,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }else{
             for (OrderItem item: getMasterNeedRes().getOrderItems()){
                 if (item.isStoreResItem()){
-                    result.append("\t" + item.getStoreRes().getTitle(dictionary) + ": ");
+                    result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
                     result.append(item.getStoreResCount().getMasterDisplayCount());
                     result.append("(" + item.getStoreResCount().getDisplayAuxCount() + ")\n");
                 }else{

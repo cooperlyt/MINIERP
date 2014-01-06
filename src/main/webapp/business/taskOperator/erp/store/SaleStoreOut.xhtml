@@ -8,102 +8,203 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-    <ui:param name="functionTitle" value="#{messages.orderStoreOut}"/>
+<ui:param name="functionTitle" value="#{messages.orderStoreOut}"/>
 
-    <ui:define name="func-body">
-        <h:form>
-            <rich:toolbar>
-                <rich:toolbarGroup>
-                    <h:graphicImage value="/img/print.png"/>
-                    <s:link target="_blank" value="#{messages.orderStoreOutPrint}"
-                            view="/report/saleStoreOutPaper.xhtml">
-                        <f:param value="inCon" name="orderId"/>
-                        <f:param value="inCon" name="storeId"/>
-                    </s:link>
-                </rich:toolbarGroup>
+<ui:define name="func-body">
 
-                <rich:toolbarGroup location="right">
-                    <h:panelGroup id="orderDispatchTaskAction">
-                        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-                        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                                         action="#{orderStoreOut.complete}"/>
-                    </h:panelGroup>
-                </rich:toolbarGroup>
-            </rich:toolbar>
-            <rich:messages ajaxRendered="true" globalOnly="true"/>
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="overlayEditPanel"/>
+    <ui:param name="panelTitle" value="#{messages.dispatch_overly_items}"/>
 
-            <rich:panel>
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.storeOut_field_dateTime}</ui:define>
-                    <rich:calendar
-                            enableManualInput="true"
-                            inputSize="20"
-                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                            datePattern="#{messages.datetimepattern}"
-                            defaultTime="#{currentTime}"
-                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
-                            required="true"
-                            label="#{messages.storeOut_field_dateTime}"
-                            value="#{orderStoreOut.storeOutDate}"/>
-                </s:decorate>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
 
-                <s:decorate template="/layout/seam-edit.xhtml"
-                            rendered="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}">
-                    <ui:define name="label">
-                        #{messages.dispatch_field_outCustomer}
-                    </ui:define>
-                    <h:inputText size="27" value="#{dispatchHome.instance.outCustomer}"
-                                 maxlength="50" label="#{messages.dispatch_field_outCustomer}"/>
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.field_memo}</ui:define>
-                    <h:inputTextarea value="#{orderStoreOut.memo}" label="#{messages.field_memo}"
-                                     rows="2" cols="40"/>
-                </s:decorate>
-
-                <div style="clear:both">
-                    <span class="required">*</span>
-                    #{messages.requiredFields}
-                </div>
-            </rich:panel>
+        </a:commandButton>
+    </ui:define>
 
 
-        </h:form>
-        <br/>
+    <ui:include src="/layout/erp/ResCountInput.xhtml">
+        <ui:param name="resCountBean" value="#{orderStoreOut.selectOutItem.overlayCount}"/>
+        <ui:param name="disabledFloatRate" value="true"/>
+    </ui:include>
 
-        <rich:dataTable style="width: 100%" value="#{dispatchHome.instance.dispatchItemList}" var="_dispatchItem">
-            <f:facet name="header">
-                #{messages.order_item_storeOut_items}
-            </f:facet>
-            <rich:column>
-                <f:facet name="header">
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">
+            #{messages.description}
+        </ui:define>
+        <h:inputText value="#{orderStoreOut.selectOutItem.overlyOut.description}"/>
+    </s:decorate>
+
+    <ui:define name="actionButtons">
+        <a:commandButton value="#{messages.cancel}" onclick="#{rich:component(panelId)}.hide(); return false;"/>
+        <a:commandButton value="#{messages.ok}" execute="@form" render="orderStoreOutItemsTable"
+                         action="#{orderStoreOut.selectOutItem.assignOverlayCount}"
+                         oncomplete="#{rich:component(panelId)}.hide();">
+            <a:attachQueue requestDelay="0"/>
+
+        </a:commandButton>
+    </ui:define>
+
+</s:decorate>
+
+
+<h:form>
+    <rich:toolbar>
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/print.png"/>
+            <s:link target="_blank" value="#{messages.orderStoreOutPrint}"
+                    view="/report/saleStoreOutPaper.xhtml">
+                <f:param value="inCon" name="orderId"/>
+                <f:param value="inCon" name="storeId"/>
+            </s:link>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup location="right">
+            <h:panelGroup id="orderDispatchTaskAction">
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                          view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                 action="#{orderStoreOut.complete}"/>
+            </h:panelGroup>
+        </rich:toolbarGroup>
+    </rich:toolbar>
+    <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+    <rich:panel>
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.storeOut_field_dateTime}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="20"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datetimepattern}"
+                    defaultTime="#{currentTime}"
+                    defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                    required="true"
+                    label="#{messages.storeOut_field_dateTime}"
+                    value="#{orderStoreOut.storeOutDate}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml"
+                    rendered="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}">
+            <ui:define name="label">
+                #{messages.dispatch_field_outCustomer}
+            </ui:define>
+            <h:inputText size="27" value="#{dispatchHome.instance.outCustomer}"
+                         maxlength="50" label="#{messages.dispatch_field_outCustomer}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+            <h:inputTextarea value="#{orderStoreOut.memo}" label="#{messages.field_memo}"
+                             rows="2" cols="40"/>
+        </s:decorate>
+
+        <div style="clear:both">
+            <span class="required">*</span>
+            #{messages.requiredFields}
+        </div>
+    </rich:panel>
+
+
+</h:form>
+<br/>
+<h:form>
+    <rich:dataTable id="orderStoreOutItemsTable" style="width: 100%" value="#{orderStoreOutItems}" var="_dispatchItem">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column rowspan="2">
                     #{messages.StoreRes}
-                </f:facet>
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.Stock}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.dispatch_need_items}
+                </rich:column>
+                <rich:column colspan="3">
+                    #{messages.dispatch_overly_items}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.dispatch_out}
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+                <rich:column>
 
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_dispatchItem.storeRes}"/>
-                </ui:include>
+                </rich:column>
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+        <rich:column>
 
-            </rich:column>
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.stockOutCount}
-                </f:facet>
-                #{_dispatchItem.resCount.masterDisplayCount}
-                <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
-                                title="#{messages.order_item_full}:#{_dispatchItem.stockCount.masterDisplayCount}(#{_dispatchItem.stockCount.displayAuxCount}) "
-                                value="/img/full_tip.png"
-                                rendered="#{_dispatchItem.enough}"/>
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="#{_dispatchItem.storeRes}"/>
+            </ui:include>
 
-                <a:outputPanel style="float:right" rendered="#{not _dispatchItem.enough}">
-                    <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.disparity.masterDisplayCount})"/>
-                    <h:graphicImage alt="#{messages.order_item_not_full}"
-                                    value="/img/not_full_tip.png"/>
-                    <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
-                                  layout="block">
+        </rich:column>
+        <rich:column>
+            #{_dispatchItem.stockCount.masterDisplayCount}
+
+        </rich:column>
+        <rich:column>
+            #{_dispatchItem.stockCount.displayAuxCount}
+        </rich:column>
+
+        <rich:column>
+            #{_dispatchItem.dispatchCount.masterDisplayCount}
+        </rich:column>
+
+        <rich:column>
+            #{_dispatchItem.dispatchCount.displayAuxCount}
+        </rich:column>
+
+        <rich:column>
+            <a:commandButton image="/img/item_add.png" action="#{orderStoreOut.editOverlay}"
+                             disabled="#{dispatchHome.canAddRes}" execute="@this"
+                             immediate="true" oncomplete="#{rich:component('overlayEditPanel')}.show()"
+                             render="overlayEditPanel_form">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </rich:column>
+
+        <rich:column>
+            #{_dispatchItem.resCount.masterDisplayCount}
+            <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
+                            title="#{messages.order_item_full}:#{_dispatchItem.stockCount.masterDisplayCount}(#{_dispatchItem.stockCount.displayAuxCount}) "
+                            value="/img/full_tip.png"
+                            rendered="#{_dispatchItem.enough}"/>
+
+            <a:outputPanel style="float:right" rendered="#{not _dispatchItem.enough}">
+                <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.disparity.masterDisplayCount})"/>
+                <h:graphicImage alt="#{messages.order_item_not_full}"
+                                value="/img/not_full_tip.png"/>
+                <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                              layout="block">
                         <span style="white-space: nowrap;color: #FF0000;">
                                     #{messages.order_item_not_full}
                                 </span> <br/>
@@ -117,48 +218,53 @@
                             #{_dispatchItem.disparity.masterDisplayCount}
                             (#{_dispatchItem.disparity.displayAuxCount})
                                </span>
-                    </rich:tooltip>
-                </a:outputPanel>
-            </rich:column>
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.AuxUnitCount}
-                </f:facet>
-                #{_dispatchItem.resCount.displayAuxCount}
-            </rich:column>
-        </rich:dataTable>
+                </rich:tooltip>
+            </a:outputPanel>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.AuxUnitCount}
+            </f:facet>
+            #{_dispatchItem.resCount.displayAuxCount}
+        </rich:column>
 
-        <br/>
-        <rich:collapsiblePanel switchType="client" header="#{messages.order_ship_info}">
+        <rich:column>
 
-            <s:decorate template="/layout/seam-edit.xhtml"
-                        rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
-                <ui:define name="label">#{messages.EXPRESS_PROXY}</ui:define>
-                <h:outputText value="#{orderStoreOut.shortageMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
-                </h:outputText>
-            </s:decorate>
+        </rich:column>
 
-            <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
-                <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>
-            </ui:include>
+    </rich:dataTable>
+</h:form>
+<br/>
+<rich:collapsiblePanel switchType="client" header="#{messages.order_ship_info}">
 
-            <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
-                <ui:param name="dispatch" value="#{dispatchHome.instance}"/>
-            </ui:include>
+    <s:decorate template="/layout/seam-edit.xhtml"
+                rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
+        <ui:define name="label">#{messages.EXPRESS_PROXY}</ui:define>
+        <h:outputText value="#{orderStoreOut.shortageMoney}">
+            <f:convertNumber locale="#{calendarBean.locale}"
+                             type="currency" groupingUsed="true"/>
+        </h:outputText>
+    </s:decorate>
 
-            <div style="clear: both"/>
+    <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
+        <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>
+    </ui:include>
 
-        </rich:collapsiblePanel>
+    <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
+        <ui:param name="dispatch" value="#{dispatchHome.instance}"/>
+    </ui:include>
 
-        <br/>
-        <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
-            <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+    <div style="clear: both"/>
+
+</rich:collapsiblePanel>
+
+<br/>
+<rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
+    <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
 
 
-            </s:decorate>
-        </rich:collapsiblePanel>
-    </ui:define>
+    </s:decorate>
+</rich:collapsiblePanel>
+</ui:define>
 
 </ui:composition>

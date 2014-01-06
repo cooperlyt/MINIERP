@@ -1,10 +1,7 @@
 package com.dgsoft.erp.action.store;
 
 import com.dgsoft.common.utils.math.BigDecimalFormat;
-import com.dgsoft.erp.model.NoConvertCount;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.ResUnit;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.log.Logging;
@@ -33,6 +30,11 @@ public class StoreResCountInupt extends ResCount {
         super();
         this.res = res;
         init();
+    }
+
+    public StoreResCountInupt(StoreRes storeRes){
+        this(storeRes.getRes(),storeRes.getRes().getUnitGroup().getMasterUnit());
+        setFloatConvertRate(storeRes.getFloatConversionRate());
     }
 
     public StoreResCountInupt(Res res, ResUnit useUnit) {

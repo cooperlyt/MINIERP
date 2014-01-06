@@ -70,6 +70,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     private Map<String, String> messages;
 
     @In
+    private ResHelper resHelper;
+
+    @In
     private DictionaryWord dictionary;
 
     @In
@@ -211,7 +214,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
         for (OrderNeedItem item : orderNeedItems) {
             if (item.isStoreResItem()) {
-                result.append("\t" + item.getStoreRes().getTitle(dictionary) + ": ");
+                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
                 result.append(item.getStoreResCountInupt().getMasterDisplayCount());
                 result.append("(" + item.getStoreResCountInupt().getDisplayAuxCount() + ")\n");
             } else {

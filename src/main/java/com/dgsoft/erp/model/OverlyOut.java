@@ -26,9 +26,11 @@ public class OverlyOut {
     public OverlyOut() {
     }
 
-    public OverlyOut(StoreRes storeRes,BigDecimal count){
+    public OverlyOut(Dispatch dispatch, StoreRes storeRes,BigDecimal count){
         this.storeRes = storeRes;
         this.count = count;
+        this.dispatch = dispatch;
+        this.addTo = false;
     }
 
     @Id
