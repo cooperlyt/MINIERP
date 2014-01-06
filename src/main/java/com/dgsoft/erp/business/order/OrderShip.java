@@ -13,7 +13,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.security.Credentials;
-import sun.plugin2.os.windows.OVERLAPPED;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

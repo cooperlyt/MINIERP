@@ -189,7 +189,6 @@
       <label x="-20" y="-7"/>
     </edge>
   </node>
-  <node name="订单完成" x="322" y="15" width="132" height="36"/>
   <node name="付款判断" x="678" y="478" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -204,4 +203,5 @@
       <label x="-49" y="24"/>
     </edge>
   </node>
+  <node name="订单完成" x="322" y="15" width="132" height="36"/>
 </root-container>

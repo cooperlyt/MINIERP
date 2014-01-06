@@ -27,6 +27,7 @@
 
     <ui:include src="/layout/erp/ResCountInput.xhtml">
         <ui:param name="resCountBean" value="#{orderStoreOut.selectOutItem.overlayCount}"/>
+        <ui:param name="lableStyleClass" value="small_name" />
         <ui:param name="disabledFloatRate" value="true"/>
     </ui:include>
 
@@ -34,7 +35,8 @@
         <ui:define name="label">
             #{messages.description}
         </ui:define>
-        <h:inputText value="#{orderStoreOut.selectOutItem.overlyOut.description}"/>
+        <h:inputTextarea value="#{orderStoreOut.selectOutItem.overlyOut.description}"
+                rows="2" cols="50"/>
     </s:decorate>
 
     <ui:define name="actionButtons">
@@ -149,7 +151,7 @@
                 <rich:column>
                     #{messages.AuxUnitCount}
                 </rich:column>
-                <rich:column>
+                <rich:column >
 
                 </rich:column>
                 <rich:column>
@@ -184,8 +186,16 @@
         </rich:column>
 
         <rich:column>
+            #{_dispatchItem.overlyOut.resCount.masterDisplayCount}
+        </rich:column>
+
+        <rich:column>
+             #{_dispatchItem.overlyOut.resCount.displayAuxCount}
+        </rich:column>
+
+        <rich:column style="text-align: center;">
             <a:commandButton image="/img/item_add.png" action="#{orderStoreOut.editOverlay}"
-                             disabled="#{dispatchHome.canAddRes}" execute="@this"
+                             disabled="#{not dispatchHome.canAddRes}" execute="@this"
                              immediate="true" oncomplete="#{rich:component('overlayEditPanel')}.show()"
                              render="overlayEditPanel_form">
                 <a:attachQueue requestDelay="0"/>
@@ -222,15 +232,10 @@
             </a:outputPanel>
         </rich:column>
         <rich:column>
-            <f:facet name="header">
-                #{messages.AuxUnitCount}
-            </f:facet>
+
             #{_dispatchItem.resCount.displayAuxCount}
         </rich:column>
 
-        <rich:column>
-
-        </rich:column>
 
     </rich:dataTable>
 </h:form>
