@@ -3,7 +3,14 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.Dispatch;
+import com.dgsoft.erp.model.OverlyOut;
+import org.apache.avro.generic.GenericData;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Name;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,5 +25,6 @@ public class DispatchHome extends ErpEntityHome<Dispatch> {
         return  getInstance().getNeedRes().getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.OVERDRAFT) ||
                 getInstance().getNeedRes().getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.COMPLETE_PAY);
     }
+
 
 }

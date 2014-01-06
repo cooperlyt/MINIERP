@@ -65,6 +65,13 @@ public class OrderItem implements java.io.Serializable {
         this.needRes = needRes;
     }
 
+    public OrderItem(NeedRes needRes, StoreRes storeRes,BigDecimal cost){
+        this.storeRes = storeRes;
+        this.storeResItem = true;
+        this.needRes = needRes;
+        this.cost = cost;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
