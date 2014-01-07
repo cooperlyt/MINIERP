@@ -65,7 +65,7 @@ public class OrderItem implements java.io.Serializable {
         this.needRes = needRes;
     }
 
-    public OrderItem(NeedRes needRes, StoreRes storeRes,BigDecimal cost){
+    public OrderItem(NeedRes needRes, StoreRes storeRes, BigDecimal cost){
         this.storeRes = storeRes;
         this.storeResItem = true;
         this.needRes = needRes;

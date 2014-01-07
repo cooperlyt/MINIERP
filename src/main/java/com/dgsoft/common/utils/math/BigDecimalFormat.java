@@ -42,4 +42,9 @@ public class BigDecimalFormat {
 
     }
 
+
+    public static boolean isTyped(BigDecimal value) {
+        return value != null && (value.compareTo(new BigDecimal("0")) != 0);
+    }
+
 }

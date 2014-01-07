@@ -26,7 +26,7 @@ public class OverlyOut {
     public OverlyOut() {
     }
 
-    public OverlyOut(Dispatch dispatch, StoreRes storeRes,BigDecimal count){
+    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count) {
         this.storeRes = storeRes;
         this.count = count;
         this.dispatch = dispatch;
@@ -57,7 +57,7 @@ public class OverlyOut {
         this.count = count;
     }
 
-    @Column(name = "ADD_TO",nullable = false)
+    @Column(name = "ADD_TO", nullable = false)
     public boolean isAddTo() {
         return addTo;
     }
@@ -66,7 +66,7 @@ public class OverlyOut {
         this.addTo = addTo;
     }
 
-    @Column(name="DESCRIPTION",length = 200)
+    @Column(name = "DESCRIPTION", length = 200)
     @Size(max = 200)
     public String getDescription() {
         return description;
@@ -76,7 +76,7 @@ public class OverlyOut {
         this.description = description;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "overlyOut")
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "overlyOut", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     public OrderItem getOrderItem() {
         return orderItem;
     }
@@ -107,7 +107,7 @@ public class OverlyOut {
     }
 
     @Transient
-    public ResCount getResCount(){
+    public ResCount getResCount() {
         return storeRes.getResCount(getCount());
     }
 

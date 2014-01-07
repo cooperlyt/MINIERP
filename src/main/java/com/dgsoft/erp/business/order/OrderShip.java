@@ -1,13 +1,16 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessDefineException;
+import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.common.utils.StringUtil;
+import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.action.DispatchHome;
 import com.dgsoft.erp.model.Dispatch;
 import com.dgsoft.erp.model.NeedRes;
 import com.dgsoft.erp.model.OrderItem;
 import com.dgsoft.erp.model.OverlyOut;
+import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -16,7 +19,9 @@ import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,25 +49,38 @@ public class OrderShip extends OrderTaskHandle {
     @DataModelSelection
     private OrderItem selectOverlyOrderItem;
 
+    @In(create=true)
+    private ActionExecuteState actionExecuteState;
+
     private OverlyOut selectOverly;
 
     private OrderItem editingOrderItem;
+
+    private BigDecimal editingOrderItemTotalMoney;
 
     public List<OverlyOut> getNoConfirmOverlys() {
         return noConfirmOverlys;
     }
 
+    public BigDecimal getEditingOrderItemTotalMoney() {
+        return editingOrderItemTotalMoney;
+    }
+
+    public void setEditingOrderItemTotalMoney(BigDecimal editingOrderItemTotalMoney) {
+        this.editingOrderItemTotalMoney = editingOrderItemTotalMoney;
+    }
+
     public String getOverlyOutId() {
 
-       if (selectOverly == null){
-           return null;
-       }else{
-           return selectOverly.getId();
-       }
+        if (selectOverly == null) {
+            return null;
+        } else {
+            return selectOverly.getId();
+        }
     }
 
     public void setOverlyOutId(String overlyOutId) {
-        if (StringUtil.isEmpty(overlyOutId)){
+        if (StringUtil.isEmpty(overlyOutId)) {
             selectOverly = null;
             return;
         }
@@ -76,23 +94,84 @@ public class OrderShip extends OrderTaskHandle {
         selectOverly = null;
     }
 
-    public void autoConfirmAll(){
+    public OrderItem getEditingOrderItem() {
+        return editingOrderItem;
+    }
 
+    public void setEditingOrderItem(OrderItem editingOrderItem) {
+        this.editingOrderItem = editingOrderItem;
+    }
+
+    public void autoConfirmAll() {
+        //TODO ff
+    }
+
+    public void autoConfirmItem() {
+        //TODO ff
     }
 
     public void beginConfirmOverly() {
         editingOrderItem = new OrderItem(dispatchHome.getInstance().getNeedRes(),
-                selectOverly.getStoreRes(),BigDecimal.ZERO);
+                selectOverly.getStoreRes(), BigDecimal.ZERO);
+        editingOrderItem.setMoney(BigDecimal.ZERO);
+        editingOrderItem.setRebate(new BigDecimal("100"));
+        editingOrderItemTotalMoney = BigDecimal.ZERO;
+        editingOrderItem.setMoneyUnit(selectOverly.getStoreRes().getRes().getResUnitByOutDefault());
+        actionExecuteState.clearState();
+    }
+
+    public void deleteOrderItem(){
+        //TODO ff
     }
 
     public void saveOverlyToOrderItem() {
+         //TODO ff
+
+        actionExecuteState.actionExecute();
+    }
+
+    private BigDecimal getEditingCount() {
+        return selectOverly.getResCount().getCountByResUnit(editingOrderItem.getMoneyUnit());
+    }
+
+    public void calcPriceByUnitMoney() {
+
+        editingOrderItemTotalMoney = editingOrderItem.getMoney().multiply(editingOrderItem.getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)).
+                multiply(getEditingCount());
+
+        editingOrderItemTotalMoney = BigDecimalFormat.halfUpCurrency(editingOrderItemTotalMoney);
+    }
+
+    public void calcPriceByUnit() {
+        if (BigDecimalFormat.isTyped(editingOrderItem.getMoney())){
+            calcPriceByUnitMoney();
+        }else if (BigDecimalFormat.isTyped(editingOrderItemTotalMoney)){
+            editingOrderItem.setMoney(calcUnitPrice());
+        }
+    }
+
+    private BigDecimal calcUnitPrice(){
+        BigDecimal result = editingOrderItemTotalMoney.divide(getEditingCount(),
+                Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
+                BigDecimal.ROUND_HALF_UP).divide(editingOrderItem.getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP));
+
+        result = BigDecimalFormat.halfUpCurrency(result);
+        return result;
 
     }
 
-    public OverlyOut getSelectedOverly() {
-
-        return null;
+    public void calcPriceByTotalMoney() {
+        if (!BigDecimalFormat.isTyped(editingOrderItem.getMoney())){
+            editingOrderItem.setMoney(calcUnitPrice());
+        }else{
+            editingOrderItem.setRebate(editingOrderItem.getMoney().divide(calcUnitPrice(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")));
+        }
     }
+
+    public void calcPriceByRebate() {
+        calcPriceByUnitMoney();
+    }
+
 
     protected String initOrderTask() {
         String storeId = taskDescription.getValue(OrderStoreOut.TASK_STORE_ID_KEY);

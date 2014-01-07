@@ -31,7 +31,7 @@
             <rich:toolbarGroup>
 
 
-                <a id="clip-button-id" href="#" data-clipboard-text="#{orderDispatch.toastMessages}"
+                <a id="clip-button-id" href="#" data-clipboard-text="#{orderDispatchTask.toastMessages}"
                    class="clipboard">
                     #{messages.toastQQ}
                 </a>
@@ -47,8 +47,8 @@
                                   view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
                         <s:button styleClass="toolBarBtn" value="#{messages.complete}"
-                                  onclick="if(#{not empty orderDispatch.storeResOrderItems}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
-                                  action="#{orderDispatch.complete}"/>
+                                  onclick="if(#{not empty dispatchOrderItems}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
+                                  action="#{orderDispatchTask.complete}"/>
                     </h:panelGroup>
                 </h:panelGrid>
 

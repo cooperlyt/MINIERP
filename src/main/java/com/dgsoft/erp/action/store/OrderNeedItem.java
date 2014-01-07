@@ -147,15 +147,22 @@ public class OrderNeedItem extends StoreChangeItem {
 
     }
 
+    private BigDecimal calcUnitPrice() {
+        BigDecimal result = totalPrice.divide(getCount(),
+                        Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
+                        BigDecimal.ROUND_HALF_UP).divide(rebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP));
+
+        result = BigDecimalFormat.halfUpCurrency(result);
+        return result;
+
+    }
+
     private void calcByCT() {
-
-        unitPrice = totalPrice.divide(getCount(),
-                Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
-                BigDecimal.ROUND_HALF_UP).divide(rebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP));
-
-        unitPrice = BigDecimalFormat.halfUpCurrency(unitPrice);
-
-
+        if (!decimalIsTyped(unitPrice)) {
+            unitPrice = calcUnitPrice();
+        } else {
+            rebate = unitPrice.divide(calcUnitPrice(),4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
+        }
     }
 
     private void calcByCR() {
