@@ -155,4 +155,13 @@ public class DispatchItem implements java.io.Serializable {
     public boolean isEnough() {
         return getStockCount().getMasterCount().compareTo(getResCount().getMasterCount()) >= 0;
     }
+
+
+    @Transient
+    public ResCount getDisparity() {
+
+        ResCount result = getResCount();
+        result.subtract(getStockCount());
+        return getStoreRes().getResCount(result.getMasterCount(), getStoreRes().getRes().getUnitGroup().getMasterUnit());
+    }
 }

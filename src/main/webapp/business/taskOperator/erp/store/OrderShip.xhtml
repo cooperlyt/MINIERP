@@ -8,169 +8,287 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-    <ui:param name="functionTitle" value="#{messages.orderShip}"/>
+<ui:param name="functionTitle" value="#{messages.orderShip}"/>
 
-    <ui:define name="func-body">
-        <s:decorate template="/layout/edit-modalpanel.xhtml">
-            <ui:param name="panelId" value="toDoorDriverSelectPanel"/>
-            <ui:param name="panelTitle" value="#{messages.plaseSelectToDoorDriver}"/>
-            <ui:define name="controls">
-                <a:commandButton immediate="true"
-                                 execute="@this" image="/img/close.png"
-                                 onclick="#{rich:component(panelId)}.hide(); return false;">
+<ui:define name="func-body">
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="toDoorDriverSelectPanel"/>
+    <ui:param name="panelTitle" value="#{messages.plaseSelectToDoorDriver}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
 
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-            </ui:define>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
 
 
-            <ui:define name="formContent">
-                <rich:panel style="width: 300px;height: 360px">
-                    <rich:tree
-                            var="_node"
-                            value="#{employeeHome.employeeTree}"
-                            nodeType="#{_node.type}"
-                            onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} "
-                            toggleType="client"
-                            selectionType="client">
-                        <rich:treeNode type="org">
-                              #{_node.org.name}
-                        </rich:treeNode>
+    <ui:define name="formContent">
+        <rich:panel style="width: 300px;height: 360px">
+            <rich:tree
+                    var="_node"
+                    value="#{employeeHome.employeeTree}"
+                    nodeType="#{_node.type}"
+                    onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} "
+                    toggleType="client"
+                    selectionType="client">
+                <rich:treeNode type="org">
+                    #{_node.org.name}
+                </rich:treeNode>
 
-                        <rich:treeNode type="emp">
+                <rich:treeNode type="emp">
 
-                            <a:commandLink value="#{_node.emp.person.name}(#{_node.emp.id})" execute="@this" immediate="true"
-                                           render="shipDriverField"
-                                           oncomplete="#{rich:component('toDoorDriverSelectPanel')}.hide();">
-                                <a:param value="#{_node.emp.id}" assignTo="#{dispatchHome.instance.productToDoor.toDoorDriver}"/>
-                                <a:attachQueue requestDelay="0"/>
-                                <s:conversationId/>
-                            </a:commandLink>
+                    <a:commandLink value="#{_node.emp.person.name}(#{_node.emp.id})" execute="@this"
+                                   immediate="true"
+                                   render="shipDriverField"
+                                   oncomplete="#{rich:component('toDoorDriverSelectPanel')}.hide();">
+                        <a:param value="#{_node.emp.id}"
+                                 assignTo="#{dispatchHome.instance.productToDoor.toDoorDriver}"/>
+                        <a:attachQueue requestDelay="0"/>
+                        <s:conversationId/>
+                    </a:commandLink>
 
-                        </rich:treeNode>
-                    </rich:tree>
-                </rich:panel>
-            </ui:define>
+                </rich:treeNode>
+            </rich:tree>
+        </rich:panel>
+    </ui:define>
+</s:decorate>
+
+
+<h:form>
+    <rich:toolbar>
+        <rich:toolbarGroup>
+            <h:panelGrid columns="2">
+                <h:outputText value="#{messages.EXPRESS_PROXY}:"
+                              rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}"/>
+
+                <h:outputText value="#{orderStoreOut.shortageMoney}"
+                              rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </h:panelGrid>
+
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup location="right">
+            <h:panelGroup id="orderDispatchTaskAction">
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                          view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                 action="#{orderShip.complete}"/>
+            </h:panelGroup>
+        </rich:toolbarGroup>
+    </rich:toolbar>
+    <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+    <rich:panel>
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="20"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datetimepattern}"
+                    defaultTime="#{currentTime}"
+                    defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                    required="true"
+                    label="#{messages.dispatch_field_shipDate}"
+                    value="#{dispatchHome.instance.sendTime}"/>
         </s:decorate>
 
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.dispatch_field_Fare}</ui:define>
+            <h:inputText value="#{dispatchHome.instance.fare}" required="true"
+                         disabled="#{(not dispatchHome.instance.deliveryType.haveFare) or dispatchHome.instance.needRes.fareByCustomer}"
+                         label="#{messages.dispatch_field_Fare}" size="20">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
 
-        <h:form>
-            <rich:toolbar>
-                <rich:toolbarGroup>
-                        <h:panelGrid columns="2">
-                        <h:outputText value="#{messages.EXPRESS_PROXY}:"
-                                      rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}"/>
+        </s:decorate>
 
-                        <h:outputText value="#{orderStoreOut.shortageMoney}"
-                                      rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
-                            <f:convertNumber locale="#{calendarBean.locale}"
-                                             type="currency" groupingUsed="true"/>
-                        </h:outputText>
-                        </h:panelGrid>
+        <s:decorate template="/layout/seam-edit.xhtml"
+                    rendered="#{dispatchHome.instance.deliveryType eq 'FULL_CAR_SEND'}">
+            <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
+            <h:inputText value="#{dispatchHome.instance.expressCar.carCode}"
+                         maxlength="20"
+                         label="#{messages.dispatch_field_expressCarCode}" size="27"/>
+        </s:decorate>
 
-                </rich:toolbarGroup>
+        <s:decorate template="/layout/seam-edit.xhtml"
+                    rendered="#{dispatchHome.instance.deliveryType eq 'EXPRESS_SEND'}">
+            <ui:define name="label">#{messages.dispatch_field_expressNumber}</ui:define>
+            <h:inputText value="#{dispatchHome.instance.expressInfo.number}"
+                         maxlength="50" size="27"/>
+        </s:decorate>
 
-                <rich:toolbarGroup location="right">
-                    <h:panelGroup id="orderDispatchTaskAction">
-                        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-                        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                                         action="#{orderShip.complete}"/>
-                    </h:panelGroup>
-                </rich:toolbarGroup>
-            </rich:toolbar>
-            <rich:messages ajaxRendered="true" globalOnly="true"/>
+        <a:outputPanel id="shipDriverField">
+            <s:decorate template="/layout/seam-edit.xhtml"
+                        rendered="#{dispatchHome.instance.deliveryType eq 'SEND_TO_DOOR'}">
+                <ui:define name="label">#{messages.dispatch_field_toDoorDriver}</ui:define>
+                <h:outputText
+                        value="#{dictionary.getEmpNameById(dispatchHome.instance.productToDoor.toDoorDriver)}"
+                        rendered="#{not empty dispatchHome.instance.productToDoor.toDoorDriver}"/>
+                <h:inputText value="#{messages.plaseSelectToDoorDriver}"
+                             rendered="#{empty dispatchHome.instance.productToDoor.toDoorDriver}"/>
+                <ui:define name="tail">
+                    <a:commandButton title="#{messages.plaseSelectToDoorDriver}" image="/img/onetomany.gif"
+                                     render="shipDriverField" immediate="true"
+                                     onclick="#{rich:component('toDoorDriverSelectPanel')}.show();return false;"/>
 
-            <rich:panel>
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
-                    <rich:calendar
-                            enableManualInput="true"
-                            inputSize="20"
-                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                            datePattern="#{messages.datetimepattern}"
-                            defaultTime="#{currentTime}"
-                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
-                            required="true"
-                            label="#{messages.dispatch_field_shipDate}"
-                            value="#{dispatchHome.instance.sendTime}"/>
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.dispatch_field_Fare}</ui:define>
-                    <h:inputText value="#{dispatchHome.instance.fare}" required="true"
-                                 disabled="#{(not dispatchHome.instance.deliveryType.haveFare) or dispatchHome.instance.needRes.fareByCustomer}"
-                                 label="#{messages.dispatch_field_Fare}" size="20">
-                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                         type="currency" groupingUsed="false"/>
-                    </h:inputText>
-
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-edit.xhtml"
-                            rendered="#{dispatchHome.instance.deliveryType eq 'FULL_CAR_SEND'}">
-                    <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
-                    <h:inputText value="#{dispatchHome.instance.expressCar.carCode}"
-                                 maxlength="20"
-                                 label="#{messages.dispatch_field_expressCarCode}" size="27"/>
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-edit.xhtml"
-                            rendered="#{dispatchHome.instance.deliveryType eq 'EXPRESS_SEND'}">
-                    <ui:define name="label">#{messages.dispatch_field_expressNumber}</ui:define>
-                    <h:inputText value="#{dispatchHome.instance.expressInfo.number}"
-                                 maxlength="50" size="27"/>
-                </s:decorate>
-
-                <a:outputPanel id="shipDriverField">
-                <s:decorate template="/layout/seam-edit.xhtml"
-                            rendered="#{dispatchHome.instance.deliveryType eq 'SEND_TO_DOOR'}">
-                    <ui:define name="label">#{messages.dispatch_field_toDoorDriver}</ui:define>
-                    <h:outputText value="#{dictionary.getEmpNameById(dispatchHome.instance.productToDoor.toDoorDriver)}"
-                                  rendered="#{not empty dispatchHome.instance.productToDoor.toDoorDriver}"/>
-                    <h:inputText value="#{messages.plaseSelectToDoorDriver}" rendered="#{empty dispatchHome.instance.productToDoor.toDoorDriver}"/>
-                    <ui:define name="tail">
-                        <a:commandButton title="#{messages.plaseSelectToDoorDriver}" image="/img/onetomany.gif"
-                                         render="shipDriverField" immediate="true"
-                                         onclick="#{rich:component('toDoorDriverSelectPanel')}.show();return false;"/>
-
-                    </ui:define>
-
-                </s:decorate>
-                </a:outputPanel>
-
-                <div style="clear:both">
-                    <span class="required">*</span>
-                    #{messages.requiredFields}
-                </div>
-            </rich:panel>
-        </h:form>
-
-
-        <br/>
-        <rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
-
-            <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
-                <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>
-            </ui:include>
-
-            <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
-                <ui:param name="dispatch" value="#{dispatchHome.instance}"/>
-            </ui:include>
-
-            <div style="clear: both"/>
-
-        </rich:collapsiblePanel>
-
-        <br/>
-        <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
-            <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
-
+                </ui:define>
 
             </s:decorate>
-        </rich:collapsiblePanel>
+        </a:outputPanel>
 
-    </ui:define>
+        <div style="clear:both">
+            <span class="required">*</span>
+            #{messages.requiredFields}
+        </div>
+    </rich:panel>
+</h:form>
+
+<rich:panel rendered="#{dispatchHome.haveOverlyOut}">
+
+    <f:facet name="header">
+        #{messages.dispathc_overly_confirm}
+    </f:facet>
+
+    <h:panelGrid columns="2">
+
+        <rich:dataTable value="#{orderShip.noConfirmOverlys}" var="_overly" id="overlyItems"
+                        noDataLabel="#{messages.dispatch_overly_empty}">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.StoreRes}
+                </f:facet>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_overly.storeRes}"/>
+                </ui:include>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.MasterUnitCount}
+                </f:facet>
+                #{_overly.resCount.masterDisplayCount}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.AuxUnitCount}
+                </f:facet>
+                #{_overly.resCount.displayAuxCount}
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.description}
+                </f:facet>
+                #{_overly.description}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+
+                </f:facet>
+
+
+            </rich:column>
+
+        </rich:dataTable>
+
+        <rich:dataTable value="#{overlyOrderItems}" var="_orderItem" noDataLabel="#{messages.dispatch_overly_order_empty}">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItem}
+                </f:facet>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_orderItem.storeRes}"/>
+                </ui:include>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemCount}
+                </f:facet>
+
+                <h:outputText value="#{_orderItem.count}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.Res_Unit}
+                </f:facet>
+                #{_orderItem.moneyUnit.name}
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemUnitPrice}
+                </f:facet>
+                <h:outputText value="#{_orderItem.money}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemPriceRebate}
+                </f:facet>
+                #{'%'}
+                <h:outputText value="#{_orderItem.rebate}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
+
+                </f:facet>
+            </rich:column>
+        </rich:dataTable>
+
+    </h:panelGrid>
+</rich:panel>
+
+<br/>
+<rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
+
+    <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
+        <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>
+    </ui:include>
+
+    <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
+        <ui:param name="dispatch" value="#{dispatchHome.instance}"/>
+    </ui:include>
+
+    <div style="clear: both"/>
+
+</rich:collapsiblePanel>
+
+<br/>
+<rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
+    <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+
+
+    </s:decorate>
+</rich:collapsiblePanel>
+
+</ui:define>
 
 </ui:composition>

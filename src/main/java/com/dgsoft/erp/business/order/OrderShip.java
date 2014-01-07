@@ -38,7 +38,7 @@ public class OrderShip extends OrderTaskHandle {
 
     private List<OverlyOut> noConfirmOverlys;
 
-    @DataModel
+    @DataModel("overlyOrderItems")
     private List<OrderItem> overlyOrderItems;
 
     @DataModelSelection
