@@ -20,7 +20,6 @@ public class OverlyOut {
     private BigDecimal count;
     private String description;
     private Dispatch dispatch;
-    private boolean addTo;
     private OrderItem orderItem;
 
     public OverlyOut() {
@@ -30,7 +29,6 @@ public class OverlyOut {
         this.storeRes = storeRes;
         this.count = count;
         this.dispatch = dispatch;
-        this.addTo = false;
     }
 
     @Id
@@ -55,15 +53,6 @@ public class OverlyOut {
 
     public void setCount(BigDecimal count) {
         this.count = count;
-    }
-
-    @Column(name = "ADD_TO", nullable = false)
-    public boolean isAddTo() {
-        return addTo;
-    }
-
-    public void setAddTo(boolean addTo) {
-        this.addTo = addTo;
     }
 
     @Column(name = "DESCRIPTION", length = 200)

@@ -8,10 +8,12 @@ import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
@@ -28,6 +30,9 @@ import java.util.Locale;
  */
 @Name("orderShip")
 public class OrderShip extends OrderTaskHandle {
+
+    @Logger
+    private Log log;
 
     @In
     private TaskDescription taskDescription;
@@ -112,6 +117,10 @@ public class OrderShip extends OrderTaskHandle {
         selectOverly = null;
     }
 
+    public OverlyOut getSelectOverly() {
+        return selectOverly;
+    }
+
     public OrderItem getEditingOrderItem() {
         return editingOrderItem;
     }
@@ -153,11 +162,13 @@ public class OrderShip extends OrderTaskHandle {
     }
 
     public void calcByRate() {
+        log.debug("calcByReate  getOrderResTotalMoney:" + getOrderResTotalMoney() + "|orderRebate:" + orderRebate);
         orderTotalMoney = BigDecimalFormat.halfUpCurrency(getOrderResTotalMoney().multiply(
                 orderRebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
     }
 
     public void calcByOrderTotalMoney() {
+        log.debug("calcByOrderTotalMoney getOrderResTotalMoney:" + getOrderResTotalMoney() + "|orderTotalMoney:" + orderTotalMoney);
         orderRebate = orderTotalMoney.divide(getOrderResTotalMoney(), 4, BigDecimal.ROUND_UP).multiply(new BigDecimal("100"));
     }
 
@@ -208,7 +219,7 @@ public class OrderShip extends OrderTaskHandle {
                 orderItem.getMoney(), orderItem.getRebate());
         newItem.setOverlyOut(overlyOut);
         overlyOut.setOrderItem(newItem);
-        overlyOut.setAddTo(true);
+
         overlyOrderItems.add(newItem);
         noConfirmOverlys.remove(overlyOut);
     }
@@ -228,15 +239,27 @@ public class OrderShip extends OrderTaskHandle {
         actionExecuteState.clearState();
     }
 
+    public void deleteAllOrderItem(){
+        for (OrderItem orderItem: overlyOrderItems){
+            OverlyOut overlyOut = orderItem.getOverlyOut();
+            overlyOut.setOrderItem(null);
+            noConfirmOverlys.add(overlyOut);
+        }
+        overlyOrderItems.clear();
+        calcByRate();
+    }
+
     public void deleteOrderItem() {
         OverlyOut overlyOut = selectOverlyOrderItem.getOverlyOut();
         if (overlyOut == null) {
+            log.error("overly not confirm");
             throw new IllegalArgumentException("overly not confirm");
         }
+        noConfirmOverlys.add(overlyOut);
         overlyOut.setOrderItem(null);
         selectOverlyOrderItem.setOverlyOut(null);
-        overlyOut.setAddTo(false);
-        noConfirmOverlys.add(overlyOut);
+
+
         overlyOrderItems.remove(selectOverlyOrderItem);
         selectOverlyOrderItem = null;
         calcByRate();
@@ -247,6 +270,7 @@ public class OrderShip extends OrderTaskHandle {
 
         selectOverly = null;
 
+        calcByRate();
         actionExecuteState.actionExecute();
     }
 
@@ -313,13 +337,13 @@ public class OrderShip extends OrderTaskHandle {
                             dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_STORE_OUT)) {
                         dispatchHome.setId(dispatch.getId());
                         orderRebate = dispatchHome.getInstance().getNeedRes().getCustomerOrder().getTotalRebate();
-
+                        orderTotalMoney = dispatchHome.getInstance().getNeedRes().getCustomerOrder().getMoney();
                         overlyOrderItems = new ArrayList<OrderItem>();
                         noConfirmOverlys = new ArrayList<OverlyOut>();
                         for (OverlyOut overly : dispatchHome.getInstance().getOverlyOuts()) {
-                            if (!overly.isAddTo()) {
-                                noConfirmOverlys.add(overly);
-                            }
+
+                            noConfirmOverlys.add(overly);
+
                         }
 
 
@@ -370,6 +394,22 @@ public class OrderShip extends OrderTaskHandle {
         if (!noConfirmOverlys.isEmpty()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "overly_item_not_price", noConfirmOverlys.size());
             return "fail";
+        }
+
+        if (inputDetails) {
+            switch (dispatchHome.getInstance().getDeliveryType()) {
+                case FULL_CAR_SEND:
+                    dispatchHome.getInstance().setExpressCar(expressCarHome.getReadyInstance());
+                    break;
+                case EXPRESS_SEND:
+                    dispatchHome.getInstance().setExpressInfo(expressInfoHome.getReadyInstance());
+                    break;
+
+                case SEND_TO_DOOR:
+                    productToDoorHome.getInstance().setToDoorDriver(dispatchHome.getInstance().getSendEmp());
+                    dispatchHome.getInstance().setProductToDoor(productToDoorHome.getReadyInstance());
+                    break;
+            }
         }
 
         if (!overlyOrderItems.isEmpty()) {

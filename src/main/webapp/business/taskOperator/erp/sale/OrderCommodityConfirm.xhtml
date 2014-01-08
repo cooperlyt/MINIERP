@@ -12,179 +12,179 @@
 
 <ui:define name="func-body">
 
-    <h:outputStylesheet>
-        .rf-tb-emp {
-            border: 0 none !important;
-            width: 100% !important;
-        }
-    </h:outputStylesheet>
+<h:outputStylesheet>
+    .rf-tb-emp {
+        border: 0 none !important;
+        width: 100% !important;
+    }
+</h:outputStylesheet>
 
-    <s:decorate template="/layout/edit-modalpanel.xhtml">
-        <ui:param name="panelId" value="sendEmpSelectPanel"/>
-        <ui:param name="panelTitle" value="#{messages.dispatch_field_shipEmp}"/>
-        <ui:define name="controls">
-            <a:commandButton immediate="true"
-                             execute="@this" image="/img/close.png"
-                             onclick="#{rich:component(panelId)}.hide(); return false;">
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="sendEmpSelectPanel"/>
+    <ui:param name="panelTitle" value="#{messages.dispatch_field_shipEmp}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
 
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-        </ui:define>
-
-
-        <ui:define name="formContent">
-            <rich:panel style="width: 300px;height: 360px">
-                <rich:tree
-                        var="_node"
-                        value="#{employeeTree}"
-                        nodeType="#{_node.type}"
-                        onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} "
-                        toggleType="client"
-                        selectionType="client">
-                    <rich:treeNode type="org">
-                        #{_node.org.name}
-                    </rich:treeNode>
-
-                    <rich:treeNode type="emp">
-
-                        <a:commandLink value="#{_node.emp.person.name}(#{_node.emp.id})" execute="@this" immediate="true"
-                                       render="sendInfos" action="#{orderCommodityConfirm.selectSendEmployee}"
-                                       oncomplete="#{rich:component('sendEmpSelectPanel')}.hide();">
-                            <a:attachQueue requestDelay="0"/>
-                            <a:param value="#{_node.emp.id}" assignTo="#{orderCommodityConfirm.selectSendEmpId}"/>
-                        </a:commandLink>
-
-                    </rich:treeNode>
-                </rich:tree>
-            </rich:panel>
-        </ui:define>
-    </s:decorate>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
 
 
-    <h:form>
-        <rich:toolbar>
-            <rich:toolbarGroup>
-                <h:outputText value="#{messages.order_proxy_fare}"
-                              rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}"/>
+    <ui:define name="formContent">
+        <rich:panel style="width: 300px;height: 360px">
+            <rich:tree
+                    var="_node"
+                    value="#{employeeTree}"
+                    nodeType="#{_node.type}"
+                    onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} "
+                    toggleType="client"
+                    selectionType="client">
+                <rich:treeNode type="org">
+                    #{_node.org.name}
+                </rich:treeNode>
 
-                <h:outputText value="#{messages[orderHome.lastNeedRes.type.name()]}"
-                              rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}"/>
-                <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
-                             value="#{orderHome.masterNeedRes.proxyFare}" size="10"
-                             rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
-                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                     type="currency" groupingUsed="false"/>
-                    <rich:placeholder value="#{messages.order_proxy_fare}"/>
-                    <rich:validator/>
-                </h:inputText>
-                <rich:message for="reveiveFareField" styleClass="message-icon"
-                              showDetail="true" showSummary="true" tooltip="true"/>
-            </rich:toolbarGroup>
+                <rich:treeNode type="emp">
 
-            <rich:toolbarGroup location="right">
-                <h:panelGroup>
-                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                                     action="#{orderCommodityConfirm.complete}"/>
-                </h:panelGroup>
-            </rich:toolbarGroup>
-        </rich:toolbar>
+                    <a:commandLink value="#{_node.emp.person.name}(#{_node.emp.id})" execute="@this" immediate="true"
+                                   render="sendInfos" action="#{orderCommodityConfirm.selectSendEmployee}"
+                                   oncomplete="#{rich:component('sendEmpSelectPanel')}.hide();">
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_node.emp.id}" assignTo="#{orderCommodityConfirm.selectSendEmpId}"/>
+                    </a:commandLink>
+
+                </rich:treeNode>
+            </rich:tree>
+        </rich:panel>
+    </ui:define>
+</s:decorate>
 
 
-        <br/>
-        <rich:messages ajaxRendered="true" globalOnly="true"/>
+<h:form>
+    <rich:toolbar>
+        <rich:toolbarGroup>
+            <h:outputText value="#{messages.order_proxy_fare}"
+                          rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}"/>
 
-        <br/>
+            <h:outputText value="#{messages[orderHome.lastNeedRes.type.name()]}"
+                          rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}"/>
+            <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
+                         value="#{orderHome.masterNeedRes.proxyFare}" size="10"
+                         rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+                <rich:placeholder value="#{messages.order_proxy_fare}"/>
+                <rich:validator/>
+            </h:inputText>
+            <rich:message for="reveiveFareField" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup location="right">
+            <h:panelGroup>
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                          view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                 action="#{orderCommodityConfirm.complete}"/>
+            </h:panelGroup>
+        </rich:toolbarGroup>
+    </rich:toolbar>
 
 
-        <a:outputPanel id="sendInfos"
-                       rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}">
+    <br/>
+    <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+    <br/>
 
 
-            <rich:dataTable style="width: 100%" value="#{orderHome.lastNeedRes.dispatchList}" var="_dispatch">
-                <f:facet name="header">
-                    #{messages[orderHome.lastNeedRes.type.name()]}
-                </f:facet>
-                <f:facet name="footer">
-                    <a:outputPanel id="totalFare">
+    <a:outputPanel id="sendInfos"
+                   rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}">
+
+
+        <rich:dataTable style="width: 100%" value="#{orderHome.lastNeedRes.dispatchList}" var="_dispatch">
+            <f:facet name="header">
+                #{messages[orderHome.lastNeedRes.type.name()]}
+            </f:facet>
+            <f:facet name="footer">
+                <a:outputPanel id="totalFare">
                     <h:outputText value="#{orderHome.lastNeedResTotalFare}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
-                    </a:outputPanel>
+                </a:outputPanel>
+            </f:facet>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.dispatch_field_store}
                 </f:facet>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.dispatch_field_store}
-                    </f:facet>
-                    #{_dispatch.store.name}
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.order_field_deliveryType}
-                    </f:facet>
-                    #{messages[_dispatch.deliveryType.name()]}
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.dispatch_field_shipDate}
-                    </f:facet>
+                #{_dispatch.store.name}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.order_field_deliveryType}
+                </f:facet>
+                #{messages[_dispatch.deliveryType.name()]}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.dispatch_field_shipDate}
+                </f:facet>
 
-                    <s:decorate template="/layout/single-edit.xhtml">
-                        <rich:calendar enableManualInput="true"
-                                       inputSize="10"
-                                       timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                                       showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                                       datePattern="#{messages.datePattern}"
-                                       disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
-                                       label="#{messages.dispatch_field_shipDate}"
-                                       value="#{_dispatch.sendTime}">
+                <s:decorate template="/layout/single-edit.xhtml">
+                    <rich:calendar enableManualInput="true"
+                                   inputSize="10"
+                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                   datePattern="#{messages.datePattern}"
+                                   disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
+                                   label="#{messages.dispatch_field_shipDate}"
+                                   value="#{_dispatch.sendTime}">
 
-                            <rich:placeholder
-                                    value="#{_dispatch.needRes.fareByCustomer ? messages.order_fare_by_customer : (_dispatch.deliveryType.haveFare ? messages.dispatch_field_shipDate : messages[_dispatch.deliveryType.name()])}"/>
-                        </rich:calendar>
-                    </s:decorate>
+                        <rich:placeholder
+                                value="#{_dispatch.needRes.fareByCustomer ? messages.order_fare_by_customer : (_dispatch.deliveryType.haveFare ? messages.dispatch_field_shipDate : messages[_dispatch.deliveryType.name()])}"/>
+                    </rich:calendar>
+                </s:decorate>
 
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.dispatch_field_shipEmp}
-                    </f:facet>
-                    <a:commandLink
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.dispatch_field_shipEmp}
+                </f:facet>
+                <a:commandLink
+                        disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
+                        value="#{empty _dispatch.sendEmp ? messages.noSelectLabelShort : dictionary.getEmpNameById(_dispatch.sendEmp)}"
+                        oncomplete="#{rich:component('sendEmpSelectPanel')}.show()" immediate="true"
+                        execute="@this" render="sendEmpSelectPanel_form">
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{_dispatch.id}" assignTo="#{orderCommodityConfirm.selectDispatchId}"/>
+                </a:commandLink>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.dispatch_field_expressNumber}
+                </f:facet>
+                <h:inputText rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"
+                             label="#{messages.dispatch_field_expressNumber}"
+                             size="15" value="#{_dispatch.expressInfo.number}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.dispatch_field_Fare}
+                </f:facet>
+                <s:decorate template="/layout/single-edit.xhtml">
+                    <h:inputText
                             disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
-                            value="#{empty _dispatch.sendEmp ? messages.noSelectLabelShort : dictionary.getEmpNameById(_dispatch.sendEmp)}"
-                            oncomplete="#{rich:component('sendEmpSelectPanel')}.show()" immediate="true"
-                            execute="@this" render="sendEmpSelectPanel_form">
-                        <a:attachQueue requestDelay="0"/>
-                        <a:param value="#{_dispatch.id}" assignTo="#{orderCommodityConfirm.selectDispatchId}"/>
-                    </a:commandLink>
-                </rich:column>
-
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.dispatch_field_expressNumber}
-                    </f:facet>
-                    <h:inputText rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"
-                                 label="#{messages.dispatch_field_expressNumber}"
-                                 size="15" value="#{_dispatch.expressInfo.number}"/>
-                </rich:column>
-
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.dispatch_field_Fare}
-                    </f:facet>
-                    <s:decorate template="/layout/single-edit.xhtml">
-                        <h:inputText
-                                disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
-                                value="#{_dispatch.fare}" size="10" label="#{messages.dispatch_field_Fare}">
-                            <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                             type="currency" groupingUsed="false"/>
-                            <a:ajax event="blur" render="sendInfos"/>
-                        </h:inputText>
-                    </s:decorate>
-                </rich:column>
-            </rich:dataTable>
+                            value="#{_dispatch.fare}" size="10" label="#{messages.dispatch_field_Fare}">
+                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                         type="currency" groupingUsed="false"/>
+                        <a:ajax event="blur" render="sendInfos"/>
+                    </h:inputText>
+                </s:decorate>
+            </rich:column>
+        </rich:dataTable>
 
 
     </a:outputPanel>
@@ -258,4 +258,4 @@
 
 </ui:define>
 
-        </ui:composition>
+</ui:composition>

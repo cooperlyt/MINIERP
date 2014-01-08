@@ -2,6 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.ProductToDoor;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 /**
@@ -13,5 +14,14 @@ import org.jboss.seam.annotations.Name;
 @Name("productToDoorHome")
 public class ProductToDoorHome extends ErpEntityHome<ProductToDoor>{
 
+    @In(create=true)
+    private CarsHome carsHome;
+
+
+    @Override
+    protected boolean wire(){
+        getInstance().setCars(carsHome.getReadyInstance());
+        return true;
+    }
 
 }

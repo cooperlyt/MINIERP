@@ -25,12 +25,7 @@ public class DispatchHome extends ErpEntityHome<Dispatch> {
     }
 
     public boolean isHaveOverlyOut(){
-        for (OverlyOut overly: getInstance().getOverlyOuts()){
-            if (!overly.isAddTo()){
-                return true;
-            }
-        }
-        return false;
+        return !getInstance().getOverlyOuts().isEmpty();
     }
 
 }
