@@ -410,6 +410,24 @@ public class CustomerOrder implements java.io.Serializable {
         return result;
     }
 
+    @Transient
+    public List<OrderItem> getAllOrderItemList(){
+        List<OrderItem> result = new ArrayList<OrderItem>();
+        for (NeedRes needRes: getNeedResList()){
+            result.addAll(needRes.getOrderItemList());
+        }
+        return result;
+    }
+
+
+    @Transient
+    public BigDecimal getResTotalMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderItem item: getAllOrderItemList()){
+            result = result.add(item.getTotalMoney());
+        }
+        return result;
+    }
 
 
 }

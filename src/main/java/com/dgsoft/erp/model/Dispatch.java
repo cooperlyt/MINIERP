@@ -134,7 +134,7 @@ public class Dispatch implements java.io.Serializable {
 		this.expressCar = expressCar;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.REFRESH})
 	@JoinColumn(name = "NEED_RES", nullable = false)
 	@NotNull
 	public NeedRes getNeedRes() {

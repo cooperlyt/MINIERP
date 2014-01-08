@@ -64,7 +64,7 @@ public class NeedRes implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
     @NotNull
     public CustomerOrder getCustomerOrder() {
