@@ -151,10 +151,17 @@
         <h:outputText value="#{_item.count}">
             <f:convertNumber pattern="#0.####"/>
         </h:outputText>
-        #{_item.moneyUnit.name}
+
 
 
     </rich:column>
+    <rich:column style="text-align: center">
+        <f:facet name="header">
+            #{messages.Res_Unit}
+        </f:facet>
+        #{_item.moneyUnit.name}
+    </rich:column>
+
     <rich:column style="text-align: right">
         <f:facet name="header">
             #{messages.orderItemUnitPrice}

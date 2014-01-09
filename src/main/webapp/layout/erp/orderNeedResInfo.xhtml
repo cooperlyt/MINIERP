@@ -30,14 +30,26 @@
                                  value="#{needRes.fareByCustomer}"/>
     </s:decorate>
 
+
     <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.order_field_postCode}</ui:define>
-        <h:outputText value="#{needRes.postCode}"/>
+        <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
+        #{needRes.receivePerson}
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
+        #{needRes.receiveTel}
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_address}</ui:define>
         <h:outputText value="#{needRes.address}"/>
     </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.order_field_postCode}</ui:define>
+        <h:outputText value="#{needRes.postCode}"/>
+    </s:decorate>
+
 
 </ui:composition>

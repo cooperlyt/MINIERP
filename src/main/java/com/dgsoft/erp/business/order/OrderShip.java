@@ -60,16 +60,10 @@ public class OrderShip extends OrderTaskHandle {
     private ActionExecuteState actionExecuteState;
 
     @In(create = true)
-    private ExpressCarHome expressCarHome;
-
-    @In(create = true)
-    private ExpressInfoHome expressInfoHome;
-
-    @In(create = true)
-    private ProductToDoorHome productToDoorHome;
-
-    @In(create = true)
     private TransCorpHome transCorpHome;
+
+    @In(create = true)
+    private CarsHome carsHome;
 
     private OverlyOut selectOverly;
 
@@ -349,31 +343,19 @@ public class OrderShip extends OrderTaskHandle {
 
                         switch (dispatchHome.getInstance().getDeliveryType()) {
                             case FULL_CAR_SEND:
-                                if (dispatchHome.getInstance().getExpressCar() != null) {
-                                    expressCarHome.setId(dispatchHome.getInstance().getExpressCar().getId());
-                                    transCorpHome.setId(expressCarHome.getInstance().getTransCorp().getId());
+                            case EXPRESS_SEND:
+                                if (dispatchHome.getInstance().getTransCorp() != null) {
+                                    transCorpHome.setId(dispatchHome.getInstance().getTransCorp().getId());
                                 } else {
-                                    expressCarHome.clearInstance();
                                     transCorpHome.clearInstance();
                                 }
-
                                 break;
 
                             case SEND_TO_DOOR:
-                                if (dispatchHome.getInstance().getProductToDoor() != null) {
-                                    productToDoorHome.setId(dispatchHome.getInstance().getProductToDoor().getId());
+                                if (dispatchHome.getInstance().getCar() != null) {
+                                    carsHome.setId(dispatchHome.getInstance().getCar().getId());
                                 } else {
-                                    productToDoorHome.clearInstance();
-                                }
-                                break;
-
-                            case EXPRESS_SEND:
-                                if (dispatchHome.getInstance().getExpressInfo() != null) {
-                                    expressInfoHome.setId(dispatchHome.getInstance().getExpressInfo().getId());
-                                    transCorpHome.setId(expressInfoHome.getInstance().getTransCorp().getId());
-                                } else {
-                                    expressInfoHome.clearInstance();
-                                    transCorpHome.clearInstance();
+                                    carsHome.clearInstance();
                                 }
                                 break;
                         }
@@ -399,15 +381,16 @@ public class OrderShip extends OrderTaskHandle {
         if (inputDetails) {
             switch (dispatchHome.getInstance().getDeliveryType()) {
                 case FULL_CAR_SEND:
-                    dispatchHome.getInstance().setExpressCar(expressCarHome.getReadyInstance());
-                    break;
                 case EXPRESS_SEND:
-                    dispatchHome.getInstance().setExpressInfo(expressInfoHome.getReadyInstance());
+                    if (transCorpHome.isIdDefined()){
+                        dispatchHome.getInstance().setTransCorp(transCorpHome.getInstance());
+                    }else{
+                        dispatchHome.getInstance().setTransCorp(transCorpHome.getReadyInstance());
+                    }
                     break;
 
                 case SEND_TO_DOOR:
-                    productToDoorHome.getInstance().setToDoorDriver(dispatchHome.getInstance().getSendEmp());
-                    dispatchHome.getInstance().setProductToDoor(productToDoorHome.getReadyInstance());
+                    dispatchHome.getInstance().setCar(carsHome.getInstance());
                     break;
             }
         }

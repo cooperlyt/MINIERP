@@ -19,4 +19,9 @@ public class TransCorpHome extends ErpSimpleEntityHome<TransCorp>{
     public TransCorp.TransCorpType[] getTransCorpTypes(){
         return TransCorp.TransCorpType.values();
     }
+
+    @Override
+    protected TransCorp createInstance(){
+        return new TransCorp(true);
+    }
 }

@@ -23,12 +23,12 @@
     <h:panelGroup>
         <s:decorate template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.dispatch_field_store}</ui:define>
-            <h:selectOneMenu value="#{orderDispatch.store}" disabled="#{not empty orderDispatch.selectDispatch}"
+            <h:selectOneMenu value="#{orderDispatch.store}" disabled="#{orderDispatch.editInfo}"
                              required="true" label="#{messages.dispatch_field_store}">
                 <s:selectItems value="#{storeList.resultList}" var="_store"
                                label="#{_store.name}(#{_store.id})" noSelectionLabel="#{messages.noSelectLabel}"/>
                 <a:ajax event="valueChange" render="newDispatchFields"
-                        listener="#{orderDispatch.storeSelectListener}"/>
+                        listener="#{orderDispatch.storeSelectListener}" disabled="#{orderDispatch.editInfo}"/>
                 <f:converter converterId="erpEntityConverter"/>
             </h:selectOneMenu>
         </s:decorate>
@@ -42,12 +42,12 @@
         </a:outputPanel>
         <a:outputPanel id="newDispatchFields">
 
-            <a:outputPanel rendered="#{(not empty orderDispatch.store) and (not orderDispatch.dispatchStoreExists)}">
+            <a:outputPanel rendered="#{not empty orderDispatch.store}">
 
                 <h:panelGrid style="clear: left;" columns="2">
                     <s:decorate id="deliveryTypeField" template="/layout/edit.xhtml">
                         <ui:define name="label">#{messages.order_field_deliveryType}</ui:define>
-                        <h:selectOneMenu value="#{orderDispatch.deliveryType}"
+                        <h:selectOneMenu value="#{orderDispatch.selectDispatch.deliveryType}"
                                          required="true" label="#{messages.order_field_deliveryType}">
                             <s:selectItems value="#{deliveryTypes}" var="_type"
                                            label="#{messages[_type.name()]}"
@@ -75,37 +75,37 @@
 
                 <a:outputPanel id="expressInfoField">
                     <a:outputPanel
-                            rendered="#{orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and ((orderDispatch.deliveryType eq 'FULL_CAR_SEND') or (orderDispatch.deliveryType eq 'EXPRESS_SEND'))}">
+                            rendered="#{orderDispatch.shipDetails and (not empty orderDispatch.selectDispatch.deliveryType) and ((orderDispatch.selectDispatch.deliveryType eq 'FULL_CAR_SEND') or (orderDispatch.selectDispatch.deliveryType eq 'EXPRESS_SEND'))}">
                         <ui:include src="/layout/erp/TransCorpInput.xhtml"/>
 
                     </a:outputPanel>
 
                     <a:outputPanel
-                            rendered="#{orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'FULL_CAR_SEND')}">
+                            rendered="#{orderDispatch.shipDetails and (not empty orderDispatch.selectDispatch.deliveryType) and (orderDispatch.selectDispatch.deliveryType eq 'FULL_CAR_SEND')}">
 
                         <s:decorate template="/layout/edit.xhtml">
                             <ui:define name="label">#{messages.ExpressDriver}</ui:define>
-                            <h:inputText value="#{expressCarHome.instance.driver}" label="#{messages.ExpressDriver}"
+                            <h:inputText value="#{orderDispatch.selectDispatch.sendDriver}" label="#{messages.ExpressDriver}"
                                          maxlength="50" size="20"/>
                         </s:decorate>
 
                         <s:decorate template="/layout/edit.xhtml">
                             <ui:define name="label">#{messages.expressDriver_field_tel}</ui:define>
-                            <h:inputText value="#{expressCarHome.instance.tel}"
+                            <h:inputText value="#{orderDispatch.selectDispatch.sendTel}"
                                          label="#{messages.expressDriver_field_tel}"
                                          maxlength="50" size="20"/>
                         </s:decorate>
 
                         <s:decorate template="/layout/edit.xhtml">
                             <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
-                            <h:inputText value="#{expressCarHome.instance.carCode}" maxlength="20" size="20"
+                            <h:inputText value="#{orderDispatch.selectDispatch.sendCarCode}" maxlength="20" size="20"
                                          label="#{messages.dispatch_field_expressCarCode}"/>
                         </s:decorate>
                     </a:outputPanel>
 
 
                     <a:outputPanel id="toDoorInfo"
-                                   rendered="#{ orderDispatch.shipDetails and (not empty orderDispatch.deliveryType) and (orderDispatch.deliveryType eq 'SEND_TO_DOOR')}"
+                                   rendered="#{ orderDispatch.shipDetails and (not empty orderDispatch.selectDispatch.deliveryType) and (orderDispatch.selectDispatch.deliveryType eq 'SEND_TO_DOOR')}"
                             >
 
                         <s:decorate
@@ -140,7 +140,7 @@
 
                 <s:decorate template="/layout/edit.xhtml">
                     <ui:define name="label">#{messages.field_memo}</ui:define>
-                    <h:inputTextarea value="#{orderDispatch.memo}"
+                    <h:inputTextarea value="#{orderDispatch.selectDispatch.memo}"
                                      label="#{messages.field_memo}" cols="27" rows="2"/>
                 </s:decorate>
             </a:outputPanel>
@@ -275,12 +275,15 @@
 
                 [
                 #{messages.order_field_deliveryType}:#{messages[_dispatch.deliveryType.name()]}(
-                <h:outputText value="#{_dispatch.expressCar.transCorp.name} - #{_dispatch.expressCar.driver}"
-                              rendered="#{_dispatch.deliveryType eq 'FULL_CAR_SEND'}"/>
-                <h:outputText value="#{_dispatch.expressInfo.transCorp.name}"
-                              rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"/>
-                <h:outputText value="#{_dispatch.productToDoor.cars.id}"
-                              rendered="#{_dispatch.deliveryType eq 'SEND_TO_DOOR'}"/> )
+                <h:outputText value="#{_dispatch.transCorp.name}"
+                              rendered="#{((_dispatch.deliveryType eq 'FULL_CAR_SEND') or (_dispatch.deliveryType eq 'EXPRESS_SEND') ) and (not empty _dispatch.transCorp)}"/>
+
+                <h:outputText value=" - #{_dispatch.sendDriver}"
+                              rendered="#{(_dispatch.deliveryType eq 'FULL_CAR_SEND')}"/>
+
+
+                <h:outputText value="#{_dispatch.car.id}"
+                              rendered="#{(_dispatch.deliveryType eq 'SEND_TO_DOOR') and (not empty _dispatch.car)}"/> )
 
                 ]
                 <a:commandButton image="/img/edit.png" immediate="true" render="singleDispatchPanel_inputs"

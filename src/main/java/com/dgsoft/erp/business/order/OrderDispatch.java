@@ -2,7 +2,6 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.action.CarsHome;
-import com.dgsoft.erp.action.ExpressCarHome;
 import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
@@ -36,9 +35,6 @@ public class OrderDispatch {
 
     @In(create = true)
     private TransCorpHome transCorpHome;
-
-    @In(create = true)
-    private ExpressCarHome expressCarHome;
 
     @In(create = true)
     private CarsHome carsHome;
@@ -78,11 +74,11 @@ public class OrderDispatch {
 
     private String orderItemId;
 
-    private String memo;
+    // private String memo;
 
-    private Dispatch.DeliveryType deliveryType;
+    // private Dispatch.DeliveryType deliveryType;
 
-    private boolean dispatchStoreExists;
+    //private boolean dispatchStoreExists;
 
     private OrderItem selectOrderItem;
 
@@ -91,6 +87,8 @@ public class OrderDispatch {
     private String storeId;
 
     private Dispatch selectDispatch;
+
+    private boolean editInfo;
 
 
     //----------------------------
@@ -101,9 +99,9 @@ public class OrderDispatch {
         store = null;
         //count = BigDecimal.ZERO;
         orderItemId = null;
-        memo = null;
+        //memo = null;
 
-        dispatchStoreExists = false;
+        //dispatchStoreExists = false;
 
         transCorpHome.clearInstance();
         carsHome.clearInstance();
@@ -151,36 +149,12 @@ public class OrderDispatch {
         this.unit = unit;
     }
 
-    public boolean isDispatchStoreExists() {
-        return dispatchStoreExists;
-    }
-
-    public void setDispatchStoreExists(boolean dispatchStoreExists) {
-        this.dispatchStoreExists = dispatchStoreExists;
-    }
-
-    public String getMemo() {
-        return memo;
-    }
-
     public List<ResOrderItem> getResOrderItemList() {
         return resOrderItemList;
     }
 
     public void setResOrderItemList(List<ResOrderItem> resOrderItemList) {
         this.resOrderItemList = resOrderItemList;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
-    public Dispatch.DeliveryType getDeliveryType() {
-        return deliveryType;
-    }
-
-    public void setDeliveryType(Dispatch.DeliveryType deliveryType) {
-        this.deliveryType = deliveryType;
     }
 
     public boolean isShipDetails() {
@@ -223,43 +197,48 @@ public class OrderDispatch {
         this.orderItemId = orderItemId;
     }
 
+    public boolean isEditInfo() {
+        return editInfo;
+    }
+
+    public void setEditInfo(boolean editInfo) {
+        this.editInfo = editInfo;
+    }
+
     public void beginEditDispatchInfo() {
         for (Dispatch dispatch : dispatchList) {
             if (dispatch.getStore().getId().equals(storeId)) {
                 selectDispatch = dispatch;
-                deliveryType = selectDispatch.getDeliveryType();
-                memo = selectDispatch.getMemo();
+                //deliveryType = selectDispatch.getDeliveryType();
+                //memo = selectDispatch.getMemo();
 
 
                 carsHome.clearInstance();
                 transCorpHome.clearInstance();
 
-                switch (deliveryType) {
+                switch (selectDispatch.getDeliveryType()) {
                     case SEND_TO_DOOR:
-                        if (selectDispatch.getProductToDoor() != null)
-                            carsHome.setId(selectDispatch.getProductToDoor().getCars().getId());
+                        if (selectDispatch.getCar() != null)
+                            carsHome.setId(selectDispatch.getCar().getId());
                         break;
                     case FULL_CAR_SEND:
-                        if (selectDispatch.getExpressCar() != null) {
-                            expressCarHome.setInstance(selectDispatch.getExpressCar());
-                            transCorpHome.setInstance(selectDispatch.getExpressCar().getTransCorp());
-                        }
-                        break;
                     case EXPRESS_SEND:
-                        if (selectDispatch.getExpressInfo() != null)
-                            transCorpHome.setInstance(selectDispatch.getExpressInfo().getTransCorp());
+                        if (selectDispatch.getTransCorp() != null)
+                            transCorpHome.setId(selectDispatch.getTransCorp().getId());
                         break;
                 }
 
-                store = dispatch.getStore();
+                store = selectDispatch.getStore();
                 break;
             }
         }
         selectOrderItem = null;
+        editInfo = true;
         actionExecuteState.clearState();
     }
 
     public void beginDispatchItem() {
+        editInfo = false;
 
 
 //        for (OrderItem oi : storeResOrderItems) {
@@ -283,107 +262,94 @@ public class OrderDispatch {
     }
 
     public void beginDispatchAll() {
+        editInfo = false;
         clearDispatch();
         shipDetails = false;
         selectOrderItem = null;
         actionExecuteState.clearState();
     }
 
+
     public void dispatchAllStoreRes() {
-
-        if (selectDispatch != null) {
-
-            setSendInfo(selectDispatch);
-
-            selectDispatch.setDeliveryType(deliveryType);
-            selectDispatch = null;
-            actionExecuteState.actionExecute();
-            return;
-        }
+        setSendInfo();
+        if (!editInfo) {
 
 
-        if ((selectOrderItem != null) && (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <= 0)) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_less_zero");
-            actionExecuteState.setState("fail");
-            return;
-        }
-
-
-        Dispatch dispatch = getStoreDispatch();
-
-        if (dispatch == null) {
-            dispatch = new Dispatch(needRes, store, deliveryType,
-                    memo, Dispatch.DispatchState.DISPATCH_COMPLETE);
-
-            setSendInfo(dispatch);
-
-            dispatchList.add(dispatch);
-        }
-
-
-        if (selectOrderItem == null) {
-            for (OrderItem oi : storeResOrderItems) {
-                dispatchItem(dispatch, oi, oi.getStoreResCount());
-            }
-            storeResOrderItems.clear();
-        } else {
-
-            if (storeResCountInupt.getMasterCount().compareTo(selectOrderItem.getStoreResCount().getMasterCount()) > 0) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "dispatch_item_count_over",
-                        storeResCountInupt.getMasterDisplayCount(),
-                        selectOrderItem.getStoreResCount().getMasterDisplayCount());
-                storeResCountInupt.setCount(selectOrderItem.getStoreResCount().getCountByResUnit(storeResCountInupt.getUseUnit()));
+            if ((selectOrderItem != null) && (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <= 0)) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_less_zero");
+                actionExecuteState.setState("fail");
+                return;
             }
 
-            dispatchItem(dispatch, selectOrderItem, storeResCountInupt);
 
 
-            selectOrderItem.getStoreResCount().subtract(storeResCountInupt);
-            if (selectOrderItem.getStoreResCount().getMasterCount().compareTo(BigDecimal.ZERO) <= 0) {
-                storeResOrderItems.remove(selectOrderItem);
+            if (!dispatchList.contains(selectDispatch)){
+                selectDispatch.setState(Dispatch.DispatchState.DISPATCH_COMPLETE);
+                dispatchList.add(selectDispatch);
             }
-            selectOrderItem = null;
-        }
 
-        clearDispatch();
+
+            if (selectOrderItem == null) {
+                for (OrderItem oi : storeResOrderItems) {
+                    dispatchItem( oi, oi.getStoreResCount());
+                }
+                storeResOrderItems.clear();
+            } else {
+
+                if (storeResCountInupt.getMasterCount().compareTo(selectOrderItem.getStoreResCount().getMasterCount()) > 0) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "dispatch_item_count_over",
+                            storeResCountInupt.getMasterDisplayCount(),
+                            selectOrderItem.getStoreResCount().getMasterDisplayCount());
+                    storeResCountInupt.setCount(selectOrderItem.getStoreResCount().getCountByResUnit(storeResCountInupt.getUseUnit()));
+                }
+
+                dispatchItem(selectOrderItem, storeResCountInupt);
+
+
+                selectOrderItem.getStoreResCount().subtract(storeResCountInupt);
+                if (selectOrderItem.getStoreResCount().getMasterCount().compareTo(BigDecimal.ZERO) <= 0) {
+                    storeResOrderItems.remove(selectOrderItem);
+                }
+                selectOrderItem = null;
+            }
+
+            clearDispatch();
+
+        }
         actionExecuteState.actionExecute();
 
     }
 
-    private void setSendInfo(Dispatch dispatch) {
+    private void setSendInfo() {
 
         if (shipDetails) {
 
 
-            switch (deliveryType) {
+            switch (selectDispatch.getDeliveryType()) {
                 case FULL_CAR_SEND:
-                    dispatch.setExpressCar(expressCarHome.getReadyInstance());
-                    //dispatch.setExpressCar(new ExpressCar(dispatch, expressDriverHome.getReadyInstance()));
-                    dispatch.setExpressInfo(null);
-                    dispatch.setProductToDoor(null);
-                    break;
                 case EXPRESS_SEND:
-                    dispatch.setExpressInfo(new ExpressInfo(dispatch, transCorpHome.getReadyInstance()));
-                    dispatch.setProductToDoor(null);
-                    dispatch.setExpressCar(null);
+                    if (transCorpHome.isIdDefined()) {
+                        selectDispatch.setTransCorp(transCorpHome.getInstance());
+                    } else {
+                        selectDispatch.setTransCorp(transCorpHome.getReadyInstance());
+                    }
+                    selectDispatch.setCar(null);
                     break;
                 case SEND_TO_DOOR:
 
-                    dispatch.setProductToDoor(new ProductToDoor(dispatch, carsHome.getInstance()));
-                    dispatch.setExpressCar(null);
-                    dispatch.setExpressInfo(null);
+                    selectDispatch.setCar(carsHome.getInstance());
+                    selectDispatch.setTransCorp(null);
                     break;
             }
         } else {
-            dispatch.setExpressCar(null);
-            dispatch.setExpressInfo(null);
-            dispatch.setProductToDoor(null);
+            selectDispatch.setTransCorp(null);
+            selectDispatch.setCar(null);
         }
     }
 
-    private void dispatchItem(Dispatch dispatch, OrderItem oi, ResCount resCount) {
+    private void dispatchItem(OrderItem oi, ResCount resCount) {
         DispatchItem dispatchItem = null;
-        for (DispatchItem di : dispatch.getDispatchItems()) {
+        for (DispatchItem di : selectDispatch.getDispatchItems()) {
             if (di.getStoreRes().getId().equals(oi.getStoreRes().getId()) && di.getResCount().canMerger(oi.getStoreResCount())) {
                 dispatchItem = di;
                 break;
@@ -395,14 +361,14 @@ public class OrderDispatch {
 
 
             if (oi.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
-                dispatch.getDispatchItems().add(new DispatchItem(
+                selectDispatch.getDispatchItems().add(new DispatchItem(
                         resCount.getSingleNoConverCount().getResUnit(),
                         resCount.getSingleNoConverCount().getCount(),
-                        dispatch, oi.getStoreRes()));
+                        selectDispatch, oi.getStoreRes()));
             } else {
-                dispatch.getDispatchItems().add(new DispatchItem(
+                selectDispatch.getDispatchItems().add(new DispatchItem(
                         oi.getStoreRes().getRes().getUnitGroup().getMasterUnit(),
-                        resCount.getMasterCount(), dispatch, oi.getStoreRes()));
+                        resCount.getMasterCount(), selectDispatch, oi.getStoreRes()));
             }
 
 
@@ -421,26 +387,55 @@ public class OrderDispatch {
     }
 
     public void storeSelectListener() {
-        dispatchStoreExists = (getStoreDispatch() != null);
-    }
+        selectDispatch = getStoreDispatch();
+        if (selectDispatch == null) {
+            selectDispatch = new Dispatch(needRes, store);
+        }else{
+            switch (selectDispatch.getDeliveryType()){
+                case EXPRESS_SEND:
+                case FULL_CAR_SEND:
+                    if (selectDispatch.getTransCorp() != null){
+                        shipDetails = true;
+                        transCorpHome.clearInstance();
+                        transCorpHome.setInstance(selectDispatch.getTransCorp());
+                    } else {
+                        shipDetails = false;
+                        transCorpHome.clearInstance();
+                    }
+                    break;
+                case SEND_TO_DOOR:
+                    if (selectDispatch.getCar() != null){
+                        shipDetails = true;
+                        carsHome.setId(selectDispatch.getCar().getId());
+                    } else {
+                        shipDetails = false;
+                        carsHome.clearInstance();
+                    }
 
-
-    public void dispatchStoreRes() {
-
-        Dispatch dispatch = null;
-        for (Dispatch d : dispatchList) {
-            if (d.getStore().getId().equals(store.getId())) {
-                dispatch = d;
-                break;
+                default:
+                    shipDetails = false;
             }
         }
 
-        if (dispatch == null) {
-            dispatch = new Dispatch();
-        }
-
-        actionExecuteState.actionExecute();
     }
+
+
+//    public void dispatchStoreRes() {
+//
+//        Dispatch dispatch = null;
+//        for (Dispatch d : dispatchList) {
+//            if (d.getStore().getId().equals(store.getId())) {
+//                dispatch = d;
+//                break;
+//            }
+//        }
+//
+//        if (dispatch == null) {
+//            dispatch = new Dispatch();
+//        }
+//
+//        actionExecuteState.actionExecute();
+//    }
 
 
     private NeedRes needRes;
@@ -476,7 +471,7 @@ public class OrderDispatch {
     }
 
 
-    public boolean dispatchComplete(){
+    public boolean dispatchComplete() {
         return storeResOrderItems.isEmpty();
     }
 

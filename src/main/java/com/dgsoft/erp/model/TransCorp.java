@@ -27,27 +27,17 @@ public class TransCorp implements java.io.Serializable,NamedEntity {
     private String memo;
 	private String contact;
 	private boolean enable;
-	private Set<ExpressInfo> expressInfos = new HashSet<ExpressInfo>(0);
+    private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
     private TransCorpType transCorpType;
 
 	public TransCorp() {
-        enable = true;
+
 	}
 
-	public TransCorp(String id, String name, boolean enable) {
-		this.id = id;
-		this.name = name;
+	public TransCorp(boolean enable) {
 		this.enable = enable;
 	}
-	public TransCorp(String id, String name, String tel, String contact,
-			boolean enable, Set<ExpressInfo> expressInfos) {
-		this.id = id;
-		this.name = name;
-		this.tel = tel;
-		this.contact = contact;
-		this.enable = enable;
-		this.expressInfos = expressInfos;
-	}
+
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -103,14 +93,14 @@ public class TransCorp implements java.io.Serializable,NamedEntity {
 		this.enable = enable;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transCorp")
-	public Set<ExpressInfo> getExpressInfos() {
-		return this.expressInfos;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "transCorp")
+    public Set<Dispatch> getDispatches() {
+        return dispatches;
+    }
 
-	public void setExpressInfos(Set<ExpressInfo> expressInfos) {
-		this.expressInfos = expressInfos;
-	}
+    public void setDispatches(Set<Dispatch> dispatches) {
+        this.dispatches = dispatches;
+    }
 
     @Column(name = "MEMO", length = 200)
     @Size(max = 200)

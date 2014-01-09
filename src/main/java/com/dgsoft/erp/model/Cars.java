@@ -17,7 +17,7 @@ public class Cars implements java.io.Serializable {
 	private String id;
     private boolean enable;
 	private String defaultDriver;
-	private Set<ProductToDoor> productToDoors = new HashSet<ProductToDoor>(0);
+    private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
 
 	public Cars() {
 
@@ -49,14 +49,14 @@ public class Cars implements java.io.Serializable {
         this.defaultDriver = employeeId;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cars")
-	public Set<ProductToDoor> getProductToDoors() {
-		return this.productToDoors;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "car")
+    public Set<Dispatch> getDispatches() {
+        return dispatches;
+    }
 
-	public void setProductToDoors(Set<ProductToDoor> productToDoors) {
-		this.productToDoors = productToDoors;
-	}
+    public void setDispatches(Set<Dispatch> dispatches) {
+        this.dispatches = dispatches;
+    }
 
     @Column(name = "ENABLE", nullable = false)
     public boolean isEnable() {

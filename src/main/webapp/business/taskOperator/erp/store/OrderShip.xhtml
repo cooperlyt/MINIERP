@@ -297,19 +297,19 @@
                 <a:outputPanel rendered="#{dispatchHome.instance.deliveryType eq 'FULL_CAR_SEND'}">
                     <s:decorate template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{messages.dispatch_field_expressCarDriver}</ui:define>
-                        <h:inputText value="#{expressCarHome.instance.driver}" maxlength="50" size="27"
+                        <h:inputText value="#{dispatchHome.instance.sendDriver}" maxlength="50" size="27"
                                      label="#{messages.dispatch_field_expressCarDriver}"/>
                     </s:decorate>
 
                     <s:decorate template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{messages.dispatch_field_expressCarTel}</ui:define>
-                        <h:inputText value="#{expressCarHome.instance.tel}" maxlength="50" size="27"
+                        <h:inputText value="#{dispatchHome.instance.sendTel}" maxlength="50" size="27"
                                      label="#{messages.dispatch_field_expressCarTel}"/>
                     </s:decorate>
 
                     <s:decorate template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
-                        <h:inputText value="#{expressCarHome.instance.carCode}"
+                        <h:inputText value="#{dispatchHome.instance.sendCarCode}"
                                      maxlength="20"
                                      label="#{messages.dispatch_field_expressCarCode}" size="27"/>
                     </s:decorate>
@@ -320,8 +320,8 @@
                 <s:decorate template="/layout/seam-edit.xhtml"
                             rendered="#{dispatchHome.instance.deliveryType eq 'EXPRESS_SEND'}">
                     <ui:define name="label">#{messages.dispatch_field_expressNumber}</ui:define>
-                    <h:inputText value="#{expressInfoHome.instance.number}"
-                                 maxlength="50" size="27"/>
+                    <h:inputText value="#{dispatchHome.instance.sendNumber}"
+                                 maxlength="100" size="27"/>
                 </s:decorate>
 
 
@@ -576,6 +576,9 @@
 <br/>
 <rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
 
+    <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+
+    </s:decorate>
     <ui:include src="/layout/erp/OrderInfo.xhtml"/>
 </rich:collapsiblePanel>
 

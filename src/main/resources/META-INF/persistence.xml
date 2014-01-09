@@ -66,7 +66,6 @@
         <class>com.dgsoft.erp.model.CustomerLevel</class>
         <class>com.dgsoft.erp.model.CustomerArea</class>
         <class>com.dgsoft.erp.model.Depositary</class>
-        <class>com.dgsoft.erp.model.ExpressInfo</class>
         <class>com.dgsoft.erp.model.Format</class>
         <class>com.dgsoft.erp.model.FormatDefine</class>
         <class>com.dgsoft.erp.model.Inventory</class>
@@ -95,10 +94,7 @@
         <class>com.dgsoft.erp.model.TransCorp</class>
         <class>com.dgsoft.erp.model.UnitGroup</class>
 
-        <class>com.dgsoft.erp.model.ProductToDoor</class>
-
         <class>com.dgsoft.erp.model.Cars</class>
-        <class>com.dgsoft.erp.model.ExpressCar</class>
 
         <class>com.dgsoft.erp.model.Dispatch</class>
         <class>com.dgsoft.erp.model.DispatchItem</class>

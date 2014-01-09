@@ -43,9 +43,7 @@ public class Dispatch implements java.io.Serializable {
 	private String id;
 	private Store store;
 	private StockChange stockChange;
-	private ExpressInfo expressInfo;
-	private ProductToDoor productToDoor;
-	private ExpressCar expressCar;
+
 	private NeedRes needRes;
 	private DeliveryType deliveryType;
 	private Date sendTime;
@@ -55,11 +53,24 @@ public class Dispatch implements java.io.Serializable {
 	private String outCustomer;
 	private String memo;
 
+    private String sendCarCode;
+    private String sendDriver;
+    private String sendTel;
+    private String sendNumber;
+
+    private TransCorp transCorp;
+    private Cars car;
+
     private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
     private Set<OverlyOut> overlyOuts = new HashSet<OverlyOut>(0);
 
 	public Dispatch() {
 	}
+
+    public Dispatch(NeedRes needRes, Store store){
+        this.needRes = needRes;
+        this.store = store;
+    }
 
     public Dispatch(NeedRes needRes, Store store, DeliveryType deliveryType, String memo, DispatchState state) {
         this.store = store;
@@ -104,37 +115,67 @@ public class Dispatch implements java.io.Serializable {
 		this.stockChange = stockChange;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
-	@JoinColumn(name = "EXPRESS_INFO")
-	public ExpressInfo getExpressInfo() {
-		return this.expressInfo;
-	}
+    @ManyToOne(optional = true,fetch = FetchType.LAZY)
+    @JoinColumn(name="TODOOR_CAR")
+    public Cars getCar() {
+        return car;
+    }
 
-	public void setExpressInfo(ExpressInfo expressInfo) {
-		this.expressInfo = expressInfo;
-	}
+    public void setCar(Cars car) {
+        this.car = car;
+    }
 
-	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
-	@JoinColumn(name = "PRODUCT_TO_DOOR")
-	public ProductToDoor getProductToDoor() {
-		return this.productToDoor;
-	}
+    @ManyToOne(optional = true,fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name="TRANS_CORP")
+    public TransCorp getTransCorp() {
+        return transCorp;
+    }
 
-	public void setProductToDoor(ProductToDoor productToDoor) {
-		this.productToDoor = productToDoor;
-	}
+    public void setTransCorp(TransCorp transCorp) {
+        this.transCorp = transCorp;
+    }
 
-	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
-	@JoinColumn(name = "EXPRESS_CAR")
-	public ExpressCar getExpressCar() {
-		return this.expressCar;
-	}
+    @Column(name = "SEND_NUMBER",length = 100)
+    @Size(max = 100)
+    public String getSendNumber() {
+        return sendNumber;
+    }
 
-	public void setExpressCar(ExpressCar expressCar) {
-		this.expressCar = expressCar;
-	}
+    public void setSendNumber(String sendNumber) {
+        this.sendNumber = sendNumber;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.REFRESH})
+    @Column(name = "SEND_TEL", length = 50)
+    @Size(max = 50)
+    public String getSendTel() {
+        return sendTel;
+    }
+
+    public void setSendTel(String sendTel) {
+        this.sendTel = sendTel;
+    }
+
+    @Column(name="SEND_DRIVER", length = 50)
+    @Size(max = 50)
+    public String getSendDriver() {
+        return sendDriver;
+    }
+
+    public void setSendDriver(String sendDriver) {
+        this.sendDriver = sendDriver;
+    }
+
+    @Column(name="SEND_CAR_CODE", length = 20)
+    @Size(max = 20)
+    public String getSendCarCode() {
+        return sendCarCode;
+    }
+
+    public void setSendCarCode(String sendCarCode) {
+        this.sendCarCode = sendCarCode;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.REFRESH})
 	@JoinColumn(name = "NEED_RES", nullable = false)
 	@NotNull
 	public NeedRes getNeedRes() {

@@ -46,7 +46,7 @@ public class CarsHome extends ErpEntityHome<Cars> {
 
     @Override
     protected boolean verifyRemoveAvailable() {
-        if (getInstance().getProductToDoors().isEmpty()) {
+        if (getInstance().getDispatches().isEmpty()) {
             return true;
         }else{
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"cant_delete");
