@@ -602,6 +602,11 @@
             <h:outputText value="#{orderHome.instance.tel}"/>
         </s:decorate>
 
+
+        <ui:include src="/layout/erp/OrderItemTable.xhtml">
+            <ui:param name="orderItems" value="#{orderHome.instance.allOrderItemList}"/>
+        </ui:include>
+
     </s:decorate>
 
 </rich:collapsiblePanel>
