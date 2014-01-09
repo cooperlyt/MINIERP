@@ -39,6 +39,7 @@
         <h:outputText value="#{orderHome.instance.tel}"/>
     </s:decorate>
 
+
 </a:outputPanel>
 
 <a:outputPanel rendered="#{s:hasRole('erp.sale.manager')}">
@@ -117,7 +118,7 @@
 </a:outputPanel>
 
 <br/>
-<rich:dataTable style="width: 100%" value="#{orderHome.masterNeedRes.orderItemList}" var="_item"
+<rich:dataTable style="width: 100%" value="#{orderHome.instance.allOrderItemList}" var="_item"
                 rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role) or s:hasRole('erp.finance.accountancy') }">
 
     <f:facet name="header">
@@ -140,7 +141,7 @@
 
         </a:outputPanel>
         <f:facet name="footer">
-            #{messages.recordTotal} #{orderHome.masterNeedRes.orderItemList.size} #{messages.item}
+            #{messages.recordTotal} #{orderHome.instance.allOrderItemList.size} #{messages.item}
         </f:facet>
 
     </rich:column>
@@ -261,7 +262,7 @@
 
 
     <br/>
-    <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
+    <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" noDataLabel="#{messages.order_ship_is_empty}" var="_entry">
         <f:facet name="header">#{messages.order_ship_all_storeRes}</f:facet>
 
         <rich:column>

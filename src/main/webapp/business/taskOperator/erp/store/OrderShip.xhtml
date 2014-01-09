@@ -576,10 +576,34 @@
 <br/>
 <rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
 
+
+
     <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+        <div style="clear: both;"/>
+        <s:decorate template="/layout/view-details.xhtml">
+            <ui:include src="/layout/erp/CustomerView.xhtml">
+
+                <ui:param name="customer" value="#{orderHome.instance.customer}"/>
+
+            </ui:include>
+            <ui:param name="labelValue" value="#{orderHome.instance.customer.name}"/>
+            <ui:param name="openLabel" value="#{messages.Customer}"/>
+            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_contact}</ui:define>
+            <h:outputText value="#{orderHome.instance.contact}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_tel}</ui:define>
+            <h:outputText value="#{orderHome.instance.tel}"/>
+        </s:decorate>
 
     </s:decorate>
-    <ui:include src="/layout/erp/OrderInfo.xhtml"/>
+
 </rich:collapsiblePanel>
 
 </ui:define>

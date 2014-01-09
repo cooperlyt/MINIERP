@@ -24,7 +24,7 @@ import java.util.*;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
-    @In(create=true)
+    @In(create = true)
     private Map<String, String> messages;
 
     @In
@@ -53,36 +53,35 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return Dispatch.DeliveryType.values();
     }
 
-    public String getToastMessages(){
+    public String getToastMessages() {
 
 
         StringBuffer result = new StringBuffer();
-        result.append(messages.get("OrderCode") +  ":" + getInstance().getId() + "\n");
+        result.append(messages.get("OrderCode") + ":" + getInstance().getId() + "\n");
 
-        if (getMasterNeedRes().isDispatched()){
-            for (Dispatch dispatch: getMasterNeedRes().getDispatches()){
+        if (getMasterNeedRes().isDispatched()) {
+            for (Dispatch dispatch : getMasterNeedRes().getDispatches()) {
                 result.append(dispatch.getStore().getName() + "\n");
-                for(DispatchItem item: dispatch.getDispatchItemList()){
+                for (DispatchItem item : dispatch.getDispatchItemList()) {
                     result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
                     result.append(item.getResCount().getMasterDisplayCount());
                     result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
                 }
             }
 
-        }else{
-            for (OrderItem item: getMasterNeedRes().getOrderItems()){
-                if (item.isStoreResItem()){
+        } else {
+            for (OrderItem item : getMasterNeedRes().getOrderItems()) {
+                if (item.isStoreResItem()) {
                     result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
                     result.append(item.getStoreResCount().getMasterDisplayCount());
                     result.append("(" + item.getStoreResCount().getDisplayAuxCount() + ")\n");
-                }else{
+                } else {
                     result.append("\t" + item.getRes().getName() + ": ");
-                    result.append(BigDecimalFormat.format(item.getCount(), item.getMoneyUnit().getCountFormate()) );
-                    result.append( item.getMoneyUnit().getName() + "\n");
+                    result.append(BigDecimalFormat.format(item.getCount(), item.getMoneyUnit().getCountFormate()));
+                    result.append(item.getMoneyUnit().getName() + "\n");
                 }
             }
         }
-
 
 
         return result.toString();
@@ -216,7 +215,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getReveiveEarnest(){
+    public BigDecimal getReveiveEarnest() {
         BigDecimal result = BigDecimal.ZERO;
         for (AccountOper oper : getInstance().getAccountOpers()) {
             if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST))
@@ -232,14 +231,24 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         for (NeedRes nr : getInstance().getNeedReses()) {
             for (Dispatch dispatch : nr.getDispatches()) {
-                for (DispatchItem di : dispatch.getDispatchItems()) {
-                    ResCount count = result.get(di.getStoreRes());
-                    if (count == null) {
-                        result.put(di.getStoreRes(), di.getResCount());
-                    } else {
-                        count.add(di.getResCount());
+                if (dispatch.getStockChange() != null)
+                    for (StockChangeItem sci : dispatch.getStockChange().getStockChangeItems()) {
+                        ResCount count = result.get(sci.getStoreRes());
+                        if (count == null) {
+                            result.put(sci.getStoreRes(), sci.getResCount());
+                        } else {
+                            count.add(sci.getResCount());
+                        }
                     }
-                }
+
+//                for (DispatchItem di : dispatch.getDispatchItems()) {
+//                    ResCount count = result.get(di.getStoreRes());
+//                    if (count == null) {
+//                        result.put(di.getStoreRes(), di.getResCount());
+//                    } else {
+//                        count.add(di.getResCount());
+//                    }
+//                }
             }
         }
         return result;
@@ -257,13 +266,13 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-    public boolean isAnyOneMoneyPay(){
-        return  !getInstance().getAccountOpers().isEmpty();
+    public boolean isAnyOneMoneyPay() {
+        return !getInstance().getAccountOpers().isEmpty();
     }
 
-    public BigDecimal getResTotalMoney(){
+    public BigDecimal getResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem item: getMasterNeedRes().getOrderItems()){
+        for (OrderItem item : getMasterNeedRes().getOrderItems()) {
             result = result.add(item.getTotalMoney());
         }
         return result;
