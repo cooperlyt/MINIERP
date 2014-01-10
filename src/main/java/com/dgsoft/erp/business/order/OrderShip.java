@@ -233,8 +233,8 @@ public class OrderShip extends OrderTaskHandle {
         actionExecuteState.clearState();
     }
 
-    public void deleteAllOrderItem(){
-        for (OrderItem orderItem: overlyOrderItems){
+    public void deleteAllOrderItem() {
+        for (OrderItem orderItem : overlyOrderItems) {
             OverlyOut overlyOut = orderItem.getOverlyOut();
             overlyOut.setOrderItem(null);
             noConfirmOverlys.add(overlyOut);
@@ -330,6 +330,9 @@ public class OrderShip extends OrderTaskHandle {
                     if (dispatch.getStore().getId().equals(storeId) &&
                             dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_STORE_OUT)) {
                         dispatchHome.setId(dispatch.getId());
+                        if (needRes.isFareByCustomer() || !dispatchHome.getInstance().getDeliveryType().isHaveFare() || dispatchHome.getInstance().getFare() == null) {
+                            dispatchHome.getInstance().setFare(BigDecimal.ZERO);
+                        }
                         orderRebate = dispatchHome.getInstance().getNeedRes().getCustomerOrder().getTotalRebate();
                         orderTotalMoney = dispatchHome.getInstance().getNeedRes().getCustomerOrder().getMoney();
                         overlyOrderItems = new ArrayList<OrderItem>();
@@ -360,7 +363,6 @@ public class OrderShip extends OrderTaskHandle {
                                 break;
                         }
 
-                        dispatchHome.getInstance().setFare(BigDecimal.ZERO);
                         return "success";
                     }
                 }
@@ -382,9 +384,9 @@ public class OrderShip extends OrderTaskHandle {
             switch (dispatchHome.getInstance().getDeliveryType()) {
                 case FULL_CAR_SEND:
                 case EXPRESS_SEND:
-                    if (transCorpHome.isIdDefined()){
+                    if (transCorpHome.isIdDefined()) {
                         dispatchHome.getInstance().setTransCorp(transCorpHome.getInstance());
-                    }else{
+                    } else {
                         dispatchHome.getInstance().setTransCorp(transCorpHome.getReadyInstance());
                     }
                     break;
@@ -406,7 +408,6 @@ public class OrderShip extends OrderTaskHandle {
 
 
         dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
-        dispatchHome.getInstance().setSendEmp(credentials.getUsername());
         if (dispatchHome.update().equals("updated")) {
             return "taskComplete";
         } else {

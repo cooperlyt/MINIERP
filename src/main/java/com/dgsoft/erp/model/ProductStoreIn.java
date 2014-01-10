@@ -15,36 +15,47 @@ import javax.validation.constraints.Size;
 @Table(name = "PRODUCT_STORE_IN", catalog = "MINI_ERP")
 public class ProductStoreIn implements java.io.Serializable, StockChangeModel {
 
-	private String id;
-	private StockChange stockChange;
+    private String id;
+    private StockChange stockChange;
+    private ProductGroup productGroup;
 
-	public ProductStoreIn() {
-	}
+    public ProductStoreIn() {
+    }
 
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@OneToOne(optional = false ,fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-	@JoinColumn(name = "STORE_CHANGE", nullable = false)
-	@NotNull
-	public StockChange getStockChange() {
-		return this.stockChange;
-	}
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "STORE_CHANGE", nullable = false)
+    @NotNull
+    public StockChange getStockChange() {
+        return this.stockChange;
+    }
 
-	public void setStockChange(StockChange stockChange) {
-		this.stockChange = stockChange;
-	}
+    public void setStockChange(StockChange stockChange) {
+        this.stockChange = stockChange;
+    }
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "PRODUCT_GROUP", nullable = false)
+    @NotNull
+    public ProductGroup getProductGroup() {
+        return productGroup;
+    }
+
+    public void setProductGroup(ProductGroup productGroup) {
+        this.productGroup = productGroup;
+    }
 }

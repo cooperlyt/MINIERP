@@ -46,8 +46,10 @@
                         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                                   view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
+
+
                         <s:button styleClass="toolBarBtn" value="#{messages.complete}"
-                                  onclick="if(#{not empty dispatchOrderItems}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
+                                  onclick="if(#{not orderDispatch.dispatchComplete}) {alert('#{messages.orderDispatchCantComplete}');return false;}"
                                   action="#{orderDispatchTask.complete}"/>
                     </h:panelGroup>
                 </h:panelGrid>
@@ -61,7 +63,9 @@
 
         <br/>
 
-        <ui:include src="/layout/erp/NeedResDispatch.xhtml"/>
+        <ui:include src="/layout/erp/NeedResDispatch.xhtml">
+            <ui:param name="render" value="orderDispatchTaskAction"/>
+        </ui:include>
 
         <br/>
 
@@ -75,20 +79,20 @@
         <a:outputPanel ajaxRendered="true">
             <h:outputScript>
 
+                ZeroClipboard.setDefaults({ moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' });
+
+                $('a.clipboard').each(function () {
+                var clip = new ZeroClipboard($(this));
 
 
-                $('a.clipboard').each(function(){
-                var clip=new ZeroClipboard($(this));
-
-
-                clip.on('complete',function(client,args){
+                clip.on('complete', function (client, args) {
 
 
                 window.open(
                 "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
                 ,
                 'newwindow',
-                ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen yes'
+                ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen no'
                 );
 
 

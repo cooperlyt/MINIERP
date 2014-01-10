@@ -13,6 +13,7 @@ import com.dgsoft.erp.action.store.OrderNeedItem;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
@@ -491,7 +492,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             }
         } else {
 
-            if (!orderDispatch.dispatchComplete()){
+            if (!orderDispatch.isDispatchComplete()){
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"dispatch_not_complete");
                 throw new ProcessCreatePrepareException("dispatch not complete");
             }

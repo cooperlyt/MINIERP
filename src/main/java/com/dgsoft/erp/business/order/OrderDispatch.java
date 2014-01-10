@@ -471,7 +471,7 @@ public class OrderDispatch {
     }
 
 
-    public boolean dispatchComplete() {
+    public boolean isDispatchComplete() {
         return storeResOrderItems.isEmpty();
     }
 

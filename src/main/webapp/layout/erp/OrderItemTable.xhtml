@@ -18,7 +18,7 @@
             <f:facet name="header">
                 #{messages.orderItem}
             </f:facet>
-            <a:outputPanel rendered="#{_item.storeResItem}">
+          <a:outputPanel rendered="#{_item.storeResItem}">
                 #{messages.StoreRes}:
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
                     <ui:param name="storeRes" value="#{_item.storeRes}"/>
@@ -30,8 +30,11 @@
                 #{_item.res.name}(#{_item.res.code})
 
             </a:outputPanel>
+
+            <h:graphicImage style="float: right;" value="/img/add_tip.png" rendered="#{not empty _item.overlyOut}" />
+
             <f:facet name="footer">
-                #{messages.recordTotal} #{orderHome.instance.allOrderItemList.size} #{messages.item}
+                #{messages.recordTotal} #{orderItems.size} #{messages.item}
             </f:facet>
 
         </rich:column>
@@ -81,7 +84,7 @@
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
             <f:facet name="footer">
-                <h:outputText value="#{orderHome.totalItemMoney}">
+                <h:outputText value="#{totalItemMoney}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>
@@ -136,7 +139,7 @@
             </h:outputText>
 
             <f:facet name="footer">
-                <h:outputText value="#{orderHome.totalItemMiddleMoney}">
+                <h:outputText value="#{totalMiddleMoney}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency"/>
                 </h:outputText>

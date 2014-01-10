@@ -120,6 +120,8 @@
 <br/>
 <ui:include src="/layout/erp/OrderItemTable.xhtml">
     <ui:param name="orderItems" value="#{orderHome.instance.allOrderItemList}"/>
+    <ui:param name="totalItemMoney" value="#{orderHome.totalItemMoney}"/>
+    <ui:param name="totalMiddleMoney" value="#{orderHome.totalItemMiddleMoney}"/>
 </ui:include>
 
 
@@ -128,11 +130,26 @@
 
 
     <br/>
-    <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" noDataLabel="#{messages.order_ship_is_empty}" var="_entry">
-        <f:facet name="header">#{messages.order_ship_all_storeRes}</f:facet>
+
+    <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column rowspan="2" breakRowBefore="true">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.storeOutCount}
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
 
         <rich:column>
-            <f:facet name="header"> #{messages.StoreRes}</f:facet>
             <ui:include src="/layout/erp/StoreResTitle.xhtml">
                 <ui:param name="storeRes" value="#{_entry.key}"/>
             </ui:include>
@@ -140,15 +157,14 @@
         </rich:column>
 
         <rich:column>
-            <f:facet name="header">#{messages.stockOutCount}</f:facet>
             #{_entry.value.masterDisplayCount}
         </rich:column>
 
         <rich:column>
-            <f:facet name="header"> #{messages.AuxUnitCount}</f:facet>
             #{_entry.value.displayAuxCount}
         </rich:column>
     </rich:dataTable>
+
 
     <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
         <br/>

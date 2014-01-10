@@ -64,21 +64,25 @@
 <h:form>
     <rich:toolbar>
         <rich:toolbarGroup>
-            <h:outputText value="#{messages.order_proxy_fare}"
-                          rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}"/>
+            <a:outputPanel id="expressProxyFare">
 
-            <h:outputText value="#{messages[orderHome.lastNeedRes.type.name()]}"
-                          rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}"/>
-            <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
-                         value="#{orderHome.masterNeedRes.proxyFare}" size="10"
-                         rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
-                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                 type="currency" groupingUsed="false"/>
-                <rich:placeholder value="#{messages.order_proxy_fare}"/>
-                <rich:validator/>
-            </h:inputText>
-            <rich:message for="reveiveFareField" styleClass="message-icon"
-                          showDetail="true" showSummary="true" tooltip="true"/>
+                <h:outputText value="#{messages.order_proxy_fare}"
+                              rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}"/>
+
+                <h:outputText value="#{messages[orderHome.lastNeedRes.type.name()]}"
+                              rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}"/>
+                <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
+                             value="#{orderHome.masterNeedRes.proxyFare}" size="10"
+                             rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
+                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                     type="currency" groupingUsed="false"/>
+                    <f:validateDoubleRange minimum="0"/>
+                    <rich:placeholder value="#{messages.order_proxy_fare}"/>
+                    <rich:validator/>
+                </h:inputText>
+                <rich:message for="reveiveFareField" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+            </a:outputPanel>
         </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">
@@ -98,103 +102,125 @@
     <br/>
 
 
-    <a:outputPanel id="sendInfos"
-                   rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}">
+    <a:outputPanel id="sendInfos">
+
+        <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
 
 
-        <rich:dataTable style="width: 100%" value="#{orderHome.lastNeedRes.dispatchList}" var="_dispatch">
-            <f:facet name="header">
-                #{messages[orderHome.lastNeedRes.type.name()]}
-            </f:facet>
-            <f:facet name="footer">
-                <a:outputPanel id="totalFare">
-                    <h:outputText value="#{orderHome.lastNeedResTotalFare}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </a:outputPanel>
-            </f:facet>
-            <rich:column>
+            <rich:dataTable style="width: 100%" value="#{_needRes.dispatchList}" var="_dispatch">
                 <f:facet name="header">
-                    #{messages.dispatch_field_store}
-                </f:facet>
-                #{_dispatch.store.name}
-            </rich:column>
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.order_field_deliveryType}
-                </f:facet>
-                #{messages[_dispatch.deliveryType.name()]}
-            </rich:column>
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.dispatch_field_shipDate}
+                    #{messages[_needRes.type.name()]}
                 </f:facet>
 
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <rich:calendar enableManualInput="true"
-                                   inputSize="10"
-                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                                   datePattern="#{messages.datePattern}"
-                                   disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
-                                   label="#{messages.dispatch_field_shipDate}"
-                                   value="#{_dispatch.sendTime}">
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.dispatch_field_store}
+                    </f:facet>
+                    #{_dispatch.store.name}
 
-                        <rich:placeholder
-                                value="#{_dispatch.needRes.fareByCustomer ? messages.order_fare_by_customer : (_dispatch.deliveryType.haveFare ? messages.dispatch_field_shipDate : messages[_dispatch.deliveryType.name()])}"/>
-                    </rich:calendar>
-                </s:decorate>
+                    <f:facet name="footer">
+                        #{messages.recordTotal} #{_needRes.dispatchList.size} #{messages.item}
+                    </f:facet>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.order_field_deliveryType}
+                    </f:facet>
+                    #{messages[_dispatch.deliveryType.name()]}
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.dispatch_field_shipDate}
+                    </f:facet>
 
-            </rich:column>
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.dispatch_field_shipEmp}
-                </f:facet>
-                <a:commandLink
-                        disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
-                        value="#{empty _dispatch.sendEmp ? messages.noSelectLabelShort : dictionary.getEmpNameById(_dispatch.sendEmp)}"
-                        oncomplete="#{rich:component('sendEmpSelectPanel')}.show()" immediate="true"
-                        execute="@this" render="sendEmpSelectPanel_form">
-                    <a:attachQueue requestDelay="0"/>
-                    <a:param value="#{_dispatch.id}" assignTo="#{orderCommodityConfirm.selectDispatchId}"/>
-                </a:commandLink>
-            </rich:column>
+                    <s:decorate template="/layout/single-edit.xhtml">
+                        <h:outputText value="#{_dispatch.sendTime}">
+                            <s:convertDateTime
+                                    pattern="#{messages.displayDatePattern}"/>
+                        </h:outputText>
+                    </s:decorate>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.dispatch_field_expressNumber}
-                </f:facet>
-                <h:inputText rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"
-                             label="#{messages.dispatch_field_expressNumber}"
-                             size="15" value="#{_dispatch.expressInfo.number}"/>
-            </rich:column>
+                </rich:column>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.dispatch_field_Fare}
-                </f:facet>
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <h:inputText
-                            disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
-                            value="#{_dispatch.fare}" size="10" label="#{messages.dispatch_field_Fare}">
-                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                         type="currency" groupingUsed="false"/>
-                        <a:ajax event="blur" render="sendInfos"/>
-                    </h:inputText>
-                </s:decorate>
-            </rich:column>
-        </rich:dataTable>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.dispatch_send_info}
+                    </f:facet>
+                    <h:outputText value="#{messages.transCorp}:#{_dispatch.transCorp.name}#{' '}"
+                            rendered="#{(not empty _dispatch.transCorp) and ((_dispatch.deliveryType eq 'EXPRESS_SEND') or (_dispatch.deliveryType eq 'FULL_CAR_SEND'))}" />
+
+                    <h:outputText rendered="#{_dispatch.deliveryType eq 'EXPRESS_SEND'}"
+                                  value="#{messages.dispatch_field_expressNumber}:#{_dispatch.sendNumber}"/>
+                    <h:outputText rendered="#{_dispatch.deliveryType eq 'FULL_CAR_SEND'}"
+                                  value="#{messages.dispatch_field_expressCarCode}:#{_dispatch.sendCarCode}#{' '}#{messages.dispatch_field_expressCarDriver}:#{_dispatch.sendDriver}#{' '}#{messages.dispatch_field_expressCarTel}"/>
+                    <h:outputText rendered="#{(_dispatch.deliveryType eq 'SEND_TO_DOOR') and (not empty _dispatch.car)}"
+                                  value="#{messages.dispatch_field_toDoorCar}:#{_dispatch.car.id}"/>
+                </rich:column>
 
 
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.dispatch_field_shipEmp}
+                    </f:facet>
+                    <a:commandLink
+                            value="#{empty _dispatch.sendEmp ? messages.noSelectLabelShort : dictionary.getEmpNameById(_dispatch.sendEmp)}"
+                            oncomplete="#{rich:component('sendEmpSelectPanel')}.show()" immediate="true"
+                            execute="@this" render="sendEmpSelectPanel_form">
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_dispatch.id}" assignTo="#{orderCommodityConfirm.selectDispatchId}"/>
+                    </a:commandLink>
+                </rich:column>
+
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.dispatch_field_Fare}
+                    </f:facet>
+                    <s:decorate template="/layout/single-edit.xhtml">
+                        <h:inputText
+                                disabled="#{_dispatch.needRes.fareByCustomer or (not _dispatch.deliveryType.haveFare)}"
+                                value="#{_dispatch.fare}" size="10" label="#{messages.dispatch_field_Fare}">
+                            <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                             type="currency" groupingUsed="false"/>
+                            <a:ajax event="blur" listener="#{_needRes.dispatchFareChangeListener}" render="sendInfos,expressProxyFare"/>
+                        </h:inputText>
+                    </s:decorate>
+
+                    <f:facet name="footer">
+                        <a:outputPanel id="totalFare">
+                            <h:outputText value="#{_needRes.totalFare}">
+                                <f:convertNumber locale="#{calendarBean.locale}"
+                                                 type="currency" groupingUsed="true"/>
+                            </h:outputText>
+                        </a:outputPanel>
+                    </f:facet>
+                </rich:column>
+            </rich:dataTable>
+            <br/>
+        </a:repeat>
     </a:outputPanel>
 </h:form>
-<br/>
+
 <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
-    <f:facet name="header">#{messages.order_ship_all_storeRes}</f:facet>
+    <f:facet name="header">
+        <rich:columnGroup>
+            <rich:column rowspan="2" breakRowBefore="true">
+                #{messages.StoreRes}
+            </rich:column>
+            <rich:column colspan="2">
+                #{messages.storeOutCount}
+            </rich:column>
+            <rich:column breakRowBefore="true">
+                #{messages.MasterUnitCount}
+            </rich:column>
+            <rich:column>
+                #{messages.AuxUnitCount}
+            </rich:column>
+        </rich:columnGroup>
+    </f:facet>
 
     <rich:column>
-        <f:facet name="header"> #{messages.StoreRes}</f:facet>
         <ui:include src="/layout/erp/StoreResTitle.xhtml">
             <ui:param name="storeRes" value="#{_entry.key}"/>
         </ui:include>
@@ -202,16 +228,22 @@
     </rich:column>
 
     <rich:column>
-        <f:facet name="header">#{messages.stockOutCount}</f:facet>
         #{_entry.value.masterDisplayCount}
     </rich:column>
 
     <rich:column>
-        <f:facet name="header"> #{messages.AuxUnitCount}</f:facet>
         #{_entry.value.displayAuxCount}
     </rich:column>
 </rich:dataTable>
 
+
+<br/>
+
+<ui:include src="/layout/erp/OrderItemTable.xhtml">
+    <ui:param name="orderItems" value="#{orderHome.instance.allOrderItemList}"/>
+    <ui:param name="totalItemMoney" value="#{orderHome.totalItemMoney}"/>
+    <ui:param name="totalMiddleMoney" value="#{orderHome.totalItemMiddleMoney}"/>
+</ui:include>
 
 <br/>
 <rich:collapsiblePanel switchType="client" header="#{messages.order_ship_info}">
@@ -250,6 +282,17 @@
 <br/>
 <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
     <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+        <div style="clear: both;"/>
+        <s:decorate template="/layout/view-details.xhtml">
+            <ui:include src="/layout/erp/CustomerView.xhtml">
+
+                <ui:param name="customer" value="#{orderHome.instance.customer}"/>
+
+            </ui:include>
+            <ui:param name="labelValue" value="#{orderHome.instance.customer.name}"/>
+            <ui:param name="openLabel" value="#{messages.Customer}"/>
+            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+        </s:decorate>
 
 
     </s:decorate>

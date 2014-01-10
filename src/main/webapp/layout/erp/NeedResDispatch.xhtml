@@ -155,7 +155,7 @@
         <a:commandButton value="#{messages.ok}" execute="@form"
                          data="#{actionExecuteState.lastState}"
                          oncomplete="if (event.data == 'success')#{rich:component('singleDispatchPanel')}.hide();"
-                         render="singleDispatchPanel_inputs,orderStoreResOrderItems,dispatchItems,orderDispatchTaskAction"
+                         render="singleDispatchPanel_inputs,orderStoreResOrderItems,dispatchItems,#{render}"
                          action="#{orderDispatch.dispatchAllStoreRes}">
             <a:attachQueue requestDelay="0"/>
 

@@ -104,6 +104,8 @@
         <class>com.dgsoft.erp.model.PrepareStockChange</class>
         <class>com.dgsoft.erp.model.CustomerContact</class>
         <class>com.dgsoft.erp.model.OverlyOut</class>
+        <class>com.dgsoft.erp.model.ProductGroup</class>
+        <class>com.dgsoft.erp.model.Factory</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

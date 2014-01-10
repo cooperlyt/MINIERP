@@ -42,7 +42,7 @@ public class NeedRes implements java.io.Serializable {
     }
 
     public NeedRes(CustomerOrder customerOrder, NeedResType type,
-                   String reason, Date createDate,boolean dispatched) {
+                   String reason, Date createDate, boolean dispatched) {
         this.customerOrder = customerOrder;
         this.type = type;
         this.createDate = createDate;
@@ -118,7 +118,7 @@ public class NeedRes implements java.io.Serializable {
         this.memo = memo;
     }
 
-    @Column(name="DISPATCHED", nullable = false)
+    @Column(name = "DISPATCHED", nullable = false)
     public boolean isDispatched() {
         return dispatched;
     }
@@ -127,7 +127,7 @@ public class NeedRes implements java.io.Serializable {
         this.dispatched = dispatched;
     }
 
-    @Column(name="ADDRESS",length = 200,nullable = false)
+    @Column(name = "ADDRESS", length = 200, nullable = false)
     @NotNull
     @Size(max = 200)
     public String getAddress() {
@@ -138,7 +138,7 @@ public class NeedRes implements java.io.Serializable {
         this.address = address;
     }
 
-    @Column(name = "POST_CODE",length = 10, nullable = true)
+    @Column(name = "POST_CODE", length = 10, nullable = true)
     @Size(max = 10)
     public String getPostCode() {
         return postCode;
@@ -148,7 +148,7 @@ public class NeedRes implements java.io.Serializable {
         this.postCode = postCode;
     }
 
-    @Column(name = "RECEIVE_PERSON",length = 50)
+    @Column(name = "RECEIVE_PERSON", length = 50)
     @Size(max = 50)
     public String getReceivePerson() {
         return receivePerson;
@@ -158,7 +158,7 @@ public class NeedRes implements java.io.Serializable {
         this.receivePerson = receivePerson;
     }
 
-    @Column(name = "RECEIVE_TEL",length = 50)
+    @Column(name = "RECEIVE_TEL", length = 50)
     @Size(max = 50)
     public String getReceiveTel() {
         return receiveTel;
@@ -189,13 +189,13 @@ public class NeedRes implements java.io.Serializable {
     }
 
     @Transient
-    public List<OrderItem> getOrderItemList(){
+    public List<OrderItem> getOrderItemList() {
         List<OrderItem> result = new ArrayList<OrderItem>(getOrderItems());
         Collections.sort(result, new Comparator<OrderItem>() {
             @Override
             public int compare(OrderItem o1, OrderItem o2) {
                 int result = o1.getUseRes().getId().compareTo(o2.getUseRes().getId());
-                if (result == 0){
+                if (result == 0) {
                     result = o1.getId().compareTo(o2.getId());
                 }
                 return result;
@@ -215,9 +215,9 @@ public class NeedRes implements java.io.Serializable {
     }
 
     @Transient
-    public List<Dispatch> getDispatchList(){
+    public List<Dispatch> getDispatchList() {
         List<Dispatch> result = new ArrayList<Dispatch>(getDispatches());
-        Collections.sort(result,new Comparator<Dispatch>() {
+        Collections.sort(result, new Comparator<Dispatch>() {
             @Override
             public int compare(Dispatch o1, Dispatch o2) {
                 return o1.getId().compareTo(o2.getId());
@@ -226,7 +226,7 @@ public class NeedRes implements java.io.Serializable {
         return result;
     }
 
-    @Column(name = "PROXY_FARE",nullable = true,scale = 3)
+    @Column(name = "PROXY_FARE", nullable = true, scale = 3)
     public BigDecimal getProxyFare() {
         return proxyFare;
     }
@@ -235,7 +235,7 @@ public class NeedRes implements java.io.Serializable {
         this.proxyFare = fare;
     }
 
-    @Column(name="FARE_BY_CUSTOMER", nullable = false)
+    @Column(name = "FARE_BY_CUSTOMER", nullable = false)
     public boolean isFareByCustomer() {
         return fareByCustomer;
     }
@@ -245,23 +245,42 @@ public class NeedRes implements java.io.Serializable {
     }
 
     @Transient
-    public boolean isAllCustomerSelfTake(){
-        for (Dispatch dispatch: getDispatches()){
-           if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)){
-               return false;
-           }
+    public boolean isAllCustomerSelfTake() {
+        for (Dispatch dispatch : getDispatches()) {
+            if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
+                return false;
+            }
         }
         return true;
     }
 
     @Transient
-    public boolean isAllDispatchComplete(){
-        for (Dispatch dispatch: getDispatches()){
-            if (!dispatch.getState().equals(Dispatch.DispatchState.ALL_COMPLETE)){
+    public boolean isAllDispatchComplete() {
+        for (Dispatch dispatch : getDispatches()) {
+            if (!dispatch.getState().equals(Dispatch.DispatchState.ALL_COMPLETE)) {
                 return false;
             }
         }
         return true;
+    }
+
+    @Transient
+    public BigDecimal getTotalFare() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (Dispatch dispatch : getDispatches()) {
+            if (dispatch.getFare() != null) {
+                result = result.add(dispatch.getFare());
+            }
+        }
+        return result;
+    }
+
+    @Transient
+    public void dispatchFareChangeListener() {
+        if (getType().equals(NeedResType.ORDER_SEND) && getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
+                && ((getProxyFare() == null) || (BigDecimal.ZERO.compareTo(getProxyFare()) == 0))) {
+            setProxyFare(getTotalFare());
+        }
     }
 
 }
