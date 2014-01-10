@@ -30,6 +30,7 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
             "lower(customerOrder.id)  like lower(concat('%',#{orderList.orderId}))",
             "customerOrder.canceled = #{orderList.canceled}",
             "customerOrder.allStoreOut = #{orderList.allStoreOut}",
+            "customerOrder.resReceived = #{orderList.customerConfirm}",
             "customerOrder.moneyComplete = #{orderList.moneyComplete}"};
 
     @In
@@ -52,6 +53,8 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
     private Boolean allStoreOut;
 
     private Boolean moneyComplete;
+
+    private Boolean customerConfirm;
 
 
     public OrderList() {
@@ -154,5 +157,13 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public Boolean getCustomerConfirm() {
+        return customerConfirm;
+    }
+
+    public void setCustomerConfirm(Boolean customerConfirm) {
+        this.customerConfirm = customerConfirm;
     }
 }

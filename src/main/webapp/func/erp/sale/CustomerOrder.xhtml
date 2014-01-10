@@ -63,6 +63,13 @@
                     <f:selectItem itemLabel="#{messages.order_search_allStoreOut_null}" noSelectionOption="true"/>
                 </h:selectOneMenu>
 
+                <h:selectOneMenu value="#{orderList.customerConfirm}">
+                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_all}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+
             </h:panelGrid>
         </s:decorate>
 
@@ -229,6 +236,12 @@
             #{messages.order_field_moneyComplete}
         </f:facet>
         <h:selectBooleanCheckbox disabled="true" value="#{_order.moneyComplete}"/>
+    </rich:column>
+    <rich:column style="text-align: center">
+        <f:facet name="header">
+            #{messages.order_field_resReceived}
+        </f:facet>
+        <h:selectBooleanCheckbox disabled="true" value="#{_order.resReceived}"/>
     </rich:column>
 
 

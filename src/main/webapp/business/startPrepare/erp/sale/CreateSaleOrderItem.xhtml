@@ -240,8 +240,10 @@
 
                 <s:span styleClass="value">
                     #{messages.orderItemUnitPrice}
-                    <h:inputText required="true" size="12" label="#{messages.orderItemUnitPrice}"
+                    <h:inputText id="unitPriceInput" required="true" size="12" label="#{messages.orderItemUnitPrice}"
                                  value="#{orderCreate.editingItem.unitPrice}">
+                        <f:validateDoubleRange minimum="0"/>
+                        <rich:validator/>
                         <f:convertNumber groupingUsed="false" type="currency" locale="#{calendarBean.locale}"
                                          currencySymbol=""/>
                         <a:ajax event="blur" render="priceFields"
@@ -249,6 +251,8 @@
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>
+                    <rich:message for="unitPriceInput" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
                 </s:span>
 
 
@@ -271,27 +275,35 @@
                 <s:span styleClass="value">
                     #{messages.orderItemPriceRebate}
 
-                    <h:inputText required="true" label="#{messages.rebate}" size="7"
+                    <h:inputText id="itemPriceRebateInput" required="true" label="#{messages.rebate}" size="7"
                                  value="#{orderCreate.editingItem.rebate}">
                         <f:convertNumber pattern="#0.##"/>
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                        <rich:validator/>
                         <a:ajax event="blur" render="priceFields"
                                 listener="#{orderCreate.editingItem.calcPriceByRebate}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>
+                    <rich:message for="itemPriceRebateInput" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
                 </s:span>
 
 
                 <s:span styleClass="value">
-                    <h:inputText size="17" value="#{orderCreate.editingItem.totalPrice}"
+                    <h:inputText id="itemTotalPriceInput" size="17" value="#{orderCreate.editingItem.totalPrice}"
                                  label="#{messages.orderItemPrice}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                          groupingUsed="false"/>
+                        <f:validateDoubleRange minimum="0"/>
+                        <rich:validator/>
                         <a:ajax event="blur" render="priceFields"
                                 listener="#{orderCreate.editingItem.calcPriceByTotalPrice}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>
+                    <rich:message for="itemTotalPriceInput" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
                 </s:span>
 
 

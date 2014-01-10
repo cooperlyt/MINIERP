@@ -134,6 +134,14 @@ public class OrderNeedItem extends StoreChangeItem {
         calcByCU();
     }
 
+    public boolean isZero(){
+        if (storeResItem) {
+            return (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <= 0);
+        } else {
+            return (resCount.compareTo(BigDecimal.ZERO) <= 0);
+        }
+    }
+
 
     private boolean decimalIsTyped(BigDecimal value) {
         return value != null && (value.compareTo(new BigDecimal("0")) != 0);
@@ -147,10 +155,12 @@ public class OrderNeedItem extends StoreChangeItem {
 
     }
 
-    private BigDecimal calcUnitPrice() {
+    private BigDecimal calcUnitPrice(BigDecimal useRebate) {
         BigDecimal result = totalPrice.divide(getCount(),
-                        Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
-                        BigDecimal.ROUND_HALF_UP).divide(rebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP));
+                Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
+                BigDecimal.ROUND_HALF_UP).divide(useRebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP),
+                Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
+                BigDecimal.ROUND_HALF_UP);
 
         result = BigDecimalFormat.halfUpCurrency(result);
         return result;
@@ -159,9 +169,10 @@ public class OrderNeedItem extends StoreChangeItem {
 
     private void calcByCT() {
         if (!decimalIsTyped(unitPrice)) {
-            unitPrice = calcUnitPrice();
+            unitPrice = calcUnitPrice(rebate);
         } else {
-            rebate = unitPrice.divide(calcUnitPrice(),4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
+
+            rebate = calcUnitPrice(new BigDecimal("100")).divide(unitPrice, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
         }
     }
 

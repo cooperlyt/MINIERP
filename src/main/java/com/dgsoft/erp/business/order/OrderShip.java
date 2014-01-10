@@ -284,14 +284,14 @@ public class OrderShip extends OrderTaskHandle {
         if (BigDecimalFormat.isTyped(editingOrderItem.getMoney())) {
             calcPriceByUnitMoney();
         } else if (BigDecimalFormat.isTyped(editingOrderItemTotalMoney)) {
-            editingOrderItem.setMoney(calcUnitPrice());
+            editingOrderItem.setMoney(calcUnitPrice(editingOrderItem.getRebate()));
         }
     }
 
-    private BigDecimal calcUnitPrice() {
+    private BigDecimal calcUnitPrice(BigDecimal useRebate) {
         BigDecimal result = editingOrderItemTotalMoney.divide(getEditingCount(),
                 Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
-                BigDecimal.ROUND_HALF_UP).divide(editingOrderItem.getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP));
+                BigDecimal.ROUND_HALF_UP).divide(useRebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP));
 
         result = BigDecimalFormat.halfUpCurrency(result);
         return result;
@@ -300,9 +300,9 @@ public class OrderShip extends OrderTaskHandle {
 
     public void calcPriceByTotalMoney() {
         if (!BigDecimalFormat.isTyped(editingOrderItem.getMoney())) {
-            editingOrderItem.setMoney(calcUnitPrice());
+            editingOrderItem.setMoney(calcUnitPrice(editingOrderItem.getRebate()));
         } else {
-            editingOrderItem.setRebate(editingOrderItem.getMoney().divide(calcUnitPrice(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")));
+            editingOrderItem.setRebate( calcUnitPrice(new BigDecimal("100")).divide(editingOrderItem.getMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")));
         }
     }
 

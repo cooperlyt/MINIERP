@@ -56,6 +56,7 @@
             <h:inputText id="masterUnitCount" required="true" style="width: 70px"
                          label="#{messages.storeResCountInupt}"
                          value="#{resCountBean.count}" converter="javax.faces.BigDecimal">
+                <f:validateDoubleRange minimum="0"/>
                 <rich:validator/>
                 <a:ajax event="change" execute="@region"
                         render="floatConvertAuxUnitFields,masterUnitCount,#{countChangeRender}"

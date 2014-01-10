@@ -153,6 +153,10 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
+    public boolean isZeroPriceOrder(){
+        return !(getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0);
+    }
+
     @DataModel
     public List<Map.Entry<StoreRes, ResCount>> getAllShipStoreResEntrySet() {
         List<Map.Entry<StoreRes, ResCount>> result = new ArrayList<Map.Entry<StoreRes, ResCount>>(allShipStoreReses().entrySet());

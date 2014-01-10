@@ -1,7 +1,9 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.CustomerOrder;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.international.StatusMessage;
 
@@ -18,6 +20,8 @@ import java.util.Locale;
 @Name("orderMoneyReceive")
 public class OrderMoneyReceive extends FinanceReceivables {
 
+    @In(create = true)
+    private NeedResHome needResHome;
 
     @Override
     protected AccountOper.AccountOperType getAccountOperType() {
@@ -60,6 +64,9 @@ public class OrderMoneyReceive extends FinanceReceivables {
         }
         orderHome.getInstance().setArrears(payMoney.compareTo(receiveMoney) > 0);
         if (orderHome.update().equals("updated")){
+            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)){
+                needResHome.setId(orderHome.getMasterNeedRes().getId());
+            }
             return "taskComplete";
         }else
             return null;

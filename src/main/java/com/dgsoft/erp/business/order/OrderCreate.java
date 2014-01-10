@@ -264,9 +264,15 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public void addOrderItem() {
-        if ((editingItem == null)) {
+        if (editingItem == null) {
             throw new IllegalArgumentException("editingItem state error");
         }
+
+        if (editingItem.isZero()){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderItemZeroError");
+            return;
+        }
+
         if (editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
             editingItem.setUseUnit(editingItem.getStoreResCountInupt().getUseUnit());
         }

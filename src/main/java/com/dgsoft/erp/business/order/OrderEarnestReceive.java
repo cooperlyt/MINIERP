@@ -1,6 +1,8 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.model.AccountOper;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.international.StatusMessage;
 
@@ -18,6 +20,8 @@ import java.util.Locale;
 @Name("orderEarnestReceive")
 public class OrderEarnestReceive extends FinanceReceivables{
 
+    @In(create = true)
+    private NeedResHome needResHome;
 
     @Override
     protected AccountOper.AccountOperType getAccountOperType() {
@@ -41,6 +45,7 @@ public class OrderEarnestReceive extends FinanceReceivables{
             return null;
         }
 
+        needResHome.setId(orderHome.getMasterNeedRes().getId());
         return "taskComplete";
     }
 }

@@ -160,6 +160,7 @@ public class OrderStoreOut extends OrderTaskHandle {
             dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
             dispatchHome.getInstance().setSendTime(storeOutDate);
             dispatchHome.getInstance().setFare(BigDecimal.ZERO);
+            dispatchHome.getInstance().getNeedRes().getCustomerOrder().setResReceived(true);
         } else {
             dispatchHome.getInstance().setState(Dispatch.DispatchState.DISPATCH_STORE_OUT);
         }
