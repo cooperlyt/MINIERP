@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jbpm.jbpm3:jbpm-jpdl:3.2.10.SP3_seam2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jbpm/jbpm3/jbpm-jpdl/3.2.10.SP3_seam2/jbpm-jpdl-3.2.10.SP3_seam2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jbpm/jbpm3/jbpm-jpdl/3.2.10.SP3_seam2/jbpm-jpdl-3.2.10.SP3_seam2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jbpm/jbpm3/jbpm-jpdl/3.2.10.SP3_seam2/jbpm-jpdl-3.2.10.SP3_seam2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

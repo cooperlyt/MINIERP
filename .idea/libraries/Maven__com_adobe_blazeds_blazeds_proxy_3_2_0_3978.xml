@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.adobe.blazeds:blazeds-proxy:3.2.0.3978">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/adobe/blazeds/blazeds-proxy/3.2.0.3978/blazeds-proxy-3.2.0.3978.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/adobe/blazeds/blazeds-proxy/3.2.0.3978/blazeds-proxy-3.2.0.3978-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/adobe/blazeds/blazeds-proxy/3.2.0.3978/blazeds-proxy-3.2.0.3978-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

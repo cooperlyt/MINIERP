@@ -43,10 +43,10 @@ dictionary = Component.getInstance("dictionary", false);
 dispatchHome = Component.getInstance("dispatchHome", false)
 if ((dispatchHome != null) &amp;&amp; dispatchHome.isIdDefined()){
 	order = dispatchHome.getInstance().getNeedRes().getCustomerOrder();
-	dispatchItems = dispatchHome.getInstance().getDispatchItemList();
+	//dispatchItems = dispatchHome.getInstance().getDispatchItemList();
 	outDate = new Date();
 	store = dispatchHome.getInstance().getStore().getName() + "(" + dispatchHome.getInstance().getStore().getId() + ")";
-	shipAddres = dispatchHome.getInstance().getNeedRes().getAddress() +  "(" + dispatchHome.getInstance().getNeedRes().getPostCode() + ")";
+	shipAddres = dispatchHome.getInstance().getNeedRes().getAddress() +  "    " + dispatchHome.getInstance().getNeedRes().getPostCode();
 }else{
 	orderHome = Component.getInstance("orderHome",true);
 	orderHome.setId(params["orderId"].value);
@@ -56,19 +56,20 @@ if ((dispatchHome != null) &amp;&amp; dispatchHome.isIdDefined()){
 	while(dispatchIt.hasNext()){
 		dispatch = dispatchIt.next();
 		if (dispatch.getStore().getId().equals(params["storeId"].value)){
-			dispatchItems = dispatch.getDispatchItemList();
+			//dispatchItems = dispatch.getDispatchItemList();
 			outDate = dispatch.getStockChange().operDate();
 			store = dispatch.getStore().getName() + "(" + dispatch.getStore().getId() + ")";
-			shipAddres = masterNeedRes.getAddress() + "(" + masterNeedRes.getPostCode() + ")";
+			shipAddres = masterNeedRes.getAddress() + "   " + masterNeedRes.getPostCode() ;
 			
 			
 		}	
 	}
-	if (dispatchItems == null){
-		dispatchItems = new ArrayList(0);
-	}
+
 	
 }
+
+dispatchItems = Component.getInstance("orderStoreOutItems",true);
+
 
 	salerName = dictionary.getEmpNameById(order.getOrderEmp());
 	saleDate = order.getCreateDate();
@@ -163,17 +164,17 @@ it=dispatchItems.iterator();]]></method>
 				itemTitle += format.getFormatValue();
 			}						
 		}
-		if (item.getResUnit().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+		if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
 			
-			itemTitle +=  BigDecimalFormat.format(storeRes.getFloatConversionRate(),item.getResUnit().getUnitGroup().getFloatConvertRateFormat());
-			itemTitle += item.getResUnit().getUnitGroup().getName();
+			itemTitle +=  BigDecimalFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat());
+			itemTitle += storeRes.getRes().getUnitGroup().getName();
 		}
 		
 
 	
 	row['NAME'] = itemTitle;
-    row['COUNT'] = BigDecimalFormat.format(item.getCount(),item.getResUnit().getCountFormate()); 
-    row['UNIT'] = item.getResUnit().getName();
+    row['COUNT'] = BigDecimalFormat.format(item.getResCount().getCountByResUnit(storeRes.getRes().getResUnitByOutDefault()),storeRes.getRes().getResUnitByOutDefault().getCountFormate()); 
+    row['UNIT'] = storeRes.getRes().getResUnitByOutDefault().getName();
     
     
 
