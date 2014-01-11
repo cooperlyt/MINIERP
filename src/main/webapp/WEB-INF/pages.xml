@@ -107,6 +107,13 @@
         <restrict>#{s:hasRole('erp.storage.store') or s:hasRole('erp.storage.manager')}</restrict>
     </page>
 
+    <page view-id="/func/erp/product/mgr/*" login-required="true">
+        <restrict>#{s:hasRole('erp.produce.manager')}</restrict>
+    </page>
+
+    <page view-id="/func/erp/product/*" login-required="true">
+        <restrict>#{s:hasRole('erp.produce.manager') or s:hasRole('erp.produce.factory.mgr')}</restrict>
+    </page>
 
     <page view-id="/func/erp/store/StoreMgr.xhtml" login-required="true">
         <restrict>#{s:hasRole('erp.storage.store')}</restrict>

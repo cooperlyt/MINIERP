@@ -1,0 +1,140 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/layout/simpleDataCURD.xhtml">
+
+    <h:outputStylesheet>
+        .leftColumn {
+            vertical-align: top;
+            width: 150px;
+        }
+
+        .rightColumn {
+            vertical-align: top;
+        }
+    </h:outputStylesheet>
+
+    <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
+    <ui:param name="dataListHeaderTitle" value="#{messages.ProductGroup}"/>
+    <ui:param name="dataHome" value="#{productGroupHome}"/>
+
+    <ui:define name="selectedTitle">
+        <a:outputPanel id="selectedTitle">
+            <a:outputPanel rendered="#{empty productGroupHome.selectFactory}">
+                <h:outputText value="#{productGroupHome.instance.title}" rendered="#{productGroupHome.idDefined}"/>
+                <h:outputText value="#{productGroupHome.parent.title}" rendered="#{not productGroupHome.idDefined}"/>
+            </a:outputPanel>
+            <h:outputText value="#{productGroupHome.selectFactory.name}" rendered="#{empty productGroupHome.selectFactory}"/>
+        </a:outputPanel>
+    </ui:define>
+
+    <ui:define name="navigation">
+        <h:form>
+            <rich:tree value="#{myFactory}" var="_group" nodeType="#{_group.type}"
+                       onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                       toggleType="client" selectionChangeListener="#{productGroupHome.selectionChanged}"
+                       selectionType="ajax" render="details,selectedTitle,productResDataTable">
+                <rich:treeNode type="factory" iconLeaf="/img/factory.png" icon="/img/factory.png">
+                    <h:outputText value="#{_group.name}"/>
+                </rich:treeNode>
+                <rich:treeNode type="group" iconLeaf="/img/group.png" icon="/img/group.png">
+                    <h:outputText value="#{_group.name}"/>
+                </rich:treeNode>
+            </rich:tree>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="actionToolbar">
+        <rich:toolbarGroup rendered="#{productGroupHome.editing}" location="left">
+            <h:graphicImage value="/img/onetomany.gif"/>
+            <a:commandLink value="#{messages.addGroupProduct}"
+                           onclick="#{rich:component('resSelectPanel')}.show();return false;"/>
+
+        </rich:toolbarGroup>
+    </ui:define>
+
+
+    <ui:define name="editFields">
+
+        <s:decorate id="idField" template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.productGroup_field_id}</ui:define>
+            <h:inputText required="true" label="#{messages.productGroup_field_id}"
+                         readonly="#{not productGroupHome.editing }"
+                         disabled="#{productGroupHome.managed}"
+                         valueChangeListener="#{productGroupHome.verifyIdAvailable}"
+                         value="#{productGroupHome.instance.id}" size="20" maxlength="20">
+                <a:ajax event="blur" render="idField"/>
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.productGroup_field_name}</ui:define>
+            <h:inputText value="#{productGroupHome.instance.name}"
+                         label="#{messages.productGroup_field_name}"
+                         readonly="#{not productGroupHome.editing}"
+                         required="true"
+                         size="27"
+                         maxlength="50"/>
+        </s:decorate>
+
+    </ui:define>
+
+    <ui:define name="detailsAnnex">
+        <rich:dataTable id="productResDataTable" value="#{productGroupHome.instance.productList}" var="_res"
+                        noDataLabel="#{messages.groupProductEmpty}">
+            <f:facet name="header">
+                #{messages.groupProduct}
+            </f:facet>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res_field_code}
+                </f:facet>
+                #{_res.code}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res_field_name}
+                </f:facet>
+                #{_res.name}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.rescategory_field_type}
+                </f:facet>
+                #{messages[_res.resCategory.type.name()]}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.resCategory}
+                </f:facet>
+                #{_res.resCategory.name}
+            </rich:column>
+
+            <rich:column rendered="#{productGroupHome.editing}">
+                <f:facet name="header">
+
+                </f:facet>
+                <a:commandButton image="/img/delete.png" title="#{messages.delete}"
+                                 action="#{productGroupHome.deleteProductRes}" render="productResDataTable"
+                                 onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}">
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{_res.id}" assignTo="#{productGroupHome.selectProductResId}"/>
+                </a:commandButton>
+            </rich:column>
+        </rich:dataTable>
+    </ui:define>
+
+    <ui:include src="/layout/erp/ResSelectTree.xhtml">
+        <ui:param name="render" value="productResDataTable"/>
+        <ui:param name="treeValue" value="#{produceInResTree}"/>
+    </ui:include>
+
+</ui:composition>

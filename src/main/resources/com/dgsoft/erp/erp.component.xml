@@ -88,6 +88,12 @@
         <action execute="#{orderHome.refresh}"/>
     </event>
 
+    <component name="validFactoryList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select factory from Factory factory where enable=true</property>
+    </component>
 
+    <component name="allFactoryList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select factory from Factory factory</property>
+    </component>
 
 </components>

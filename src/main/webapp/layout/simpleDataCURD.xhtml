@@ -12,26 +12,28 @@
         <ui:insert/>
 
         <h:panelGrid columns="2" columnClasses="#{bodyColumnClasses}" width="100%">
-            <h:form>
-                <rich:dataTable id="dataList" value="#{dataList}" var="_dataItem"
-                                noDataLabel="#{messages.emptyResult}" style="width: 100%">
-                    <ui:insert name="listColumns">
+            <ui:insert name="navigation">
+                <h:form>
+                    <rich:dataTable id="dataList" value="#{dataList}" var="_dataItem"
+                                    noDataLabel="#{messages.emptyResult}" style="width: 100%">
+                        <ui:insert name="listColumns">
 
-                        <rich:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{dataListHeaderTitle}"/>
-                            </f:facet>
-                            <a:commandLink value="#{_dataItem.name}" immediate="true"
-                                           execute="@this" image="/img/edit.png"
-                                           render="#{detailsRender},details">
-                                <a:param value="#{_dataItem.id}" assignTo="#{dataHome.id}"/>
-                                <s:conversationPropagation type="end"/>
-                            </a:commandLink>
+                            <rich:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{dataListHeaderTitle}"/>
+                                </f:facet>
+                                <a:commandLink value="#{_dataItem.name}" immediate="true"
+                                               execute="@this" image="/img/edit.png"
+                                               render="#{detailsRender},details">
+                                    <a:param value="#{_dataItem.id}" assignTo="#{dataHome.id}"/>
+                                    <s:conversationPropagation type="end"/>
+                                </a:commandLink>
 
-                        </rich:column>
-                    </ui:insert>
-                </rich:dataTable>
-            </h:form>
+                            </rich:column>
+                        </ui:insert>
+                    </rich:dataTable>
+                </h:form>
+            </ui:insert>
             <h:panelGroup>
                 <h:form id="details">
                     <rich:toolbar id="actions" height="34" itemSeparator="line">
@@ -68,7 +70,9 @@
                         </rich:toolbarGroup>
 
                         <rich:toolbarGroup location="#{dataHome.editing?'left':'right'}">
-                            #{dataHome.instance.name}
+                            <ui:insert name="selectedTitle">
+                                #{dataHome.instance.name}
+                            </ui:insert>
                         </rich:toolbarGroup>
                         <ui:insert name="actionToolbar"/>
 

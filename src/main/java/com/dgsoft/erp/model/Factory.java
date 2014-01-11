@@ -1,5 +1,6 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.common.NamedEntity;
 import com.google.common.collect.Iterators;
 
 import javax.persistence.*;
@@ -17,15 +18,14 @@ import java.util.*;
 
 @Entity
 @Table(name = "FACTORY", catalog = "MINI_ERP")
-public class Factory implements java.io.Serializable, TreeNode {
+public class Factory implements java.io.Serializable, TreeNode, NamedEntity {
 
-    public String id;
+    private String id;
+    private String name;
+    private String factoryRole;
+    private boolean enable;
 
-    public String name;
-
-    public boolean enable;
-
-    public Set<ProductGroup> productGroups = new HashSet<ProductGroup>(0);
+    private Set<ProductGroup> productGroups = new HashSet<ProductGroup>(0);
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -48,6 +48,17 @@ public class Factory implements java.io.Serializable, TreeNode {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name="FACTORY_ROLE",nullable = false,length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getFactoryRole() {
+        return factoryRole;
+    }
+
+    public void setFactoryRole(String factoryRole) {
+        this.factoryRole = factoryRole;
     }
 
     @Column(name = "ENABLE", nullable = false)
@@ -98,6 +109,11 @@ public class Factory implements java.io.Serializable, TreeNode {
             }
         });
         return result;
+    }
+
+    @Transient
+    public String getType(){
+        return "factory";
     }
 
     @Transient

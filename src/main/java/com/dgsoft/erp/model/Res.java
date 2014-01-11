@@ -37,6 +37,8 @@ public class Res implements java.io.Serializable {
 
     private Set<Supplier> suppliers = new HashSet<Supplier>(0);
 
+    private Set<ProductGroup> productGroups = new HashSet<ProductGroup>(0);
+
 	public Res() {
 	}
 
@@ -242,6 +244,15 @@ public class Res implements java.io.Serializable {
 
     public void setAccounting(Accounting accounting) {
         this.accounting = accounting;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "reses")
+    public Set<ProductGroup> getProductGroups() {
+        return productGroups;
+    }
+
+    public void setProductGroups(Set<ProductGroup> productGroups) {
+        this.productGroups = productGroups;
     }
 
     @Override

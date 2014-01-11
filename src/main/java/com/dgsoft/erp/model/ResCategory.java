@@ -149,6 +149,16 @@ public class ResCategory implements java.io.Serializable {
         return result;
     }
 
+    @Transient
+    public String getTitle(){
+        if (isRoot()){
+            return getName();
+        }else{
+           return getResCategory().getTitle() + "->" + getName();
+        }
+
+    }
+
     @Column(name = "TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     @NotNull

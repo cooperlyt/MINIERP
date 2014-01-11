@@ -1,5 +1,7 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.common.NamedEntity;
+import com.dgsoft.common.system.model.Role;
 import com.google.common.collect.Iterators;
 
 import javax.persistence.*;
@@ -16,7 +18,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "PRODUCT_GROUP", catalog = "MINI_ERP")
-public class ProductGroup implements java.io.Serializable, TreeNode {
+public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity {
 
     private String id;
 
@@ -31,6 +33,8 @@ public class ProductGroup implements java.io.Serializable, TreeNode {
     private Factory factory;
 
     private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
+
+    private Set<Res> reses = new HashSet<Res>(0);
 
 
     @Id
@@ -106,6 +110,37 @@ public class ProductGroup implements java.io.Serializable, TreeNode {
         this.enable = enable;
     }
 
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Res.class)
+    @JoinTable(name = "PRODUCT_GROUP_RES", joinColumns = @JoinColumn(name = "PRODUCT_GROUP"), inverseJoinColumns = @JoinColumn(name = "RES"))
+    public Set<Res> getReses() {
+        return reses;
+    }
+
+    public void setReses(Set<Res> reses) {
+        this.reses = reses;
+    }
+
+    @Transient
+    public Set<Res> getProducts(){
+        Set<Res> result = new HashSet<Res>(getReses());
+        for(ProductGroup pg: getChildrenGroups()){
+            result.addAll(pg.getProducts());
+        }
+        return result;
+    }
+
+    @Transient
+    public List<Res> getProductList(){
+        List<Res> result = new ArrayList<Res>(getProducts());
+        Collections.sort(result,new Comparator<Res>() {
+            @Override
+            public int compare(Res o1, Res o2) {
+                return o1.getId().compareTo(o2.getId());
+            }
+        });
+        return result;
+    }
+
     @Transient
     private boolean containDisable = false;
 
@@ -135,6 +170,20 @@ public class ProductGroup implements java.io.Serializable, TreeNode {
             }
         });
         return result;
+    }
+
+    @Transient
+    public String getTitle(){
+        if (getParentGroup() == null){
+            return getFactory().getName() + "->" + getName();
+        }else{
+            return getParentGroup().getTitle() + "->" + getName();
+        }
+    }
+
+    @Transient
+    public String getType(){
+        return "group";
     }
 
     @Transient
