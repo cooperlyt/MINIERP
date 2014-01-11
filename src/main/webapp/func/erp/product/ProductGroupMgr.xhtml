@@ -12,7 +12,7 @@
     <h:outputStylesheet>
         .leftColumn {
             vertical-align: top;
-            width: 150px;
+            width: 200px;
         }
 
         .rightColumn {
@@ -23,30 +23,51 @@
     <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
     <ui:param name="dataListHeaderTitle" value="#{messages.ProductGroup}"/>
     <ui:param name="dataHome" value="#{productGroupHome}"/>
+    <ui:param name="detailsRender" value="productResDataTable"/>
+    <ui:param name="editOperRender" value="resSelectPanel_form"/>
 
     <ui:define name="selectedTitle">
+
         <a:outputPanel id="selectedTitle">
             <a:outputPanel rendered="#{empty productGroupHome.selectFactory}">
                 <h:outputText value="#{productGroupHome.instance.title}" rendered="#{productGroupHome.idDefined}"/>
                 <h:outputText value="#{productGroupHome.parent.title}" rendered="#{not productGroupHome.idDefined}"/>
             </a:outputPanel>
-            <h:outputText value="#{productGroupHome.selectFactory.name}" rendered="#{empty productGroupHome.selectFactory}"/>
+            <h:outputText value="#{productGroupHome.selectFactory.name}"
+                          rendered="#{not empty productGroupHome.selectFactory}"/>
         </a:outputPanel>
+    </ui:define>
+
+    <ui:define name="addLink">
+        <a:commandLink value="#{messages.add}" immediate="true"
+                       execute="@this"
+                       action="#{productGroupHome.createNew}"
+                       render="productResDataTable,details,resSelectPanel_form">
+            <a:attachQueue requestDelay="0"/>
+            <a:param value="#{productGroupHome.instance.id}" assignTo="#{productGroupHome.id}"
+                     rendered="#{productGroupHome.idDefined}"/>
+            <a:param value="#{productGroupHome.selectFactoryId}" assignTo="#{productGroupHome.selectFactoryId}"
+                     rendered="#{not empty productGroupHome.selectFactory}"/>
+        </a:commandLink>
     </ui:define>
 
     <ui:define name="navigation">
         <h:form>
-            <rich:tree value="#{myFactory}" var="_group" nodeType="#{_group.type}"
-                       onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
-                       toggleType="client" selectionChangeListener="#{productGroupHome.selectionChanged}"
-                       selectionType="ajax" render="details,selectedTitle,productResDataTable">
-                <rich:treeNode type="factory" iconLeaf="/img/factory.png" icon="/img/factory.png">
-                    <h:outputText value="#{_group.name}"/>
-                </rich:treeNode>
-                <rich:treeNode type="group" iconLeaf="/img/group.png" icon="/img/group.png">
-                    <h:outputText value="#{_group.name}"/>
-                </rich:treeNode>
-            </rich:tree>
+            <rich:panel style="min-height: 460px;">
+                <rich:tree value="#{myFactory}" var="_group" nodeType="#{_group.type}"
+                           onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                           toggleType="client" selectionChangeListener="#{productGroupHome.selectionChanged}"
+                           selectionType="ajax" render="details,selectedTitle,productResDataTable">
+                    <rich:treeNode type="factory" iconLeaf="/img/factory.png" iconCollapsed="/img/factory.png"
+                                   iconExpanded="/img/factory.png">
+                        <h:outputText value="#{_group.name}"/>
+                    </rich:treeNode>
+                    <rich:treeNode type="group" iconLeaf="/img/group.png" iconCollapsed="/img/group.png"
+                                   iconExpanded="/img/group.png">
+                        <h:outputText value="#{_group.name}"/>
+                    </rich:treeNode>
+                </rich:tree>
+            </rich:panel>
         </h:form>
     </ui:define>
 
@@ -86,7 +107,10 @@
     </ui:define>
 
     <ui:define name="detailsAnnex">
-        <rich:dataTable id="productResDataTable" value="#{productGroupHome.instance.productList}" var="_res"
+        <br/>
+
+        <rich:dataTable style="width: 100%" id="productResDataTable"
+                        value="#{productGroupHome.instance.productList}" var="_res"
                         noDataLabel="#{messages.groupProductEmpty}">
             <f:facet name="header">
                 #{messages.groupProduct}
@@ -118,23 +142,33 @@
                 #{_res.resCategory.name}
             </rich:column>
 
-            <rich:column rendered="#{productGroupHome.editing}">
+            <rich:column rendered="#{productGroupHome.editing}" style="text-align: center">
                 <f:facet name="header">
 
                 </f:facet>
-                <a:commandButton image="/img/delete.png" title="#{messages.delete}"
-                                 action="#{productGroupHome.deleteProductRes}" render="productResDataTable"
-                                 onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}">
-                    <a:attachQueue requestDelay="0"/>
-                    <a:param value="#{_res.id}" assignTo="#{productGroupHome.selectProductResId}"/>
+
+                <a:commandButton image="/img/delete.png" title="#{messages.delete}" immediate="true"
+                                 onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){removeRes('#{_res.id}')}else{return false;}">
                 </a:commandButton>
             </rich:column>
         </rich:dataTable>
+
     </ui:define>
+
+    <h:form>
+        <a:outputPanel ajaxRendered="true">
+            <a:jsFunction name="removeRes" action="#{productGroupHome.deleteProductRes}" render="productResDataTable">
+                <a:param name="resId" assignTo="#{productGroupHome.selectProductResId}"/>
+                <a:attachQueue requestDelay="0"/>
+                <s:conversationId/>
+            </a:jsFunction>
+        </a:outputPanel>
+    </h:form>
 
     <ui:include src="/layout/erp/ResSelectTree.xhtml">
         <ui:param name="render" value="productResDataTable"/>
         <ui:param name="treeValue" value="#{produceInResTree}"/>
+
     </ui:include>
 
 </ui:composition>

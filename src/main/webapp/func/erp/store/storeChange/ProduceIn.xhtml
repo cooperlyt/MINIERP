@@ -5,6 +5,8 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
 
@@ -24,7 +26,19 @@
             <rich:messages ajaxRendered="true" globalOnly="true"/>
             <br/>
 
-            <ui:include src="/layout/erp/StockChangeEdit.xhtml"/>
+
+            <s:decorate template="/layout/erp/StockChangeEdit.xhtml">
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.ProductGroup}
+                    </ui:define>
+                    <ui:include src="/layout/erp/ProductGroupSelect.xhtml">
+                        <ui:param name="required" value="true"/>
+                    </ui:include>
+                </s:decorate>
+
+            </s:decorate>
+
 
             <div style="clear:both">
                 <span class="required">*</span>
@@ -33,6 +47,6 @@
 
 
         </h:form>
-
+        <ui:include src="/layout/erp/ProductGroupSelectTree.xhtml"/>
     </ui:define>
 </ui:composition>

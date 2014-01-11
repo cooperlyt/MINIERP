@@ -36,6 +36,12 @@ public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity
 
     private Set<Res> reses = new HashSet<Res>(0);
 
+    public ProductGroup() {
+    }
+
+    public ProductGroup(boolean enable) {
+        this.enable = enable;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)

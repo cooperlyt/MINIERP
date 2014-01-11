@@ -12,46 +12,52 @@
         <ui:insert/>
 
         <h:panelGrid columns="2" columnClasses="#{bodyColumnClasses}" width="100%">
-            <ui:insert name="navigation">
-                <h:form>
-                    <rich:dataTable id="dataList" value="#{dataList}" var="_dataItem"
-                                    noDataLabel="#{messages.emptyResult}" style="width: 100%">
-                        <ui:insert name="listColumns">
+            <a:outputPanel id="dataList">
+                <ui:insert name="navigation">
+                    <h:form>
+                        <rich:dataTable value="#{dataList}" var="_dataItem"
+                                        noDataLabel="#{messages.emptyResult}" style="width: 100%">
+                            <ui:insert name="listColumns">
 
-                            <rich:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{dataListHeaderTitle}"/>
-                                </f:facet>
-                                <a:commandLink value="#{_dataItem.name}" immediate="true"
-                                               execute="@this" image="/img/edit.png"
-                                               render="#{detailsRender},details">
-                                    <a:param value="#{_dataItem.id}" assignTo="#{dataHome.id}"/>
-                                    <s:conversationPropagation type="end"/>
-                                </a:commandLink>
+                                <rich:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{dataListHeaderTitle}"/>
+                                    </f:facet>
+                                    <a:commandLink value="#{_dataItem.name}" immediate="true"
+                                                   execute="@this" image="/img/edit.png"
+                                                   render="#{detailsRender},details">
+                                        <a:param value="#{_dataItem.id}" assignTo="#{dataHome.id}"/>
+                                        <s:conversationPropagation type="end"/>
+                                    </a:commandLink>
 
-                            </rich:column>
-                        </ui:insert>
-                    </rich:dataTable>
-                </h:form>
-            </ui:insert>
+                                </rich:column>
+                            </ui:insert>
+                        </rich:dataTable>
+                    </h:form>
+                </ui:insert>
+            </a:outputPanel>
             <h:panelGroup>
                 <h:form id="details">
                     <rich:toolbar id="actions" height="34" itemSeparator="line">
 
                         <rich:toolbarGroup rendered="#{not dataHome.editing}">
+
                             <h:graphicImage value="/img/add.png"/>
-                            <a:commandLink value="#{messages.add}" immediate="true"
-                                           execute="@this"
-                                           action="#{dataHome.createNew}"
-                                           render="#{detailsRender},details">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:commandLink>
+                            <ui:insert name="addLink">
+                                <a:commandLink value="#{messages.add}" immediate="true"
+                                               execute="@this"
+                                               action="#{dataHome.createNew}"
+                                               render="#{detailsRender},#{editOperRender},details">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandLink>
+                            </ui:insert>
+
                         </rich:toolbarGroup>
                         <rich:toolbarGroup rendered="#{not dataHome.editing}">
                             <h:graphicImage value="/img/edit.png"/>
                             <a:commandLink value="#{messages.edit}" immediate="true"
                                            execute="@this"
-                                           action="#{dataHome.edit}" render="#{detailsRender},details"
+                                           action="#{dataHome.edit}" render="#{detailsRender},#{editOperRender},details"
                                            onclick="if (#{not dataHome.idDefined}) {alert('#{messages.plaseSelectOperDataFirst}'); return false;}">
                                 <a:attachQueue requestDelay="0"/>
                                 <a:param value="#{dataHome.instance.id}" assignTo="#{dataHome.id}"/>

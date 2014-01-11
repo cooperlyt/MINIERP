@@ -1,7 +1,9 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.erp.action.ProductGroupSelect;
 import com.dgsoft.erp.model.ProductStoreIn;
 import com.dgsoft.erp.model.StockChange;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
@@ -18,6 +20,8 @@ import java.util.List;
 @Name("produceStoreInHome")
 public class ProduceStoreInHome extends StoreInAction<ProductStoreIn> {
 
+    @In(create = true)
+    private ProductGroupSelect productGroupSelect;
 
     @DataModelSelection
     private StoreInItem selectedStoreInItem;
@@ -39,11 +43,13 @@ public class ProduceStoreInHome extends StoreInAction<ProductStoreIn> {
 
     @Override
     public String beginStoreIn() {
+        getInstance().setProductGroup(productGroupSelect.getProductGroup());
         return "ProcduceBeginStoreIn";
     }
 
     @Override
     protected String storeIn() {
+
         return "ProcduceStoreInComplete";
     }
 

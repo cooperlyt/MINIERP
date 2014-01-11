@@ -268,8 +268,13 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             storeInItems.add(editingItem);
         }
 
-        resHome.clearInstance();
-        storeResHome.clearInstance();
+        //resHome.clearInstance();
+        //storeResHome.clearInstance();
+        if (storeResHome.isIdDefined()){
+            generateStoreInItemByStoreRes(storeResHome.getInstance());
+        }else if (resHome.isIdDefined()){
+            generateStoreInItemByRes(resHome.getInstance());
+        }
         addItemLastState = "added";
         return addItemLastState;
     }

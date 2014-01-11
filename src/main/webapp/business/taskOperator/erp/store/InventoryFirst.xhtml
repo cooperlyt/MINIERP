@@ -44,7 +44,7 @@
         </a:commandButton>
         <a:commandButton value="#{messages.addItem}" execute="@form"
                          action="#{inventoryHome.addItem}" data="#{inventoryHome.addItemLastState}"
-                         oncomplete="if (event.data == 'updated')#{rich:component('newStoreResCodeInputPanel')}.hide();"
+                         oncomplete="alert(event.data);if (event.data == 'updated')#{rich:component('newStoreResCodeInputPanel')}.hide();"
                          render="newStoreResCodeInputPanel_inputs,storeInItem,inventoryTable">
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>

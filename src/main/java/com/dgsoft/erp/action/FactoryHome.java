@@ -3,6 +3,8 @@ package com.dgsoft.erp.action;
 import com.dgsoft.common.system.action.RoleHome;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.Factory;
+import com.dgsoft.erp.model.ProductGroup;
+import com.dgsoft.erp.model.Res;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.FlushModeType;
@@ -13,7 +15,9 @@ import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Identity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by cooper on 1/11/14.
@@ -49,6 +53,10 @@ public class FactoryHome extends ErpSimpleEntityHome<Factory> {
         return super.createNew();
     }
 
+    @Override
+    protected Factory createInstance(){
+        return new Factory(true);
+    }
 
     @Override
     protected boolean wire(){
@@ -71,6 +79,14 @@ public class FactoryHome extends ErpSimpleEntityHome<Factory> {
             return false;
         }
         return true;
+    }
+
+    public List<Res> getOutProductList(){
+        Set<Res> result = new HashSet<Res>();
+        for (ProductGroup pg: getInstance().getRootProductGroupList()){
+            result.addAll(pg.getProducts());
+        }
+        return new ArrayList<Res>(result);
     }
 
     @org.jboss.seam.annotations.Factory(value = "myFactory",scope = ScopeType.CONVERSATION)

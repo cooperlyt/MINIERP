@@ -43,31 +43,32 @@
             </h:panelGrid>
         </f:facet>
         <rich:messages ajaxRendered="true" globalOnly="true"/>
+        <ui:insert name="panelContent">
+            <h:form id="#{panelId}_form">
+                <ui:insert name="formContent">
 
-        <h:form id="#{panelId}_form">
-            <ui:insert name="formContent">
+                    <rich:panel id="#{panelId}_inputs">
+                        <div class="edit">
+                            <ui:insert/>
 
-                <rich:panel id="#{panelId}_inputs">
-                    <div class="edit">
-                        <ui:insert/>
-
-                        <div style="clear:both">
-                            <span class="required">*</span>
-                            #{messages.requiredFields}
+                            <div style="clear:both">
+                                <span class="required">*</span>
+                                #{messages.requiredFields}
+                            </div>
                         </div>
-                    </div>
-                </rich:panel>
+                    </rich:panel>
 
 
-                <h:panelGrid columns="1" style="width: 100%; text-align: right">
-                    <a:outputPanel id="#{panelId}_buttons">
-                        <div class="actionButtons">
-                            <ui:insert name="actionButtons"/>
-                        </div>
-                    </a:outputPanel>
-                </h:panelGrid>
-            </ui:insert>
-        </h:form>
+                    <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                        <a:outputPanel id="#{panelId}_buttons">
+                            <div class="actionButtons">
+                                <ui:insert name="actionButtons"/>
+                            </div>
+                        </a:outputPanel>
+                    </h:panelGrid>
+                </ui:insert>
+            </h:form>
+        </ui:insert>
 
     </rich:popupPanel>
 

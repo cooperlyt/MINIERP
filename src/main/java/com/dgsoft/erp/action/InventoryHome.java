@@ -368,10 +368,17 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         if (loseStockChange != null)
             removePrepareStockChange(loseStockChange);
 
-        addItemLastState = update();
 
-        resHome.clearInstance();
-        storeResHome.clearInstance();
+        update();
+
+        //resHome.clearInstance();
+        //storeResHome.clearInstance();
+        if (storeResHome.isIdDefined()){
+            generateStoreInItemByStoreRes(storeResHome.getInstance());
+        }else if (resHome.isIdDefined()){
+            generateStoreInItemByRes(resHome.getInstance());
+        }
+        addItemLastState = lastState;
         return addItemLastState;
     }
 

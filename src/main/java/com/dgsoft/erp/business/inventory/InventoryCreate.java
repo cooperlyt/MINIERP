@@ -32,16 +32,26 @@ public class InventoryCreate {
     @In
     private Credentials credentials;
 
+    private boolean lockStore = false;
 
-    public void init(){
+    public boolean isLockStore() {
+        return lockStore;
+    }
+
+    public void setLockStore(boolean lockStore) {
+        this.lockStore = lockStore;
+    }
+
+    public void init() {
         startData.generateKey();
         businessDefineHome.setId("erp.business.inventory");
     }
 
     @Observer("com.dgsoft.BusinessCreatePrepare.inventory")
     @Transactional
-    public void beginInventory(){
-        inventoryHome.getInstance().getStore().setEnable(false);
+    public void beginInventory() {
+        if (lockStore)
+            inventoryHome.getInstance().getStore().setEnable(false);
         inventoryHome.getInstance().setId(startData.getBusinessKey());
         inventoryHome.getInstance().setApplyEmp(credentials.getUsername());
         if (!"persisted".equals(inventoryHome.persist())) {

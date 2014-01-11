@@ -47,6 +47,11 @@
                                    label="#{_store.name}"/>
                     <f:converter converterId="erpEntityConverter"/>
                 </rich:select>
+                <ui:define name="tail">
+                    <h:selectBooleanCheckbox value="#{inventoryCreate.lockStore}">
+                        #{messages.lockInventoryStore}
+                    </h:selectBooleanCheckbox>
+                </ui:define>
             </s:decorate>
 
 

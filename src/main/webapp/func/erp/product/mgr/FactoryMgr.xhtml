@@ -5,6 +5,8 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
                 template="/layout/simpleDataCURD.xhtml">
 
     <h:outputStylesheet>
@@ -22,6 +24,7 @@
     <ui:param name="dataList" value="#{allFactoryList.resultList}"/>
     <ui:param name="dataListHeaderTitle" value="#{messages.Factory}"/>
     <ui:param name="dataHome" value="#{factoryHome}"/>
+    <ui:param name="detailsRender" value="productResDataTable" />
 
     <ui:define name="editFields">
         <s:decorate id="idField" template="/layout/seam-edit.xhtml">
@@ -71,5 +74,44 @@
 
 
     </ui:define>
+
+    <ui:define name="detailsAnnex">
+        <br/>
+
+        <rich:dataTable style="width: 100%" id="productResDataTable" value="#{factoryHome.outProductList}" var="_res"
+                        noDataLabel="#{messages.groupProductEmpty}">
+            <f:facet name="header">
+                #{messages.groupProduct}
+            </f:facet>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res_field_code}
+                </f:facet>
+                #{_res.code}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res_field_name}
+                </f:facet>
+                #{_res.name}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.rescategory_field_type}
+                </f:facet>
+                #{messages[_res.resCategory.type.name()]}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.resCategory}
+                </f:facet>
+                #{_res.resCategory.name}
+            </rich:column>
+
+        </rich:dataTable>
+    </ui:define>
+
 
 </ui:composition>

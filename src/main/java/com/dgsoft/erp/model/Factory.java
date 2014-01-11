@@ -27,6 +27,13 @@ public class Factory implements java.io.Serializable, TreeNode, NamedEntity {
 
     private Set<ProductGroup> productGroups = new HashSet<ProductGroup>(0);
 
+    public Factory() {
+    }
+
+    public Factory(boolean enable) {
+        this.enable = enable;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @NotNull
@@ -93,10 +100,10 @@ public class Factory implements java.io.Serializable, TreeNode, NamedEntity {
     }
 
     @Transient
-    private List<ProductGroup> getProductGroupList() {
+    public List<ProductGroup> getRootProductGroupList() {
         List<ProductGroup> result = new ArrayList<ProductGroup>();
         for (ProductGroup pg : getProductGroups()) {
-            if (containDisable || pg.isEnable()) {
+            if ((pg.getParentGroup() == null) && (containDisable || pg.isEnable())) {
                 pg.setContainDisable(containDisable);
                 result.add(pg);
             }
@@ -119,13 +126,13 @@ public class Factory implements java.io.Serializable, TreeNode, NamedEntity {
     @Transient
     @Override
     public TreeNode getChildAt(int childIndex) {
-        return getProductGroupList().get(childIndex);
+        return getRootProductGroupList().get(childIndex);
     }
 
     @Transient
     @Override
     public int getChildCount() {
-        return getProductGroupList().size();
+        return getRootProductGroupList().size();
     }
 
     @Transient
@@ -137,7 +144,7 @@ public class Factory implements java.io.Serializable, TreeNode, NamedEntity {
     @Transient
     @Override
     public int getIndex(TreeNode node) {
-        return getProductGroupList().indexOf(node);
+        return getRootProductGroupList().indexOf(node);
     }
 
     @Transient
@@ -155,6 +162,6 @@ public class Factory implements java.io.Serializable, TreeNode, NamedEntity {
     @Transient
     @Override
     public Enumeration children() {
-        return Iterators.asEnumeration(getProductGroupList().iterator());
+        return Iterators.asEnumeration(getRootProductGroupList().iterator());
     }
 }
