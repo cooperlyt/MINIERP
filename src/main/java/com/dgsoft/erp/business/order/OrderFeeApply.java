@@ -2,6 +2,7 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.action.MiddleManHome;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.OrderFee;
 import com.dgsoft.erp.model.OrderItem;
@@ -29,9 +30,7 @@ import java.util.List;
 @Name("orderFee")
 public class OrderFeeApply extends OrderTaskHandle {
 
-    public enum ItemMiddleMoneyCalcType {
-        NOT_CALC, ITEM_FIX, ITEM_RATE, CROSS_CALC;
-    }
+
 
     @In(create = true)
     private MiddleManHome middleManHome;
@@ -47,12 +46,8 @@ public class OrderFeeApply extends OrderTaskHandle {
         return orderHome.getMasterNeedRes().getOrderItemList();
     }
 
-    @Factory(value = "allItemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
-    public ItemMiddleMoneyCalcType[] getItemMiddleMoneyCalcTypes() {
-        return ItemMiddleMoneyCalcType.values();
-    }
 
-    private ItemMiddleMoneyCalcType itemMiddleMoneyCalcType;
+    private ResHelper.ItemMiddleMoneyCalcType itemMiddleMoneyCalcType;
 
 
     private OrderFee middleManFee;
@@ -67,11 +62,11 @@ public class OrderFeeApply extends OrderTaskHandle {
         this.middleManFee = middleManFee;
     }
 
-    public ItemMiddleMoneyCalcType getItemMiddleMoneyCalcType() {
+    public ResHelper.ItemMiddleMoneyCalcType getItemMiddleMoneyCalcType() {
         return itemMiddleMoneyCalcType;
     }
 
-    public void setItemMiddleMoneyCalcType(ItemMiddleMoneyCalcType itemMiddleMoneyCalcType) {
+    public void setItemMiddleMoneyCalcType(ResHelper.ItemMiddleMoneyCalcType itemMiddleMoneyCalcType) {
         this.itemMiddleMoneyCalcType = itemMiddleMoneyCalcType;
     }
 
@@ -149,13 +144,13 @@ public class OrderFeeApply extends OrderTaskHandle {
         for (OrderItem orderItem : getOrderItemsByFee()) {
             orderItem.setMiddleRate(null);
             orderItem.setMiddleMoney(null);
-            if (itemMiddleMoneyCalcType.equals(ItemMiddleMoneyCalcType.ITEM_FIX)) {
+            if (itemMiddleMoneyCalcType.equals(ResHelper.ItemMiddleMoneyCalcType.ITEM_FIX)) {
                 orderItem.setMiddleMoneyCalcType(OrderItem.MiddleMoneyCalcType.COUNT_FIX);
                 if (!orderItem.isStoreResItem() && !orderItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
                     orderItem.setMiddleUnit(orderItem.getMoneyUnit());
                 }
 
-            } else if (itemMiddleMoneyCalcType.equals(ItemMiddleMoneyCalcType.ITEM_RATE)) {
+            } else if (itemMiddleMoneyCalcType.equals(ResHelper.ItemMiddleMoneyCalcType.ITEM_RATE)) {
                 orderItem.setMiddleMoneyCalcType(OrderItem.MiddleMoneyCalcType.MONEY_RATE);
                 orderItem.setMiddleUnit(null);
             } else {
@@ -242,7 +237,7 @@ public class OrderFeeApply extends OrderTaskHandle {
         if (orderHome.getInstance().isIncludeMiddleMan() && (middleManFee != null)) {
             BigDecimal result = BigDecimal.ZERO;
 
-            if ((itemMiddleMoneyCalcType != null) && !ItemMiddleMoneyCalcType.NOT_CALC.equals(itemMiddleMoneyCalcType)) {
+            if ((itemMiddleMoneyCalcType != null) && !ResHelper.ItemMiddleMoneyCalcType.NOT_CALC.equals(itemMiddleMoneyCalcType)) {
                 result = result.add(getTotalMiddleMoney());
             }
 

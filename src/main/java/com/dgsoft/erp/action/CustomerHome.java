@@ -55,24 +55,24 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
 
     public void removeContact() {
         if (customerContactList.size() <= 1) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"customer_must_have_contace");
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "customer_must_have_contace");
         } else {
             customerContactList.remove(selectedContact);
             getInstance().getCustomerContacts().remove(selectedContact);
         }
     }
 
-    public List<String> getAllTelList(){
+    public List<String> getAllTelList() {
         Set<String> result = new HashSet<String>();
-        for (CustomerContact contact: getInstance().getCustomerContacts()){
+        for (CustomerContact contact : getInstance().getCustomerContacts()) {
             result.add(contact.getTel());
         }
         return new ArrayList<String>(result);
     }
 
-    public List<String> getAllContactList(){
+    public List<String> getAllContactList() {
         Set<String> result = new HashSet<String>();
-        for (CustomerContact contact: getInstance().getCustomerContacts()){
+        for (CustomerContact contact : getInstance().getCustomerContacts()) {
             result.add(contact.getName());
         }
         return new ArrayList<String>(result);
@@ -104,9 +104,9 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     @Override
     public boolean wire() {
         if (haveMiddleMan) {
-            if ((isIdDefined() && middleManHome.isIdDefined()) || (!isIdDefined())) {
-                getInstance().setMiddleMan(middleManHome.getReadyInstance());
-            }
+            //if ((isIdDefined() && middleManHome.isIdDefined()) || (!isIdDefined())) {
+            getInstance().setMiddleMan(middleManHome.getReadyInstance());
+            //}
         } else {
             getInstance().setMiddleMan(null);
         }

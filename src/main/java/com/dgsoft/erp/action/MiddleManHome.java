@@ -14,4 +14,10 @@ import org.jboss.seam.annotations.Name;
 @Name("middleManHome")
 public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
 
+
+
+    @Override
+    protected MiddleMan createInstance(){
+        return new MiddleMan(true);
+    }
 }

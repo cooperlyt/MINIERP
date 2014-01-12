@@ -117,7 +117,10 @@
                 </ui:include>
 
             </f:facet>
-            #{_customer.name}
+            <h:outputText style="text-decoration:line-through; color: red;" value=" #{_customer.name}"
+                          rendered="#{not _customer.enable}"/>
+            <h:outputText  value=" #{_customer.name}"
+                           rendered="#{_customer.enable}"/>
         </rich:column>
 
         <rich:column>
@@ -307,7 +310,7 @@
     <ui:param name="panelId" value="middleManEditPanel"/>
     <ui:param name="panelTitle" value="#{messages.MiddleMan}"/>
 
-    <s:span styleClass="small_name">
+    <s:span styleClass="name">
         <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
             <a:ajax event="click" render="middleManEditPanel_inputs"
                     listener="#{customerHome.middleManPayChangeListener}"/>

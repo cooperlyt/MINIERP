@@ -170,7 +170,7 @@
 
         <br/>
         <a:outputPanel id="middleManSelectOrCreate" rendered="#{not customerHome.idDefined}">
-            <s:span styleClass="small_name">
+            <s:span styleClass="name">
                 <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
                     <a:ajax event="click" render="middleManSelectOrCreate"
                             listener="#{customerHome.middleManPayChangeListener}"/>

@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.BatchOperEntity;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,7 +14,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "CUSTOMER_ORDER", catalog = "MINI_ERP")
-public class CustomerOrder implements java.io.Serializable {
+public class CustomerOrder extends BatchOperEntity implements java.io.Serializable {
 
     public enum OrderPayType {
         COMPLETE_PAY, PAY_FIRST, EXPRESS_PROXY, OVERDRAFT;
@@ -285,7 +287,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.includeMiddleMan = middleManPay;
     }
 
-    @OneToOne(optional = true,fetch = FetchType.LAZY,mappedBy = "customerOrder")
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "customerOrder")
     public OrderBack getOrderBack() {
         return orderBack;
     }
@@ -411,9 +413,9 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Transient
-    public List<OrderItem> getAllOrderItemList(){
+    public List<OrderItem> getAllOrderItemList() {
         List<OrderItem> result = new ArrayList<OrderItem>();
-        for (NeedRes needRes: getNeedResList()){
+        for (NeedRes needRes : getNeedResList()) {
             result.addAll(needRes.getOrderItemList());
         }
         return result;
@@ -421,12 +423,28 @@ public class CustomerOrder implements java.io.Serializable {
 
 
     @Transient
-    public BigDecimal getResTotalMoney(){
+    public BigDecimal getResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem item: getAllOrderItemList()){
+        for (OrderItem item : getAllOrderItemList()) {
             result = result.add(item.getTotalMoney());
         }
         return result;
+    }
+
+    @Transient
+    public void calcOrderMiddleMoney() {
+        switch (getMiddleMoneyCalcType()) {
+            case NOT_CALC:
+                setMiddleRate(null);
+                setMiddleMoney(BigDecimal.ZERO);
+                break;
+            case CONSULT_FIX:
+                setMiddleRate(null);
+                break;
+            case TOTAL_MONEY_RATE:
+                setMiddleMoney(getMoney().multiply(getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
+                break;
+        }
     }
 
 

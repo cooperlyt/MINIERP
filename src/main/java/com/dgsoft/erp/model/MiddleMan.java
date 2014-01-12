@@ -26,33 +26,19 @@ public class MiddleMan implements java.io.Serializable, NamedEntity {
     private String bank;
 	private String tel;
     private String bankInfo;
+    private boolean enable;
+
 	private Set<Customer> customers = new HashSet<Customer>(0);
 	private Set<MiddleMoneyPay> middleMoneys = new HashSet<MiddleMoneyPay>(0);
 
 	public MiddleMan() {
 	}
 
-	public MiddleMan(String id, String name, String contact, String type) {
-		this.id = id;
-		this.name = name;
-		this.contact = contact;
-		this.type = type;
-	}
-	public MiddleMan(String id, String name, String contact, String type,
-			String memo, String bankNumber, String tel,
-			Set<Customer> customers, Set<MiddleMoneyPay> middleMoneys) {
-		this.id = id;
-		this.name = name;
-		this.contact = contact;
-		this.type = type;
-		this.memo = memo;
-		this.bankNumber = bankNumber;
-		this.tel = tel;
-		this.customers = customers;
-		this.middleMoneys = middleMoneys;
-	}
+    public MiddleMan(boolean enable) {
+        this.enable = enable;
+    }
 
-	@Id
+    @Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
@@ -165,5 +151,14 @@ public class MiddleMan implements java.io.Serializable, NamedEntity {
 
     public void setBankInfo(String bankInfo) {
         this.bankInfo = bankInfo;
+    }
+
+    @Column(name="ENABLE",nullable = false)
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

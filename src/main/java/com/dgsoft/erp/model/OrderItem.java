@@ -65,11 +65,32 @@ public class OrderItem implements java.io.Serializable {
         this.needRes = needRes;
     }
 
-    public OrderItem(NeedRes needRes, StoreRes storeRes, BigDecimal cost){
+    public OrderItem(NeedRes needRes, StoreRes storeRes, BigDecimal cost) {
         this.storeRes = storeRes;
         this.storeResItem = true;
         this.needRes = needRes;
         this.cost = cost;
+    }
+
+    public OrderItem(StoreRes storeRes, ResUnit moneyUnit,
+                     BigDecimal count, BigDecimal money, BigDecimal rebate) {
+        this.storeRes = storeRes;
+        this.moneyUnit = moneyUnit;
+        this.count = count;
+        this.money = money;
+        this.rebate = rebate;
+        this.storeResItem = true;
+    }
+
+    public OrderItem(Res res, ResUnit moneyUnit,
+                     BigDecimal count, BigDecimal money,
+                     BigDecimal rebate) {
+        this.moneyUnit = moneyUnit;
+        this.count = count;
+        this.money = money;
+        this.rebate = rebate;
+        this.storeResItem = false;
+        this.res = res;
     }
 
     @Id
@@ -241,7 +262,7 @@ public class OrderItem implements java.io.Serializable {
     }
 
     @Transient
-    public Res getUseRes(){
+    public Res getUseRes() {
         if (isStoreResItem()) {
             return getStoreRes().getRes();
         } else {
@@ -255,7 +276,6 @@ public class OrderItem implements java.io.Serializable {
 
             throw new IllegalArgumentException("Res unit must be FIX_CONVERT");
         }
-
 
 
         if (getUseRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {

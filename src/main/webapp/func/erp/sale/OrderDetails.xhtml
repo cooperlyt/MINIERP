@@ -17,7 +17,7 @@
         <h:outputStylesheet>
             .rf-tb-emp {
                 border: 0 none !important;
-                width:100% !important;
+                width: 100% !important;
             }
         </h:outputStylesheet>
 
@@ -29,7 +29,7 @@
                     <f:param name="first" value="false"/>
                     <f:param name="orderId" value="#{orderHome.id}"/>
                 </s:link>
-                <s:link target="_blank" view="/report/salePaper.xhtml"  value="#{messages.print_sale_paper}"
+                <s:link target="_blank" view="/report/salePaper.xhtml" value="#{messages.print_sale_paper}"
                         rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role)}">
                     <f:param name="first" value="false"/>
                     <f:param name="orderId" value="#{orderHome.id}"/>
@@ -45,42 +45,45 @@
             </rich:toolbarGroup>
 
             <rich:toolbarGroup location="right">
-                <s:button styleClass="toolBarBtn" value="#{messages.return}" view="#{empty from ? '/home.xhtml' : from}"/>
+                <s:button styleClass="toolBarBtn" value="#{messages.return}"
+                          view="#{empty from ? '/home.xhtml' : from}"/>
             </rich:toolbarGroup>
         </rich:toolbar>
 
         <br/>
         <ui:include src="/layout/erp/OrderInfo.xhtml"/>
 
-        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>
+        <a:outputPanel ajaxRendered="true" rendered="#{not empty from}">
 
-        <script type="text/javascript">
+            <script type="text/javascript"
+                    src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>
 
-
-            ZeroClipboard.setDefaults( { moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' } );
-
-            $('a.clipboard').each(function(){
-                var clip=new ZeroClipboard($(this));
+            <script type="text/javascript">
 
 
-                clip.on('complete',function(client,args){
+                ZeroClipboard.setDefaults({ moviePath: '#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.swf' });
+
+                $('a.clipboard').each(function () {
+                    var clip = new ZeroClipboard($(this));
 
 
-                    window.open(
-                            "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
-                            ,
-                            'newwindow',
-                            ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen no'
-                    );
+                    clip.on('complete', function (client, args) {
 
 
+                        window.open(
+                                "http://shang.qq.com/wpa/qunwpa?idkey=#{runParam.getStringParamValue('erp.dispatch.QQKey')}"
+                                ,
+                                'newwindow',
+                                ' top=0,left=0, toolbar=no, menubar=no,location=no, status=no,resizable yes,fullscreen no'
+                        );
+
+
+                    });
                 });
-            });
 
 
-
-        </script>
-
+            </script>
+        </a:outputPanel>
     </ui:define>
 
 </ui:composition>
