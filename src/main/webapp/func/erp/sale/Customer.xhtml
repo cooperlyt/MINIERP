@@ -8,11 +8,6 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
-<ui:define name="toolbar">
-
-
-</ui:define>
-
 <ui:define name="body">
 
 
@@ -33,7 +28,7 @@
 <h:form styleClass="edit">
 
     <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
-        <h:form>
+
 
             <s:decorate template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.CustomerArea}</ui:define>
@@ -96,7 +91,7 @@
                     </div>
                 </a:outputPanel>
             </h:panelGrid>
-        </h:form>
+
     </rich:collapsiblePanel>
 
 
