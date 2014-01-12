@@ -1,0 +1,349 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+<ui:param name="functionTitle" value="#{messages.middleMan_reward_calc}"/>
+
+<ui:define name="func-body">
+
+<rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+    <h:form>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_state}</ui:define>
+            <h:panelGrid columns="90">
+                <h:selectOneMenu value="#{middleManRewardCalc.containPayed}">
+                    <f:selectItem itemLabel="#{messages.order_search_middleMoneyPayed_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_middleMoneyPayed_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_middleMoneyPayed_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+                <h:selectOneMenu value="#{middleManRewardCalc.canceled}">
+                    <f:selectItem itemLabel="#{messages.order_search_canceled_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_canceled_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_canceled_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+                <h:selectOneMenu value="#{middleManRewardCalc.moneyComplete}">
+                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+
+                <h:selectOneMenu value="#{middleManRewardCalc.allStoreOut}">
+                    <f:selectItem itemLabel="#{messages.order_search_allStoreOut_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_allStoreOut_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_allStoreOut_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+                <h:selectOneMenu value="#{middleManRewardCalc.customerConfirm}">
+                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_all}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+
+            </h:panelGrid>
+        </s:decorate>
+
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_search_BETWEEN_createDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{middleManRewardCalc.calcDateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{middleManRewardCalc.calcDateTo}">
+            </rich:calendar>
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="#{panelId}_buttons">
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders" action="#{middleManRewardCalc.refresh}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </h:form>
+</rich:collapsiblePanel>
+
+<h:form>
+    <rich:dataTable id="constainCustomers" value="#{middleManRewardCalc.containCustomers}" var="_customer"
+                    noDataLabel="#{messages.middleMan_reward_customer_empty}" style="width: 100%">
+        <rich:column style="text-align: center">
+            <f:facet name="header">
+                <h:selectBooleanCheckbox id="allCustomerSelectedCheckbox"
+                                         value="#{middleManRewardCalc.allCustomerSelected}">
+                    <a:ajax event="click" render="constainCustomers"/>
+                </h:selectBooleanCheckbox>
+            </f:facet>
+            <h:selectBooleanCheckbox value="#{_customer.selected}">
+                <a:ajax event="click" render="allCustomerSelectedCheckbox"/>
+            </h:selectBooleanCheckbox>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.customer_field_name}
+            </f:facet>
+            <h:outputText style="text-decoration:line-through; color: red;" value=" #{_customer.name}"
+                          rendered="#{not _customer.enable}"/>
+            <h:outputText value=" #{_customer.name}"
+                          rendered="#{_customer.enable}"/>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.customer_field_type}
+            </f:facet>
+            #{dictionary.getWordValue(_customer.type)}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.CustomerArea}
+            </f:facet>
+            #{_customer.customerArea.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.customer_field_level}
+            </f:facet>
+            #{_customer.customerLevel.name}(#{_customer.customerLevel.priority})
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.customer_field_province}
+            </f:facet>
+            #{dictionary.getCityName(_customer.provinceCode)}
+        </rich:column>
+
+    </rich:dataTable>
+
+</h:form>
+<br/>
+<h:form id="allOrderMiddleMoneyCalcType">
+    <s:decorate template="/layout/seam-edit.xhtml">
+        <ui:define name="label">
+            #{messages.orderMiddleMoneyMainCalcType}
+        </ui:define>
+        <h:selectOneMenu value="#{middleManRewardCalc.orderCalcType}">
+            <s:selectItems value="#{middleMoneyCalcTypes}" var="_type"
+                           label="#{messages[_type.name()]}"
+                           noSelectionLabel="#{messages.orderMiddleMoneyCrossCalc}"/>
+            <s:convertEnum/>
+            <a:ajax event="valueChange" render="containOrders,allOrderCalcTypeFields"/>
+        </h:selectOneMenu>
+    </s:decorate>
+
+    <a:outputPanel id="allOrderCalcTypeFields">
+        <a:outputPanel rendered="#{not empty middleManRewardCalc.orderCalcType}">
+            <s:decorate id="allOrderMiddleMoneyRateField" rendered="#{middleManRewardCalc.orderCalcType eq 'TOTAL_MONEY_RATE' }"
+                        template="/layout/seam-edit.xhtml">
+                <ui:define name="label">
+                    #{messages.orderMiddleMoneyRate}
+                </ui:define>
+                <h:inputText required="true" value="#{middleManRewardCalc.allOrderRate}"
+                             label="#{messages.orderMiddleMoneyRate}">
+                    <a:ajax event="blur" render="allOrderMiddleMoneyField,containOrders"/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="allOrderMiddleMoneyField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">
+                    #{messages.orderMiddleMoney}
+                </ui:define>
+                <h:inputText required="true" value="#{middleManRewardCalc.allOrderMiddleMoney}"
+                             label="#{messages.orderMiddleMoney}">
+                     <a:ajax event="blur" render="allOrderMiddleMoneyRateField,containOrders"/>
+                </h:inputText>
+            </s:decorate>
+
+        </a:outputPanel>
+    </a:outputPanel>
+</h:form>
+
+<h:form>
+
+
+    <rich:dataTable id="containOrders" value="#{middleManRewardCalc.resultList}" var="_order" style="width: 100%"
+                    noDataLabel="#{messages.middleMan_reward_order_empty}">
+        <rich:column>
+            <f:facet name="header">
+                <h:selectBooleanCheckbox id="allOrderSelectCheckbox"
+                                         value="#{middleManRewardCalc.allOrderSelected}">
+                    <a:ajax event="click" render="containOrders"/>
+                </h:selectBooleanCheckbox>
+            </f:facet>
+            <h:selectBooleanCheckbox value="#{_order.selected}">
+                <a:ajax event="click" render="allOrderSelectCheckbox"/>
+            </h:selectBooleanCheckbox>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.order_field_id}
+            </f:facet>
+            <h:outputText style="text-decoration:line-through; color: red;" value=" #{_order.id}"
+                          rendered="#{_order.canceled}"/>
+            <h:outputText value=" #{_order.id}"
+                          rendered="#{not _order.canceled}"/>
+        </rich:column>
+
+        <rich:column style="text-align: center;">
+            <f:facet name="header">
+                #{messages.orderMiddleMoneyPayed}
+            </f:facet>
+            <h:selectBooleanCheckbox disabled="true" value="#{_order.middlePayed}"/>
+
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.CustomerArea}
+            </f:facet>
+            #{_order.customer.customerArea.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderCustomer}
+            </f:facet>
+            #{_order.customer.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.order_field_createDate}
+            </f:facet>
+            <h:outputText value="#{_order.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.order_field_emp}
+            </f:facet>
+            #{dictionary.getEmpNameById(_order.orderEmp)}
+        </rich:column>
+
+        <rich:column style="text-align: center">
+            <f:facet name="header">
+                #{messages.order_field_allStoreOut}
+            </f:facet>
+            <h:selectBooleanCheckbox disabled="true" value="#{_order.allStoreOut}"/>
+        </rich:column>
+        <rich:column style="text-align: center">
+            <f:facet name="header">
+                #{messages.order_field_moneyComplete}
+            </f:facet>
+            <h:selectBooleanCheckbox disabled="true" value="#{_order.moneyComplete}"/>
+        </rich:column>
+        <rich:column style="text-align: center">
+            <f:facet name="header">
+                #{messages.order_field_resReceived}
+            </f:facet>
+            <h:selectBooleanCheckbox disabled="true" value="#{_order.resReceived}"/>
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.order_field_payType}
+            </f:facet>
+            #{messages[_order.payType.name()]}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderMoney}
+            </f:facet>
+            <h:outputText value="#{_order.money}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column rendered="#{empty middleManRewardCalc.orderCalcType}">
+            <f:facet name="header">
+                #{messages.order_middle_money_itemCalcType}
+            </f:facet>
+
+            <s:decorate template="/layout/single-edit.xhtml">
+                <h:selectOneMenu value="#{_order.middleMoneyCalcType}">
+                    <s:selectItems value="#{middleMoneyCalcTypes}" var="_type"
+                                   label="#{messages[_type.name()]}"/>
+                    <s:convertEnum/>
+                    <a:ajax event="valueChange" render="containOrders"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+        </rich:column>
+
+        <rich:column rendered="#{empty middleManRewardCalc.orderCalcType}">
+            <f:facet name="header">
+                #{messages.orderMiddleMoneyRate}
+            </f:facet>
+            <s:decorate template="/layout/single-edit.xhtml">
+                <h:inputText value="#{_order.middleRate}" label="#{messages.orderMiddleMoneyRate}"
+                             required="true"
+                             rendered="#{(not empty _order.middleMoneyCalcType) and (_order.middleMoneyCalcType eq 'TOTAL_MONEY_RATE')}">
+                    <a:ajax event="blur" render="containOrders"/>
+                </h:inputText>
+
+            </s:decorate>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderMiddleMoney}
+            </f:facet>
+
+            <h:outputText value="#{_order.middleMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+    </rich:dataTable>
+</h:form>
+
+</ui:define>
+
+</ui:composition>
