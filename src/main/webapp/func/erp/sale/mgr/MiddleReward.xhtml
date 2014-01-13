@@ -442,7 +442,7 @@
             <f:facet name="header">
                 #{messages.order_middle_money_itemCalcType}
             </f:facet>
-            <rich:inplaceSelect style="width: 100%" required="true" value="#{_res.calcType}"
+            <rich:inplaceSelect style="width: 90%" required="true" value="#{_res.calcType}"
                                 defaultLabel="#{messages.order_middle_money_itemCalcType}" rendered="#{_res.selected}">
                 <s:selectItems value="#{itemMiddleMoneyCalcTypes}" var="_type" label="#{messages[_type.name()]}"/>
                 <s:convertEnum/>
@@ -454,7 +454,7 @@
             <f:facet name="header">
                 #{messages.order_middle_money_unit}
             </f:facet>
-            <rich:inplaceSelect style="width: 100%" required="true" value="#{_res.calcUnit}" label="#{messages.order_middle_money_unit}"
+            <rich:inplaceSelect style="width: 90%" required="true" value="#{_res.calcUnit}" label="#{messages.order_middle_money_unit}"
                                 defaultLabel="#{messages.order_middle_money_unit}"
                                 rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'COUNT_FIX')}">
                 <s:selectItems value="#{_res.res.unitGroup.resUnitList}" var="_unit"
@@ -468,7 +468,7 @@
             <f:facet name="header">
                 #{messages.order_middle_money_rate}
             </f:facet>
-            <rich:inplaceInput style="width: 100%" label="#{messages.order_middle_money_rate}"
+            <rich:inplaceInput style="width: 90%" label="#{messages.order_middle_money_rate}"
                                value="#{_res.rate}" required="true"
                                defaultLabel="#{messages.order_middle_money_rate}"
                                rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'COUNT_FIX')}">
@@ -476,7 +476,7 @@
                 <a:ajax event="blur" render="containRes"/>
             </rich:inplaceInput>
 
-            <rich:inplaceInput style="width: 100%" label="#{messages.order_middle_money_rate}"
+            <rich:inplaceInput style="width: 90%" label="#{messages.order_middle_money_rate}"
                                value="#{_res.rate}" required="true"
                                defaultLabel="#{messages.order_middle_money_rate}"
                                rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'MONEY_RATE')}">

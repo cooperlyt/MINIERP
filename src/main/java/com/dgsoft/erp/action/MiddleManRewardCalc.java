@@ -223,6 +223,13 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
     }
 
+    public void allResCheckChange() {
+        for (ResMiddleMoney rmm : getContainReses()) {
+            rmm.setSelected(allResSelected);
+
+        }
+    }
+
     public void allOrderCheckChange() {
         for (CustomerOrder order : getContainOrders()) {
             order.setSelected(allOrderSelected);
