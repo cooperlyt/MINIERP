@@ -1,0 +1,62 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/layout/simpleDataCURD.xhtml">
+
+    <h:outputStylesheet>
+        .leftColumn {
+            vertical-align: top;
+            width: 150px;
+        }
+
+        .rightColumn {
+            vertical-align: top;
+        }
+    </h:outputStylesheet>
+
+    <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
+
+    <ui:param name="dataHome" value="#{storeResHome}"/>
+
+
+    <ui:define name="navigation">
+        <h:form>
+            <rich:panel style="min-height: 460px;">
+                <rich:tree
+                        var="_node"
+                        value="#{allResManagerTree}"
+                        nodeType="#{_node.type}"
+                        onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                        toggleType="client" selectionChangeListener="#{storeResHome.selectionChanged}"
+                        selectionType="ajax" render="details">
+                    <rich:treeNode type="category" expanded="true">
+                        <h:outputText value="#{_node.resCategory.name}" rendered="#{_node.resCategory.enable}"/>
+                        <h:outputText style="text-decoration:line-through; color: red;"
+                              value="#{_node.resCategory.name}" rendered="#{not _node.resCategory.enable}"/>
+                    </rich:treeNode>
+                    <rich:treeNode type="res" expanded="true">
+                        <h:outputText style="text-decoration:line-through; color: red;"
+                                      value="#{_node.res.name}(#{_node.res.code})"
+                                      rendered="#{not _node.res.enable}"/>
+
+                        <h:outputText  value="#{_node.res.name}(#{_node.res.code})"
+                                      rendered="#{_node.res.enable}"/>
+
+                    </rich:treeNode>
+                </rich:tree>
+            </rich:panel>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="editFields">
+
+    </ui:define>
+
+
+</ui:composition>

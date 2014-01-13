@@ -1,11 +1,18 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
+import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
+import org.jboss.seam.annotations.End;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.richfaces.component.UITree;
+import org.richfaces.event.TreeSelectionChangeEvent;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,7 +24,7 @@ import java.util.List;
  */
 
 @Name("storeResHome")
-public class StoreResHome extends ErpEntityHome<StoreRes> {
+public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
 
     public static final String STORE_RES_CODE_RULE_PARAM_NAME = "erp.storeResRegRule";
 
@@ -56,4 +63,26 @@ public class StoreResHome extends ErpEntityHome<StoreRes> {
         return null;
     }
 
+
+
+    @In(create= true)
+    private StoreResFormatFilter storeResFormatFilter;
+
+    @End
+    public void selectionChanged(TreeSelectionChangeEvent selectionChangeEvent) {
+        List<Object> selection = new ArrayList<Object>(selectionChangeEvent.getNewSelection());
+        Object currentSelectionKey = selection.get(0);
+        UITree tree = (UITree) selectionChangeEvent.getSource();
+
+        Object storedKey = tree.getRowKey();
+        tree.setRowKey(currentSelectionKey);
+
+        Object rowData = tree.getRowData();
+        clearInstance();
+        if (rowData instanceof StoreRes){
+            setId(((StoreRes) rowData).getId());
+        }
+
+        tree.setRowKey(storedKey);
+    }
 }

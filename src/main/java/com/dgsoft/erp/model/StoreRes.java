@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
@@ -18,7 +19,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "STORE_RES", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
-public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
+public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<StoreRes> {
 
     private String id;
     private Res res;
@@ -315,6 +316,12 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
             result = o.getId().compareTo(getId());
         }
         return result;
+    }
+
+    @Transient
+    @Override
+    public String getName() {
+        return null;
     }
 
 //
