@@ -12,7 +12,7 @@
     <h:outputStylesheet>
         .leftColumn {
             vertical-align: top;
-            width: 150px;
+            width: 190px;
         }
 
         .rightColumn {
@@ -26,11 +26,11 @@
 
 
     <ui:define name="navigation">
-        <h:form>
+
             <rich:panel style="min-height: 460px;">
                 <rich:tree
                         var="_node"
-                        value="#{allStoreResManagerTree}"
+                        value="#{resCategoryHome.allStoreResManagerTree}"
                         nodeType="#{_node.type}"
                         onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
                         toggleType="client" selectionChangeListener="#{storeResHome.selectionChanged}"
@@ -63,7 +63,7 @@
                     </rich:treeNode>
                 </rich:tree>
             </rich:panel>
-        </h:form>
+
     </ui:define>
 
     <ui:define name="editFields">
@@ -75,6 +75,22 @@
             <h:selectBooleanCheckbox value="#{storeResHome.instance.enable}"
                                      label="#{messages.field_enable}"
                                      disabled="#{not storeResHome.editing}"/>
+        </s:decorate>
+
+
+
+        <s:decorate id="resField" template="/layout/display.xhtml">
+            <ui:define name="label">
+                #{messages.res}
+            </ui:define>
+            <h:outputText value="#{storeResHome.instance.res.name}(#{storeResHome.instance.res.code})"
+                          rendered="#{(not empty storeResHome.instance.res) and ((not storeResHome.editing) or storeResHome.managed)}"/>
+
+            <a:commandLink immediate="true" rendered="#{storeResHome.editing and (not storeResHome.managed)}"
+                           onclick="#{rich:component('resSelectPanel')}.show(); return false;"
+                           value="#{empty storeResHome.instance.res ? messages.plase_select_res : storeResHome.instance.res.name} #{(empty storeResHome.instance.res ? '' : storeResHome.instance.res.code)}">
+
+            </a:commandLink>
         </s:decorate>
 
         <s:decorate id="codeField" template="/layout/edit.xhtml">
@@ -91,22 +107,6 @@
                 <a:ajax event="blur" render="codeField" disabled="#{not storeResHome.editing}"/>
             </h:inputText>
         </s:decorate>
-
-        <s:decorate id="resField" template="/layout/display.xhtml">
-            <ui:define name="label">
-                #{messages.res}
-            </ui:define>
-            <h:outputText value="#{storeResHome.instance.res.name}(#{storeResHome.instance.res.code})"
-                          rendered="#{(not empty storeResHome.instance.res) and ((not storeResHome.editing) or storeResHome.managed)}"/>
-
-            <a:commandLink immediate="true" rendered="#{storeResHome.editing and (not storeResHome.managed)}"
-                           onclick="#{rich:component('resSelectPanel')}.show(); return false;"
-                           value="#{empty storeResHome.instance.res ? messages.plase_select_res : storeResHome.instance.res.name} #{(empty storeResHome.instance.res ? '' : storeResHome.instance.res.code)}">
-
-            </a:commandLink>
-        </s:decorate>
-
-
 
         <a:outputPanel id="storesFormats">
 
@@ -166,7 +166,7 @@
 
 
     <ui:include src="/layout/erp/ResSelectTree.xhtml">
-        <ui:param name="render" value="resField,storesFormats"/>
+        <ui:param name="render" value="resField,storesFormats,codeField"/>
         <ui:param name="treeValue" value="#{allResTree}"/>
     </ui:include>
 

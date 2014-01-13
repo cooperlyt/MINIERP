@@ -10,6 +10,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
@@ -345,7 +346,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
-    @Factory(value = "allStoreResManagerTree", scope = ScopeType.EVENT)
+
     public List<ResCategoryNode> getAllStoreResManagerTree(){
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true ").getResultList();

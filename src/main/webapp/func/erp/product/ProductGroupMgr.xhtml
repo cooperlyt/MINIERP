@@ -53,7 +53,7 @@
     </ui:define>
 
     <ui:define name="navigation">
-        <h:form>
+
             <rich:panel style="min-height: 460px;">
                 <rich:tree value="#{myFactory}" var="_group" nodeType="#{_group.type}"
                            onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
@@ -69,7 +69,7 @@
                     </rich:treeNode>
                 </rich:tree>
             </rich:panel>
-        </h:form>
+
     </ui:define>
 
     <ui:define name="actionToolbar">

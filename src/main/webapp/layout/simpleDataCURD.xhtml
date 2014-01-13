@@ -12,9 +12,9 @@
         <ui:insert/>
 
         <h:panelGrid columns="2" columnClasses="#{bodyColumnClasses}" width="100%">
-            <a:outputPanel id="dataList">
-                <ui:insert name="navigation">
-                    <h:form>
+            <h:form>
+                <a:outputPanel id="dataList">
+                    <ui:insert name="navigation">
                         <rich:dataTable value="#{dataList}" var="_dataItem"
                                         noDataLabel="#{messages.emptyResult}" style="width: 100%">
                             <ui:insert name="listColumns">
@@ -33,9 +33,10 @@
                                 </rich:column>
                             </ui:insert>
                         </rich:dataTable>
-                    </h:form>
-                </ui:insert>
-            </a:outputPanel>
+
+                    </ui:insert>
+                </a:outputPanel>
+            </h:form>
             <h:panelGroup>
                 <h:form id="details">
                     <rich:toolbar id="actions" height="34" itemSeparator="line">
