@@ -141,7 +141,7 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
         this.stocks = stocks;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes", orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "storeRes", cascade = {CascadeType.ALL})
     public Set<Format> getFormats() {
         return this.formats;
     }
@@ -280,8 +280,8 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
         }
         StoreRes other = (StoreRes) obj;
 
-        if ((id != null) && (!"".equals(id.trim()))) {
-            return id.equals(other.getId());
+        if ((getId() != null) && (!"".equals(getId().trim()))) {
+            return getId().equals(other.getId());
         }
 
         if (!getRes().getId().equals(other.getRes().getId())) {
@@ -290,14 +290,14 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
 
         return StoreChangeHelper.sameFormat(other.getFormats(), getFormats())
                 && (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
-                || floatConversionRate.equals(other.floatConversionRate));
+                || getFloatConversionRate().equals(other.getFloatConversionRate()));
     }
 
     @Override
     @Transient
     public int hashCode() {
-        if ((id != null) && (!"".equals(id.trim()))) {
-            return id.hashCode();
+        if ((getId() != null) && (!"".equals(getId().trim()))) {
+            return getId().hashCode();
         }
 
         String result = getRes().getId();
@@ -312,7 +312,7 @@ public class StoreRes implements java.io.Serializable, Comparable<StoreRes> {
     public int compareTo(StoreRes o) {
         int result = getRes().getId().compareTo(o.getRes().getId());
         if (result == 0) {
-            result = o.getId().compareTo(id);
+            result = o.getId().compareTo(getId());
         }
         return result;
     }

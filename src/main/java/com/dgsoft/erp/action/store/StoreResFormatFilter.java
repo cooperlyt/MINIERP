@@ -79,7 +79,7 @@ public class StoreResFormatFilter {
     }
 
 
-    @Observer("erp.storeResLocateSelected")
+    @Observer(value = "erp.storeResLocateSelected",create = false)
     public void selectedStoreRes(StoreRes storeRes){
         this.res = storeRes.getRes();
         generateFloatConvertRateHistory();
@@ -92,7 +92,7 @@ public class StoreResFormatFilter {
     }
 
 
-    @Observer("erp.resLocateSelected")
+    @Observer(value = "erp.resLocateSelected",create = false)
     public void selectedRes(Res res) {
         this.res = res;
         generateFloatConvertRateHistory();

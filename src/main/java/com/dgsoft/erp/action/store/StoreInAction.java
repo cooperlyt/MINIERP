@@ -8,6 +8,7 @@ import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StockChangeModel;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     @In
     protected NumberBuilder numberBuilder;
 
-    @In(required = false)
+    @In(create = true)
     protected StoreResFormatFilter storeResFormatFilter;
 
     //@In(required = false)
@@ -215,7 +216,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
     @Override
     public String addItem() {
         addItemLastState = "";
-        if ((editingItem == null)) {
+        if (editingItem == null) {
             throw new IllegalArgumentException("editingItem state error");
         }
 
@@ -267,14 +268,18 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
 
             storeInItems.add(editingItem);
         }
-
+        editingItem = null;
         //resHome.clearInstance();
         //storeResHome.clearInstance();
         if (storeResHome.isIdDefined()){
+            storeResFormatFilter.selectedStoreRes(storeResHome.getInstance());
             generateStoreInItemByStoreRes(storeResHome.getInstance());
         }else if (resHome.isIdDefined()){
+            storeResFormatFilter.selectedRes(resHome.getInstance());
             generateStoreInItemByRes(resHome.getInstance());
         }
+
+
         addItemLastState = "added";
         return addItemLastState;
     }

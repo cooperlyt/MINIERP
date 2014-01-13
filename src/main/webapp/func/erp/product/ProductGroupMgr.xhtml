@@ -42,6 +42,7 @@
         <a:commandLink value="#{messages.add}" immediate="true"
                        execute="@this"
                        action="#{productGroupHome.createNew}"
+                       onclick="if (#{(not productGroupHome.idDefined) and (empty productGroupHome.selectFactory) }) {alert('#{messages.plaseSelectOperDataFirst}'); return false;}"
                        render="productResDataTable,details,resSelectPanel_form">
             <a:attachQueue requestDelay="0"/>
             <a:param value="#{productGroupHome.instance.id}" assignTo="#{productGroupHome.id}"

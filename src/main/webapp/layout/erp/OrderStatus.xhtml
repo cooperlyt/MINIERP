@@ -1,0 +1,31 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <h:outputText rendered="#{order.moneyComplete}" style="color: green"
+                  value="#{messages.order_field_moneyComplete_true}"  />
+    <h:outputText rendered="#{not order.moneyComplete}"
+                  value="#{messages.order_field_moneyComplete_false}" style="color: red;"/>
+
+    #{' '}/#{' '}
+
+    <h:outputText rendered="#{order.allStoreOut}" style="color: green"
+                  value="#{messages.order_field_allStoreOut_true}"  />
+    <h:outputText rendered="#{not order.allStoreOut}"
+                  value="#{messages.order_field_allStoreOut_false}" style="color: red;"/>
+
+    #{' '}/#{' '}
+
+    <h:outputText rendered="#{order.resReceived}" style="color: green"
+                  value="#{messages.order_field_resReceived_true}"  />
+    <h:outputText rendered="#{not order.resReceived}"
+                  value="#{messages.order_field_resReceived_false}" style="color: red;"/>
+
+
+</ui:composition>

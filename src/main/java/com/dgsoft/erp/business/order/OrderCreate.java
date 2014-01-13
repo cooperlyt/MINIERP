@@ -55,7 +55,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     @In(create = true)
     private StoreResHome storeResHome;
 
-    @In(required = false)
+    @In(create = true)
     protected StoreResFormatFilter storeResFormatFilter;
 
     @In(create = true)

@@ -101,13 +101,4 @@ public class ResHelper {
         return result;
     }
 
-    public enum ItemMiddleMoneyCalcType {
-        NOT_CALC, ITEM_FIX, ITEM_RATE, CROSS_CALC;
-    }
-
-    @Factory(value = "allItemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
-    public ItemMiddleMoneyCalcType[] getItemMiddleMoneyCalcTypes() {
-        return ItemMiddleMoneyCalcType.values();
-    }
-
 }

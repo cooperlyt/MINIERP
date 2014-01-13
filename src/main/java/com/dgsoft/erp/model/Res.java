@@ -271,12 +271,12 @@ public class Res implements java.io.Serializable {
 
         Res otherRes = (Res) other;
 
-        if ((otherRes.id != null) && (!"".equals(otherRes.id.trim()))){
-           return otherRes.id.equals(id);
+        if ((otherRes.getId() != null) && (!"".equals(otherRes.getId().trim()))){
+           return otherRes.getId().equals(getId());
         }
 
-        if (otherRes.code != null && (!"".equals(otherRes.code.trim()))){
-            return otherRes.code.equals(code);
+        if (otherRes.getCode() != null && (!"".equals(otherRes.getCode().trim()))){
+            return otherRes.getCode().equals(getCode());
         }
 
         return false;
@@ -285,7 +285,7 @@ public class Res implements java.io.Serializable {
     @Override
     @Transient
     public int hashCode(){
-        return (id + code).hashCode();
+        return (getId() + getCode()).hashCode();
     }
 
 }

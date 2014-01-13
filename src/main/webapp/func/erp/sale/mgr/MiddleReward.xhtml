@@ -103,7 +103,7 @@
                     <a:outputPanel id="searchButton">
                         <a:commandButton value="#{messages.search}"
                                          execute="@form"
-                                         render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders"
+                                         render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders,containRes"
                                          action="#{middleManRewardCalc.refresh}">
                             <a:attachQueue requestDelay="0"/>
                         </a:commandButton>
@@ -122,12 +122,13 @@
                 <h:selectBooleanCheckbox id="allCustomerSelectedCheckbox"
                                          value="#{middleManRewardCalc.allCustomerSelected}">
                     <a:ajax event="click" listener="#{middleManRewardCalc.allCustomerCheckChange}"
-                            render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders"/>
+                            render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders,containRes"/>
                 </h:selectBooleanCheckbox>
             </f:facet>
             <h:selectBooleanCheckbox value="#{_customer.selected}">
                 <a:ajax event="click" execute="@form" listener="#{middleManRewardCalc.customerCheckChange}"
-                        render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders"/>
+                        render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders,containRes">
+                </a:ajax>
             </h:selectBooleanCheckbox>
         </rich:column>
 
@@ -222,14 +223,15 @@
 </h:form>
 
 <div style="clear: both"/>
-        <h:outputStylesheet>
-            .containOrdersSelectFooter{
-               width: 18px;
-            }
-            .rightAlign{
-                text-align: right;
-            }
-        </h:outputStylesheet>
+<h:outputStylesheet>
+    .containOrdersSelectFooter {
+        width: 18px;
+    }
+
+    .rightAlign {
+        text-align: right;
+    }
+</h:outputStylesheet>
 
 <h:form id="containOrders">
 
@@ -247,6 +249,7 @@
             <h:selectBooleanCheckbox value="#{_order.selected}">
                 <a:ajax event="click" listener="#{middleManRewardCalc.orderCheckChange}"
                         render="containOrders,containRes"/>
+
             </h:selectBooleanCheckbox>
         </rich:column>
         <rich:column>
@@ -270,7 +273,7 @@
             </f:facet>
         </rich:column>
 
-        <rich:column style="text-align: right;">
+        <rich:column style="text-align: right;" width="150px">
             <f:facet name="header">
                 #{messages.orderMoney}
             </f:facet>
@@ -350,24 +353,14 @@
             </f:facet>
             <h:selectBooleanCheckbox disabled="true" value="#{_order.middlePayed}"/>
         </rich:column>
-        <rich:column style="text-align: center">
-            <f:facet name="header">
-                #{messages.order_field_moneyComplete}
-            </f:facet>
-            <h:selectBooleanCheckbox disabled="true" value="#{_order.moneyComplete}"/>
-        </rich:column>
 
-        <rich:column style="text-align: center">
+        <rich:column style="text-align: center;" width="150px">
             <f:facet name="header">
-                #{messages.order_field_allStoreOut}
+                #{messages.order_status}
             </f:facet>
-            <h:selectBooleanCheckbox disabled="true" value="#{_order.allStoreOut}"/>
-        </rich:column>
-        <rich:column style="text-align: center">
-            <f:facet name="header">
-                #{messages.order_field_resReceived}
-            </f:facet>
-            <h:selectBooleanCheckbox disabled="true" value="#{_order.resReceived}"/>
+            <ui:include src="/layout/erp/OrderStatus.xhtml">
+                <ui:param name="order" value="#{_order}"/>
+            </ui:include>
         </rich:column>
 
         <rich:column>
@@ -414,7 +407,94 @@
 <br/>
 
 <h:form id="containRes">
+    <rich:dataTable style="width: 100%" noDataLabel="#{messages.middleMan_reward_res_empty}"
+                    value="#{middleManRewardCalc.containReses}" var="_res">
+        <rich:column style="text-align: center; width: 15px">
+            <f:facet name="header">
+                <h:selectBooleanCheckbox value="#{middleManRewardCalc.allResSelected}">
+                    <a:ajax event="click" render="containRes"/>
+                </h:selectBooleanCheckbox>
+            </f:facet>
+            <h:selectBooleanCheckbox value="#{_res.selected}">
+                <a:ajax event="click" render="containRes"/>
+            </h:selectBooleanCheckbox>
 
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.res_field_code}
+            </f:facet>
+
+            <h:outputText style="text-decoration:line-through; color: red;" value="#{_res.res.code}"
+                          rendered="#{not _res.res.enable}"/>
+            <h:outputText value="#{_res.res.code}"
+                          rendered="#{_res.res.enable}"/>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.res_field_name}
+            </f:facet>
+            #{_res.res.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.order_middle_money_itemCalcType}
+            </f:facet>
+            <rich:inplaceSelect style="width: 100%" required="true" value="#{_res.calcType}"
+                                defaultLabel="#{messages.order_middle_money_itemCalcType}" rendered="#{_res.selected}">
+                <s:selectItems value="#{itemMiddleMoneyCalcTypes}" var="_type" label="#{messages[_type.name()]}"/>
+                <s:convertEnum/>
+                <a:ajax event="selectitem" render="containRes"/>
+            </rich:inplaceSelect>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.order_middle_money_unit}
+            </f:facet>
+            <rich:inplaceSelect style="width: 100%" required="true" value="#{_res.calcUnit}" label="#{messages.order_middle_money_unit}"
+                                defaultLabel="#{messages.order_middle_money_unit}"
+                                rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'COUNT_FIX')}">
+                <s:selectItems value="#{_res.res.unitGroup.resUnitList}" var="_unit"
+                               label="#{messages[_unit.name]}"/>
+                <f:converter converterId="erpEntityConverter"/>
+                <a:ajax event="selectitem" render="containRes"/>
+            </rich:inplaceSelect>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.order_middle_money_rate}
+            </f:facet>
+            <rich:inplaceInput style="width: 100%" label="#{messages.order_middle_money_rate}"
+                               value="#{_res.rate}" required="true"
+                               defaultLabel="#{messages.order_middle_money_rate}"
+                               rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'COUNT_FIX')}">
+                <f:validateDoubleRange minimum="0" maximum="100"/>
+                <a:ajax event="blur" render="containRes"/>
+            </rich:inplaceInput>
+
+            <rich:inplaceInput style="width: 100%" label="#{messages.order_middle_money_rate}"
+                               value="#{_res.rate}" required="true"
+                               defaultLabel="#{messages.order_middle_money_rate}"
+                               rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'MONEY_RATE')}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                 groupingUsed="false"/>
+                <a:ajax event="blur" render="containRes"/>
+            </rich:inplaceInput>
+        </rich:column>
+
+    </rich:dataTable>
+</h:form>
+
+<br/>
+
+<h:form>
+    <a:outputPanel ajaxRendered="true">
+
+    </a:outputPanel>
 </h:form>
 
 </ui:define>

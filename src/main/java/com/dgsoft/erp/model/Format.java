@@ -46,7 +46,7 @@ public class Format implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_RES", nullable = false)
     @NotNull
     public StoreRes getStoreRes() {

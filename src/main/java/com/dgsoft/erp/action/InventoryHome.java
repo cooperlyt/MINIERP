@@ -33,7 +33,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         return Inventory.InventoryType.values();
     }
 
-    @In(required = false)
+    @In(create = true)
     protected StoreResFormatFilter storeResFormatFilter;
 
     @In(create = true)
@@ -374,8 +374,10 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         //resHome.clearInstance();
         //storeResHome.clearInstance();
         if (storeResHome.isIdDefined()){
+            storeResFormatFilter.selectedStoreRes(storeResHome.getInstance());
             generateStoreInItemByStoreRes(storeResHome.getInstance());
         }else if (resHome.isIdDefined()){
+            storeResFormatFilter.selectedRes(resHome.getInstance());
             generateStoreInItemByRes(resHome.getInstance());
         }
         addItemLastState = lastState;

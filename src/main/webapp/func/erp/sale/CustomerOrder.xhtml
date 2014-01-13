@@ -225,23 +225,13 @@
         #{dictionary.getEmpNameById(_order.orderEmp)}
     </rich:column>
 
-    <rich:column style="text-align: center">
+    <rich:column style="text-align: center;">
         <f:facet name="header">
-            #{messages.order_field_allStoreOut}
+            #{messages.order_status}
         </f:facet>
-        <h:selectBooleanCheckbox disabled="true" value="#{_order.allStoreOut}"/>
-    </rich:column>
-    <rich:column style="text-align: center">
-        <f:facet name="header">
-            #{messages.order_field_moneyComplete}
-        </f:facet>
-        <h:selectBooleanCheckbox disabled="true" value="#{_order.moneyComplete}"/>
-    </rich:column>
-    <rich:column style="text-align: center">
-        <f:facet name="header">
-            #{messages.order_field_resReceived}
-        </f:facet>
-        <h:selectBooleanCheckbox disabled="true" value="#{_order.resReceived}"/>
+        <ui:include src="/layout/erp/OrderStatus.xhtml">
+            <ui:param name="order" value="#{_order}"/>
+        </ui:include>
     </rich:column>
 
 

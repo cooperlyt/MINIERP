@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.erp.model.api.BatchOperEntity;
+import com.dgsoft.erp.model.api.ResCount;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -447,5 +448,58 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
         }
     }
 
+    @Transient
+    public Map<StoreRes, ResCount> getAllShipStoreReses() {
+        Map<StoreRes, ResCount> result = new HashMap<StoreRes, ResCount>();
 
+        for (NeedRes nr : getNeedReses()) {
+            for (Dispatch dispatch : nr.getDispatches()) {
+                if (dispatch.getStockChange() != null)
+                    for (StockChangeItem sci : dispatch.getStockChange().getStockChangeItems()) {
+                        ResCount count = result.get(sci.getStoreRes());
+                        if (count == null) {
+                            result.put(sci.getStoreRes(), sci.getResCount());
+                        } else {
+                            count.add(sci.getResCount());
+                        }
+                    }
+            }
+        }
+        return result;
+    }
+
+
+    @Override
+    @Transient
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof CustomerOrder)) {
+            return false;
+        }
+
+        CustomerOrder otherOrder = (CustomerOrder) other;
+
+        if ((otherOrder.getId() != null) && (!"".equals(otherOrder.getId().trim()))) {
+            return otherOrder.getId().equals(getId());
+        }
+
+        return false;
+    }
+
+    @Override
+    @Transient
+    public int hashCode() {
+        if ((getId() != null) && !getId().trim().equals("")){
+            return getId().hashCode();
+        }else{
+            return this.toString().hashCode();
+        }
+
+    }
 }

@@ -48,6 +48,15 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return OrderItem.MiddleMoneyCalcType.values();
     }
 
+    public enum ItemMiddleMoneyCalcType {
+        NOT_CALC, ITEM_FIX, ITEM_RATE, CROSS_CALC;
+    }
+
+    @Factory(value = "allItemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
+    public ItemMiddleMoneyCalcType[] getAllItemMiddleMoneyCalcTypes() {
+        return ItemMiddleMoneyCalcType.values();
+    }
+
     @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)
     public Dispatch.DeliveryType[] getDeliveryTypes() {
         return Dispatch.DeliveryType.values();
@@ -224,32 +233,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
     public Map<StoreRes, ResCount> allShipStoreReses() {
-        Map<StoreRes, ResCount> result = new HashMap<StoreRes, ResCount>();
-
-
-        for (NeedRes nr : getInstance().getNeedReses()) {
-            for (Dispatch dispatch : nr.getDispatches()) {
-                if (dispatch.getStockChange() != null)
-                    for (StockChangeItem sci : dispatch.getStockChange().getStockChangeItems()) {
-                        ResCount count = result.get(sci.getStoreRes());
-                        if (count == null) {
-                            result.put(sci.getStoreRes(), sci.getResCount());
-                        } else {
-                            count.add(sci.getResCount());
-                        }
-                    }
-
-//                for (DispatchItem di : dispatch.getDispatchItems()) {
-//                    ResCount count = result.get(di.getStoreRes());
-//                    if (count == null) {
-//                        result.put(di.getStoreRes(), di.getResCount());
-//                    } else {
-//                        count.add(di.getResCount());
-//                    }
-//                }
-            }
-        }
-        return result;
+        return getInstance().getAllShipStoreReses();
     }
 
     public boolean isAnyOneStoreOut() {

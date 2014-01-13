@@ -68,7 +68,9 @@ public class ResHome extends ErpEntityHome<Res> {
         if (!newFormatDefine.getDataType().equals(FormatDefine.FormatType.WORD)) {
             newFormatDefine.setWordCategory(null);
         }
+
         OrderBeanComparator.addToLast(newFormatDefine, formatDefineList);
+        getInstance().getFormatDefines().add(newFormatDefine);
         newFormatDefine = new FormatDefine();
         actionExecuteState.setLastState("success");
     }
@@ -81,8 +83,7 @@ public class ResHome extends ErpEntityHome<Res> {
     @Override
     protected void initInstance() {
         super.initInstance();
-        formatDefineList = new ArrayList<FormatDefine>(getInstance().getFormatDefines());
-        Collections.sort(formatDefineList, OrderBeanComparator.getInstance());
+        formatDefineList = getInstance().getFormatDefineList();
     }
 
     @Override
@@ -90,13 +91,12 @@ public class ResHome extends ErpEntityHome<Res> {
         if (!isManaged()) {
             getInstance().setResCategory(resCategoryHome.getInstance());
         }
-        getInstance().getFormatDefines().clear();
-        getInstance().getFormatDefines().addAll(formatDefineList);
         return true;
     }
 
     public void deleteFormatDefine() {
         formatDefineList.remove(formatDefine);
+        getInstance().getFormatDefines().remove(formatDefine);
     }
 
     public void upFormatDefine() {

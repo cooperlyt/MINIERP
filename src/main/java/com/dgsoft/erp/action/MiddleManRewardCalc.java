@@ -2,6 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.api.BatchOperEntity;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -9,6 +10,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Credentials;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -31,20 +33,23 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             "customerOrder.moneyComplete = #{middleManRewardCalc.moneyComplete}",
             "customerOrder.middlePayed = #{middleManRewardCalc.containPayed}"};
 
-    private boolean allCustomerSelected = true;
+    private boolean allCustomerSelected = false;
 
-    private boolean allOrderSelected = true;
+    private boolean allOrderSelected = false;
+
+    private boolean allResSelected = false;
 
     private CustomerOrder.MiddleMoneyCalcType orderCalcType;
-
-    public List<Customer> containCustomers;
-
-    public List<CustomerOrder> containOrders;
 
     public BigDecimal allOrderRate;
 
     public BigDecimal allOrderMiddleMoney;
 
+    public List<Customer> containCustomers;
+
+    public List<CustomerOrder> containOrders;
+
+    public List<ResMiddleMoney> containReses;
 
     public MiddleManRewardCalc() {
         setEjbql(EJBQL);
@@ -135,6 +140,15 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
 
     //------------------------------------
+
+    public boolean isAllResSelected() {
+        return allResSelected;
+    }
+
+    public void setAllResSelected(boolean allResSelected) {
+        this.allResSelected = allResSelected;
+    }
+
     public boolean isAllOrderSelected() {
         return allOrderSelected;
     }
@@ -196,32 +210,56 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
     }
 
     public void customerCheckChange() {
-        refreshOrder();
+
+        allCustomerSelected = true;
         for (Customer customer : getContainCustomers()) {
             if (!customer.isSelected()) {
                 allCustomerSelected = false;
-                return;
+                break;
             }
         }
-        allCustomerSelected = true;
+
+        refreshOrder();
+
     }
 
     public void allOrderCheckChange() {
         for (CustomerOrder order : getContainOrders()) {
             order.setSelected(allOrderSelected);
+            if (allOrderSelected) {
+                order.setMiddleMoney(BigDecimal.ZERO);
+                order.setMiddleMoneyCalcType(CustomerOrder.MiddleMoneyCalcType.NOT_CALC);
+                order.setMiddleTotal(null);
+                order.setMiddleRate(null);
+            } else {
+                order.setMiddleMoney(null);
+                order.setMiddleMoneyCalcType(null);
+                order.setMiddleTotal(null);
+                order.setMiddleRate(null);
+            }
         }
         refreshRes();
     }
 
     public void orderCheckChange() {
-        refreshRes();
+        allOrderSelected = true;
         for (CustomerOrder order : getContainOrders()) {
             if (!order.isSelected()) {
                 allOrderSelected = false;
-                return;
+                break;
             }
         }
-        allOrderSelected = true;
+        Set<Res> reses = genContainOrderReses();
+        Set<ResMiddleMoney> removeRmm = new HashSet<ResMiddleMoney>();
+        for (ResMiddleMoney rmm : getContainReses()) {
+            if (!reses.remove(rmm.getRes())) {
+                removeRmm.add(rmm);
+            }
+        }
+        getContainReses().removeAll(removeRmm);
+        for (Res res : reses) {
+            getContainReses().add(new ResMiddleMoney(res));
+        }
     }
 
 
@@ -232,7 +270,12 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
     }
 
     private void refreshRes() {
+        containReses = null;
+        allResSelected = false;
+        refreshItems();
+    }
 
+    private void refreshItems() {
         //TODO
     }
 
@@ -310,7 +353,7 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getSelectOrderTotalMiddleMoney(){
+    public BigDecimal getSelectOrderTotalMiddleMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (CustomerOrder order : getContainOrders()) {
             if (order.isSelected() && (order.getMiddleMoney() != null))
@@ -319,16 +362,113 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         return result;
     }
 
+    public List<ResMiddleMoney> getContainReses() {
+        if (isAnyParameterDirty()) {
+            refresh();
+        }
+
+        initContainReses();
+
+        return containReses;
+    }
+
+    private void initContainReses() {
+        if (containReses == null) {
+
+            containReses = new ArrayList<ResMiddleMoney>();
+            for (Res res : genContainOrderReses()) {
+                containReses.add(new ResMiddleMoney(res));
+            }
+
+        }
+    }
+
+    private Set<Res> genContainOrderReses() {
+        initContainOrders();
+        Set<Res> result = new HashSet<Res>();
+        for (CustomerOrder order : containOrders) {
+            if (order.isSelected()) {
+                for (OrderItem orderItem : order.getAllOrderItemList()) {
+                    result.add(orderItem.getUseRes());
+                }
+            }
+        }
+        return result;
+    }
+
     @Override
     public void refresh() {
-
         super.refresh();
+        refreshOrder();
         containCustomers = null;
-        containOrders = null;
-        allOrderSelected = false;
         allCustomerSelected = false;
+    }
 
+    public static class ResMiddleMoney extends BatchOperEntity {
 
+        private Res res;
+
+        private OrderItem.MiddleMoneyCalcType calcType;
+
+        private ResUnit calcUnit;
+
+        private BigDecimal rate;
+
+        public ResMiddleMoney(Res res) {
+            this.res = res;
+        }
+
+        public Res getRes() {
+            return res;
+        }
+
+        public OrderItem.MiddleMoneyCalcType getCalcType() {
+            return calcType;
+        }
+
+        public void setCalcType(OrderItem.MiddleMoneyCalcType calcType) {
+            this.calcType = calcType;
+        }
+
+        public ResUnit getCalcUnit() {
+            return calcUnit;
+        }
+
+        public void setCalcUnit(ResUnit calcUnit) {
+            this.calcUnit = calcUnit;
+        }
+
+        public BigDecimal getRate() {
+            return rate;
+        }
+
+        public void setRate(BigDecimal rate) {
+            this.rate = rate;
+        }
+
+        @Override
+        @Transient
+        public boolean equals(Object other) {
+            if (other == null) {
+                return false;
+            }
+            if (other == this) {
+                return true;
+            }
+
+            if (!(other instanceof ResMiddleMoney)) {
+                return false;
+            }
+
+            return getRes().equals(((ResMiddleMoney) other).getRes());
+
+        }
+
+        @Override
+        @Transient
+        public int hashCode() {
+            return getRes().hashCode();
+        }
     }
 
 
