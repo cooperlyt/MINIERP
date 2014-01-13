@@ -99,7 +99,7 @@
 
     <page view-id="/func/erp/res/*" login-required="true">
         <restrict>
-            #{s:hasRole('erp.storage.store') or s:hasRole('erp.produce.manager') or s:hasRole('erp.storage.manager')}
+            #{s:hasRole('erp.produce.manager') or s:hasRole('erp.storage.manager')}
         </restrict>
     </page>
 

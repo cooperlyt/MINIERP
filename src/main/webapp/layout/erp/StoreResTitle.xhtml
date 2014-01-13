@@ -14,7 +14,6 @@
                   rendered="#{empty showResName ? true : showResName}"/>
     <a:repeat value="#{storeRes.formatList}" var="_format">
         #{' '}
-        #{_format.formatDefine.name} :
         <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
                       rendered="#{_format.formatDefine.dataType.name() eq 'WORD'}"/>
         <h:outputText value="#{_format.formatValue}"

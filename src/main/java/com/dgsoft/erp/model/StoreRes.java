@@ -4,9 +4,11 @@ package com.dgsoft.erp.model;
 import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
 import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
+import org.jboss.seam.international.StatusMessage;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,11 +21,12 @@ import java.util.*;
  */
 @Entity
 @Table(name = "STORE_RES", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
+@UniqueVerify(name = "code", severity = StatusMessage.Severity.ERROR, field = {"code"})
 public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<StoreRes> {
 
     private String id;
     private Res res;
-    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
+
     private Set<Format> formats = new HashSet<Format>(0);
 
     private String code;
@@ -32,6 +35,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     private BigDecimal floatConversionRate;
 
+    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
@@ -50,6 +54,12 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         this.res = res;
         this.formats = formats;
         enable = true;
+    }
+
+    public StoreRes(String code, boolean enable){
+        this.code = code;
+        this.enable = enable;
+
     }
 
     @Id

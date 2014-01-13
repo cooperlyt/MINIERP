@@ -56,7 +56,7 @@ public class StoreResFormatFilter {
 
     private void generateFloatConvertRateHistory() {
         Set<BigDecimal> result = new HashSet<BigDecimal>();
-        if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+        if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             return;
         }
         DecimalFormat df = new DecimalFormat(res.getUnitGroup().getFloatConvertRateFormat());
@@ -78,21 +78,29 @@ public class StoreResFormatFilter {
         Collections.sort(floatConvertHistoryRates);
     }
 
-
-    @Observer(value = "erp.storeResLocateSelected",create = false)
-    public void selectedStoreRes(StoreRes storeRes){
+    public void selectedStoreRes(StoreRes storeRes, boolean var) {
         this.res = storeRes.getRes();
         generateFloatConvertRateHistory();
         resFormatList = new ArrayList<Format>();
-        for (Format format: storeRes.getFormatList()){
-            resFormatList.add(new Format(format.getFormatDefine(),format.getFormatValue()));
+        for (Format format : storeRes.getFormatList()) {
+            if (var) {
+                resFormatList.add(format);
+            } else
+                resFormatList.add(new Format(format.getFormatDefine(), format.getFormatValue()));
+
             historyValues.put(format.getFormatDefine().getId(), searchHistoryValues(format.getFormatDefine()));
         }
         log.debug("storeResFormatFilter resSelect event comp");
     }
 
 
-    @Observer(value = "erp.resLocateSelected",create = false)
+    @Observer(value = "erp.storeResLocateSelected", create = false)
+    public void selectedStoreRes(StoreRes storeRes) {
+        selectedStoreRes(storeRes, false);
+    }
+
+
+    @Observer(value = "erp.resLocateSelected", create = false)
     public void selectedRes(Res res) {
         this.res = res;
         generateFloatConvertRateHistory();

@@ -16,3 +16,12 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.produce.factor
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.saler.middleManMgr','客户关系人','erp.sale.mgr','','/func/erp/sale/mgr/MiddleManMgr.seam','','100','');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.saler.middleManMgr');
+
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.storeRes','货品管理','erp.res.mgr','','/func/erp/res/StoreResMgr.seam','','10','货品管理');
+
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.storage.manager','erp.data.storeRes');
+
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.produce.manager','erp.data.storeRes');
+
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE ROL_ID = 'erp.storage.store' AND FUN_ID = 'erp.data.res';
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE ROL_ID = 'erp.storage.store'AND FUN_ID ='erp.data.resUnit';

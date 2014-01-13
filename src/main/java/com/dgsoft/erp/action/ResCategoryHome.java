@@ -345,6 +345,18 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
+    @Factory(value = "allStoreResManagerTree", scope = ScopeType.EVENT)
+    public List<ResCategoryNode> getAllStoreResManagerTree(){
+        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true ").getResultList();
+        for (ResCategory resCategory : rootCategories) {
+            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+            generateChildrenNode(rootNode, true, true, true,  EnumSet.allOf(ResCategory.ResType.class));
+            result.add(rootNode);
+        }
+        return result;
+    }
+
     @Factory(value = "allResTree", scope = ScopeType.CONVERSATION)
     public List<ResCategoryNode> getAllResTree(){
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
@@ -358,7 +370,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
     }
 
 
-    @Factory(value = "allResManagerTree", scope = ScopeType.CONVERSATION)
+    @Factory(value = "allResManagerTree", scope = ScopeType.EVENT)
     public List<ResCategoryNode> getAllResManagerTree(){
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true").getResultList();
