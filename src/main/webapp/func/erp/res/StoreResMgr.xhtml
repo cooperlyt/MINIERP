@@ -30,7 +30,7 @@
             <rich:panel style="min-height: 460px;">
                 <rich:tree
                         var="_node"
-                        value="#{resCategoryHome.allStoreResManagerTree}"
+                        value="#{allStoreResManagerTree}"
                         nodeType="#{_node.type}"
                         onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
                         toggleType="client" selectionChangeListener="#{storeResHome.selectionChanged}"

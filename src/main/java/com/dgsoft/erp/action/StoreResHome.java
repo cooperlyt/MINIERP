@@ -32,8 +32,11 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
     public static final String STORE_RES_CODE_RULE_PARAM_NAME = "erp.storeResRegRule";
 
 
-    private String getStoreResId(Res res, Collection<Format> formatList, BigDecimal floatConvertRate) {
-        List<StoreRes> storeResList = getEntityManager().createQuery("select storeRes from StoreRes storeRes where storeRes.res.id = :resId").setParameter("resId", res.getId()).getResultList();
+    private String getStoreResId(Res res, Collection<Format> formatList, BigDecimal floatConvertRate,String exId) {
+        List<StoreRes> storeResList = getEntityManager().createQuery("select storeRes from StoreRes storeRes where storeRes.res.id = :resId and storeRes.id != :exId")
+                .setParameter("resId", res.getId()).setParameter("exId",(exId == null) ? "" : exId).getResultList();
+
+        log.debug("valid stores property count:" + storeResList.size());
         for (StoreRes storeRes : storeResList) {
 
             log.debug("setRes:" + storeRes + "|" + res + "|" + res.getUnitGroup() + "|" + res.getUnitGroup().getType() + "|"
@@ -50,10 +53,11 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
 
     public void setRes(Res res, Collection<Format> formatList, BigDecimal floatConvertRate) {
 
-        String findStoresId = getStoreResId(res, formatList, floatConvertRate);
+        String findStoresId = getStoreResId(res, formatList, floatConvertRate,null);
         if (findStoresId != null) {
             this.setId(findStoresId);
             getInstance();
+            log.debug("setRes if found:" + findStoresId);
             return;
         }
 
@@ -100,7 +104,11 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
             throw new IllegalArgumentException("format size error");
         }
 
+        if (getStoreResId(getInstance().getRes(), getInstance().getFormats(), getInstance().getFloatConversionRate(),getInstance().getId()) != null) {
 
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeRes_same_format_exists");
+            return false;
+        }
         return true;
     }
 
@@ -113,7 +121,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
     @Override
     protected boolean verifyRemoveAvailable() {
 
-
+        lastChangeRes = getInstance().getRes();
         boolean result = getInstance().getStockChangeItems().isEmpty() &&
                 getInstance().getAllocationReses().isEmpty() &&
                 getInstance().getOrderItems().isEmpty() &&
@@ -130,11 +138,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
     protected boolean verifyPersistAvailable() {
         boolean result = verifyEdit();
         if (result) {
-            if (getStoreResId(getInstance().getRes(), getInstance().getFormats(), getInstance().getFloatConversionRate()) != null) {
 
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeRes_same_format_exists");
-                return false;
-            }
         }
         return result;
     }
@@ -159,6 +163,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
                 format.setStoreRes(getInstance());
             }
         }
+        lastChangeRes = getInstance().getRes();
         return true;
     }
 
@@ -171,6 +176,8 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
 
     @In
     protected NumberBuilder numberBuilder;
+
+    private Res lastChangeRes;
 
     @End
     public void selectionChanged(TreeSelectionChangeEvent selectionChangeEvent) {
@@ -188,5 +195,14 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
         }
 
         tree.setRowKey(storedKey);
+    }
+
+    @Observer(value = "org.jboss.seam.afterTransactionSuccess.StoreRes", create = false)
+    public void saveAfter(){
+        log.debug("call StoreRes Home saveAfter");
+        if (lastChangeRes != null){
+            getEntityManager().refresh(lastChangeRes);
+            log.debug("refresh Res:" + lastChangeRes.getName() + " count is:" + lastChangeRes.getStoreReses().size());
+        }
     }
 }

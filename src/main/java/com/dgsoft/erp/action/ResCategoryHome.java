@@ -346,7 +346,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
-
+    @Factory(value = "allStoreResManagerTree", scope = ScopeType.EVENT)
     public List<ResCategoryNode> getAllStoreResManagerTree(){
         List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
         List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true ").getResultList();
