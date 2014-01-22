@@ -4,6 +4,8 @@ package com.dgsoft.erp.model;
 import com.dgsoft.common.OrderBeanComparator;
 import com.dgsoft.erp.model.api.ResTreeNode;
 import com.dgsoft.erp.tools.ResTreeFilter;
+import com.dgsoft.erp.tools.StoreResPropertyTreeNode;
+import com.google.common.collect.Iterators;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,15 +21,15 @@ import java.util.*;
 @Table(name = "RES", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
 public class Res implements java.io.Serializable, ResTreeNode {
 
-	private String id;
-	private ResCategory resCategory;
-	private String name;
-	private String description;
+    private String id;
+    private ResCategory resCategory;
+    private String name;
+    private String description;
     private String code;
-	private boolean enable;
+    private boolean enable;
     private boolean batchMgr;
-	private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
-	private Set<FormatDefine> formatDefines = new HashSet<FormatDefine>(0);
+    private Set<StoreRes> storeReses = new HashSet<StoreRes>(0);
+    private Set<FormatDefine> formatDefines = new HashSet<FormatDefine>(0);
     private Set<Batch> batches = new HashSet<Batch>(0);
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Accounting accounting;
@@ -42,32 +44,32 @@ public class Res implements java.io.Serializable, ResTreeNode {
 
     private Set<ProductGroup> productGroups = new HashSet<ProductGroup>(0);
 
-	public Res() {
-	}
+    public Res() {
+    }
 
     public Res(boolean enable) {
         this.enable = enable;
     }
 
-	public Res(String code, boolean enable) {
-		this.code = code;
-		this.enable = enable;
-	}
+    public Res(String code, boolean enable) {
+        this.code = code;
+        this.enable = enable;
+    }
 
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IN_DEFAULT", nullable = false)
@@ -114,16 +116,16 @@ public class Res implements java.io.Serializable, ResTreeNode {
     }
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CATEGORY", nullable = false)
-	@NotNull
-	public ResCategory getResCategory() {
-		return this.resCategory;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORY", nullable = false)
+    @NotNull
+    public ResCategory getResCategory() {
+        return this.resCategory;
+    }
 
-	public void setResCategory(ResCategory resCategory) {
-		this.resCategory = resCategory;
-	}
+    public void setResCategory(ResCategory resCategory) {
+        this.resCategory = resCategory;
+    }
 
     @Column(name = "CODE", nullable = false, length = 50)
     @NotNull
@@ -137,15 +139,15 @@ public class Res implements java.io.Serializable, ResTreeNode {
     }
 
     @Column(name = "NAME", nullable = false, length = 50)
-	@NotNull
-	@Size(max = 50)
-	public String getName() {
-		return this.name;
-	}
+    @NotNull
+    @Size(max = 50)
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "res")
     public Set<Batch> getBatches() {
@@ -166,23 +168,23 @@ public class Res implements java.io.Serializable, ResTreeNode {
     }
 
     @Column(name = "DESCRIPTION", length = 200)
-	@Size(max = 200)
-	public String getDescription() {
-		return this.description;
-	}
+    @Size(max = 200)
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	@Column(name = "ENABLE", nullable = false)
-	public boolean isEnable() {
-		return this.enable;
-	}
+    @Column(name = "ENABLE", nullable = false)
+    public boolean isEnable() {
+        return this.enable;
+    }
 
-	public void setEnable(boolean enable) {
-		this.enable = enable;
-	}
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 
     @Column(name = "BATCH_MGR", nullable = false)
     public boolean isBatchMgr() {
@@ -194,27 +196,27 @@ public class Res implements java.io.Serializable, ResTreeNode {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "res")
-	public Set<StoreRes> getStoreReses() {
-		return this.storeReses;
-	}
+    public Set<StoreRes> getStoreReses() {
+        return this.storeReses;
+    }
 
-	public void setStoreReses(Set<StoreRes> storeReses) {
-		this.storeReses = storeReses;
-	}
+    public void setStoreReses(Set<StoreRes> storeReses) {
+        this.storeReses = storeReses;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "res", orphanRemoval = true, cascade = {CascadeType.ALL})
-	public Set<FormatDefine> getFormatDefines() {
-		return this.formatDefines;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "res", orphanRemoval = true, cascade = {CascadeType.ALL})
+    public Set<FormatDefine> getFormatDefines() {
+        return this.formatDefines;
+    }
 
-	public void setFormatDefines(Set<FormatDefine> formatDefines) {
-		this.formatDefines = formatDefines;
-	}
+    public void setFormatDefines(Set<FormatDefine> formatDefines) {
+        this.formatDefines = formatDefines;
+    }
 
     @Transient
-    public List<StoreRes> getStoreResList(){
+    public List<StoreRes> getStoreResList() {
         List<StoreRes> result = new ArrayList<StoreRes>(getStoreReses());
-        Collections.sort(result,new Comparator<StoreRes>() {
+        Collections.sort(result, new Comparator<StoreRes>() {
             @Override
             public int compare(StoreRes o1, StoreRes o2) {
                 return o1.getCode().compareTo(o2.getCode());
@@ -224,13 +226,13 @@ public class Res implements java.io.Serializable, ResTreeNode {
     }
 
     @Transient
-    public List<FormatDefine> getFormatDefineList(){
+    public List<FormatDefine> getFormatDefineList() {
         List<FormatDefine> result = new ArrayList<FormatDefine>(getFormatDefines());
         Collections.sort(result, OrderBeanComparator.getInstance());
         return result;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "reses",cascade = {CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "reses", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     public Set<Supplier> getSuppliers() {
         return this.suppliers;
     }
@@ -249,7 +251,7 @@ public class Res implements java.io.Serializable, ResTreeNode {
         this.accounting = accounting;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "reses")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "reses")
     public Set<ProductGroup> getProductGroups() {
         return productGroups;
     }
@@ -260,25 +262,25 @@ public class Res implements java.io.Serializable, ResTreeNode {
 
     @Override
     @Transient
-    public boolean equals(Object other){
-        if (other == null){
+    public boolean equals(Object other) {
+        if (other == null) {
             return false;
         }
-        if (other == this){
+        if (other == this) {
             return true;
         }
 
-        if (!(other instanceof Res)){
+        if (!(other instanceof Res)) {
             return false;
         }
 
         Res otherRes = (Res) other;
 
-        if ((otherRes.getId() != null) && (!"".equals(otherRes.getId().trim()))){
-           return otherRes.getId().equals(getId());
+        if ((otherRes.getId() != null) && (!"".equals(otherRes.getId().trim()))) {
+            return otherRes.getId().equals(getId());
         }
 
-        if (otherRes.getCode() != null && (!"".equals(otherRes.getCode().trim()))){
+        if (otherRes.getCode() != null && (!"".equals(otherRes.getCode().trim()))) {
             return otherRes.getCode().equals(getCode());
         }
 
@@ -287,7 +289,7 @@ public class Res implements java.io.Serializable, ResTreeNode {
 
     @Override
     @Transient
-    public int hashCode(){
+    public int hashCode() {
         return (getId() + getCode()).hashCode();
     }
 
@@ -307,15 +309,12 @@ public class Res implements java.io.Serializable, ResTreeNode {
     private ResTreeFilter treeFilter;
 
     @Transient
-    private List<StoreRes> getChildList(){
-        List<StoreRes> result = new ArrayList<StoreRes>();
+    private List<ResTreeNode> getChildList() {
 
-        if (!treeFilter.getCategoryTypes().equals(ResTreeFilter.StoreResAddType.NOT_ADD)){
-
-
-        }
-
-        return result;
+        if (!treeFilter.getCategoryTypes().equals(ResTreeFilter.StoreResAddType.NOT_ADD)) {
+            return StoreResPropertyTreeNode.genStoreResNodes(this, treeFilter);
+        } else
+            return new ArrayList<ResTreeNode>(0);
     }
 
     @Transient
@@ -327,31 +326,31 @@ public class Res implements java.io.Serializable, ResTreeNode {
     @Transient
     @Override
     public TreeNode getChildAt(int childIndex) {
-        return null;
+        return getChildList().get(childIndex);
     }
 
     @Transient
     @Override
     public int getChildCount() {
-        return 0;
+        return getChildList().size();
     }
 
     @Transient
     @Override
     public TreeNode getParent() {
-        return null;
+        return getResCategory();
     }
 
     @Transient
     @Override
     public int getIndex(TreeNode node) {
-        return 0;
+        return getChildList().indexOf(node);
     }
 
     @Transient
     @Override
     public boolean getAllowsChildren() {
-        return false;
+        return true;
     }
 
     @Transient
@@ -363,6 +362,6 @@ public class Res implements java.io.Serializable, ResTreeNode {
     @Transient
     @Override
     public Enumeration children() {
-        return null;
+        return Iterators.asEnumeration(getChildList().iterator());
     }
 }

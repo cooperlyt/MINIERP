@@ -5,6 +5,7 @@ import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResCategory;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.tools.ResTreeFilter;
 import com.google.common.collect.Iterators;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
@@ -391,6 +392,18 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
             generateChildrenNode(rootNode, true, addStoreRes, false, changeType.getResTypes());
             result.add(rootNode);
         }
+        return result;
+    }
+
+    private List<ResCategory> genResTree(ResTreeFilter filter) {
+        List<ResCategory> result;
+        if (filter.containDisable()){
+            result = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.type in (:changeTypes)")
+                    .setParameter("changeTypes",filter.getCategoryTypes()).getResultList();
+        }else
+            result = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)")
+                .setParameter("changeTypes",filter.getCategoryTypes()).getResultList();
+
         return result;
     }
 
