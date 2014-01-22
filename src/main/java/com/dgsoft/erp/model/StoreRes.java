@@ -56,7 +56,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         enable = true;
     }
 
-    public StoreRes(String code, boolean enable){
+    public StoreRes(String code, boolean enable) {
         this.code = code;
         this.enable = enable;
 
@@ -188,7 +188,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         this.orderItems = orderItems;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "storeRes")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
     public Set<OverlyOut> getOverlyOuts() {
         return overlyOuts;
     }
@@ -255,6 +255,19 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @Transient
+    public boolean seamFormat(Map<FormatDefine, Format> formats) {
+        if (formats.size() != getFormats().size()) {
+            return false;
+        }
+        for (FormatDefine formatDefine : formats.keySet()) {
+            if (!getFormat(formatDefine.getId()).equals(formats.get(formatDefine))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Transient
     public Format getFormat(String formatDefineId) {
         for (Format format : getFormats()) {
             if (format.getFormatDefine().getId().equals(formatDefineId)) {
@@ -275,6 +288,11 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         });
 
         return result;
+    }
+
+    @Transient
+    public String getDisplayFloatRate() {
+        return BigDecimalFormat.format(getFloatConversionRate(), getRes().getUnitGroup().getFloatConvertRateFormat()) + getRes().getUnitGroup().getName();
     }
 
     @Override

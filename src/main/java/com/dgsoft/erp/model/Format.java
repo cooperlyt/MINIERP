@@ -27,7 +27,7 @@ public class Format implements java.io.Serializable {
         this.formatDefine = formatDefine;
     }
 
-    public Format(FormatDefine formatDefine, String formatValue){
+    public Format(FormatDefine formatDefine, String formatValue) {
         this.formatDefine = formatDefine;
         this.formatValue = formatValue;
     }
@@ -46,7 +46,7 @@ public class Format implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_RES", nullable = false)
     @NotNull
     public StoreRes getStoreRes() {
@@ -115,9 +115,56 @@ public class Format implements java.io.Serializable {
     public void setFloatValue(BigDecimal value) {
         if (value != null) {
             setFormatValue(value.toPlainString());
-        }else{
+        } else {
             setFormatValue(null);
         }
+    }
+
+    @Override
+    @Transient
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof Format)) {
+            return false;
+        }
+
+        Format otherRes = (Format) other;
+
+        if ((otherRes.getId() != null) && (!"".equals(otherRes.getId().trim()))
+                && otherRes.getId().equals(getId())) {
+            return true;
+        }
+
+        if (!otherRes.getFormatDefine().getDataType().equals(getFormatDefine().getDataType())) {
+            return false;
+        }
+
+        if ((getFormatDefine().getDataType() != null) &&
+                (otherRes.getFormatDefine().getDataType() != null)) {
+            switch (getFormatDefine().getDataType()) {
+                case WORD:
+                    return getFormatValue().equals(otherRes.getFormatValue());
+                case INTEGER:
+                    return getIntValue().equals(otherRes.getIntValue());
+                case FLOAT:
+                    return getFloatValue().equals(otherRes.getFloatValue());
+            }
+        }
+
+
+        return false;
+    }
+
+    @Override
+    @Transient
+    public int hashCode() {
+        return (getId() + getFormatValue()).hashCode();
     }
 
 

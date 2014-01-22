@@ -2,6 +2,7 @@ package com.dgsoft.erp.tools;
 
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResTreeNode;
+import com.google.common.collect.Iterators;
 
 import javax.swing.tree.TreeNode;
 import java.util.*;
@@ -29,45 +30,51 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
             propertyCount++;
         }
 
+        List<StoreRes> validStoreResList = new ArrayList<StoreRes>();
+
+        for (StoreRes storeRes: res.getStoreResList()){
+            if (storeRes.isEnable() || filter.containDisable()){
+                validStoreResList.add(storeRes);
+            }
+        }
+
         if (filter.getCategoryTypes().equals(ResTreeFilter.StoreResAddType.LIST_ADD) ||
                 (propertyCount <= 1)) {
 
-            for (StoreRes storeRes : res.getStoreResList()) {
+            for (StoreRes storeRes : validStoreResList) {
                 if (storeRes.isEnable() || filter.containDisable()) {
-                    result.add(new StoreResTreeNode(storeRes));
+                    result.add(new StoreResTreeNode(storeRes, res));
                 }
             }
 
         } else {
 
 
+            Map<FormatDefine, Set<Format>> defines = new HashMap<FormatDefine, Set<Format>>();
 
-            Map<FormatDefine,Set<Format>> defines = new HashMap<FormatDefine, Set<Format>>();
+            for (StoreRes storeRes : res.getStoreReses()) {
+                for (Format format : storeRes.getFormats()) {
+                    Set<Format> containsFormat = defines.get(format.getFormatDefine());
+                    if (containsFormat == null) {
+                        containsFormat = new HashSet<Format>();
 
-            for (StoreRes storeRes: res.getStoreReses()){
-               for(Format format: storeRes.getFormats()){
-                   Set<Format> containsFormat = defines.get(format.getFormatDefine());
-                   if (containsFormat == null){
-                       containsFormat = new HashSet<Format>();
+                        defines.put(format.getFormatDefine(), containsFormat);
+                    }
+                    containsFormat.add(format);
 
-                       defines.put(format.getFormatDefine(),containsFormat);
-                   }
-                   containsFormat.add(format);
-
-               }
+                }
             }
-
 
 
             FormatDefine define = null;
 
-            StoreResPropertyTreeNode treeNode = null;
+            List<StoreResPropertyTreeNode> treeNodes = null;
 
             for (int i = 0; i < propertyCount; i++) {
-                if (i == (propertyCount - 1)){
-                    if (res.getFormatDefines().size() <= i){
+                if (i == (propertyCount - 1)) {
+                    if (res.getFormatDefines().size() <= i) {
                         define = null;
-                    }else{
+                    } else {
                         define = res.getFormatDefineList().get(i);
                     }
                     break;
@@ -75,24 +82,44 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                 define = res.getFormatDefineList().get(i);
 
 
-
-                if (treeNode == null){
-                    treeNode = new StoreResPropertyTreeNode(define);
-                    result.add(treeNode);
-                }else{
-
+                if (treeNodes == null) {
+                    treeNodes = new ArrayList<StoreResPropertyTreeNode>();
+                    for (Format f : defines.get(define)) {
+                        StoreResPropertyTreeNode srptn = new StoreResPropertyTreeNode(f, res);
+                        treeNodes.add(srptn);
+                        result.add(srptn);
+                    }
+                } else {
+                    List<StoreResPropertyTreeNode> childNodes = new ArrayList<StoreResPropertyTreeNode>();
+                    for (StoreResPropertyTreeNode parentNode : treeNodes) {
+                        for (Format f : defines.get(define)) {
+                            StoreResPropertyTreeNode newNode = new StoreResPropertyTreeNode(f, parentNode);
+                            childNodes.add(newNode);
+                            parentNode.addChild(newNode);
+                        }
+                    }
+                    treeNodes = childNodes;
                 }
-
-
-
-
-
             }
 
-            if (define == null){
-
+            for (StoreRes sr : validStoreResList) {
+                boolean find = false;
+                for (StoreResPropertyTreeNode node : treeNodes) {
+                    if (sr.seamFormat(node.getFormats())) {
+                        node.addChild(new StoreResTreeNode(sr, node, (define == null) ? sr.getDisplayFloatRate() : define.getName()));
+                        find = true;
+                        break;
+                    }
+                }
+                if (!find){
+                    throw  new IllegalArgumentException("storeRes not in tree:" + sr);
+                }
             }
 
+            for (ResTreeNode node: result){
+                ((StoreResPropertyTreeNode)node).clean();
+
+            }
         }
 
 
@@ -105,13 +132,17 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
         private String title = null;
 
-        public StoreResTreeNode(StoreRes storeRes) {
+        private TreeNode parent;
+
+        public StoreResTreeNode(StoreRes storeRes, TreeNode parent) {
             this.storeRes = storeRes;
+            this.parent = parent;
         }
 
-        public StoreResTreeNode(StoreRes storeRes, String title) {
+        public StoreResTreeNode(StoreRes storeRes, TreeNode parent, String title) {
             this.storeRes = storeRes;
             this.title = title;
+            this.parent = parent;
         }
 
         @Override
@@ -121,7 +152,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
         @Override
         public String getNodeType() {
-            return null;
+            return "storeRes";
         }
 
         @Override
@@ -141,7 +172,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
         @Override
         public TreeNode getParent() {
-            return null;
+            return parent;
         }
 
         @Override
@@ -156,7 +187,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
         @Override
         public boolean isLeaf() {
-            return false;
+            return true;
         }
 
         @Override
@@ -165,21 +196,50 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
         }
     }
 
-    public StoreResPropertyTreeNode(FormatDefine define) {
-        this.define = define;
+    public Map<FormatDefine, Format> getFormats() {
+        Map<FormatDefine, Format> result;
+        if (getParent() instanceof StoreResPropertyTreeNode) {
+            result = ((StoreResPropertyTreeNode) getParent()).getFormats();
+        } else {
+            result = new HashMap<FormatDefine, Format>();
+        }
+        result.put(format.getFormatDefine(), format);
+        return result;
     }
 
-    private FormatDefine define;
+    private Format format;
 
-    private List<ResTreeNode> clildList = new ArrayList<ResTreeNode>();
+    private TreeNode parent;
 
-    public void addChild(ResTreeNode node){
-        clildList.add(node);
+    public StoreResPropertyTreeNode(Format format, TreeNode parent) {
+        this.format = format;
+        this.parent = parent;
+    }
+
+
+    public void clean(){
+
+        List<ResTreeNode> removeNode = new ArrayList<ResTreeNode>();
+        for (ResTreeNode childNode: childList){
+            if (childNode instanceof StoreResPropertyTreeNode){
+                ((StoreResPropertyTreeNode) childNode).clean();
+            }
+            if (childNode.getChildCount() == 0){
+                removeNode.add(childNode);
+            }
+        }
+        childList.removeAll(removeNode);
+    }
+
+    private List<ResTreeNode> childList = new ArrayList<ResTreeNode>();
+
+    public void addChild(ResTreeNode node) {
+        childList.add(node);
     }
 
     @Override
     public Object getData() {
-        return define;
+        return format;
     }
 
     @Override
@@ -194,27 +254,27 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
     @Override
     public TreeNode getChildAt(int childIndex) {
-        return null;
+        return childList.get(childIndex);
     }
 
     @Override
     public int getChildCount() {
-        return 0;
+        return childList.size();
     }
 
     @Override
     public TreeNode getParent() {
-        return null;
+        return parent;
     }
 
     @Override
     public int getIndex(TreeNode node) {
-        return 0;
+        return childList.indexOf(node);
     }
 
     @Override
     public boolean getAllowsChildren() {
-        return false;
+        return true;
     }
 
     @Override
@@ -224,6 +284,6 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
     @Override
     public Enumeration children() {
-        return null;
+        return Iterators.asEnumeration(childList.iterator());
     }
 }

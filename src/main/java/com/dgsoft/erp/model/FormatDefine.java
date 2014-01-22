@@ -107,4 +107,38 @@ public class FormatDefine implements java.io.Serializable,OrderModel {
 		this.formats = formats;
 	}
 
+    @Override
+    @Transient
+    public boolean equals(Object other){
+        if (other == null){
+            return false;
+        }
+        if (other == this){
+            return true;
+        }
+
+        if (!(other instanceof FormatDefine)){
+            return false;
+        }
+
+        FormatDefine otherRes = (FormatDefine) other;
+
+        if ((otherRes.getId() != null) && (!"".equals(otherRes.getId().trim()))){
+            return otherRes.getId().equals(getId());
+        }
+
+
+        return false;
+    }
+
+    @Override
+    @Transient
+    public int hashCode(){
+        if ((getId() != null) && (!"".equals(getId().trim()))){
+            return getId().hashCode();
+        }else{
+            return super.hashCode();
+        }
+    }
+
 }
