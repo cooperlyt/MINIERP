@@ -1,9 +1,13 @@
 package com.dgsoft.erp.model;
 // Generated Sep 25, 2013 4:34:50 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.ResTreeNode;
+import com.dgsoft.erp.tools.ResTreeFilter;
+import com.google.common.collect.Iterators;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.swing.tree.TreeNode;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
@@ -13,7 +17,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "RES_CATEGORY", catalog = "MINI_ERP")
-public class ResCategory implements java.io.Serializable {
+public class ResCategory implements java.io.Serializable, ResTreeNode {
 
     public enum ResType {
         PRODUCT, SEMI_PRODUCT, MATERIAL, WORK_IN_PROCESS,CONSUMABLE,OUTER_MATERIAL;
@@ -171,4 +175,94 @@ public class ResCategory implements java.io.Serializable {
     }
 
 
+    @Transient
+    private ResTreeFilter treeFilter;
+
+    @Transient
+    private List<ResTreeNode> getChildList(){
+        List<ResTreeNode> result = new ArrayList<ResTreeNode>();
+        for(ResCategory category: getResCategoryList()){
+            if (category.isEnable() || treeFilter.containDisable()){
+                category.setTreeFilter(treeFilter);
+                result.add(category);
+            }
+        }
+
+        if (treeFilter.isAddRes()){
+            for(Res res: getResList()){
+                if (res.isEnable() || treeFilter.containDisable()){
+                    res.setTreeFilter(treeFilter);
+                    result.add(res);
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+    @Transient
+    @Override
+    public Object getData() {
+        return this;
+    }
+
+    @Transient
+    @Override
+    public String getNodeType() {
+        return "category";
+    }
+
+    @Transient
+    @Override
+    public void setTreeFilter(ResTreeFilter treeFilter) {
+        this.treeFilter = treeFilter;
+    }
+
+    @Transient
+    @Override
+    public TreeNode getChildAt(int childIndex) {
+        return getChildList().get(childIndex);
+    }
+
+    @Transient
+    @Override
+    public int getChildCount() {
+        return getChildList().size();
+    }
+
+    @Transient
+    @Override
+    public TreeNode getParent() {
+        if (isRoot()){
+            return null;
+        }else{
+            return getResCategory();
+        }
+
+    }
+
+    @Transient
+    @Override
+    public int getIndex(TreeNode node) {
+        return getChildList().indexOf(node);
+    }
+
+    @Transient
+    @Override
+    public boolean getAllowsChildren() {
+        return true;
+    }
+
+    @Transient
+    @Override
+    public boolean isLeaf() {
+        return false;
+    }
+
+    @Transient
+    @Override
+    public Enumeration children() {
+        return Iterators.asEnumeration(getChildList().iterator());
+    }
 }

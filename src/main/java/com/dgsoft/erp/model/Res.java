@@ -2,9 +2,12 @@ package com.dgsoft.erp.model;
 // Generated Sep 25, 2013 4:34:50 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.OrderBeanComparator;
+import com.dgsoft.erp.model.api.ResTreeNode;
+import com.dgsoft.erp.tools.ResTreeFilter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.swing.tree.TreeNode;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
@@ -14,7 +17,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "RES", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
-public class Res implements java.io.Serializable {
+public class Res implements java.io.Serializable, ResTreeNode {
 
 	private String id;
 	private ResCategory resCategory;
@@ -288,4 +291,78 @@ public class Res implements java.io.Serializable {
         return (getId() + getCode()).hashCode();
     }
 
+    @Transient
+    @Override
+    public Object getData() {
+        return this;
+    }
+
+    @Transient
+    @Override
+    public String getNodeType() {
+        return "res";
+    }
+
+    @Transient
+    private ResTreeFilter treeFilter;
+
+    @Transient
+    private List<StoreRes> getChildList(){
+        List<StoreRes> result = new ArrayList<StoreRes>();
+
+        if (!treeFilter.getCategoryTypes().equals(ResTreeFilter.StoreResAddType.NOT_ADD)){
+
+
+        }
+
+        return result;
+    }
+
+    @Transient
+    @Override
+    public void setTreeFilter(ResTreeFilter treeFilter) {
+        this.treeFilter = treeFilter;
+    }
+
+    @Transient
+    @Override
+    public TreeNode getChildAt(int childIndex) {
+        return null;
+    }
+
+    @Transient
+    @Override
+    public int getChildCount() {
+        return 0;
+    }
+
+    @Transient
+    @Override
+    public TreeNode getParent() {
+        return null;
+    }
+
+    @Transient
+    @Override
+    public int getIndex(TreeNode node) {
+        return 0;
+    }
+
+    @Transient
+    @Override
+    public boolean getAllowsChildren() {
+        return false;
+    }
+
+    @Transient
+    @Override
+    public boolean isLeaf() {
+        return false;
+    }
+
+    @Transient
+    @Override
+    public Enumeration children() {
+        return null;
+    }
 }
