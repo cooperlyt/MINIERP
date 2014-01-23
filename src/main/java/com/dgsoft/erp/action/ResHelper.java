@@ -8,10 +8,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -64,6 +61,24 @@ public class ResHelper {
             }
         }
         return result;
+    }
+
+
+    public static boolean sameFormat(Collection<Format> formatList1, Collection<Format> formatList2) {
+        if (formatList1.size() != formatList2.size()) {
+            return false;
+        }
+
+        Map<FormatDefine, Format> format1Values = new HashMap<FormatDefine, Format>();
+        for (Format format : formatList1) {
+            format1Values.put(format.getFormatDefine(), format);
+        }
+        for (Format format : formatList2) {
+            if (!format1Values.get(format.getFormatDefine()).equals(format)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<OrderItem> totalOrderItem(List<OrderItem> items) {

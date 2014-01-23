@@ -32,4 +32,9 @@ public class ResManagerTreeFilter implements ResTreeFilter{
         return true;
     }
 
+    @Override
+    public boolean expandedDefault() {
+        return true;
+    }
+
 }

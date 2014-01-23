@@ -1,9 +1,8 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.model.Stock;
-import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.tools.StoreResPropertyTreeNode;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -121,15 +120,15 @@ public class StockList extends ErpEntityQuery<Stock> {
         storeResId = null;
         selectedTitle = null;
         selectedStoreRes = null;
-        if (selected instanceof ResCategoryHome.ResCategoryNode) {
-            resCategoryId = ((ResCategoryHome.ResCategoryNode) selected).getResCategory().getId();
-            selectedTitle = ((ResCategoryHome.ResCategoryNode) selected).getResCategory().getName();
-        } else if (selected instanceof ResCategoryHome.ResNode) {
-            resId = ((ResCategoryHome.ResNode) selected).getRes().getId();
-            selectedTitle = ((ResCategoryHome.ResNode) selected).getRes().getName();
-        } else if (selected instanceof ResCategoryHome.StoreResNode) {
-            storeResId = ((ResCategoryHome.StoreResNode) selected).getStoreRes().getId();
-            selectedStoreRes = ((ResCategoryHome.StoreResNode) selected).getStoreRes();
+        if (selected instanceof ResCategory) {
+            resCategoryId = ((ResCategory) selected).getId();
+            selectedTitle = ((ResCategory) selected).getName();
+        } else if (selected instanceof Res) {
+            resId = ((Res) selected).getId();
+            selectedTitle = ((Res) selected).getName();
+        } else if (selected instanceof StoreResPropertyTreeNode.StoreResTreeNode) {
+            storeResId = ((StoreResPropertyTreeNode.StoreResTreeNode) selected).getStoreRes().getId();
+            selectedStoreRes = ((StoreResPropertyTreeNode.StoreResTreeNode) selected).getStoreRes();
         }
     }
 

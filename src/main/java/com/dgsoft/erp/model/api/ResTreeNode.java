@@ -16,5 +16,13 @@ public interface ResTreeNode extends TreeNode {
 
     public String getNodeType();
 
-    public void setTreeFilter(ResTreeFilter treeFilter);
+    //public void setTreeFilter(ResTreeFilter treeFilter);
+
+    public ResTreeFilter getTreeFilter();
+
+
+    public boolean isExpanded();
+
+    public void setExpanded(boolean expanded);
+
 }

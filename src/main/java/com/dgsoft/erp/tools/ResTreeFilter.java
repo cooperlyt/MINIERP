@@ -26,5 +26,7 @@ public interface ResTreeFilter {
 
     public abstract boolean isAddRes();
 
+    public abstract boolean expandedDefault();
+
 
 }

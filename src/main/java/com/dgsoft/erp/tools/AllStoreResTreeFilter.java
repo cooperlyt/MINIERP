@@ -17,4 +17,9 @@ public class AllStoreResTreeFilter extends StoreResManagerTreeFilter{
         return false;
     }
 
+
+    @Override
+    public boolean expandedDefault() {
+        return false;
+    }
 }

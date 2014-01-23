@@ -16,4 +16,10 @@ public class AllResTreeFilter extends ResManagerTreeFilter {
     public boolean containDisable() {
         return false;
     }
+
+    @Override
+    public boolean expandedDefault() {
+        return false;
+    }
+
 }

@@ -306,21 +306,36 @@ public class Res implements java.io.Serializable, ResTreeNode {
     }
 
     @Transient
-    private ResTreeFilter treeFilter;
-
-    @Transient
     private List<ResTreeNode> getChildList() {
 
-        if (!treeFilter.getCategoryTypes().equals(ResTreeFilter.StoreResAddType.NOT_ADD)) {
-            return StoreResPropertyTreeNode.genStoreResNodes(this, treeFilter);
+        if (!getTreeFilter().getCategoryTypes().equals(ResTreeFilter.StoreResAddType.NOT_ADD)) {
+            return StoreResPropertyTreeNode.genStoreResNodes(this, getTreeFilter());
         } else
             return new ArrayList<ResTreeNode>(0);
     }
 
     @Transient
     @Override
-    public void setTreeFilter(ResTreeFilter treeFilter) {
-        this.treeFilter = treeFilter;
+    public ResTreeFilter getTreeFilter() {
+       return getResCategory().getTreeFilter();
+    }
+
+    @Transient
+    private Boolean expanded = null;
+
+    @Transient
+    @Override
+    public boolean isExpanded() {
+        if (expanded == null){
+            expanded = getTreeFilter().expandedDefault();
+        }
+        return expanded;
+    }
+
+    @Transient
+    @Override
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 
     @Transient

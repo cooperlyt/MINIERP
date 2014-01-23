@@ -191,8 +191,8 @@
                        onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
                        toggleType="client"
                        selectionType="ajax">
-                <rich:treeNode expanded="#{true}">
-                    #{_node.resCategory.name}
+                <rich:treeNode expanded="#{_node.expanded}">
+                    #{_node.data.name}
                 </rich:treeNode>
             </rich:tree>
         </h:form>

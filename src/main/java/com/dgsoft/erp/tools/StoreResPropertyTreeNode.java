@@ -1,9 +1,12 @@
 package com.dgsoft.erp.tools;
 
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResTreeNode;
 import com.google.common.collect.Iterators;
+import org.jboss.seam.log.Logging;
 
+import javax.persistence.Transient;
 import javax.swing.tree.TreeNode;
 import java.util.*;
 
@@ -32,8 +35,8 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
         List<StoreRes> validStoreResList = new ArrayList<StoreRes>();
 
-        for (StoreRes storeRes: res.getStoreResList()){
-            if (storeRes.isEnable() || filter.containDisable()){
+        for (StoreRes storeRes : res.getStoreResList()) {
+            if (storeRes.isEnable() || filter.containDisable()) {
                 validStoreResList.add(storeRes);
             }
         }
@@ -59,6 +62,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                         containsFormat = new HashSet<Format>();
 
                         defines.put(format.getFormatDefine(), containsFormat);
+                        Logging.getLog(StoreResPropertyTreeNode.class).debug("create FormatDefine:" + format.getFormatDefine().getName());
                     }
                     containsFormat.add(format);
 
@@ -84,19 +88,39 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
                 if (treeNodes == null) {
                     treeNodes = new ArrayList<StoreResPropertyTreeNode>();
-                    for (Format f : defines.get(define)) {
-                        StoreResPropertyTreeNode srptn = new StoreResPropertyTreeNode(f, res);
-                        treeNodes.add(srptn);
-                        result.add(srptn);
+
+                    if (defines.get(define) != null) {
+                        Logging.getLog(StoreResPropertyTreeNode.class).debug("gen root node define:" + define.getName() + "-" + defines.get(define).size());
+                        for (Format f : defines.get(define)) {
+                            StoreResPropertyTreeNode srptn = new StoreResPropertyTreeNode(f, res);
+                            treeNodes.add(srptn);
+                            result.add(srptn);
+                        }
                     }
+                    StoreResPropertyTreeNode srptn = new StoreResPropertyTreeNode(define, res);
+                    treeNodes.add(srptn);
+                    result.add(srptn);
+
                 } else {
                     List<StoreResPropertyTreeNode> childNodes = new ArrayList<StoreResPropertyTreeNode>();
                     for (StoreResPropertyTreeNode parentNode : treeNodes) {
-                        for (Format f : defines.get(define)) {
-                            StoreResPropertyTreeNode newNode = new StoreResPropertyTreeNode(f, parentNode);
-                            childNodes.add(newNode);
-                            parentNode.addChild(newNode);
+
+                        if (defines.get(define) != null) {
+
+                            for (Format f : defines.get(define)) {
+                                StoreResPropertyTreeNode newNode = new StoreResPropertyTreeNode(f, parentNode);
+                                childNodes.add(newNode);
+                                parentNode.addChild(newNode);
+                                Logging.getLog(StoreResPropertyTreeNode.class).debug("add format :" + f.getFormatValue() + "to" + parentNode.getFormatDefine().getName());
+                            }
+
                         }
+
+                        StoreResPropertyTreeNode newNode = new StoreResPropertyTreeNode(define, parentNode);
+                        childNodes.add(newNode);
+                        parentNode.addChild(newNode);
+
+
                     }
                     treeNodes = childNodes;
                 }
@@ -105,21 +129,30 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
             for (StoreRes sr : validStoreResList) {
                 boolean find = false;
                 for (StoreResPropertyTreeNode node : treeNodes) {
-                    if (sr.seamFormat(node.getFormats())) {
+                    if (ResHelper.sameFormat(node.getFormats().values(), sr.getFormats())) {
                         node.addChild(new StoreResTreeNode(sr, node, (define == null) ? sr.getDisplayFloatRate() : define.getName()));
                         find = true;
                         break;
                     }
                 }
-                if (!find){
-                    throw  new IllegalArgumentException("storeRes not in tree:" + sr);
+                if (!find) {
+                    throw new IllegalArgumentException("storeRes not in tree:" + sr);
                 }
             }
 
-            for (ResTreeNode node: result){
-                ((StoreResPropertyTreeNode)node).clean();
-
+            for (ResTreeNode node : result) {
+                ((StoreResPropertyTreeNode) node).clean();
             }
+
+            List<ResTreeNode> newResult = new ArrayList<ResTreeNode>();
+            for (ResTreeNode node : result) {
+                if (node.getChildCount() > 0) {
+                    newResult.add(node);
+                }
+            }
+
+            result = newResult;
+
         }
 
 
@@ -132,17 +165,29 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
         private String title = null;
 
-        private TreeNode parent;
+        private ResTreeNode parent;
 
-        public StoreResTreeNode(StoreRes storeRes, TreeNode parent) {
+        public StoreResTreeNode(StoreRes storeRes, ResTreeNode parent) {
             this.storeRes = storeRes;
             this.parent = parent;
         }
 
-        public StoreResTreeNode(StoreRes storeRes, TreeNode parent, String title) {
+        public StoreResTreeNode(StoreRes storeRes, ResTreeNode parent, String title) {
             this.storeRes = storeRes;
             this.title = title;
             this.parent = parent;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public StoreRes getStoreRes() {
+            return storeRes;
+        }
+
+        public void setStoreRes(StoreRes storeRes) {
+            this.storeRes = storeRes;
         }
 
         @Override
@@ -156,8 +201,26 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
         }
 
         @Override
-        public void setTreeFilter(ResTreeFilter treeFilter) {
+        public ResTreeFilter getTreeFilter() {
+            return parent.getTreeFilter();
+        }
 
+        @Transient
+        private Boolean expanded = null;
+
+        @Transient
+        @Override
+        public boolean isExpanded() {
+            if (expanded == null) {
+                expanded = getTreeFilter().expandedDefault();
+            }
+            return expanded;
+        }
+
+        @Transient
+        @Override
+        public void setExpanded(boolean expanded) {
+            this.expanded = expanded;
         }
 
         @Override
@@ -203,35 +266,69 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
         } else {
             result = new HashMap<FormatDefine, Format>();
         }
-        result.put(format.getFormatDefine(), format);
+        if (format != null)
+            result.put(format.getFormatDefine(), format);
         return result;
     }
 
     private Format format;
 
-    private TreeNode parent;
+    private ResTreeNode parent;
 
-    public StoreResPropertyTreeNode(Format format, TreeNode parent) {
-        this.format = format;
-        this.parent = parent;
+    private FormatDefine formatDefine;
+
+    public FormatDefine getFormatDefine() {
+        return formatDefine;
     }
 
 
-    public void clean(){
+    public StoreResPropertyTreeNode(FormatDefine formatDefine, ResTreeNode parent) {
+        this.formatDefine = formatDefine;
+        this.parent = parent;
+    }
+
+    public StoreResPropertyTreeNode(Format format, ResTreeNode parent) {
+        this.format = format;
+        this.parent = parent;
+        this.formatDefine = format.getFormatDefine();
+    }
+
+
+    public void clean() {
 
         List<ResTreeNode> removeNode = new ArrayList<ResTreeNode>();
-        for (ResTreeNode childNode: childList){
-            if (childNode instanceof StoreResPropertyTreeNode){
+        for (ResTreeNode childNode : childList) {
+            if (childNode instanceof StoreResPropertyTreeNode) {
                 ((StoreResPropertyTreeNode) childNode).clean();
+                if (childNode.getChildCount() == 0) {
+                    removeNode.add(childNode);
+                }
             }
-            if (childNode.getChildCount() == 0){
-                removeNode.add(childNode);
-            }
+
         }
         childList.removeAll(removeNode);
     }
 
     private List<ResTreeNode> childList = new ArrayList<ResTreeNode>();
+
+
+    @Transient
+    private Boolean expanded = null;
+
+    @Transient
+    @Override
+    public boolean isExpanded() {
+        if (expanded == null) {
+            expanded = getTreeFilter().expandedDefault();
+        }
+        return expanded;
+    }
+
+    @Transient
+    @Override
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
 
     public void addChild(ResTreeNode node) {
         childList.add(node);
@@ -248,8 +345,8 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
     }
 
     @Override
-    public void setTreeFilter(ResTreeFilter treeFilter) {
-
+    public ResTreeFilter getTreeFilter() {
+        return parent.getTreeFilter();
     }
 
     @Override

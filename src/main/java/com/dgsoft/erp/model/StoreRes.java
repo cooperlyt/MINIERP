@@ -5,6 +5,7 @@ import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
 import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
@@ -255,19 +256,6 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @Transient
-    public boolean seamFormat(Map<FormatDefine, Format> formats) {
-        if (formats.size() != getFormats().size()) {
-            return false;
-        }
-        for (FormatDefine formatDefine : formats.keySet()) {
-            if (!getFormat(formatDefine.getId()).equals(formats.get(formatDefine))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Transient
     public Format getFormat(String formatDefineId) {
         for (Format format : getFormats()) {
             if (format.getFormatDefine().getId().equals(formatDefineId)) {
@@ -317,7 +305,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
             return false;
         }
 
-        return StoreChangeHelper.sameFormat(other.getFormats(), getFormats())
+        return ResHelper.sameFormat(other.getFormats(), getFormats())
                 && (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || getFloatConversionRate().equals(other.getFloatConversionRate()));
     }

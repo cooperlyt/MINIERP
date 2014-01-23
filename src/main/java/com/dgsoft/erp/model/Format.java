@@ -164,7 +164,7 @@ public class Format implements java.io.Serializable {
     @Override
     @Transient
     public int hashCode() {
-        return (getId() + getFormatValue()).hashCode();
+        return (getFormatDefine().getId() + getFormatValue()).hashCode();
     }
 
 

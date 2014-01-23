@@ -7,6 +7,7 @@ import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.action.store.StoreChangeHelper;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.tools.StoreResPropertyTreeNode;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -41,7 +42,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
 
             log.debug("setRes:" + storeRes + "|" + res + "|" + res.getUnitGroup() + "|" + res.getUnitGroup().getType() + "|"
                     + storeRes.getFloatConversionRate());
-            if (StoreChangeHelper.sameFormat(storeRes.getFormats(), formatList)
+            if (ResHelper.sameFormat(storeRes.getFormats(), formatList)
                     && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                     || (storeRes.getFloatConversionRate().compareTo(floatConvertRate) == 0))) {
 
@@ -190,8 +191,8 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
 
         Object rowData = tree.getRowData();
         clearInstance();
-        if (rowData instanceof ResCategoryHome.StoreResNode) {
-            setId(((ResCategoryHome.StoreResNode) rowData).getStoreRes().getId());
+        if (rowData instanceof StoreResPropertyTreeNode.StoreResTreeNode) {
+            setId(((StoreResPropertyTreeNode.StoreResTreeNode) rowData).getStoreRes().getId());
         }
 
         tree.setRowKey(storedKey);

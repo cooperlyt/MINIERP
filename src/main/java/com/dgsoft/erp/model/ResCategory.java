@@ -191,7 +191,6 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
         if (treeFilter.isAddRes()){
             for(Res res: getResList()){
                 if (res.isEnable() || treeFilter.containDisable()){
-                    res.setTreeFilter(treeFilter);
                     result.add(res);
                 }
             }
@@ -214,9 +213,32 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
     }
 
     @Transient
-    @Override
     public void setTreeFilter(ResTreeFilter treeFilter) {
         this.treeFilter = treeFilter;
+    }
+
+    @Transient
+    @Override
+    public  ResTreeFilter getTreeFilter(){
+        return treeFilter;
+    }
+
+    @Transient
+    private Boolean expanded = null;
+
+    @Transient
+    @Override
+    public boolean isExpanded() {
+        if (expanded == null){
+            expanded = getTreeFilter().expandedDefault();
+        }
+        return expanded;
+    }
+
+    @Transient
+    @Override
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 
     @Transient

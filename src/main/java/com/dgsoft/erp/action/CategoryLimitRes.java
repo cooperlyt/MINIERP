@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.model.Res;
+import com.dgsoft.erp.model.ResCategory;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -40,7 +41,7 @@ public class CategoryLimitRes {
         tree.setRowKey(currentSelectionKey);
 
 
-        resCategoryHome.setId(((ResCategoryHome.ResCategoryNode) tree.getRowData()).getResCategory().getId());
+        resCategoryHome.setId(((ResCategory) tree.getRowData()).getId());
         refresh();
         tree.setRowKey(storedKey);
     }

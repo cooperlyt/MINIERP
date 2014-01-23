@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 
 import java.util.List;
@@ -52,6 +53,6 @@ public abstract class StoreChangeItem implements java.io.Serializable {
         return res.getId().equals(storeChangeItem.getRes().getId()) &&
                 (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || storeResCountInupt.getFloatConvertRate().compareTo(storeChangeItem.storeResCountInupt.getFloatConvertRate()) == 0) &&
-                StoreChangeHelper.sameFormat(storeChangeItem.getFormats(), getFormats());
+                ResHelper.sameFormat(storeChangeItem.getFormats(), getFormats());
     }
 }

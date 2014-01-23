@@ -32,4 +32,9 @@ public class StoreResManagerTreeFilter implements ResTreeFilter{
     public boolean isAddRes() {
         return true;
     }
+
+    @Override
+    public boolean expandedDefault() {
+        return true;
+    }
 }

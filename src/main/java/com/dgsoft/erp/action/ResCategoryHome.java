@@ -5,7 +5,7 @@ import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResCategory;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.tools.ResTreeFilter;
+import com.dgsoft.erp.tools.*;
 import com.google.common.collect.Iterators;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
@@ -48,223 +48,223 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         this.parentId = parentId;
     }
 
-    public static class StoreResNode implements TreeNode {
+//    public static class StoreResNode implements TreeNode {
+//
+//        private TreeNode parent;
+//
+//        private StoreRes storeRes;
+//
+//        public StoreResNode(TreeNode parent, StoreRes storeRes) {
+//            this.parent = parent;
+//            this.storeRes = storeRes;
+//        }
+//
+//        public StoreRes getStoreRes() {
+//            return storeRes;
+//        }
+//
+//        public void setStoreRes(StoreRes storeRes) {
+//            this.storeRes = storeRes;
+//        }
+//
+//        public String getType() {
+//            return "storeRes";
+//        }
+//
+//        @Override
+//        public TreeNode getChildAt(int childIndex) {
+//            return null;
+//        }
+//
+//        @Override
+//        public int getChildCount() {
+//            return 0;
+//        }
+//
+//        @Override
+//        public TreeNode getParent() {
+//            return parent;
+//        }
+//
+//        @Override
+//        public int getIndex(TreeNode node) {
+//            return 0;
+//        }
+//
+//        @Override
+//        public boolean getAllowsChildren() {
+//            return false;
+//        }
+//
+//        @Override
+//        public boolean isLeaf() {
+//            return true;
+//        }
+//
+//        @Override
+//        public Enumeration children() {
+//            return null;
+//        }
+//    }
 
-        private TreeNode parent;
+//    public class ResNode implements TreeNode {
+//
+//        private Res res;
+//
+//        private TreeNode parent;
+//
+//        private boolean addStoreResNode;
+//
+//        private List<TreeNode> childNodes = null;
+//
+//        public ResNode(TreeNode parent, Res res, boolean addStoreResNode, boolean hasDisable) {
+//            this.parent = parent;
+//            this.res = res;
+//            this.addStoreResNode = addStoreResNode;
+//            if (addStoreResNode) {
+//                childNodes = new ArrayList<TreeNode>();
+//                for (StoreRes storeRes : res.getStoreResList()) {
+//                    if (hasDisable || storeRes.isEnable()) {
+//                        childNodes.add(new StoreResNode(this, storeRes));
+//                    }
+//                }
+//            }
+//        }
+//
+//        public String getType() {
+//            return "res";
+//        }
+//
+//        public Res getRes() {
+//            return res;
+//        }
+//
+//        @Override
+//        public TreeNode getChildAt(int childIndex) {
+//            if (addStoreResNode) {
+//                return childNodes.get(childIndex);
+//            } else
+//                return null;
+//        }
+//
+//        @Override
+//        public int getChildCount() {
+//            if (addStoreResNode) {
+//                return childNodes.size();
+//            } else
+//                return 0;
+//        }
+//
+//        @Override
+//        public TreeNode getParent() {
+//            return parent;
+//        }
+//
+//        @Override
+//        public int getIndex(TreeNode node) {
+//            if (addStoreResNode) {
+//                return childNodes.indexOf(node);
+//            } else
+//                return 0;
+//        }
+//
+//        @Override
+//        public boolean getAllowsChildren() {
+//            return addStoreResNode;
+//        }
+//
+//        @Override
+//        public boolean isLeaf() {
+//            return !addStoreResNode;
+//        }
+//
+//        @Override
+//        public Enumeration children() {
+//            if (addStoreResNode) {
+//                return Iterators.asEnumeration(childNodes.iterator());
+//            } else
+//                return null;
+//        }
+//    }
 
-        private StoreRes storeRes;
-
-        public StoreResNode(TreeNode parent, StoreRes storeRes) {
-            this.parent = parent;
-            this.storeRes = storeRes;
-        }
-
-        public StoreRes getStoreRes() {
-            return storeRes;
-        }
-
-        public void setStoreRes(StoreRes storeRes) {
-            this.storeRes = storeRes;
-        }
-
-        public String getType() {
-            return "storeRes";
-        }
-
-        @Override
-        public TreeNode getChildAt(int childIndex) {
-            return null;
-        }
-
-        @Override
-        public int getChildCount() {
-            return 0;
-        }
-
-        @Override
-        public TreeNode getParent() {
-            return parent;
-        }
-
-        @Override
-        public int getIndex(TreeNode node) {
-            return 0;
-        }
-
-        @Override
-        public boolean getAllowsChildren() {
-            return false;
-        }
-
-        @Override
-        public boolean isLeaf() {
-            return true;
-        }
-
-        @Override
-        public Enumeration children() {
-            return null;
-        }
-    }
-
-    public class ResNode implements TreeNode {
-
-        private Res res;
-
-        private TreeNode parent;
-
-        private boolean addStoreResNode;
-
-        private List<TreeNode> childNodes = null;
-
-        public ResNode(TreeNode parent, Res res, boolean addStoreResNode, boolean hasDisable) {
-            this.parent = parent;
-            this.res = res;
-            this.addStoreResNode = addStoreResNode;
-            if (addStoreResNode) {
-                childNodes = new ArrayList<TreeNode>();
-                for (StoreRes storeRes : res.getStoreResList()) {
-                    if (hasDisable || storeRes.isEnable()) {
-                        childNodes.add(new StoreResNode(this, storeRes));
-                    }
-                }
-            }
-        }
-
-        public String getType() {
-            return "res";
-        }
-
-        public Res getRes() {
-            return res;
-        }
-
-        @Override
-        public TreeNode getChildAt(int childIndex) {
-            if (addStoreResNode) {
-                return childNodes.get(childIndex);
-            } else
-                return null;
-        }
-
-        @Override
-        public int getChildCount() {
-            if (addStoreResNode) {
-                return childNodes.size();
-            } else
-                return 0;
-        }
-
-        @Override
-        public TreeNode getParent() {
-            return parent;
-        }
-
-        @Override
-        public int getIndex(TreeNode node) {
-            if (addStoreResNode) {
-                return childNodes.indexOf(node);
-            } else
-                return 0;
-        }
-
-        @Override
-        public boolean getAllowsChildren() {
-            return addStoreResNode;
-        }
-
-        @Override
-        public boolean isLeaf() {
-            return !addStoreResNode;
-        }
-
-        @Override
-        public Enumeration children() {
-            if (addStoreResNode) {
-                return Iterators.asEnumeration(childNodes.iterator());
-            } else
-                return null;
-        }
-    }
-
-    public class ResCategoryNode implements TreeNode {
-
-
-        private List<TreeNode> childList = new ArrayList<TreeNode>();
-
-        private TreeNode parent;
-
-        public ResCategoryNode(TreeNode parent, ResCategory resCategory) {
-            this.parent = parent;
-            this.resCategory = resCategory;
-        }
-
-        private ResCategory resCategory;
-
-        public String getType() {
-            return "category";
-        }
-
-        public ResCategory getResCategory() {
-            return resCategory;
-        }
-
-        @Override
-        public TreeNode getChildAt(int childIndex) {
-            return childList.get(childIndex);
-        }
-
-        @Override
-        public int getChildCount() {
-            return childList.size();
-        }
-
-        @Override
-        public TreeNode getParent() {
-            return parent;
-        }
-
-        @Override
-        public int getIndex(TreeNode node) {
-            return childList.indexOf(node);
-        }
-
-        @Override
-        public boolean getAllowsChildren() {
-            return true;
-        }
-
-        @Override
-        public boolean isLeaf() {
-            return false;
-        }
-
-        @Override
-        public Enumeration children() {
-            return Iterators.asEnumeration(childList.iterator());
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (!(obj instanceof ResCategoryNode)) {
-                return false;
-            }
-            if (((ResCategoryNode) obj).resCategory.getId().equals(resCategory.getId())) {
-                return true;
-            } else {
-                return false;
-            }
-
-        }
-
-        @Override
-        public int hashCode() {
-            return resCategory.getId().hashCode();
-        }
-    }
+//    public class ResCategoryNode implements TreeNode {
+//
+//
+//        private List<TreeNode> childList = new ArrayList<TreeNode>();
+//
+//        private TreeNode parent;
+//
+//        public ResCategoryNode(TreeNode parent, ResCategory resCategory) {
+//            this.parent = parent;
+//            this.resCategory = resCategory;
+//        }
+//
+//        private ResCategory resCategory;
+//
+//        public String getType() {
+//            return "category";
+//        }
+//
+//        public ResCategory getResCategory() {
+//            return resCategory;
+//        }
+//
+//        @Override
+//        public TreeNode getChildAt(int childIndex) {
+//            return childList.get(childIndex);
+//        }
+//
+//        @Override
+//        public int getChildCount() {
+//            return childList.size();
+//        }
+//
+//        @Override
+//        public TreeNode getParent() {
+//            return parent;
+//        }
+//
+//        @Override
+//        public int getIndex(TreeNode node) {
+//            return childList.indexOf(node);
+//        }
+//
+//        @Override
+//        public boolean getAllowsChildren() {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean isLeaf() {
+//            return false;
+//        }
+//
+//        @Override
+//        public Enumeration children() {
+//            return Iterators.asEnumeration(childList.iterator());
+//        }
+//
+//        @Override
+//        public boolean equals(Object obj) {
+//            if (obj == null) {
+//                return false;
+//            }
+//            if (!(obj instanceof ResCategoryNode)) {
+//                return false;
+//            }
+//            if (((ResCategoryNode) obj).resCategory.getId().equals(resCategory.getId())) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            return resCategory.getId().hashCode();
+//        }
+//    }
 
     @Override
     protected ResCategory createInstance() {
@@ -278,122 +278,122 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
-    private void generateChildrenNode(ResCategoryNode node, boolean addRes, boolean addStoreRes, boolean hasDisable, EnumSet<ResCategory.ResType> contains) {
-        if (node.resCategory.getResCategories().isEmpty() && node.resCategory.getReses().isEmpty())
-            return;
-
-        if (!addRes && node.resCategory.getResCategories().isEmpty()) {
-            return;
-        }
-
-
-        if (addRes) {
-            for (Res res : node.resCategory.getResList()) {
-                if (res.isEnable() || hasDisable) {
-                    node.childList.add(new ResNode(node, res, addStoreRes, hasDisable));
-                }
-            }
-        }
-
-
-        for (ResCategory category : node.resCategory.getResCategoryList()) {
-            if (category.isEnable() || hasDisable) {
-                if (contains.contains(category.getType())) {
-                    ResCategoryNode childrenNode = new ResCategoryNode(node, category);
-                    node.childList.add(childrenNode);
-                    generateChildrenNode(childrenNode, addRes, addStoreRes, hasDisable, contains);
-                }
-            }
-        }
-
-    }
+//    private void generateChildrenNode(ResCategoryNode node, boolean addRes, boolean addStoreRes, boolean hasDisable, EnumSet<ResCategory.ResType> contains) {
+//        if (node.resCategory.getResCategories().isEmpty() && node.resCategory.getReses().isEmpty())
+//            return;
+//
+//        if (!addRes && node.resCategory.getResCategories().isEmpty()) {
+//            return;
+//        }
+//
+//
+//        if (addRes) {
+//            for (Res res : node.resCategory.getResList()) {
+//                if (res.isEnable() || hasDisable) {
+//                    node.childList.add(new ResNode(node, res, addStoreRes, hasDisable));
+//                }
+//            }
+//        }
+//
+//
+//        for (ResCategory category : node.resCategory.getResCategoryList()) {
+//            if (category.isEnable() || hasDisable) {
+//                if (contains.contains(category.getType())) {
+//                    ResCategoryNode childrenNode = new ResCategoryNode(node, category);
+//                    node.childList.add(childrenNode);
+//                    generateChildrenNode(childrenNode, addRes, addStoreRes, hasDisable, contains);
+//                }
+//            }
+//        }
+//
+//    }
 
     //private static final ResCategory.ResType[] RESTRICTIONS = {};
 
     @Factory(value = "categoryManagerTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getResCategoryManagerTree() {
-        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
-        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
-        for (ResCategory resCategory : rootCategories) {
-            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, false, false, true, EnumSet.allOf(ResCategory.ResType.class));
-            result.add(rootNode);
-        }
-        return result;
+    public List<ResCategory> getResCategoryManagerTree() {
+//        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+//        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
+//        for (ResCategory resCategory : rootCategories) {
+//            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+//            generateChildrenNode(rootNode, false, false, true, EnumSet.allOf(ResCategory.ResType.class));
+//            result.add(rootNode);
+//        }
+        return genResTree(new ResCategoryManagerTreeFilter());
     }
 
     @Factory(value = "resCategoryTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getResCategoryTree() {
-        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
-        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
-        for (ResCategory resCategory : rootCategories) {
-            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, false, false, EnumSet.allOf(ResCategory.ResType.class));
-            result.add(rootNode);
-        }
-        return result;
+    public List<ResCategory> getResCategoryTree() {
+//        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+//        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
+//        for (ResCategory resCategory : rootCategories) {
+//            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+//            generateChildrenNode(rootNode, true, false, false, EnumSet.allOf(ResCategory.ResType.class));
+//            result.add(rootNode);
+//        }
+        return genResTree(new AllResCategoryTreeFilter());
     }
 
 
     @Factory(value = "allStoreResTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getAllStoreResTree(){
-        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
-        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
-        for (ResCategory resCategory : rootCategories) {
-            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, true, false,  EnumSet.allOf(ResCategory.ResType.class));
-            result.add(rootNode);
-        }
-        return result;
+    public List<ResCategory> getAllStoreResTree(){
+//        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+//        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
+//        for (ResCategory resCategory : rootCategories) {
+//            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+//            generateChildrenNode(rootNode, true, true, false,  EnumSet.allOf(ResCategory.ResType.class));
+//            result.add(rootNode);
+//        }
+        return genResTree(new AllStoreResTreeFilter());
     }
 
     @Factory(value = "allStoreResManagerTree", scope = ScopeType.EVENT)
-    public List<ResCategoryNode> getAllStoreResManagerTree(){
-        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
-        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true ").getResultList();
-        for (ResCategory resCategory : rootCategories) {
-            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, true, true,  EnumSet.allOf(ResCategory.ResType.class));
-            result.add(rootNode);
-        }
-        return result;
+    public List<ResCategory> getAllStoreResManagerTree(){
+//        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+//        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true ").getResultList();
+//        for (ResCategory resCategory : rootCategories) {
+//            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+//            generateChildrenNode(rootNode, true, true, true,  EnumSet.allOf(ResCategory.ResType.class));
+//            result.add(rootNode);
+//        }
+        return genResTree(new StoreResManagerTreeFilter());
     }
 
     @Factory(value = "allResTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getAllResTree(){
-        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
-        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
-        for (ResCategory resCategory : rootCategories) {
-            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, false, false,  EnumSet.allOf(ResCategory.ResType.class));
-            result.add(rootNode);
-        }
-        return result;
+    public List<ResCategory> getAllResTree(){
+//        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+//        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
+//        for (ResCategory resCategory : rootCategories) {
+//            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+//            generateChildrenNode(rootNode, true, false, false,  EnumSet.allOf(ResCategory.ResType.class));
+//            result.add(rootNode);
+//        }
+        return genResTree(new AllResTreeFilter());
     }
 
 
     @Factory(value = "allResManagerTree", scope = ScopeType.EVENT)
-    public List<ResCategoryNode> getAllResManagerTree(){
-        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
-        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true").getResultList();
-        for (ResCategory resCategory : rootCategories) {
-            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, false, true,  EnumSet.allOf(ResCategory.ResType.class));
-            result.add(rootNode);
-        }
-        return result;
+    public List<ResCategory> getAllResManagerTree(){
+//        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+//        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true").getResultList();
+//        for (ResCategory resCategory : rootCategories) {
+//            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+//            generateChildrenNode(rootNode, true, false, true,  EnumSet.allOf(ResCategory.ResType.class));
+//            result.add(rootNode);
+//        }
+        return genResTree(new ResManagerTreeFilter());
     }
 
-    private List<ResCategoryNode> getStoreChangeResLimitTree(StockChange.StoreChangeType changeType, boolean addStoreRes){
-        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
-        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)").setParameter("changeTypes",changeType.getResTypes()).getResultList();
-        for (ResCategory resCategory : rootCategories) {
-            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
-            generateChildrenNode(rootNode, true, addStoreRes, false, changeType.getResTypes());
-            result.add(rootNode);
-        }
-        return result;
-    }
+//    private List<ResCategoryNode> getStoreChangeResLimitTree(StockChange.StoreChangeType changeType, boolean addStoreRes){
+//        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
+//        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)").setParameter("changeTypes",changeType.getResTypes()).getResultList();
+//        for (ResCategory resCategory : rootCategories) {
+//            ResCategoryNode rootNode = new ResCategoryNode(null, resCategory);
+//            generateChildrenNode(rootNode, true, addStoreRes, false, changeType.getResTypes());
+//            result.add(rootNode);
+//        }
+//        return result;
+//    }
 
     private List<ResCategory> genResTree(ResTreeFilter filter) {
         List<ResCategory> result;
@@ -404,27 +404,34 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
             result = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)")
                 .setParameter("changeTypes",filter.getCategoryTypes()).getResultList();
 
+        for (ResCategory rc: result){
+            rc.setTreeFilter(filter);
+        }
         return result;
     }
 
     @Factory(value="produceInResTree",scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getProduceInResTree(){
-        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,false);
+    public List<ResCategory> getProduceInResTree(){
+        return genResTree(new ProduceInResTreeFilter());
+                //getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,false);
     }
 
     @Factory(value = "produceInStoreResTree",scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getProduceInStoreResTree(){
-        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,true);
+    public List<ResCategory> getProduceInStoreResTree(){
+        return  genResTree(new ProduceInStoreResTreeFilter());
+                //getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,true);
     }
 
     @Factory(value = "saleResTree",scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getSaleResTree(){
-        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,false);
+    public List<ResCategory> getSaleResTree(){
+        return  genResTree(new SaleResTreeFilter());
+                //getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,false);
     }
 
     @Factory(value = "saleStoreResTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategoryNode> getSaleStoreTree(){
-        return  getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,true);
+    public List<ResCategory> getSaleStoreTree(){
+        return  genResTree(new SaleStoreResTreeFilter());
+                //getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,true);
     }
 
     @Override

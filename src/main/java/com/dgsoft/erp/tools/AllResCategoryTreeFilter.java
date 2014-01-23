@@ -12,4 +12,10 @@ public class AllResCategoryTreeFilter extends ResCategoryManagerTreeFilter{
     public boolean containDisable() {
         return false;
     }
+
+    @Override
+    public boolean expandedDefault() {
+        return false;
+    }
+
 }
