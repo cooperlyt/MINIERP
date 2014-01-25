@@ -1,13 +1,19 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.common.system.DictionaryWord;
+import com.dgsoft.common.system.model.Word;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.log.Logging;
+import org.jbpm.JbpmContext;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -74,11 +80,54 @@ public class ResHelper {
             format1Values.put(format.getFormatDefine(), format);
         }
         for (Format format : formatList2) {
-            if (!format1Values.get(format.getFormatDefine()).equals(format)) {
+            Format format1 = format1Values.get(format.getFormatDefine());
+            if ((format1 == null) || !format1.equals(format)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public String formatDisplayValue(Format format){
+        if (format != null)
+        switch (format.getFormatDefine().getDataType()){
+            case INTEGER:
+                return format.getFormatDefine().getName() + " " + format.getIntValue();
+            case WORD:
+                return format.getFormatDefine().getName() + " " + dictionary.getWordValue(format.getFormatValue()) ;
+            case FLOAT:
+                return format.getFormatDefine().getName() + " " + format.getFloatValue();
+        }
+
+        return "";
+    }
+
+    public String genStoreResCode(String resCode, List<Format> formats, String floatConvertRate){
+        String result = resCode.trim() + "-";
+        for (Format format: formats){
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
+                Word word = dictionary.getWord(format.getFormatValue());
+                if (word != null)
+                    result += word.getKey();
+            }
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.INTEGER)){
+                result += format.getIntValue();
+            }
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.FLOAT)){
+                result += format.getFloatValue();
+            }
+        }
+        if (floatConvertRate != null){
+            result += floatConvertRate;
+        }
+
+        return result;
+    }
+
+    public String genStoreResCode(StoreRes storeRes) {
+        return genStoreResCode(storeRes.getRes().getCode(),storeRes.getFormatList(),
+                (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))?
+                BigDecimalFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString(): null);
     }
 
     public List<OrderItem> totalOrderItem(List<OrderItem> items) {
@@ -114,6 +163,16 @@ public class ResHelper {
             }
         }
         return result;
+    }
+
+
+    public static ResHelper instance()
+    {
+        if ( !Contexts.isEventContextActive() )
+        {
+            throw new IllegalStateException("no active event context");
+        }
+        return (ResHelper) Component.getInstance(ResHelper.class, ScopeType.STATELESS,true);
     }
 
 }

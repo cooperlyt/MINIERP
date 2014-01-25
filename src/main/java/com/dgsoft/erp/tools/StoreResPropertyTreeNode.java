@@ -62,7 +62,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                         containsFormat = new HashSet<Format>();
 
                         defines.put(format.getFormatDefine(), containsFormat);
-                        Logging.getLog(StoreResPropertyTreeNode.class).debug("create FormatDefine:" + format.getFormatDefine().getName());
+                        //Logging.getLog(StoreResPropertyTreeNode.class).debug("create FormatDefine:" + format.getFormatDefine().getName());
                     }
                     containsFormat.add(format);
 
@@ -90,7 +90,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                     treeNodes = new ArrayList<StoreResPropertyTreeNode>();
 
                     if (defines.get(define) != null) {
-                        Logging.getLog(StoreResPropertyTreeNode.class).debug("gen root node define:" + define.getName() + "-" + defines.get(define).size());
+                        //Logging.getLog(StoreResPropertyTreeNode.class).debug("gen root node define:" + define.getName() + "-" + defines.get(define).size());
                         for (Format f : defines.get(define)) {
                             StoreResPropertyTreeNode srptn = new StoreResPropertyTreeNode(f, res);
                             treeNodes.add(srptn);
@@ -111,7 +111,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                                 StoreResPropertyTreeNode newNode = new StoreResPropertyTreeNode(f, parentNode);
                                 childNodes.add(newNode);
                                 parentNode.addChild(newNode);
-                                Logging.getLog(StoreResPropertyTreeNode.class).debug("add format :" + f.getFormatValue() + "to" + parentNode.getFormatDefine().getName());
+                               // Logging.getLog(StoreResPropertyTreeNode.class).debug("add format :" + f.getFormatValue() + "to" + parentNode.getFormatDefine().getName());
                             }
 
                         }
@@ -129,13 +129,22 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
             for (StoreRes sr : validStoreResList) {
                 boolean find = false;
                 for (StoreResPropertyTreeNode node : treeNodes) {
-                    if (ResHelper.sameFormat(node.getFormats().values(), sr.getFormats())) {
-                        node.addChild(new StoreResTreeNode(sr, node, (define == null) ? sr.getDisplayFloatRate() : define.getName()));
+
+                    List<Format> srcParentFormats = new ArrayList<Format>(sr.getFormatList());
+
+                    if (!sr.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                        srcParentFormats.remove(srcParentFormats.size() - 1);
+                    }
+
+                    if (ResHelper.sameFormat(node.getFormats().values(), srcParentFormats)) {
+                        node.addChild(new StoreResTreeNode(sr, node, (define == null) ? sr.getDisplayFloatRate() : ResHelper.instance().formatDisplayValue(sr.getFormatMap().get(define))));
                         find = true;
                         break;
                     }
                 }
                 if (!find) {
+                    //Logging.getLog(StoreResPropertyTreeNode.class).warn("storeRes not in Tree:" + sr.getCode());
+
                     throw new IllegalArgumentException("storeRes not in tree:" + sr);
                 }
             }
@@ -268,6 +277,8 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
         }
         if (format != null)
             result.put(format.getFormatDefine(), format);
+
+
         return result;
     }
 

@@ -26,21 +26,23 @@
         <h2>#{messages.PleaseLoginHere}</h2>
         <rich:panel>
 
-            <h:form id="loginForm">
-                <div class="dialog">
-                    <h:panelGrid columns="2" rowClasses="prop" columnClasses="name,value">
 
-                        <h:inputText id="username"
+
+            <h:form id="loginForm">
+
+                    <h:panelGrid columns="1" rowClasses="prop" >
+
+                        <h:inputText id="username"  style="width: 100%"
                                      value="#{credentials.username}">
                             <rich:placeholder value="#{messages.login_userName}"/>
                         </h:inputText>
-                        <h:inputSecret id="password"
+                        <h:inputSecret id="password" style="width: 100%"
                                        value="#{credentials.password}">
                             <rich:placeholder value="#{messages.login_password}"/>
                         </h:inputSecret>
 
                     </h:panelGrid>
-                </div>
+
                 <div class="actionButtons">
                     <h:commandButton id="submit" value="#{messages.login}" action="#{identity.login}"/>
                 </div>

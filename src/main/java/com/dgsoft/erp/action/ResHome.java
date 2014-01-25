@@ -17,9 +17,7 @@ import org.jboss.seam.international.StatusMessage;
 
 import javax.faces.event.ValueChangeEvent;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,6 +51,8 @@ public class ResHome extends ErpEntityHome<Res> {
     @DataModelSelection
     private FormatDefine formatDefine;
 
+    private FormatDefine editFormatDefine;
+
     private FormatDefine newFormatDefine = new FormatDefine();
 
     public FormatDefine getNewFormatDefine() {
@@ -73,6 +73,19 @@ public class ResHome extends ErpEntityHome<Res> {
         getInstance().getFormatDefines().add(newFormatDefine);
         newFormatDefine = new FormatDefine();
         actionExecuteState.setLastState("success");
+    }
+
+    public FormatDefine getEditFormatDefine() {
+        return editFormatDefine;
+    }
+
+    public void setEditFormatDefine(FormatDefine editFormatDefine) {
+        this.editFormatDefine = editFormatDefine;
+    }
+
+    public void beginEditFormatDefine(){
+        editFormatDefine = formatDefine;
+        actionExecuteState.actionExecute();
     }
 
     @Factory(value = "formatTypes", scope = ScopeType.SESSION, autoCreate = true)
@@ -136,13 +149,15 @@ public class ResHome extends ErpEntityHome<Res> {
 
 
     public void verifyCodeAvailable(ValueChangeEvent e) {
-        if (!getInstance().getCode().matches(runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME))) {
-            facesMessages.addToControlFromResourceBundle(e.getComponent().getId(), StatusMessage.Severity.ERROR, "resCodeNotRule",
-                    getInstance().getCode(), runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME));
+        String newCode = (String) e.getNewValue();
 
-        } else if (!isCodeAvailable(getInstance().getCode())) {
+        if (!newCode.matches(runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME))) {
+            facesMessages.addToControlFromResourceBundle(e.getComponent().getId(), StatusMessage.Severity.ERROR, "resCodeNotRule",
+                    newCode, runParam.getStringParamValue(RES_CODE_RULE_PARAM_NAME));
+
+        } else if (!isCodeAvailable(newCode)) {
             facesMessages.addToControlFromResourceBundle(e.getComponent().getId(),
-                    StatusMessage.Severity.ERROR, "resCodeConflict", getInstance().getCode());
+                    StatusMessage.Severity.ERROR, "resCodeConflict", newCode);
         }
     }
 
@@ -158,7 +173,6 @@ public class ResHome extends ErpEntityHome<Res> {
         } else {
             return true;
         }
-
 
     }
 
@@ -177,6 +191,19 @@ public class ResHome extends ErpEntityHome<Res> {
         }
         return true;
 
+    }
+
+    @Override
+    protected boolean verifyRemoveAvailable() {
+
+        if (!getInstance().getProductGroups().isEmpty() || !getInstance().getStoreReses().isEmpty()
+                || !getInstance().getBatches().isEmpty() || !getInstance().getOrderItems().isEmpty()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"res_cannotDelete");
+
+            return false;
+        }
+
+        return true;
     }
 
     public boolean isCodeAvailable(String code) {

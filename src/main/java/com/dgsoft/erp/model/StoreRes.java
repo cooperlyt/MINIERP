@@ -279,6 +279,15 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @Transient
+    public Map<FormatDefine, Format> getFormatMap(){
+        Map<FormatDefine, Format> result = new HashMap<FormatDefine, Format>();
+        for (Format format : getFormats()){
+            result.put(format.getFormatDefine(),format);
+        }
+        return result;
+    }
+
+    @Transient
     public String getDisplayFloatRate() {
         return BigDecimalFormat.format(getFloatConversionRate(), getRes().getUnitGroup().getFloatConvertRateFormat()) + getRes().getUnitGroup().getName();
     }

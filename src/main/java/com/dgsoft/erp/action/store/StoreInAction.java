@@ -2,6 +2,7 @@ package com.dgsoft.erp.action.store;
 
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.ResHome;
 import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
@@ -29,6 +30,9 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
 
     @In
     protected NumberBuilder numberBuilder;
+
+    @In
+    private ResHelper resHelper;
 
     @In(create = true)
     protected StoreResFormatFilter storeResFormatFilter;
@@ -240,8 +244,9 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
                     if (!storeResHome.isIdDefined()) {
                         facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
                                 "newSotreResTypedCodePlase");
-                        editingItem.setStoreResCode(editingItem.getRes().getCode() + "-" +
-                                numberBuilder.getNumber("erp.storeResCode." + editingItem.getRes().getCode()));
+                        editingItem.setStoreResCode(resHelper.genStoreResCode(editingItem.getRes().getCode(), editingItem.getFormats(),
+                                (editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) ?
+                                        editingItem.getStoreResCountInupt().getFloatConvertRate().toString() : null));
                         addItemLastState = "code_not_set";
                         return addItemLastState;
                     } else {
@@ -271,10 +276,10 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
         editingItem = null;
         //resHome.clearInstance();
         //storeResHome.clearInstance();
-        if (storeResHome.isIdDefined()){
+        if (storeResHome.isIdDefined()) {
             storeResFormatFilter.selectedStoreRes(storeResHome.getInstance());
             generateStoreInItemByStoreRes(storeResHome.getInstance());
-        }else if (resHome.isIdDefined()){
+        } else if (resHome.isIdDefined()) {
             storeResFormatFilter.selectedRes(resHome.getInstance());
             generateStoreInItemByRes(resHome.getInstance());
         }

@@ -59,8 +59,7 @@ public class Supplier implements java.io.Serializable {
 		this.batches = batches;
 	}
 
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = StoreRes.class)
-    @JoinTable(name = "SUPPLIER_RES", joinColumns = @JoinColumn(name = "SUPPLIER"), inverseJoinColumns = @JoinColumn(name = "RES"))
+    @ManyToMany(fetch = FetchType.LAZY,  mappedBy = "suppliers")
 	public Set<Res> getReses() {
 		return this.reses;
 	}

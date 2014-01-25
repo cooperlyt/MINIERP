@@ -232,7 +232,8 @@ public class Res implements java.io.Serializable, ResTreeNode {
         return result;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "reses", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY,targetEntity = Supplier.class)
+    @JoinTable(name = "SUPPLIER_RES", joinColumns = @JoinColumn(name = "RES"), inverseJoinColumns = @JoinColumn(name = "SUPPLIER"))
     public Set<Supplier> getSuppliers() {
         return this.suppliers;
     }

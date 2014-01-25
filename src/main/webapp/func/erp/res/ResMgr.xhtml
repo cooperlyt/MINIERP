@@ -58,7 +58,7 @@
 
             <rich:toolbarGroup location="right">
 
-                <s:button  value="#{messages.create}#{messages.res}" action="#{resHome.clearInstance}"
+                <s:button value="#{messages.create}#{messages.res}" action="#{resHome.clearInstance}"
                           view="/func/erp/res/ResDetails.xhtml" propagation="begin" styleClass="toolBarBtn"
                           onclick="if (#{not resCategoryHome.idDefined}){alert('#{messages.plase_select_rescategory_first}'); return false;}">
                     <f:param name="categoryId" value="#{resCategoryHome.instance.id}"/>
@@ -232,16 +232,22 @@
                     </f:facet>
                     <h:selectBooleanCheckbox readonly="true" value="#{_res.enable}"/>
                 </rich:column>
-                <rich:column style="width: 30px">
+                <rich:column style="width: 70px; text-align: center;">
                     <f:facet name="header">
                         #{messages.action}
                     </f:facet>
                     <s:link propagation="begin" view="/func/erp/res/ResDetails.xhtml">
                         <s:graphicImage value="/img/edit.png" title="#{messages.edit}"/>
                         <f:param name="resId" value="#{_res.id}"/>
-                        <f:param name="categoryId" value="#{resCategoryHome.instance.id}" />
+                        <f:param name="categoryId" value="#{resCategoryHome.instance.id}"/>
                     </s:link>
+                    #{' '}
 
+                    <a:commandButton image="/img/delete.png" action="#{resHome.remove}"
+                                     onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                                     immediate="true" execute="@this" render="resDatas">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
                 </rich:column>
 
             </rich:dataTable>

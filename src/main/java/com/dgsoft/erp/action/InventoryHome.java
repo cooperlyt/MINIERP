@@ -40,10 +40,10 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     private StoreResHome storeResHome;
 
     @In
-    private Credentials credentials;
+    private ResHelper resHelper;
 
     @In
-    private NumberBuilder numberBuilder;
+    private Credentials credentials;
 
     @In(required = false)
     private ResHome resHome;
@@ -319,8 +319,8 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
                         "newSotreResTypedCodePlase");
-                newItemCode = storeResFormatFilter.getRes().getCode() + "-" +
-                        numberBuilder.getNumber("erp.storeResCode." + storeResFormatFilter.getRes().getCode());
+                newItemCode = resHelper.genStoreResCode(storeResHome.getInstance());
+
                 addItemLastState = "code_not_set";
                 return addItemLastState;
             }
