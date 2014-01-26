@@ -19,6 +19,7 @@
     <param name="allStoreOut" value="#{orderList.allStoreOut}"/>
     <param name="moneyComplete" value="#{orderList.moneyComplete}"/>
     <param name="customerConfirm" value="#{orderList.customerConfirm}"/>
+    <param name="onlyMyOrder" value="#{orderList.onlyMyOrder}"/>
 
     <param name="cloneOrderId" value="#{orderHome.id}"/>
     <param name="cloneCustomerAreaId" value="#{customerAreaHome.id}"/>

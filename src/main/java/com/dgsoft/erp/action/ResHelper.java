@@ -47,7 +47,7 @@ public class ResHelper {
 
 
         if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            result += BigDecimalFormat.format(storeRes.getFloatConversionRate(),
+            result += " " + BigDecimalFormat.format(storeRes.getFloatConversionRate(),
                     storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString();
             result += storeRes.getRes().getUnitGroup().getName();
         }

@@ -33,6 +33,8 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
     private AccountOper debitAccountOper;
 
+    private boolean freeMoney;
+
 
     protected abstract AccountOper.AccountOperType getAccountOperType();
 
@@ -55,11 +57,23 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
     }
 
+    public boolean isFreeMoney() {
+        return freeMoney;
+    }
+
+    public void setFreeMoney(boolean freeMoney) {
+        this.freeMoney = freeMoney;
+    }
+
+    private boolean isFreeForPay(){
+        return freeMoney && debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
+    }
+
     public void checkCustomerAccountBlance() {
         if (debitAccountOper.getOperMoney() == null) {
             return;
         }
-        if (debitAccountOper.getPayType() != null &&
+        if (!isFreeForPay() && debitAccountOper.getPayType() != null &&
                 debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT)) {
             if (debitAccountOper.getOperMoney().compareTo(orderHome.getInstance().getCustomer().getBalance()) > 0) {
                 facesMessages.addFromResourceBundle(
@@ -88,17 +102,32 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     @Transactional
     public void receiveMoney() {
 
-        boolean saving =  !debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
+        if (debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) && (debitAccountOper.getOperMoney().compareTo(getShortageMoney()) > 0)) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderFreeMoneyLessMoney");
+            return;
+        }
 
-        if (saving) {
-          AccountOper savingAccountOper = new AccountOper(customerHome.getInstance(),
-                  credentials.getUsername(),debitAccountOper.getOperMoney(),
-                  AccountOper.AccountOperType.ORDER_SAVINGS,
-                  new Date(debitAccountOper.getOperDate().getTime()),
-                  customerHome.getInstance().getBalance(),
-                  customerHome.getInstance().getBalance().add(debitAccountOper.getOperMoney()),
-                  debitAccountOper.getDescription(),debitAccountOper.getPayType(),orderHome.getInstance(),
-                  debitAccountOper.getCheckNumber());
+        boolean saving = !debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
+        if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
+            debitAccountOper.setOperMoney(debitAccountOper.getOperMoney().add(debitAccountOper.getRemitFee()));
+        }
+
+        if (saving || isFreeForPay()) {
+            AccountOper savingAccountOper = new AccountOper(customerHome.getInstance(),
+                    credentials.getUsername(), debitAccountOper.getOperMoney(),
+                    isFreeForPay() ? AccountOper.AccountOperType.ORDER_FREE : AccountOper.AccountOperType.ORDER_SAVINGS,
+                    isFreeForPay() ? new Date(debitAccountOper.getOperDate().getTime() + 1001) :
+                            new Date(debitAccountOper.getOperDate().getTime()),
+                    customerHome.getInstance().getBalance(),
+                    isFreeForPay() ? customerHome.getInstance().getBalance() : customerHome.getInstance().getBalance().add(debitAccountOper.getOperMoney()),
+                    debitAccountOper.getDescription(), debitAccountOper.getPayType(), orderHome.getInstance(),
+                    debitAccountOper.getCheckNumber());
+            if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
+                savingAccountOper.setRemitFee(debitAccountOper.getRemitFee());
+            } else {
+                savingAccountOper.setRemitFee(BigDecimal.ZERO);
+            }
+
 
             customerHome.getInstance().getAccountOpers().add(savingAccountOper);
         }
@@ -109,18 +138,31 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         debitAccountOper.setCustomerOrder(orderHome.getInstance());
 
 
-        if (saving){
+        if (saving) {
             debitAccountOper.setBeforMoney(customerHome.getInstance().getBalance().add(debitAccountOper.getOperMoney()));
-            debitAccountOper.setAfterMoney(customerHome.getInstance().getBalance());
-        }else{
+
+            if (debitAccountOper.getOperMoney().compareTo(getOrderShortageMoney()) > 0) {
+                BigDecimal saveMoney = debitAccountOper.getOperMoney().subtract(getOrderShortageMoney());
+                debitAccountOper.setOperMoney(getOrderShortageMoney());
+                debitAccountOper.setAfterMoney(customerHome.getInstance().getBalance().add(saveMoney));
+                customerHome.getInstance().setBalance(debitAccountOper.getAfterMoney());
+            } else {
+                debitAccountOper.setAfterMoney(customerHome.getInstance().getBalance());
+            }
+
+        } else {
             debitAccountOper.setBeforMoney(customerHome.getInstance().getBalance());
             debitAccountOper.setAfterMoney(customerHome.getInstance().getBalance().subtract(debitAccountOper.getOperMoney()));
-            customerHome.getInstance().setBalance(debitAccountOper.getAfterMoney());
+            if (!isFreeForPay())
+                customerHome.getInstance().setBalance(debitAccountOper.getAfterMoney());
         }
 
-        debitAccountOper.setPayType(PayType.FROM_PRE_DEPOSIT);
-        debitAccountOper.setCheckNumber(null);
-        debitAccountOper.setOperDate(new Date(debitAccountOper.getOperDate().getTime() + 1001));
+        //debitAccountOper.setPayType(PayType.FROM_PRE_DEPOSIT);
+        debitAccountOper.setRemitFee(BigDecimal.ZERO);
+        //debitAccountOper.setCheckNumber(null);
+        if (!isFreeForPay())
+            debitAccountOper.setOperDate(new Date(debitAccountOper.getOperDate().getTime() + 1001));
+
 
         customerHome.getInstance().getAccountOpers().add(debitAccountOper);
 
@@ -133,8 +175,10 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
     }
 
-    public void reset(){
-        debitAccountOper = new AccountOper(PayType.BANK_TRANSFER,credentials.getUsername());
+    public void reset() {
+        debitAccountOper = new AccountOper(PayType.BANK_TRANSFER, credentials.getUsername());
+        debitAccountOper.setRemitFee(BigDecimal.ZERO);
+        freeMoney = false;
     }
 
     @Override

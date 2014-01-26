@@ -38,6 +38,10 @@ public abstract class OrderTaskHandle extends TaskHandle {
     }
 
     public BigDecimal getShortageMoney(){
+        return getOrderShortageMoney();
+    }
+
+    public BigDecimal getOrderShortageMoney(){
         return orderHome.getInstance().getMoney().subtract(getTotalReveiveMoney());
     }
 

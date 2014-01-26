@@ -27,7 +27,7 @@
 
     <ui:include src="/layout/erp/ResCountInput.xhtml">
         <ui:param name="resCountBean" value="#{orderStoreOut.selectOutItem.overlayCount}"/>
-        <ui:param name="lableStyleClass" value="small_name" />
+        <ui:param name="lableStyleClass" value="small_name"/>
         <ui:param name="disabledFloatRate" value="true"/>
     </ui:include>
 
@@ -36,7 +36,7 @@
             #{messages.description}
         </ui:define>
         <h:inputTextarea value="#{orderStoreOut.selectOutItem.overlyOut.description}"
-                rows="2" cols="50"/>
+                         rows="2" cols="50"/>
     </s:decorate>
 
     <ui:define name="actionButtons">
@@ -61,6 +61,16 @@
                 <f:param value="inCon" name="orderId"/>
                 <f:param value="inCon" name="storeId"/>
             </s:link>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup rendered="#{orderHome.instance.payType eq 'EXPRESS_PROXY'}">
+            <h:panelGrid columns="2">
+                #{messages.EXPRESS_PROXY}
+                <h:outputText value="#{orderStoreOut.shortageMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </h:panelGrid>
         </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">
@@ -151,7 +161,7 @@
                 <rich:column>
                     #{messages.AuxUnitCount}
                 </rich:column>
-                <rich:column >
+                <rich:column>
 
                 </rich:column>
                 <rich:column>
@@ -190,7 +200,7 @@
         </rich:column>
 
         <rich:column>
-             #{_dispatchItem.overlyOut.resCount.displayAuxCount}
+            #{_dispatchItem.overlyOut.resCount.displayAuxCount}
         </rich:column>
 
         <rich:column style="text-align: center;">

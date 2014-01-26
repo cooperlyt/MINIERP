@@ -34,6 +34,22 @@
     <rich:toolbarGroup>
 
         <h:panelGrid columns="20">
+            <rich:calendar id="orderCreateDateField"
+                           enableManualInput="true"
+                           inputSize="10"
+                           timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                           showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                           datePattern="#{messages.datePattern}"
+                           required="true"
+                           defaultLabel="#{currentDate}"
+                           label="#{messages.order_field_createDate}"
+                           value="#{orderCreate.instance.createDate}">
+                <rich:validator event="change"/>
+                <rich:placeholder value="#{messages.order_field_createDate}"/>
+            </rich:calendar>
+            <rich:message for="orderCreateDateField" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+
             <rich:select value="#{orderCreate.instance.payType}"
                          styleClass="payTypeSelectWidth" listWidth="93px"
                          label="#{messages.order_field_payType}"
@@ -198,7 +214,6 @@
 
 
             <rich:autocomplete mode="client" minChars="1" autofill="false"
-                               required="true"
                                showButton="true"
                                selectFirst="true"
                                label="#{messages.order_field_tel}"
@@ -208,9 +223,10 @@
                                fetchValue="#{_tel}" var="_tel">
 
                 <h:outputText value="#{_tel}"/>
-                <a:ajax event="blur" listener="#{orderCreate.orderTelChanged}" render="orderTelField,contactField"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderTelChanged}"
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
                 <a:ajax event="selectitem" listener="#{orderCreate.orderTelChanged}"
-                        render="orderTelField,contactField"/>
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
             </rich:autocomplete>
         </s:decorate>
 
@@ -218,7 +234,6 @@
             <ui:define name="label">#{messages.order_field_contact}</ui:define>
 
             <rich:autocomplete mode="client" minChars="1" autofill="false"
-                               required="true"
                                showButton="true"
                                selectFirst="true"
                                label="#{messages.order_field_contact}"
@@ -228,9 +243,10 @@
                                fetchValue="#{_contact}" var="_contact">
 
                 <h:outputText value="#{_contact}"/>
-                <a:ajax event="blur" listener="#{orderCreate.orderContactChanged}" render="orderTelField,contactField"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderContactChanged}"
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
                 <a:ajax event="selectitem" listener="#{orderCreate.orderContactChanged}"
-                        render="orderTelField,contactField"/>
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
             </rich:autocomplete>
 
         </s:decorate>
@@ -249,6 +265,7 @@
             <rich:autocomplete mode="client" minChars="1" autofill="false"
                                showButton="true"
                                selectFirst="true"
+                               required="true"
                                label="#{messages.order_field_reveiveTel}"
                                clientFilterFunction="pinyinNameFilter"
                                autocompleteList="#{customerHome.allTelList}"
@@ -257,9 +274,9 @@
 
                 <h:outputText value="#{_tel}"/>
                 <a:ajax event="blur" listener="#{orderCreate.orderReceivceTelChanged}"
-                        render="receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
                 <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceTelChanged}"
-                        render="receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
             </rich:autocomplete>
 
         </s:decorate>
@@ -270,6 +287,7 @@
             <rich:autocomplete mode="client" minChars="1" autofill="false"
                                showButton="true"
                                selectFirst="true"
+                               required="true"
                                label="#{messages.order_field_reveiveContact}"
                                clientFilterFunction="pinyinNameFilter"
                                autocompleteList="#{customerHome.allContactList}"
@@ -278,9 +296,9 @@
 
                 <h:outputText value="#{_contact}"/>
                 <a:ajax event="blur" listener="#{orderCreate.orderReceivceContactChanged}"
-                        render="receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
                 <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceContactChanged}"
-                        render="receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
             </rich:autocomplete>
 
         </s:decorate>

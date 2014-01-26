@@ -213,7 +213,7 @@
             <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
         </h:outputText>
     </rich:column>
-
+    <!--
     <rich:column>
         <f:facet name="header">
             <ui:include src="/layout/a4jSort.xhtml">
@@ -224,8 +224,8 @@
         </f:facet>
         #{dictionary.getEmpNameById(_order.orderEmp)}
     </rich:column>
-
-    <rich:column style="text-align: center;">
+     -->
+    <rich:column style="text-align: center; font-size: 8pt;">
         <f:facet name="header">
             #{messages.order_status}
         </f:facet>

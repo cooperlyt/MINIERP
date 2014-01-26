@@ -89,6 +89,15 @@ public class OrderDispatchTask extends OrderTaskHandle {
         StringBuffer result = new StringBuffer();
         result.append(messages.get("OrderCode") + ":" + orderHome.getInstance().getId() + "\n");
 
+        result.append(messages.get("Customer") + ":" + orderHome.getInstance().getCustomer().getName());
+        result.append("\n");
+        result.append(messages.get("order_field_reveiveContact") + ":" + needResHome.getInstance().getReceivePerson());
+        result.append(" ");
+        result.append(messages.get("order_field_reveiveTel") + " " + needResHome.getInstance().getReceiveTel());
+        result.append("\n");
+        result.append(messages.get("address") + ":" +  needResHome.getInstance().getAddress());
+        result.append("\n");
+
         for (Dispatch dispatch : orderDispatch.getDispatchList()) {
             result.append(dispatch.getStore().getName() + "\n");
             for (DispatchItem item : dispatch.getDispatchItemList()) {

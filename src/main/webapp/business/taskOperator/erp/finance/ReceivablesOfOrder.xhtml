@@ -23,6 +23,10 @@
     </ui:define>
     <ui:define name="toolbarContext">
         <rich:toolbarGroup>
+            #{messages[orderHome.instance.payType.name()]}
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
             <a:outputPanel ajaxRendered="true">
                 #{' '}#{messages.order_money}:
 

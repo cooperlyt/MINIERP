@@ -148,7 +148,8 @@ public class NeedRes implements java.io.Serializable {
         this.postCode = postCode;
     }
 
-    @Column(name = "RECEIVE_PERSON", length = 50)
+    @Column(name = "RECEIVE_PERSON", length = 50, nullable = false)
+    @NotNull
     @Size(max = 50)
     public String getReceivePerson() {
         return receivePerson;
@@ -158,7 +159,8 @@ public class NeedRes implements java.io.Serializable {
         this.receivePerson = receivePerson;
     }
 
-    @Column(name = "RECEIVE_TEL", length = 50)
+    @Column(name = "RECEIVE_TEL", length = 50, nullable = false)
+    @NotNull
     @Size(max = 50)
     public String getReceiveTel() {
         return receiveTel;
@@ -267,11 +269,13 @@ public class NeedRes implements java.io.Serializable {
     @Transient
     public BigDecimal getTotalFare() {
         BigDecimal result = BigDecimal.ZERO;
-        for (Dispatch dispatch : getDispatches()) {
-            if (dispatch.getFare() != null) {
-                result = result.add(dispatch.getFare());
+        if (!isFareByCustomer())
+            for (Dispatch dispatch : getDispatches()) {
+                if (dispatch.getDeliveryType().isHaveFare() &&
+                        dispatch.getFare() != null){
+                    result = result.add(dispatch.getFare());
+                }
             }
-        }
         return result;
     }
 

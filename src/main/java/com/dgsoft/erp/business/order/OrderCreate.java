@@ -2,6 +2,7 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.system.DictionaryWord;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
@@ -69,6 +70,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     @In(create = true)
     private Map<String, String> messages;
+
+    @In
+    private RunParam runParam;
 
     @In
     private ResHelper resHelper;
@@ -174,6 +178,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                 }
             }
         }
+        orderContactInfoChanged();
     }
 
     public void orderContactChanged() {
@@ -185,6 +190,15 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                 }
             }
         }
+        orderContactInfoChanged();
+    }
+
+    private void orderContactInfoChanged() {
+        if ((!StringUtil.isEmpty(getInstance().getTel())) && (!StringUtil.isEmpty(getInstance().getContact())))
+            if ((StringUtil.isEmpty(getNeedRes().getReceiveTel())) && (StringUtil.isEmpty(getNeedRes().getReceivePerson()))) {
+                getNeedRes().setReceiveTel(getInstance().getTel());
+                getNeedRes().setReceivePerson(getInstance().getContact());
+            }
     }
 
     public void orderReceivceTelChanged() {
@@ -196,6 +210,15 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                 }
             }
         }
+        orderReceiveInfoChanged();
+    }
+
+    private void orderReceiveInfoChanged() {
+        if ((!StringUtil.isEmpty(getNeedRes().getReceiveTel())) && (!StringUtil.isEmpty(getNeedRes().getReceivePerson())))
+            if ((StringUtil.isEmpty(getInstance().getTel())) && (StringUtil.isEmpty(getInstance().getContact()))) {
+                getInstance().setTel(getNeedRes().getReceiveTel());
+                getInstance().setContact(getNeedRes().getReceivePerson());
+            }
     }
 
     public void orderReceivceContactChanged() {
@@ -207,11 +230,21 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                 }
             }
         }
+        orderReceiveInfoChanged();
     }
 
     public String getToastMessages() {
         StringBuffer result = new StringBuffer();
         result.append(messages.get("OrderCode") + ":" + startData.getBusinessKey() + "\n");
+
+        result.append(messages.get("Customer") + ":" + customerHome.getReadyInstance().getName());
+        result.append("\n");
+        result.append(messages.get("order_field_reveiveContact") + ":" + needRes.getReceivePerson());
+        result.append(" ");
+        result.append(messages.get("order_field_reveiveTel") + " " + needRes.getReceiveTel());
+        result.append("\n");
+        result.append(messages.get("address") + ":" + needRes.getAddress());
+        result.append("\n");
 
         for (OrderNeedItem item : orderNeedItems) {
             if (item.isStoreResItem()) {
@@ -268,7 +301,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             throw new IllegalArgumentException("editingItem state error");
         }
 
-        if (editingItem.isZero()){
+        if (editingItem.isZero()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderItemZeroError");
             return;
         }
@@ -411,7 +444,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         getInstance().setTotalCost(new BigDecimal(0));
         getInstance().setMoneyComplete(false);
 
-        getInstance().setCreateDate(new Date());
+        //getInstance().setCreateDate(new Date());
         getInstance().setOrderEmp(credentials.getUsername());
         getInstance().setId(startData.getBusinessKey());
         if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
@@ -457,7 +490,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public void customerChangeListener() {
         if (customerHome.isIdDefined()) {
-            needRes.setAddress(customerHome.getInstance().getAddress());
+            if (runParam.getStringParamValue("erp.sale.receiveAddress").trim().equals("CITY")) {
+                needRes.setAddress(dictionary.getCityName(customerHome.getInstance().getProvinceCode()));
+            } else
+                needRes.setAddress(customerHome.getInstance().getAddress());
             needRes.setPostCode(customerHome.getInstance().getPostCode());
         }
     }
@@ -498,8 +534,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             }
         } else {
 
-            if (!orderDispatch.isDispatchComplete()){
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"dispatch_not_complete");
+            if (!orderDispatch.isDispatchComplete()) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_not_complete");
                 throw new ProcessCreatePrepareException("dispatch not complete");
             }
 

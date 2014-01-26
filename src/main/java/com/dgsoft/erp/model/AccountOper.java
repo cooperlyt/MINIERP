@@ -19,7 +19,7 @@ public class AccountOper implements java.io.Serializable {
 
     public enum AccountOperType {
         ORDER_SAVINGS(true), ORDER_PAY(false), ORDER_EARNEST(false),
-        PRE_DEPOSIT(true), DEPOSIT_BACK(false),
+        PRE_DEPOSIT(true), DEPOSIT_BACK(false), ORDER_FREE(true),
         ORDER_BACK_SAVINGS(true);
 
         private boolean add;
@@ -46,6 +46,7 @@ public class AccountOper implements java.io.Serializable {
     private String description;
     private PayType payType;
     private String checkNumber;
+    private BigDecimal remitFee;
 
 
     private BackPrepareMoney backPrepareMoney;
@@ -235,6 +236,16 @@ public class AccountOper implements java.io.Serializable {
 
     public void setAfterMoney(BigDecimal afterMoney) {
         this.afterMoney = afterMoney;
+    }
+
+    @Column(name="REMIT_FEE", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getRemitFee() {
+        return remitFee;
+    }
+
+    public void setRemitFee(BigDecimal remitFee) {
+        this.remitFee = remitFee;
     }
 
     @Column(name = "DESCRIPTION", length = 200)

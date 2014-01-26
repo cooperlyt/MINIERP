@@ -247,8 +247,7 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
         return result;
     }
 
-    @Column(name = "CONTACT", length = 50, nullable = false)
-    @NotNull
+    @Column(name = "CONTACT", length = 50, nullable = true)
     @Size(max = 50)
     public String getContact() {
         return contact;
@@ -258,8 +257,7 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
         this.contact = contact;
     }
 
-    @Column(name = "TEL", length = 50, nullable = false)
-    @NotNull
+    @Column(name = "TEL", length = 50, nullable = true)
     @Size(max = 50)
     public String getTel() {
         return tel;
