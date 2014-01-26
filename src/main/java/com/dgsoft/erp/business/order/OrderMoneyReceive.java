@@ -39,7 +39,7 @@ public class OrderMoneyReceive extends FinanceReceivables {
 
     @Override
     protected String completeOrderTask() {
-        if (getTotalReveiveMoney().compareTo(orderHome.getInstance().getEarnest()) < 0) {
+        if (getTotalReveiveMoney().compareTo(orderHome.getInstance().getMoney()) < 0) {
 
 
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
