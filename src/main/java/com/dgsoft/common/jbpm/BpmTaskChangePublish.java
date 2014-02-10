@@ -37,6 +37,8 @@ public class BpmTaskChangePublish {
         subscribers.add(subscriber);
     }
 
+
+    @Transactional
     public synchronized void onBusinessTaskChange() {
         log.debug("onBusinessTaskChange listener count:" + subscribers.size());
         invalidSubscribers.clear();

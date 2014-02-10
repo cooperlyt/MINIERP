@@ -5,6 +5,8 @@ import com.dgsoft.erp.model.Dispatch;
 import com.dgsoft.erp.model.NeedRes;
 import org.jboss.seam.annotations.Name;
 
+import java.util.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: cooper
@@ -29,4 +31,10 @@ public class NeedResHome extends ErpEntityHome<NeedRes>{
         return false;
     }
 
+
+    @Override
+    public String persist(){
+        getInstance().setCreateDate(new Date());
+        return super.persist();
+    }
 }

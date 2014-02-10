@@ -36,10 +36,6 @@ public class Dispatch implements java.io.Serializable {
 
     }
 
-    public enum DispatchState{
-        DISPATCH_COMPLETE,DISPATCH_STORE_OUT,ALL_COMPLETE;
-    }
-
 	private String id;
 	private Store store;
 	private StockChange stockChange;
@@ -49,7 +45,7 @@ public class Dispatch implements java.io.Serializable {
 	private Date sendTime;
 	private BigDecimal fare;
 	private String sendEmp;
-	private DispatchState state;
+    private boolean storeOut;
 	private String outCustomer;
 	private String memo;
 
@@ -72,10 +68,10 @@ public class Dispatch implements java.io.Serializable {
         this.store = store;
     }
 
-    public Dispatch(NeedRes needRes, Store store, DeliveryType deliveryType, String memo, DispatchState state) {
+    public Dispatch(NeedRes needRes, Store store, DeliveryType deliveryType, String memo, boolean storeOut) {
         this.store = store;
         this.memo = memo;
-        this.state = state;
+        this.storeOut = storeOut;
         this.needRes = needRes;
         this.deliveryType = deliveryType;
     }
@@ -226,18 +222,16 @@ public class Dispatch implements java.io.Serializable {
 		this.sendEmp = sendEmp;
 	}
 
-    @Enumerated(EnumType.STRING)
-	@Column(name = "STATE", nullable = false, length = 20)
-	@NotNull
-	public DispatchState getState() {
-		return this.state;
-	}
+    @Column(name="STORE_OUT", nullable = false)
+    public boolean isStoreOut() {
+        return storeOut;
+    }
 
-	public void setState(DispatchState state) {
-		this.state = state;
-	}
+    public void setStoreOut(boolean storeOut) {
+        this.storeOut = storeOut;
+    }
 
-	@Column(name = "OUT_CUSTOMER", length = 50)
+    @Column(name = "OUT_CUSTOMER", length = 50)
 	@Size(max = 50)
 	public String getOutCustomer() {
 		return this.outCustomer;
@@ -285,6 +279,19 @@ public class Dispatch implements java.io.Serializable {
             }
         });
         return result;
+    }
+
+    @Transient
+    public boolean haveSubOut(){
+        if (getOverlyOuts().isEmpty()){
+            return false;
+        }
+        for(OverlyOut overlyOut: getOverlyOuts()){
+            if (!overlyOut.isAdd()){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

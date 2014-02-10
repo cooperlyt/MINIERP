@@ -284,7 +284,7 @@ public class OrderDispatch {
 
 
             if (!dispatchList.contains(selectDispatch)){
-                selectDispatch.setState(Dispatch.DispatchState.DISPATCH_COMPLETE);
+                selectDispatch.setStoreOut(false);
                 dispatchList.add(selectDispatch);
             }
 

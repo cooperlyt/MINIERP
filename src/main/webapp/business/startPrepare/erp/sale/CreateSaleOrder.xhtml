@@ -274,9 +274,9 @@
 
                 <h:outputText value="#{_tel}"/>
                 <a:ajax event="blur" listener="#{orderCreate.orderReceivceTelChanged}"
-                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
                 <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceTelChanged}"
-                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
             </rich:autocomplete>
 
         </s:decorate>
@@ -296,9 +296,9 @@
 
                 <h:outputText value="#{_contact}"/>
                 <a:ajax event="blur" listener="#{orderCreate.orderReceivceContactChanged}"
-                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
                 <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceContactChanged}"
-                        render="receiveContactField,receiveTelField,receiveContactField,receiveTelField"/>
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
             </rich:autocomplete>
 
         </s:decorate>

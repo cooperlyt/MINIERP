@@ -35,7 +35,6 @@ public class OrderItem implements java.io.Serializable {
     private MiddleMoneyCalcType middleMoneyCalcType;
     private boolean storeResItem;
     private Res res;
-    private OverlyOut overlyOut;
 
     public OrderItem() {
     }
@@ -227,16 +226,6 @@ public class OrderItem implements java.io.Serializable {
         this.storeResItem = storeResItem;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "OVERLY_OUT", unique = true, nullable = true)
-    public OverlyOut getOverlyOut() {
-        return overlyOut;
-    }
-
-    public void setOverlyOut(OverlyOut overlyOut) {
-        this.overlyOut = overlyOut;
-    }
-
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "RES", nullable = true)
     public Res getRes() {
@@ -307,4 +296,25 @@ public class OrderItem implements java.io.Serializable {
     public BigDecimal getTotalMoney() {
         return BigDecimalFormat.halfUpCurrency(getMoney().multiply(getCount()).multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
     }
+
+    @Transient
+    public OrderItem cloneNew() {
+        OrderItem result;
+        if (isStoreResItem()) {
+            result = new OrderItem(getNeedRes(), getStoreRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate());
+        } else {
+            result = new OrderItem(getNeedRes(), getRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate());
+        }
+        return result;
+    }
+
+    @Transient
+    public boolean isSameItem(OrderItem orderItem) {
+        return (isStoreResItem() == orderItem.isStoreResItem()) &&
+                (isStoreResItem() ? getStoreRes().equals(orderItem.getStoreRes()) : getRes().equals(orderItem.getRes())) &&
+                getMoneyUnit().getId().equals(orderItem.getMoneyUnit().getId()) &&
+                getMoney().equals(orderItem.getMoney()) &&
+                getRebate().equals(orderItem.getRebate());
+    }
+
 }

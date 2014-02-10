@@ -63,27 +63,7 @@
 
 <h:form>
     <rich:toolbar>
-        <rich:toolbarGroup>
-            <a:outputPanel id="expressProxyFare">
 
-                <h:outputText value="#{messages.order_proxy_fare}"
-                              rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}"/>
-
-                <h:outputText value="#{messages[orderHome.lastNeedRes.type.name()]}"
-                              rendered="#{not ((orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND')}"/>
-                <h:inputText id="reveiveFareField" label="#{messages.order_fare}" required="true"
-                             value="#{orderHome.masterNeedRes.proxyFare}" size="10"
-                             rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and orderHome.lastNeedRes.type eq 'ORDER_SEND'}">
-                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                     type="currency" groupingUsed="false"/>
-                    <f:validateDoubleRange minimum="0"/>
-                    <rich:placeholder value="#{messages.order_proxy_fare}"/>
-                    <rich:validator/>
-                </h:inputText>
-                <rich:message for="reveiveFareField" styleClass="message-icon"
-                              showDetail="true" showSummary="true" tooltip="true"/>
-            </a:outputPanel>
-        </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">
             <h:panelGroup>
@@ -183,7 +163,6 @@
                                 value="#{_dispatch.fare}" size="10" label="#{messages.dispatch_field_Fare}">
                             <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                              type="currency" groupingUsed="false"/>
-                            <a:ajax event="blur" listener="#{_needRes.dispatchFareChangeListener}" render="sendInfos,expressProxyFare"/>
                         </h:inputText>
                     </s:decorate>
 

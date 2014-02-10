@@ -31,9 +31,6 @@ public class OrderMoneyReceive extends FinanceReceivables {
     @Override
     public BigDecimal getShortageMoney() {
         BigDecimal result = orderHome.getInstance().getMoney().subtract(getTotalReveiveMoney());
-        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
-            result = result.subtract(orderHome.getMasterNeedRes().getProxyFare());
-        }
         return result;
     }
 

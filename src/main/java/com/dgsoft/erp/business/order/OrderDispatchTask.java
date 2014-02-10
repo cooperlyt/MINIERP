@@ -75,7 +75,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
         }
         needResHome.getInstance().getDispatches().addAll(orderDispatch.getDispatchList());
 
-        needResHome.getInstance().setDispatched(true);
+        needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
 
         if (needResHome.update().equals("updated")) {
             return "taskComplete";

@@ -13,6 +13,11 @@
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.needRes_field_status}</ui:define>
+        <h:outputText value="#{messages[needRes.status.name()]}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_limitDate}</ui:define>
         <h:outputText value="#{needRes.limitTime}">
             <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
@@ -21,7 +26,7 @@
 
     <s:decorate template="/layout/seam-display.xhtml" rendered="#{needRes.type eq 'SUPPLEMENT_SEND'}">
         <ui:define name="label">#{messages.needRes_field_reason}</ui:define>
-        <h:outputText value="#{needRes.reason}"/>
+        <h:outputText value="#{dictionary.getWordValue(needRes.reason)}"/>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">

@@ -187,7 +187,7 @@
         <h:panelGrid columns="4">
             <h:outputText value="#{resHome.resTitle}" styleClass="name"/>
             #{' '}
-            <h:selectBooleanCheckbox value="#{orderCreate.editingItem.storeResItem}">
+            <h:selectBooleanCheckbox value="#{orderCreate.editingItem.storeResItem}" disabled="true">
                 <a:ajax event="click" render="orderItemDetails"/>
             </h:selectBooleanCheckbox>
 

@@ -2,14 +2,15 @@ package com.dgsoft.common.jbpm;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.*;
+import org.jboss.seam.bpm.Actor;
+import org.jboss.seam.bpm.ManagedJbpmContext;
+import org.jboss.seam.log.Logging;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.richfaces.application.push.TopicKey;
 import org.richfaces.application.push.TopicsContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,16 +30,25 @@ public class PooledTaskInstanceListener extends TaskInstanceListener {
     public static final String PUSH_POOLEDTASK_COME_TOPIC ="pushPooledTaskCome";
 
 
-//    private Actor actor;
+    private Actor actor;
 //    private Jbpm jbpm;
 
     public PooledTaskInstanceListener() {
         super();
-//        actor = Actor.instance();
-//        jbpm = Jbpm.instance();
+
+    }
+
+    @Create
+    @Override
+    @Transactional
+    public void init(){
+        Logging.getLog(this.getClass()).debug("pooldTaskListener is Create!");
+        actor = Actor.instance();
+        super.init();
     }
 
     @Override
+    @Transactional
     protected List<TaskInstance> queryTaskList() {
 
 
@@ -52,7 +62,15 @@ public class PooledTaskInstanceListener extends TaskInstanceListener {
 //        } finally {
 //            jbpmContext.close();
 //        }
-        return (List<TaskInstance>) Component.getInstance("org.jboss.seam.bpm.pooledTaskInstanceList", true, true);
+        //return (List<TaskInstance>) Component.getInstance("org.jboss.seam.bpm.pooledTaskInstanceList", true, true);
+
+
+        //Actor actor = Actor.instance();
+        String actorId = actor.getId();
+        if ( actorId == null ) return null;
+        ArrayList groupIds = new ArrayList( actor.getGroupActorIds() );
+        groupIds.add(actorId);
+        return ManagedJbpmContext.instance().getGroupTaskList(groupIds);
     }
 
     @Override

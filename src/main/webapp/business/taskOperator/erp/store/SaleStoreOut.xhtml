@@ -24,9 +24,18 @@
         </a:commandButton>
     </ui:define>
 
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.Type}</ui:define>
+        <h:selectOneMenu disabled="#{not dispatchHome.canAddRes}" value="#{orderStoreOut.operOutItem.overlyOut.add}" rendered="true"
+                         label="#{messages.Type}">
+            <f:selectItem itemLabel="#{messages.dispatch_overly_items}" itemValue="#{true}"/>
+            <f:selectItem itemLabel="#{messages.dispatch_overly_sub_items}" itemValue="#{false}"/>
+        </h:selectOneMenu>
+    </s:decorate>
+
 
     <ui:include src="/layout/erp/ResCountInput.xhtml">
-        <ui:param name="resCountBean" value="#{orderStoreOut.selectOutItem.overlayCount}"/>
+        <ui:param name="resCountBean" value="#{orderStoreOut.operOutItem.overlayCount}"/>
         <ui:param name="lableStyleClass" value="small_name"/>
         <ui:param name="disabledFloatRate" value="true"/>
     </ui:include>
@@ -35,15 +44,15 @@
         <ui:define name="label">
             #{messages.description}
         </ui:define>
-        <h:inputTextarea value="#{orderStoreOut.selectOutItem.overlyOut.description}"
+        <h:inputTextarea value="#{orderStoreOut.operOutItem.overlyOut.description}"
                          rows="2" cols="50"/>
     </s:decorate>
 
     <ui:define name="actionButtons">
         <a:commandButton value="#{messages.cancel}" onclick="#{rich:component(panelId)}.hide(); return false;"/>
         <a:commandButton value="#{messages.ok}" execute="@form" render="orderStoreOutItemsTable"
-                         action="#{orderStoreOut.selectOutItem.assignOverlayCount}"
-                         oncomplete="#{rich:component(panelId)}.hide();">
+                         action="#{orderStoreOut.saveOverlay}" data="#{actionExecuteState.lastState}"
+                         oncomplete="if (event.data == 'success')#{rich:component(panelId)}.hide();">
             <a:attachQueue requestDelay="0"/>
 
         </a:commandButton>
@@ -137,38 +146,54 @@
                 <rich:column colspan="2">
                     #{messages.dispatch_need_items}
                 </rich:column>
-                <rich:column colspan="3">
+                <rich:column colspan="2">
                     #{messages.dispatch_overly_items}
                 </rich:column>
                 <rich:column colspan="2">
+                    #{messages.dispatch_overly_sub_items}
+                </rich:column>
+
+                <rich:column colspan="3">
                     #{messages.dispatch_out}
                 </rich:column>
+
+
                 <rich:column breakRowBefore="true">
-                    #{messages.MasterUnitCount}
+                    <h:outputText value="#{messages.MasterUnitCount}" style="font-size: 11px"/>
                 </rich:column>
                 <rich:column>
-                    #{messages.AuxUnitCount}
+                    <h:outputText value="#{messages.AuxUnitCount}" style="font-size: 11px"/>
                 </rich:column>
                 <rich:column>
-                    #{messages.MasterUnitCount}
+                    <h:outputText value="#{messages.MasterUnitCount}" style="font-size: 11px"/>
                 </rich:column>
                 <rich:column>
-                    #{messages.AuxUnitCount}
+                    <h:outputText value="#{messages.AuxUnitCount}" style="font-size: 11px"/>
                 </rich:column>
                 <rich:column>
-                    #{messages.MasterUnitCount}
+                    <h:outputText value="#{messages.MasterUnitCount}" style="font-size: 11px"/>
                 </rich:column>
                 <rich:column>
-                    #{messages.AuxUnitCount}
+                    <h:outputText value="#{messages.AuxUnitCount}" style="font-size: 11px"/>
                 </rich:column>
+
+                <rich:column>
+                    <h:outputText value="#{messages.MasterUnitCount}" style="font-size: 11px"/>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{messages.AuxUnitCount}" style="font-size: 11px"/>
+                </rich:column>
+
+
+                <rich:column>
+                    <h:outputText value="#{messages.MasterUnitCount}" style="font-size: 11px"/>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{messages.AuxUnitCount}" style="font-size: 11px"/>
+                </rich:column>
+
                 <rich:column>
 
-                </rich:column>
-                <rich:column>
-                    #{messages.MasterUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.AuxUnitCount}
                 </rich:column>
             </rich:columnGroup>
         </f:facet>
@@ -196,21 +221,26 @@
         </rich:column>
 
         <rich:column>
-            #{_dispatchItem.overlyOut.resCount.masterDisplayCount}
+            <h:outputText value="#{_dispatchItem.overlyOut.resCount.masterDisplayCount}"
+                          rendered="#{_dispatchItem.overlyOut.add}"/>
+
         </rich:column>
 
         <rich:column>
-            #{_dispatchItem.overlyOut.resCount.displayAuxCount}
+            <h:outputText value="#{_dispatchItem.overlyOut.resCount.displayAuxCount}"
+                          rendered="#{_dispatchItem.overlyOut.add}"/>
         </rich:column>
 
-        <rich:column style="text-align: center;">
-            <a:commandButton image="/img/item_add.png" action="#{orderStoreOut.editOverlay}"
-                             disabled="#{not dispatchHome.canAddRes}" execute="@this"
-                             immediate="true" oncomplete="#{rich:component('overlayEditPanel')}.show()"
-                             render="overlayEditPanel_form">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
+
+        <rich:column>
+            <h:outputText value="#{_dispatchItem.overlyOut.resCount.masterDisplayCount}"
+                          rendered="#{not _dispatchItem.overlyOut.add}"/>
         </rich:column>
+        <rich:column>
+            <h:outputText value="#{_dispatchItem.overlyOut.resCount.displayAuxCount}"
+                          rendered="#{not _dispatchItem.overlyOut.add}"/>
+        </rich:column>
+
 
         <rich:column>
             #{_dispatchItem.resCount.masterDisplayCount}
@@ -242,10 +272,16 @@
             </a:outputPanel>
         </rich:column>
         <rich:column>
-
             #{_dispatchItem.resCount.displayAuxCount}
         </rich:column>
-
+        <rich:column style="text-align: center;">
+            <a:commandButton image="/img/edit.png" action="#{orderStoreOut.editOverlay}"
+                             execute="@this"
+                             immediate="true" oncomplete="#{rich:component('overlayEditPanel')}.show()"
+                             render="overlayEditPanel_form">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </rich:column>
 
     </rich:dataTable>
 </h:form>

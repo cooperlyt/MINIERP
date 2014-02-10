@@ -31,8 +31,6 @@
 
             </a:outputPanel>
 
-            <h:graphicImage style="float: right;" value="/img/add_tip.png" rendered="#{not empty _item.overlyOut}" />
-
             <f:facet name="footer">
                 #{messages.recordTotal} #{orderItems.size} #{messages.item}
             </f:facet>
@@ -92,7 +90,7 @@
         </rich:column>
 
 
-        <rich:column rendered="#{s:hasRole('erp.sale.manager')}">
+        <rich:column rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and  s:hasRole('erp.sale.manager')}">
             <f:facet name="header">#{messages.order_middle_money_itemCalcType}</f:facet>
 
             <h:outputText value="#{messages[_item.middleMoneyCalcType.name()]}"
@@ -101,14 +99,14 @@
 
         </rich:column>
 
-        <rich:column rendered="#{s:hasRole('erp.sale.manager')}">
+        <rich:column rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and  s:hasRole('erp.sale.manager')}">
             <f:facet name="header">#{messages.order_middle_money_unit}</f:facet>
 
             <h:outputText value="#{_item.middleUnit.name}"
                           rendered="#{(not empty _item.middleMoneyCalcType) and (_item.middleMoneyCalcType eq 'COUNT_FIX') and (not empty _item.middleUnit)}"/>
         </rich:column>
 
-        <rich:column rendered="#{s:hasRole('erp.sale.manager')}">
+        <rich:column rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and s:hasRole('erp.sale.manager')}">
             <f:facet name="header">
                 #{messages.order_field_middleMoney_Rate}
             </f:facet>
@@ -131,7 +129,7 @@
         </rich:column>
 
 
-        <rich:column style="text-align: right" rendered="#{s:hasRole('erp.sale.manager')}">
+        <rich:column style="text-align: right" rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and s:hasRole('erp.sale.manager')}">
             <f:facet name="header">#{messages.order_field_middleMoney}</f:facet>
             <h:outputText value="#{_item.middleMoney}">
                 <f:convertNumber locale="#{calendarBean.locale}"

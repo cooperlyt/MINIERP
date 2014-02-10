@@ -88,6 +88,23 @@ public class ResHelper {
         return true;
     }
 
+    public static List<OrderItem> unionSeamOrderItem(List<OrderItem> orderItems){
+        List<OrderItem> result = new ArrayList<OrderItem>();
+        for (OrderItem orderItem: orderItems){
+            boolean finded = false;
+            for (OrderItem item: result){
+                if (item.isSameItem(orderItem)){
+                    finded = true;
+                    item.setCount(item.getCount().add(orderItem.getCount()));
+                }
+            }
+            if (!finded){
+                result.add(orderItem);
+            }
+        }
+        return result;
+    }
+
     public String formatDisplayValue(Format format){
         if (format != null)
         switch (format.getFormatDefine().getDataType()){

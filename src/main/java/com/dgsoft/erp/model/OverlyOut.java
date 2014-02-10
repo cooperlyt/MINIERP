@@ -20,15 +20,16 @@ public class OverlyOut {
     private BigDecimal count;
     private String description;
     private Dispatch dispatch;
-    private OrderItem orderItem;
+    private boolean add;
 
     public OverlyOut() {
     }
 
-    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count) {
+    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count, boolean add) {
         this.storeRes = storeRes;
         this.count = count;
         this.dispatch = dispatch;
+        this.add = add;
     }
 
     @Id
@@ -65,16 +66,6 @@ public class OverlyOut {
         this.description = description;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "overlyOut", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
-    public OrderItem getOrderItem() {
-        return orderItem;
-    }
-
-    public void setOrderItem(OrderItem orderItem) {
-        this.orderItem = orderItem;
-    }
-
-
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_RES", nullable = false)
     public StoreRes getStoreRes() {
@@ -100,4 +91,12 @@ public class OverlyOut {
         return storeRes.getResCount(getCount());
     }
 
+    @Column(name = "IS_ADD",nullable = false)
+    public boolean isAdd() {
+        return add;
+    }
+
+    public void setAdd(boolean add) {
+        this.add = add;
+    }
 }

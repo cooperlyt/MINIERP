@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.BatchOperEntity;
 import com.dgsoft.erp.model.api.ResCount;
 
@@ -417,7 +418,7 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
         for (NeedRes needRes : getNeedResList()) {
             result.addAll(needRes.getOrderItemList());
         }
-        return result;
+        return ResHelper.unionSeamOrderItem(result);
     }
 
 

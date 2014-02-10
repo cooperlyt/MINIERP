@@ -47,14 +47,6 @@
             </a:outputPanel>
         </rich:toolbarGroup>
 
-        <rich:toolbarGroup rendered="#{orderHome.instance.payType eq 'EXPRESS_PROXY'}">
-            #{' '} #{messages.order_fare}:
-
-            <h:outputText value="#{orderHome.masterNeedRes.proxyFare}"
-                          rendered="#{orderHome.instance.payType eq 'EXPRESS_PROXY'}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </rich:toolbarGroup>
         <rich:toolbarGroup>
             <a:outputPanel ajaxRendered="true">
                 #{' '}#{messages.order_money_lacking}:

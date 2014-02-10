@@ -16,12 +16,13 @@
 
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.State}</ui:define>
-        <h:outputText value="#{messages[dispatch.state.name()]}"/>
+        <h:outputText value="#{messages.dispatch_state_out}" rendered="#{dispatch.storeOut}"/>
+        <h:outputText value="#{messages.dispathc_state_create}" rendered="#{not dispatch.storeOut}"/>
     </s:decorate>
 
 
     <s:decorate template="/layout/seam-display.xhtml"
-                rendered="#{not (dispatch.deliveryType eq 'CUSTOMER_SELF') and (dispatch.state eq 'ALL_COMPLETE')}">
+                rendered="#{not (dispatch.deliveryType eq 'CUSTOMER_SELF') and (dispatch.storeOut)}">
         <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
         <h:outputText value="#{dispatch.sendTime}" rendered="#{not empty dispatch.sendTime}">
             <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
@@ -29,7 +30,7 @@
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml"
-                rendered="#{(dispatch.deliveryType.haveFare) and (not (dispatch.deliveryType eq 'CUSTOMER_SELF')) and (dispatch.state eq 'ALL_COMPLETE')}">
+                rendered="#{(dispatch.deliveryType.haveFare) and (not (dispatch.deliveryType eq 'CUSTOMER_SELF')) and (dispatch.storeOut)}">
         <ui:define name="label">#{messages.order_fare}</ui:define>
         <h:outputText value="#{dispatch.fare}">
             <f:convertNumber locale="#{calendarBean.locale}" type="currency"/>
@@ -38,7 +39,7 @@
 
 
     <s:decorate template="/layout/seam-display.xhtml"
-                rendered="#{(not (dispatch.deliveryType eq 'CUSTOMER_SELF')) and (dispatch.state eq 'ALL_COMPLETE')}">
+                rendered="#{(not (dispatch.deliveryType eq 'CUSTOMER_SELF')) and (dispatch.storeOut)}">
         <ui:define name="label">#{messages.order_field_sendEmployee}</ui:define>
         <h:outputText value="#{dictionary.getEmpNameById(dispatch.sendEmp)}" rendered="#{not empty dispatch.sendEmp}"/>
     </s:decorate>
@@ -66,7 +67,7 @@
         </a:outputPanel>
 
         <s:decorate template="/layout/seam-display.xhtml"
-                    rendered="#{(dispatch.state eq 'ALL_COMPLETE') and (dispatch.deliveryType eq 'CUSTOMER_SELF')}">
+                    rendered="#{(dispatch.storeOut) and (dispatch.deliveryType eq 'CUSTOMER_SELF')}">
             <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
             <h:outputText value="#{dispatch.outCustomer}"/>
         </s:decorate>
@@ -91,7 +92,7 @@
 
         <a:outputPanel rendered="#{(dispatch.deliveryType eq 'EXPRESS_SEND')}">
             <s:decorate template="/layout/seam-display.xhtml"
-                        rendered="#{dispatch.state eq 'ALL_COMPLETE'}">
+                        rendered="#{dispatch.storeOut}">
                 <ui:define name="label">#{messages.dispatch_field_expressNumber}</ui:define>
                 <h:outputText value="#{dispatch.sendNumber}"/>
             </s:decorate>
@@ -115,7 +116,7 @@
     </s:decorate>
 
 
-    <a:outputPanel rendered="#{(dispatch.state eq 'DISPATCH_STORE_OUT') or (dispatch.state eq 'ALL_COMPLETE')}">
+    <a:outputPanel rendered="#{dispatch.storeOut}">
 
 
         <div style="clear: both"/>

@@ -40,21 +40,21 @@
                     <rich:tree
                             var="_node"
                             value="#{allStoreResTree}"
-                            nodeType="#{_node.type}"
+                            nodeType="#{_node.nodeType}"
                             selectionChangeListener="#{stockList.treeSectionChanged}"
                             onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
                             render="dataListResult"
                             toggleType="client"
                             selectionType="ajax">
                         <rich:treeNode type="category">
-                            #{_node.resCategory.name}
+                            #{_node.data.name}
                         </rich:treeNode>
                         <rich:treeNode type="res">
-                            #{_node.res.name}(#{_node.res.code})
+                            #{_node.data.name}(#{_node.data.code})
                         </rich:treeNode>
                         <rich:treeNode type="storeRes">
                             <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                                <ui:param name="storeRes" value="#{_node.storeRes}"/>
+                                <ui:param name="storeRes" value="#{_node.data}"/>
                             </ui:include>
                         </rich:treeNode>
                     </rich:tree>

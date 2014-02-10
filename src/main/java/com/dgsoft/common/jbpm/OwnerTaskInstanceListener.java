@@ -2,10 +2,10 @@ package com.dgsoft.common.jbpm;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.*;
+import org.jboss.seam.bpm.Actor;
+import org.jboss.seam.bpm.ManagedJbpmContext;
+import org.jboss.seam.log.Logging;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.richfaces.application.push.TopicKey;
 import org.richfaces.application.push.TopicsContext;
@@ -32,25 +32,31 @@ public class OwnerTaskInstanceListener extends TaskInstanceListener {
 
 //    private Jbpm jbpm;
 //
-//    private Actor actor;
+    private String actorId;
 
     public OwnerTaskInstanceListener() {
         super();
-//        actor = Actor.instance();
+
 //        jbpm = Jbpm.instance();
     }
 
 
+    @Create
+    @Override
+    @Transactional
+    public void init(){
+        Logging.getLog(this.getClass()).debug("OwnerTaskListener is Create!");
+        actorId = Actor.instance().getId();
+        super.init();
+    }
+
     @Override
     protected List<TaskInstance> queryTaskList() {
 
-//        JbpmContext jbpmContext = jbpm.getJbpmConfiguration().createJbpmContext();
-//        try {
-//            return jbpmContext.getTaskList(actor.getId());
-//        } finally {
-//            jbpmContext.close();
-//        }
-        return (List<TaskInstance>) Component.getInstance("org.jboss.seam.bpm.taskInstanceList", true, true);
+
+        if ( actorId == null ) return null;
+
+        return ManagedJbpmContext.instance().getTaskList(actorId);
     }
 
 

@@ -6,6 +6,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.log.Log;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
@@ -26,6 +27,7 @@ public abstract class TaskInstanceListener {
 
     private List<TaskInstance> taskInstanceList;
 
+
     protected abstract List<TaskInstance> queryTaskList();
 
     protected List<Long> newTaskIds = new ArrayList<Long>();
@@ -33,7 +35,7 @@ public abstract class TaskInstanceListener {
     @Logger
     protected Log log;
 
-    @Create
+
     public void init() {
         ((BpmTaskChangePublish) Component.getInstance("bpmTaskChangePublish", ScopeType.APPLICATION, true, true)).subscribe(this);
         refresh();
@@ -44,6 +46,7 @@ public abstract class TaskInstanceListener {
         ((BpmTaskChangePublish) Component.getInstance("bpmTaskChangePublish", ScopeType.APPLICATION, true, true)).unSubscribe(this);
     }
 
+    @Transactional
     public void refresh() {
         newTaskIds.clear();
         taskInstanceList = queryTaskList();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="order" width="992" height="784">
+<root-container name="order" width="1030" height="784">
   <node name="生成订单" x="43" y="15" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -36,7 +36,7 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="join3" x="676" y="628" width="142" height="24">
+  <node name="join3" x="679" y="686" width="142" height="24">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -52,7 +52,7 @@
       <label x="-69" y="-94"/>
     </edge>
   </node>
-  <node name="出库确认(1库)" x="299" y="360" width="132" height="36">
+  <node name="出库确认(1库)" x="295" y="367" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -96,12 +96,12 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="fork1" x="677" y="337" width="90" height="24">
+  <node name="fork1" x="654" y="299" width="90" height="24">
     <edge>
-      <label x="98" y="3"/>
+      <label x="81" y="-8"/>
     </edge>
     <edge>
-      <label x="-44" y="-10"/>
+      <label x="-12" y="6"/>
     </edge>
   </node>
   <node name="付款方式" x="44" y="82" width="132" height="36">
@@ -157,7 +157,7 @@
   </node>
   <node name="发货方式(2库)" x="207" y="622" width="132" height="36">
     <edge>
-      <label x="-16" y="-5"/>
+      <label x="-35" y="-5"/>
     </edge>
     <edge>
       <label x="-19" y="-14"/>
@@ -171,7 +171,7 @@
       <label x="-21" y="-10"/>
     </edge>
   </node>
-  <node name="发货确认(2库)" x="391" y="619" width="132" height="36">
+  <node name="发货确认(2库)" x="360" y="618" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -189,12 +189,12 @@
       <label x="-20" y="-7"/>
     </edge>
   </node>
-  <node name="付款判断" x="678" y="478" width="132" height="36">
+  <node name="付款判断" x="697" y="392" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
     <edge>
-      <label x="73" y="141"/>
+      <label x="63" y="124"/>
     </edge>
     <edge>
       <label x="-76" y="-14"/>
@@ -203,5 +203,26 @@
       <label x="-49" y="24"/>
     </edge>
   </node>
+  <node name="发货情况判断" x="832" y="598" width="132" height="36">
+    <edge>
+      <label x="14" y="42"/>
+    </edge>
+    <edge>
+      <label x="-50" y="-3"/>
+    </edge>
+  </node>
+  <node name="重新发货判断" x="667" y="478" width="132" height="36">
+    <edge>
+      <label x="196" y="74"/>
+    </edge>
+    <edge>
+      <label x="-47" y="-8"/>
+    </edge>
+  </node>
   <node name="订单完成" x="322" y="15" width="132" height="36"/>
+  <node name="订单更改" x="668" y="535" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
 </root-container>

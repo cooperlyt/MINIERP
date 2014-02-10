@@ -20,6 +20,10 @@ public class NeedRes implements java.io.Serializable {
         ORDER_SEND, SUPPLEMENT_SEND;
     }
 
+    public enum NeedResStatus{
+        CREATED, DISPATCHED, OUTED;
+    }
+
     private String id;
     private CustomerOrder customerOrder;
     private NeedResType type;
@@ -27,13 +31,14 @@ public class NeedRes implements java.io.Serializable {
     private String reason;
     private String memo;
     private Date createDate;
-    private boolean dispatched;
-    private BigDecimal proxyFare;
+    //private boolean dispatched;
+    //private BigDecimal proxyFare;
     private boolean fareByCustomer;
     private String address;
     private String postCode;
     private String receivePerson;
     private String receiveTel;
+    private NeedResStatus status;
 
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
@@ -42,12 +47,12 @@ public class NeedRes implements java.io.Serializable {
     }
 
     public NeedRes(CustomerOrder customerOrder, NeedResType type,
-                   String reason, Date createDate, boolean dispatched) {
+                   String reason, Date createDate, NeedResStatus status) {
         this.customerOrder = customerOrder;
         this.type = type;
         this.createDate = createDate;
         this.reason = reason;
-        this.dispatched = dispatched;
+        this.status = status;
     }
 
     @Id
@@ -116,15 +121,6 @@ public class NeedRes implements java.io.Serializable {
 
     public void setMemo(String memo) {
         this.memo = memo;
-    }
-
-    @Column(name = "DISPATCHED", nullable = false)
-    public boolean isDispatched() {
-        return dispatched;
-    }
-
-    public void setDispatched(boolean dispatched) {
-        this.dispatched = dispatched;
     }
 
     @Column(name = "ADDRESS", length = 200, nullable = false)
@@ -228,15 +224,6 @@ public class NeedRes implements java.io.Serializable {
         return result;
     }
 
-    @Column(name = "PROXY_FARE", nullable = true, scale = 3)
-    public BigDecimal getProxyFare() {
-        return proxyFare;
-    }
-
-    public void setProxyFare(BigDecimal fare) {
-        this.proxyFare = fare;
-    }
-
     @Column(name = "FARE_BY_CUSTOMER", nullable = false)
     public boolean isFareByCustomer() {
         return fareByCustomer;
@@ -244,6 +231,17 @@ public class NeedRes implements java.io.Serializable {
 
     public void setFareByCustomer(boolean fareByCustomer) {
         this.fareByCustomer = fareByCustomer;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="STATUS",nullable = false,length = 32)
+    @NotNull
+    public NeedResStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(NeedResStatus status) {
+        this.status = status;
     }
 
     @Transient
@@ -259,7 +257,7 @@ public class NeedRes implements java.io.Serializable {
     @Transient
     public boolean isAllDispatchComplete() {
         for (Dispatch dispatch : getDispatches()) {
-            if (!dispatch.getState().equals(Dispatch.DispatchState.ALL_COMPLETE)) {
+            if (!dispatch.isStoreOut()) {
                 return false;
             }
         }
@@ -277,14 +275,6 @@ public class NeedRes implements java.io.Serializable {
                 }
             }
         return result;
-    }
-
-    @Transient
-    public void dispatchFareChangeListener() {
-        if (getType().equals(NeedResType.ORDER_SEND) && getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
-                && ((getProxyFare() == null) || (BigDecimal.ZERO.compareTo(getProxyFare()) == 0))) {
-            setProxyFare(getTotalFare());
-        }
     }
 
 }

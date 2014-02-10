@@ -1,6 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessDefineException;
+import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.DispatchHome;
@@ -12,11 +13,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +42,9 @@ public class OrderStoreOut extends OrderTaskHandle {
     protected NumberBuilder numberBuilder;
 
     @In
+    private ActionExecuteState actionExecuteState;
+
+    @In
     private org.jboss.seam.security.Credentials credentials;
 
     @DataModel("orderStoreOutItems")
@@ -48,6 +54,8 @@ public class OrderStoreOut extends OrderTaskHandle {
 
     @DataModelSelection
     private OrderStoreOutItem selectOutItem;
+
+    private OrderStoreOutItem operOutItem;
 
     //private String storeId;
 
@@ -79,16 +87,27 @@ public class OrderStoreOut extends OrderTaskHandle {
         this.noAssignedItems = noAssignedItems;
     }
 
-    public OrderStoreOutItem getSelectOutItem() {
-        return selectOutItem;
-    }
-
-    public void setSelectOutItem(OrderStoreOutItem selectOutItem) {
-        this.selectOutItem = selectOutItem;
+    public OrderStoreOutItem getOperOutItem() {
+        return operOutItem;
     }
 
     public void editOverlay() {
+        operOutItem = selectOutItem;
         selectOutItem.generateOverlayInput();
+        actionExecuteState.clearState();
+    }
+
+    public void saveOverlay() {
+
+
+        if (!operOutItem.getOverlyOut().isAdd() &&
+                (operOutItem.getOverlayCount().getMasterCount().compareTo(operOutItem.getDispatchMaterCount()) > 0)) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"sale_store_out_must_less_need",operOutItem.getDispatchCount().getMasterDisplayCount());
+            return;
+        }
+
+        operOutItem.assignOverlayCount();
+        actionExecuteState.actionExecute();
     }
 
     @Override
@@ -142,28 +161,41 @@ public class OrderStoreOut extends OrderTaskHandle {
             }
         }
 
-        boolean allStoreOut = true;
-        for (Dispatch dispatch : orderHome.getMasterNeedRes().getDispatches()) {
-            if (!dispatch.getId().equals(dispatchHome.getInstance().getId())) {
-                if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_COMPLETE)) {
-                    allStoreOut = false;
-                    break;
-                }
-            }
-        }
 
-        if (allStoreOut) {
-            orderHome.getInstance().setAllStoreOut(allStoreOut);
-        }
+        dispatchHome.getInstance().setStoreOut(true);
 
         if (dispatchHome.getInstance().getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
-            dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
             dispatchHome.getInstance().setSendTime(storeOutDate);
             dispatchHome.getInstance().setFare(BigDecimal.ZERO);
             dispatchHome.getInstance().getNeedRes().getCustomerOrder().setResReceived(true);
-        } else {
-            dispatchHome.getInstance().setState(Dispatch.DispatchState.DISPATCH_STORE_OUT);
         }
+
+
+        boolean allStoreOut = true;
+        for (Dispatch dispatch : dispatchHome.getInstance().getNeedRes().getDispatches()) {
+            if (!dispatch.isStoreOut() || dispatch.haveSubOut()) {
+                allStoreOut = false;
+                break;
+            }
+        }
+
+        //if (allStoreOut) {
+        orderHome.getInstance().setAllStoreOut(allStoreOut);
+        //}
+
+        boolean needResComplete = true;
+        for (Dispatch dispatch : dispatchHome.getInstance().getNeedRes().getDispatches()) {
+            if (!dispatch.isStoreOut()) {
+                needResComplete = false;
+                break;
+            }
+        }
+
+        if (needResComplete) {
+            dispatchHome.getInstance().getNeedRes().setStatus(NeedRes.NeedResStatus.OUTED);
+        }
+
+
         if (dispatchHome.update().equals("updated")) {
             return "taskComplete";
         } else {
@@ -180,10 +212,10 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
-            if (needRes.isDispatched()) {
+            if (needRes.getStatus().equals(NeedRes.NeedResStatus.DISPATCHED)) {
                 for (Dispatch dispatch : needRes.getDispatches()) {
                     if (dispatch.getStore().getId().equals(storeId) &&
-                            dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_COMPLETE)) {
+                            !dispatch.isStoreOut()) {
                         dispatchHome.setId(dispatch.getId());
                         dispatchHome.getInstance().getOverlyOuts().clear();
                         orderStoreOutItems = new ArrayList<OrderStoreOutItem>();
@@ -270,6 +302,7 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         public void assignOverlayCount() {
+
             overlyOut.setCount(overlayCount.getMasterCount());
         }
 
@@ -279,7 +312,7 @@ public class OrderStoreOut extends OrderTaskHandle {
             dispatchItems.add(dispatchItem);
             storeRes = dispatchItem.getStoreRes();
 
-            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO);
+            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO, false);
         }
 
         public OrderStoreOutItem(DispatchItem dispatchItem, StoreRes storeRes) {
@@ -289,7 +322,7 @@ public class OrderStoreOut extends OrderTaskHandle {
             dispatchItems.add(dispatchItem);
             this.storeRes = storeRes;
 
-            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO);
+            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO, false);
         }
 
         public void addDispatchItem(DispatchItem dispatchItem) {
@@ -327,7 +360,11 @@ public class OrderStoreOut extends OrderTaskHandle {
         public ResCount getResCount() {
             BigDecimal masterCount = getDispatchMaterCount();
             if (overlyOut != null) {
-                masterCount = masterCount.add(overlyOut.getCount());
+                if (overlyOut.isAdd()) {
+                    masterCount = masterCount.add(overlyOut.getCount());
+                } else {
+                    masterCount = masterCount.subtract(overlyOut.getCount());
+                }
             }
 
             return storeRes.getResCount(masterCount);

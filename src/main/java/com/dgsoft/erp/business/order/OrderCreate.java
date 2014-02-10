@@ -271,7 +271,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     @Observer(value = "erp.resLocateSelected", create = false)
     public void generateSaleItemByRes(Res res) {
         editingItem = new OrderNeedItem(res);
-        editingItem.setStoreResItem(false);
+        //TODO: editingItem.setStoreResItem(false);
+        editingItem.setStoreResItem(true);
     }
 
     @Observer(value = "erp.storeResLocateSelected", create = false)
@@ -368,7 +369,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         businessDefineHome.setId("erp.business.order");
         startData.generateKey();
         needRes = new NeedRes(getInstance(),
-                NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), false);
+                NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), NeedRes.NeedResStatus.CREATED);
         orderNeedItems = new ArrayList<OrderNeedItem>();
         //toDO read from customer level
 
@@ -385,7 +386,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             businessDefineHome.setId("erp.business.order");
             startData.generateKey();
             needRes = new NeedRes(getInstance(),
-                    NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), false);
+                    NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), NeedRes.NeedResStatus.CREATED);
 
 
             orderNeedItems = new ArrayList<OrderNeedItem>();
@@ -554,7 +555,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             }
             needRes.getDispatches().addAll(orderDispatch.getDispatchList());
 
-            needRes.setDispatched(true);
+            needRes.setStatus(NeedRes.NeedResStatus.DISPATCHED);
 
         }
 

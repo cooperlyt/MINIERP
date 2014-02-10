@@ -72,6 +72,18 @@
                         </h:selectOneMenu>
 
                         <ui:define name="tail">
+
+                            <h:outputText value="#{messages.accountOper_field_fee}#{' '}"
+                                          rendered="#{(orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER') or (orderHome.instance.payType eq 'EXPRESS_PROXY')}"/>
+
+                            <h:inputText
+                                    rendered="#{(orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER') or (orderHome.instance.payType eq 'EXPRESS_PROXY')}"
+                                    label="#{orderFinanceReveiveAction.debitAccountOper.remitFee}" required="true"
+                                    size="15" value="#{orderFinanceReveiveAction.debitAccountOper.remitFee}">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                                 groupingUsed="false"/>
+                            </h:inputText>
+
                             <h:outputText value="#{messages.ORDER_FREE}"
                                           rendered="#{orderFinanceReveiveAction.debitAccountOper.payType eq 'FROM_PRE_DEPOSIT'}"/>
                             <h:selectBooleanCheckbox value="#{orderFinanceReveiveAction.freeMoney}"
@@ -93,16 +105,7 @@
                                          value="#{orderFinanceReveiveAction.debitAccountOper.checkNumber}">
                             </h:inputText>
 
-                            <h:outputText value="#{messages.accountOper_field_fee}#{' '}"
-                                          rendered="#{orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER'}"/>
 
-                            <h:inputText
-                                    rendered="#{orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER'}"
-                                    label="#{orderFinanceReveiveAction.debitAccountOper.remitFee}" required="true"
-                                    size="15" value="#{orderFinanceReveiveAction.debitAccountOper.remitFee}">
-                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                                 groupingUsed="false"/>
-                            </h:inputText>
                         </ui:define>
                     </s:decorate>
 

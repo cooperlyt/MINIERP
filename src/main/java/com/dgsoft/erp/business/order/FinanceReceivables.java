@@ -3,6 +3,7 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
+import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Transactional;
@@ -48,6 +49,10 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
     public void allMoney() {
         debitAccountOper.setOperMoney(getShortageMoney());
+        if ((orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
+                || debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) && debitAccountOper.getRemitFee() != null ){
+            debitAccountOper.setOperMoney(debitAccountOper.getOperMoney().subtract(debitAccountOper.getRemitFee()));
+        }
         checkCustomerAccountBlance();
     }
 
@@ -122,7 +127,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
                     isFreeForPay() ? customerHome.getInstance().getBalance() : customerHome.getInstance().getBalance().add(debitAccountOper.getOperMoney()),
                     debitAccountOper.getDescription(), debitAccountOper.getPayType(), orderHome.getInstance(),
                     debitAccountOper.getCheckNumber());
-            if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
+            if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER) || orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                 savingAccountOper.setRemitFee(debitAccountOper.getRemitFee());
             } else {
                 savingAccountOper.setRemitFee(BigDecimal.ZERO);

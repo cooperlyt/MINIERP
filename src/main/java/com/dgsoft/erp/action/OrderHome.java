@@ -76,10 +76,10 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         result.append(" ");
         result.append(messages.get("order_field_reveiveTel") + " " + getLastNeedRes().getReceiveTel());
         result.append("\n");
-        result.append(messages.get("address") + ":" +  getLastNeedRes().getAddress());
+        result.append(messages.get("address") + ":" + getLastNeedRes().getAddress());
         result.append("\n");
 
-        if (getMasterNeedRes().isDispatched()) {
+        if (getMasterNeedRes().getStatus().equals(NeedRes.NeedResStatus.DISPATCHED)) {
             for (Dispatch dispatch : getMasterNeedRes().getDispatches()) {
                 result.append(dispatch.getStore().getName() + "\n");
                 for (DispatchItem item : dispatch.getDispatchItemList()) {
@@ -109,20 +109,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result.toString();
     }
 
-    public BigDecimal getAllProxyFare() {
-        BigDecimal result = BigDecimal.ZERO;
-        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY))
-            for (NeedRes nr : getInstance().getNeedReses()) {
-                if (!nr.isFareByCustomer()) {
-                    result = result.add(nr.getProxyFare());
-                }
-            }
-        return result;
-    }
-
 
     public BigDecimal getAllFare() {
-        BigDecimal result = getAllProxyFare();
+        BigDecimal result = BigDecimal.ZERO;
 
         for (NeedRes nr : getInstance().getNeedReses()) {
             result = result.add(nr.getTotalFare());
@@ -137,6 +126,16 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             result = result.add(nr.getTotalFare());
         }
         return result;
+    }
+
+
+    public boolean isHaveOverlyOut() {
+        for (Dispatch dispatch : getLastNeedRes().getDispatches()) {
+            if (!dispatch.getOverlyOuts().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public NeedRes getLastNeedRes() {
@@ -187,7 +186,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getResTotalMoney() {
+    public BigDecimal getLastResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         NeedRes needRes = getMasterNeedRes();
         if (needRes != null)
@@ -196,6 +195,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             }
         return result;
     }
+
+    public BigDecimal getResTotalMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (NeedRes needRes : getInstance().getNeedReses()) {
+            for (OrderItem orderItem : needRes.getOrderItems()) {
+                result = result.add(orderItem.getTotalMoney());
+            }
+        }
+        return result;
+    }
+
 
     public List<AccountOper> getOrderPayOpers() {
         List<AccountOper> result = new ArrayList<AccountOper>();
@@ -208,10 +218,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+
+
     public BigDecimal getTotalItemMiddleMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        NeedRes needRes = getMasterNeedRes();
-        if (needRes != null)
+        for (NeedRes needRes : getInstance().getNeedReses())
             for (OrderItem orderItem : needRes.getOrderItems()) {
                 if ((orderItem.getMiddleMoneyCalcType() != null) &&
                         (orderItem.getMiddleMoney() != null))
@@ -257,7 +268,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     public boolean isAnyOneStoreOut() {
         for (NeedRes needRes : getInstance().getNeedReses()) {
             for (Dispatch dispatch : needRes.getDispatches()) {
-                if (dispatch.getState().equals(Dispatch.DispatchState.DISPATCH_STORE_OUT)) {
+                if (dispatch.isStoreOut()) {
                     return true;
                 }
             }
