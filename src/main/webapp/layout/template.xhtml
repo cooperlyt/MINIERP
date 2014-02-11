@@ -27,23 +27,14 @@
 </h:head>
 <h:body>
 
-
 <h:form>
-    <a:push id="pushPooledTaskCome" address="pushPooledTaskCome">
-        <a:ajax event="dataavailable" render="netTaskComeNotify"/>
-    </a:push>
-    <a:push id="pushOwnerTaskCome" address="pushTaskCome">
-        <a:ajax event="dataavailable" render="netTaskComeNotify"/>
-    </a:push>
-</h:form>
+    <ui:insert name="taskChangePush">
 
-<h:form>
-    <a:push id="pushTask" address="pushPooledTaskChange">
-        <a:ajax event="dataavailable" render="taskOperLink"/>
-    </a:push>
-    <a:push id="pushOwnerTask" address="pushTaskChange">
-        <a:ajax event="dataavailable" render="taskOperLink"/>
-    </a:push>
+        <a:push id="pushTask" address="pushTaskChange">
+            <a:ajax event="dataavailable" render="taskOperLink,netOwnerTaskComeNotify,netPooledTaskComeNotify"/>
+        </a:push>
+    </ui:insert>
+
 </h:form>
 
 
@@ -91,14 +82,30 @@
 
 </rich:popupPanel>
 
-<a:outputPanel id="netTaskComeNotify">
+<rich:notifyStack id="pooledTaskStack" position="topRight" direction="vertical" method="first"/>
+<rich:notifyStack id="ownerTaskStack" position="bottomRight" direction="horizontal" method="last"/>
 
-    <rich:notify stayTime="1500" sticky="false" nonblocking="false"
+
+<a:outputPanel id="netOwnerTaskComeNotify">
+
+    <rich:notify stack="ownerTaskStack" stayTime="1500" sticky="false" nonblocking="false"
                  nonblockingOpacity="0.5" showShadow="true"
-                 rendered="#{identity.loggedIn and (ownerTaskInstanceListener.haveNewTask or pooledTaskInstanceListener.haveNewTask)}"
-                 detail="test" showCloseButton="true" escape="false">
+                 rendered="#{identity.loggedIn and (ownerTaskInstanceCacheList.haveNotice)}"
+                 detail="#{ownerTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
         <f:facet name="summary">
-            Notification
+            #{messages.ownerTaskComeToast}
+        </f:facet>
+    </rich:notify>
+</a:outputPanel>
+
+<a:outputPanel id="netPooledTaskComeNotify">
+
+    <rich:notify stack="pooledTaskStack" stayTime="1500" sticky="false" nonblocking="false"
+                 nonblockingOpacity="0.5" showShadow="true"
+                 rendered="#{identity.loggedIn and (pooledTaskInstanceCacheList.haveNotice)}"
+                 detail="#{pooledTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
+        <f:facet name="summary">
+            #{messages.pooledTaskComeToast}
         </f:facet>
     </rich:notify>
 </a:outputPanel>
@@ -146,7 +153,7 @@
                                 disabled="#{authInfo.loginEmployee.id eq 'root'}"/>
                     </li>
                     <li class="last"><s:link id="taskOperLink" propagation="end"
-                                             view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceListener.taskInstanceCreateList.size}</strong>]#{messages.ownerTask}[<strong>#{ownerTaskInstanceListener.taskInstanceCreateList.size}</strong>]</s:link>
+                                             view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceCacheList.taskInstanceCreateList.size}</strong>]#{messages.ownerTask}[<strong>#{ownerTaskInstanceCacheList.taskInstanceCreateList.size}</strong>]</s:link>
                     </li>
 
                 </ul>

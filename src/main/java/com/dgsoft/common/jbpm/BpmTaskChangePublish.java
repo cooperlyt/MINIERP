@@ -2,7 +2,10 @@ package com.dgsoft.common.jbpm;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.log.Log;
+import org.richfaces.application.push.TopicKey;
+import org.richfaces.application.push.TopicsContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,50 +24,31 @@ import java.util.List;
 @Startup(depends = "org.jboss.seam.bpm.jbpm")
 public class BpmTaskChangePublish {
 
+    public static final String PUSH_TASK_CHANGE_TOPIC = "pushTaskChange";
+
+    protected void sendTaskChangeMessage() {
+        try {
+            TopicKey topicKey = new TopicKey(PUSH_TASK_CHANGE_TOPIC);
+            TopicsContext topicsContext = TopicsContext.lookup();
+            topicsContext.publish(topicKey, "message");
+        } catch (Exception e) {
+            log.error("sendMessage error", e);
+        }
+    }
+
+
     @Logger
     private Log log;
-
-    private List<TaskInstanceListener> subscribers = new ArrayList<TaskInstanceListener>();
-
-    private List<TaskInstanceListener> invalidSubscribers = new ArrayList<TaskInstanceListener>();
 
     public BpmTaskChangePublish(){
         super();
     }
 
-    public synchronized void subscribe(TaskInstanceListener subscriber) {
-        log.debug("subscribe = Publish:" + this + "|subscriber:" + subscriber);
-        subscribers.add(subscriber);
-    }
-
-
     @Transactional
-    public synchronized void onBusinessTaskChange() {
-        log.debug("onBusinessTaskChange listener count:" + subscribers.size());
-        invalidSubscribers.clear();
-        for (TaskInstanceListener listener : subscribers) {
-            try {
-                log.debug("onBusinessTaskChange publish:" + listener);
-                listener.checkTask();
-            } catch (Exception e) {
-                invalidSubscribers.add(listener);
-                log.error("publish fail subscriber be remove:" + listener, e);
-            }
-        }
-        for (TaskInstanceListener listener : invalidSubscribers) {
-            if (subscribers.contains(listener)) {
-                subscribers.remove(listener);
-            }
-        }
-    }
-
-    public synchronized void unSubscribe(TaskInstanceListener subscriber) {
-        log.debug("unSubscribe = Publish:" + this + "|subscriber:" + subscriber);
-        if (subscribers.contains(subscriber)) {
-            subscribers.remove(subscriber);
-        } else {
-            log.warn("unSubscribe fail! subscriber not in list");
-        }
+    @Asynchronous
+    public void onBusinessTaskChange() {
+        log.info("onTaskChange");
+        sendTaskChangeMessage();
     }
 
 }

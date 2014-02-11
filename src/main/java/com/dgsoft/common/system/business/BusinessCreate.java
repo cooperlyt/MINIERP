@@ -1,7 +1,7 @@
 package com.dgsoft.common.system.business;
 
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
-import com.dgsoft.common.jbpm.OwnerTaskInstanceListener;
+import com.dgsoft.common.jbpm.OwnerTaskInstanceCacheList;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.model.BusinessInstance;
@@ -47,8 +47,8 @@ public class BusinessCreate {
     @In(create = true)
     private EntityHome<BusinessInstance> businessInstanceHome;
 
-    @In
-    private OwnerTaskInstanceListener ownerTaskInstanceListener;
+    @In(create = true)
+    private OwnerTaskInstanceCacheList ownerTaskInstanceCacheList;
 
     @In
     private Events events;
@@ -130,10 +130,10 @@ public class BusinessCreate {
         ManagedJbpmContext.instance().getSession().flush();
 
         if (runParam.getBooleanParamValue("system.business.forwordToTask")) {
-            ownerTaskInstanceListener.refresh();
+            //ownerTaskInstanceListener.refresh();
             int findTask = 0;
             TaskInstance findTaskInstance = null;
-            for (TaskInstance taskInstance : ownerTaskInstanceListener.getTaskInstanceCreateList()) {
+            for (TaskInstance taskInstance : ownerTaskInstanceCacheList.getTaskInstanceCreateList()) {
                 if (taskInstance.getProcessInstance().getKey().equals(businessKey)) {
                     findTask++;
                     if (findTask > 1) {

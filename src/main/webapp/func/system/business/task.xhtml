@@ -9,13 +9,13 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
-<ui:define name="body">
-<h:form>
-    <a:push id="pushTask" address="pushPooledTaskChange">
-        <a:ajax event="dataavailable" render="pooledTasks"/>
+<ui:define name="taskChangePush">
+    <a:push id="pushTask" address="pushTaskChange">
+        <a:ajax event="dataavailable" render="ownerTasks,pooledTasks,taskOperLink,netOwnerTaskComeNotify,netPooledTaskComeNotify"/>
     </a:push>
-</h:form>
+</ui:define>
 
+<ui:define name="body">
 
 <rich:toolbar height="30" itemSeparator="none">
     <rich:toolbarGroup itemSeparator="none">
@@ -28,7 +28,7 @@
                          action="#{pooledTaskSortFilter.reset}"
                          render="pooledTasks"/>
         <a:commandButton image="/img/refresh_btn.png" title="#{messages.refresh}" execute="@this"
-                         immediate="true" action="#{pooledTaskInstanceListener.refresh}"
+                         immediate="true"
                          render="pooledTasks"/>
 
 
@@ -37,7 +37,7 @@
 <h:form>
     <rich:extendedDataTable tableState="#{pooledTaskSortFilter.stateVar}" id="pooledTasks"
                             sortPriority="#{pooledTaskSortFilter.taskSortPriorities}"
-                            value="#{pooledTaskInstanceListener.taskInstancePriorityList}" var="_task"
+                            value="#{pooledTaskInstanceCacheList.taskInstancePriorityList}" var="_task"
                             selectionMode="none" filterVar="_filterValue"
                             sortMode="#{pooledTaskSortFilter.sortMode}"
                             style="height:300px; width:100%;" clientRows="0" frozenColumns="5">
@@ -84,7 +84,7 @@
                      filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessName,_filterValue)}">
             <f:facet name="header">#{messages.businessName}</f:facet>
             <h:graphicImage style="float:right" alt="rf" value="/img/new_messages.png"
-                            rendered="#{pooledTaskInstanceListener.isNewTask(_task.id)}"/>
+                            rendered="#{pooledTaskInstanceCacheList.isNewTask(_task.id)}"/>
 
             <h:outputText value="#{_task.variables.businessName}"/>
         </rich:column>
@@ -139,12 +139,6 @@
     </rich:extendedDataTable>
 </h:form>
 
-<h:form>
-    <a:push id="pushOwnerTask" address="pushTaskChange">
-        <a:ajax event="dataavailable" render="ownerTasks"/>
-    </a:push>
-</h:form>
-
 <rich:toolbar height="30" itemSeparator="none">
     <rich:toolbarGroup itemSeparator="none">
         <h:outputText value="#{messages.myBussiness}"/>
@@ -156,7 +150,6 @@
                          render="ownerTasks"/>
         <a:commandButton image="/img/refresh_btn.png" title="#{messages.refresh}" execute="@this"
                          immediate="true"
-                         action="#{ownerTaskInstanceListener.refresh}"
                          render="ownerTasks"/>
     </rich:toolbarGroup>
 </rich:toolbar>
@@ -164,7 +157,7 @@
 <h:form>
     <rich:extendedDataTable id="ownerTasks"
                             tableState="#{taskSortFilter.stateVar}" sortPriority="#{taskSortFilter.taskSortPriorities}"
-                            value="#{ownerTaskInstanceListener.taskInstanceCreateList}" var="_task"
+                            value="#{ownerTaskInstanceCacheList.taskInstanceCreateList}" var="_task"
                             selectionMode="none" filterVar="_filterValue" sortMode="#{taskSortFilter.sortMode}"
                             style="height:260px; width:100%;" clientRows="0" frozenColumns="5">
 
@@ -217,7 +210,7 @@
                      filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessName,_filterValue)}">
             <f:facet name="header">#{messages.businessName}</f:facet>
             <h:graphicImage style="float:right" alt="rf" value="/img/new_messages.png"
-                            rendered="#{ownerTaskInstanceListener.isNewTask(_task.id)}"/>
+                            rendered="#{ownerTaskInstanceCacheList.isNewTask(_task.id)}"/>
             <h:outputText value="#{_task.variables.businessName}"/>
         </rich:column>
         <rich:column width="90px" sortBy="#{_task.name}" filterValue="#{taskSortFilter.taskNameFilter}"
@@ -267,7 +260,7 @@
             #{_task.processInstance.processDefinition.version}
         </rich:column>
         <f:facet
-                name="footer">#{messages.mybusinessCount} #{ownerTaskInstanceListener.taskInstanceCreateList.size}</f:facet>
+                name="footer">#{messages.mybusinessCount} #{ownerTaskInstanceCacheList.taskInstanceCreateList.size}</f:facet>
 
     </rich:extendedDataTable>
 </h:form>
