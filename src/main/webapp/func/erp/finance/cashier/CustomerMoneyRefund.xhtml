@@ -99,6 +99,16 @@
                 </s:decorate>
 
                 <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.accountOper_field_fee}</ui:define>
+                    <h:inputText value="#{backPrepareMoneyHome.instance.accountOper.remitFee}"
+                                 label="#{messages.accountOper_field_fee}"
+                                 required="true"
+                                 converter="javax.faces.BigDecimal">
+                        <f:validateDoubleRange minimum="0"/>
+                    </h:inputText>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
                     <ui:define name="label">#{messages.description}</ui:define>
                     <h:inputTextarea label="#{messages.description}"
                                      value="#{backPrepareMoneyHome.instance.accountOper.description}"

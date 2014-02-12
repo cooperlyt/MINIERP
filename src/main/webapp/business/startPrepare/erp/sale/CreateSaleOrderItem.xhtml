@@ -310,6 +310,11 @@
             </div>
         </a:outputPanel>
 
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+            <h:inputTextarea value=""
+        </s:decorate>
+
         <s:span styleClass="value">
             <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
                              action="#{resHome.clearInstance}" render="orderItemDetails">

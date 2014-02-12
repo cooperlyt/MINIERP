@@ -7,6 +7,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.Credentials;
 
+import java.math.BigDecimal;
+
 /**
  * Created with IntelliJ IDEA.
  * User: cooper
@@ -26,7 +28,7 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
     @Override
     public BackPrepareMoney createInstance(){
         BackPrepareMoney result = new BackPrepareMoney();
-        result.setAccountOper(new AccountOper(result,customerHome.getInstance(),credentials.getUsername()));
+        result.setAccountOper(new AccountOper(result,customerHome.getInstance(),credentials.getUsername(), BigDecimal.ZERO));
         return result;
     }
 

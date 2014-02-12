@@ -23,7 +23,8 @@
                 </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
-                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" view="/func/erp/sale/Customer.xhtml" propagation="end"/>
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" view="/func/erp/sale/Customer.xhtml"
+                              propagation="end"/>
                     <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{preparePayHome.persist}"/>
                 </rich:toolbarGroup>
             </rich:toolbar>
@@ -86,6 +87,16 @@
                                  validator="javax.faces.validator.GtZeroNumberValidator"
                                  converter="javax.faces.BigDecimal" required="true">
 
+                    </h:inputText>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.accountOper_field_fee}</ui:define>
+                    <h:inputText value="#{preparePayHome.instance.accountOper.remitFee}"
+                                 label="#{messages.accountOper_field_fee}"
+                                 required="true"
+                                 converter="javax.faces.BigDecimal">
+                        <f:validateDoubleRange minimum="0"/>
                     </h:inputText>
                 </s:decorate>
 

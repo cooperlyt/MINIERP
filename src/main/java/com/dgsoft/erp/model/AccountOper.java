@@ -83,20 +83,22 @@ public class AccountOper implements java.io.Serializable {
     }
 
 
-    public AccountOper(PreparePay preparePay,Customer customer,String operEmp){
+    public AccountOper(PreparePay preparePay,Customer customer,String operEmp,BigDecimal remitFee){
         this.operType = AccountOperType.PRE_DEPOSIT;
         this.preparePay = preparePay;
         this.customer = customer;
         this.beforMoney = customer.getBalance();
         this.operEmp = operEmp;
+        this.remitFee = remitFee;
     }
 
-    public AccountOper(BackPrepareMoney backPrepareMoney,Customer customer,String operEmp){
+    public AccountOper(BackPrepareMoney backPrepareMoney,Customer customer,String operEmp,BigDecimal remitFee){
         this.operType = AccountOperType.DEPOSIT_BACK;
         this.backPrepareMoney = backPrepareMoney;
         this.customer = customer;
         this.beforMoney = customer.getBalance();
         this.operEmp = operEmp;
+        this.remitFee = remitFee;
     }
 
 

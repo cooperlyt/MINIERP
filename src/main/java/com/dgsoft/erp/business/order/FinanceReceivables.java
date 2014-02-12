@@ -49,10 +49,6 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
     public void allMoney() {
         debitAccountOper.setOperMoney(getShortageMoney());
-        if ((orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
-                || debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) && debitAccountOper.getRemitFee() != null ){
-            debitAccountOper.setOperMoney(debitAccountOper.getOperMoney().subtract(debitAccountOper.getRemitFee()));
-        }
         checkCustomerAccountBlance();
     }
 
@@ -113,9 +109,9 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         }
 
         boolean saving = !debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
-        if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
-            debitAccountOper.setOperMoney(debitAccountOper.getOperMoney().add(debitAccountOper.getRemitFee()));
-        }
+        //if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
+        //    debitAccountOper.setOperMoney(debitAccountOper.getOperMoney().add(debitAccountOper.getRemitFee()));
+        //}
 
         if (saving || isFreeForPay()) {
             AccountOper savingAccountOper = new AccountOper(customerHome.getInstance(),

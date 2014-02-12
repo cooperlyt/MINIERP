@@ -35,6 +35,7 @@ public class OrderItem implements java.io.Serializable {
     private MiddleMoneyCalcType middleMoneyCalcType;
     private boolean storeResItem;
     private Res res;
+    private String memo;
 
     public OrderItem() {
     }
@@ -234,6 +235,16 @@ public class OrderItem implements java.io.Serializable {
 
     public void setRes(Res res) {
         this.res = res;
+    }
+
+    @Column(name = "MEMO", nullable = true, length = 200)
+    @Size(max = 200)
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     private ResCount resCount = null;
