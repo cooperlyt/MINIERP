@@ -8,6 +8,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Unwrap;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Logging;
+import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +28,13 @@ public class CurrTaskDescription {
 
     @Unwrap
     public TaskDescription getTaskDescription() throws Exception {
-        String taskJSONDescription = org.jboss.seam.bpm.TaskInstance.instance().getDescription();
+        TaskInstance taskInstance = org.jboss.seam.bpm.TaskInstance.instance();
+        if (taskInstance == null){
+            Logging.getLog(getClass()).warn("cant get TaskDescription reason: taskInstance return null.");
+            return null;
+        }
+
+        String taskJSONDescription = taskInstance.getDescription();
         if (taskJSONDescription == null || taskJSONDescription.trim().equals("")) {
             return new TaskDescription();
         }
