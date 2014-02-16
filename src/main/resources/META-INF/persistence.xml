@@ -60,12 +60,10 @@
         <class>com.dgsoft.erp.model.BackPrepareMoney</class>
         <class>com.dgsoft.erp.model.ProductBackStoreIn</class>
         <class>com.dgsoft.erp.model.Batch</class>
-        <class>com.dgsoft.erp.model.BatchStoreCount</class>
         <class>com.dgsoft.erp.model.Customer</class>
         <class>com.dgsoft.erp.model.CustomerOrder</class>
         <class>com.dgsoft.erp.model.CustomerLevel</class>
         <class>com.dgsoft.erp.model.CustomerArea</class>
-        <class>com.dgsoft.erp.model.Depositary</class>
         <class>com.dgsoft.erp.model.Format</class>
         <class>com.dgsoft.erp.model.FormatDefine</class>
         <class>com.dgsoft.erp.model.Inventory</class>

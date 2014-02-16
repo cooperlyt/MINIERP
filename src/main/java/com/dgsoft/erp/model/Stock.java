@@ -24,9 +24,8 @@ public class Stock implements java.io.Serializable {
     private Store store;
     private BigDecimal count;
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
-    private Set<BatchStoreCount> batchStoreCounts = new HashSet<BatchStoreCount>(0);
-    private Set<Depositary> depositaries = new HashSet<Depositary>(0);
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
+    private Set<StockDetailsCheckout> stockDetailsCheckouts = new HashSet<StockDetailsCheckout>(0);
 
     public Stock() {
     }
@@ -99,24 +98,6 @@ public class Stock implements java.io.Serializable {
         this.count = count;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    public Set<BatchStoreCount> getBatchStoreCounts() {
-        return this.batchStoreCounts;
-    }
-
-    public void setBatchStoreCounts(Set<BatchStoreCount> batchStoreCounts) {
-        this.batchStoreCounts = batchStoreCounts;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")
-    public Set<Depositary> getDepositaries() {
-        return this.depositaries;
-    }
-
-    public void setDepositaries(Set<Depositary> depositaries) {
-        this.depositaries = depositaries;
-    }
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")
     public Set<StockChangeItem> getStockChangeItems() {
         return this.stockChangeItems;
@@ -135,16 +116,13 @@ public class Stock implements java.io.Serializable {
         this.noConvertCounts = noConvertCounts;
     }
 
-    @Transient
-    public List<BatchStoreCount> getBatchStoreCountList() {
-        List<BatchStoreCount> result = new ArrayList<BatchStoreCount>(getBatchStoreCounts());
-        Collections.sort(result, new Comparator<BatchStoreCount>() {
-            @Override
-            public int compare(BatchStoreCount o1, BatchStoreCount o2) {
-                return o1.getBatch().getLastInTime().compareTo(o2.getBatch().getLastInTime());
-            }
-        });
-        return result;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock", orphanRemoval = false)
+    public Set<StockDetailsCheckout> getStockDetailsCheckouts() {
+        return stockDetailsCheckouts;
+    }
+
+    public void setStockDetailsCheckouts(Set<StockDetailsCheckout> stockDetailsCheckouts) {
+        this.stockDetailsCheckouts = stockDetailsCheckouts;
     }
 
     @Transient

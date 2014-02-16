@@ -20,11 +20,11 @@ import java.text.ParseException;
 public class NoConvertCount implements java.io.Serializable, OrderModel {
 
 	private String id;
-	private Depositary depositary;
+
 	private StockChangeItem stockChangeItem;
 	private Stock stock;
 	private ResUnit resUnit;
-	private BatchStoreCount batchStoreCount;
+
 	private BigDecimal count;
     private PrepareStockChange prepareStockChange;
 
@@ -32,7 +32,7 @@ public class NoConvertCount implements java.io.Serializable, OrderModel {
 	}
 
 	public NoConvertCount(ResUnit resUnit, BigDecimal count) {
-        this.stockChangeItem = stockChangeItem;
+
 		this.resUnit = resUnit;
 		this.count = count;
 	}
@@ -57,16 +57,6 @@ public class NoConvertCount implements java.io.Serializable, OrderModel {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DEPOSITARY", nullable = true)
-	public Depositary getDepositary() {
-		return this.depositary;
-	}
-
-	public void setDepositary(Depositary depositary) {
-		this.depositary = depositary;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -108,16 +98,6 @@ public class NoConvertCount implements java.io.Serializable, OrderModel {
 
 	public void setResUnit(ResUnit resUnit) {
 		this.resUnit = resUnit;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BATCH_STORE_COUNT", nullable = true)
-	public BatchStoreCount getBatchStoreCount() {
-		return this.batchStoreCount;
-	}
-
-	public void setBatchStoreCount(BatchStoreCount batchStoreCount) {
-		this.batchStoreCount = batchStoreCount;
 	}
 
 	@Column(name = "COUNT", nullable = false, scale = 4)

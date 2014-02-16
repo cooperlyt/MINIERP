@@ -16,11 +16,8 @@ import java.util.List;
 public class StoreInItem extends StoreChangeItem {
 
 
-    //TODO batch
-
     //TODO storeaArea
 
-    private Batch batch;
 
     private String storeResCode = null;
 
@@ -33,9 +30,6 @@ public class StoreInItem extends StoreChangeItem {
 
     public StoreInItem(Res res) {
         super(res,res.getResUnitByInDefault());
-        if (res.isBatchMgr()){
-            batch = new Batch();
-        }
     }
 
     public void merger(StoreInItem storeInItem) {
@@ -51,14 +45,6 @@ public class StoreInItem extends StoreChangeItem {
 
     public void setStoreResCode(String storeResCode) {
         this.storeResCode = storeResCode;
-    }
-
-    public Batch getBatch() {
-        return batch;
-    }
-
-    public void setBatch(Batch batch) {
-        this.batch = batch;
     }
 
     public void setFormats(List<Format> formats) {

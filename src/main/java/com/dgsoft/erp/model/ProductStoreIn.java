@@ -19,6 +19,8 @@ public class ProductStoreIn implements java.io.Serializable, StockChangeModel {
     private StockChange stockChange;
     private ProductGroup productGroup;
 
+    private Batch batch;
+
     public ProductStoreIn() {
     }
 
@@ -57,5 +59,15 @@ public class ProductStoreIn implements java.io.Serializable, StockChangeModel {
 
     public void setProductGroup(ProductGroup productGroup) {
         this.productGroup = productGroup;
+    }
+
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "BATCH", nullable = true)
+    public Batch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(Batch batch) {
+        this.batch = batch;
     }
 }

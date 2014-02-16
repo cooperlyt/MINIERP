@@ -25,8 +25,6 @@ public class StoreArea implements java.io.Serializable, TreeNode {
     private String description;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
 
-    private Set<Depositary> depositaries = new HashSet<Depositary>(0);
-
     public StoreArea() {
     }
 
@@ -117,15 +115,6 @@ public class StoreArea implements java.io.Serializable, TreeNode {
 
     public void setStoreAreas(Set<StoreArea> storeAreas) {
         this.storeAreas = storeAreas;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeArea")
-    public Set<Depositary> getDepositaries() {
-        return this.depositaries;
-    }
-
-    public void setDepositaries(Set<Depositary> depositaries) {
-        this.depositaries = depositaries;
     }
 
     @Transient

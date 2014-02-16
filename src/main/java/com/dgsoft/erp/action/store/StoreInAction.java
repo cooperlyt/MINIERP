@@ -154,31 +154,6 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             }
         }
 
-        Batch batch = storeInItem.getBatch();
-        if (batch == null) {
-            for (BatchStoreCount batchStoreCount : stockChangeItem.getStock().getBatchStoreCounts()) {
-                if (batchStoreCount.getBatch().isDefaultBatch()) {
-                    batch = batchStoreCount.getBatch();
-                    break;
-                }
-            }
-
-        }
-        if (batch == null) {
-            batch = new Batch(UUID.randomUUID().toString().replace("-", ""), storeInItem.getRes(), true, false, true, stockChangeHome.getInstance().getOperDate());
-        }
-
-        if (batch.getBatchStoreCount() == null) {
-            batch.setBatchStoreCount(new BatchStoreCount(batch, stockChangeItem.getStock(), storeInItem.getStoreResCountInupt().getMasterCount()));
-            batch.getBatchStoreCount().setBatch(batch);
-            stockChangeItem.getStock().getBatchStoreCounts().add(batch.getBatchStoreCount());
-        } else {
-            batch.getBatchStoreCount().setCount(batch.getBatchStoreCount().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
-        }
-
-        batch.getStockChangeItems().add(stockChangeItem);
-        stockChangeItem.setBatch(batch);
-
 
         //stockChangeItem.getStock().getBatchStoreCounts()
 
