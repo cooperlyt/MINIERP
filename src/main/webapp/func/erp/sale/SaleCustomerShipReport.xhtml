@@ -1,0 +1,57 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="func-body">
+
+        <ui:include src="/layout/erp/ResSelectTree.xhtml">
+            <ui:param name="treeValue" value="#{saleResTree}"/>
+        </ui:include>
+
+        <ui:include src="/layout/erp/StoreResSelectTree.xhtml">
+            <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+        </ui:include>
+
+        <h:form>
+            <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_search_BETWEEN_createDate}"
+                            value="#{orderList.createDateFrom}">
+                    </rich:calendar>
+
+                    --
+
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_search_BETWEEN_createDate}"
+                            value="#{orderList.createDateTo}">
+                    </rich:calendar>
+                </s:decorate>
+
+
+                <ui:include src="/layout/erp/StoreResSearchCondition.xhtml"/>
+
+            </rich:collapsiblePanel>
+
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>
