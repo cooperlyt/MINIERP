@@ -474,11 +474,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                 //TODO cost from BOM
                 needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getStoreRes(),
                         BigDecimal.ZERO, orderNeedItem.getUseUnit(),
-                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate()));
+                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate(),orderNeedItem.getMemo()));
             } else {
                 needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getRes(),
                         BigDecimal.ZERO, orderNeedItem.getUseUnit(),
-                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate()));
+                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate(),orderNeedItem.getMemo()));
             }
         }
 

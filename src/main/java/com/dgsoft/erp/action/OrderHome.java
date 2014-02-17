@@ -240,6 +240,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+    public BigDecimal getShortageMoney(){
+        return getInstance().getMoney().subtract(getTotalReveiveMoney());
+    }
 
     public BigDecimal getTotalReveiveMoney() {
         BigDecimal result = BigDecimal.ZERO;

@@ -42,7 +42,7 @@ public class OrderItem implements java.io.Serializable {
 
     public OrderItem(NeedRes needRes, Res res, BigDecimal cost, ResUnit moneyUnit,
                      BigDecimal count, BigDecimal money,
-                     BigDecimal rebate) {
+                     BigDecimal rebate, String memo) {
         this.moneyUnit = moneyUnit;
         this.needRes = needRes;
         this.count = count;
@@ -51,10 +51,11 @@ public class OrderItem implements java.io.Serializable {
         this.rebate = rebate;
         this.storeResItem = false;
         this.res = res;
+        this.memo = memo;
     }
 
     public OrderItem(NeedRes needRes, StoreRes storeRes, BigDecimal cost,
-                     ResUnit moneyUnit, BigDecimal count, BigDecimal money, BigDecimal rebate) {
+                     ResUnit moneyUnit, BigDecimal count, BigDecimal money, BigDecimal rebate, String memo) {
         this.storeRes = storeRes;
         this.moneyUnit = moneyUnit;
         this.count = count;
@@ -312,9 +313,9 @@ public class OrderItem implements java.io.Serializable {
     public OrderItem cloneNew() {
         OrderItem result;
         if (isStoreResItem()) {
-            result = new OrderItem(getNeedRes(), getStoreRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate());
+            result = new OrderItem(getNeedRes(), getStoreRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate(), getMemo());
         } else {
-            result = new OrderItem(getNeedRes(), getRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate());
+            result = new OrderItem(getNeedRes(), getRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate(), getMemo());
         }
         return result;
     }

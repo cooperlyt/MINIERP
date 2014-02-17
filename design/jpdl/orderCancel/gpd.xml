@@ -56,12 +56,12 @@
       <label x="0" y="76"/>
     </edge>
   </node>
-  <node name="fork2" x="138" y="382" width="99" height="24">
+  <node name="fork2" x="136" y="434" width="99" height="24">
     <edge>
       <label x="-26" y="-6"/>
     </edge>
     <edge>
-      <label x="-18" y="-15"/>
+      <label x="-34" y="-21"/>
     </edge>
     <edge>
       <label x="-31" y="-14"/>
@@ -103,7 +103,7 @@
       <label x="-27" y="-10"/>
     </edge>
   </node>
-  <node name="入库确认(天津)" x="122" y="469" width="132" height="36">
+  <node name="入库确认(天津)" x="122" y="498" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -121,10 +121,18 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="调度" x="122" y="314" width="132" height="36">
+  <node name="调度" x="26" y="370" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
   <node name="结束" x="571" y="7" width="132" height="36"/>
+  <node name="调度判断" x="122" y="301" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+    <edge>
+      <label x="-13" y="-19"/>
+    </edge>
+  </node>
 </root-container>

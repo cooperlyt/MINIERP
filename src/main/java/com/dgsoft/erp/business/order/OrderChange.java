@@ -241,7 +241,7 @@ public class OrderChange extends OrderTaskHandle {
 
         for (Map.Entry<StoreRes, ResCount> entry : storeOutItems.entrySet()) {
             newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), BigDecimal.ZERO, entry.getKey().getRes().getResUnitByOutDefault(),
-                    entry.getValue().getCountByResUnit(entry.getKey().getRes().getResUnitByOutDefault()), BigDecimal.ZERO, new BigDecimal("100")));
+                    entry.getValue().getCountByResUnit(entry.getKey().getRes().getResUnitByOutDefault()), BigDecimal.ZERO, new BigDecimal("100"),""));
         }
 
 

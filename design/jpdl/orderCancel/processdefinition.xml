@@ -15,7 +15,7 @@
 		<transition to="退款" name="仅退款">
 			<condition expression="#{true  or  ((not orderHome.anyOneStoreOut) and orderHome.instance.moneyComplete)}"></condition>
 		</transition>
-		<transition to="调度" name="仅退货">
+		<transition to="调度判断" name="仅退货">
 			<condition expression="#{false}"></condition>
 		</transition>
 	</decision>
@@ -42,7 +42,7 @@
 
 	<fork name="fork1">
 		<transition to="退款" name="退款"></transition>
-		<transition to="调度" name="退货"></transition>
+		<transition to="调度判断" name="退货"></transition>
 	</fork>
 
 	<join name="join1">
@@ -145,6 +145,11 @@
 		</task>
 		<transition to="fork2"></transition>
 	</task-node>
+
+	<decision name="调度判断">
+		<transition to="调度"></transition>
+		<transition to="fork2" name="已调度"></transition>
+	</decision>
 
 
 	<end-state name="结束"></end-state>

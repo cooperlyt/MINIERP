@@ -104,6 +104,10 @@
         <class>com.dgsoft.erp.model.OverlyOut</class>
         <class>com.dgsoft.erp.model.ProductGroup</class>
         <class>com.dgsoft.erp.model.Factory</class>
+
+        <class>com.dgsoft.erp.model.AccountCheckout</class>
+        <class>com.dgsoft.erp.model.CustomerDetailsCheckout</class>
+        <class>com.dgsoft.erp.model.StockDetailsCheckout</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

@@ -312,7 +312,7 @@
 
         <s:decorate template="/layout/seam-edit.xhtml">
             <ui:define name="label">#{messages.field_memo}</ui:define>
-            <h:inputTextarea value=""
+            <h:inputTextarea value="#{orderCreate.editingItem.memo}" cols="65"/>
         </s:decorate>
 
         <s:span styleClass="value">
@@ -413,6 +413,13 @@
                 </h:outputText>
             </f:facet>
         </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.field_memo}
+            </f:facet>
+                #{_item.memo}
+        </rich:column>
+
         <rich:column style="text-align: center">
             <f:facet name="header">
 

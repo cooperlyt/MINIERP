@@ -64,6 +64,7 @@ public class OrderNeedItem extends StoreChangeItem {
 
     private BigDecimal resCount;
 
+    private String memo;
 
     public Res getUseRes() {
         if (isStoreResItem()) {
@@ -120,6 +121,14 @@ public class OrderNeedItem extends StoreChangeItem {
 
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     public void merger(OrderNeedItem other) {
