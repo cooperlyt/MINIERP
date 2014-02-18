@@ -27,50 +27,30 @@ public class OrderItem implements java.io.Serializable {
     private ResUnit moneyUnit;
     private NeedRes needRes;
     private BigDecimal count;
-    private BigDecimal cost;
     private BigDecimal money;
     private BigDecimal rebate;
     private BigDecimal middleMoney;
     private BigDecimal middleRate;
     private MiddleMoneyCalcType middleMoneyCalcType;
-    private boolean storeResItem;
-    private Res res;
     private String memo;
 
     public OrderItem() {
     }
 
-    public OrderItem(NeedRes needRes, Res res, BigDecimal cost, ResUnit moneyUnit,
-                     BigDecimal count, BigDecimal money,
-                     BigDecimal rebate, String memo) {
-        this.moneyUnit = moneyUnit;
-        this.needRes = needRes;
-        this.count = count;
-        this.cost = cost;
-        this.money = money;
-        this.rebate = rebate;
-        this.storeResItem = false;
-        this.res = res;
-        this.memo = memo;
-    }
-
-    public OrderItem(NeedRes needRes, StoreRes storeRes, BigDecimal cost,
+    public OrderItem(NeedRes needRes, StoreRes storeRes,
                      ResUnit moneyUnit, BigDecimal count, BigDecimal money, BigDecimal rebate, String memo) {
         this.storeRes = storeRes;
         this.moneyUnit = moneyUnit;
         this.count = count;
-        this.cost = cost;
         this.money = money;
         this.rebate = rebate;
-        this.storeResItem = true;
         this.needRes = needRes;
+        this.memo = memo;
     }
 
-    public OrderItem(NeedRes needRes, StoreRes storeRes, BigDecimal cost) {
+    public OrderItem(NeedRes needRes, StoreRes storeRes) {
         this.storeRes = storeRes;
-        this.storeResItem = true;
         this.needRes = needRes;
-        this.cost = cost;
     }
 
     public OrderItem(StoreRes storeRes, ResUnit moneyUnit,
@@ -80,18 +60,6 @@ public class OrderItem implements java.io.Serializable {
         this.count = count;
         this.money = money;
         this.rebate = rebate;
-        this.storeResItem = true;
-    }
-
-    public OrderItem(Res res, ResUnit moneyUnit,
-                     BigDecimal count, BigDecimal money,
-                     BigDecimal rebate) {
-        this.moneyUnit = moneyUnit;
-        this.count = count;
-        this.money = money;
-        this.rebate = rebate;
-        this.storeResItem = false;
-        this.res = res;
     }
 
     @Id
@@ -161,16 +129,6 @@ public class OrderItem implements java.io.Serializable {
         this.count = count;
     }
 
-    @Column(name = "COST", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getCost() {
-        return this.cost;
-    }
-
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
-    }
-
     @Column(name = "MONEY", nullable = false, scale = 3)
     @NotNull
     public BigDecimal getMoney() {
@@ -219,25 +177,6 @@ public class OrderItem implements java.io.Serializable {
         this.middleMoneyCalcType = middleMoneyCalcType;
     }
 
-    @Column(name = "STORE_RES_ITEM", nullable = false)
-    public boolean isStoreResItem() {
-        return storeResItem;
-    }
-
-    public void setStoreResItem(boolean storeResItem) {
-        this.storeResItem = storeResItem;
-    }
-
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "RES", nullable = true)
-    public Res getRes() {
-        return res;
-    }
-
-    public void setRes(Res res) {
-        this.res = res;
-    }
-
     @Column(name = "MEMO", nullable = true, length = 200)
     @Size(max = 200)
     public String getMemo() {
@@ -252,10 +191,7 @@ public class OrderItem implements java.io.Serializable {
 
     @Transient
     public ResCount getStoreResCount() {
-        if (!isStoreResItem() && !UnitGroup.UnitGroupType.FIX_CONVERT.equals(getMoneyUnit().getUnitGroup().getType())) {
 
-            throw new IllegalArgumentException("Res unit must be FIX_CONVERT");
-        }
         if (resCount == null) {
             generateResCount();
         }
@@ -263,23 +199,9 @@ public class OrderItem implements java.io.Serializable {
     }
 
     @Transient
-    public Res getUseRes() {
-        if (isStoreResItem()) {
-            return getStoreRes().getRes();
-        } else {
-            return getRes();
-        }
-    }
-
-    @Transient
     public void generateResCount() {
-        if (!isStoreResItem() && !UnitGroup.UnitGroupType.FIX_CONVERT.equals(getMoneyUnit().getUnitGroup().getType())) {
 
-            throw new IllegalArgumentException("Res unit must be FIX_CONVERT");
-        }
-
-
-        if (getUseRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+        if (getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             resCount = new ResCount(getCount(), getMoneyUnit(), getStoreRes().getFloatConversionRate());
         } else {
             resCount = new ResCount(getCount(), getMoneyUnit());
@@ -289,19 +211,15 @@ public class OrderItem implements java.io.Serializable {
 
     @Transient
     public void addCount(OrderItem orderItem) {
-
-        if (orderItem.isStoreResItem() && isStoreResItem()) {
-            if (!getStoreRes().getId().equals(orderItem.getStoreRes().getId())) {
-                throw new IllegalArgumentException("only same storeRes item can add!");
-            }
-            if (resCount == null) {
-                generateResCount();
-            }
-            resCount.add(orderItem.getStoreResCount());
-
-        } else {
-            throw new IllegalArgumentException("only storeRes item can add!");
+        if (!getStoreRes().getId().equals(orderItem.getStoreRes().getId())) {
+            throw new IllegalArgumentException("only same storeRes item can add!");
         }
+        if (resCount == null) {
+            generateResCount();
+        }
+        resCount.add(orderItem.getStoreResCount());
+
+
     }
 
     @Transient
@@ -312,21 +230,17 @@ public class OrderItem implements java.io.Serializable {
     @Transient
     public OrderItem cloneNew() {
         OrderItem result;
-        if (isStoreResItem()) {
-            result = new OrderItem(getNeedRes(), getStoreRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate(), getMemo());
-        } else {
-            result = new OrderItem(getNeedRes(), getRes(), getCost(), getMoneyUnit(), getCount(), getMoney(), getRebate(), getMemo());
-        }
+        result = new OrderItem(getNeedRes(), getStoreRes(), getMoneyUnit(), getCount(), getMoney(), getRebate(), getMemo());
+
         return result;
     }
 
     @Transient
     public boolean isSameItem(OrderItem orderItem) {
-        return (isStoreResItem() == orderItem.isStoreResItem()) &&
-                (isStoreResItem() ? getStoreRes().equals(orderItem.getStoreRes()) : getRes().equals(orderItem.getRes())) &&
-                getMoneyUnit().getId().equals(orderItem.getMoneyUnit().getId()) &&
-                getMoney().equals(orderItem.getMoney()) &&
-                getRebate().equals(orderItem.getRebate());
+        return getStoreRes().equals(orderItem.getStoreRes()) &&
+                        getMoneyUnit().getId().equals(orderItem.getMoneyUnit().getId()) &&
+                        getMoney().equals(orderItem.getMoney()) &&
+                        getRebate().equals(orderItem.getRebate());
     }
 
 }

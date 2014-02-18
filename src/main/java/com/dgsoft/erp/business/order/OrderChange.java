@@ -180,14 +180,12 @@ public class OrderChange extends OrderTaskHandle {
             oldMatchOrderItems.clear();
             ResCount count = entry.getKey().getResCount(BigDecimal.ZERO);
             for (OrderItem item : oldOrderItem) {
-                if (item.isStoreResItem()) {
+
                     if (item.getStoreRes().equals(entry.getKey())){
                         count.add(item.getStoreResCount());
                         oldMatchOrderItems.add(item);
                     }
-                } else {
-                    //TODO res item
-                }
+
             }
             if (count.getMasterCount().compareTo(entry.getValue().getMasterCount()) == 0) {
                 matchItems.add(entry.getKey());
@@ -211,7 +209,7 @@ public class OrderChange extends OrderTaskHandle {
             OrderItem matchItem = null;
             int orderContainCount = 0;
             for (OrderItem item : oldOrderItem) {
-                if (item.isStoreResItem()) {
+
                     if (entry.getKey().equals(item.getStoreRes())) {
                         orderContainCount++;
                         if (orderContainCount == 1) {
@@ -221,9 +219,7 @@ public class OrderChange extends OrderTaskHandle {
                             break;
                         }
                     }
-                } else {
-                    //TODO res item
-                }
+
 
             }
             if (matchItem != null) {
@@ -240,7 +236,7 @@ public class OrderChange extends OrderTaskHandle {
         }
 
         for (Map.Entry<StoreRes, ResCount> entry : storeOutItems.entrySet()) {
-            newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), BigDecimal.ZERO, entry.getKey().getRes().getResUnitByOutDefault(),
+            newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), entry.getKey().getRes().getResUnitByOutDefault(),
                     entry.getValue().getCountByResUnit(entry.getKey().getRes().getResUnitByOutDefault()), BigDecimal.ZERO, new BigDecimal("100"),""));
         }
 
@@ -269,7 +265,7 @@ public class OrderChange extends OrderTaskHandle {
             OrderItem matchOrderItem = null;
             int matchCount = 0;
             for(OrderItem orderItem: orderHome.getLastNeedRes().getOrderItems()){
-                if (orderItem.isStoreResItem()) {
+
                     if (overlyOut.getStoreRes().equals(orderItem.getStoreRes())){
                         matchCount ++;
                         if (matchCount == 1){
@@ -279,16 +275,13 @@ public class OrderChange extends OrderTaskHandle {
                             break;
                         }
                     }
-                }else{
-                    //TODO other
-                }
+
 
             }
 
             OrderItem newItem = new OrderItem();
             newItem.setStoreRes(overlyOut.getStoreRes());
-            newItem.setCost(BigDecimal.ZERO);
-            newItem.setStoreResItem(true);
+
 
 
             if (matchOrderItem != null){

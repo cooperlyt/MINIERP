@@ -44,6 +44,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     private Set<Stock> stocks = new HashSet<Stock>(0);
     private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
+    private Set<Batch> batches = new HashSet<Batch>(0);
     private boolean enable;
 
     public StoreRes() {
@@ -205,6 +206,15 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     public void setDispatchItems(Set<DispatchItem> dispatchItems) {
         this.dispatchItems = dispatchItems;
+    }
+
+    @OneToMany(fetch= FetchType.LAZY,mappedBy = "storeRes")
+    public Set<Batch> getBatches() {
+        return batches;
+    }
+
+    public void setBatches(Set<Batch> batches) {
+        this.batches = batches;
     }
 
     @Transient

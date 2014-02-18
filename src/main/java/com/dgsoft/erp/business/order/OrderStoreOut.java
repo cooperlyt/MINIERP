@@ -102,7 +102,7 @@ public class OrderStoreOut extends OrderTaskHandle {
 
         if (!operOutItem.getOverlyOut().isAdd() &&
                 (operOutItem.getOverlayCount().getMasterCount().compareTo(operOutItem.getDispatchMaterCount()) > 0)) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"sale_store_out_must_less_need",operOutItem.getDispatchCount().getMasterDisplayCount());
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "sale_store_out_must_less_need", operOutItem.getDispatchCount().getMasterDisplayCount());
             return;
         }
 
@@ -115,7 +115,7 @@ public class OrderStoreOut extends OrderTaskHandle {
 
         if (!noAssignedItems.isEmpty()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                    "dispatch_res_item_not_assigned", noAssignedItems.get(0).getRes().getName() + " ...");
+                    "dispatch_res_item_not_assigned", noAssignedItems.get(0).getStoreRes().getRes().getName() + " ...");
             return "resItemNotAssigned";
         }
 //
@@ -221,12 +221,7 @@ public class OrderStoreOut extends OrderTaskHandle {
                         orderStoreOutItems = new ArrayList<OrderStoreOutItem>();
                         noAssignedItems = new ArrayList<DispatchItem>();
                         for (DispatchItem dispatchItem : dispatchHome.getInstance().getDispatchItems()) {
-                            if (dispatchItem.isStoreResItem()) {
-                                addDispatchItem(dispatchItem);
-                            } else {
-                                noAssignedItems.add(dispatchItem);
-                            }
-
+                            addDispatchItem(dispatchItem);
                         }
 
                         return "success";
@@ -240,9 +235,7 @@ public class OrderStoreOut extends OrderTaskHandle {
     }
 
     private void addDispatchItem(DispatchItem dispatchItem) {
-        if (!dispatchItem.isStoreResItem()) {
-            throw new IllegalArgumentException("dispatchItem must a StoreRes item");
-        }
+
         boolean find = false;
         for (OrderStoreOutItem item : orderStoreOutItems) {
             if (item.getStoreRes().getId().equals(dispatchItem.getStoreRes().getId())) {
@@ -257,9 +250,7 @@ public class OrderStoreOut extends OrderTaskHandle {
     }
 
     private void addDispatchItem(DispatchItem dispatchItem, StoreRes storeRes) {
-        if (dispatchItem.isStoreResItem()) {
-            throw new IllegalArgumentException("dispatchItem must a Res item");
-        }
+
         boolean find = false;
         for (OrderStoreOutItem item : orderStoreOutItems) {
             if (item.getStoreRes().getId().equals(storeRes.getId())) {
@@ -307,8 +298,7 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         public OrderStoreOutItem(DispatchItem dispatchItem) {
-            if (!dispatchItem.isStoreResItem())
-                throw new IllegalArgumentException("plase call other constructor put storeRes");
+
             dispatchItems.add(dispatchItem);
             storeRes = dispatchItem.getStoreRes();
 
@@ -316,9 +306,7 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         public OrderStoreOutItem(DispatchItem dispatchItem, StoreRes storeRes) {
-            if (dispatchItem.isStoreResItem() && !dispatchItem.getStoreRes().getId().equals(storeRes.getId())) {
-                throw new IllegalArgumentException("dispatchItem stores not eq storeRes");
-            }
+
             dispatchItems.add(dispatchItem);
             this.storeRes = storeRes;
 
@@ -326,15 +314,11 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         public void addDispatchItem(DispatchItem dispatchItem) {
-            if (dispatchItem.isStoreResItem()) {
-                if (!dispatchItem.getStoreRes().getId().equals(storeRes.getId())) {
-                    throw new IllegalArgumentException("not same storeRes can't add");
-                }
-            } else {
-                if (!dispatchItem.getRes().equals(storeRes.getRes())) {
-                    throw new IllegalArgumentException("not same Res can't add");
-                }
+
+            if (!dispatchItem.getStoreRes().getId().equals(storeRes.getId())) {
+                throw new IllegalArgumentException("not same storeRes can't add");
             }
+
 
             dispatchItems.add(dispatchItem);
         }

@@ -192,7 +192,7 @@ public class NeedRes implements java.io.Serializable {
         Collections.sort(result, new Comparator<OrderItem>() {
             @Override
             public int compare(OrderItem o1, OrderItem o2) {
-                int result = o1.getUseRes().getId().compareTo(o2.getUseRes().getId());
+                int result = o1.getStoreRes().getRes().getId().compareTo(o2.getStoreRes().getRes().getId());
                 if (result == 0) {
                     result = o1.getId().compareTo(o2.getId());
                 }

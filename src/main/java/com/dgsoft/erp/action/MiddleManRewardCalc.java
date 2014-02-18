@@ -396,7 +396,7 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         for (CustomerOrder order : containOrders) {
             if (order.isSelected()) {
                 for (OrderItem orderItem : order.getAllOrderItemList()) {
-                    result.add(orderItem.getUseRes());
+                    //result.add(orderItem.getUseRes());
                 }
             }
         }

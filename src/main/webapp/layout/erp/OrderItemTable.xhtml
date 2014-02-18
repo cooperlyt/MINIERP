@@ -18,17 +18,11 @@
             <f:facet name="header">
                 #{messages.orderItem}
             </f:facet>
-          <a:outputPanel rendered="#{_item.storeResItem}">
+          <a:outputPanel>
                 #{messages.StoreRes}:
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
                     <ui:param name="storeRes" value="#{_item.storeRes}"/>
                 </ui:include>
-            </a:outputPanel>
-            <a:outputPanel rendered="#{not _item.storeResItem}">
-                #{messages.res}:
-
-                #{_item.res.name}(#{_item.res.code})
-
             </a:outputPanel>
 
             <f:facet name="footer">

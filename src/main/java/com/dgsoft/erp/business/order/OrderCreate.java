@@ -247,15 +247,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         result.append("\n");
 
         for (OrderNeedItem item : orderNeedItems) {
-            if (item.isStoreResItem()) {
-                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-                result.append(item.getStoreResCountInupt().getMasterDisplayCount());
-                result.append("(" + item.getStoreResCountInupt().getDisplayAuxCount() + ")\n");
-            } else {
-                result.append("\t" + item.getRes().getName() + ": ");
-                result.append(BigDecimalFormat.format(item.getResCount(), item.getUseUnit().getCountFormate()));
-                result.append(item.getUseUnit().getName() + "\n");
-            }
+
+            result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
+            result.append(item.getStoreResCountInupt().getMasterDisplayCount());
+            result.append("(" + item.getStoreResCountInupt().getDisplayAuxCount() + ")\n");
+
         }
 
         return result.toString();
@@ -271,14 +267,13 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     @Observer(value = "erp.resLocateSelected", create = false)
     public void generateSaleItemByRes(Res res) {
         editingItem = new OrderNeedItem(res);
-        //TODO: editingItem.setStoreResItem(false);
-        editingItem.setStoreResItem(true);
+
     }
 
     @Observer(value = "erp.storeResLocateSelected", create = false)
     public void generateSaleItemByStoreRes(StoreRes storeRes) {
         editingItem = new OrderNeedItem(storeRes.getRes(), storeRes.getFloatConversionRate());
-        editingItem.setStoreResItem(true);
+
     }
 
     public int getItemsCount() {
@@ -313,16 +308,15 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
         editingItem.calcPriceByCount();
 
-        if (editingItem.isStoreResItem()) {
-            storeResHome.setRes(editingItem.getRes(), storeResFormatFilter.getResFormatList(), editingItem.getStoreResCountInupt().getFloatConvertRate());
-            if (storeResHome.isIdDefined()) {
-                editingItem.setStoreRes(storeResHome.getInstance());
-            } else {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
-                return;
-            }
 
+        storeResHome.setRes(editingItem.getRes(), storeResFormatFilter.getResFormatList(), editingItem.getStoreResCountInupt().getFloatConvertRate());
+        if (storeResHome.isIdDefined()) {
+            editingItem.setStoreRes(storeResHome.getInstance());
+        } else {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
+            return;
         }
+
 
         for (OrderNeedItem orderNeedItem : orderNeedItems) {
 
@@ -393,13 +387,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
             for (OrderItem orderItem : orderHome.getMasterNeedRes().getOrderItems()) {
                 OrderNeedItem cloneItem;
-                if (orderItem.isStoreResItem()) {
-                    cloneItem = new OrderNeedItem(orderItem.getStoreRes(), orderItem.getMoneyUnit(),
-                            orderItem.getCount(), orderItem.getMoney(), orderItem.getRebate());
-                } else {
-                    cloneItem = new OrderNeedItem(orderItem.getRes(), orderItem.getMoneyUnit(),
-                            orderItem.getCount(), orderItem.getMoney(), orderItem.getRebate());
-                }
+
+                cloneItem = new OrderNeedItem(orderItem.getStoreRes(), orderItem.getMoneyUnit(),
+                        orderItem.getCount(), orderItem.getMoney(), orderItem.getRebate());
+
                 orderNeedItems.add(cloneItem);
             }
 
@@ -470,16 +461,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
 
         for (OrderNeedItem orderNeedItem : orderNeedItems) {
-            if (orderNeedItem.isStoreResItem()) {
-                //TODO cost from BOM
-                needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getStoreRes(),
-                        BigDecimal.ZERO, orderNeedItem.getUseUnit(),
-                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate(),orderNeedItem.getMemo()));
-            } else {
-                needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getRes(),
-                        BigDecimal.ZERO, orderNeedItem.getUseUnit(),
-                        orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate(),orderNeedItem.getMemo()));
-            }
+            needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getStoreRes(),
+                    orderNeedItem.getUseUnit(),
+                    orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate(), orderNeedItem.getMemo()));
+
         }
 
 

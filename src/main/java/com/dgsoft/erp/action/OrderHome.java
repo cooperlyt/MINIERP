@@ -92,16 +92,12 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         } else {
             for (OrderItem item : getMasterNeedRes().getOrderItems()) {
-                if (item.isStoreResItem()) {
-                    result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-                    result.append(item.getStoreResCount().getMasterDisplayCount());
-                    if (!StringUtil.isEmpty(item.getStoreResCount().getDisplayAuxCount()))
-                        result.append("(" + item.getStoreResCount().getDisplayAuxCount() + ")\n");
-                } else {
-                    result.append("\t" + item.getRes().getName() + ": ");
-                    result.append(BigDecimalFormat.format(item.getCount(), item.getMoneyUnit().getCountFormate()));
-                    result.append(item.getMoneyUnit().getName() + "\n");
-                }
+
+                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
+                result.append(item.getStoreResCount().getMasterDisplayCount());
+                if (!StringUtil.isEmpty(item.getStoreResCount().getDisplayAuxCount()))
+                    result.append("(" + item.getStoreResCount().getDisplayAuxCount() + ")\n");
+
             }
         }
 
@@ -219,7 +215,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-
     public BigDecimal getTotalItemMiddleMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (NeedRes needRes : getInstance().getNeedReses())
@@ -240,7 +235,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getShortageMoney(){
+    public BigDecimal getShortageMoney() {
         return getInstance().getMoney().subtract(getTotalReveiveMoney());
     }
 

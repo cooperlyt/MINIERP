@@ -32,21 +32,9 @@ public class OrderNeedItem extends StoreChangeItem {
         super(storeRes.getRes(), useUnit);
         storeResCountInupt.setFloatConvertRate(storeRes.getFloatConversionRate());
         storeResCountInupt.setCount(resCount);
-        storeResItem = true;
         this.storeRes = storeRes;
         this.useUnit = useUnit;
 
-        this.unitPrice = unitPrice;
-        this.rebate = rebate;
-        calcByCU();
-    }
-
-    public OrderNeedItem(Res res, ResUnit useUnit,
-                         BigDecimal resCount, BigDecimal unitPrice, BigDecimal rebate) {
-        super(res, useUnit);
-        storeResItem = false;
-        this.useUnit = useUnit;
-        this.resCount = resCount;
         this.unitPrice = unitPrice;
         this.rebate = rebate;
         calcByCU();
@@ -58,30 +46,12 @@ public class OrderNeedItem extends StoreChangeItem {
 
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
-    private boolean storeResItem;
-
     private ResUnit useUnit;
 
-    private BigDecimal resCount;
+
 
     private String memo;
 
-    public Res getUseRes() {
-        if (isStoreResItem()) {
-            return getStoreRes().getRes();
-        } else {
-            return getRes();
-        }
-    }
-
-
-    public boolean isStoreResItem() {
-        return storeResItem;
-    }
-
-    public void setStoreResItem(boolean storeResItem) {
-        this.storeResItem = storeResItem;
-    }
 
     public ResUnit getUseUnit() {
         return useUnit;
@@ -91,13 +61,7 @@ public class OrderNeedItem extends StoreChangeItem {
         this.useUnit = useUnit;
     }
 
-    public BigDecimal getResCount() {
-        return resCount;
-    }
 
-    public void setResCount(BigDecimal resCount) {
-        this.resCount = resCount;
-    }
 
     public BigDecimal getUnitPrice() {
         return unitPrice;
@@ -135,20 +99,16 @@ public class OrderNeedItem extends StoreChangeItem {
         if (!same(other)) {
             throw new IllegalArgumentException("not same orderItem can't merger");
         }
-        if (storeResItem) {
-            storeResCountInupt.add(other.storeResCountInupt);
-        } else {
-            resCount = resCount.add(other.getResCount());
-        }
+
+        storeResCountInupt.add(other.storeResCountInupt);
+
         calcByCU();
     }
 
-    public boolean isZero(){
-        if (storeResItem) {
-            return (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <= 0);
-        } else {
-            return (resCount.compareTo(BigDecimal.ZERO) <= 0);
-        }
+    public boolean isZero() {
+
+        return (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <= 0);
+
     }
 
 
@@ -201,24 +161,20 @@ public class OrderNeedItem extends StoreChangeItem {
     }
 
     private boolean countIsTyped() {
-        if (storeResItem) {
-            return decimalIsTyped(getStoreResCountInupt().getCount());
-        } else {
-            return decimalIsTyped(resCount);
-        }
+
+        return decimalIsTyped(getStoreResCountInupt().getCount());
+
     }
 
     public BigDecimal getCount() {
-        if (storeResItem) {
-            if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-                return storeResCountInupt.getCount();
-            } else {
-                return storeResCountInupt.getCountByResUnit(useUnit);
-            }
 
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
+            return storeResCountInupt.getCount();
         } else {
-            return resCount;
+            return storeResCountInupt.getCountByResUnit(useUnit);
         }
+
+
     }
 
 
@@ -289,9 +245,6 @@ public class OrderNeedItem extends StoreChangeItem {
         }
         OrderNeedItem other = (OrderNeedItem) storeChangeItem;
 
-        if (storeResItem != other.isStoreResItem()) {
-            return false;
-        }
 
         if (other.getRebate().compareTo(getRebate()) != 0) {
             return false;
@@ -305,12 +258,9 @@ public class OrderNeedItem extends StoreChangeItem {
             return false;
         }
 
-        if (storeResItem) {
-            return super.same(storeChangeItem);
 
-        } else {
-            return res.getId().equals(other.getRes().getId());
-        }
+        return super.same(storeChangeItem);
+
 
     }
 }

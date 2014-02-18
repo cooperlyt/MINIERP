@@ -174,14 +174,11 @@
                     var="_orderItem" id="middleMoneyCalcInputTable">
         <rich:column>
             <f:facet name="header">#{messages.StoreRes}/#{messages.res}</f:facet>
-            <a:outputPanel rendered="#{_orderItem.storeResItem}">
+            <a:outputPanel >
                 #{messages.StoreRes}:
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
                     <ui:param name="storeRes" value="#{_orderItem.storeRes}"/>
                 </ui:include>
-            </a:outputPanel>
-            <a:outputPanel rendered="#{not _orderItem.storeResItem}">
-                #{messages.res}:#{_orderItem.res.name}(#{_orderItem.res.code})
             </a:outputPanel>
 
             <f:facet name="footer">
@@ -195,7 +192,7 @@
             <a:outputPanel>
                 <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
                               layout="block"
-                              rendered="#{(_orderItem.storeResItem) or (_orderItem.useRes.unitGroup.type eq 'FIX_CONVERT') }">
+                              rendered="#{(_orderItem.useRes.unitGroup.type eq 'FIX_CONVERT') }">
                     <span style="white-space: nowrap"> #{messages.MasterUnitCount}:#{_orderItem.storeResCount.masterDisplayCount}</span>
                     <br/>
                     <span style="white-space: nowrap">#{messages.AuxUnitCount}: #{_orderItem.storeResCount.displayAuxCount}</span>
@@ -263,7 +260,7 @@
                 <s:decorate template="/layout/single-edit.xhtml">
                     <h:selectOneMenu value="#{_orderItem.middleUnit}" required="true"
                                      label="#{messages.order_middle_money_unit}"
-                                     rendered="#{_orderItem.storeResItem or not (_orderItem.moneyUnit.unitGroup.type eq 'FLOAT_CONVERT')}">
+                                     rendered="#{not (_orderItem.moneyUnit.unitGroup.type eq 'FLOAT_CONVERT')}">
                         <s:selectItems value="#{_orderItem.moneyUnit.unitGroup.resUnitList}" var="_unit"
                                        label="#{_unit.name}" noSelectionLabel="#{messages.noSelectLabelShort}"/>
                         <f:converter converterId="erpEntityConverter"/>
@@ -271,8 +268,6 @@
                                 listener="#{orderFee.orderItemFeeUnitChangeListener}"/>
                     </h:selectOneMenu>
                 </s:decorate>
-                <h:outputText value="#{_orderItem.moneyUnit.name}"
-                              rendered="#{(not _orderItem.storeResItem) and (_orderItem.moneyUnit.unitGroup.type eq 'FLOAT_CONVERT')}"/>
             </a:outputPanel>
         </rich:column>
 

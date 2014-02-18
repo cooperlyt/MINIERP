@@ -19,13 +19,14 @@ public class Batch implements java.io.Serializable {
     private Supplier supplier;
     private boolean produce;
     private boolean storeIn;
-    private Res res;
     private Date proDate;
     private Date expDate;
     private Date lastInTime;
     private MaterialStoreOut materialStoreOut;
-    private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
+    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
+    private Set<Stock> stocks = new HashSet<Stock>(0);
     private boolean defaultBatch;
+    private StoreRes storeRes;
 
     public Batch() {
     }
@@ -37,13 +38,13 @@ public class Batch implements java.io.Serializable {
 
     }
 
-    public Batch(String id, Res res, boolean defaultBatch, boolean produce, boolean storeIn, Date lastInTime) {
+    public Batch(String id, StoreRes storeRes, boolean defaultBatch, boolean produce, boolean storeIn, Date lastInTime) {
         this.id = id;
         this.defaultBatch = defaultBatch;
         this.produce = produce;
         this.storeIn = storeIn;
         this.lastInTime = lastInTime;
-        this.res = res;
+        this.storeRes = storeRes;
     }
 
 
@@ -109,14 +110,14 @@ public class Batch implements java.io.Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RES", nullable = false)
+    @JoinColumn(name = "STORE_RES", nullable = false)
     @NotNull
-    public Res getRes() {
-        return this.res;
+    public StoreRes getStoreRes() {
+        return storeRes;
     }
 
-    public void setRes(Res res) {
-        this.res = res;
+    public void setStoreRes(StoreRes storeRes) {
+        this.storeRes = storeRes;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "batch")
@@ -147,11 +148,20 @@ public class Batch implements java.io.Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-    public Set<ProductStoreIn> getProductStoreIns() {
-        return productStoreIns;
+    public Set<StockChangeItem> getStockChangeItems() {
+        return stockChangeItems;
     }
 
-    public void setProductStoreIns(Set<ProductStoreIn> productStoreIns) {
-        this.productStoreIns = productStoreIns;
+    public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
+        this.stockChangeItems = stockChangeItems;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
+    public Set<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
     }
 }

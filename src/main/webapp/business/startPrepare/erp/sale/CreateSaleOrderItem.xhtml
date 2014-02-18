@@ -185,17 +185,12 @@
     <rich:panel rendered="#{resHome.idDefined}">
 
         <h:panelGrid columns="4">
-            <h:outputText value="#{resHome.resTitle}" styleClass="name"/>
-            #{' '}
-            <h:selectBooleanCheckbox value="#{orderCreate.editingItem.storeResItem}" disabled="true">
-                <a:ajax event="click" render="orderItemDetails"/>
-            </h:selectBooleanCheckbox>
+            <h:outputText value="#{resHome.resTitle}" />
 
-            #{messages.orderItemIsStoreRes}
         </h:panelGrid>
 
 
-        <a:outputPanel rendered="#{orderCreate.editingItem.storeResItem}">
+        <a:outputPanel >
             <a:outputPanel id="itemFormats">
                 <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
                     <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
@@ -217,16 +212,6 @@
 
         </a:outputPanel>
 
-        <s:decorate template="/layout/seam-edit.xhtml" rendered="#{not orderCreate.editingItem.storeResItem}">
-            <ui:define name="label">#{messages.orderItemCount}</ui:define>
-            <h:inputText value="#{orderCreate.editingItem.resCount}" size="15" required="true"
-                         label="#{messages.orderItemCount}" converter="javax.faces.BigDecimal">
-                <a:ajax event="blur"
-                        listener="#{orderCreate.editingItem.calcPriceByCount}" render="priceFields">
-                    <a:attachQueue requestDelay="0"/>
-                </a:ajax>
-            </h:inputText>
-        </s:decorate>
 
         <div style="clear:both"/>
         <a:outputPanel id="priceFields">
@@ -257,7 +242,7 @@
 
 
                 <s:span styleClass="value"
-                        rendered="#{not (orderCreate.editingItem.storeResItem and (orderCreate.editingItem.res.unitGroup.type eq 'FIX_CONVERT'))}">
+                        rendered="#{not (orderCreate.editingItem.res.unitGroup.type eq 'FIX_CONVERT')}">
                     <h:outputText value="#{' / '}"/>
 
                     <h:selectOneMenu value="#{orderCreate.editingItem.useUnit}" style="width: 80px"
@@ -346,18 +331,13 @@
             <f:facet name="header">
                 #{messages.orderItem}
             </f:facet>
-            <a:outputPanel rendered="#{_item.storeResItem}">
-                #{messages.StoreRes}:
+            <a:outputPanel>
+
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
                     <ui:param name="storeRes" value="#{_item.storeRes}"/>
                 </ui:include>
             </a:outputPanel>
-            <a:outputPanel rendered="#{not _item.storeResItem}">
-                #{messages.res}:
-                <ui:include src="/layout/erp/ChangeItemResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_item}"/>
-                </ui:include>
-            </a:outputPanel>
+
             <f:facet name="footer">
                 #{messages.recordTotal} #{orderCreate.itemsCount} #{messages.item}
             </f:facet>

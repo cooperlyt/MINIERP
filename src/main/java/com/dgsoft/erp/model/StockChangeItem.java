@@ -26,6 +26,7 @@ public class StockChangeItem implements java.io.Serializable {
     private BigDecimal count;
     private BigDecimal befortCount;
     private BigDecimal afterCount;
+    private Batch batch;
 
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
@@ -151,6 +152,15 @@ public class StockChangeItem implements java.io.Serializable {
         this.noConvertCounts = noConvertCounts;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "BATCH", nullable = true)
+    public Batch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(Batch batch) {
+        this.batch = batch;
+    }
 
     @Transient
     public ResCount getResCount(){

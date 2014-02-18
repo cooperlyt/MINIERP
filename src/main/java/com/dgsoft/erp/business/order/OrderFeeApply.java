@@ -32,7 +32,6 @@ import java.util.List;
 public class OrderFeeApply extends OrderTaskHandle {
 
 
-
     @In(create = true)
     private MiddleManHome middleManHome;
 
@@ -107,7 +106,7 @@ public class OrderFeeApply extends OrderTaskHandle {
             for (OrderItem orderItem : getOrderItemsByFee()) {
                 if ((!selectOrderItem.getId().equals(orderItem.getId())) &&
                         (orderItem.getMiddleUnit() == null) &&
-                        (orderItem.getUseRes().equals(selectOrderItem.getUseRes()))) {
+                        (orderItem.getStoreRes().getRes().equals(selectOrderItem.getStoreRes().getRes()))) {
                     orderItem.setMiddleUnit(selectOrderItem.getMiddleUnit());
                     calcItemMiddleMoney(orderItem);
                 }
@@ -129,7 +128,7 @@ public class OrderFeeApply extends OrderTaskHandle {
             for (OrderItem orderItem : getOrderItemsByFee()) {
                 if ((!selectOrderItem.getId().equals(orderItem.getId())) &&
                         (orderItem.getMiddleRate() == null) &&
-                        (orderItem.getUseRes().equals(selectOrderItem.getUseRes()))) {
+                        (orderItem.getStoreRes().getRes().equals(selectOrderItem.getStoreRes().getRes()))) {
                     orderItem.setMiddleRate(selectOrderItem.getMiddleRate());
                     calcItemMiddleMoney(orderItem);
                 }
@@ -147,9 +146,7 @@ public class OrderFeeApply extends OrderTaskHandle {
             orderItem.setMiddleMoney(null);
             if (itemMiddleMoneyCalcType.equals(OrderHome.ItemMiddleMoneyCalcType.ITEM_FIX)) {
                 orderItem.setMiddleMoneyCalcType(OrderItem.MiddleMoneyCalcType.COUNT_FIX);
-                if (!orderItem.isStoreResItem() && !orderItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-                    orderItem.setMiddleUnit(orderItem.getMoneyUnit());
-                }
+
 
             } else if (itemMiddleMoneyCalcType.equals(OrderHome.ItemMiddleMoneyCalcType.ITEM_RATE)) {
                 orderItem.setMiddleMoneyCalcType(OrderItem.MiddleMoneyCalcType.MONEY_RATE);
@@ -175,16 +172,13 @@ public class OrderFeeApply extends OrderTaskHandle {
             selectOrderItem.setMiddleMoney(null);
             selectOrderItem.setMiddleUnit(null);
         } else {
-            if (selectOrderItem.getMiddleMoneyCalcType().equals(OrderItem.MiddleMoneyCalcType.COUNT_FIX) &&
-                    !selectOrderItem.isStoreResItem() && !selectOrderItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-                selectOrderItem.setMiddleUnit(selectOrderItem.getMoneyUnit());
-            }
+
             calcItemMiddleMoney(selectOrderItem);
 
             for (OrderItem orderItem : getOrderItemsByFee()) {
                 if ((!selectOrderItem.getId().equals(orderItem.getId())) &&
                         (orderItem.getMiddleMoneyCalcType() == null) &&
-                        (orderItem.getUseRes().equals(selectOrderItem.getUseRes()))) {
+                        (orderItem.getStoreRes().equals(selectOrderItem.getStoreRes()))) {
                     orderItem.setMiddleMoneyCalcType(selectOrderItem.getMiddleMoneyCalcType());
                     calcItemMiddleMoney(orderItem);
                 }
@@ -197,11 +191,8 @@ public class OrderFeeApply extends OrderTaskHandle {
     private void calcItemMiddleMoney(OrderItem item) {
         if ((item.getMiddleMoneyCalcType() != null) && (item.getMiddleRate() != null)) {
             if (item.getMiddleMoneyCalcType().equals(OrderItem.MiddleMoneyCalcType.COUNT_FIX) && (item.getMiddleUnit() != null)) {
-                if (item.isStoreResItem() || item.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-                    item.setMiddleMoney(item.getStoreResCount().getCountByResUnit(item.getMiddleUnit()).multiply(item.getMiddleRate()));
-                } else {
-                    item.setMiddleMoney(item.getCount().multiply(item.getMiddleRate()));
-                }
+                item.setMiddleMoney(item.getStoreResCount().getCountByResUnit(item.getMiddleUnit()).multiply(item.getMiddleRate()));
+
             } else if (item.getMiddleMoneyCalcType().equals(OrderItem.MiddleMoneyCalcType.MONEY_RATE)) {
                 item.setMiddleMoney(BigDecimalFormat.halfUpCurrency(item.getTotalMoney().multiply(item.getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
             }
@@ -276,7 +267,7 @@ public class OrderFeeApply extends OrderTaskHandle {
             orderHome.getInstance().getOrderFees().add(orderFee);
         }
 
-        Logging.getLog(this.getClass()).debug("order fee call complete! fee size:" + orderHome.getInstance().getOrderFees().size() );
+        Logging.getLog(this.getClass()).debug("order fee call complete! fee size:" + orderHome.getInstance().getOrderFees().size());
 
         if ("updated".equals(orderHome.update())) {
             return "taskComplete";

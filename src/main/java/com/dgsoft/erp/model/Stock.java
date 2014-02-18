@@ -26,6 +26,7 @@ public class Stock implements java.io.Serializable {
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<StockDetailsCheckout> stockDetailsCheckouts = new HashSet<StockDetailsCheckout>(0);
+    private Batch batch;
 
     public Stock() {
     }
@@ -123,6 +124,16 @@ public class Stock implements java.io.Serializable {
 
     public void setStockDetailsCheckouts(Set<StockDetailsCheckout> stockDetailsCheckouts) {
         this.stockDetailsCheckouts = stockDetailsCheckouts;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "BATCH",nullable = true)
+    public Batch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(Batch batch) {
+        this.batch = batch;
     }
 
     @Transient

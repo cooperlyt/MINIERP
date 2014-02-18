@@ -21,8 +21,6 @@ public class DispatchItem implements java.io.Serializable {
     private Dispatch dispatch;
     private StoreRes storeRes;
     private ResUnit resUnit;
-    private Res res;
-    private boolean storeResItem;
 
     public DispatchItem() {
     }
@@ -34,7 +32,6 @@ public class DispatchItem implements java.io.Serializable {
         this.dispatch = dispatch;
         this.storeRes = storeRes;
         this.resUnit = resUnit;
-        storeResItem = true;
     }
 
     @Id
@@ -93,26 +90,6 @@ public class DispatchItem implements java.io.Serializable {
 
     public void setResUnit(ResUnit resUnit) {
         this.resUnit = resUnit;
-    }
-
-
-    @Column(name = "STORE_RES_ITEM", nullable = false)
-    public boolean isStoreResItem() {
-        return storeResItem;
-    }
-
-    public void setStoreResItem(boolean storeResItem) {
-        this.storeResItem = storeResItem;
-    }
-
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "RES", nullable = true)
-    public Res getRes() {
-        return res;
-    }
-
-    public void setRes(Res res) {
-        this.res = res;
     }
 
     @Transient

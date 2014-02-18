@@ -196,8 +196,7 @@ public class ResHome extends ErpEntityHome<Res> {
     @Override
     protected boolean verifyRemoveAvailable() {
 
-        if (!getInstance().getProductGroups().isEmpty() || !getInstance().getStoreReses().isEmpty()
-                || !getInstance().getBatches().isEmpty() || !getInstance().getOrderItems().isEmpty()) {
+        if (!getInstance().getProductGroups().isEmpty() || !getInstance().getStoreReses().isEmpty()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"res_cannotDelete");
 
             return false;

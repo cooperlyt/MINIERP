@@ -88,53 +88,53 @@ public class ResHelper {
         return true;
     }
 
-    public static List<OrderItem> unionSeamOrderItem(List<OrderItem> orderItems){
+    public static List<OrderItem> unionSeamOrderItem(List<OrderItem> orderItems) {
         List<OrderItem> result = new ArrayList<OrderItem>();
-        for (OrderItem orderItem: orderItems){
+        for (OrderItem orderItem : orderItems) {
             boolean finded = false;
-            for (OrderItem item: result){
-                if (item.isSameItem(orderItem)){
+            for (OrderItem item : result) {
+                if (item.isSameItem(orderItem)) {
                     finded = true;
                     item.setCount(item.getCount().add(orderItem.getCount()));
                 }
             }
-            if (!finded){
+            if (!finded) {
                 result.add(orderItem);
             }
         }
         return result;
     }
 
-    public String formatDisplayValue(Format format){
+    public String formatDisplayValue(Format format) {
         if (format != null)
-        switch (format.getFormatDefine().getDataType()){
-            case INTEGER:
-                return format.getFormatDefine().getName() + " " + format.getIntValue();
-            case WORD:
-                return format.getFormatDefine().getName() + " " + dictionary.getWordValue(format.getFormatValue()) ;
-            case FLOAT:
-                return format.getFormatDefine().getName() + " " + format.getFloatValue();
-        }
+            switch (format.getFormatDefine().getDataType()) {
+                case INTEGER:
+                    return format.getFormatDefine().getName() + " " + format.getIntValue();
+                case WORD:
+                    return format.getFormatDefine().getName() + " " + dictionary.getWordValue(format.getFormatValue());
+                case FLOAT:
+                    return format.getFormatDefine().getName() + " " + format.getFloatValue();
+            }
 
         return "";
     }
 
-    public String genStoreResCode(String resCode, List<Format> formats, String floatConvertRate){
+    public String genStoreResCode(String resCode, List<Format> formats, String floatConvertRate) {
         String result = resCode.trim() + "-";
-        for (Format format: formats){
+        for (Format format : formats) {
             if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
                 Word word = dictionary.getWord(format.getFormatValue());
                 if (word != null)
                     result += word.getKey();
             }
-            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.INTEGER)){
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.INTEGER)) {
                 result += format.getIntValue();
             }
-            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.FLOAT)){
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.FLOAT)) {
                 result += format.getFloatValue();
             }
         }
-        if (floatConvertRate != null){
+        if (floatConvertRate != null) {
             result += floatConvertRate;
         }
 
@@ -142,9 +142,9 @@ public class ResHelper {
     }
 
     public String genStoreResCode(StoreRes storeRes) {
-        return genStoreResCode(storeRes.getRes().getCode(),storeRes.getFormatList(),
-                (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))?
-                BigDecimalFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString(): null);
+        return genStoreResCode(storeRes.getRes().getCode(), storeRes.getFormatList(),
+                (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) ?
+                        BigDecimalFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null);
     }
 
     public List<OrderItem> totalOrderItem(List<OrderItem> items) {
@@ -152,30 +152,22 @@ public class ResHelper {
         for (OrderItem item : items) {
             boolean find = false;
             for (OrderItem totalItem : result) {
-                if ((totalItem.isStoreResItem() == item.isStoreResItem()) &&
-                        totalItem.getMoneyUnit().getId().equals(item.getMoneyUnit().getId()) &&
+                if (totalItem.getMoneyUnit().getId().equals(item.getMoneyUnit().getId()) &&
                         (totalItem.getMoney().compareTo(item.getMoney()) == 0) &&
                         (totalItem.getRebate().compareTo(item.getRebate()) == 0)) {
-                    if (totalItem.isStoreResItem()) {
-                        if (totalItem.getStoreRes().equals(item.getStoreRes())) {
-                            find = true;
-                            totalItem.addCount(item);
-                            break;
-                        }
-                    } else if (totalItem.getRes().equals(item.getRes())) {
+
+                    if (totalItem.getStoreRes().equals(item.getStoreRes())) {
                         find = true;
-                        totalItem.setCount(totalItem.getCount().add(item.getCount()));
+                        totalItem.addCount(item);
                         break;
                     }
+
                 }
             }
             if (!find) {
-                if (item.isStoreResItem()) {
-                    result.add(new OrderItem(item.getStoreRes(),
-                            item.getMoneyUnit(), item.getCount(), item.getMoney(), item.getRebate()));
-                } else {
-                    result.add(new OrderItem(item.getRes(), item.getMoneyUnit(), item.getCount(), item.getMoney(), item.getRebate()));
-                }
+                result.add(new OrderItem(item.getStoreRes(),
+                        item.getMoneyUnit(), item.getCount(), item.getMoney(), item.getRebate()));
+
 
             }
         }
@@ -183,13 +175,11 @@ public class ResHelper {
     }
 
 
-    public static ResHelper instance()
-    {
-        if ( !Contexts.isEventContextActive() )
-        {
+    public static ResHelper instance() {
+        if (!Contexts.isEventContextActive()) {
             throw new IllegalStateException("no active event context");
         }
-        return (ResHelper) Component.getInstance(ResHelper.class, ScopeType.STATELESS,true);
+        return (ResHelper) Component.getInstance(ResHelper.class, ScopeType.STATELESS, true);
     }
 
 }
