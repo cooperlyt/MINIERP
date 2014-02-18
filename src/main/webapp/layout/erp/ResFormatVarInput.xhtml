@@ -11,7 +11,7 @@
                      rendered="#{format.formatDefine.dataType.name() eq 'WORD'}">
         <s:selectItems value="#{dictionary.getWordList(format.formatDefine.wordCategory)}"
                        var="_word" itemValue="#{_word.id}" label="#{_word.value}"
-                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                       noSelectionLabel="#{(empty noSelectionLabel) ? messages.noSelectLabel : noSelectionLabel}"/>
         <a:ajax event="selectitem" render="#{render}" disabled="#{empty ajaxDisable ? false : ajaxDisable}"/>
     </rich:select>
 

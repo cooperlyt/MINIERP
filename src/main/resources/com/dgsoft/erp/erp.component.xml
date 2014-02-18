@@ -80,6 +80,10 @@
         <property name="ejbql">select cars from Cars cars where enable=true</property>
     </component>
 
+    <component name="validResList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select res from Res res where enable=true</property>
+    </component>
+
     <component name="customerNameList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">
         <property name="ejbql">select distinct customer.name from Customer customer</property>
     </component>
