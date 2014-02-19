@@ -20,7 +20,6 @@
     </h:outputStylesheet>
 
 
-
     <a:region>
         <h:panelGrid id="resSearchForm" columns="4">
 
@@ -40,14 +39,14 @@
 
             <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
                              title="#{messages.resSelect}" render="resSelectPanel_form"
-                             onclick="#{rich:component('resSelectPanel')}.show();">
+                             oncomplete="#{rich:component('resSelectPanel')}.show();">
                 <a:attachQueue requestDelay="0"/>
                 <s:conversationPropagation type="join"/>
             </a:commandButton>
 
             <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
                              title="#{messages.storeResSelect}" render="storeResSelectPanel_form"
-                             onclick="#{rich:component('storeResSelectPanel')}.show();">
+                             oncomplete="#{rich:component('storeResSelectPanel')}.show();">
                 <a:attachQueue requestDelay="0"/>
                 <s:conversationPropagation type="join"/>
             </a:commandButton>
@@ -59,12 +58,38 @@
 
 
         <a:outputPanel rendered="#{resHome.idDefined}">
+            <div style="clear: both;"/>
+            <h:panelGrid columns="5">
+                <a:outputPanel>
+                    <s:decorate template="/layout/seam-display.xhtml">
+                        <ui:define name="label">#{messages.res}</ui:define>
+                        #{resHome.instance.name}(#{resHome.instance.code})
+                    </s:decorate>
+                </a:outputPanel>
+                <a:outputPanel rendered="#{resHome.instance.unitGroup.type eq 'FLOAT_CONVERT'}">
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.res}</ui:define>
-                 #{resHome.instance.name}(#{resHome.instance.code})
-            </s:decorate>
+                    <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+                                       popupClass="floatConvertRatePopupHeight"
+                                       value="#{storeResList.floatConvertRate}"
+                                       layout="div"
+                                       label="#{resHome.instance.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
+                                       var="_value"
+                                       selectFirst="false"
+                                       autofill="false"
+                                       fetchValue="#{_value}"
+                                       autocompleteList="#{storeResFormatFilter.floatConvertHistoryRateList}"
+                                       showButton="true" converter="javax.faces.BigDecimal">
+                        <b>#{_value}</b>
 
+
+                    </rich:autocomplete>
+
+
+
+                </a:outputPanel>
+
+                <h:outputText value="#{resHome.instance.unitGroup.name}" rendered="#{resHome.instance.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+            </h:panelGrid>
 
             <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
                 <s:decorate template="/layout/seam-display.xhtml">
@@ -77,27 +102,6 @@
                 </s:decorate>
             </a:repeat>
 
-            <a:outputPanel rendered="#{resHome.instance.unitGroup.type eq 'FLOAT_CONVERT'}">
-
-                <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
-                                   popupClass="floatConvertRatePopupHeight"
-                                   value="#{storeResList.floatConvertRate}"
-                                   layout="div"
-                                   label="#{resHome.instance.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
-                                   required="true"
-                                   var="_value"
-                                   selectFirst="false"
-                                   fetchValue="#{_value}"
-                                   autocompleteList="#{storeResFormatFilter.floatConvertHistoryRateList}"
-                                   showButton="true" converter="javax.faces.BigDecimal">
-                    <b>#{_value}</b>
-
-
-                </rich:autocomplete>
-
-                <h:outputText value="#{resHome.instance.unitGroup.name}"/>
-
-            </a:outputPanel>
 
         </a:outputPanel>
     </a:outputPanel>

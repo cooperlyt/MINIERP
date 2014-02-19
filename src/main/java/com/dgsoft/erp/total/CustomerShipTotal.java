@@ -97,9 +97,10 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
             refresh();
         }
         initResultMap();
-
         return resultMap;
     }
+
+
 
     private void initResultMap(){
         if (resultMap == null){

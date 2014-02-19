@@ -5,6 +5,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:b="http://jboss.com/products/seam/birt"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
@@ -47,10 +48,37 @@
 
 
                 <ui:include src="/layout/erp/StoreResSearchCondition.xhtml"/>
+                <div style="clear:both"/>
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                    <a:outputPanel id="#{panelId}_buttons">
+                        <div class="actionButtons">
 
+                            <s:button id="reset" value="#{messages.reset}" includePageParams="false" propagation="end">
+
+                            </s:button>
+
+                            <a:outputPanel id="searchButton">
+                                <a:commandButton value="#{messages.total}"
+                                                 execute="@form" render="">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandButton>
+                            </a:outputPanel>
+                        </div>
+                    </a:outputPanel>
+                </h:panelGrid>
             </rich:collapsiblePanel>
 
         </h:form>
+
+        <rich:panel>
+            <f:facet name="header">Products</f:facet>
+            <b:birt designType="embed" designName="report/SaleCustomerShip.rptdesign"
+                    embeddable="true" masterpage="false"/>
+            <div style="clear:both"/>
+        </rich:panel>
+
+
     </ui:define>
 
 

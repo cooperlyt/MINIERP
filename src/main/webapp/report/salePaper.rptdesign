@@ -192,10 +192,10 @@ it=orderItems.iterator();
             <method name="fetch"><![CDATA[if (it.hasNext()){
 	item = it.next();
 
-	itemTitle = item.getUseRes().getName() + " ";
+	itemTitle = item.getStoreRes().getRes().getName() + " ";
 	
 	
-	if (item.isStoreResItem()){
+
 		storeRes = item.getStoreRes();
 		formats = storeRes.getFormatList(); 
 		for(i=0;i++;i<formats.size() -1){
@@ -207,13 +207,13 @@ it=orderItems.iterator();
 				itemTitle += format.getFormatValue();
 			}						
 		}
-		if (item.getUseRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+		if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
 			
-			itemTitle +=  BigDecimalFormat.format(storeRes.getFloatConversionRate(),item.getUseRes().getUnitGroup().getFloatConvertRateFormat());
-			itemTitle += item.getUseRes().getUnitGroup().getName();
+			itemTitle +=  BigDecimalFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat());
+			itemTitle += item.getStoreRes().getRes().getUnitGroup().getName();
 		}
 		
-	}
+	
 	
 	row['NAME'] = itemTitle;
     

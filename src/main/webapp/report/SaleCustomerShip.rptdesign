@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
+    <property name="units">in</property>
+    <method name="initialize"><![CDATA[
+importPackage(Packages.java.lang);
+importPackage(Packages.org.jboss.seam);  
+importPackage(Packages.com.dgsoft.erp.model); 
+importPackage(Packages.com.dgsoft.common.utils.math);
+importPackage(Packages.java.math); 
+
+
+
+
+dataMap = Component.getInstance("customerShipTotal", false).getResultMap();
+resHelper = Component.getInstance("resHelper", false)
+
+]]></method>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <data-sources>
+        <script-data-source name="Data Source" id="9"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="DataSet" id="10">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">customerName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">customerId</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">resID</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">resName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">storeRes</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">masterCount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">auxCount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">masterUnit</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">auxUnit</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">customerName</property>
+                    <text-property name="displayName">客户</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">customerId</property>
+                </structure>
+                <structure>
+                    <property name="columnName">resID</property>
+                </structure>
+                <structure>
+                    <property name="columnName">resName</property>
+                </structure>
+                <structure>
+                    <property name="columnName">storeRes</property>
+                </structure>
+                <structure>
+                    <property name="columnName">masterCount</property>
+                </structure>
+                <structure>
+                    <property name="columnName">auxCount</property>
+                </structure>
+                <structure>
+                    <property name="columnName">masterUnit</property>
+                </structure>
+                <structure>
+                    <property name="columnName">auxUnit</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">customerName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">customerId</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">resID</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">resName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">storeRes</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">masterCount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">auxCount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">masterUnit</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">auxUnit</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[cit = dataMap.entrySet().iterator();
+if (cit.hasNext()){
+	curEntry = cit.next();
+	rit = cit.getValue().entrySet().iterator();
+}else{
+	rit = null;
+}
+]]></method>
+            <method name="fetch"><![CDATA[if (rit == null){
+	return false;
+}
+
+if (!rit.hasNext()){
+	if (cit.hasNext()){
+		curEntry = cit.next();
+		rit = curEntry.getValue().entrySet().iterator();
+		resEntry = rit.next();
+	}else{
+		return false;
+	}
+}else{
+	resEntry = rit.next(); 	
+}
+
+
+row['customerName'] = curEntry.getKey().getCustomerArea().getName() + " - " + curEntry.getKey().getName();
+row['customerId'] = curEntry.getKey().getId();
+row['resName'] = resEntry.getKey().getRes().getName() + "(" + resEntry.getKey().getRes().getCode() + ")";
+row['resID'] = resEntry.getKey().getRes().getId();
+row['storeRes'] = resHelper.generateStoreResTitle(resEntry.getKey());
+
+row['masterCount'] = resEntry.getValue().getMasterCount();
+row['masterUnit'] = resEntry.getKey().getRes().getUnitGroup().getMasterUnit().getName();
+
+if (resEntry.getKey().getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+	row['auxCount'] = resEntry.getValue().getAuxCount();
+	row['auxUnit'] = resEntry.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit();
+}  
+
+
+
+
+]]></method>
+        </script-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="客户发货情况汇总表" id="2">
+            <property name="type">a4</property>
+            <page-header>
+                <text id="8">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<H2><B>客户发货情况汇总表</B></H2>]]></text-property>
+                </text>
+            </page-header>
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <table id="161">
+            <property name="dataSet">DataSet</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">customerName</property>
+                    <text-property name="displayName">客户</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customerName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customerId</property>
+                    <text-property name="displayName">customerId</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customerId"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">resID</property>
+                    <text-property name="displayName">resID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["resID"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">resName</property>
+                    <text-property name="displayName">resName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["resName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">storeRes</property>
+                    <text-property name="displayName">storeRes</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["storeRes"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">masterCount</property>
+                    <text-property name="displayName">masterCount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["masterCount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">auxCount</property>
+                    <text-property name="displayName">auxCount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["auxCount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">masterUnit</property>
+                    <text-property name="displayName">masterUnit</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["masterUnit"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">auxUnit</property>
+                    <text-property name="displayName">auxUnit</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["auxUnit"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="210"/>
+            <column id="211"/>
+            <column id="212"/>
+            <column id="213"/>
+            <column id="214"/>
+            <column id="215"/>
+            <column id="216"/>
+            <column id="217"/>
+            <column id="218"/>
+            <header>
+                <row id="162">
+                    <cell id="163">
+                        <label id="164">
+                            <text-property name="text">客户</text-property>
+                        </label>
+                    </cell>
+                    <cell id="165">
+                        <label id="166">
+                            <text-property name="text">customerId</text-property>
+                        </label>
+                    </cell>
+                    <cell id="167">
+                        <label id="168">
+                            <text-property name="text">resID</text-property>
+                        </label>
+                    </cell>
+                    <cell id="169">
+                        <label id="170">
+                            <text-property name="text">resName</text-property>
+                        </label>
+                    </cell>
+                    <cell id="171">
+                        <label id="172">
+                            <text-property name="text">storeRes</text-property>
+                        </label>
+                    </cell>
+                    <cell id="173">
+                        <label id="174">
+                            <text-property name="text">masterCount</text-property>
+                        </label>
+                    </cell>
+                    <cell id="175">
+                        <label id="176">
+                            <text-property name="text">auxCount</text-property>
+                        </label>
+                    </cell>
+                    <cell id="177">
+                        <label id="178">
+                            <text-property name="text">masterUnit</text-property>
+                        </label>
+                    </cell>
+                    <cell id="179">
+                        <label id="180">
+                            <text-property name="text">auxUnit</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="219">
+                <property name="groupName">CustomerGroup</property>
+                <expression name="keyExpr" type="javascript">row["customerId"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["customerId"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="220">
+                        <cell id="221">
+                            <data id="240">
+                                <property name="resultSetColumn">customerId</property>
+                            </data>
+                        </cell>
+                        <cell id="222"/>
+                        <cell id="223"/>
+                        <cell id="224"/>
+                        <cell id="225"/>
+                        <cell id="226"/>
+                        <cell id="227"/>
+                        <cell id="228"/>
+                        <cell id="229"/>
+                    </row>
+                </header>
+                <footer>
+                    <row id="230">
+                        <cell id="231"/>
+                        <cell id="232"/>
+                        <cell id="233"/>
+                        <cell id="234"/>
+                        <cell id="235"/>
+                        <cell id="236"/>
+                        <cell id="237"/>
+                        <cell id="238"/>
+                        <cell id="239"/>
+                    </row>
+                </footer>
+            </group>
+            <group id="241">
+                <property name="groupName">ResGroup</property>
+                <expression name="keyExpr" type="javascript">row["resID"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["resID"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="242">
+                        <cell id="243">
+                            <data id="262">
+                                <property name="resultSetColumn">resID</property>
+                            </data>
+                        </cell>
+                        <cell id="244"/>
+                        <cell id="245"/>
+                        <cell id="246"/>
+                        <cell id="247"/>
+                        <cell id="248"/>
+                        <cell id="249"/>
+                        <cell id="250"/>
+                        <cell id="251"/>
+                    </row>
+                </header>
+                <footer>
+                    <row id="252">
+                        <cell id="253"/>
+                        <cell id="254"/>
+                        <cell id="255"/>
+                        <cell id="256"/>
+                        <cell id="257"/>
+                        <cell id="258"/>
+                        <cell id="259"/>
+                        <cell id="260"/>
+                        <cell id="261"/>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="181">
+                    <cell id="182">
+                        <data id="183">
+                            <property name="resultSetColumn">customerName</property>
+                        </data>
+                    </cell>
+                    <cell id="184">
+                        <data id="185">
+                            <property name="resultSetColumn">customerId</property>
+                        </data>
+                    </cell>
+                    <cell id="186">
+                        <data id="187">
+                            <property name="resultSetColumn">resID</property>
+                        </data>
+                    </cell>
+                    <cell id="188">
+                        <data id="189">
+                            <property name="resultSetColumn">resName</property>
+                        </data>
+                    </cell>
+                    <cell id="190">
+                        <data id="191">
+                            <property name="resultSetColumn">storeRes</property>
+                        </data>
+                    </cell>
+                    <cell id="192">
+                        <data id="193">
+                            <property name="resultSetColumn">masterCount</property>
+                        </data>
+                    </cell>
+                    <cell id="194">
+                        <data id="195">
+                            <property name="resultSetColumn">auxCount</property>
+                        </data>
+                    </cell>
+                    <cell id="196">
+                        <data id="197">
+                            <property name="resultSetColumn">masterUnit</property>
+                        </data>
+                    </cell>
+                    <cell id="198">
+                        <data id="199">
+                            <property name="resultSetColumn">auxUnit</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="200">
+                    <cell id="201"/>
+                    <cell id="202"/>
+                    <cell id="203"/>
+                    <cell id="204"/>
+                    <cell id="205"/>
+                    <cell id="206"/>
+                    <cell id="207"/>
+                    <cell id="208"/>
+                    <cell id="209"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

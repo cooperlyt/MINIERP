@@ -192,6 +192,10 @@ REFERENCES MINI_ERP.STORE_RES (ID)
 
 ALTER TABLE MINI_ERP.ORDER_ITEM DROP COST;
 
+/*
+INSERT INTO DG_SYSTEM.FUNC_CATEGORY (ID, NAME, ICON, PRIORITY, MEMO) VALUES ('erp.search','统计分析','',90,'');
+*/
+
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.customerShip','客户发货统计','erp.search','','/func/erp/sale/mgr/SaleCustomerShipReport.seam','','400','');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.search.customerShip');
