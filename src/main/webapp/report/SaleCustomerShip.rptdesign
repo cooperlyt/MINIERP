@@ -12,15 +12,18 @@ importPackage(Packages.java.math);
 
 
 
-dataMap = Component.getInstance("customerShipTotal", false).getResultMap();
-resHelper = Component.getInstance("resHelper", false)
+
 
 ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <data-sources>
-        <script-data-source name="Data Source" id="9"/>
+        <script-data-source name="Data Source" id="9">
+            <method name="open"><![CDATA[
+
+]]></method>
+        </script-data-source>
     </data-sources>
     <data-sets>
         <script-data-set name="DataSet" id="10">
@@ -151,10 +154,16 @@ resHelper = Component.getInstance("resHelper", false)
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
-            <method name="open"><![CDATA[cit = dataMap.entrySet().iterator();
+            <method name="open"><![CDATA[dataMap = Component.getInstance("customerShipTotal", true).getResultMap();
+java.lang.System.out.println("aaa---------------------------------------------");
+
+resHelper = Component.getInstance("resHelper", false)
+
+
+cit = dataMap.entrySet().iterator();
 if (cit.hasNext()){
 	curEntry = cit.next();
-	rit = cit.getValue().entrySet().iterator();
+	rit = curEntry.getValue().entrySet().iterator();
 }else{
 	rit = null;
 }
@@ -185,14 +194,12 @@ row['storeRes'] = resHelper.generateStoreResTitle(resEntry.getKey());
 row['masterCount'] = resEntry.getValue().getMasterCount();
 row['masterUnit'] = resEntry.getKey().getRes().getUnitGroup().getMasterUnit().getName();
 
-if (resEntry.getKey().getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+if (resEntry.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
 	row['auxCount'] = resEntry.getValue().getAuxCount();
-	row['auxUnit'] = resEntry.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit();
+	row['auxUnit'] = resEntry.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
 }  
 
-
-
-
+return true;
 ]]></method>
         </script-data-set>
     </data-sets>
@@ -249,6 +256,15 @@ if (resEntry.getKey().getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLO
     </page-setup>
     <body>
         <table id="161">
+            <property name="borderBottomStyle">double</property>
+            <property name="borderBottomWidth">thick</property>
+            <property name="borderLeftStyle">double</property>
+            <property name="borderLeftWidth">thick</property>
+            <property name="borderRightStyle">double</property>
+            <property name="borderRightWidth">thick</property>
+            <property name="borderTopStyle">double</property>
+            <property name="borderTopWidth">thick</property>
+            <property name="width">7.764227642276423in</property>
             <property name="dataSet">DataSet</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -305,61 +321,185 @@ if (resEntry.getKey().getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLO
                     <expression name="expression" type="javascript">dataSetRow["auxUnit"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>ResGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["storeRes"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>ResGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["masterCount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_2</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>ResGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["auxCount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_3</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>CustomerGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["resID"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_4</property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["customerId"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
-            <column id="210"/>
-            <column id="211"/>
-            <column id="212"/>
-            <column id="213"/>
-            <column id="214"/>
-            <column id="215"/>
-            <column id="216"/>
-            <column id="217"/>
-            <column id="218"/>
+            <column id="210">
+                <property name="width">0.42276422764227645in</property>
+            </column>
+            <column id="214">
+                <property name="width">0.3821138211382114in</property>
+            </column>
+            <column id="271">
+                <property name="width">4.642276422764228in</property>
+            </column>
+            <column id="215">
+                <property name="width">0.7154471544715447in</property>
+            </column>
+            <column id="217">
+                <property name="repeat">1</property>
+                <property name="width">0.43902439024390244in</property>
+            </column>
+            <column id="216">
+                <property name="width">0.6991869918699187in</property>
+            </column>
+            <column id="218">
+                <property name="width">0.4634146341463415in</property>
+            </column>
             <header>
+                <row id="281">
+                    <cell id="282">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">3</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <label id="272">
+                            <text-property name="text">客户/物资/货品</text-property>
+                        </label>
+                    </cell>
+                    <cell id="285">
+                        <property name="colSpan">4</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <label id="289">
+                            <text-property name="text">发货数量</text-property>
+                        </label>
+                    </cell>
+                </row>
+                <row id="273">
+                    <cell id="277">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <label id="290">
+                            <text-property name="text">主计量单位</text-property>
+                        </label>
+                    </cell>
+                    <cell id="279">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <label id="291">
+                            <text-property name="text">辅计量单位</text-property>
+                        </label>
+                    </cell>
+                </row>
                 <row id="162">
-                    <cell id="163">
-                        <label id="164">
-                            <text-property name="text">客户</text-property>
-                        </label>
-                    </cell>
-                    <cell id="165">
-                        <label id="166">
-                            <text-property name="text">customerId</text-property>
-                        </label>
-                    </cell>
-                    <cell id="167">
-                        <label id="168">
-                            <text-property name="text">resID</text-property>
-                        </label>
-                    </cell>
-                    <cell id="169">
-                        <label id="170">
-                            <text-property name="text">resName</text-property>
-                        </label>
-                    </cell>
-                    <cell id="171">
-                        <label id="172">
-                            <text-property name="text">storeRes</text-property>
-                        </label>
-                    </cell>
                     <cell id="173">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <label id="174">
-                            <text-property name="text">masterCount</text-property>
-                        </label>
-                    </cell>
-                    <cell id="175">
-                        <label id="176">
-                            <text-property name="text">auxCount</text-property>
+                            <text-property name="text">数量</text-property>
                         </label>
                     </cell>
                     <cell id="177">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <label id="178">
-                            <text-property name="text">masterUnit</text-property>
+                            <text-property name="text">单位</text-property>
+                        </label>
+                    </cell>
+                    <cell id="175">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <label id="176">
+                            <text-property name="text">数量</text-property>
                         </label>
                     </cell>
                     <cell id="179">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <label id="180">
-                            <text-property name="text">auxUnit</text-property>
+                            <text-property name="text">单位</text-property>
                         </label>
                     </cell>
                 </row>
@@ -373,32 +513,97 @@ if (resEntry.getKey().getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLO
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="220">
+                        <property name="borderTopStyle">double</property>
+                        <property name="borderTopWidth">medium</property>
                         <cell id="221">
-                            <data id="240">
-                                <property name="resultSetColumn">customerId</property>
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="263">
+                                <property name="resultSetColumn">customerName</property>
                             </data>
                         </cell>
-                        <cell id="222"/>
-                        <cell id="223"/>
-                        <cell id="224"/>
-                        <cell id="225"/>
-                        <cell id="226"/>
-                        <cell id="227"/>
-                        <cell id="228"/>
-                        <cell id="229"/>
+                        <cell id="294">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="228">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="227">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="229">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
                     </row>
                 </header>
                 <footer>
                     <row id="230">
-                        <cell id="231"/>
-                        <cell id="232"/>
-                        <cell id="233"/>
-                        <cell id="234"/>
-                        <cell id="235"/>
-                        <cell id="236"/>
-                        <cell id="237"/>
-                        <cell id="238"/>
-                        <cell id="239"/>
+                        <property name="borderBottomStyle">double</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thick</property>
+                        <cell id="231">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <label id="300">
+                                <text-property name="text">合计:</text-property>
+                            </label>
+                        </cell>
+                        <cell id="297">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="319">
+                                <property name="resultSetColumn">Aggregation_3</property>
+                            </data>
+                        </cell>
+                        <cell id="236">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="238">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="237">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="239">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
                     </row>
                 </footer>
             </group>
@@ -411,78 +616,171 @@ if (resEntry.getKey().getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLO
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="242">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">medium</property>
                         <cell id="243">
-                            <data id="262">
-                                <property name="resultSetColumn">resID</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="247">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="189">
+                                <property name="resultSetColumn">resName</property>
                             </data>
                         </cell>
-                        <cell id="244"/>
-                        <cell id="245"/>
-                        <cell id="246"/>
-                        <cell id="247"/>
-                        <cell id="248"/>
-                        <cell id="249"/>
-                        <cell id="250"/>
-                        <cell id="251"/>
+                        <cell id="248">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="250">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="249">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="251">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
                     </row>
                 </header>
                 <footer>
                     <row id="252">
-                        <cell id="253"/>
-                        <cell id="254"/>
-                        <cell id="255"/>
-                        <cell id="256"/>
-                        <cell id="257"/>
-                        <cell id="258"/>
-                        <cell id="259"/>
-                        <cell id="260"/>
-                        <cell id="261"/>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">medium</property>
+                        <cell id="253">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="257">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <label id="299">
+                                <text-property name="text">合计:</text-property>
+                            </label>
+                        </cell>
+                        <cell id="296">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="304">
+                                <property name="resultSetColumn">Aggregation</property>
+                            </data>
+                        </cell>
+                        <cell id="258">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="305">
+                                <property name="resultSetColumn">Aggregation_1</property>
+                            </data>
+                        </cell>
+                        <cell id="260">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="306">
+                                <property name="resultSetColumn">masterUnit</property>
+                            </data>
+                        </cell>
+                        <cell id="259">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="307">
+                                <property name="resultSetColumn">Aggregation_2</property>
+                            </data>
+                        </cell>
+                        <cell id="261">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="308">
+                                <property name="resultSetColumn">auxUnit</property>
+                            </data>
+                        </cell>
                     </row>
                 </footer>
             </group>
             <detail>
                 <row id="181">
                     <cell id="182">
-                        <data id="183">
-                            <property name="resultSetColumn">customerName</property>
-                        </data>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                     </cell>
-                    <cell id="184">
-                        <data id="185">
-                            <property name="resultSetColumn">customerId</property>
-                        </data>
-                    </cell>
-                    <cell id="186">
-                        <data id="187">
-                            <property name="resultSetColumn">resID</property>
-                        </data>
-                    </cell>
-                    <cell id="188">
-                        <data id="189">
-                            <property name="resultSetColumn">resName</property>
-                        </data>
-                    </cell>
-                    <cell id="190">
+                    <cell id="267">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <data id="191">
                             <property name="resultSetColumn">storeRes</property>
                         </data>
                     </cell>
                     <cell id="192">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <data id="193">
                             <property name="resultSetColumn">masterCount</property>
                         </data>
                     </cell>
-                    <cell id="194">
-                        <data id="195">
-                            <property name="resultSetColumn">auxCount</property>
-                        </data>
-                    </cell>
                     <cell id="196">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <data id="197">
                             <property name="resultSetColumn">masterUnit</property>
                         </data>
                     </cell>
+                    <cell id="194">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <data id="195">
+                            <property name="resultSetColumn">auxCount</property>
+                        </data>
+                    </cell>
                     <cell id="198">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <data id="199">
                             <property name="resultSetColumn">auxUnit</property>
                         </data>
@@ -491,15 +789,52 @@ if (resEntry.getKey().getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLO
             </detail>
             <footer>
                 <row id="200">
-                    <cell id="201"/>
-                    <cell id="202"/>
-                    <cell id="203"/>
-                    <cell id="204"/>
-                    <cell id="205"/>
-                    <cell id="206"/>
-                    <cell id="207"/>
-                    <cell id="208"/>
-                    <cell id="209"/>
+                    <cell id="201">
+                        <property name="colSpan">1</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <label id="303">
+                            <text-property name="text">总计：</text-property>
+                        </label>
+                    </cell>
+                    <cell id="301">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <data id="320">
+                            <property name="resultSetColumn">Aggregation_4</property>
+                        </data>
+                    </cell>
+                    <cell id="206">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                    </cell>
+                    <cell id="208">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                    </cell>
+                    <cell id="207">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                    </cell>
+                    <cell id="209">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                    </cell>
                 </row>
             </footer>
         </table>

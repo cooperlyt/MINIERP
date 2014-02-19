@@ -9,9 +9,11 @@ import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by cooper on 2/18/14.
@@ -19,14 +21,14 @@ import java.util.*;
 @Name("customerShipTotal")
 public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
 
-    private static final String EJBQL = "select dispatchItem from DispatchItem dispatchItem left join fetch dispatchItem.dispatch.needRes.customerOrder.customer where dispatchItem.dispatch.storeOut = true";
+    private static final String EJBQL = "select dispatchItem from DispatchItem dispatchItem  where dispatchItem.dispatch.storeOut = true";
 
     private static final String[] RESTRICTIONS = {
             "dispatchItem.sendTime >= #{customerShipTotal.shipDateFrom}",
             "dispatchItem.sendTime <= #{customerShipTotal.searchShipDateTo}",
-            "dispatchItem.storeRes.res.id = #{customerShipTotal.searchResId}}",
-            "dispatchItem.storeRes.floatConversionRate = #{customerShipTotal.searchFloatConvertRate}}",
-            "dispatchItem.storeRes in (#{customerShipTotal.filterStoreReses}})"};
+            "dispatchItem.storeRes.res.id = #{customerShipTotal.searchResId}",
+            "dispatchItem.storeRes.floatConversionRate = #{customerShipTotal.searchFloatConvertRate}",
+            "dispatchItem.storeRes in (#{customerShipTotal.filterStoreReses})"};
 
 
     public CustomerShipTotal() {
@@ -72,6 +74,7 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         if (storeResList.isResSearch()) {
             return storeResList.getSearchResId();
         } else {
+
             return null;
         }
     }
@@ -104,12 +107,12 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
 
     private void initResultMap(){
         if (resultMap == null){
-            resultMap =new HashMap<Customer,Map<StoreRes,ResCount>>();
+            Map<Customer,Map<StoreRes,ResCount>> result =new HashMap<Customer,Map<StoreRes,ResCount>>();
             for (DispatchItem item: getResultList()){
-                Map<StoreRes,ResCount> mapValue = resultMap.get(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer());
+                Map<StoreRes,ResCount> mapValue = result.get(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer());
                 if (mapValue == null){
                     mapValue = new HashMap<StoreRes,ResCount>();
-                    resultMap.put(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer(),mapValue);
+                    result.put(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer(),mapValue);
                 }
 
                 ResCount count =  mapValue.get(item.getStoreRes());
@@ -119,6 +122,7 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
                     count.add(item.getResCount());
                 }
             }
+            resultMap = result;
         }
     }
 

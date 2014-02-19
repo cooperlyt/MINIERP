@@ -37,7 +37,7 @@ public class ResHelper {
         String result = storeRes.getRes().getName() + "(" + storeRes.getRes().getCode() + ")  ";
 
         for (Format format : storeRes.getFormatList()) {
-            result += " " + format.getFormatDefine().getName() + " : ";
+            result += " " + format.getFormatDefine().getName() + ":";
             if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
                 result += dictionary.getWordValue(format.getFormatValue());
             } else {
