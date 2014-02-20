@@ -279,5 +279,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return !getInstance().getAccountOpers().isEmpty();
     }
 
+    public boolean isComplete(){
+        return !getInstance().isCanceled() && getInstance().isAllStoreOut() && getInstance().isMoneyComplete() && getInstance().isResReceived();
+    }
 
 }

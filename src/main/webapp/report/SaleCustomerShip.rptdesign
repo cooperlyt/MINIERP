@@ -256,15 +256,15 @@ return true;
     </page-setup>
     <body>
         <table id="161">
-            <property name="borderBottomStyle">double</property>
+            <property name="borderBottomStyle">solid</property>
             <property name="borderBottomWidth">thick</property>
-            <property name="borderLeftStyle">double</property>
+            <property name="borderLeftStyle">solid</property>
             <property name="borderLeftWidth">thick</property>
-            <property name="borderRightStyle">double</property>
+            <property name="borderRightStyle">solid</property>
             <property name="borderRightWidth">thick</property>
-            <property name="borderTopStyle">double</property>
+            <property name="borderTopStyle">solid</property>
             <property name="borderTopWidth">thick</property>
-            <property name="width">7.764227642276423in</property>
+            <property name="width">7.760416666666667in</property>
             <property name="dataSet">DataSet</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -376,7 +376,7 @@ return true;
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["resID"]</expression>
+                            <expression name="value" type="javascript">row["customerId"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -395,13 +395,13 @@ return true;
                 </structure>
             </list-property>
             <column id="210">
-                <property name="width">0.42276422764227645in</property>
+                <property name="width">0.5520833333333334in</property>
             </column>
             <column id="214">
-                <property name="width">0.3821138211382114in</property>
+                <property name="width">0.4375in</property>
             </column>
             <column id="271">
-                <property name="width">4.642276422764228in</property>
+                <property name="width">4.46875in</property>
             </column>
             <column id="215">
                 <property name="width">0.7154471544715447in</property>
@@ -421,22 +421,37 @@ return true;
                     <cell id="282">
                         <property name="colSpan">3</property>
                         <property name="rowSpan">3</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
                         <label id="272">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">客户/物资/货品</text-property>
                         </label>
                     </cell>
                     <cell id="285">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <label id="289">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">发货数量</text-property>
                         </label>
                     </cell>
@@ -445,60 +460,104 @@ return true;
                     <cell id="277">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <label id="290">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">主计量单位</text-property>
                         </label>
                     </cell>
                     <cell id="279">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <label id="291">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">辅计量单位</text-property>
                         </label>
                     </cell>
                 </row>
                 <row id="162">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">3px</property>
                     <cell id="173">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <label id="174">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">数量</text-property>
                         </label>
                     </cell>
                     <cell id="177">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <label id="178">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">单位</text-property>
                         </label>
                     </cell>
                     <cell id="175">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <label id="176">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">数量</text-property>
                         </label>
                     </cell>
                     <cell id="179">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <label id="180">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <text-property name="text">单位</text-property>
                         </label>
                     </cell>
@@ -513,8 +572,6 @@ return true;
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="220">
-                        <property name="borderTopStyle">double</property>
-                        <property name="borderTopWidth">medium</property>
                         <cell id="221">
                             <property name="colSpan">3</property>
                             <property name="rowSpan">1</property>
@@ -523,6 +580,8 @@ return true;
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <data id="263">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontSize">11pt</property>
                                 <property name="resultSetColumn">customerName</property>
                             </data>
                         </cell>
@@ -554,10 +613,10 @@ return true;
                 </header>
                 <footer>
                     <row id="230">
-                        <property name="borderBottomStyle">double</property>
-                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">3px</property>
                         <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thick</property>
+                        <property name="borderTopWidth">2px</property>
                         <cell id="231">
                             <property name="colSpan">1</property>
                             <property name="rowSpan">1</property>
@@ -566,7 +625,9 @@ return true;
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <label id="300">
-                                <text-property name="text">合计:</text-property>
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontSize">11pt</property>
+                                <text-property name="text">合计</text-property>
                             </label>
                         </cell>
                         <cell id="297">
@@ -577,6 +638,8 @@ return true;
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <data id="319">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontSize">11pt</property>
                                 <property name="resultSetColumn">Aggregation_3</property>
                             </data>
                         </cell>
@@ -616,22 +679,25 @@ return true;
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="242">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
                         <cell id="243">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                         </cell>
                         <cell id="247">
                             <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>
-                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
                             <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <data id="189">
+                                <property name="fontFamily">"SimSun"</property>
                                 <property name="resultSetColumn">resName</property>
                             </data>
                         </cell>
@@ -663,8 +729,9 @@ return true;
                 </header>
                 <footer>
                     <row id="252">
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">medium</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <cell id="253">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -679,7 +746,9 @@ return true;
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <label id="299">
-                                <text-property name="text">合计:</text-property>
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <text-property name="text">合计</text-property>
                             </label>
                         </cell>
                         <cell id="296">
@@ -688,42 +757,52 @@ return true;
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <data id="304">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">Aggregation</property>
                             </data>
                         </cell>
                         <cell id="258">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
                             <data id="305">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">Aggregation_1</property>
                             </data>
                         </cell>
                         <cell id="260">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
                             <data id="306">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">masterUnit</property>
                             </data>
                         </cell>
                         <cell id="259">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
                             <data id="307">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">Aggregation_2</property>
                             </data>
                         </cell>
                         <cell id="261">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
                             <data id="308">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">auxUnit</property>
                             </data>
                         </cell>
@@ -735,53 +814,85 @@ return true;
                     <cell id="182">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                     </cell>
                     <cell id="267">
-                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <data id="191">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">storeRes</property>
                         </data>
                     </cell>
                     <cell id="192">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <data id="193">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">masterCount</property>
                         </data>
                     </cell>
                     <cell id="196">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <data id="197">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">masterUnit</property>
                         </data>
                     </cell>
                     <cell id="194">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <data id="195">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">auxCount</property>
                         </data>
                     </cell>
                     <cell id="198">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <data id="199">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">auxUnit</property>
                         </data>
                     </cell>
@@ -797,7 +908,10 @@ return true;
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <label id="303">
-                            <text-property name="text">总计：</text-property>
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">总计</text-property>
                         </label>
                     </cell>
                     <cell id="301">
@@ -808,6 +922,9 @@ return true;
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <data id="320">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <property name="resultSetColumn">Aggregation_4</property>
                         </data>
                     </cell>

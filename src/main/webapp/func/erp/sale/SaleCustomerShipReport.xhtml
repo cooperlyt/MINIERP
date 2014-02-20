@@ -48,6 +48,7 @@
 
 
                 <ui:include src="/layout/erp/StoreResSearchCondition.xhtml"/>
+
                 <div style="clear:both"/>
                 <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
                 <h:panelGrid columns="1" style="width: 100%; text-align: right">
@@ -71,12 +72,11 @@
 
         </h:form>
 
-        <rich:panel>
-            <f:facet name="header">Products</f:facet>
-            <b:birt designType="embed" designName="report/SaleCustomerShip.rptdesign"
-                    embeddable="true" masterpage="false"/>
-            <div style="clear:both"/>
-        </rich:panel>
+        <br/>
+        <b:birt designType="embed" designName="report/SaleCustomerShip.rptdesign"
+                embeddable="true" masterpage="false"/>
+
+        <div style="clear:both"/>
 
 
     </ui:define>

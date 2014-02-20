@@ -20,7 +20,7 @@ import java.util.*;
 public class ResCategory implements java.io.Serializable, ResTreeNode {
 
     public enum ResType {
-        PRODUCT, SEMI_PRODUCT, MATERIAL, WORK_IN_PROCESS,CONSUMABLE,OUTER_MATERIAL;
+        PRODUCT, FITTING, SEMI_PRODUCT, MATERIAL, WORK_IN_PROCESS, CONSUMABLE, OUTER_MATERIAL;
     }
 
     private String id;
@@ -154,11 +154,11 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
     }
 
     @Transient
-    public String getTitle(){
-        if (isRoot()){
+    public String getTitle() {
+        if (isRoot()) {
             return getName();
-        }else{
-           return getResCategory().getTitle() + "->" + getName();
+        } else {
+            return getResCategory().getTitle() + "->" + getName();
         }
 
     }
@@ -179,18 +179,18 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
     private ResTreeFilter treeFilter;
 
     @Transient
-    private List<ResTreeNode> getChildList(){
+    private List<ResTreeNode> getChildList() {
         List<ResTreeNode> result = new ArrayList<ResTreeNode>();
-        for(ResCategory category: getResCategoryList()){
-            if (category.isEnable() || treeFilter.containDisable()){
+        for (ResCategory category : getResCategoryList()) {
+            if (category.isEnable() || treeFilter.containDisable()) {
                 category.setTreeFilter(treeFilter);
                 result.add(category);
             }
         }
 
-        if (treeFilter.isAddRes()){
-            for(Res res: getResList()){
-                if (res.isEnable() || treeFilter.containDisable()){
+        if (treeFilter.isAddRes()) {
+            for (Res res : getResList()) {
+                if (res.isEnable() || treeFilter.containDisable()) {
                     result.add(res);
                 }
             }
@@ -219,7 +219,7 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
 
     @Transient
     @Override
-    public  ResTreeFilter getTreeFilter(){
+    public ResTreeFilter getTreeFilter() {
         return treeFilter;
     }
 
@@ -229,7 +229,7 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
     @Transient
     @Override
     public boolean isExpanded() {
-        if (expanded == null){
+        if (expanded == null) {
             expanded = getTreeFilter().expandedDefault();
         }
         return expanded;
@@ -256,9 +256,9 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
     @Transient
     @Override
     public TreeNode getParent() {
-        if (isRoot()){
+        if (isRoot()) {
             return null;
-        }else{
+        } else {
             return getResCategory();
         }
 
