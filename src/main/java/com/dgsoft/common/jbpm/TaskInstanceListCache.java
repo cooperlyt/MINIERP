@@ -1,5 +1,10 @@
 package com.dgsoft.common.jbpm;
 
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.log.Logging;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 import java.util.*;
@@ -12,7 +17,9 @@ import java.util.*;
  */
 public abstract class TaskInstanceListCache {
 
-    protected abstract Set<TaskInstance> getCurrTaskInstances();
+    protected abstract Set<TaskInstance> searchTaskInstances();
+
+    private Set<TaskInstance> taskInstances;
 
     private Set<Long> taskInstanceIds;
 
@@ -20,40 +27,60 @@ public abstract class TaskInstanceListCache {
 
     private List<String> taskNoticeMsgs = new ArrayList<String>();
 
+    @Create
+    public void register() {
+        ((BpmTaskChangePublish) Component.getInstance(BpmTaskChangePublish.class, ScopeType.APPLICATION, true)).subscribe(this);
+    }
+
+    @Destroy
+    public void unRegister(){
+        ((BpmTaskChangePublish) Component.getInstance(BpmTaskChangePublish.class, ScopeType.APPLICATION, true)).unSubscribe(this);
+    }
+
     private Set<TaskInstance> getTaskInstances() {
+        initTaskInstances();
+        return taskInstances;
+    }
 
-        Set<TaskInstance> result = getCurrTaskInstances();
+    private void initTaskInstances() {
+        if (taskInstances == null) {
+            Logging.getLog(this.getClass()).debug("init getTaskInstances");
+
+            taskInstances = searchTaskInstances();
 
 
-        if (taskInstanceIds == null){
-            taskInstanceIds = new HashSet<Long>();
-        }else{
+            if (taskInstanceIds == null) {
+                taskInstanceIds = new HashSet<Long>();
+            } else {
 
 
-            Set<Long> prepareIds = new HashSet<Long>();
+                Set<Long> prepareIds = new HashSet<Long>();
 
-            for (TaskInstance taskInstance: result){
-                if (!taskInstanceIds.contains(taskInstance.getId())){
-                    prepareIds.add(taskInstance.getId());
+                for (TaskInstance taskInstance : taskInstances) {
+                    if (!taskInstanceIds.contains(taskInstance.getId())) {
+                        prepareIds.add(taskInstance.getId());
 
-                    //TODO messages details
-                    taskNoticeMsgs.add(taskInstance.getName());
+                        //TODO messages details
+                        taskNoticeMsgs.add(taskInstance.getName());
+                    }
+                }
+
+                if (!prepareIds.isEmpty()) {
+                    newTaskInstanceIds.clear();
+                    newTaskInstanceIds.addAll(prepareIds);
+
                 }
             }
 
-            if (!prepareIds.isEmpty()){
-                newTaskInstanceIds.clear();
-                newTaskInstanceIds.addAll(prepareIds);
-
+            taskInstanceIds.clear();
+            for (TaskInstance taskInstance : taskInstances) {
+                taskInstanceIds.add(taskInstance.getId());
             }
         }
+    }
 
-        taskInstanceIds.clear();
-        for (TaskInstance taskInstance: result){
-            taskInstanceIds.add(taskInstance.getId());
-        }
-
-        return result;
+    public void refresh() {
+        taskInstances = null;
     }
 
 
@@ -81,19 +108,19 @@ public abstract class TaskInstanceListCache {
         return result;
     }
 
-    public boolean isNewTask(Long taskId){
+    public boolean isNewTask(Long taskId) {
         return newTaskInstanceIds.contains(taskId);
     }
 
-    public boolean isHaveNotice(){
-        getTaskInstances();
+    public boolean isHaveNotice() {
+        initTaskInstances();
         return !taskNoticeMsgs.isEmpty();
     }
 
-    public String getTaskNoticeMsg(){
-        if (taskNoticeMsgs.isEmpty()){
+    public String getTaskNoticeMsg() {
+        if (taskNoticeMsgs.isEmpty()) {
             return null;
-        }else{
+        } else {
             return taskNoticeMsgs.remove(0);
         }
     }

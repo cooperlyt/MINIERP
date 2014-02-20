@@ -1,6 +1,8 @@
 package com.dgsoft.common.jbpm;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -18,13 +20,15 @@ import java.util.Set;
  */
 @Name("pooledTaskInstanceCacheList")
 @Scope(ScopeType.SESSION)
+@AutoCreate
 public class PooledTaskInstanceCacheList extends TaskInstanceListCache{
 
-    @In
-    private List<TaskInstance> pooledTaskInstanceList;
 
     @Override
-    protected Set<TaskInstance> getCurrTaskInstances() {
+    protected Set<TaskInstance> searchTaskInstances() {
+        List<TaskInstance> pooledTaskInstanceList = (List<TaskInstance>) Component.getInstance("org.jboss.seam.bpm.pooledTaskInstanceList");
         return new HashSet<TaskInstance>(pooledTaskInstanceList);
     }
+
+
 }

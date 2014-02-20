@@ -29,6 +29,7 @@
                          render="pooledTasks"/>
         <a:commandButton image="/img/refresh_btn.png" title="#{messages.refresh}" execute="@this"
                          immediate="true"
+                         action="#{pooledTaskInstanceCacheList.refresh}"
                          render="pooledTasks"/>
 
 
@@ -149,7 +150,7 @@
                          action="#{taskSortFilter.reset}"
                          render="ownerTasks"/>
         <a:commandButton image="/img/refresh_btn.png" title="#{messages.refresh}" execute="@this"
-                         immediate="true"
+                         immediate="true" action="#{ownerTaskInstanceCacheList.refresh}"
                          render="ownerTasks"/>
     </rich:toolbarGroup>
 </rich:toolbar>

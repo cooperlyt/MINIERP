@@ -26,6 +26,8 @@ public class BpmTaskChangePublish {
 
     public static final String PUSH_TASK_CHANGE_TOPIC = "pushTaskChange";
 
+    private List<TaskInstanceListCache> subscribers = new ArrayList<TaskInstanceListCache>();
+
     protected void sendTaskChangeMessage() {
         try {
             TopicKey topicKey = new TopicKey(PUSH_TASK_CHANGE_TOPIC);
@@ -48,7 +50,26 @@ public class BpmTaskChangePublish {
     @Asynchronous
     public void onBusinessTaskChange() {
         log.info("onTaskChange");
+        for(TaskInstanceListCache subscriber: subscribers){
+            subscriber.refresh();
+        }
         sendTaskChangeMessage();
+    }
+
+
+    public synchronized void unSubscribe(TaskInstanceListCache subscriber) {
+        log.debug("unSubscribe = Publish:" + this + "|subscriber:" + subscriber);
+        if (subscribers.contains(subscriber)) {
+            subscribers.remove(subscriber);
+        } else {
+            log.warn("unSubscribe fail! subscriber not in list");
+        }
+    }
+
+
+    public synchronized void subscribe(TaskInstanceListCache subscriber) {
+        log.debug("subscribe = Publish:" + this + "|subscriber:" + subscriber);
+        subscribers.add(subscriber);
     }
 
 }
