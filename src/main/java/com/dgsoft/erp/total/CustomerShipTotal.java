@@ -2,13 +2,11 @@ package com.dgsoft.erp.total;
 
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.action.StoreResList;
-import com.dgsoft.erp.model.Customer;
-import com.dgsoft.erp.model.Dispatch;
-import com.dgsoft.erp.model.DispatchItem;
-import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
@@ -37,6 +35,9 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         setRestrictionLogicOperator("and");
     }
 
+
+    @org.jboss.seam.annotations.Logger
+    private Log log;
 
     @In(create = true)
     private StoreResList storeResList;
@@ -88,7 +89,10 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
     }
 
     public List<StoreRes> getFilterStoreReses(){
-        if (!storeResList.isResSearch()) {
+        log.debug("getFilterStoreReses:" + storeResList.isAllStoreRes());
+
+        if (!storeResList.isAllStoreRes() && !storeResList.isResSearch()) {
+
             return storeResList.getResultList();
         }else{
             return null;
@@ -100,7 +104,24 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
             refresh();
         }
         initResultMap();
+
+        log.debug("getResultMap:" + resultMap.entrySet().size());
         return resultMap;
+    }
+
+    public Map<StoreRes,ResCount> getTotalResultMap(){
+        Map<StoreRes,ResCount> result = new HashMap<StoreRes,ResCount>();
+        for (Map.Entry<Customer,Map<StoreRes,ResCount>> entry: getResultMap().entrySet()){
+            for (Map.Entry<StoreRes,ResCount> resEntry: entry.getValue().entrySet()){
+                ResCount resCount = result.get(resEntry.getKey());
+                if (resCount == null){
+                    result.put(resEntry.getKey(),resEntry.getValue());
+                }else{
+                    resCount.add(resEntry.getValue());
+                }
+            }
+        }
+        return result;
     }
 
 

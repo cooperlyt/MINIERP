@@ -7,7 +7,13 @@ importPackage(Packages.java.lang);
 importPackage(Packages.org.jboss.seam);  
 importPackage(Packages.com.dgsoft.erp.model); 
 importPackage(Packages.com.dgsoft.common.utils.math);
-importPackage(Packages.java.math); 
+importPackage(Packages.java.math);
+
+
+
+
+
+resHelper = Component.getInstance("resHelper", false); 
 
 
 
@@ -154,10 +160,7 @@ importPackage(Packages.java.math);
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
-            <method name="open"><![CDATA[dataMap = Component.getInstance("customerShipTotal", true).getResultMap();
-java.lang.System.out.println("aaa---------------------------------------------");
-
-resHelper = Component.getInstance("resHelper", false)
+            <method name="open"><![CDATA[dataMap = Component.getInstance("customerShipTotal", false).getResultMap();
 
 
 cit = dataMap.entrySet().iterator();
@@ -201,6 +204,127 @@ if (resEntry.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGro
 
 return true;
 ]]></method>
+        </script-data-set>
+        <script-data-set name="TotalDataSet" id="321">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">RES_ID</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">RES_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">STORE_RES_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">MASTER_COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">MASTER_UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">AUX_COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">AUX_UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">RES_ID</property>
+                </structure>
+                <structure>
+                    <property name="columnName">RES_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">STORE_RES_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">MASTER_COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">MASTER_UNIT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">AUX_COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">AUX_UNIT</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">RES_ID</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">RES_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">STORE_RES_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">MASTER_COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">MASTER_UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">AUX_COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">AUX_UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[totalDataMap = Component.getInstance("customerShipTotal", false).getTotalResultMap();
+
+tit = totalDataMap.entrySet().iterator();]]></method>
+            <method name="fetch"><![CDATA[if(tit.hasNext()){
+	entry = tit.next();
+	row['RES_ID'] = entry.getKey().getRes().getId();
+	row['RES_NAME'] = entry.getKey().getRes().getName();
+	row['STORE_RES_NAME'] = resHelper.generateStoreResTitle(entry.getKey());
+	row['MASTER_COUNT'] = entry.getValue().getMasterCount();
+	row['MASTER_UNIT'] = entry.getKey().getRes().getUnitGroup().getMasterUnit().getName();
+	
+	if (entry.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+		row['AUX_COUNT'] = resEntry.getValue().getAuxCount();
+		row['AUX_UNIT'] = resEntry.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
+	}  
+	return true;
+}else{
+	return false;
+}]]></method>
         </script-data-set>
     </data-sets>
     <styles>
@@ -582,6 +706,7 @@ return true;
                             <data id="263">
                                 <property name="fontFamily">"SimSun"</property>
                                 <property name="fontSize">11pt</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">customerName</property>
                             </data>
                         </cell>
@@ -627,6 +752,7 @@ return true;
                             <label id="300">
                                 <property name="fontFamily">"SimSun"</property>
                                 <property name="fontSize">11pt</property>
+                                <property name="fontWeight">bold</property>
                                 <text-property name="text">合计</text-property>
                             </label>
                         </cell>
@@ -640,6 +766,7 @@ return true;
                             <data id="319">
                                 <property name="fontFamily">"SimSun"</property>
                                 <property name="fontSize">11pt</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">Aggregation_3</property>
                             </data>
                         </cell>
@@ -698,6 +825,7 @@ return true;
                             <property name="borderTopStyle">none</property>
                             <data id="189">
                                 <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
                                 <property name="resultSetColumn">resName</property>
                             </data>
                         </cell>
@@ -952,6 +1080,486 @@ return true;
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                     </cell>
+                </row>
+            </footer>
+        </table>
+        <text id="322">
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<BR/>]]></text-property>
+        </text>
+        <table id="323">
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">3px</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">3px</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">3px</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">3px</property>
+            <property name="width">7.764227642276423in</property>
+            <property name="dataSet">TotalDataSet</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">RES_ID</property>
+                    <text-property name="displayName">RES_ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["RES_ID"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">RES_NAME</property>
+                    <text-property name="displayName">RES_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["RES_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">STORE_RES_NAME</property>
+                    <text-property name="displayName">STORE_RES_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["STORE_RES_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">MASTER_COUNT</property>
+                    <text-property name="displayName">MASTER_COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MASTER_COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">MASTER_UNIT</property>
+                    <text-property name="displayName">MASTER_UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MASTER_UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">AUX_COUNT</property>
+                    <text-property name="displayName">AUX_COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AUX_COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">AUX_UNIT</property>
+                    <text-property name="displayName">AUX_UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AUX_UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>TotalResGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["STORE_RES_NAME"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>TotalResGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["MASTER_COUNT"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_2</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>TotalResGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["AUX_COUNT"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_3</property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["RES_ID"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="363">
+                <property name="width">0.36585365853658536in</property>
+            </column>
+            <column id="364">
+                <property name="width">5.040650406504065in</property>
+            </column>
+            <column id="365">
+                <property name="width">0.7479674796747967in</property>
+            </column>
+            <column id="366">
+                <property name="width">0.43089430894308944in</property>
+            </column>
+            <column id="367">
+                <property name="width">0.6991869918699187in</property>
+            </column>
+            <column id="368">
+                <property name="width">0.4796747967479675in</property>
+            </column>
+            <header>
+                <row id="394">
+                    <cell id="395">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">3</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="408">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">物资/货品</text-property>
+                        </label>
+                    </cell>
+                    <cell id="397">
+                        <property name="colSpan">4</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <label id="401">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">发货数量</text-property>
+                        </label>
+                    </cell>
+                </row>
+                <row id="387">
+                    <cell id="390">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <label id="402">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">主计量单位</text-property>
+                        </label>
+                    </cell>
+                    <cell id="392">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <label id="403">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">辅计量单位</text-property>
+                        </label>
+                    </cell>
+                </row>
+                <row id="324">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">2px</property>
+                    <cell id="331">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <label id="404">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">数量</text-property>
+                        </label>
+                    </cell>
+                    <cell id="333">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <label id="405">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">单位</text-property>
+                        </label>
+                    </cell>
+                    <cell id="335">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <label id="406">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">数量</text-property>
+                        </label>
+                    </cell>
+                    <cell id="337">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <label id="407">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">单位</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="369">
+                <property name="groupName">TotalResGroup</property>
+                <expression name="keyExpr" type="javascript">row["RES_ID"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["RES_ID"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="370">
+                        <cell id="372">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <data id="343">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="resultSetColumn">RES_NAME</property>
+                            </data>
+                        </cell>
+                        <cell id="374"/>
+                        <cell id="375"/>
+                        <cell id="376"/>
+                        <cell id="377"/>
+                    </row>
+                </header>
+                <footer>
+                    <row id="378">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <cell id="380">
+                            <label id="409">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <text-property name="text">合计</text-property>
+                            </label>
+                        </cell>
+                        <cell id="381">
+                            <data id="411">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="resultSetColumn">Aggregation</property>
+                            </data>
+                        </cell>
+                        <cell id="382">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">1px</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">1px</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="414">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="resultSetColumn">Aggregation_1</property>
+                            </data>
+                        </cell>
+                        <cell id="383">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">1px</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">1px</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="412">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="resultSetColumn">MASTER_UNIT</property>
+                            </data>
+                        </cell>
+                        <cell id="384">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">1px</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">1px</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="415">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="resultSetColumn">Aggregation_2</property>
+                            </data>
+                        </cell>
+                        <cell id="385">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">1px</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">1px</property>
+                            <property name="borderTopStyle">none</property>
+                            <data id="413">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="resultSetColumn">AUX_UNIT</property>
+                            </data>
+                        </cell>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="339">
+                    <cell id="342">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">1px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">1px</property>
+                    </cell>
+                    <cell id="344">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">1px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">1px</property>
+                        <data id="345">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">STORE_RES_NAME</property>
+                        </data>
+                    </cell>
+                    <cell id="346">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">1px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">1px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">1px</property>
+                        <data id="347">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">MASTER_COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="348">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">1px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">1px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">1px</property>
+                        <data id="349">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">MASTER_UNIT</property>
+                        </data>
+                    </cell>
+                    <cell id="350">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">1px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">1px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">1px</property>
+                        <data id="351">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">AUX_COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="352">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">1px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">1px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">1px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">1px</property>
+                        <data id="353">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">AUX_UNIT</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="354">
+                    <cell id="356">
+                        <label id="410">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">总计</text-property>
+                        </label>
+                    </cell>
+                    <cell id="357">
+                        <data id="416">
+                            <property name="resultSetColumn">Aggregation_3</property>
+                        </data>
+                    </cell>
+                    <cell id="358"/>
+                    <cell id="359"/>
+                    <cell id="360"/>
+                    <cell id="361"/>
                 </row>
             </footer>
         </table>

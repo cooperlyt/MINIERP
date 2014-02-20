@@ -30,7 +30,7 @@
                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                             datePattern="#{messages.datePattern}"
                             label="#{messages.order_search_BETWEEN_createDate}"
-                            value="#{orderList.createDateFrom}">
+                            value="#{customerShipTotal.shipDateFrom}">
                     </rich:calendar>
 
                     --
@@ -42,7 +42,7 @@
                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                             datePattern="#{messages.datePattern}"
                             label="#{messages.order_search_BETWEEN_createDate}"
-                            value="#{orderList.createDateTo}">
+                            value="#{customerShipTotal.shipDateTo}">
                     </rich:calendar>
                 </s:decorate>
 
@@ -59,12 +59,16 @@
 
                             </s:button>
 
-                            <a:outputPanel id="searchButton">
+                            <a:outputPanel id="searchButton" ajaxRendered="true">
                                 <a:commandButton value="#{messages.total}"
-                                                 execute="@form" render="">
+                                                 execute="@form" render="resultReport,resultReportb">
                                     <a:attachQueue requestDelay="0"/>
+                                    <s:conversationId/>
                                 </a:commandButton>
                             </a:outputPanel>
+
+
+                            <s:button value="test" view="/report/SaleCustomerShip.xhtml"/>
                         </div>
                     </a:outputPanel>
                 </h:panelGrid>
@@ -73,10 +77,14 @@
         </h:form>
 
         <br/>
-        <b:birt designType="embed" designName="report/SaleCustomerShip.rptdesign"
-                embeddable="true" masterpage="false"/>
+        <rich:panel id="resultReport">
 
-        <div style="clear:both"/>
+
+
+        <b:birt id="resultReportb" designType="embed" designName="report/SaleCustomerShip.rptdesign"
+                embeddable="true" masterpage="false" />
+        </rich:panel>
+
 
 
     </ui:define>

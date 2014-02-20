@@ -9,6 +9,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
@@ -69,6 +70,7 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
     }
 
     public boolean isAllStoreRes() {
+        Logging.getLog(this.getClass()).debug("isAllStoreRes:" + (resHome == null) + !resHome.isIdDefined());
         return (resHome == null) || !resHome.isIdDefined();
     }
 
@@ -96,7 +98,7 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
                     }
 
                 }
-                if (add){
+                if (add) {
                     filterResult.add(storeRes);
                 }
             }
