@@ -31,6 +31,7 @@ public class ResUnit implements java.io.Serializable,OrderModel {
     private Set<OrderItem> orderItemsByMiddleUnit = new HashSet<OrderItem>(0);
     private Set<OrderItem> orderItemsByMoneyUnit = new HashSet<OrderItem>(0);
     private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
+    private Set<BackItem> backItems = new HashSet<BackItem>(0);
 
 	public ResUnit() {
         this.conversionRate = new BigDecimal(0);
@@ -167,6 +168,15 @@ public class ResUnit implements java.io.Serializable,OrderModel {
 
     public void setDispatchItems(Set<DispatchItem> dispatchItems) {
         this.dispatchItems = dispatchItems;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resUnit")
+    public Set<BackItem> getBackItems() {
+        return backItems;
+    }
+
+    public void setBackItems(Set<BackItem> backItems) {
+        this.backItems = backItems;
     }
 
     @Transient

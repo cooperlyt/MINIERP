@@ -34,6 +34,13 @@ public class OrderBack implements java.io.Serializable {
     private boolean resComplete;
     private String applyEmp;
 
+    private boolean needBackMoney;
+    private boolean needBackRes;
+
+    private BigDecimal saveMoney;
+
+    private Set<BackItem> backItems = new HashSet<BackItem>(0);
+
 
 
 	private Set<ProductBackStoreIn> productBackStoreIn = new HashSet<ProductBackStoreIn>(0);
@@ -185,5 +192,41 @@ public class OrderBack implements java.io.Serializable {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "orderBack",orphanRemoval = true)
+    public Set<BackItem> getBackItems() {
+        return backItems;
+    }
+
+    public void setBackItems(Set<BackItem> backItems) {
+        this.backItems = backItems;
+    }
+
+    @Column(name="NEED_BACK_MONEY",nullable = false)
+    public boolean isNeedBackMoney() {
+        return needBackMoney;
+    }
+
+    public void setNeedBackMoney(boolean needBackMoney) {
+        this.needBackMoney = needBackMoney;
+    }
+
+    @Column(name="NEED_BACK_RES",nullable = false)
+    public boolean isNeedBackRes() {
+        return needBackRes;
+    }
+
+    public void setNeedBackRes(boolean needBackRes) {
+        this.needBackRes = needBackRes;
+    }
+
+    @Column(name = "SAVE_MONEY",nullable = false)
+    public BigDecimal getSaveMoney() {
+        return saveMoney;
+    }
+
+    public void setSaveMoney(BigDecimal saveMoney) {
+        this.saveMoney = saveMoney;
     }
 }

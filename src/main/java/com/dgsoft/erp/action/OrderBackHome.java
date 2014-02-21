@@ -49,6 +49,9 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
     public void init() {
         startData.generateKey();
         businessDefineHome.setId("erp.business.orderCancel");
+        if (orderHome.getInstance().isAllStoreOut()){
+            getInstance().setOrderBackType(OrderBack.OrderBackType.PART_ORDER_BACK);
+        }
     }
 
     public boolean needStoreIn(String storeId) {
