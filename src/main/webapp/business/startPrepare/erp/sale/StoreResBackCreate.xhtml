@@ -1,0 +1,197 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+    <ui:param name="functionTitle" value="#{messages.BackStoreRes}"/>
+
+
+    <ui:define name="func-body">
+
+        <ui:include src="/layout/erp/ResSelectTree.xhtml">
+            <ui:param name="render" value="orderItemDetails"/>
+            <ui:param name="treeValue" value="#{saleResTree}"/>
+        </ui:include>
+
+        <ui:include src="/layout/erp/StoreResSelectTree.xhtml">
+            <ui:param name="render" value="orderItemDetails"/>
+            <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+        </ui:include>
+
+        <h:form>
+
+            <rich:toolbar>
+
+                <rich:toolbarGroup>
+                    <a:region>
+                        <h:panelGrid id="resSearchForm" columns="4">
+
+                            <h:inputText styleClass="barOrderNumber"
+                                         label="#{messages.res_field_code}"
+                                         id="resItemCode" value="#{resLocate.code}"
+                                         required="true">
+                                <rich:placeholder value="#{messages.res_field_code}"/>
+                            </h:inputText>
+
+
+                            <a:commandButton value="#{messages.search}" execute="@region"
+                                             render="resSearchForm,orderItemDetails,orderItemActionMessages"
+                                             action="#{resLocate.locateByCode('SELL_OUT')}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+
+                            <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                             title="#{messages.resSelect}"
+                                             onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+
+                            <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                             title="#{messages.storeResSelect}"
+                                             onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </h:panelGrid>
+
+                    </a:region>
+
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup location="right">
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{(empty from) ? '/func/erp/sale/CancelOrderAndBackRes.xhtml' : from}"/>
+
+                    <h:commandButton styleClass="toolBarBtn" id="backButton"
+                                     value="#{messages.BackStoreRes}"
+                                     action="#{storeResBackCreate.createBack}"/>
+                </rich:toolbarGroup>
+
+            </rich:toolbar>
+
+
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
+
+            <a:region>
+            <rich:panel rendered="#{resHome.idDefined}">
+
+                <h:panelGrid columns="4">
+                    <h:outputText value="#{resHome.resTitle}" />
+                </h:panelGrid>
+
+
+                <a:outputPanel >
+                    <a:outputPanel id="itemFormats">
+                        <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+                            <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
+                                <ui:define name="label">#{_format.formatDefine.name}</ui:define>
+                                <ui:include src="/layout/erp/ResFormatVarInput.xhtml">
+                                    <ui:param name="format" value="#{_format}"/>
+                                    <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
+
+                                </ui:include>
+                            </s:decorate>
+                        </a:repeat>
+                    </a:outputPanel>
+
+
+                    <ui:include src="/layout/erp/ResCountInput.xhtml">
+                        <ui:param name="resCountBean" value="#{orderCreate.editingItem.storeResCountInupt}"/>
+                        <ui:param name="countChangeRender" value="priceFields"/>
+                    </ui:include>
+
+                </a:outputPanel>
+
+
+                <div style="clear:both"/>
+                <a:outputPanel id="priceFields">
+
+                    <div>
+                        <s:label styleClass="name">
+                            #{messages.orderItemPrice}
+                            <s:span styleClass="required">*</s:span>
+                        </s:label>
+
+
+                        <s:span styleClass="value">
+                            #{messages.orderItemUnitPrice}
+                            <h:inputText id="unitPriceInput" required="true" size="12" label="#{messages.orderItemUnitPrice}"
+                                         value="#{orderCreate.editingItem.unitPrice}">
+                                <f:validateDoubleRange minimum="0"/>
+                                <rich:validator/>
+                                <f:convertNumber groupingUsed="false" type="currency" locale="#{calendarBean.locale}"
+                                                 currencySymbol=""/>
+                                <a:ajax event="blur" render="priceFields"
+                                        listener="#{orderCreate.editingItem.calcPriceByUnitPrice}">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                            </h:inputText>
+                            <rich:message for="unitPriceInput" styleClass="message-icon"
+                                          showDetail="true" showSummary="true" tooltip="true"/>
+                        </s:span>
+
+
+                        <s:span styleClass="value"
+                                rendered="#{not (orderCreate.editingItem.res.unitGroup.type eq 'FIX_CONVERT')}">
+                            <h:outputText value="#{' / '}"/>
+
+                            <h:selectOneMenu value="#{orderCreate.editingItem.useUnit}" style="width: 80px"
+                                             required="true">
+                                <s:selectItems value="#{orderCreate.editingItem.res.unitGroup.resUnitList}" var="_unit"
+                                               label="#{_unit.name}"/>
+                                <f:converter converterId="erpEntityConverter"/>
+                                <a:ajax event="valueChange" listener="#{orderCreate.editingItem.calcPriceByCount}"
+                                        render="priceFields">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                            </h:selectOneMenu>
+                        </s:span>
+
+
+
+                        <s:span styleClass="value">
+                            totalPrice
+                        </s:span>
+
+
+                    </div>
+                </a:outputPanel>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea value="#{orderCreate.editingItem.memo}" cols="65"/>
+                </s:decorate>
+
+                <s:span styleClass="value">
+                    <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                                     action="#{resHome.clearInstance}" render="orderItemDetails">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </s:span>
+                <s:span styleClass="value">
+                    <a:commandButton value="#{messages.addItem}" execute="@form"
+                                     action="#{orderCreate.addOrderItem}"
+                                     render="orderItemListTable,orderItemDetails, orderTotalPrice">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </s:span>
+
+                <div style="clear:both"/>
+            </rich:panel>
+
+            </a:region>
+        </h:form>
+
+
+
+
+
+
+    </ui:define>
+</ui:composition>

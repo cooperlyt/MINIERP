@@ -60,15 +60,14 @@
                             </s:button>
 
                             <a:outputPanel id="searchButton" ajaxRendered="true">
-                                <a:commandButton value="#{messages.total}"
-                                                 execute="@form" render="resultReport,resultReportb">
-                                    <a:attachQueue requestDelay="0"/>
-                                    <s:conversationId/>
-                                </a:commandButton>
+
+
+
+                            <h:commandLink target="_blank" value="#{messages.total}" action="#{customerShipTotal.showReport}">
+                                <s:conversationId/>
+                            </h:commandLink>
                             </a:outputPanel>
 
-
-                            <s:button value="test" view="/report/SaleCustomerShip.xhtml"/>
                         </div>
                     </a:outputPanel>
                 </h:panelGrid>
@@ -77,6 +76,7 @@
         </h:form>
 
         <br/>
+        <!--
         <rich:panel id="resultReport">
 
 
@@ -85,7 +85,7 @@
                 embeddable="true" masterpage="false" />
         </rich:panel>
 
-
+        -->
 
     </ui:define>
 

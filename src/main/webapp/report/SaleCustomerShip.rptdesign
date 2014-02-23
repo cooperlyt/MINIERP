@@ -24,9 +24,41 @@ resHelper = Component.getInstance("resHelper", false);
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="shipDateFrom" id="417">
+            <text-property name="helpText">起始发货日期</text-property>
+            <text-property name="promptText">起始发货日期</text-property>
+            <property name="valueType">static</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="shipDateTo" id="418">
+            <text-property name="helpText">截止发货日期</text-property>
+            <text-property name="promptText">截止发货日期</text-property>
+            <property name="valueType">static</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
     <data-sources>
         <script-data-source name="Data Source" id="9">
-            <method name="open"><![CDATA[
+            <method name="open"><![CDATA[customerShipTotal = Component.getInstance("customerShipTotal", true);
+customerShipTotal.setShipDateFrom(params["shipDateFrom"].value);
+customerShipTotal.setShipDateTo(params["shipDateTo"].value);
+totalDataMap = customerShipTotal.getTotalResultMap();
+dataMap = customerShipTotal.getResultMap();
 
 ]]></method>
         </script-data-source>
@@ -160,7 +192,7 @@ resHelper = Component.getInstance("resHelper", false);
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
-            <method name="open"><![CDATA[dataMap = Component.getInstance("customerShipTotal", false).getResultMap();
+            <method name="open"><![CDATA[
 
 
 cit = dataMap.entrySet().iterator();
@@ -306,7 +338,7 @@ return true;
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
-            <method name="open"><![CDATA[totalDataMap = Component.getInstance("customerShipTotal", false).getTotalResultMap();
+            <method name="open"><![CDATA[
 
 tit = totalDataMap.entrySet().iterator();]]></method>
             <method name="fetch"><![CDATA[if(tit.hasNext()){

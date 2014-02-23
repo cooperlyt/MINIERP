@@ -15,6 +15,7 @@ import org.jboss.seam.security.Credentials;
 import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -31,10 +32,6 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
     @In(create = true)
     private BusinessDefineHome businessDefineHome;
-
-    @In(required = false)
-    private OrderHome orderHome;
-
     @In
     private Credentials credentials;
 
@@ -49,9 +46,6 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
     public void init() {
         startData.generateKey();
         businessDefineHome.setId("erp.business.orderCancel");
-        if (orderHome.getInstance().isAllStoreOut()){
-            getInstance().setOrderBackType(OrderBack.OrderBackType.PART_ORDER_BACK);
-        }
     }
 
     public boolean needStoreIn(String storeId) {
@@ -66,28 +60,28 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         throw new IllegalThreadStateException("business not init;");
     }
 
-    public void backAllMoney(){
-        getInstance().setMoney(orderHome.getTotalReveiveMoney());
+    public boolean isNeedBackMoney() {
+        return getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0;
     }
 
-    public void backNoEarnestMoney(){
-        getInstance().setMoney(orderHome.getTotalReveiveMoney().subtract(orderHome.getReveiveEarnest()));
+    public boolean isNeedBackRes() {
+        return !getInstance().getBackItems().isEmpty();
+    }
+
+    @Override
+    protected OrderBack createInstance() {
+        return new OrderBack(BigDecimal.ZERO);
     }
 
     @Override
     protected boolean wire() {
         if (!isManaged()) {
-            if (!orderHome.isIdDefined()) {
-                throw new IllegalStateException("order not select");
-            }
+
             getInstance().setId(startData.getBusinessKey());
             getInstance().setApplyEmp(credentials.getUsername());
-            getInstance().setCustomerOrder(orderHome.getInstance());
             getInstance().setCreateDate(new Date());
-            getInstance().setMoneyComplete(!orderHome.isAnyOneMoneyPay());
-            getInstance().setResComplete(!orderHome.isAnyOneStoreOut());
-            getInstance().getCustomerOrder().setCanceled(true);
-
+            getInstance().setMoneyComplete(!isNeedBackMoney());
+            getInstance().setResComplete(!isNeedBackRes());
         }
         return true;
     }
@@ -100,30 +94,8 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         if (!"persisted".equals(persist())) {
             throw new ProcessCreatePrepareException("inventory persist fail");
         }
-
-        ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition("order");
-        ProcessInstance processInstance = definition==null ?
-                null : ManagedJbpmContext.instance().getProcessInstanceForUpdate(definition, orderHome.getInstance().getId());
-
-        processInstance.suspend();
-
-        startData.setDescription(orderHome.getInstance().getCustomer().getName() + "[" + orderHome.getInstance().getId()  + "]");
+        startData.setDescription(getInstance().getCustomer().getName());
     }
-
-
-
-
-    @End
-    public String cancelSimpleOrder(){
-
-        businessProcess.stopProcess("order",orderHome.getInstance().getId());
-        if ("persisted".equals(persist())){
-            return "/func/erp/sale/CustomerOrder.xhtml";
-        } else
-            return null;
-    }
-
-
 
 
 }

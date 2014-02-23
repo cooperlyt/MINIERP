@@ -22,8 +22,8 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
     private static final String EJBQL = "select dispatchItem from DispatchItem dispatchItem  where dispatchItem.dispatch.storeOut = true";
 
     private static final String[] RESTRICTIONS = {
-            "dispatchItem.sendTime >= #{customerShipTotal.shipDateFrom}",
-            "dispatchItem.sendTime <= #{customerShipTotal.searchShipDateTo}",
+            "dispatchItem.dispatch.sendTime >= #{customerShipTotal.shipDateFrom}",
+            "dispatchItem.dispatch.sendTime <= #{customerShipTotal.searchShipDateTo}",
             "dispatchItem.storeRes.res.id = #{customerShipTotal.searchResId}",
             "dispatchItem.storeRes.floatConversionRate = #{customerShipTotal.searchFloatConvertRate}",
             "dispatchItem.storeRes in (#{customerShipTotal.filterStoreReses})"};
@@ -151,5 +151,9 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
     public void refresh() {
         super.refresh();
         resultMap = null;
+    }
+
+    public String showReport(){
+        return "/report/SaleCustomerShip.xhtml";
     }
 }

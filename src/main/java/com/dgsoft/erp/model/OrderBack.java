@@ -33,18 +33,10 @@ public class OrderBack implements java.io.Serializable {
     private boolean moneyComplete;
     private boolean resComplete;
     private String applyEmp;
-
-    private boolean needBackMoney;
-    private boolean needBackRes;
-
     private BigDecimal saveMoney;
-
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
-
-
-
+    private Customer customer;
 	private Set<ProductBackStoreIn> productBackStoreIn = new HashSet<ProductBackStoreIn>(0);
-
 	private AccountOper accountOper;
 
 
@@ -52,12 +44,8 @@ public class OrderBack implements java.io.Serializable {
 	public OrderBack() {
 	}
 
-	public OrderBack(String id, CustomerOrder customerOrder, String state,
-			String reason, Date createDate, Date completeDate) {
-		this.id = id;
-		this.customerOrder = customerOrder;
-		this.reason = reason;
-		this.createDate = createDate;
+	public OrderBack(BigDecimal saveMoney) {
+		this.saveMoney = saveMoney;
 	}
 
 	@Id
@@ -93,8 +81,7 @@ public class OrderBack implements java.io.Serializable {
 		this.customerOrder = customerOrder;
 	}
 
-	@Column(name = "REASON", nullable = false, length = 32)
-	@NotNull
+	@Column(name = "REASON", nullable = true, length = 32)
 	@Size(max = 32)
 	public String getReason() {
 		return this.reason;
@@ -125,7 +112,7 @@ public class OrderBack implements java.io.Serializable {
 		this.memo = memo;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack", cascade = {CascadeType.ALL})
 	public Set<ProductBackStoreIn> getProductBackStoreIn() {
 		return this.productBackStoreIn;
 	}
@@ -194,31 +181,13 @@ public class OrderBack implements java.io.Serializable {
         this.money = money;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "orderBack",orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "orderBack",orphanRemoval = true,cascade = {CascadeType.ALL})
     public Set<BackItem> getBackItems() {
         return backItems;
     }
 
     public void setBackItems(Set<BackItem> backItems) {
         this.backItems = backItems;
-    }
-
-    @Column(name="NEED_BACK_MONEY",nullable = false)
-    public boolean isNeedBackMoney() {
-        return needBackMoney;
-    }
-
-    public void setNeedBackMoney(boolean needBackMoney) {
-        this.needBackMoney = needBackMoney;
-    }
-
-    @Column(name="NEED_BACK_RES",nullable = false)
-    public boolean isNeedBackRes() {
-        return needBackRes;
-    }
-
-    public void setNeedBackRes(boolean needBackRes) {
-        this.needBackRes = needBackRes;
     }
 
     @Column(name = "SAVE_MONEY",nullable = false)
@@ -228,5 +197,16 @@ public class OrderBack implements java.io.Serializable {
 
     public void setSaveMoney(BigDecimal saveMoney) {
         this.saveMoney = saveMoney;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER,optional = false)
+    @JoinColumn(name="CUSTOMER",nullable = false)
+    @NotNull
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

@@ -38,6 +38,7 @@ public class Customer extends BatchOperEntity implements java.io.Serializable, N
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<CustomerContact> customerContacts = new HashSet<CustomerContact>(0);
     private Set<CustomerDetailsCheckout> customerDetailsCheckouts = new HashSet<CustomerDetailsCheckout>(0);
+    private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
 
     public Customer() {
         balance = BigDecimal.ZERO;
@@ -242,6 +243,15 @@ public class Customer extends BatchOperEntity implements java.io.Serializable, N
 
     public void setCustomerDetailsCheckouts(Set<CustomerDetailsCheckout> customerDetailsCheckouts) {
         this.customerDetailsCheckouts = customerDetailsCheckouts;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    public Set<OrderBack> getOrderBacks() {
+        return orderBacks;
+    }
+
+    public void setOrderBacks(Set<OrderBack> orderBacks) {
+        this.orderBacks = orderBacks;
     }
 
     @Transient

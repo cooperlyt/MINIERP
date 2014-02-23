@@ -70,7 +70,6 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
     }
 
     public boolean isAllStoreRes() {
-        Logging.getLog(this.getClass()).debug("isAllStoreRes:" + (resHome == null) + !resHome.isIdDefined());
         return (resHome == null) || !resHome.isIdDefined();
     }
 

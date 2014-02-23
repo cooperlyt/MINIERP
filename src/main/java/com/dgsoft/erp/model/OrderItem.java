@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -188,6 +189,11 @@ public class OrderItem implements java.io.Serializable {
     }
 
     private ResCount resCount = null;
+
+    @Transient
+    public OrderHome.StoreResPrice getPrice(){
+        return new OrderHome.StoreResPrice(getStoreRes(),getMoneyUnit(),getMoney(),getCount());
+    }
 
     @Transient
     public ResCount getStoreResCount() {

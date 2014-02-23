@@ -105,12 +105,14 @@ public class StoreResFormatFilter {
 
     @Observer(value = "erp.storeResLocateSelected", create = false)
     public void selectedStoreRes(StoreRes storeRes) {
+        log.debug("storeResFormat selectedStoreRes Observer ");
         selectedStoreRes(storeRes, false);
     }
 
 
     @Observer(value = "erp.resLocateSelected", create = false)
     public void selectedRes(Res res) {
+        log.debug("storeResFormat selectedRes Observer ");
         this.res = res;
         generateFloatConvertRateHistory();
         resFormatList = new ArrayList<Format>();

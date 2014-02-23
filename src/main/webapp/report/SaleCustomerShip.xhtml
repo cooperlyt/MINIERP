@@ -1,7 +1,9 @@
 <p:birt
         xmlns:p="http://jboss.com/products/seam/birt"
         designType="frameset"
+        locale="zh-CN"
         designName="report/SaleCustomerShip.rptdesign"
         showtitle="false">
-
+    <p:param name="shipDateFrom" value="#{shipDateFrom}" rendererType="" locale="zh-CN"/>
+    <p:param name="shipDateTo" value="#{shipDateTo}" locale="zh-CN"/>
 </p:birt>

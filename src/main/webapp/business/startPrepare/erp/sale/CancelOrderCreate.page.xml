@@ -4,7 +4,7 @@
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
 
-    <action execute="#{orderBackHome.init}" on-postback="false"/>
+    <action execute="#{cancelOrderCreate.init}" on-postback="false"/>
 
     <param name="orderId" value="#{orderHome.id}"/>
 

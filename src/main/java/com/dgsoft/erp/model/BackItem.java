@@ -27,6 +27,25 @@ public class BackItem {
     private ResUnit resUnit;
     private OrderBack orderBack;
 
+    public BackItem() {
+    }
+
+    public BackItem(OrderBack orderBack, StoreRes storeRes, ResUnit resUnit, BigDecimal count,
+                    BigDecimal money) {
+        this.count = count;
+        this.money = money;
+        this.storeRes = storeRes;
+        this.resUnit = resUnit;
+        this.orderBack = orderBack;
+    }
+
+    public BackItem(OrderBack orderBack,StoreRes storeRes, ResCount resCount) {
+        this.orderBack = orderBack;
+        this.storeRes = storeRes;
+        this.count = resCount.getMasterCount();
+        this.resUnit = storeRes.getRes().getUnitGroup().getMasterUnit();
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
@@ -51,8 +70,7 @@ public class BackItem {
         this.count = count;
     }
 
-    @Column(name="MONEY", nullable = false, scale = 3)
-    @NotNull
+    @Column(name = "MONEY", nullable = true, scale = 3)
     public BigDecimal getMoney() {
         return money;
     }
@@ -61,7 +79,7 @@ public class BackItem {
         this.money = money;
     }
 
-    @Column(name = "MEMO",length = 200)
+    @Column(name = "MEMO", length = 200)
     @Size(max = 200)
     public String getMemo() {
         return memo;
@@ -71,8 +89,8 @@ public class BackItem {
         this.memo = memo;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER,optional = false)
-    @JoinColumn(name="STORE_RES",nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "STORE_RES", nullable = false)
     @NotNull
     public StoreRes getStoreRes() {
         return storeRes;
@@ -83,8 +101,8 @@ public class BackItem {
     }
 
 
-    @ManyToOne(fetch = FetchType.EAGER,optional = false)
-    @JoinColumn(name="MONEY_UNIT",nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "MONEY_UNIT", nullable = false)
     @NotNull
     public ResUnit getResUnit() {
         return resUnit;
@@ -94,8 +112,8 @@ public class BackItem {
         this.resUnit = resUnit;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "BACK_ORDER",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "BACK_ORDER", nullable = false)
     @NotNull
     public OrderBack getOrderBack() {
         return orderBack;
@@ -106,7 +124,15 @@ public class BackItem {
     }
 
     @Transient
-    public ResCount getResCount(){
-        return getStoreRes().getResCount(getCount(),getResUnit());
+    public ResCount getResCount() {
+        return getStoreRes().getResCount(getCount(), getResUnit());
+    }
+
+    @Transient
+    public BigDecimal getTotalMoney(){
+        if ((getMoney() == null) || (getCount() == null)){
+            return BigDecimal.ZERO;
+        }
+        return getMoney().multiply(getCount());
     }
 }

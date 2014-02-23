@@ -453,7 +453,7 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
 
         for (NeedRes nr : getNeedReses()) {
             for (Dispatch dispatch : nr.getDispatches()) {
-                if (dispatch.getStockChange() != null)
+                if (dispatch.isStoreOut() && (dispatch.getStockChange() != null))
                     for (StockChangeItem sci : dispatch.getStockChange().getStockChangeItems()) {
                         ResCount count = result.get(sci.getStoreRes());
                         if (count == null) {

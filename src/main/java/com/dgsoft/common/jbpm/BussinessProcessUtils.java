@@ -28,38 +28,38 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @Scope(ScopeType.CONVERSATION)
 @Name("org.jboss.seam.bpm.businessProcess")
 @BypassInterceptors
-@Install(dependencies="org.jboss.seam.bpm.jbpm", precedence=APPLICATION)
-public class BussinessProcessUtils extends BusinessProcess{
+@Install(dependencies = "org.jboss.seam.bpm.jbpm", precedence = APPLICATION)
+public class BussinessProcessUtils extends BusinessProcess {
 
     @Override
-    public void createProcess(String processDefinitionName, String businessKey){
-        super.createProcess(processDefinitionName,businessKey);
+    public void createProcess(String processDefinitionName, String businessKey) {
+        super.createProcess(processDefinitionName, businessKey);
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.createProcess");
     }
 
     @Override
-    public void createProcess(String processDefinitionName, boolean shouldSignalProcess){
-        super.createProcess(processDefinitionName,shouldSignalProcess);
+    public void createProcess(String processDefinitionName, boolean shouldSignalProcess) {
+        super.createProcess(processDefinitionName, shouldSignalProcess);
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.createProcess");
     }
 
 
     @Override
-    public void endTask(String transitionName){
+    public void endTask(String transitionName) {
         super.endTask(transitionName);
         ManagedJbpmContext.instance().getSession().flush();
         Logging.getLog(getClass()).debug("call endTask:" + transitionName);
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.endTask");
     }
 
-    public void stopProcess(String processDefinitionName, String businessKey){
+    public void stopProcess(String processDefinitionName, String businessKey) {
         ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition(processDefinitionName);
-        ProcessInstance processInstance = definition==null ?
+        ProcessInstance processInstance = definition == null ?
                 null : ManagedJbpmContext.instance().getProcessInstanceForUpdate(definition, businessKey);
 
 
         Collection listTasks = processInstance.getTaskMgmtInstance().getTaskInstances();
-        if (listTasks.size()>0) {
+        if (listTasks.size() > 0) {
             for (Iterator iter = listTasks.iterator(); iter.hasNext(); ) {
                 TaskInstance ti = (TaskInstance) iter.next();
                 if (!ti.hasEnded() && !ti.isSuspended()) {
@@ -82,9 +82,33 @@ public class BussinessProcessUtils extends BusinessProcess{
             Logging.getLog(getClass()).debug("process instance " + processInstance.getId() + " has ended");
         }
 
-        Events.instance().raiseEvent("org.jboss.seam.stopProcess",processInstance);
+        Events.instance().raiseEvent("org.jboss.seam.stopProcess", processInstance);
 
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processStoped");
+    }
+
+
+    public void suspendProcess(String processDefinitionName, String businessKey) {
+
+        ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition(processDefinitionName);
+        ProcessInstance processInstance = definition == null ?
+                null : ManagedJbpmContext.instance().getProcessInstanceForUpdate(definition, businessKey);
+
+        processInstance.suspend();
+
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processSuspended");
+    }
+
+    @Override
+    public boolean resumeProcess(String processDefinition, String key) {
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processResumed");
+        return super.resumeProcess(processDefinition, key);
+    }
+
+    @Override
+    public boolean resumeProcess(Long processId) {
+        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processResumed");
+        return super.resumeProcess(processId);
     }
 
 }

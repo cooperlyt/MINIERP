@@ -8,106 +8,249 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-    <ui:param name="functionTitle" value="#{messages.CancelOrder}"/>
+<ui:param name="functionTitle" value="#{messages.CancelOrder}"/>
 
-    <ui:define name="func-body">
-        <h:form>
-            <rich:toolbar>
+<ui:define name="func-body">
+<h:form>
+<rich:toolbar>
 
-                <rich:toolbarGroup>
-                    <h:outputText value="#{messages.OrderReveiveMoney}"/>
-                    <h:outputText value="#{orderHome.totalReveiveMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    <rich:toolbarGroup>
+        <h:outputText value="#{messages.OrderReveiveMoney}"/>
+        <h:outputText value="#{orderHome.totalReveiveMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+
+    </rich:toolbarGroup>
+
+    <rich:toolbarGroup>
+
+        <h:outputText value="#{messages.order_field_earnest}"/>
+        <h:outputText value="#{orderHome.reveiveEarnest}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </rich:toolbarGroup>
+
+    <rich:toolbarGroup location="right">
+        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                  view="/func/erp/sale/CustomerOrder.xhtml"/>
+
+        <h:commandButton styleClass="toolBarBtn" id="backButton"
+                         value="#{(orderBackHome.instance.orderBackType eq 'PART_ORDER_BACK')? messages.BackStoreRes : messages.CancelOrder}"
+                         action="#{cancelOrderCreate.cancelOrder}"/>
+    </rich:toolbarGroup>
+</rich:toolbar>
+
+<br/>
+<rich:messages ajaxRendered="true" globalOnly="true"/>
+<br/>
+
+<rich:panel>
+
+    <s:decorate template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.OrderBack_field_BackType}</ui:define>
+        <h:selectOneMenu value="#{orderBackHome.instance.orderBackType}"
+                         disabled="#{not (orderHome.anyOneStoreOut and (not orderHome.instance.allStoreOut))}"
+                         label="#{orderBackHome.instance.orderBackType}" required="true">
+            <s:selectItems value="#{orderBackTypes}" var="_type" label="#{messages[_type.name()]}"/>
+            <s:convertEnum/>
+            <a:ajax event="valueChange" listener="#{cancelOrderCreate.calcBackMoney}" render="reasonField,backButton"/>
+        </h:selectOneMenu>
+    </s:decorate>
+
+    <s:decorate id="reasonField" template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.OrderBack_field_reason}</ui:define>
+        <h:selectOneMenu value="#{orderBackHome.instance.reason}"
+                         label="#{messages.OrderBack_field_reason}" required="true">
+            <s:selectItems var="_word" label="#{_word.value}"
+                           itemValue="#{_word.id}"
+                           value="#{(orderBackHome.instance.orderBackType eq 'ALL_ORDER_CANCEL') ? dictionary.getWordList('erp.orderBackReason') : dictionary.getWordList('erp.orderResBackReason')}"
+                           noSelectionLabel="#{messages.noSelectLabel}"/>
+        </h:selectOneMenu>
+    </s:decorate>
+
+    <a:outputPanel ajaxRendered="true">
+        <div style="clear: both"/>
+        <a:region>
+            <br/>
+            <rich:dataTable rendered="#{orderBackHome.instance.orderBackType eq 'PART_ORDER_BACK'}"
+                            id="backResEditTable" style="width: 100%" value="#{backOrderItems}" var="_item"
+                            noDataLabel="#{messages.orderNoAnyOneShip}">
+                <f:facet name="header">
+                    <rich:columnGroup>
+                        <rich:column rowspan="2">
+                            <h:selectBooleanCheckbox value="#{cancelOrderCreate.selectAll}">
+                                <a:ajax event="click" listener="#{cancelOrderCreate.selectAllListener}"/>
+                            </h:selectBooleanCheckbox>
+                        </rich:column>
+                        <rich:column rowspan="2">
+                            #{messages.StoreRes}
+                        </rich:column>
+
+                        <rich:column colspan="2">
+                            #{messages.storeOutCount}
+                        </rich:column>
+
+                        <rich:column colspan="4">
+                            #{messages.OrderBackRes}
+                        </rich:column>
+
+                        <rich:column rowspan="2">
+                            #{messages.field_memo}
+                        </rich:column>
+
+                        <rich:column breakRowBefore="true">
+                            #{messages.MasterUnitCount}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.AuxUnitCount}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.Res_Unit}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.count}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.orderItemUnitPrice}
+
+                        </rich:column>
+                        <rich:column>
+                            #{messages.orderItemTotalPrice}
+                        </rich:column>
+
+
+                    </rich:columnGroup>
+                </f:facet>
+
+                <rich:column>
+                    <h:selectBooleanCheckbox value="#{_item.selected}">
+                        <a:ajax event="click" listener="#{cancelOrderCreate.selectItemListener}"/>
+                    </h:selectBooleanCheckbox>
+                </rich:column>
+
+                <rich:column>
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item.backItem.storeRes}"/>
+                    </ui:include>
+                </rich:column>
+                <rich:column>
+                    #{_item.outCount.masterDisplayCount}
+                </rich:column>
+                <rich:column>
+                    #{_item.outCount.displayAuxCount}
+                </rich:column>
+                <rich:column>
+
+                    <rich:inplaceSelect rendered="#{_item.selected}" style="width: 90%"
+                                        value="#{_item.backItem.resUnit}" required="true">
+                        <s:selectItems value="#{_item.backItem.resUnit.unitGroup.resUnitList}" var="_unit"
+                                       label="#{_unit.name}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                    </rich:inplaceSelect>
+                </rich:column>
+                <rich:column>
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:inplaceInput label="#{messages.count}" rendered="#{_item.selected}" style="width: 90%"
+                                           value="#{_item.backItem.count}" required="true"
+                                           converter="javax.faces.BigDecimal">
+                            <f:validateDoubleRange minimum="0" maximum="#{_item.maxOutCount}"/>
+                            <a:ajax event="blur" listener="#{cancelOrderCreate.calcBackMoney}" render="backResEditTable"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                </rich:column>
+                <rich:column style="text-align: right">
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:inplaceInput label="#{messages.orderItemUnitPrice}" rendered="#{_item.selected}"
+                                           style="width: 90%"
+                                           value="#{_item.backItem.money}"
+                                           required="true">
+                            <f:validateDoubleRange minimum="0"/>
+                            <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                             type="currency" groupingUsed="false"/>
+                            <a:ajax event="blur" listener="#{cancelOrderCreate.calcBackMoney}" render="backResEditTable"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                </rich:column>
+
+                <rich:column style="text-align: right">
+                    <h:outputText value="#{_item.backItem.totalMoney}" rendered="#{_item.selected}">
+                        <f:convertNumber locale="#{calendarBean.locale}" type="currency"/>
                     </h:outputText>
 
-                </rich:toolbarGroup>
+                    <f:facet name="footer">
+                        <h:outputText value="#{cancelOrderCreate.resTotalMoney}">
+                            <f:convertNumber locale="#{calendarBean.locale}" type="currency"/>
+                        </h:outputText>
 
-                <rich:toolbarGroup>
+                    </f:facet>
+                </rich:column>
 
-                    <h:outputText value="#{messages.order_field_earnest}"/>
-                    <h:outputText value="#{orderHome.reveiveEarnest}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </rich:toolbarGroup>
+                <rich:column>
+                    <rich:inplaceInput rendered="#{_item.selected}" style="width: 90%" value="#{_item.backItem.memo}"/>
+                </rich:column>
+            </rich:dataTable>
+        </a:region>
 
-                <rich:toolbarGroup location="right">
-                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                              view="/func/erp/sale/CustomerOrder.xhtml"/>
-
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.CancelOrder}" action="#{cancelOrderCreate.cancelOrder}" />
-                </rich:toolbarGroup>
-            </rich:toolbar>
-
-            <br/>
-            <rich:messages ajaxRendered="true" globalOnly="true"/>
-            <br/>
-
-            <rich:panel>
-
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.OrderBack_field_BackType}</ui:define>
-                    <h:selectOneMenu value="#{orderBackHome.instance.orderBackType}"
-                                     disabled="#{orderHome.instance.allStoreOut}"
-                                     label="#{orderBackHome.instance.orderBackType}" required="true">
-                        <s:selectItems value="#{orderBackTypes}" var="_type" label="#{messages[_type.name()]}"
-                                       noSelectionLabel="#{messages.noSelectLabel}"/>
-                        <s:convertEnum/>
-                    </h:selectOneMenu>
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.OrderBack_field_reason}</ui:define>
-                    <h:selectOneMenu value="#{orderBackHome.instance.reason}"
-                                     label="#{messages.OrderBack_field_reason}" required="true">
-                        <s:selectItems var="_word" label="#{_word.value}"
-                                       itemValue="#{_word.id}"
-                                       value="#{dictionary.getWordList('erp.orderBackReason')}"
-                                       noSelectionLabel="#{messages.noSelectLabel}"/>
-                    </h:selectOneMenu>
-                </s:decorate>
-
-                <s:decorate id="backMoneyField" template="/layout/seam-edit.xhtml" rendered="#{orderHome.anyOneMoneyPay}">
-                    <ui:define name="label">#{messages.OrderBackMoney}</ui:define>
-                    <h:inputText label="#{messages.OrderBackMoney}" value="#{orderBackHome.instance.money}"
-                                 required="true"
-                                 converter="javax.faces.Number">
-                        <f:validateDoubleRange minimum="0"/>
-                    </h:inputText>
-
-                    <ui:define name="tail">
-                        <a:commandButton value="#{messages.backAllMoney}"
-                                         action="#{orderBackHome.backAllMoney}"
-                                         execute="@this" immediate="true" render="backMoneyField">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
-
-                        <a:commandButton value="#{messages.backPartMoney}" execute="@this"
-                                         action="#{orderBackHome.backNoEarnestMoney}" immediate="true"
-                                         render="backMoneyField">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
+        <s:decorate
+                    id="backMoneyField" template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.OrderBack_field_SaveMoney}</ui:define>
 
 
-                    </ui:define>
-                </s:decorate>
+            <h:inputText label="#{messages.OrderBack_field_SaveMoney}" rendered="true"
+                         value="#{orderBackHome.instance.saveMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+                <f:validateDoubleRange maximum="#{cancelOrderCreate.maxSaveMoney}"/>
+                <a:ajax event="blur" execute="@this" listener="#{cancelOrderCreate.calcBackMoney}"/>
+            </h:inputText>
 
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.field_memo}</ui:define>
-                    <h:inputTextarea label="#{messages.field_memo}" value="#{orderBackHome.instance.memo}" cols="20"
-                                     rows="2"/>
-                </s:decorate>
 
-                <div style="clear:both">
-                    <span class="required">*</span>
-                    #{messages.requiredFields}
-                </div>
-            </rich:panel>
-        </h:form>
-            <br/>
-        <h:form>
-            <rich:collapsiblePanel switchType="client" header="#{messages.order_info} - #{orderHome.instance.id}">
-                <ui:include src="/layout/erp/OrderInfo.xhtml"/>
-            </rich:collapsiblePanel>
-        </h:form>
-    </ui:define>
+            <ui:define name="tail">
+
+
+                <a:commandButton value="#{messages.backAllMoney}"
+                                 rendered="#{orderBackHome.instance.orderBackType eq 'ALL_ORDER_CANCEL'}"
+                                 action="#{cancelOrderCreate.backAllMoney}"
+                                 execute="@this" immediate="true" render="backMoneyField">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+                <a:commandButton value="#{messages.backPartMoney}" execute="@this"
+                                 rendered="#{(orderBackHome.instance.orderBackType eq 'ALL_ORDER_CANCEL') and orderHome.instance.earnestFirst}"
+                                 action="#{cancelOrderCreate.backNoEarnestMoney}" immediate="true"
+                                 render="backMoneyField">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+
+                #{messages.OrderBackMoney}:
+
+                <h:outputText value="#{orderBackHome.instance.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+            </ui:define>
+        </s:decorate>
+    </a:outputPanel>
+
+    <br/>
+    <s:decorate template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.field_memo}</ui:define>
+        <h:inputTextarea label="#{messages.field_memo}" value="#{orderBackHome.instance.memo}" cols="100"
+                         rows="2"/>
+    </s:decorate>
+
+    <div style="clear:both">
+        <span class="required">*</span>
+        #{messages.requiredFields}
+    </div>
+</rich:panel>
+</h:form>
+<br/>
+<h:form>
+    <rich:collapsiblePanel switchType="client" header="#{messages.order_info} - #{orderHome.instance.id}">
+        <ui:include src="/layout/erp/OrderInfo.xhtml"/>
+    </rich:collapsiblePanel>
+</h:form>
+</ui:define>
 </ui:composition>

@@ -24,4 +24,13 @@
         <action execute="#{bpmTaskChangePublish.onBusinessTaskChange}"/>
     </event>
 
+    <event type="org.jboss.seam.processSuspended">
+        <action execute="#{bpmTaskChangePublish.onBusinessTaskChange}"/>
+    </event>
+
+
+    <event type="org.jboss.seam.processResumed">
+        <action execute="#{bpmTaskChangePublish.onBusinessTaskChange}"/>
+    </event>
+
 </components>
