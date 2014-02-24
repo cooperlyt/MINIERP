@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "BACK_ITEM", catalog = "MINI_ERP")
-public class BackItem {
+public class BackItem extends StoreResPriceEntity implements java.io.Serializable{
 
     private String id;
     private BigDecimal count;
