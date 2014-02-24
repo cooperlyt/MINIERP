@@ -24,6 +24,7 @@ import java.util.*;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
+    @Deprecated
     public static class StoreResPrice {
         private StoreRes storeRes;
         private ResUnit unit;

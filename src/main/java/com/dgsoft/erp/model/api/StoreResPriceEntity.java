@@ -3,8 +3,10 @@ package com.dgsoft.erp.model.api;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.*;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -15,8 +17,47 @@ import java.util.Map;
  */
 public abstract class StoreResPriceEntity extends StoreResCountEntity {
 
+    protected static final int MONEY_MAX_SCALE = 10;
+
+
+    protected StoreResPriceEntity() {
+    }
+
+    protected StoreResPriceEntity(StoreRes storeRes) {
+        super(storeRes);
+    }
+
+    protected StoreResPriceEntity(Res res, Map<String, List<Object>> formatHistory, ResUnit defaultUnit) {
+        super(res, formatHistory, defaultUnit);
+    }
+
+    protected StoreResPriceEntity(Res res, Map<String, List<Object>> formatHistory) {
+        super(res, formatHistory);
+    }
+
+    protected StoreResPriceEntity(Res res, Map<String, List<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
+        super(res, formatHistory, floatConvertRateHistory);
+    }
+
+    protected StoreResPriceEntity(Res res, Map<String, List<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
+        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    }
+
+    public abstract BigDecimal getMoney();
+
+    public abstract void setMoney(BigDecimal money);
+
+    public abstract ResUnit getResUnit();
+
+    public abstract void setResUnit(ResUnit resUnit);
+
+    public abstract BigDecimal getCount();
+
+    public abstract void setCount(BigDecimal count);
+
 
     @Override
+    @Transient
     public BigDecimal getMasterCount() {
 
         if (getResUnit().isMasterUnit()) {
@@ -36,6 +77,7 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
     }
 
     @Override
+    @Transient
     public void setMasterCount(BigDecimal count) {
         if (getResUnit().isMasterUnit()) {
             setCount(count);
@@ -54,47 +96,26 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
         }
     }
 
-    public abstract BigDecimal getMoney();
-
-    public abstract void setMoney(BigDecimal money);
-
-    public abstract ResUnit getResUnit();
-
-    public abstract void setResUnit(ResUnit resUnit);
-
-    public abstract BigDecimal getCount();
-
-    public abstract void setCount(BigDecimal count);
-
-    public StoreResPriceEntity(Res res, Map<FormatDefine, List<Format>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
-        super(res, formatHistory, floatConvertRateHistory);
-        setResUnit(getRes().getResUnitByMasterUnit());
+    @Override
+    @Transient
+    public ResUnit getUseUnit() {
+        return getResUnit();
     }
 
-    public StoreResPriceEntity(Res res,
-                               Map<FormatDefine, List<Format>> formatHistory,
-                               List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory);
-        setResUnit(defaultUnit);
+    @Override
+    @Transient
+    public void setUseUnit(ResUnit useUnit) {
+        setResUnit(useUnit);
     }
 
-    public StoreResPriceEntity(StoreRes storeRes) {
-        super(storeRes);
+    @Transient
+    public BigDecimal getTotalPrice(){
+       return getCount().multiply(getMoney());
     }
 
-    public StoreResPriceEntity(Res res, Map<FormatDefine, List<Format>> formatHistory) {
-        super(res, formatHistory);
-        setResUnit(getRes().getResUnitByMasterUnit());
-    }
-
-    public StoreResPriceEntity(Res res,
-                               Map<FormatDefine, List<Format>> formatHistory, ResUnit defaultUnit) {
-        super(res, formatHistory);
-        setResUnit(defaultUnit);
-    }
-
-    public StoreResPriceEntity() {
-
+    @Transient
+    public void setTotalPrice(BigDecimal price){
+       setMoney(BigDecimalFormat.halfUpCurrency(price.divide(getCount(), MONEY_MAX_SCALE, BigDecimal.ROUND_HALF_UP)));
     }
 
 }

@@ -1,0 +1,80 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="StoreResCountInput.xhtml">
+
+    <!--param inputValue formatTemplate countLableStyleClass ,priceChangeRender,disabledFloatRate, -->
+
+    <ui:param name="countChangeRender" value="itemTotalPriceInput"/>
+
+    <div style="clear:both"/>
+    <a:outputPanel>
+
+        <div>
+            <s:label styleClass="name">
+                #{messages.orderItemPrice}
+                <s:span styleClass="required">*</s:span>
+            </s:label>
+
+
+            <s:span styleClass="value">
+                #{messages.orderItemUnitPrice}
+                <h:inputText id="unitPriceInput" required="true" size="12" label="#{messages.orderItemUnitPrice}"
+                             value="#{inputValue.money}">
+                    <f:validateDoubleRange minimum="0"/>
+                    <rich:validator/>
+                    <f:convertNumber groupingUsed="false" type="currency" locale="#{calendarBean.locale}"
+                                     currencySymbol=""/>
+                    <a:ajax event="blur" render="itemTotalPriceInput,#{priceChangeRender}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </h:inputText>
+                <rich:message for="unitPriceInput" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+            </s:span>
+
+
+            <s:span styleClass="value"
+                    rendered="#{not (inputValue.res.unitGroup.type eq 'FIX_CONVERT')}">
+                <h:outputText value="#{' / '}"/>
+
+                <h:selectOneMenu value="#{inputValue.resUnit}" style="width: 80px"
+                                 required="true">
+                    <s:selectItems value="#{inputValue.res.unitGroup.resUnitList}" var="_unit"
+                                   label="#{_unit.name}"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                    <a:ajax event="valueChange" render="#{priceChangeRender}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </h:selectOneMenu>
+            </s:span>
+
+            <ui:insert name="priceExtend"/>
+
+            <s:span styleClass="value">
+                <h:inputText id="itemTotalPriceInput" size="17" value="#{inputValue.totalPrice}"
+                             label="#{messages.orderItemPrice}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                     groupingUsed="false"/>
+                    <f:validateDoubleRange minimum="0"/>
+                    <rich:validator/>
+                    <a:ajax event="blur" render="unitPriceInput,#{priceChangeRender}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </h:inputText>
+                <rich:message for="itemTotalPriceInput" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+            </s:span>
+
+
+        </div>
+    </a:outputPanel>
+
+    <ui:insert/>
+
+</ui:composition>

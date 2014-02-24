@@ -1,0 +1,51 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <!--params: format, template , required, noSelectionLabel, historys-->
+    <a:region>
+        <s:decorate template="#{template}">
+            <ui:define name="label">#{format.formatDefine.name}</ui:define>
+
+
+            <rich:select label="#{format.formatDefine.name}" required="#{required}" value="#{format.formatValue}"
+                         rendered="#{format.formatDefine.dataType.name() eq 'WORD'}">
+                <s:selectItems value="#{dictionary.getWordList(format.formatDefine.wordCategory)}"
+                               var="_word" itemValue="#{_word.id}" label="#{_word.value}"
+                               noSelectionLabel="#{(empty noSelectionLabel) ? messages.noSelectLabel : noSelectionLabel}"/>
+                <a:ajax event="selectitem" execute="@this" render="@region"/>
+            </rich:select>
+
+            <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client"
+                               value="#{format.intValue}" layout="div" label="#{format.formatDefine.name}"
+                               required="#{required}"
+                               var="_value" fetchValue="#{_value}"
+                               rendered="#{format.formatDefine.dataType.name() eq 'INTEGER'}"
+                               autocompleteList="#{historys}"
+                               converter="javax.faces.Integer" showButton="true">
+                <b>#{_value}</b>
+                <a:ajax event="blur" execute="@this" render="@region"/>
+            </rich:autocomplete>
+
+            <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client"
+                               value="#{format.floatValue}" layout="div" label="#{format.formatDefine.name}"
+                               required="#{required}"
+                               var="_value" fetchValue="#{_value}"
+                               rendered="#{format.formatDefine.dataType.name() eq 'FLOAT'}"
+                               autocompleteList="#{historys}"
+                               converter="javax.faces.BigDecimal" showButton="true">
+                <b>#{_value}</b>
+
+                <a:ajax event="blur" execute="@this" render="@region" />
+            </rich:autocomplete>
+
+
+        </s:decorate>
+    </a:region>
+
+
+</ui:composition>

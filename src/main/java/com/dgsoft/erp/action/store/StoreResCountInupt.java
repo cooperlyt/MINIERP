@@ -20,6 +20,7 @@ import java.util.Set;
  * Date: 10/23/13
  * Time: 11:34 AM
  */
+@Deprecated
 public class StoreResCountInupt extends ResCount {
 
     private Res res;

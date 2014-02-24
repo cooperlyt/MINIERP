@@ -22,6 +22,7 @@ import java.util.List;
  * Time: 12:25 PM
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 public class ResCount implements java.io.Serializable {
 
     //public static final ResCount ZERO = new ResCount(BigDecimal.ZERO);

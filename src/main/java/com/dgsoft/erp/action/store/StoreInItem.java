@@ -13,6 +13,7 @@ import java.util.List;
  * Date: 10/23/13
  * Time: 10:48 AM
  */
+@Deprecated
 public class StoreInItem extends StoreChangeItem {
 
 

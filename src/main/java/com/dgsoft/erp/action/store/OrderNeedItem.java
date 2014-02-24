@@ -15,6 +15,7 @@ import java.util.Locale;
  * Date: 11/1/13
  * Time: 9:32 AM
  */
+@Deprecated
 public class OrderNeedItem extends StoreChangeItem {
 
     public OrderNeedItem(Res res) {

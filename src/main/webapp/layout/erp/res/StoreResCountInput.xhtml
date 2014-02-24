@@ -1,0 +1,114 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <!--param inputValue formatTemplate countLableStyleClass ,countChangeRender,disabledFloatRate-->
+    <f:subview>
+        <a:outputPanel rendered="#{not empty inputValue.storeRes}">
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="inputValue.storeRes"/>
+            </ui:include>
+        </a:outputPanel>
+
+        <a:outputPanel rendered="#{empty inputValue.storeRes}">
+            <ui:include src="ResFormatsInput.xhtml"/>
+        </a:outputPanel>
+
+
+        <div>
+
+            <s:label styleClass="#{empty countLableStyleClass ? 'name' : countLableStyleClass}">
+                #{messages.storeChangeCount}
+                <s:span styleClass="required">*</s:span>
+            </s:label>
+
+
+            <span class="value">
+            <h:inputText id="masterUnitCount" required="true" style="width: 70px"
+                         label="#{messages.storeResCountInupt}"
+                         value="#{inputValue.masterCount}" converter="javax.faces.BigDecimal">
+                <f:validateDoubleRange minimum="0"/>
+                <rich:validator/>
+                <a:ajax event="change" execute="@this"
+                        render="floatConvertAuxCount,masterUnitCount,#{countChangeRender}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </h:inputText>
+             <rich:message for="masterUnitCount" styleClass="message-icon"
+                           showDetail="true" showSummary="true" tooltip="true"/>
+            </span>
+
+            <h:outputText styleClass="unit_label" value="#{inputValue.res.resUnitByMasterUnit.name}"
+                          rendered="#{not (inputValue.res.unitGroup.type.name() eq 'FIX_CONVERT')}"/>
+
+            <span class="value">
+            <rich:select value="#{inputValue.useUnit}" listWidth="87px" required="true"
+                         styleClass="fixConvertUnitSelectWidth"
+                         rendered="#{inputValue.res.unitGroup.type.name() eq 'FIX_CONVERT'}">
+                <s:selectItems value="#{inputValue.res.unitGroup.resUnitList}" var="_unit"
+                               label="#{_unit.name}"/>
+                <f:converter converterId="erpEntityConverter"/>
+                <a:ajax event="selectitem" render="#{countChangeRender}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </rich:select>
+            </span>
+
+
+            <a:outputPanel>
+
+
+                <a:outputPanel id="floatConvertUnitRate"
+                               rendered="#{inputValue.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
+                    <h:outputText styleClass="auto_width_unit_label" value="*"/>
+                    <span class="value">
+                    <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+                                       popupClass="floatConvertRatePopupHeight"
+                                       disabled="#{empty disabledFloatRate ? false : disabledFloatRate}"
+                                       value="#{inputValue.floatConvertRate}"
+                                       layout="div"
+                                       label="#{inputValue.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
+                                       required="true"
+                                       var="_value"
+                                       selectFirst="false"
+                                       fetchValue="#{_value}"
+                                       autocompleteList="#{inputValue.floatConvertRateHistory}"
+                                       showButton="true" converter="javax.faces.BigDecimal">
+                        <b>#{_value}</b>
+
+
+                        <a:ajax event="change" execute="@this"
+                                render="floatConvertAuxCount,#{countChangeRender}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:autocomplete>
+                    </span>
+                    <h:outputText styleClass="auto_width_unit_label" value="="/>
+                    <span class="value">
+                    <h:inputText id="floatConvertAuxCount" required="true" style="width: 80px"
+                                 label="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"
+                                 value="#{inputValue.auxCount}" converter="javax.faces.BigDecimal">
+                        <a:ajax event="change" execute="@this"
+                                render="masterUnitCount,#{countChangeRender}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                        <rich:validator/>
+                    </h:inputText>
+                        <rich:message for="floatConvertAuxCount" styleClass="message-icon"
+                                      showDetail="true" showSummary="true" tooltip="true"/>
+                    </span>
+                    <h:outputText styleClass="unit_label"
+                                  value="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"/>
+                </a:outputPanel>
+
+            </a:outputPanel>
+        </div>
+
+    </f:subview>
+</ui:composition>

@@ -11,6 +11,7 @@ import java.util.List;
  * Date: 11/1/13
  * Time: 9:21 AM
  */
+@Deprecated
 public abstract class StoreChangeItem implements java.io.Serializable {
 
     protected Res res;
