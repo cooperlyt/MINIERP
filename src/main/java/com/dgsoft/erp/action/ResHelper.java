@@ -8,10 +8,7 @@ import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.log.Logging;
-import org.jbpm.JbpmContext;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;

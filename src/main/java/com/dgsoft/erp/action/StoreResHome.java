@@ -34,10 +34,17 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
         List<StoreRes> storeResList = getEntityManager().createQuery("select storeRes from StoreRes storeRes where storeRes.res.id = :resId and storeRes.id != :exId")
                 .setParameter("resId", res.getId()).setParameter("exId", (exId == null) ? "" : exId).getResultList();
 
+        log.debug("valid res: " + res.getName() + "|convertRate :" + floatConvertRate);
+
+        for (Format format: formatList){
+            log.debug("valid format:" + format.getFormatDefine().getName() + "=" + format.getFormatValue());
+        }
+
+
         log.debug("valid stores property count:" + storeResList.size());
         for (StoreRes storeRes : storeResList) {
 
-            log.debug("setRes:" + storeRes + "|" + res + "|" + res.getUnitGroup() + "|" + res.getUnitGroup().getType() + "|"
+            log.debug("very StoreRes :" + storeRes.getName() + "| format count:" + storeRes.getFormats().size() + "| covnertRate:"
                     + storeRes.getFloatConversionRate());
             if (ResHelper.sameFormat(storeRes.getFormats(), formatList)
                     && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
@@ -92,16 +99,16 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
         }
     }
 
-    public void genCode(){
-        if (getInstance().getRes() == null){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeResCodeCantGenForNullRes");
-            return ;
+    public void genCode() {
+        if (getInstance().getRes() == null) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeResCodeCantGenForNullRes");
+            return;
         }
         if (!getInstance().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ||
-                getInstance().getFloatConversionRate() != null){
+                getInstance().getFloatConversionRate() != null) {
             getInstance().setCode(resHelper.genStoreResCode(getReadyInstance()));
-        }else{
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeResCodeCantGenForFolatConvertRate");
+        } else {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeResCodeCantGenForFolatConvertRate");
         }
     }
 

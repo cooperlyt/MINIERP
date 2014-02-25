@@ -31,22 +31,26 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
 
     protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, ResUnit defaultUnit) {
         super(res, formatHistory, defaultUnit);
-        setResUnit(defaultUnit);
     }
 
     protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory) {
         super(res, formatHistory);
-        setResUnit(res.getResUnitByMasterUnit());
     }
 
     protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
         super(res, formatHistory, floatConvertRateHistory);
-        setResUnit(res.getResUnitByMasterUnit());
     }
 
     protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
-        setResUnit(defaultUnit);
+    }
+
+    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate) {
+        super(res, formatHistory, floatConvertRateHistory, defaultFloatConvertRate);
+    }
+
+    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate, ResUnit defaultUnit) {
+        super(res, formatHistory, floatConvertRateHistory, defaultFloatConvertRate, defaultUnit);
     }
 
     public abstract BigDecimal getMoney();
@@ -58,18 +62,19 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
     public abstract void setResUnit(ResUnit resUnit);
 
     @Override
-    @Transient
     public ResUnit getUseUnit() {
         return getResUnit();
     }
 
     @Override
-    @Transient
     public void setUseUnit(ResUnit useUnit) {
         setResUnit(useUnit);
     }
 
-    @Transient
+    public BigDecimal getMoneyUnitCount() {
+        return getCountByResUnit(getUseUnit());
+    }
+
     public BigDecimal getTotalPrice() {
 
         if ((getMasterCount() == null) || (getMoney() == null)) {
@@ -78,12 +83,15 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
         return getCountByResUnit(getUseUnit()).multiply(getMoney());
     }
 
-    @Transient
     public void setTotalPrice(BigDecimal price) {
         if ((getMasterCount() == null) || (price == null)) {
             setMoney(null);
         } else
             setMoney(BigDecimalFormat.halfUpCurrency(price.divide(getCountByResUnit(getUseUnit()), MONEY_MAX_SCALE, BigDecimal.ROUND_HALF_UP)));
+    }
+
+    public boolean isSameItem(StoreResPriceEntity other){
+        return super.isSameItem(other) && getUseUnit().equals(other.getUseUnit()) && getMoney().equals(other.getMoney());
     }
 
 }

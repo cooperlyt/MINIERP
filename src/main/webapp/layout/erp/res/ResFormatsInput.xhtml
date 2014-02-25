@@ -14,7 +14,7 @@
     </h:panelGrid>
 
     <a:outputPanel>
-        <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+        <a:repeat value="#{inputValue.formats}" var="_format">
             <ui:include src="ResFormatInput.xhtml">
 
                 <ui:param name="format" value="#{_format}"/>

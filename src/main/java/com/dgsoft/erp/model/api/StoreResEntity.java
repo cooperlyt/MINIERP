@@ -31,7 +31,8 @@ public abstract class StoreResEntity {
         initResFormat();
     }
 
-    public StoreResEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
+    public StoreResEntity(Res res, Map<String, Set<Object>> formatHistory,
+                          List<BigDecimal> floatConvertRateHistory) {
         if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             throw new IllegalArgumentException("only FLOAT_CONVERT  call ");
         }
@@ -39,9 +40,21 @@ public abstract class StoreResEntity {
         this.formatHistory = formatHistory;
         this.floatConvertRateHistory = floatConvertRateHistory;
         initResFormat();
+        floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
     }
 
-    @Transient
+    public StoreResEntity(Res res, Map<String, Set<Object>> formatHistory,
+                          List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate) {
+        if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            throw new IllegalArgumentException("only FLOAT_CONVERT  call ");
+        }
+        this.res = res;
+        this.formatHistory = formatHistory;
+        this.floatConvertRateHistory = floatConvertRateHistory;
+        initResFormat();
+        floatConvertRate = defaultFloatConvertRate;
+    }
+
     private void initResFormat(){
         formats = new ArrayList<Format>(res.getFormatDefines().size());
         for (FormatDefine formatDefine : res.getFormatDefineList()) {
@@ -49,42 +62,32 @@ public abstract class StoreResEntity {
         }
     }
 
-    @Transient
     private BigDecimal floatConvertRate;
 
-    @Transient
     private Res res;
 
-    @Transient
     private List<Format> formats;
 
-    @Transient
     private Map<String, Set<Object>> formatHistory;
 
-    @Transient
     private List<BigDecimal> floatConvertRateHistory;
 
-    @Transient
     public Res getRes() {
         return res;
     }
 
-    @Transient
     public List<Format> getFormats() {
         return formats;
     }
 
-    @Transient
     public List<Object> getFormatHistorys(String defineId) {
         return new ArrayList<Object>(formatHistory.get(defineId));
     }
 
-    @Transient
     public List<BigDecimal> getFloatConvertRateHistory() {
         return floatConvertRateHistory;
     }
 
-    @Transient
     public BigDecimal getFloatConvertRate() {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             throw new IllegalArgumentException("res is not float convert");
@@ -93,13 +96,11 @@ public abstract class StoreResEntity {
 
     }
 
-    @Transient
     public void setFloatConvertRate(BigDecimal floatConvertRate) {
         this.floatConvertRate = BigDecimalFormat.format(floatConvertRate,getRes().getUnitGroup().getFloatConvertRateFormat());
     }
 
 
-    @Transient
     public boolean isSameItem(StoreResEntity other) {
 
         return ResHelper.sameFormat(other.getFormats(), getFormats())

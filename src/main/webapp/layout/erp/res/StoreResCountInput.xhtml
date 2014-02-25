@@ -10,6 +10,43 @@
 
     <!--param inputValue formatTemplate countLableStyleClass ,countChangeRender-->
     <f:subview>
+        <h:outputStylesheet>
+            .unit_label {
+                vertical-align: top;
+                font-weight: bold;
+                width: 30px;
+                float: left;
+                padding: 5px;
+                margin-top: 3px;
+            }
+
+            .auto_width_unit_label {
+                vertical-align: top;
+                font-weight: bold;
+                float: left;
+                padding: 5px;
+                margin-top: 3px;
+            }
+
+            .fixConvertUnitSelectWidth input[type="text"] {
+                width: 60px;
+            }
+
+            .fixConvertUnitPopupHieght {
+                width: 72px !important;
+            }
+
+            .floatConvertRateWidth {
+                width: 60px !important;
+            }
+
+            .floatConvertRatePopupHeight {
+                width: 74px !important;
+            }
+
+        </h:outputStylesheet>
+
+
         <a:outputPanel rendered="#{not empty inputValue.storeRes}">
             <ui:include src="/layout/erp/StoreResTitle.xhtml">
                 <ui:param name="storeRes" value="#{inputValue.storeRes}"/>

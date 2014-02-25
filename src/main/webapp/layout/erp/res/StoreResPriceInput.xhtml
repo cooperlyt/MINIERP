@@ -33,7 +33,7 @@
                         <rich:validator/>
                         <f:convertNumber groupingUsed="false" type="currency" locale="#{calendarBean.locale}"
                                          currencySymbol=""/>
-                        <a:ajax event="blur" execute="@this" render="itemTotalPriceInput,#{priceChangeRender}">
+                        <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="itemTotalPriceInput,#{priceChangeRender}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>
@@ -45,16 +45,17 @@
                 <s:span styleClass="value"
                         rendered="#{not (inputValue.res.unitGroup.type eq 'FIX_CONVERT')}">
                     <h:outputText value="#{' / '}"/>
-
-                    <h:selectOneMenu value="#{inputValue.resUnit}" style="width: 80px"
-                                     required="true">
-                        <s:selectItems value="#{inputValue.res.unitGroup.resUnitList}" var="_unit"
-                                       label="#{_unit.name}"/>
-                        <f:converter converterId="erpEntityConverter"/>
-                        <a:ajax event="valueChange" render="#{priceChangeRender}">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:ajax>
-                    </h:selectOneMenu>
+                    <a:region id="priceUnitSelectRegion">
+                        <h:selectOneMenu value="#{inputValue.resUnit}" style="width: 80px"
+                                         required="true">
+                            <s:selectItems value="#{inputValue.res.unitGroup.resUnitList}" var="_unit"
+                                           label="#{_unit.name}"/>
+                            <f:converter converterId="erpEntityConverter"/>
+                            <a:ajax event="valueChange" execute="@this" render="#{priceChangeRender}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </h:selectOneMenu>
+                    </a:region>
                 </s:span>
 
                 <ui:insert name="priceExtend"/>
@@ -66,7 +67,7 @@
                                          groupingUsed="false"/>
                         <f:validateDoubleRange minimum="0"/>
                         <rich:validator/>
-                        <a:ajax event="blur" render="unitPriceInput,#{priceChangeRender}">
+                        <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="unitPriceInput,#{priceChangeRender}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>
