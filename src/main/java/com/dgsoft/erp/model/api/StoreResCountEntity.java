@@ -9,6 +9,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,27 +28,38 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         setStoreRes(storeRes);
     }
 
-    public StoreResCountEntity(Res res, Map<String, List<Object>> formatHistory, ResUnit defaultUnit) {
+    public StoreResCountEntity(Res res, Map<String, Set<Object>> formatHistory, ResUnit defaultUnit) {
         super(res, formatHistory);
         setUseUnit(defaultUnit);
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            setFloatConvertRate(res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate());
+        }
     }
 
-    public StoreResCountEntity(Res res, Map<String, List<Object>> formatHistory) {
+    public StoreResCountEntity(Res res, Map<String, Set<Object>> formatHistory) {
         super(res, formatHistory);
         setUseUnit(res.getResUnitByMasterUnit());
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            setFloatConvertRate(res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate());
+        }
     }
 
-    public StoreResCountEntity(Res res, Map<String, List<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
+    public StoreResCountEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
         super(res, formatHistory, floatConvertRateHistory);
         setUseUnit(res.getResUnitByMasterUnit());
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            setFloatConvertRate(res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate());
+        }
     }
 
-    public StoreResCountEntity(Res res, Map<String, List<Object>> formatHistory,
+    public StoreResCountEntity(Res res, Map<String, Set<Object>> formatHistory,
                                List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(res, formatHistory, floatConvertRateHistory);
         setUseUnit(defaultUnit);
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            setFloatConvertRate(res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate());
+        }
     }
-
 
     public abstract BigDecimal getMasterCount();
 
@@ -98,6 +110,9 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
             throw new IllegalArgumentException("only fix convert res can call this function");
         }
+        if (getMasterCount() == null){
+            return null;
+        }
 
         if (getUseUnit().isMasterUnit()) {
             return BigDecimalFormat.format(getMasterCount(), getUseUnit().getCountFormate());
@@ -114,6 +129,10 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
             throw new IllegalArgumentException("only fix convert res can call this function");
         }
+        if (count == null){
+            setMasterCount(null);
+            return;
+        }
         if (getUseUnit().isMasterUnit()) {
             setMasterCount(BigDecimalFormat.format(count, getUseUnit().getCountFormate()));
         } else {
@@ -126,6 +145,10 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             throw new IllegalArgumentException("only float convert res can call this function");
         }
+
+        if (getMasterCount() == null){
+            return null;
+        }
         return BigDecimalFormat.format(getMasterCount().multiply(getFloatConvertRate()),
                 getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
     }
@@ -135,6 +158,10 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             throw new IllegalArgumentException("only float convert res can call this function");
         }
+        if (count == null){
+            setMasterCount(null);
+            return;
+        }
         setMasterCount(BigDecimalFormat.
                 format(count.divide(getFloatConvertRate(),
                         FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP),
@@ -143,6 +170,9 @@ public abstract class StoreResCountEntity extends StoreResEntity {
 
     @Transient
     public String getDisplayMasterCount() {
+        if (getMasterCount() == null){
+            return null;
+        }
         DecimalFormat df = new DecimalFormat();
         df.setRoundingMode(RoundingMode.HALF_UP);
         df.applyPattern(getRes().getUnitGroup().getMasterUnit().getCountFormate());
@@ -151,7 +181,9 @@ public abstract class StoreResCountEntity extends StoreResEntity {
 
     @Transient
     public String getDisplayAuxCount() {
-
+        if (getMasterCount() == null){
+            return null;
+        }
         DecimalFormat df = new DecimalFormat();
         df.setRoundingMode(RoundingMode.HALF_UP);
 
@@ -180,7 +212,9 @@ public abstract class StoreResCountEntity extends StoreResEntity {
 
     @Transient
     public BigDecimal getCountByResUnit(ResUnit resUnit) {
-
+        if (getMasterCount() == null){
+            return null;
+        }
         switch (getRes().getUnitGroup().getType()) {
             case FLOAT_CONVERT:
                 if (resUnit.isMasterUnit()) {
@@ -211,7 +245,19 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (!isSameItem(otherCount)) {
             throw new IllegalArgumentException("not seam unit cant subtract");
         }
-        setMasterCount(getMasterCount().subtract(otherCount.getMasterCount()));
+        if (otherCount.getMasterCount() == null){
+            return;
+        }
+
+        BigDecimal thisMasterCount;
+        if (getMasterCount() == null){
+            thisMasterCount = BigDecimal.ZERO;
+        }else{
+            thisMasterCount = getMasterCount();
+        }
+
+
+        setMasterCount(thisMasterCount.subtract(otherCount.getMasterCount() ));
     }
 
     @Transient
@@ -219,7 +265,17 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (!isSameItem(otherCount)) {
             throw new IllegalArgumentException("not seam unit cant subtract");
         }
-        setMasterCount(getMasterCount().add(otherCount.getMasterCount()));
+        if (otherCount.getMasterCount() == null){
+            return;
+        }
+
+        BigDecimal thisMasterCount;
+        if (getMasterCount() == null){
+            thisMasterCount = BigDecimal.ZERO;
+        }else{
+            thisMasterCount = getMasterCount();
+        }
+        setMasterCount(thisMasterCount.add(otherCount.getMasterCount()));
 
     }
 

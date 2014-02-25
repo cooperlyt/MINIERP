@@ -8,11 +8,11 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <!--param inputValue formatTemplate countLableStyleClass ,countChangeRender,disabledFloatRate-->
+    <!--param inputValue formatTemplate countLableStyleClass ,countChangeRender-->
     <f:subview>
         <a:outputPanel rendered="#{not empty inputValue.storeRes}">
             <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="inputValue.storeRes"/>
+                <ui:param name="storeRes" value="#{inputValue.storeRes}"/>
             </ui:include>
         </a:outputPanel>
 
@@ -35,7 +35,7 @@
                          value="#{inputValue.masterCount}" converter="javax.faces.BigDecimal">
                 <f:validateDoubleRange minimum="0"/>
                 <rich:validator/>
-                <a:ajax event="change" execute="@this"
+                <a:ajax event="blur" execute="@this,floatConvertRateRegion"
                         render="floatConvertAuxCount,masterUnitCount,#{countChangeRender}">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
@@ -68,34 +68,42 @@
                                rendered="#{inputValue.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
                     <h:outputText styleClass="auto_width_unit_label" value="*"/>
                     <span class="value">
-                    <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
-                                       popupClass="floatConvertRatePopupHeight"
-                                       disabled="#{empty disabledFloatRate ? false : disabledFloatRate}"
-                                       value="#{inputValue.floatConvertRate}"
-                                       layout="div"
-                                       label="#{inputValue.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
-                                       required="true"
-                                       var="_value"
-                                       selectFirst="false"
-                                       fetchValue="#{_value}"
-                                       autocompleteList="#{inputValue.floatConvertRateHistory}"
-                                       showButton="true" converter="javax.faces.BigDecimal">
-                        <b>#{_value}</b>
+                        <a:region id="floatConvertRateRegion">
 
 
-                        <a:ajax event="change" execute="@this"
-                                render="floatConvertAuxCount,#{countChangeRender}">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:ajax>
-                    </rich:autocomplete>
+
+                            <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+                                               popupClass="floatConvertRatePopupHeight"
+                                               disabled="#{not empty inputValue.storeRes}"
+                                               value="#{inputValue.floatConvertRate}"
+                                               layout="div"
+                                               label="#{inputValue.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
+                                               required="true"
+                                               var="_value"
+                                               selectFirst="false"
+                                               fetchValue="#{_value}"
+                                               autocompleteList="#{inputValue.floatConvertRateHistory}"
+                                               showButton="true" converter="javax.faces.BigDecimal">
+                                <b>#{_value}</b>
+
+                                <a:ajax event="selectitem" execute="@this"
+                                        render="floatConvertAuxCount,#{countChangeRender}">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                                <a:ajax event="change" execute="@this"
+                                        render="floatConvertAuxCount,#{countChangeRender}">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                            </rich:autocomplete>
+                        </a:region>
                     </span>
                     <h:outputText styleClass="auto_width_unit_label" value="="/>
                     <span class="value">
                     <h:inputText id="floatConvertAuxCount" required="true" style="width: 80px"
                                  label="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"
                                  value="#{inputValue.auxCount}" converter="javax.faces.BigDecimal">
-                        <a:ajax event="change" execute="@this"
-                                render="masterUnitCount,#{countChangeRender}">
+                        <a:ajax event="blur" execute="@this,floatConvertRateRegion"
+                                render="masterUnitCount,floatConvertAuxCount,#{countChangeRender}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                         <rich:validator/>
@@ -109,6 +117,8 @@
 
             </a:outputPanel>
         </div>
+
+        <ui:insert name="countInputTail"/>
 
     </f:subview>
 </ui:composition>

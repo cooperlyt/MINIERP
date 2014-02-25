@@ -13,6 +13,7 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.log.Logging;
 import org.jbpm.JbpmContext;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -170,6 +171,43 @@ public class ResHelper {
 
 
             }
+        }
+        return result;
+    }
+
+    @In
+    private EntityManager erpEntityManager;
+
+    public Map<String, Set<Object>> getFormatHistory(Res res) {
+        Map<String, Set<Object>> result = new HashMap<String, Set<Object>>();
+
+        List<Format> formats = erpEntityManager.createQuery("select format from Format format where format.storeRes.res.id = :resId and format.formatDefine.dataType != :dataType and format.storeRes.enable = true", Format.class).
+                setParameter("resId", res.getId()).setParameter("dataType", FormatDefine.FormatType.WORD).getResultList();
+
+        for (Format format : formats) {
+            Set<Object> historys = result.get(format.getFormatDefine().getId());
+            if (historys == null){
+                historys = new HashSet<Object>();
+                result.put(format.getFormatDefine().getId(),historys);
+            }
+
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.INTEGER)) {
+
+                historys.add(format.getIntValue());
+            } else if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.FLOAT)) {
+                historys.add(format.getFloatValue());
+            }
+        }
+
+        return result;
+    }
+
+    public List<BigDecimal> getFloatConvertRateHistory(Res res) {
+        List<BigDecimal> queryResult = erpEntityManager.createQuery("select distinct storeRes.floatConversionRate from StoreRes storeRes where storeRes.enable = true and storeRes.res.unitGroup.type = :floatConvertType and storeRes.res.id = :resId",BigDecimal.class).
+                setParameter("floatConvertType",UnitGroup.UnitGroupType.FLOAT_CONVERT).setParameter("resId",res.getId()).getResultList();
+        List<BigDecimal> result = new ArrayList<BigDecimal>(queryResult.size());
+        for (BigDecimal rate: queryResult){
+            result.add(BigDecimalFormat.format(rate,res.getUnitGroup().getFloatConvertRateFormat()));
         }
         return result;
     }

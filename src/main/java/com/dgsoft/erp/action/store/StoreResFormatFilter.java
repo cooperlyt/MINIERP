@@ -22,6 +22,7 @@ import java.util.*;
  */
 @Name("storeResFormatFilter")
 @Scope(ScopeType.CONVERSATION)
+@Deprecated
 public class StoreResFormatFilter {
 
     @In

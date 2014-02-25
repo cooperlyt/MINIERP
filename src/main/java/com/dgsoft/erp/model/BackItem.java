@@ -8,6 +8,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,6 +32,34 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     private OrderBack orderBack;
 
     public BackItem() {
+    }
+
+    public BackItem(Res res, Map<String, Set<Object>> formatHistory, ResUnit defaultUnit) {
+        super(res, formatHistory, defaultUnit);
+    }
+
+    public BackItem(Res res, Map<String, Set<Object>> formatHistory) {
+        super(res, formatHistory);
+    }
+
+    public BackItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
+        super(res, formatHistory, floatConvertRateHistory);
+    }
+
+    public BackItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
+        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    }
+
+    @Override
+    @Transient
+    public BigDecimal getMasterCount() {
+        return getCount();
+    }
+
+    @Override
+    @Transient
+    public void setMasterCount(BigDecimal count) {
+        setCount(count);
     }
 
     public BackItem(OrderBack orderBack, StoreRes storeRes, ResUnit resUnit, BigDecimal count,

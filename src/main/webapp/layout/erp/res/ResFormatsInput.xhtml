@@ -10,14 +10,14 @@
     <!--param inputValue formatTemplate-->
 
     <h:panelGrid columns="4">
-        <h:outputText value="#{inputValue.resTitle}"/>
+        <h:outputText value="#{inputValue.res.name}(#{inputValue.res.code})"/>
     </h:panelGrid>
 
     <a:outputPanel>
         <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
             <ui:include src="ResFormatInput.xhtml">
 
-                <ui:param name="format" value="_format"/>
+                <ui:param name="format" value="#{_format}"/>
                 <ui:param name="template" value="#{formatTemplate}"/>
                 <ui:param name="required" value="true"/>
                 <ui:param name="hestorys" value="#{inputValue.getFormatHistorys(_format.formatDefine.id)}"/>
