@@ -90,7 +90,12 @@ public abstract class TaskInstanceListCache {
         Collections.sort(result, new Comparator<TaskInstance>() {
             @Override
             public int compare(TaskInstance o1, TaskInstance o2) {
-                return new Integer(o1.getPriority()).compareTo(o2.getPriority());
+                int cResult = new Integer(o1.getPriority()).compareTo(o2.getPriority());
+                if (cResult == 0){
+                    return o2.getCreate().compareTo(o1.getCreate());
+                }else{
+                    return cResult;
+                }
             }
         });
         return result;
