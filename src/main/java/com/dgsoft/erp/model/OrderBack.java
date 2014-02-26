@@ -16,18 +16,18 @@ import java.util.Set;
 @Table(name = "ORDER_BACK", catalog = "MINI_ERP")
 public class OrderBack implements java.io.Serializable {
 
-    public enum OrderBackType{
-        ALL_ORDER_CANCEL,PART_ORDER_BACK;
+    public enum OrderBackType {
+        ALL_ORDER_CANCEL, PART_ORDER_BACK;
     }
 
 
-	private String id;
-	private Integer version;
-	private CustomerOrder customerOrder;
-	private String reason;
-	private Date createDate;
+    private String id;
+    private Integer version;
+    private CustomerOrder customerOrder;
+    private String reason;
+    private Date createDate;
     private BigDecimal money;
-	private String memo;
+    private String memo;
 
     private OrderBackType orderBackType;
     private boolean moneyComplete;
@@ -36,103 +36,103 @@ public class OrderBack implements java.io.Serializable {
     private BigDecimal saveMoney;
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
     private Customer customer;
-	private Set<ProductBackStoreIn> productBackStoreIn = new HashSet<ProductBackStoreIn>(0);
-	private AccountOper accountOper;
+    private Set<ProductBackStoreIn> productBackStoreIn = new HashSet<ProductBackStoreIn>(0);
+    private AccountOper accountOper;
+    private boolean dispatched;
 
+    public OrderBack() {
+    }
 
+    public OrderBack(BigDecimal saveMoney, boolean dispatched) {
+        this.saveMoney = saveMoney;
+        this.dispatched = dispatched;
+    }
 
-	public OrderBack() {
-	}
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public OrderBack(BigDecimal saveMoney) {
-		this.saveMoney = saveMoney;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @Version
+    @Column(name = "VERSION")
+    public Integer getVersion() {
+        return this.version;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
-	@Version
-	@Column(name = "VERSION")
-	public Integer getVersion() {
-		return this.version;
-	}
+    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "CUSTOMER_ORDER", nullable = true)
+    public CustomerOrder getCustomerOrder() {
+        return this.customerOrder;
+    }
 
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
+    public void setCustomerOrder(CustomerOrder customerOrder) {
+        this.customerOrder = customerOrder;
+    }
 
-	@OneToOne(optional = false,fetch = FetchType.LAZY)
-	@JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
-	@NotNull
-	public CustomerOrder getCustomerOrder() {
-		return this.customerOrder;
-	}
+    @Column(name = "REASON", nullable = false, length = 32)
+    @Size(max = 32)
+    @NotNull
+    public String getReason() {
+        return this.reason;
+    }
 
-	public void setCustomerOrder(CustomerOrder customerOrder) {
-		this.customerOrder = customerOrder;
-	}
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
-	@Column(name = "REASON", nullable = true, length = 32)
-	@Size(max = 32)
-	public String getReason() {
-		return this.reason;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATE_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
+    @NotNull
+    public Date getCreateDate() {
+        return this.createDate;
+    }
 
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATE_DATE", nullable = false, length = 19,columnDefinition = "DATETIME")
-	@NotNull
-	public Date getCreateDate() {
-		return this.createDate;
-	}
+    @Column(name = "MEMO", length = 200)
+    @Size(max = 200)
+    public String getMemo() {
+        return this.memo;
+    }
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
-	@Column(name = "MEMO", length = 200)
-	@Size(max = 200)
-	public String getMemo() {
-		return this.memo;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack", cascade = {CascadeType.ALL})
+    public Set<ProductBackStoreIn> getProductBackStoreIn() {
+        return this.productBackStoreIn;
+    }
 
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
+    public void setProductBackStoreIn(Set<ProductBackStoreIn> productBackReses) {
+        this.productBackStoreIn = productBackReses;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack", cascade = {CascadeType.ALL})
-	public Set<ProductBackStoreIn> getProductBackStoreIn() {
-		return this.productBackStoreIn;
-	}
-
-	public void setProductBackStoreIn(Set<ProductBackStoreIn> productBackReses) {
-		this.productBackStoreIn = productBackReses;
-	}
-
-    @OneToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
+    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "BACK_MONEY", nullable = true)
     public AccountOper getAccountOper() {
-		return this.accountOper;
-	}
+        return this.accountOper;
+    }
 
-	public void setAccountOper(AccountOper backMoneys) {
-		this.accountOper = backMoneys;
-	}
+    public void setAccountOper(AccountOper backMoneys) {
+        this.accountOper = backMoneys;
+    }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="BACK_TYPE",nullable = false,length = 32)
+    @Column(name = "BACK_TYPE", nullable = false, length = 32)
     @NotNull
     public OrderBackType getOrderBackType() {
         return orderBackType;
@@ -142,7 +142,7 @@ public class OrderBack implements java.io.Serializable {
         this.orderBackType = orderBackType;
     }
 
-    @Column(name="MONEY_COMPLETE",nullable = false)
+    @Column(name = "MONEY_COMPLETE", nullable = false)
     public boolean isMoneyComplete() {
         return moneyComplete;
     }
@@ -151,7 +151,7 @@ public class OrderBack implements java.io.Serializable {
         this.moneyComplete = moneyComplete;
     }
 
-    @Column(name="RES_COMPLETE",nullable = false)
+    @Column(name = "RES_COMPLETE", nullable = false)
     public boolean isResComplete() {
         return resComplete;
     }
@@ -160,7 +160,7 @@ public class OrderBack implements java.io.Serializable {
         this.resComplete = resComplete;
     }
 
-    @Column(name = "APPLY_EMP",nullable = false,length = 32)
+    @Column(name = "APPLY_EMP", nullable = false, length = 32)
     @NotNull
     @Size(max = 32)
     public String getApplyEmp() {
@@ -181,7 +181,7 @@ public class OrderBack implements java.io.Serializable {
         this.money = money;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "orderBack",orphanRemoval = true,cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<BackItem> getBackItems() {
         return backItems;
     }
@@ -190,7 +190,7 @@ public class OrderBack implements java.io.Serializable {
         this.backItems = backItems;
     }
 
-    @Column(name = "SAVE_MONEY",nullable = false)
+    @Column(name = "SAVE_MONEY", nullable = false)
     public BigDecimal getSaveMoney() {
         return saveMoney;
     }
@@ -199,8 +199,8 @@ public class OrderBack implements java.io.Serializable {
         this.saveMoney = saveMoney;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER,optional = false)
-    @JoinColumn(name="CUSTOMER",nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "CUSTOMER", nullable = false)
     @NotNull
     public Customer getCustomer() {
         return customer;
@@ -208,5 +208,14 @@ public class OrderBack implements java.io.Serializable {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    @Column(name = "DISPATCHED", nullable = false)
+    public boolean isDispatched() {
+        return dispatched;
+    }
+
+    public void setDispatched(boolean dispatched) {
+        this.dispatched = dispatched;
     }
 }

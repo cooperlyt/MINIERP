@@ -70,7 +70,7 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
     @Override
     protected OrderBack createInstance() {
-        return new OrderBack(BigDecimal.ZERO);
+        return new OrderBack(BigDecimal.ZERO, false);
     }
 
     @Override

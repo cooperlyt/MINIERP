@@ -34,32 +34,12 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     public BackItem() {
     }
 
-    public BackItem(StoreRes storeRes) {
-        super(storeRes);
-    }
-
-    public BackItem(Res res, Map<String, Set<Object>> formatHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, defaultUnit);
-    }
-
-    public BackItem(Res res, Map<String, Set<Object>> formatHistory) {
-        super(res, formatHistory);
-    }
-
-    public BackItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
-        super(res, formatHistory, floatConvertRateHistory);
-    }
-
     public BackItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
-    public BackItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate) {
-        super(res, formatHistory, floatConvertRateHistory, defaultFloatConvertRate);
-    }
-
-    public BackItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory, defaultFloatConvertRate, defaultUnit);
+    public BackItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
+        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
     @Override

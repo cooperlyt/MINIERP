@@ -1,11 +1,8 @@
 package com.dgsoft.erp.business.order.cancel;
 
-import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.action.StoreResHome;
-import com.dgsoft.erp.model.BackItem;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.common.system.business.BusinessCreate;
+import com.dgsoft.erp.action.*;
+import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -29,7 +26,7 @@ public class StoreResBackCreate {
     private Log log;
 
     @DataModel("orderBackItems")
-    private List<BackItem> backItems = new ArrayList<BackItem>();
+    private List<BackItem> backItems;
 
     @In
     private ResHelper resHelper;
@@ -40,8 +37,31 @@ public class StoreResBackCreate {
     @In
     private FacesMessages facesMessages;
 
+    @In(create = true)
+    private CustomerHome customerHome;
+
+    @In(required = false)
+    private CustomerAreaHome customerAreaHome;
+
+    @In(create = true)
+    private BusinessCreate businessCreate;
+
+    @In(required = false)
+    private ResHome resHome;
+
+    @In(create=true)
+    private OrderBackHome orderBackHome;
+
     @DataModelSelection
     private BackItem selectBackItem;
+
+    @Create
+    public void onCreate(){
+        backItems = new ArrayList<BackItem>();
+        orderBackHome.clearInstance();
+        orderBackHome.getInstance().setOrderBackType(OrderBack.OrderBackType.PART_ORDER_BACK);
+        orderBackHome.init();
+    }
 
     private BackItem operBackItem;
 
@@ -51,6 +71,11 @@ public class StoreResBackCreate {
 
     public void setOperBackItem(BackItem operBackItem) {
         this.operBackItem = operBackItem;
+    }
+
+    public void deleteItem(){
+        backItems.remove(selectBackItem);
+        calcBackMoney();
     }
 
     public BigDecimal getResTotalMoney() {
@@ -73,44 +98,72 @@ public class StoreResBackCreate {
                 }
             }
 
-            if (!find)
+            if (!find) {
                 backItems.add(operBackItem);
+                operBackItem.setOrderBack(orderBackHome.getInstance());
+            } else {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "storeResInOrderItemMerger");
+            }
 
-            log.debug("backitem is added!");
+            calcBackMoney();
 
+            operBackItem = null;
+            if (resHome != null) {
+                resHome.clearInstance();
+            }
         } else {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
         }
     }
 
-    private void createNewBackItem(Res res, BigDecimal floatConvertRate) {
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            if (floatConvertRate == null) {
-                operBackItem = new BackItem(res, resHelper.getFormatHistory(res), resHelper.getFloatConvertRateHistory(res), res.getResUnitByOutDefault());
-            } else {
-                operBackItem = new BackItem(res, resHelper.getFormatHistory(res), resHelper.getFloatConvertRateHistory(res), floatConvertRate, res.getResUnitByOutDefault());
-            }
-        } else {
-            operBackItem = new BackItem(res, resHelper.getFormatHistory(res), res.getResUnitByOutDefault());
-        }
-
-    }
-
     @Observer(value = "erp.storeResLocateSelected", create = false)
     public void selectedStoreRes(StoreRes storeRes) {
         log.debug("storeResFormat selectedStoreRes Observer ");
-        createNewBackItem(storeRes.getRes(), storeRes.getFloatConversionRate());
+        operBackItem = new BackItem(storeRes, resHelper.getFormatHistory(storeRes.getRes()),
+                storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ? resHelper.getFloatConvertRateHistory(storeRes.getRes()) : null,
+                storeRes.getRes().getResUnitByOutDefault());
     }
 
 
     @Observer(value = "erp.resLocateSelected", create = false)
     public void selectedRes(Res res) {
         log.debug("selectedRes selectedStoreRes Observer ");
-        createNewBackItem(res, null);
+        operBackItem = new BackItem(res, resHelper.getFormatHistory(res),
+                res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ? resHelper.getFloatConvertRateHistory(res) : null,
+                res.getResUnitByOutDefault());
     }
 
+    public void calcBackMoney(){
+        orderBackHome.getInstance().setMoney(getResTotalMoney().subtract(orderBackHome.getInstance().getSaveMoney()));
+
+    }
+
+    @Transactional
     public String createBack() {
-        return null;
+
+        if (backItems.isEmpty()){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"noneBackItemAdd");
+            return null;
+        }
+        if (orderBackHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) < 0){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"backMoneyCantLessZero");
+            return null;
+        }
+
+        calcBackMoney();
+        orderBackHome.getInstance().setCustomerOrder(null);
+        if (customerHome.isIdDefined()){
+            customerHome.refresh();
+            orderBackHome.getInstance().setCustomer(customerHome.getInstance());
+        }else{
+            orderBackHome.getInstance().setCustomer(customerHome.getReadyInstance());
+            orderBackHome.getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
+        }
+
+        orderBackHome.getInstance().getBackItems().addAll(backItems);
+
+        return businessCreate.create();
+
     }
 
 

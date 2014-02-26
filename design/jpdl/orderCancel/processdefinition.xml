@@ -10,20 +10,20 @@
 
 	<decision name="定单状态判断">
 		<transition to="fork1" name="同时退款退货">
-			<condition expression="#{false}"></condition>
+			<condition expression="#{(not orderBackHome.instance.moneyComplete) and (not orderBackHome.instance.resComplete)}"></condition>
 		</transition>
 		<transition to="退款" name="仅退款">
-			<condition expression="#{true  or  ((not orderHome.anyOneStoreOut) and orderHome.instance.moneyComplete)}"></condition>
+			<condition expression="#{(not orderBackHome.instance.moneyComplete) and orderBackHome.instance.resComplete}"></condition>
 		</transition>
 		<transition to="调度判断" name="仅退货">
-			<condition expression="#{false}"></condition>
+			<condition expression="#{(orderBackHome.instance.moneyComplete) and (not orderBackHome.instance.resComplete)}"></condition>
 		</transition>
 	</decision>
 
 	<task-node name="退货入库(1库)">
 		<task name="退货入库">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderStoreIn.xhtml&quot;}
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
 		</task>
@@ -51,19 +51,19 @@
 
 	<decision name="退款完成">
 		<transition to="join1">
-			<condition expression="#{false}"></condition>
+			<condition expression="#{orderBackHome.needBackRes}"></condition>
 		</transition>
 		<transition to="结束" name="结束仅退款">
-			<condition expression="#{true}"></condition>
+			<condition expression="#{not orderBackHome.needBackRes}"></condition>
 		</transition>
 	</decision>
 
 	<decision name="退货完成">
 		<transition to="join1">
-			<condition expression="#{orderHome.instance.moneyComplete}"></condition>
+			<condition expression="#{orderBackHome.needBackMoney}"></condition>
 		</transition>
 		<transition to="结束" name="结束仅退货">
-			<condition expression="#{not orderHome.instance.moneyComplete}"></condition>
+			<condition expression="#{not orderBackHome.needBackMoney}"></condition>
 		</transition>
 	</decision>
 
@@ -119,7 +119,7 @@
 	<task-node name="退货入库(2库)">
 		<task name="退货入库(2库)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderStoreIn.xhtml&quot;}
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
 		</task>
@@ -129,7 +129,7 @@
 	<task-node name="退货入库(天津)">
 		<task name="退货入库(天津)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderStoreIn.xhtml&quot;}
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('C')}"></assignment>
 		</task>
@@ -139,7 +139,7 @@
 	<task-node name="调度">
 		<task name="调度">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/CancelOrderDispatch.xhtml&quot;}
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackDispatch.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.storage.dispatch"></assignment>
 		</task>
@@ -147,8 +147,12 @@
 	</task-node>
 
 	<decision name="调度判断">
-		<transition to="调度"></transition>
-		<transition to="fork2" name="已调度"></transition>
+		<transition to="调度">
+			<condition expression="#{not orderBackHome.instance.dispatched}"></condition>
+		</transition>
+		<transition to="fork2" name="已调度">
+			<condition expression="#{orderBackHome.instance.dispatched}"></condition>
+		</transition>
 	</decision>
 
 

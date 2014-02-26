@@ -22,45 +22,42 @@ public abstract class StoreResEntity {
     public StoreResEntity() {
     }
 
-    public StoreResEntity(Res res, Map<String, Set<Object>> formatHistory) {
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            throw new IllegalArgumentException("FLOAT_CONVERT res must be call floatConvert history constructor");
-        }
-        this.res = res;
-        this.formatHistory = formatHistory;
-        initResFormat();
-    }
 
     public StoreResEntity(Res res, Map<String, Set<Object>> formatHistory,
                           List<BigDecimal> floatConvertRateHistory) {
-        if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            throw new IllegalArgumentException("only FLOAT_CONVERT  call ");
-        }
         this.res = res;
         this.formatHistory = formatHistory;
-        this.floatConvertRateHistory = floatConvertRateHistory;
-        initResFormat();
-        floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
-    }
-
-    public StoreResEntity(Res res, Map<String, Set<Object>> formatHistory,
-                          List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate) {
-        if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            throw new IllegalArgumentException("only FLOAT_CONVERT  call ");
-        }
-        this.res = res;
-        this.formatHistory = formatHistory;
-        this.floatConvertRateHistory = floatConvertRateHistory;
-        initResFormat();
-        floatConvertRate = defaultFloatConvertRate;
-    }
-
-    private void initResFormat(){
         formats = new ArrayList<Format>(res.getFormatDefines().size());
         for (FormatDefine formatDefine : res.getFormatDefineList()) {
             formats.add(new Format(formatDefine));
         }
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            if (floatConvertRateHistory == null) {
+                throw new IllegalArgumentException("float convert res must set floatConvertRateHistory");
+            }
+            this.floatConvertRateHistory = floatConvertRateHistory;
+            floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
+        }
     }
+
+
+    public StoreResEntity(StoreRes storeRes, Map<String, Set<Object>> formatHistory,
+                          List<BigDecimal> floatConvertRateHistory) {
+        this.res = storeRes.getRes();
+        this.formatHistory = formatHistory;
+        formats = new ArrayList<Format>(res.getFormatDefines().size());
+        for (Format format : storeRes.getFormatList()) {
+            formats.add(new Format(format.getFormatDefine(), format.getFormatValue()));
+        }
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            if (floatConvertRateHistory == null) {
+                throw new IllegalArgumentException("float convert res must set floatConvertRateHistory");
+            }
+            this.floatConvertRateHistory = floatConvertRateHistory;
+            floatConvertRate = storeRes.getFloatConversionRate();
+        }
+    }
+
 
     private BigDecimal floatConvertRate;
 
@@ -92,12 +89,12 @@ public abstract class StoreResEntity {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             throw new IllegalArgumentException("res is not float convert");
         }
-        return BigDecimalFormat.format(floatConvertRate,getRes().getUnitGroup().getFloatConvertRateFormat());
+        return BigDecimalFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
 
     }
 
     public void setFloatConvertRate(BigDecimal floatConvertRate) {
-        this.floatConvertRate = BigDecimalFormat.format(floatConvertRate,getRes().getUnitGroup().getFloatConvertRateFormat());
+        this.floatConvertRate = BigDecimalFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
     }
 
 

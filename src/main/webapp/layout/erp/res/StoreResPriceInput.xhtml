@@ -51,7 +51,7 @@
                             <s:selectItems value="#{inputValue.res.unitGroup.resUnitList}" var="_unit"
                                            label="#{_unit.name}"/>
                             <f:converter converterId="erpEntityConverter"/>
-                            <a:ajax event="valueChange" execute="@this" render="#{priceChangeRender}">
+                            <a:ajax event="valueChange" execute="@this" render="itemTotalPriceInput,#{priceChangeRender}">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
                         </h:selectOneMenu>

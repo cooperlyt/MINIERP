@@ -25,32 +25,12 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
     protected StoreResPriceEntity() {
     }
 
-    protected StoreResPriceEntity(StoreRes storeRes) {
-        super(storeRes);
-    }
-
-    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, defaultUnit);
-    }
-
-    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory) {
-        super(res, formatHistory);
-    }
-
-    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory) {
-        super(res, formatHistory, floatConvertRateHistory);
-    }
-
     protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
-    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate) {
-        super(res, formatHistory, floatConvertRateHistory, defaultFloatConvertRate);
-    }
-
-    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, BigDecimal defaultFloatConvertRate, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory, defaultFloatConvertRate, defaultUnit);
+    protected StoreResPriceEntity(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
+        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
     public abstract BigDecimal getMoney();
@@ -90,7 +70,7 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
             setMoney(BigDecimalFormat.halfUpCurrency(price.divide(getCountByResUnit(getUseUnit()), MONEY_MAX_SCALE, BigDecimal.ROUND_HALF_UP)));
     }
 
-    public boolean isSameItem(StoreResPriceEntity other){
+    public boolean isSameItem(StoreResPriceEntity other) {
         return super.isSameItem(other) && getUseUnit().equals(other.getUseUnit()) && getMoney().equals(other.getMoney());
     }
 
