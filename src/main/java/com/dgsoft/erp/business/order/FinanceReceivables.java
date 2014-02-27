@@ -183,10 +183,10 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     }
 
     @Override
-    protected String initOrderTask() {
+    protected void initOrderTask() {
         reset();
         customerHome.setId(orderHome.getInstance().getCustomer().getId());
-        return super.initOrderTask();
+        super.initOrderTask();
     }
 
 }

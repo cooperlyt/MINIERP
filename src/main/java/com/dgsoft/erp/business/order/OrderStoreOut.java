@@ -204,7 +204,7 @@ public class OrderStoreOut extends OrderTaskHandle {
     }
 
     @Override
-    protected String initOrderTask() {
+    protected void initOrderTask() {
 
         String storeId = taskDescription.getValue(TASK_STORE_ID_KEY);
         if (storeId == null) {
@@ -224,14 +224,12 @@ public class OrderStoreOut extends OrderTaskHandle {
                             addDispatchItem(dispatchItem);
                         }
 
-                        return "success";
                     }
                 }
             }
         }
 
 
-        return "fail";
     }
 
     private void addDispatchItem(DispatchItem dispatchItem) {

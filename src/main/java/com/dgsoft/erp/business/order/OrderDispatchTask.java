@@ -40,7 +40,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
     private OrderDispatch orderDispatch;
 
     @Override
-    protected String initOrderTask() {
+    protected void initOrderTask() {
 
         for (NeedRes nr : orderHome.getInstance().getNeedReses()) {
             if (nr.getDispatches().isEmpty()) {
@@ -52,7 +52,6 @@ public class OrderDispatchTask extends OrderTaskHandle {
 
         orderDispatch.init(needResHome.getInstance());
 
-        return "success";
     }
 
 

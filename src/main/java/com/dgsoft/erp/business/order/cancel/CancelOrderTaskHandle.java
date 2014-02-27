@@ -19,8 +19,7 @@ public abstract class CancelOrderTaskHandle extends TaskHandle {
     @In(create = true)
     protected OrderBackHome orderBackHome;
 
-    protected String initCancelOrderTask() {
-        return "success";
+    protected void initCancelOrderTask() {
     }
 
     protected String completeOrderTask() {
@@ -34,9 +33,8 @@ public abstract class CancelOrderTaskHandle extends TaskHandle {
     }
 
     @Override
-    protected String initTask() {
+    protected void initTask() {
         orderBackHome.setId(taskInstance.getProcessInstance().getKey());
-        orderHome.setId(orderBackHome.getInstance().getCustomerOrder().getId());
-        return initCancelOrderTask();
+        initCancelOrderTask();
     }
 }

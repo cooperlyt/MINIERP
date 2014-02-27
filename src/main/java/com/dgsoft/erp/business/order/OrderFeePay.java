@@ -99,9 +99,8 @@ public class OrderFeePay extends OrderTaskHandle {
     }
 
     @Override
-    protected String initOrderTask() {
+    protected void initOrderTask() {
         splitOrderFee();
-        return "success";
     }
 
 }

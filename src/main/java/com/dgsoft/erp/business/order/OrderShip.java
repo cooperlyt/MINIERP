@@ -57,7 +57,7 @@ public class OrderShip extends OrderTaskHandle {
     }
 
     @Override
-    protected String initOrderTask() {
+    protected void initOrderTask() {
         String storeId = taskDescription.getValue(OrderStoreOut.TASK_STORE_ID_KEY);
         if (storeId == null) {
             throw new ProcessDefineException("Order Store out store ID not Define");
@@ -92,13 +92,11 @@ public class OrderShip extends OrderTaskHandle {
                         break;
                 }
 
-                return "success";
             }
 
         }
 
 
-        return "fail";
     }
 
 

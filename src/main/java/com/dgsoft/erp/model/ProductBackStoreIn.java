@@ -24,6 +24,11 @@ public class ProductBackStoreIn implements java.io.Serializable {
     public ProductBackStoreIn() {
     }
 
+    public ProductBackStoreIn(OrderBack orderBack, Store store) {
+        this.orderBack = orderBack;
+        this.store = store;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @NotNull

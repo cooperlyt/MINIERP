@@ -17,8 +17,7 @@ public abstract class OrderTaskHandle extends TaskHandle {
     @In(create= true)
     protected OrderHome orderHome;
 
-    protected String initOrderTask(){
-        return "success";
+    protected void initOrderTask(){
     }
 
     protected String completeOrderTask(){
@@ -53,9 +52,9 @@ public abstract class OrderTaskHandle extends TaskHandle {
     }
 
     @Override
-    protected final String initTask() {
+    protected final void initTask() {
         orderHome.setId(taskInstance.getProcessInstance().getKey());
-        return initOrderTask();
+        initOrderTask();
     }
 
 }

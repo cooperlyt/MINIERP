@@ -1,6 +1,7 @@
 package com.dgsoft.common.system.business;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
@@ -26,7 +27,8 @@ public abstract class TaskHandle implements Serializable{
 
     protected abstract String completeTask();
 
-    protected abstract String initTask();
+
+    protected abstract void initTask();
 
 
     @Transactional
@@ -37,9 +39,9 @@ public abstract class TaskHandle implements Serializable{
 
 
     @Transactional
-    public String init(){
-
-        return initTask();
+    @Create
+    public void init(){
+        initTask();
     }
 
 }

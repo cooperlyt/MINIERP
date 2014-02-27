@@ -5,6 +5,9 @@ import com.dgsoft.common.system.model.Word;
 import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
+import org.apache.poi.ss.formula.functions.T;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -167,6 +170,19 @@ public class ResHelper {
                         item.getMoneyUnit(), item.getCount(), item.getMoney(), item.getRebate()));
 
 
+            }
+        }
+        return result;
+    }
+
+    public <T extends StoreResCountEntity> Map<StoreRes,StoreResCount> groupByStoreRes(List<T> items){
+        Map<StoreRes,StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
+        for (T item: items){
+            StoreResCount count = result.get(item.getStoreRes());
+            if (count == null){
+                result.put(item.getStoreRes(),new StoreResCount(item.getStoreRes(),item.getMasterCount()));
+            }else{
+                count.add(item);
             }
         }
         return result;

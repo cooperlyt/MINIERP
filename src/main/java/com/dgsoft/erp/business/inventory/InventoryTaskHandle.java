@@ -28,8 +28,7 @@ public abstract class InventoryTaskHandle extends TaskHandle {
 
     private List<InventoryItem> inventoryItems;
 
-    protected String initInventoryTask() {
-        return "success";
+    protected void initInventoryTask() {
     }
 
     protected String completeInventoryTask() {
@@ -55,9 +54,9 @@ public abstract class InventoryTaskHandle extends TaskHandle {
     }
 
     @Override
-    protected String initTask() {
+    protected void initTask() {
         inventoryHome.setId(taskInstance.getProcessInstance().getKey());
-        return initInventoryTask();
+        initInventoryTask();
     }
 
     private void generateItems() {

@@ -20,7 +20,6 @@ public class AutoTaskOperate extends TaskHandle {
     }
 
     @Override
-    protected String initTask() {
-        return "";
+    protected void initTask() {
     }
 }

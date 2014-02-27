@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,13 +17,21 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "BACK_DISPATCH_ITEM", catalog = "MINI_ERP")
-public class BackDispatchItem {
+public class BackDispatchItem extends StoreResCountEntity implements java.io.Serializable{
 
     private String id;
 
     private BigDecimal count;
     private StoreRes storeRes;
     private ProductBackStoreIn productBackStoreIn;
+
+    public BackDispatchItem() {
+    }
+
+    public BackDispatchItem(StoreRes storeRes, BigDecimal count) {
+        this.storeRes = storeRes;
+        this.count = count;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -47,6 +56,17 @@ public class BackDispatchItem {
         this.count = count;
     }
 
+    @Override
+    @Transient
+    public BigDecimal getMasterCount() {
+        return getCount();
+    }
+
+    @Override
+    public void setMasterCount(BigDecimal count) {
+       setCount(count);
+    }
+
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     @JoinColumn(name="STORE_RES",nullable = false)
     @NotNull
@@ -69,8 +89,4 @@ public class BackDispatchItem {
         this.productBackStoreIn = productBackStoreIn;
     }
 
-    @Transient
-    public ResCount getResCount(){
-        return getStoreRes().getResCount(getCount());
-    }
 }

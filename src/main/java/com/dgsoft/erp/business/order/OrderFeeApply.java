@@ -278,10 +278,9 @@ public class OrderFeeApply extends OrderTaskHandle {
     }
 
 
-    protected String initOrderTask() {
+    protected void initOrderTask() {
         middleManIncludeLisntener();
 
-        return "success";
     }
 
 }

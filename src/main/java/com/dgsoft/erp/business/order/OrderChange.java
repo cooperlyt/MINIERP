@@ -152,7 +152,7 @@ public class OrderChange extends OrderTaskHandle {
     }
 
     @Override
-    protected String initOrderTask() {
+    protected void initOrderTask() {
 
         //----- match new OrderItems
         Map<StoreRes, ResCount> storeOutItems = new HashMap<StoreRes, ResCount>();
@@ -303,7 +303,6 @@ public class OrderChange extends OrderTaskHandle {
 
         orderRebate = orderHome.getInstance().getTotalRebate();
         calcByRate();
-        return "success";
 
     }
 

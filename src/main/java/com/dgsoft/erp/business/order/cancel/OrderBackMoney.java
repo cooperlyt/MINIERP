@@ -32,14 +32,14 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
     protected CustomerHome customerHome;
 
     @Override
-    protected String initCancelOrderTask() {
+    protected void initCancelOrderTask() {
 
 
         customerHome.setId(orderHome.getInstance().getCustomer().getId());
 
         accountOper = new AccountOper(orderBackHome.getInstance(),
                 credentials.getUsername());
-        return "success";
+
     }
 
     public AccountOper getAccountOper() {
