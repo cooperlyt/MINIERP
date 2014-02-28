@@ -1,12 +1,94 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{resBackDispatchTask.taskName}"/>
+
+    <ui:define name="toolbar">
+
+
+        <rich:toolbar>
+            <rich:toolbarGroup location="right">
+                <h:panelGroup id="orderDispatchTaskAction">
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+
+                    <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                              action="#{resBackDispatchTask.complete}"/>
+                </h:panelGroup>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+    </ui:define>
+
+    <ui:define name="body">
+        <ui:include src="/layout/erp/biz/ResBackDispatch.xhtml"/>
+
+        <br/>
+
+        <rich:collapsiblePanel switchType="client" header="#{messages.details}">
+
+
+            <div style="clear: both"/>
+
+            <s:decorate template="/layout/view-details.xhtml">
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+
+                    <ui:param name="customer" value="#{orderBackHome.instance.customer}"/>
+
+                </ui:include>
+                <ui:param name="labelValue" value="#{orderBackHome.instance.customer.name}"/>
+                <ui:param name="openLabel" value="#{messages.Customer}"/>
+                <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+            </s:decorate>
+
+
+            <div style="clear: both"/>
+
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.OrderBack_field_createDate}</ui:define>
+
+                <h:outputText value="#{orderBackHome.instance.createDate}">
+                    <s:convertDateTime
+                            pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+
+            </s:decorate>
+
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.OrderBack_field_BackType}</ui:define>
+
+                <h:outputText value="#{messages[orderBackHome.instance.orderBackType.name()]}"/>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define
+                        name="label">#{(orderBackHome.instance.orderBackType eq 'ALL_ORDER_CANCEL') ? messages.OrderBack_field_reason : messages.OrderBack_field_BackReason}</ui:define>
+
+                <h:outputText value="#{dictionary.getWordValue(orderBackHome.instance.reason)}"/>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.OrderBack_field_applyEmp}</ui:define>
+
+                <h:outputText value="#{dictionary.getEmpNameById(orderBackHome.instance.applyEmp)}"/>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+
+                <h:outputText value="#{orderBackHome.instance.memo}"/>
+            </s:decorate>
+
+            <div style="clear: both"/>
+        </rich:collapsiblePanel>
+    </ui:define>
+
+</ui:composition>

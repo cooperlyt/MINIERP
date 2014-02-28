@@ -84,7 +84,7 @@
     <a:region>
         <br/>
         <rich:dataTable rendered="#{orderBackHome.instance.orderBackType eq 'PART_ORDER_BACK'}"
-                        id="backResEditTable" style="width: 100%" value="#{backOrderItems}" var="_item"
+                        id="backResEditTable" style="width: 100%" value="#{cancelOrderCreate.backOrderItems}" var="_item"
                         noDataLabel="#{messages.orderNoAnyOneShip}">
             <f:facet name="header">
                 <rich:columnGroup>
@@ -134,27 +134,27 @@
             </f:facet>
 
             <rich:column>
-                <h:selectBooleanCheckbox value="#{_item.selected}">
+                <h:selectBooleanCheckbox value="#{_item.value.selected}">
                     <a:ajax event="click" listener="#{cancelOrderCreate.selectItemListener}"/>
                 </h:selectBooleanCheckbox>
             </rich:column>
 
             <rich:column>
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_item.backItem.storeRes}"/>
+                    <ui:param name="storeRes" value="#{_item.key.storeRes}"/>
                 </ui:include>
             </rich:column>
             <rich:column>
-                #{_item.outCount.masterDisplayCount}
+                #{_item.value.data.displayMasterCount}
             </rich:column>
             <rich:column>
-                #{_item.outCount.displayAuxCount}
+                #{_item.value.data.displayAuxCount}
             </rich:column>
             <rich:column>
 
-                <rich:inplaceSelect rendered="#{_item.selected}" style="width: 90%"
-                                    value="#{_item.backItem.resUnit}" required="true">
-                    <s:selectItems value="#{_item.backItem.resUnit.unitGroup.resUnitList}" var="_unit"
+                <rich:inplaceSelect rendered="#{_item.value.selected}" style="width: 90%"
+                                    value="#{_item.key.resUnit}" required="true">
+                    <s:selectItems value="#{_item.key.resUnit.unitGroup.resUnitList}" var="_unit"
                                    label="#{_unit.name}"/>
                     <a:ajax event="blur" render="backResEditTable"/>
                     <f:converter converterId="erpEntityConverter"/>
@@ -162,8 +162,8 @@
             </rich:column>
             <rich:column>
                 <s:decorate template="/layout/grid-inside-edit.xhtml">
-                    <rich:inplaceInput label="#{messages.count}" rendered="#{_item.selected}" style="width: 90%"
-                                       value="#{_item.backItem.count}" required="true"
+                    <rich:inplaceInput label="#{messages.count}" rendered="#{_item.value.selected}" style="width: 90%"
+                                       value="#{_item.key.useUnitCount}" required="true"
                                        converter="javax.faces.BigDecimal">
                         <f:convertNumber pattern="#0.####"/>
                         <a:ajax event="blur" listener="#{cancelOrderCreate.calcBackMoney}"
@@ -173,9 +173,9 @@
             </rich:column>
             <rich:column style="text-align: right">
                 <s:decorate template="/layout/grid-inside-edit.xhtml">
-                    <rich:inplaceInput label="#{messages.orderItemUnitPrice}" rendered="#{_item.selected}"
+                    <rich:inplaceInput label="#{messages.orderItemUnitPrice}" rendered="#{_item.value.selected}"
                                        style="width: 90%"
-                                       value="#{_item.backItem.money}"
+                                       value="#{_item.key.money}"
                                        required="true">
                         <f:validateDoubleRange minimum="0"/>
                         <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
@@ -187,7 +187,7 @@
             </rich:column>
 
             <rich:column style="text-align: right">
-                <h:outputText value="#{_item.backItem.totalMoney}" rendered="#{_item.selected}">
+                <h:outputText value="#{_item.key.totalPrice}" rendered="#{_item.value.selected}">
                     <f:convertNumber locale="#{calendarBean.locale}" type="currency"/>
                 </h:outputText>
 
@@ -200,7 +200,7 @@
             </rich:column>
 
             <rich:column>
-                <rich:inplaceInput rendered="#{_item.selected}" style="width: 90%" value="#{_item.backItem.memo}"/>
+                <rich:inplaceInput rendered="#{_item.value.selected}" style="width: 90%" value="#{_item.key.memo}"/>
             </rich:column>
         </rich:dataTable>
     </a:region>

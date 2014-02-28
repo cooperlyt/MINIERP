@@ -6,6 +6,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.log.Logging;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 import java.io.Serializable;
@@ -31,16 +32,20 @@ public abstract class TaskHandle implements Serializable{
     protected abstract void initTask();
 
 
+    public String getTaskName(){
+        return taskInstance.getName();
+    }
+
     @Transactional
     public String complete(){
 
         return completeTask();
     }
 
-
-    @Transactional
     @Create
+    @Transactional
     public void init(){
+        Logging.getLog(getClass()).debug("task is init");
         initTask();
     }
 

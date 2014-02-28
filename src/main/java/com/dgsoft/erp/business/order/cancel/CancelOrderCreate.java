@@ -20,10 +20,7 @@ import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.graph.exe.ProcessInstance;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -69,7 +66,16 @@ public class CancelOrderCreate {
         this.selectAll = selectAll;
     }
 
-    public List<>
+    public List<Map.Entry<BackItem, BatchOperData<StoreResCount>>> getBackOrderItems() {
+        List<Map.Entry<BackItem, BatchOperData<StoreResCount>>> result = new ArrayList<Map.Entry<BackItem, BatchOperData<StoreResCount>>>(backOrderItems.entrySet());
+        Collections.sort(result, new Comparator<Map.Entry<BackItem, BatchOperData<StoreResCount>>>() {
+            @Override
+            public int compare(Map.Entry<BackItem, BatchOperData<StoreResCount>> o1, Map.Entry<BackItem, BatchOperData<StoreResCount>> o2) {
+                return o1.getKey().getStoreRes().compareTo(o2.getKey().getStoreRes());
+            }
+        });
+        return result;
+    }
 
     @Create
     public void init() {
@@ -139,6 +145,9 @@ public class CancelOrderCreate {
     }
 
     public String dispatchCancelOrder() {
+        if (!isCanCancel()) return null;
+
+
         resBackDispatch.init(genBackItem());
         return "/business/startPrepare/erp/sale/BackStoreResDispatch.xhtml";
     }
@@ -149,7 +158,7 @@ public class CancelOrderCreate {
             for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
                 if (item.getValue().isSelected() && (item.getKey().getMasterCount().compareTo(item.getValue().getData().getMasterCount()) > 0)) {
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderBack_backCountLessOrderCountError",
-                            item.getKey().getStoreRes().getCode(), item.getKey().getDisplayMasterCount());
+                            item.getKey().getStoreRes().getCode(), item.getValue().getData().getDisplayMasterCount());
                     return false;
                 }
             }
@@ -160,7 +169,7 @@ public class CancelOrderCreate {
 
     @Transactional
     public String dispatchAndCancelOrder() {
-        if (!isCanCancel()) return null;
+
 
         if (!resBackDispatch.isComplete()) {
 
@@ -236,7 +245,7 @@ public class CancelOrderCreate {
     public void selectItemListener() {
 
         for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
-            if (!item.getValue().isSelected()){
+            if (!item.getValue().isSelected()) {
                 selectAll = false;
                 calcBackMoney();
                 return;
@@ -259,7 +268,7 @@ public class CancelOrderCreate {
     public BigDecimal getResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
-            if (item.getValue().isSelected()){
+            if (item.getValue().isSelected()) {
                 result = result.add(item.getKey().getTotalPrice());
             }
 

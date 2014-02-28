@@ -18,14 +18,14 @@ public class ResBackDispatchTask extends CancelOrderTaskHandle {
     @In(create = true)
     private ResBackDispatch resBackDispatch;
 
-    @In
-    private OrderBackHome orderBackHome;
 
     @Override
     protected void initCancelOrderTask() {
         Logging.getLog(getClass()).debug("resBackDispatchTask init...");
         resBackDispatch.init(orderBackHome.getInstance().getBackItemList());
     }
+
+
 
     @Override
     protected String completeOrderTask() {
@@ -36,7 +36,7 @@ public class ResBackDispatchTask extends CancelOrderTaskHandle {
 
         orderBackHome.getInstance().getProductBackStoreIn().clear();
         orderBackHome.getInstance().getProductBackStoreIn().addAll(resBackDispatch.getResBackDispatcheds(orderBackHome.getInstance()));
-        if ("persisted".equals(orderBackHome.persist())) {
+        if ("updated".equals(orderBackHome.update())) {
             return "taskComplete";
         }else{
             return null;
