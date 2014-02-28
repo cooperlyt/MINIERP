@@ -2,15 +2,15 @@ package com.dgsoft.erp.business.order.cancel;
 
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.utils.StringUtil;
-import com.dgsoft.erp.action.OrderBackHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -23,7 +23,10 @@ import java.util.*;
 public class ResBackDispatch {
 
     @In
-    private OrderBackHome orderBackHome;
+    private FacesMessages facesMessages;
+
+    //@In
+    //private OrderBackHome orderBackHome;
 
     private Map<StoreRes, StoreResCount> waitDispatchItems;
 
@@ -31,7 +34,7 @@ public class ResBackDispatch {
     private ActionExecuteState actionExecuteState;
 
     @DataModel
-    private List<ProductBackStoreIn> dispatchs;
+    private List<ProductBackStoreIn> resBackDispatcheds;
 
     @DataModelSelection
     private ProductBackStoreIn selectDispatchItem;
@@ -45,13 +48,26 @@ public class ResBackDispatch {
 
     private StoreRes selectDispatchStoreRes;
 
+    public BackDispatchItem getNewDispatchItem() {
+        return newDispatchItem;
+    }
 
-    public void init() {
-        waitDispatchItems = new HashMap<StoreRes, StoreResCount>(orderBackHome.getInstance().getBackItems().size());
-        waitDispatchItems = resHelper.groupByStoreRes(orderBackHome.getInstance().getBackItemList());
-        dispatchs = new ArrayList<ProductBackStoreIn>();
+    public void setNewDispatchItem(BackDispatchItem newDispatchItem) {
+        this.newDispatchItem = newDispatchItem;
+    }
+
+    private List<BackItem> backItems;
+
+    public void init(List<BackItem> backItems) {
+        this.backItems = backItems;
+        waitDispatchItems = new HashMap<StoreRes, StoreResCount>(backItems.size());
+        waitDispatchItems = resHelper.groupByStoreRes(backItems);
+        resBackDispatcheds = new ArrayList<ProductBackStoreIn>();
         selectStore = null;
+    }
 
+    public void reset(){
+        init(backItems);
     }
 
     public List<Map.Entry<StoreRes, StoreResCount>> getWaitDispatchItems() {
@@ -79,6 +95,7 @@ public class ResBackDispatch {
     }
 
     public void setSelectWaitDispatchItemId(String id) {
+        selectDispatchStoreRes = null;
         if (!StringUtil.isEmpty(id)) {
             for (Map.Entry<StoreRes, StoreResCount> entry : waitDispatchItems.entrySet()) {
                 if (entry.getKey().getId().equals(id)) {
@@ -87,7 +104,7 @@ public class ResBackDispatch {
                 }
             }
         }
-        selectDispatchStoreRes = null;
+
     }
 
     public Store getSelectStore() {
@@ -105,13 +122,22 @@ public class ResBackDispatch {
     }
 
     public void addDispatchItem() {
-        addDispatchItem(newDispatchItem);
+        if (newDispatchItem.getMasterCount().compareTo(waitDispatchItems.get(newDispatchItem.getStoreRes()).getMasterCount()) > 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_over_error",
+                    newDispatchItem.getDisplayMasterCount(),
+                    waitDispatchItems.get(newDispatchItem.getStoreRes()).getDisplayMasterCount());
+        } else {
+            addDispatchItem(newDispatchItem);
+            actionExecuteState.actionExecute();
+        }
+
+
     }
 
     private void addDispatchItem(BackDispatchItem newItem) {
         boolean added = false;
 
-        for (ProductBackStoreIn item : dispatchs) {
+        for (ProductBackStoreIn item : resBackDispatcheds) {
 
             if (item.getStore().getId().equals(selectStore.getId())) {
                 for (BackDispatchItem bItem : item.getBackDispatchItems()) {
@@ -132,16 +158,16 @@ public class ResBackDispatch {
         }
 
         if (!added) {
-            ProductBackStoreIn newDispatch = new ProductBackStoreIn(orderBackHome.getInstance(), selectStore);
-            dispatchs.add(newDispatch);
+            ProductBackStoreIn newDispatch = new ProductBackStoreIn(selectStore);
+            resBackDispatcheds.add(newDispatch);
             newDispatch.getBackDispatchItems().add(newItem);
             newItem.setProductBackStoreIn(newDispatch);
         }
-        waitDispatchItems.get(selectDispatchStoreRes).subtract(newItem);
+        waitDispatchItems.get(newItem.getStoreRes()).subtract(newItem);
     }
 
     public void dispatchAll() {
-        for (Map.Entry<StoreRes, StoreResCount> entry : waitDispatchItems.entrySet()) {
+        for (Map.Entry<StoreRes, StoreResCount> entry : getWaitDispatchItems()) {
             addDispatchItem(new BackDispatchItem(entry.getKey(), entry.getValue().getMasterCount()));
         }
 
@@ -151,11 +177,22 @@ public class ResBackDispatch {
         for (BackDispatchItem item : selectDispatchItem.getBackDispatchItems()) {
             waitDispatchItems.get(item.getStoreRes()).add(item);
         }
-        dispatchs.remove(selectDispatchItem);
+        resBackDispatcheds.remove(selectDispatchItem);
     }
 
-    public List<ProductBackStoreIn> getDispatchs() {
-        return dispatchs;
+    public List<ProductBackStoreIn> getResBackDispatcheds() {
+        return resBackDispatcheds;
+    }
+
+    public  List<ProductBackStoreIn> getResBackDispatcheds(OrderBack orderBack){
+        for (ProductBackStoreIn pbsi: resBackDispatcheds){
+            pbsi.setOrderBack(orderBack);
+        }
+        return resBackDispatcheds;
+    }
+
+    public boolean isComplete(){
+        return getWaitDispatchItems().isEmpty();
     }
 
 

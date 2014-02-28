@@ -94,9 +94,6 @@ public abstract class StoreResCountEntity extends StoreResEntity {
     }
 
     public void setUseUnitCount(BigDecimal count) {
-        if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-            throw new IllegalArgumentException("only fix convert res can call this function");
-        }
         if (count == null) {
             setMasterCount(null);
             return;
@@ -104,8 +101,13 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (getUseUnit().isMasterUnit()) {
             setMasterCount(BigDecimalFormat.format(count, getUseUnit().getCountFormate()));
         } else {
-            setMasterCount(BigDecimalFormat.format(count.multiply(getUseUnit().getConversionRate()), getUseUnit().getCountFormate()));
+            if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
+                setMasterCount(BigDecimalFormat.format(count.multiply(getUseUnit().getConversionRate()), getUseUnit().getCountFormate()));
+            } else if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                setAuxCount(count);
+            }
         }
+
     }
 
     public BigDecimal getAuxCount() {

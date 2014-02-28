@@ -9,3 +9,5 @@ INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, EN
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.sale.cancelAndbackRes','撤单&退货','erp.sale.mgr','','/func/erp/sale/CancelOrderAndBackRes.seam','','10','');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.sale.cancelAndbackRes');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.sale.cancelAndbackRes');
+
+UPDATE DG_SYSTEM.BUSINESS_DEFINE SET NAME='撤单&退货' WHERE id ='erp.business.orderCancel';

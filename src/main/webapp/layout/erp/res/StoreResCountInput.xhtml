@@ -139,6 +139,7 @@
                     <h:inputText id="floatConvertAuxCount" required="true" style="width: 80px"
                                  label="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"
                                  value="#{inputValue.auxCount}" converter="javax.faces.BigDecimal">
+                        <f:validateDoubleRange minimum="0"/>
                         <a:ajax event="blur" execute="@this,floatConvertRateRegion"
                                 render="masterUnitCount,floatConvertAuxCount,#{countChangeRender}">
                             <a:attachQueue requestDelay="0"/>

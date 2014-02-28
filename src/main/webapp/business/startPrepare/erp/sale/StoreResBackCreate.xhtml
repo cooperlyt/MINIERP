@@ -83,9 +83,16 @@
             <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                       view="#{(empty from) ? '/func/erp/sale/CancelOrderAndBackRes.xhtml' : from}"/>
 
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.Dispatch}"
+                             action="#{storeResBackCreate.dispatchBack}">
+                <f:param name="from" value="#{from}"/>
+                <f:param name="stepFrom" value="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml"/>
+            </h:commandButton>
+
             <h:commandButton styleClass="toolBarBtn" id="backButton"
                              value="#{messages.BackStoreRes}"
-                             action="#{storeResBackCreate.createBack}"/>
+                             action="#{storeResBackCreate.createBack}">
+            </h:commandButton>
 
 
         </rich:toolbarGroup>

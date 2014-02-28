@@ -191,11 +191,6 @@ public class OrderItem implements java.io.Serializable {
     private ResCount resCount = null;
 
     @Transient
-    public OrderHome.StoreResPrice getPrice(){
-        return new OrderHome.StoreResPrice(getStoreRes(),getMoneyUnit(),getMoney(),getCount());
-    }
-
-    @Transient
     public ResCount getStoreResCount() {
 
         if (resCount == null) {
@@ -231,6 +226,12 @@ public class OrderItem implements java.io.Serializable {
     @Transient
     public BigDecimal getTotalMoney() {
         return BigDecimalFormat.halfUpCurrency(getMoney().multiply(getCount()).multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
+    }
+
+    @Transient
+    public BigDecimal getRebateUnitPrice(){
+        return BigDecimalFormat.halfUpCurrency(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
+
     }
 
     @Transient

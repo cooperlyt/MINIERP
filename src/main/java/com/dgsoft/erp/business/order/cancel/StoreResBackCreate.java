@@ -55,6 +55,9 @@ public class StoreResBackCreate {
     @DataModelSelection
     private BackItem selectBackItem;
 
+    @In(create = true)
+    private ResBackDispatch resBackDispatch;
+
     @Create
     public void onCreate(){
         backItems = new ArrayList<BackItem>();
@@ -138,17 +141,31 @@ public class StoreResBackCreate {
 
     }
 
+    public String dispatchBack(){
+        if (!isCanCreate()) return null;
+        resBackDispatch.init(backItems);
+        return "/business/startPrepare/erp/sale/BackStoreResDispatch.xhtml";
+    }
+
+
+
+
+    @Transactional
+    public String dispatchAndCreateBack(){
+        if (!resBackDispatch.isComplete()){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"dispatchNotComplete");
+            return null;
+        }
+        orderBackHome.getInstance().setDispatched(true);
+        orderBackHome.getInstance().getProductBackStoreIn().clear();
+        orderBackHome.getInstance().getProductBackStoreIn().addAll(resBackDispatch.getResBackDispatcheds(orderBackHome.getInstance()));
+        return createBack();
+    }
+
     @Transactional
     public String createBack() {
 
-        if (backItems.isEmpty()){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"noneBackItemAdd");
-            return null;
-        }
-        if (orderBackHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) < 0){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"backMoneyCantLessZero");
-            return null;
-        }
+        if (!isCanCreate()) return null;
 
         calcBackMoney();
         orderBackHome.getInstance().setCustomerOrder(null);
@@ -164,6 +181,18 @@ public class StoreResBackCreate {
 
         return businessCreate.create();
 
+    }
+
+    private boolean isCanCreate() {
+        if (backItems.isEmpty()){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"noneBackItemAdd");
+            return false;
+        }
+        if (orderBackHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) < 0){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"backMoneyCantLessZero");
+            return false;
+        }
+        return true;
     }
 
 

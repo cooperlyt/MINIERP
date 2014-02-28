@@ -5,6 +5,8 @@
 
     <param name="from"/>
 
+    <param name="stepFrom"/>
+
     <navigation from-action="#{storeResBackCreate.createBack}">
         <rule if-outcome="businessCreated" if="#{empty from}">
             <end-conversation/>

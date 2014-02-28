@@ -24,7 +24,7 @@ public class ResBackDispatchTask extends CancelOrderTaskHandle {
     @Override
     protected void initCancelOrderTask() {
         Logging.getLog(getClass()).debug("resBackDispatchTask init...");
-        resBackDispatch.init();
+        resBackDispatch.init(orderBackHome.getInstance().getBackItemList());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ResBackDispatchTask extends CancelOrderTaskHandle {
         }
 
         orderBackHome.getInstance().getProductBackStoreIn().clear();
-        orderBackHome.getInstance().getProductBackStoreIn().addAll(resBackDispatch.getDispatchs());
+        orderBackHome.getInstance().getProductBackStoreIn().addAll(resBackDispatch.getResBackDispatcheds(orderBackHome.getInstance()));
         if ("persisted".equals(orderBackHome.persist())) {
             return "taskComplete";
         }else{

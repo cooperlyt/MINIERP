@@ -5,6 +5,7 @@ import javax.persistence.Transient;
 /**
  * Created by cooper on 1/12/14.
  */
+@Deprecated
 public abstract class BatchOperEntity implements java.io.Serializable{
 
     @Transient

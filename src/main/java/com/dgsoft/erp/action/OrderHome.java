@@ -24,65 +24,6 @@ import java.util.*;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
-    @Deprecated
-    public static class StoreResPrice {
-        private StoreRes storeRes;
-        private ResUnit unit;
-        private BigDecimal unitPrice;
-        private BigDecimal count;
-
-        public StoreResPrice(StoreRes storeRes, ResUnit unit, BigDecimal unitPrice, BigDecimal count) {
-            this.storeRes = storeRes;
-            this.unit = unit;
-            this.unitPrice = unitPrice;
-            this.count = count;
-        }
-
-        public ResUnit getUnit() {
-            return unit;
-        }
-
-        public void setUnit(ResUnit unit) {
-            this.unit = unit;
-        }
-
-        public BigDecimal getUnitPrice() {
-            return unitPrice;
-        }
-
-        public void setUnitPrice(BigDecimal unitPrice) {
-            this.unitPrice = unitPrice;
-        }
-
-        public BigDecimal getCount() {
-            return count;
-        }
-
-        public void setCount(BigDecimal count) {
-            this.count = count;
-        }
-
-        public StoreRes getStoreRes() {
-            return storeRes;
-        }
-
-        public void setStoreRes(StoreRes storeRes) {
-            this.storeRes = storeRes;
-        }
-
-        public ResCount getResCount(){
-            return storeRes.getResCount(count,unit);
-        }
-
-        public BigDecimal getTotalPrice(){
-            if ((count == null) || (unitPrice == null)){
-                return BigDecimal.ZERO;
-            }else{
-                return count.multiply(unitPrice);
-            }
-        }
-    }
-
     @In(create = true)
     private Map<String, String> messages;
 
@@ -336,17 +277,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return !getInstance().getAccountOpers().isEmpty();
     }
 
-    public StoreResPrice getFirstPrice(StoreRes storeRes){
-
-        for (NeedRes needRes: getInstance().getNeedReses()){
-            for (OrderItem orderItem: needRes.getOrderItems()){
-                if (orderItem.getStoreRes().equals(storeRes)){
-                    return orderItem.getPrice();
-                }
-            }
-        }
-        return null;
-    }
+//    public  getFirstPrice(StoreRes storeRes){
+//
+//        for (NeedRes needRes: getInstance().getNeedReses()){
+//            for (OrderItem orderItem: needRes.getOrderItems()){
+//                if (orderItem.getStoreRes().equals(storeRes)){
+//                    return orderItem.getPrice();
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     public boolean isComplete(){
         return !getInstance().isCanceled() && getInstance().isAllStoreOut() && getInstance().isMoneyComplete() && getInstance().isResReceived();
