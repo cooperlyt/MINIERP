@@ -21,7 +21,7 @@
 	</decision>
 
 	<task-node name="退货入库(1库)">
-		<task name="退货入库">
+		<task name="退货入库(1库)">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>

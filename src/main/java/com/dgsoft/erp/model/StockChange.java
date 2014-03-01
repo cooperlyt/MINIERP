@@ -14,21 +14,21 @@ import java.util.*;
 public class StockChange implements java.io.Serializable {
 
     public enum StoreChangeType {
-        MATERIAL_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL),false),
-        MATERIAL_BACK_IN(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL),false),
-        MATERIAL_OUT(EnumSet.of(ResCategory.ResType.MATERIAL,ResCategory.ResType.OUTER_MATERIAL),true),
-        SELL_OUT(EnumSet.of(ResCategory.ResType.PRODUCT,ResCategory.ResType.FITTING),true),
-        SELL_BACK(EnumSet.of(ResCategory.ResType.PRODUCT,ResCategory.ResType.FITTING),false),
-        PRODUCE_IN(EnumSet.of(ResCategory.ResType.PRODUCT,ResCategory.ResType.FITTING,ResCategory.ResType.SEMI_PRODUCT,ResCategory.ResType.WORK_IN_PROCESS),false),
-        ALLOCATION_IN(EnumSet.allOf(ResCategory.ResType.class),false),
-        ALLOCATION_OUT(EnumSet.allOf(ResCategory.ResType.class),true),
-        ASSEMBLY_IN(EnumSet.allOf(ResCategory.ResType.class),false),
-        ASSEMBLY_OUT(EnumSet.allOf(ResCategory.ResType.class),true),
-        SCRAP_OUT(EnumSet.allOf(ResCategory.ResType.class),true),
-        STORE_CHECK_LOSS(EnumSet.allOf(ResCategory.ResType.class),true),
-        STORE_CHECK_ADD(EnumSet.allOf(ResCategory.ResType.class),false),
-        STORE_CHANGE_IN(EnumSet.allOf(ResCategory.ResType.class),false),
-        STORE_CHANGE_OUT(EnumSet.allOf(ResCategory.ResType.class),true);
+        MATERIAL_IN(EnumSet.of(ResCategory.ResType.MATERIAL, ResCategory.ResType.OUTER_MATERIAL), false),
+        MATERIAL_BACK_IN(EnumSet.of(ResCategory.ResType.MATERIAL, ResCategory.ResType.OUTER_MATERIAL), false),
+        MATERIAL_OUT(EnumSet.of(ResCategory.ResType.MATERIAL, ResCategory.ResType.OUTER_MATERIAL), true),
+        SELL_OUT(EnumSet.of(ResCategory.ResType.PRODUCT, ResCategory.ResType.FITTING), true),
+        SELL_BACK(EnumSet.of(ResCategory.ResType.PRODUCT, ResCategory.ResType.FITTING), false),
+        PRODUCE_IN(EnumSet.of(ResCategory.ResType.PRODUCT, ResCategory.ResType.FITTING, ResCategory.ResType.SEMI_PRODUCT, ResCategory.ResType.WORK_IN_PROCESS), false),
+        ALLOCATION_IN(EnumSet.allOf(ResCategory.ResType.class), false),
+        ALLOCATION_OUT(EnumSet.allOf(ResCategory.ResType.class), true),
+        ASSEMBLY_IN(EnumSet.allOf(ResCategory.ResType.class), false),
+        ASSEMBLY_OUT(EnumSet.allOf(ResCategory.ResType.class), true),
+        SCRAP_OUT(EnumSet.allOf(ResCategory.ResType.class), true),
+        STORE_CHECK_LOSS(EnumSet.allOf(ResCategory.ResType.class), true),
+        STORE_CHECK_ADD(EnumSet.allOf(ResCategory.ResType.class), false),
+        STORE_CHANGE_IN(EnumSet.allOf(ResCategory.ResType.class), false),
+        STORE_CHANGE_OUT(EnumSet.allOf(ResCategory.ResType.class), true);
 
         private EnumSet<ResCategory.ResType> resTypes;
 
@@ -43,7 +43,7 @@ public class StockChange implements java.io.Serializable {
             return out;
         }
 
-        private StoreChangeType(EnumSet<ResCategory.ResType> resTypes, boolean out){
+        private StoreChangeType(EnumSet<ResCategory.ResType> resTypes, boolean out) {
             this.resTypes = resTypes;
             this.out = out;
         }
@@ -82,8 +82,16 @@ public class StockChange implements java.io.Serializable {
     public StockChange() {
     }
 
+    public StockChange(Store store, String operEmp,
+                       StoreChangeType operType, boolean verify) {
+        this.store = store;
+        this.operEmp = operEmp;
+        this.operType = operType;
+        this.verify = verify;
+    }
+
     public StockChange(Store store, Date operDate, String operEmp,
-                       StoreChangeType operType, String memo,boolean verify) {
+                       StoreChangeType operType, String memo, boolean verify) {
         this.store = store;
         this.operDate = operDate;
         this.operEmp = operEmp;
@@ -92,9 +100,9 @@ public class StockChange implements java.io.Serializable {
         this.verify = verify;
     }
 
-    public StockChange(String id,Store store, Date operDate, String operEmp,
-                       StoreChangeType operType, String memo,boolean verify) {
-        this(store,operDate,operEmp,operType,memo,verify);
+    public StockChange(String id, Store store, Date operDate, String operEmp,
+                       StoreChangeType operType, String memo, boolean verify) {
+        this(store, operDate, operEmp, operType, memo, verify);
         this.id = id;
     }
 
@@ -110,7 +118,7 @@ public class StockChange implements java.io.Serializable {
         this.id = id;
     }
 
-    @Column(name="VERIFY",nullable = false)
+    @Column(name = "VERIFY", nullable = false)
     public boolean isVerify() {
         return verify;
     }
@@ -203,21 +211,22 @@ public class StockChange implements java.io.Serializable {
     }
 
     @Transient
-    public List<PrepareStockChange> getPrepareStockChangeList(){
+    public List<PrepareStockChange> getPrepareStockChangeList() {
         List<PrepareStockChange> result = new ArrayList<PrepareStockChange>(getPrepareStockChanges());
         Collections.sort(result, new Comparator<PrepareStockChange>() {
             @Override
             public int compare(PrepareStockChange o1, PrepareStockChange o2) {
                 return o1.getStoreRes().compareTo(o2.getStoreRes());
-            }}
+            }
+        }
         );
         return result;
     }
 
     @Transient
-    public List<StockChangeItem> getStockChangeItemList(){
+    public List<StockChangeItem> getStockChangeItemList() {
         List<StockChangeItem> result = new ArrayList<StockChangeItem>(getStockChangeItems());
-        Collections.sort(result,new Comparator<StockChangeItem>() {
+        Collections.sort(result, new Comparator<StockChangeItem>() {
             @Override
             public int compare(StockChangeItem o1, StockChangeItem o2) {
                 return o1.getStoreRes().compareTo(o2.getStoreRes());
@@ -326,7 +335,7 @@ public class StockChange implements java.io.Serializable {
         this.productBackStoreIn = productBackStoreIn;
     }
 
-    @OneToOne(optional = true,fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
     public MaterialBackStoreIn getMaterialBackStoreIn() {
         return this.materialBackStoreIn;
     }

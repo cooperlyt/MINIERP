@@ -24,8 +24,6 @@ public class StockChangeItem implements java.io.Serializable {
     private StockChange stockChange;
     private boolean storeOut;
     private BigDecimal count;
-    private BigDecimal befortCount;
-    private BigDecimal afterCount;
     private Batch batch;
 
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
@@ -47,12 +45,6 @@ public class StockChangeItem implements java.io.Serializable {
         this.stock = stock;
         this.storeOut = storeOut;
         this.count = count;
-        this.befortCount = stock.getCount();
-        if (storeOut){
-            this.afterCount = befortCount.subtract(count);
-        } else{
-            this.afterCount = befortCount.add(count);
-        }
     }
 
 
@@ -121,26 +113,6 @@ public class StockChangeItem implements java.io.Serializable {
 
     public void setCount(BigDecimal count) {
         this.count = count;
-    }
-
-    @Column(name = "BEFORT_COUNT", nullable = false, scale = 4)
-    @NotNull
-    public BigDecimal getBefortCount() {
-        return this.befortCount;
-    }
-
-    public void setBefortCount(BigDecimal befortCount) {
-        this.befortCount = befortCount;
-    }
-
-    @Column(name = "AFTER_COUNT", nullable = false, scale = 4)
-    @NotNull
-    public BigDecimal getAfterCount() {
-        return this.afterCount;
-    }
-
-    public void setAfterCount(BigDecimal afterCount) {
-        this.afterCount = afterCount;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeItem", cascade = {CascadeType.ALL})

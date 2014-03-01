@@ -264,12 +264,7 @@
                     </f:facet>
                     #{dictionary.getEmpNameById(_item.stockChange.operEmp)}
                 </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.StoreChangeItem_field_befortCount}
-                    </f:facet>
-                    #{_item.befortCount}
-                </rich:column>
+
                 <rich:column>
                     <f:facet name="header">
                         #{messages.StoreChangeItem_field_count}
@@ -280,7 +275,7 @@
                     <f:facet name="header">
                         #{messages.StoreChangeItem_field_afterCount}
                     </f:facet>
-                    #{_item.afterCount}
+
                 </rich:column>
             </rich:dataTable>
 

@@ -55,7 +55,11 @@ public class InventoryLastCheck extends InventoryTaskHandle {
 
 
                     addStockChange.getStockChangeItems().add(item);
-                    stock.setCount(item.getAfterCount());
+                    if (item.isStoreOut()){
+                        stock.setCount(stock.getCount().subtract(prepareStockChange.getCount()));
+                    }else{
+                        stock.setCount(stock.getCount().add(prepareStockChange.getCount()));
+                    }
                 }
                 addStockChange.setVerify(true);
             }
@@ -85,7 +89,11 @@ public class InventoryLastCheck extends InventoryTaskHandle {
 
 
                     loseStockChange.getStockChangeItems().add(item);
-                    stock.setCount(item.getAfterCount());
+                    if (item.isStoreOut()){
+                        stock.setCount(stock.getCount().subtract(prepareStockChange.getCount()));
+                    }else{
+                        stock.setCount(stock.getCount().add(prepareStockChange.getCount()));
+                    }
                 }
                 loseStockChange.setVerify(true);
             }

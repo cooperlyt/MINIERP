@@ -8,51 +8,21 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-    <ui:param name="functionTitle" value="#{messages.CancelOrderBackMoney}"/>
+    <ui:param name="functionTitle" value="#{orderBackMoney.taskName}"/>
 
     <ui:define name="func-body">
 
         <h:form>
             <rich:toolbar>
 
-                <rich:toolbarGroup>
-                    <h:outputText value="#{messages.OrderReveiveMoney}"/>
-                    <h:outputText value="#{orderHome.totalReveiveMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-
-                </rich:toolbarGroup>
 
                 <rich:toolbarGroup>
-
-                    <h:outputText value="#{messages.order_field_earnest}"/>
-                    <h:outputText value="#{orderHome.reveiveEarnest}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </rich:toolbarGroup>
-
-                <rich:toolbarGroup>
-                    <h:outputText value="#{messages.OrderBackMoney}" />
+                    <h:outputText value="#{messages.OrderBackMoney}"/>
                     <h:outputText value="#{orderBackMoney.accountOper.operMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                 </rich:toolbarGroup>
 
-                <rich:toolbarGroup>
-                    <h:outputText value="#{messages.customer_field_balance}"/>
-
-                    <h:outputText value="#{orderBackMoney.accountOper.beforMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-
-                </rich:toolbarGroup>
-
-                <rich:toolbarGroup>
-                    <h:outputText value="#{messages.accountOper_field_afterBanance}"/>
-                    <h:outputText id="afterCustomerBalanceField" value="#{orderBackMoney.accountOper.afterMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
                     <h:panelGroup>
@@ -72,9 +42,92 @@
             <rich:panel>
 
                 <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.BackMoneyTime}
+                    </ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="20"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            required="true"
+                            defaultTime="#{currentTime}"
+                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                            label="#{messages.BackMoneyTime}"
+                            value="#{orderBackMoney.accountOper.operDate}">
+
+                    </rich:calendar>
+
+                </s:decorate>
+
+
+                <a:region>
+                    <s:decorate id="payTypeField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
+                        <h:selectOneMenu style="width: 120px" label="#{messages.accountOper_field_payType}"
+                                         required="true"
+                                         value="#{orderBackMoney.accountOper.payType}">
+
+                            <s:selectItems value="#{accountPayTypes}" var="_payType"
+                                           label="#{messages[_payType.name()]}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                            <s:convertEnum/>
+                            <a:ajax event="valueChange" execute="@this" render="payTypeField">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </h:selectOneMenu>
+
+                        <ui:define name="tail">
+                            <h:panelGrid columns="10"
+                                         rendered="#{(orderBackMoney.accountOper.payType eq 'BANK_TRANSFER')}">
+
+                                <h:outputText value="#{messages.accountOper_field_fee}#{' '}"/>
+
+                                <h:inputText
+                                        label="#{messages.accountOper_field_fee}" required="true"
+                                        size="15" value="#{orderBackMoney.accountOper.remitFee}">
+                                    <f:validateDoubleRange minimum="0"/>
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                                     groupingUsed="false"/>
+                                </h:inputText>
+
+                                <h:outputText value="#{messages.BankAccount}#{' '}"/>
+
+                                <h:selectOneMenu value="#{orderBackMoney.accountOper.bankAccount}" label="#{messages.BankAccount}">
+                                    <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
+                                                   label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
+                                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                                    <f:converter converterId="erpEntityConverter"/>
+                                </h:selectOneMenu>
+
+                            </h:panelGrid>
+
+                            <h:outputText value="#{' '}#{messages.customer_field_balance}:"
+                                          rendered="#{orderBackMoney.accountOper.payType eq 'FROM_PRE_DEPOSIT'}"/>
+
+                            <h:outputText value="#{orderBackHome.instance.customer.balance}"
+                                          rendered="#{orderBackMoney.accountOper.payType eq 'FROM_PRE_DEPOSIT'}">
+                                <f:convertNumber locale="#{calendarBean.locale}"
+                                                 type="currency" groupingUsed="true"/>
+                            </h:outputText>
+
+                            <h:outputText value="#{messages.accountOper_field_checkNumber}#{' '}"
+                                          rendered="#{orderBackMoney.accountOper.payType eq 'CHECK'}"/>
+                            <h:inputText rendered="#{orderBackMoney.accountOper.payType eq 'CHECK'}"
+                                         label="#{messages.accountOper_field_checkNumber}"
+                                         value="#{orderBackMoney.accountOper.checkNumber}">
+                            </h:inputText>
+
+
+                        </ui:define>
+                    </s:decorate>
+                </a:region>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
                     <ui:define name="label">#{messages.description}</ui:define>
                     <h:inputTextarea value="#{orderBackMoney.accountOper.description}" rows="2" cols="100"/>
                 </s:decorate>
+
                 <div style="clear:both">
                     <span class="required">*</span>
                     #{messages.requiredFields}
@@ -84,39 +137,13 @@
         </h:form>
 
         <br/>
-        <rich:collapsiblePanel switchType="client" expanded="#{false}"
-                               header="#{messages.Customer}: #{customerHome.instance.name}">
 
-            <ui:include src="/layout/erp/CustomerView.xhtml">
-                <ui:param name="customer" value="#{customerHome.instance}"/>
-            </ui:include>
+        <rich:collapsiblePanel switchType="client" header="#{messages.details}">
+
+            <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
 
         </rich:collapsiblePanel>
 
-        <br/>
-        <a:outputPanel id="orderPayRecord">
-            <ui:include src="/layout/erp/OrderPayRecord.xhtml">
-                <ui:param name="order" value="#{orderHome.instance}"/>
-            </ui:include>
-        </a:outputPanel>
-
-
-        <h:form>
-
-
-            <br/>
-            <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
-                <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
-                    <s:decorate template="/layout/seam-display.xhtml">
-                        <ui:define name="label">#{messages.order_field_totalMoney}</ui:define>
-                        <h:outputText value="#{orderHome.instance.money}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                        </h:outputText>
-                    </s:decorate>
-                </s:decorate>
-            </rich:collapsiblePanel>
-            <br/>
-        </h:form>
 
     </ui:define>
 </ui:composition>

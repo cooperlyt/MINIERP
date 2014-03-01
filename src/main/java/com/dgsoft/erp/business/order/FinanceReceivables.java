@@ -119,8 +119,6 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
                     isFreeForPay() ? AccountOper.AccountOperType.ORDER_FREE : AccountOper.AccountOperType.ORDER_SAVINGS,
                     isFreeForPay() ? new Date(debitAccountOper.getOperDate().getTime() + 1001) :
                             new Date(debitAccountOper.getOperDate().getTime()),
-                    customerHome.getInstance().getBalance(),
-                    isFreeForPay() ? customerHome.getInstance().getBalance() : customerHome.getInstance().getBalance().add(debitAccountOper.getOperMoney()),
                     debitAccountOper.getDescription(), debitAccountOper.getPayType(), orderHome.getInstance(),
                     debitAccountOper.getCheckNumber());
             if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER) || orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
@@ -140,22 +138,16 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
 
         if (saving) {
-            debitAccountOper.setBeforMoney(customerHome.getInstance().getBalance().add(debitAccountOper.getOperMoney()));
 
             if (debitAccountOper.getOperMoney().compareTo(getOrderShortageMoney()) > 0) {
                 BigDecimal saveMoney = debitAccountOper.getOperMoney().subtract(getOrderShortageMoney());
                 debitAccountOper.setOperMoney(getOrderShortageMoney());
-                debitAccountOper.setAfterMoney(customerHome.getInstance().getBalance().add(saveMoney));
-                customerHome.getInstance().setBalance(debitAccountOper.getAfterMoney());
-            } else {
-                debitAccountOper.setAfterMoney(customerHome.getInstance().getBalance());
+                customerHome.getInstance().setBalance(customerHome.getInstance().getBalance().add(saveMoney));
             }
 
         } else {
-            debitAccountOper.setBeforMoney(customerHome.getInstance().getBalance());
-            debitAccountOper.setAfterMoney(customerHome.getInstance().getBalance().subtract(debitAccountOper.getOperMoney()));
             if (!isFreeForPay())
-                customerHome.getInstance().setBalance(debitAccountOper.getAfterMoney());
+                customerHome.getInstance().setBalance(customerHome.getInstance().getBalance().subtract(debitAccountOper.getOperMoney()));
         }
 
         //debitAccountOper.setPayType(PayType.FROM_PRE_DEPOSIT);

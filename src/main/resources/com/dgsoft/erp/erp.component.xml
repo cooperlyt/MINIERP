@@ -100,4 +100,12 @@
         <property name="ejbql">select factory from Factory factory</property>
     </component>
 
+    <component name="allBankAccountList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select bankAccount from BankAccount bankAccount</property>
+    </component>
+
+    <component name="validBankAccountList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select bankAccount from BankAccount bankAccount where enable=true</property>
+    </component>
+
 </components>

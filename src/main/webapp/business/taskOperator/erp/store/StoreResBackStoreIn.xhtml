@@ -1,12 +1,108 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{storeResBackStoreIn.taskName}"/>
+
+    <ui:define name="func-body">
+
+        <h:form>
+            <rich:toolbar>
+
+                <rich:toolbarGroup location="right">
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                    <h:commandButton  styleClass="toolBarBtn" value="#{messages.complete}"
+                                      action="#{storeResBackStoreIn.complete}"/>
+
+                </rich:toolbarGroup>
+
+            </rich:toolbar>
+
+            <rich:panel>
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.storeIn_field_dateTime}
+                    </ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="20"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            required="true"
+                            defaultTime="#{currentTime}"
+                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                            label="#{messages.storeIn_field_dateTime}"
+                            value="#{stockChangeHome.instance.operDate}">
+
+                    </rich:calendar>
+
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.field_memo}
+                    </ui:define>
+                    <h:inputTextarea cols="80" value="#{stockChangeHome.instance.memo}"/>
+                </s:decorate>
+
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
+            </rich:panel>
+
+
+        </h:form>
+        <br/>
+        <rich:dataTable style="width: 100%" value="#{productBackStoreInHome.instance.backDispatchItemList}" var="_item">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column rowspan="2">
+                        #{messages.StoreRes}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.count}
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+
+            <rich:column>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                </ui:include>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.displayMasterCount}"/>
+            </rich:column>
+            <rich:column>
+                #{_item.displayAuxCount}
+            </rich:column>
+        </rich:dataTable>
+
+        <br/>
+
+        <rich:collapsiblePanel switchType="client" header="#{messages.details}">
+
+            <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
+
+        </rich:collapsiblePanel>
+
+    </ui:define>
+
+
+</ui:composition>

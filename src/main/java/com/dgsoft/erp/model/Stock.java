@@ -42,6 +42,13 @@ public class Stock implements java.io.Serializable {
         this.count = count;
     }
 
+    public Stock(Store store,Batch batch, StoreRes storeRes, BigDecimal count){
+        this.storeRes = storeRes;
+        this.store = store;
+        this.count = count;
+        this.batch = batch;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")

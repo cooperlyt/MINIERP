@@ -20,7 +20,7 @@ public class AccountOper implements java.io.Serializable {
     public enum AccountOperType {
         ORDER_SAVINGS(true), ORDER_PAY(false), ORDER_EARNEST(false),
         PRE_DEPOSIT(true), DEPOSIT_BACK(false), ORDER_FREE(true),
-        ORDER_BACK_SAVINGS(true);
+        ORDER_BACK_SAVINGS(true),ORDER_BACK(false);
 
         private boolean add;
 
@@ -41,8 +41,6 @@ public class AccountOper implements java.io.Serializable {
     private BigDecimal operMoney;
     private AccountOperType operType;
     private Date operDate;
-    private BigDecimal beforMoney;
-    private BigDecimal afterMoney;
     private String description;
     private PayType payType;
     private String checkNumber;
@@ -53,6 +51,8 @@ public class AccountOper implements java.io.Serializable {
     private PreparePay preparePay;
     private OrderBack orderBack;
     private CustomerOrder customerOrder;
+    private BankAccount bankAccount;
+
 
     public AccountOper() {
     }
@@ -66,7 +66,7 @@ public class AccountOper implements java.io.Serializable {
 
     public AccountOper(Customer customer, String operEmp,
                        BigDecimal operMoney, AccountOperType operType,
-                       Date operDate, BigDecimal beforMoney, BigDecimal afterMoney,
+                       Date operDate,
                        String description, PayType payType, CustomerOrder customerOrder,
                        String checkNumber) {
         this.customer = customer;
@@ -74,8 +74,6 @@ public class AccountOper implements java.io.Serializable {
         this.operMoney = operMoney;
         this.operType = operType;
         this.operDate = operDate;
-        this.beforMoney = beforMoney;
-        this.afterMoney = afterMoney;
         this.description = description;
         this.payType = payType;
         this.customerOrder = customerOrder;
@@ -87,7 +85,6 @@ public class AccountOper implements java.io.Serializable {
         this.operType = AccountOperType.PRE_DEPOSIT;
         this.preparePay = preparePay;
         this.customer = customer;
-        this.beforMoney = customer.getBalance();
         this.operEmp = operEmp;
         this.remitFee = remitFee;
     }
@@ -96,7 +93,6 @@ public class AccountOper implements java.io.Serializable {
         this.operType = AccountOperType.DEPOSIT_BACK;
         this.backPrepareMoney = backPrepareMoney;
         this.customer = customer;
-        this.beforMoney = customer.getBalance();
         this.operEmp = operEmp;
         this.remitFee = remitFee;
     }
@@ -104,31 +100,13 @@ public class AccountOper implements java.io.Serializable {
 
     public AccountOper(OrderBack orderBack, String operEmp) {
         this.orderBack = orderBack;
-        this.customer = orderBack.getCustomerOrder().getCustomer();
+        this.customer = orderBack.getCustomer();
         this.operEmp = operEmp;
-        this.payType = PayType.FROM_PRE_DEPOSIT;
         this.operType = AccountOperType.ORDER_BACK_SAVINGS;
-        this.beforMoney = orderBack.getCustomerOrder().getCustomer().getBalance();
-        this.customerOrder = orderBack.getCustomerOrder();
         this.operMoney = orderBack.getMoney();
-        this.afterMoney = beforMoney.add(operMoney);
-
-    }
-
-    public AccountOper(OrderBack orderBack, String operEmp,
-                       BigDecimal operMoney, Date operDate,
-                       String description) {
-        this.orderBack = orderBack;
-        this.customer = orderBack.getCustomerOrder().getCustomer();
-        this.operEmp = operEmp;
-        this.operMoney = operMoney;
-        this.operType = AccountOperType.ORDER_BACK_SAVINGS;
-        this.operDate = operDate;
-        this.beforMoney = orderBack.getCustomerOrder().getCustomer().getBalance();
-        this.afterMoney = beforMoney.add(operMoney);
-        this.description = description;
-        this.payType = PayType.FROM_PRE_DEPOSIT;
-        this.customerOrder = orderBack.getCustomerOrder();
+        if (orderBack.getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL)){
+            this.customerOrder = orderBack.getCustomerOrder();
+        }
     }
 
     @Id
@@ -220,26 +198,6 @@ public class AccountOper implements java.io.Serializable {
         this.operDate = operDate;
     }
 
-    @Column(name = "BEFOR_MONEY", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getBeforMoney() {
-        return this.beforMoney;
-    }
-
-    public void setBeforMoney(BigDecimal beforMoney) {
-        this.beforMoney = beforMoney;
-    }
-
-    @Column(name = "AFTER_MONEY", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getAfterMoney() {
-        return this.afterMoney;
-    }
-
-    public void setAfterMoney(BigDecimal afterMoney) {
-        this.afterMoney = afterMoney;
-    }
-
     @Column(name="REMIT_FEE", nullable = false, scale = 3)
     @NotNull
     public BigDecimal getRemitFee() {
@@ -310,7 +268,8 @@ public class AccountOper implements java.io.Serializable {
         this.preparePay = preparePay;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "accountOper")
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name="ORDER_BACK",nullable = true)
     public OrderBack getOrderBack() {
         return this.orderBack;
     }
@@ -319,4 +278,13 @@ public class AccountOper implements java.io.Serializable {
         this.orderBack = orderBack;
     }
 
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "BANK_ACCOUNT",nullable = true)
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
 }

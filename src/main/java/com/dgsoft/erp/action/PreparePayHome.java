@@ -35,10 +35,9 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
     @Override
     protected boolean wire(){
         if (!isManaged()){
-            getInstance().getAccountOper().setBeforMoney(getInstance().getAccountOper().getCustomer().getBalance());
-            getInstance().getAccountOper().setAfterMoney(getInstance().getAccountOper().getCustomer().getBalance().add(getInstance().getAccountOper().getOperMoney()));
 
-            getInstance().getAccountOper().getCustomer().setBalance(getInstance().getAccountOper().getAfterMoney());
+            getInstance().getAccountOper().getCustomer().
+                    setBalance(getInstance().getAccountOper().getCustomer().getBalance().add(getInstance().getAccountOper().getOperMoney()));
 
         }
 

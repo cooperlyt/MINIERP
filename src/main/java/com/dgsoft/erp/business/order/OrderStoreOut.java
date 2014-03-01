@@ -149,7 +149,11 @@ public class OrderStoreOut extends OrderTaskHandle {
                     stock, item.getResCount().getMasterCount(), true);
             dispatchHome.getInstance().getStockChange().getStockChangeItems()
                     .add(stockChangeItem);
-            stock.setCount(stockChangeItem.getAfterCount());
+            if (stockChangeItem.isStoreOut()){
+                stock.setCount(stock.getCount().subtract(item.getResCount().getMasterCount()));
+            }else{
+                stock.setCount(stock.getCount().add(item.getResCount().getMasterCount()));
+            }
 
             if ((item.getOverlyOut() != null) && (item.getOverlyOut().getCount().compareTo(BigDecimal.ZERO) > 0)) {
                 dispatchHome.getInstance().getOverlyOuts().add(item.getOverlyOut());
@@ -263,6 +267,7 @@ public class OrderStoreOut extends OrderTaskHandle {
     }
 
 
+    @Deprecated
     public class OrderStoreOutItem {
 
         private List<DispatchItem> dispatchItems = new ArrayList<DispatchItem>();

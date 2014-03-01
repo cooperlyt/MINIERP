@@ -110,6 +110,7 @@
         <class>com.dgsoft.erp.model.StockDetailsCheckout</class>
         <class>com.dgsoft.erp.model.BackDispatchItem</class>
         <class>com.dgsoft.erp.model.BackItem</class>
+        <class>com.dgsoft.erp.model.BankAccount</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

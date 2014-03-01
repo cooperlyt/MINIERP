@@ -35,7 +35,7 @@ public class OrderBack implements java.io.Serializable {
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
     private Customer customer;
     private Set<ProductBackStoreIn> productBackStoreIn = new HashSet<ProductBackStoreIn>(0);
-    private AccountOper accountOper;
+    private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private boolean dispatched;
 
     public OrderBack() {
@@ -119,14 +119,13 @@ public class OrderBack implements java.io.Serializable {
         this.productBackStoreIn = productBackReses;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "BACK_MONEY", nullable = true)
-    public AccountOper getAccountOper() {
-        return this.accountOper;
+    @OneToMany(orphanRemoval = false, mappedBy ="orderBack" ,fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE})
+    public Set<AccountOper> getAccountOpers() {
+        return accountOpers;
     }
 
-    public void setAccountOper(AccountOper backMoneys) {
-        this.accountOper = backMoneys;
+    public void setAccountOpers(Set<AccountOper> accountOpers) {
+        this.accountOpers = accountOpers;
     }
 
     @Enumerated(EnumType.STRING)

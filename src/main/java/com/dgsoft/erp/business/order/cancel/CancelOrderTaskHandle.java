@@ -1,8 +1,10 @@
 package com.dgsoft.erp.business.order.cancel;
 
+import com.dgsoft.common.jbpm.BussinessProcessUtils;
 import com.dgsoft.common.system.business.TaskHandle;
 import com.dgsoft.erp.action.OrderBackHome;
 import com.dgsoft.erp.action.OrderHome;
+import com.dgsoft.erp.model.OrderBack;
 import org.jboss.seam.annotations.In;
 
 /**
@@ -14,10 +16,10 @@ import org.jboss.seam.annotations.In;
 public abstract class CancelOrderTaskHandle extends TaskHandle {
 
     @In(create = true)
-    protected OrderHome orderHome;
+    protected OrderBackHome orderBackHome;
 
     @In(create = true)
-    protected OrderBackHome orderBackHome;
+    private BussinessProcessUtils businessProcess;
 
     protected void initCancelOrderTask() {
     }
@@ -27,9 +29,15 @@ public abstract class CancelOrderTaskHandle extends TaskHandle {
     }
 
 
+
     @Override
     protected String completeTask() {
-        return completeOrderTask();
+        String result = completeOrderTask();
+        if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL) &&
+                orderBackHome.getInstance().isResComplete() && orderBackHome.getInstance().isMoneyComplete()){
+            businessProcess.stopProcess("order",orderBackHome.getInstance().getCustomerOrder().getId());
+        }
+        return result;
     }
 
     @Override

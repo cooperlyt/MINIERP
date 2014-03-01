@@ -159,7 +159,12 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
         for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
             noConvertCount.setStockChangeItem(stockChangeItem);
         }
-        stockChangeItem.getStock().setCount(stockChangeItem.getAfterCount());
+        if (stockChangeItem.isStoreOut()){
+            stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().subtract(outItem.getStoreResCountInupt().getMasterCount()));
+        }else{
+            stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(outItem.getStoreResCountInupt().getMasterCount()));
+        }
+
 
 
         if (stockChangeItem.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {

@@ -11,5 +11,5 @@ public interface NamedEntity{
 
     public abstract String getName();
 
-
+    public abstract String getId();
 }

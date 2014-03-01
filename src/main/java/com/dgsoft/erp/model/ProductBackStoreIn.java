@@ -43,7 +43,7 @@ public class ProductBackStoreIn implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
     @NotNull
     public OrderBack getOrderBack() {
@@ -54,7 +54,7 @@ public class ProductBackStoreIn implements java.io.Serializable {
         this.orderBack = orderBack;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @OneToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "STOCK_CNAHGE", nullable = true)
     public StockChange getStockChange() {
         return this.stockChange;
