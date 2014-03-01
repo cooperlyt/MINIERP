@@ -9,85 +9,237 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
-    <ui:define name="func-body">
+<ui:define name="func-body">
 
-        <ui:include src="/layout/erp/ResSelectTree.xhtml">
-            <ui:param name="treeValue" value="#{saleResTree}"/>
-        </ui:include>
+<rich:messages ajaxRendered="true" globalOnly="false"/>
 
-        <ui:include src="/layout/erp/StoreResSelectTree.xhtml">
-            <ui:param name="treeValue" value="#{saleStoreResTree}"/>
-        </ui:include>
+<ui:include src="/layout/erp/ResSelectTree.xhtml">
+    <ui:param name="treeValue" value="#{saleResTree}"/>
+    <ui:param name="render" value="storeResCondition"/>
+</ui:include>
 
-        <h:form>
-            <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
-                <s:decorate template="/layout/seam-display.xhtml">
-                    <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
-                    <rich:calendar
-                            enableManualInput="true"
-                            inputSize="10"
-                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                            datePattern="#{messages.datePattern}"
-                            label="#{messages.order_search_BETWEEN_createDate}"
-                            value="#{customerShipTotal.shipDateFrom}">
-                    </rich:calendar>
-
-                    --
-
-                    <rich:calendar
-                            enableManualInput="true"
-                            inputSize="10"
-                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                            datePattern="#{messages.datePattern}"
-                            label="#{messages.order_search_BETWEEN_createDate}"
-                            value="#{customerShipTotal.shipDateTo}">
-                    </rich:calendar>
-                </s:decorate>
+<ui:include src="/layout/erp/StoreResSelectTree.xhtml">
+    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+    <ui:param name="render" value="storeResCondition"/>
+</ui:include>
 
 
-                <ui:include src="/layout/erp/StoreResSearchCondition.xhtml"/>
-
-                <div style="clear:both"/>
-                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-                <h:panelGrid columns="1" style="width: 100%; text-align: right">
-                    <a:outputPanel id="#{panelId}_buttons">
-                        <div class="actionButtons">
-
-                            <s:button id="reset" value="#{messages.reset}" includePageParams="false" propagation="end">
-
-                            </s:button>
-
-                            <a:outputPanel id="searchButton" ajaxRendered="true">
+<rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+    <h:form/>
+    <s:decorate id="resCodeLocateField" template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.res_field_code}</ui:define>
+        <h:panelGrid columns="4">
+            <h:inputText styleClass="barOrderNumber"
+                         label="#{messages.res_field_code}"
+                         value="#{resLocate.code}"
+                         required="true">
+                <rich:placeholder value="#{messages.res_field_code}"/>
+            </h:inputText>
 
 
+            <a:commandButton value="#{messages.search}" execute="@form"
+                             action="#{resLocate.locateByCode}" render="storeResCondition,resCodeLocateField">
+                <a:attachQueue requestDelay="0"/>
+                <s:conversationPropagation type="join"/>
+                <s:conversationId/>
+            </a:commandButton>
 
-                            <h:commandLink target="_blank" value="#{messages.total}" action="#{customerShipTotal.showReport}">
-                                <s:conversationId/>
-                            </h:commandLink>
-                            </a:outputPanel>
+            <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                             title="#{messages.resSelect}" render="resSelectPanel_form,resCodeLocateField"
+                             oncomplete="#{rich:component('resSelectPanel')}.show();">
+                <a:attachQueue requestDelay="0"/>
+                <s:conversationPropagation type="join"/>
+                <s:conversationId/>
+            </a:commandButton>
 
-                        </div>
+            <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                             title="#{messages.storeResSelect}" render="storeResSelectPanel_form,resCodeLocateField"
+                             oncomplete="#{rich:component('storeResSelectPanel')}.show();">
+                <a:attachQueue requestDelay="0"/>
+                <s:conversationPropagation type="join"/>
+                <s:conversationId/>
+            </a:commandButton>
+        </h:panelGrid>
+
+    </s:decorate>
+    <h:form/>
+
+    <h:form id="storeResCondition">
+
+
+        <a:outputPanel ajaxRendered="true" >
+
+            <a:outputPanel rendered="#{not empty storeResList.resCondition}">
+                <div style="clear: both;"/>
+
+                <ui:include src="/layout/erp/res/StoreResInput.xhtml">
+                    <ui:param name="inputValue" value="#{storeResList.resCondition}"/>
+                    <ui:param name="required" value="false"/>
+                    <ui:param name="formatTemplate" value="/layout/seam-display.xhtml"/>
+                    <ui:param name="noSelectionLabel" value="#{messages.searchNoSelectLabel}"/>
+                </ui:include>
+
+            </a:outputPanel>
+        </a:outputPanel>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{customerShipTotal.shipDateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{customerShipTotal.shipDateTo}">
+            </rich:calendar>
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="#{panelId}_buttons">
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false" propagation="end">
+
+                    </s:button>
+
+
+                    <a:outputPanel id="searchButton" ajaxRendered="true">
+
+                        <a:commandButton value="#{messages.total}" action="#{customerShipTotal.refresh}"
+                                         render="totalResults" execute="@form">
+                            <a:attachQueue requestDelay="0"/>
+                            <s:conversationId/>
+                        </a:commandButton>
+
+                        <h:commandLink target="_blank" value="#{messages.total}"
+                                       action="#{customerShipTotal.showReport}">
+                            <s:conversationId/>
+                        </h:commandLink>
                     </a:outputPanel>
-                </h:panelGrid>
-            </rich:collapsiblePanel>
 
-        </h:form>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </h:form>
 
-        <br/>
-        <!--
-        <rich:panel id="resultReport">
-
+</rich:collapsiblePanel>
 
 
-        <b:birt id="resultReportb" designType="embed" designName="report/SaleCustomerShip.rptdesign"
-                embeddable="true" masterpage="false" />
-        </rich:panel>
+<br/>
 
-        -->
+<a:outputPanel id="totalResults">
 
-    </ui:define>
+    <rich:dataTable style="width: 100%" value="#{customerShipTotal.customerTotalResultList}" var="_citem">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column rowspan="2">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+
+        </f:facet>
+
+        <rich:column colspan="3">
+            <rich:collapsibleSubTableToggler for="sbtb1"/>
+            #{_citem.key.customerArea.name} - #{_citem.key.name}
+        </rich:column>
+
+        <rich:collapsibleSubTable value="#{_citem.value}" var="_ritem" id="sbtb1" expandMode="client">
+
+            <rich:column>
+
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_ritem.storeRes}"/>
+                </ui:include>
+
+            </rich:column>
+
+            <rich:column>
+                #{_ritem.displayMasterCount}
+            </rich:column>
+
+            <rich:column>
+                #{_ritem.displayAuxCount}
+            </rich:column>
+        </rich:collapsibleSubTable>
+
+
+    </rich:dataTable>
+
+    <br/>
+    <rich:dataTable style="width: 100%" value="#{customerShipTotal.resTotalResultList}" var="_rtitem">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column rowspan="2">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column>
+
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="#{_rtitem.storeRes}"/>
+            </ui:include>
+
+        </rich:column>
+        <rich:column>
+            #{_rtitem.displayMasterCount}
+        </rich:column>
+
+        <rich:column>
+            #{_rtitem.displayAuxCount}
+        </rich:column>
+    </rich:dataTable>
+
+</a:outputPanel>
+<!--
+<rich:panel id="resultReport">
+
+
+
+<b:birt id="resultReportb" designType="embed" designName="report/SaleCustomerShip.rptdesign"
+        embeddable="true" masterpage="false" />
+</rich:panel>
+
+-->
+
+</ui:define>
 
 
 </ui:composition>

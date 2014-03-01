@@ -4,6 +4,6 @@
         locale="zh-CN"
         designName="report/SaleCustomerShip.rptdesign"
         showtitle="false">
-    <p:param name="shipDateFrom" value="#{shipDateFrom}" rendererType="" locale="zh-CN"/>
-    <p:param name="shipDateTo" value="#{shipDateTo}" locale="zh-CN"/>
+    <p:param name="shipDateFrom" value="#{shipDateFrom.time}"/>
+    <p:param name="shipDateTo" value="#{shipDateTo.time}" />
 </p:birt>

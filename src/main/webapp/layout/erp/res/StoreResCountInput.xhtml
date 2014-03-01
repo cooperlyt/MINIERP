@@ -40,9 +40,6 @@
                 width: 60px !important;
             }
 
-            .floatConvertRatePopupHeight {
-                width: 74px !important;
-            }
 
         </h:outputStylesheet>
 
@@ -54,7 +51,9 @@
         </a:outputPanel>
 
         <a:outputPanel rendered="#{empty inputValue.storeRes}">
-            <ui:include src="ResFormatsInput.xhtml"/>
+            <ui:include src="ResFormatsInput.xhtml">
+                <ui:param name="required" value="true"/>
+            </ui:include>
         </a:outputPanel>
 
 
@@ -110,7 +109,7 @@
 
 
                             <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
-                                               popupClass="floatConvertRatePopupHeight"
+
                                                disabled="#{not empty inputValue.storeRes}"
                                                value="#{inputValue.floatConvertRate}"
                                                layout="div"

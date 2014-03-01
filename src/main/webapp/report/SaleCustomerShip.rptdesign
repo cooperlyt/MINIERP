@@ -9,10 +9,6 @@ importPackage(Packages.com.dgsoft.erp.model);
 importPackage(Packages.com.dgsoft.common.utils.math);
 importPackage(Packages.java.math);
 
-
-
-
-
 resHelper = Component.getInstance("resHelper", false); 
 
 
@@ -29,7 +25,7 @@ resHelper = Component.getInstance("resHelper", false);
             <text-property name="helpText">起始发货日期</text-property>
             <text-property name="promptText">起始发货日期</text-property>
             <property name="valueType">static</property>
-            <property name="dataType">date</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -42,7 +38,7 @@ resHelper = Component.getInstance("resHelper", false);
             <text-property name="helpText">截止发货日期</text-property>
             <text-property name="promptText">截止发货日期</text-property>
             <property name="valueType">static</property>
-            <property name="dataType">date</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -55,8 +51,12 @@ resHelper = Component.getInstance("resHelper", false);
     <data-sources>
         <script-data-source name="Data Source" id="9">
             <method name="open"><![CDATA[customerShipTotal = Component.getInstance("customerShipTotal", true);
-customerShipTotal.setShipDateFrom(params["shipDateFrom"].value);
-customerShipTotal.setShipDateTo(params["shipDateTo"].value);
+java.lang.System.out.println(params["shipDateFrom"].value);
+java.lang.System.out.println(params['shipDateFrom'].value);
+java.lang.System.out.println(new java.util.Date(params["shipDateFrom"].value));
+java.lang.System.out.println(new java.util.Date(params['shipDateFrom'].value));
+customerShipTotal.setShipDateFrom(new java.util.Date(params["shipDateFrom"].value));
+customerShipTotal.setShipDateTo(new java.util.Date(params["shipDateTo"].value));
 totalDataMap = customerShipTotal.getTotalResultMap();
 dataMap = customerShipTotal.getResultMap();
 

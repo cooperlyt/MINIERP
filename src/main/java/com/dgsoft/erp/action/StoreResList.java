@@ -4,11 +4,12 @@ import com.dgsoft.common.utils.StringUtil;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.*;
+import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Credentials;
 
@@ -25,6 +26,7 @@ import java.util.Map;
 @Scope(ScopeType.CONVERSATION)
 public class StoreResList extends ErpEntityQuery<StoreRes> {
 
+
     private static final String EJBQL = "select storeRes from StoreRes storeRes left join fetch storeRes.res";
 
     private static final String[] RESTRICTIONS = {
@@ -38,57 +40,73 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
         setRestrictionLogicOperator("and");
     }
 
-    @In(required = false)
-    private StoreResFormatFilter storeResFormatFilter;
+    // @In(required = false)
+    //  private StoreResFormatFilter storeResFormatFilter;
 
-    @In(required = false)
-    private ResHome resHome;
+    @Logger
+    private Log log;
 
-    private BigDecimal floatConvertRate;
+    @In
+    private ResHelper resHelper;
 
-    public BigDecimal getFloatConvertRate() {
-        return floatConvertRate;
+    private StoreResEntity resCondition = null;
+
+    public StoreResEntity getResCondition() {
+        return resCondition;
     }
 
-    public void setFloatConvertRate(BigDecimal floatConvertRate) {
-        this.floatConvertRate = floatConvertRate;
+
+    @Observer(value = "erp.storeResLocateSelected", create = false)
+    public void selectedStoreRes(StoreRes storeRes) {
+        log.debug("storeResFormat selectedStoreRes Observer ");
+        resCondition = new StoreResEntity(storeRes, resHelper.
+                getFormatHistory(storeRes.getRes()),
+                resHelper.getFloatConvertRateHistory(storeRes.getRes()));
     }
+
+
+    @Observer(value = "erp.resLocateSelected", create = false)
+    public void selectedRes(Res res) {
+        resCondition = new StoreResEntity(res, resHelper.
+                getFormatHistory(res),
+                resHelper.getFloatConvertRateHistory(res));
+    }
+
 
     public BigDecimal getSearchFloatConvertRate() {
-        if ((resHome != null) && resHome.isIdDefined() && resHome.getInstance().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            return floatConvertRate;
+        if ((resCondition != null) && resCondition.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            return resCondition.getFloatConvertRate();
         } else {
             return null;
         }
     }
 
     public String getSearchResId() {
-        if ((resHome != null) && resHome.isIdDefined()) {
-            return resHome.getInstance().getId();
+        if (resCondition != null) {
+            return resCondition.getRes().getId();
         } else
             return null;
     }
 
     public boolean isAllStoreRes() {
-        return (resHome == null) || !resHome.isIdDefined();
+        return resCondition == null;
     }
 
     public boolean isResSearch() {
-        return (resHome != null) && resHome.isIdDefined() &&
-                ((storeResFormatFilter == null) || storeResFormatFilter.isNoFormatLimit());
+        return (resCondition != null) && resCondition.isNoFormatTyped();
     }
 
     @Override
     public List<StoreRes> getResultList() {
         List<StoreRes> result = super.getResultList();
-        if ((storeResFormatFilter != null) && !storeResFormatFilter.isNoFormatLimit()) {
+        if ((resCondition != null) && !resCondition.isNoFormatTyped()) {
             List<StoreRes> filterResult = new ArrayList<StoreRes>();
 
 
             for (StoreRes storeRes : result) {
                 boolean add = true;
                 Map<FormatDefine, Format> storeResFormatMap = storeRes.getFormatMap();
-                for (Format format : storeResFormatFilter.getResFormatList()) {
+                for (Format format : resCondition.getFormats()) {
                     if (!StringUtil.isEmpty(format.getFormatValue()) &&
                             !storeResFormatMap.get(format.getFormatDefine()).equals(format)) {
                         add = false;

@@ -4,6 +4,7 @@ import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.action.StoreResList;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Log;
@@ -33,6 +34,8 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
+        shipDateFrom = new Date();
+        shipDateTo = new Date();
     }
 
 
@@ -46,7 +49,7 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
 
     private Date shipDateTo;
 
-    private Map<Customer,Map<StoreRes,ResCount>> resultMap;
+    private Map<Customer,List<StoreResCount>> resultMap;
 
     public Date getShipDateFrom() {
         return shipDateFrom;
@@ -62,6 +65,7 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
 
     public void setShipDateTo(Date shipDateTo) {
         this.shipDateTo = shipDateTo;
+
     }
 
     public Date getSearchShipDateTo() {
@@ -86,6 +90,7 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         } else {
             return null;
         }
+
     }
 
     public List<StoreRes> getFilterStoreReses(){
@@ -99,7 +104,7 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         }
     }
 
-    public Map<Customer,Map<StoreRes,ResCount>> getResultMap() {
+    public Map<Customer,List<StoreResCount>> getCustomerTotalResultMap() {
         if (isAnyParameterDirty()) {
             refresh();
         }
@@ -109,18 +114,41 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         return resultMap;
     }
 
-    public Map<StoreRes,ResCount> getTotalResultMap(){
-        Map<StoreRes,ResCount> result = new HashMap<StoreRes,ResCount>();
-        for (Map.Entry<Customer,Map<StoreRes,ResCount>> entry: getResultMap().entrySet()){
-            for (Map.Entry<StoreRes,ResCount> resEntry: entry.getValue().entrySet()){
-                ResCount resCount = result.get(resEntry.getKey());
-                if (resCount == null){
-                    result.put(resEntry.getKey(),resEntry.getValue());
+    public List<Map.Entry<Customer,List<StoreResCount>>> getCustomerTotalResultList(){
+        List<Map.Entry<Customer,List<StoreResCount>>> result = new ArrayList<Map.Entry<Customer, List<StoreResCount>>>(getCustomerTotalResultMap().entrySet());
+        Collections.sort(result,new Comparator<Map.Entry<Customer, List<StoreResCount>>>() {
+            @Override
+            public int compare(Map.Entry<Customer, List<StoreResCount>> o1, Map.Entry<Customer, List<StoreResCount>> o2) {
+                return o1.getKey().getId().compareTo(o2.getKey().getId());
+            }
+        });
+        return result;
+    }
+
+    public Map<StoreRes,StoreResCount> getResTotalResultMap(){
+        Map<StoreRes,StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
+        for (List<StoreResCount> storeResCounts: getCustomerTotalResultMap().values()){
+            for (StoreResCount storeResCount: storeResCounts){
+                StoreResCount c = result.get(storeResCount.getStoreRes());
+
+                if (c == null){
+                    result.put(storeResCount.getStoreRes(),storeResCount);
                 }else{
-                    resCount.add(resEntry.getValue());
+                    c.add(storeResCount);
                 }
             }
         }
+        return result;
+    }
+
+    public List<StoreResCount> getResTotalResultList(){
+        List<StoreResCount> result = new ArrayList<StoreResCount>(getResTotalResultMap().values());
+        Collections.sort(result,new Comparator<StoreResCount>() {
+            @Override
+            public int compare(StoreResCount o1, StoreResCount o2) {
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            }
+        });
         return result;
     }
 
@@ -128,19 +156,25 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
 
     private void initResultMap(){
         if (resultMap == null){
-            Map<Customer,Map<StoreRes,ResCount>> result =new HashMap<Customer,Map<StoreRes,ResCount>>();
+            Map<Customer,List<StoreResCount>> result =new HashMap<Customer,List<StoreResCount>>();
             for (DispatchItem item: getResultList()){
-                Map<StoreRes,ResCount> mapValue = result.get(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer());
+                List<StoreResCount> mapValue = result.get(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer());
                 if (mapValue == null){
-                    mapValue = new HashMap<StoreRes,ResCount>();
+                    mapValue = new ArrayList<StoreResCount>();
                     result.put(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer(),mapValue);
                 }
 
-                ResCount count =  mapValue.get(item.getStoreRes());
+                StoreResCount count = null;
+                for (StoreResCount c: mapValue){
+                    if (c.getStoreRes().equals(item.getStoreRes())){
+                        count = c;
+                        break;
+                    }
+                }
                 if (count == null){
-                    mapValue.put(item.getStoreRes(),item.getResCount());
+                    mapValue.add(new StoreResCount(item.getStoreRes(),item.getResCount().getMasterCount()) );
                 }else{
-                    count.add(item.getResCount());
+                    count.setMasterCount(count.getMasterCount().add(item.getResCount().getMasterCount()));
                 }
             }
             resultMap = result;

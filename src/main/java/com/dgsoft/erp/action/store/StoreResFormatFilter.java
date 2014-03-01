@@ -47,14 +47,7 @@ public class StoreResFormatFilter {
         this.resFormatList = resFormatList;
     }
 
-    public boolean isNoFormatLimit(){
-        for (Format format: resFormatList){
-            if ((format.getFormatValue() != null) && !format.getFormatValue().trim().equals("")){
-                return false;
-            }
-        }
-        return true;
-    }
+
 
     public Res getRes() {
         return res;

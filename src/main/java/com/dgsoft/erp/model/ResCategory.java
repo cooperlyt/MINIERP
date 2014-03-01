@@ -188,7 +188,7 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
             }
         }
 
-        if (treeFilter.isAddRes()) {
+        if ((treeFilter != null) && treeFilter.isAddRes()) {
             for (Res res : getResList()) {
                 if (res.isEnable() || treeFilter.containDisable()) {
                     result.add(res);

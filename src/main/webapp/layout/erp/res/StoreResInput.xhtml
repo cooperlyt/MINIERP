@@ -8,14 +8,46 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <!--param inputValue formatTemplate-->
+    <!--param inputValue formatTemplate required noSelectionLabel-->
+    <h:outputStylesheet>
+
+
+        .floatConvertRateWidth {
+            width: 60px !important;
+        }
+
+
+    </h:outputStylesheet>
+
 
     <ui:include src="ResFormatsInput.xhtml"/>
 
-    <a:outputPanel rendered="#{inputValue.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+    <div style="clear: both"/>
 
+    <a:outputPanel rendered="#{inputValue.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+        <s:decorate template="#{formatTemplate}">
+            <ui:define name="label">#{inputValue.res.unitGroup.name}</ui:define>
+
+            <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+                               value="#{inputValue.floatConvertRate}"
+                               layout="div"
+                               label="#{rinputValue.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
+                               var="_value"
+                               required="#{required}"
+                               selectFirst="false"
+                               autofill="false"
+                               fetchValue="#{_value}"
+                               autocompleteList="#{inputValue.floatConvertRateHistory}"
+                               showButton="true" converter="javax.faces.BigDecimal">
+                <b>#{_value}</b>
+
+
+            </rich:autocomplete>
+            <ui:define name="tail">
+                <h:outputText value="#{inputValue.res.unitGroup.name}"/>
+            </ui:define>
+        </s:decorate>
     </a:outputPanel>
 
-    <ui:insert/>
 
 </ui:composition>

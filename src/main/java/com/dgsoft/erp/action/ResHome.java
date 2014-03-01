@@ -45,7 +45,7 @@ public class ResHome extends ErpEntityHome<Res> {
     @In
     private NumberBuilder numberBuilder;
 
-    @DataModel(scope = ScopeType.PAGE)
+    @DataModel
     private List<FormatDefine> formatDefineList = new ArrayList<FormatDefine>();
 
     @DataModelSelection

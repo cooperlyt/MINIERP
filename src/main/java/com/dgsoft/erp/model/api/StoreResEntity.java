@@ -17,7 +17,7 @@ import java.util.Set;
  * Date: 2/24/14
  * Time: 3:24 PM
  */
-public abstract class StoreResEntity {
+public class StoreResEntity {
 
     public StoreResEntity() {
     }
@@ -89,12 +89,18 @@ public abstract class StoreResEntity {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             throw new IllegalArgumentException("res is not float convert");
         }
+        if (floatConvertRate == null){
+            return null;
+        }
         return BigDecimalFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
 
     }
 
     public void setFloatConvertRate(BigDecimal floatConvertRate) {
-        this.floatConvertRate = BigDecimalFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
+        if (floatConvertRate == null) {
+            this.floatConvertRate = null;
+        } else
+            this.floatConvertRate = BigDecimalFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
     }
 
 
@@ -104,5 +110,14 @@ public abstract class StoreResEntity {
                 && (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || getFloatConvertRate().equals(other.getFloatConvertRate()));
 
+    }
+
+    public boolean isNoFormatTyped() {
+        for (Format format : formats) {
+            if ((format.getFormatValue() != null) && !format.getFormatValue().trim().equals("")) {
+                return false;
+            }
+        }
+        return true;
     }
 }
