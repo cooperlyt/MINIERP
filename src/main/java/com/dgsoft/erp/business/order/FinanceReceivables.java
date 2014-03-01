@@ -123,6 +123,8 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
                     debitAccountOper.getCheckNumber());
             if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER) || orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                 savingAccountOper.setRemitFee(debitAccountOper.getRemitFee());
+                savingAccountOper.setBankAccount(debitAccountOper.getBankAccount());
+                debitAccountOper.setBankAccount(null);
             } else {
                 savingAccountOper.setRemitFee(BigDecimal.ZERO);
             }

@@ -73,6 +73,19 @@
 
                         <ui:define name="tail">
 
+                            <h:outputText value="#{messages.BankAccount}#{' '}"
+                                          rendered="#{orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER'}"/>
+
+                            <h:selectOneMenu value="#{orderFinanceReveiveAction.debitAccountOper.bankAccount}"
+                                             rendered="#{orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER'}"
+                                             label="#{messages.BankAccount}">
+                                <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
+                                               label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
+                                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                                <f:converter converterId="erpEntityConverter"/>
+                            </h:selectOneMenu>
+
+
                             <h:outputText value="#{messages.accountOper_field_fee}#{' '}"
                                           rendered="#{(orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER') or (orderHome.instance.payType eq 'EXPRESS_PROXY')}"/>
 
