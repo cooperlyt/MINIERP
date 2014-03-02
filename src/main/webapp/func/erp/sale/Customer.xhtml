@@ -240,6 +240,12 @@
                 <f:param name="customerId" value="#{_customer.id}"/>
             </s:link>
 
+            #{' '}
+            <s:link target="_blank" view="/report/customerConfirm.xhtml">
+                <s:graphicImage value="/img/match_price.png" title="#{messages.customerConfirmPager}"/>
+                <f:param name="customerId" value="#{_customer.id}"/>
+            </s:link>
+
         </rich:column>
 
     </rich:dataTable>

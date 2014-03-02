@@ -5,8 +5,10 @@ import com.dgsoft.erp.action.StoreResList;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
@@ -18,6 +20,7 @@ import java.util.logging.Logger;
  * Created by cooper on 2/18/14.
  */
 @Name("customerShipTotal")
+@Scope(ScopeType.CONVERSATION)
 public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
 
     private static final String EJBQL = "select dispatchItem from DispatchItem dispatchItem  where dispatchItem.dispatch.storeOut = true";
@@ -94,7 +97,6 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
     }
 
     public List<StoreRes> getFilterStoreReses(){
-        log.debug("getFilterStoreReses:" + storeResList.isAllStoreRes());
 
         if (!storeResList.isAllStoreRes() && !storeResList.isResSearch()) {
 
@@ -110,7 +112,6 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         }
         initResultMap();
 
-        log.debug("getResultMap:" + resultMap.entrySet().size());
         return resultMap;
     }
 

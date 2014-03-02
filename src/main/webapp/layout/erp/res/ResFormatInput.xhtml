@@ -4,6 +4,7 @@
                 xmlns:s="http://jboss.org/schema/seam/taglib"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:a="http://richfaces.org/a4j"
+                xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
     <!--params: format, template , required, noSelectionLabel, historys-->
@@ -12,13 +13,13 @@
             <ui:define name="label">#{format.formatDefine.name}</ui:define>
 
 
-            <rich:select label="#{format.formatDefine.name}" required="#{required}" value="#{format.formatValue}"
-                         rendered="#{format.formatDefine.dataType.name() eq 'WORD'}">
+            <h:selectOneMenu label="#{format.formatDefine.name}" required="#{required}" value="#{format.formatValue}"
+                         rendered="#{format.formatDefine.dataType.name() eq 'WORD'}" >
                 <s:selectItems value="#{dictionary.getWordList(format.formatDefine.wordCategory)}"
                                var="_word" itemValue="#{_word.id}" label="#{_word.value}"
                                noSelectionLabel="#{(empty noSelectionLabel) ? messages.noSelectLabel : noSelectionLabel}"/>
-                <a:ajax event="selectitem" execute="@this" render="@region"/>
-            </rich:select>
+                <a:ajax event="valueChange" execute="@this" render="@region"/>
+            </h:selectOneMenu >
 
             <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client"
                                value="#{format.intValue}" layout="div" label="#{format.formatDefine.name}"

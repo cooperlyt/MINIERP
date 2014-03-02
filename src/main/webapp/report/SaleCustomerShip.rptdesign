@@ -20,45 +20,13 @@ resHelper = Component.getInstance("resHelper", false);
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <parameters>
-        <scalar-parameter name="shipDateFrom" id="417">
-            <text-property name="helpText">起始发货日期</text-property>
-            <text-property name="promptText">起始发货日期</text-property>
-            <property name="valueType">static</property>
-            <property name="dataType">decimal</property>
-            <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="shipDateTo" id="418">
-            <text-property name="helpText">截止发货日期</text-property>
-            <text-property name="promptText">截止发货日期</text-property>
-            <property name="valueType">static</property>
-            <property name="dataType">decimal</property>
-            <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-    </parameters>
     <data-sources>
         <script-data-source name="Data Source" id="9">
-            <method name="open"><![CDATA[customerShipTotal = Component.getInstance("customerShipTotal", true);
-java.lang.System.out.println(params["shipDateFrom"].value);
-java.lang.System.out.println(params['shipDateFrom'].value);
-java.lang.System.out.println(new java.util.Date(params["shipDateFrom"].value));
-java.lang.System.out.println(new java.util.Date(params['shipDateFrom'].value));
-customerShipTotal.setShipDateFrom(new java.util.Date(params["shipDateFrom"].value));
-customerShipTotal.setShipDateTo(new java.util.Date(params["shipDateTo"].value));
-totalDataMap = customerShipTotal.getTotalResultMap();
-dataMap = customerShipTotal.getResultMap();
+            <method name="open"><![CDATA[customerShipTotal = Component.getInstance("customerShipTotal", false);
+
+
+totalDataMap = customerShipTotal.getResTotalResultList();
+dataMap = customerShipTotal.getCustomerTotalResultList();
 
 ]]></method>
         </script-data-source>
@@ -195,10 +163,10 @@ dataMap = customerShipTotal.getResultMap();
             <method name="open"><![CDATA[
 
 
-cit = dataMap.entrySet().iterator();
+cit = dataMap.iterator();
 if (cit.hasNext()){
 	curEntry = cit.next();
-	rit = curEntry.getValue().entrySet().iterator();
+	rit = curEntry.getValue().iterator();
 }else{
 	rit = null;
 }
@@ -210,7 +178,7 @@ if (cit.hasNext()){
 if (!rit.hasNext()){
 	if (cit.hasNext()){
 		curEntry = cit.next();
-		rit = curEntry.getValue().entrySet().iterator();
+		rit = curEntry.getValue().iterator();
 		resEntry = rit.next();
 	}else{
 		return false;
@@ -222,16 +190,16 @@ if (!rit.hasNext()){
 
 row['customerName'] = curEntry.getKey().getCustomerArea().getName() + " - " + curEntry.getKey().getName();
 row['customerId'] = curEntry.getKey().getId();
-row['resName'] = resEntry.getKey().getRes().getName() + "(" + resEntry.getKey().getRes().getCode() + ")";
-row['resID'] = resEntry.getKey().getRes().getId();
-row['storeRes'] = resHelper.generateStoreResTitle(resEntry.getKey());
+row['resName'] = resEntry.getRes().getName() + "(" + resEntry.getRes().getCode() + ")";
+row['resID'] = resEntry.getRes().getId();
+row['storeRes'] = resHelper.generateStoreResTitle(resEntry.getStoreRes());
 
-row['masterCount'] = resEntry.getValue().getMasterCount();
-row['masterUnit'] = resEntry.getKey().getRes().getUnitGroup().getMasterUnit().getName();
+row['masterCount'] = resEntry.getMasterCount();
+row['masterUnit'] = resEntry.getRes().getUnitGroup().getMasterUnit().getName();
 
-if (resEntry.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-	row['auxCount'] = resEntry.getValue().getAuxCount();
-	row['auxUnit'] = resEntry.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
+if (resEntry.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+	row['auxCount'] = resEntry.getAuxCount();
+	row['auxUnit'] = resEntry.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
 }  
 
 return true;
@@ -340,18 +308,18 @@ return true;
             <property name="dataSource">Data Source</property>
             <method name="open"><![CDATA[
 
-tit = totalDataMap.entrySet().iterator();]]></method>
+tit = totalDataMap.iterator();]]></method>
             <method name="fetch"><![CDATA[if(tit.hasNext()){
 	entry = tit.next();
-	row['RES_ID'] = entry.getKey().getRes().getId();
-	row['RES_NAME'] = entry.getKey().getRes().getName();
-	row['STORE_RES_NAME'] = resHelper.generateStoreResTitle(entry.getKey());
-	row['MASTER_COUNT'] = entry.getValue().getMasterCount();
-	row['MASTER_UNIT'] = entry.getKey().getRes().getUnitGroup().getMasterUnit().getName();
+	row['RES_ID'] = entry.getRes().getId();
+	row['RES_NAME'] = entry.getRes().getName();
+	row['STORE_RES_NAME'] = resHelper.generateStoreResTitle(entry.getStoreRes());
+	row['MASTER_COUNT'] = entry.getMasterCount();
+	row['MASTER_UNIT'] = entry.getRes().getUnitGroup().getMasterUnit().getName();
 	
-	if (entry.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-		row['AUX_COUNT'] = resEntry.getValue().getAuxCount();
-		row['AUX_UNIT'] = resEntry.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
+	if (entry.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+		row['AUX_COUNT'] = resEntry.getAuxCount();
+		row['AUX_UNIT'] = resEntry.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
 	}  
 	return true;
 }else{
@@ -398,6 +366,8 @@ tit = totalDataMap.entrySet().iterator();]]></method>
             <property name="type">a4</property>
             <page-header>
                 <text id="8">
+                    <property name="fontFamily">"SimSun"</property>
+                    <property name="textAlign">center</property>
                     <property name="contentType">html</property>
                     <text-property name="content"><![CDATA[<H2><B>客户发货情况汇总表</B></H2>]]></text-property>
                 </text>

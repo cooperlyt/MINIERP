@@ -11,6 +11,21 @@
 
 <ui:define name="func-body">
 
+<h:outputStylesheet>
+    .button {
+        font: bold 11px Arial;
+        text-decoration: none;
+        background-color: #EEEEEE;
+        color: #333333;
+        padding: 2px 6px 2px 6px;
+        border-top: 1px solid #CCCCCC;
+        border-right: 1px solid #333333;
+        border-bottom: 1px solid #333333;
+        border-left: 1px solid #CCCCCC;
+        margin: 2px;
+    }
+</h:outputStylesheet>
+
 <rich:messages ajaxRendered="true" globalOnly="false"/>
 
 <ui:include src="/layout/erp/ResSelectTree.xhtml">
@@ -40,24 +55,18 @@
             <a:commandButton value="#{messages.search}" execute="@form"
                              action="#{resLocate.locateByCode}" render="storeResCondition,resCodeLocateField">
                 <a:attachQueue requestDelay="0"/>
-                <s:conversationPropagation type="join"/>
-                <s:conversationId/>
             </a:commandButton>
 
             <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
                              title="#{messages.resSelect}" render="resSelectPanel_form,resCodeLocateField"
-                             oncomplete="#{rich:component('resSelectPanel')}.show();">
+                             onclick="#{rich:component('resSelectPanel')}.show();return false;">
                 <a:attachQueue requestDelay="0"/>
-                <s:conversationPropagation type="join"/>
-                <s:conversationId/>
             </a:commandButton>
 
             <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
                              title="#{messages.storeResSelect}" render="storeResSelectPanel_form,resCodeLocateField"
-                             oncomplete="#{rich:component('storeResSelectPanel')}.show();">
+                             onclick="#{rich:component('storeResSelectPanel')}.show(); return false">
                 <a:attachQueue requestDelay="0"/>
-                <s:conversationPropagation type="join"/>
-                <s:conversationId/>
             </a:commandButton>
         </h:panelGrid>
 
@@ -67,7 +76,7 @@
     <h:form id="storeResCondition">
 
 
-        <a:outputPanel ajaxRendered="true" >
+        <a:outputPanel ajaxRendered="true">
 
             <a:outputPanel rendered="#{not empty storeResList.resCondition}">
                 <div style="clear: both;"/>
@@ -115,24 +124,20 @@
             <a:outputPanel id="#{panelId}_buttons">
                 <div class="actionButtons">
 
-                    <s:button id="reset" value="#{messages.reset}" includePageParams="false" propagation="end">
+                        <s:button id="reset" value="#{messages.reset}" includePageParams="false" propagation="end">
 
-                    </s:button>
+                        </s:button>
 
-
-                    <a:outputPanel id="searchButton" ajaxRendered="true">
 
                         <a:commandButton value="#{messages.total}" action="#{customerShipTotal.refresh}"
                                          render="totalResults" execute="@form">
                             <a:attachQueue requestDelay="0"/>
-                            <s:conversationId/>
                         </a:commandButton>
 
-                        <h:commandLink target="_blank" value="#{messages.total}"
+                        <h:commandLink styleClass="button" target="_blank" value="#{messages.total}"
                                        action="#{customerShipTotal.showReport}">
-                            <s:conversationId/>
                         </h:commandLink>
-                    </a:outputPanel>
+
 
                 </div>
             </a:outputPanel>

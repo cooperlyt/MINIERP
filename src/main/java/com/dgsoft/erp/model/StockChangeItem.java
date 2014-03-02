@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "STOCK_CHANGE_ITEM", catalog = "MINI_ERP")
-public class StockChangeItem implements java.io.Serializable {
+public class StockChangeItem extends StoreResCountEntity implements java.io.Serializable {
 
     private String id;
     private StoreRes storeRes;
@@ -29,6 +30,18 @@ public class StockChangeItem implements java.io.Serializable {
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
     public StockChangeItem() {
+    }
+
+    @Override
+    @Transient
+    public BigDecimal getMasterCount() {
+        return getCount();
+    }
+
+    @Override
+    @Transient
+    public void setMasterCount(BigDecimal count) {
+        setCount(count);
     }
 
 

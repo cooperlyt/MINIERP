@@ -122,7 +122,7 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
             result = filterResult;
 
         }
-
+        log.debug("getResultList:" + result.size());
         return result;
     }
 }
