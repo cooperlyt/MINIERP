@@ -79,7 +79,6 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
             getInstance().setId(startData.getBusinessKey());
             getInstance().setApplyEmp(credentials.getUsername());
-            getInstance().setCreateDate(new Date());
             getInstance().setMoneyComplete(!isNeedBackMoney());
             getInstance().setResComplete(!isNeedBackRes());
         }

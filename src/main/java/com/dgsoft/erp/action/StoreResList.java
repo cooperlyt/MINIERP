@@ -50,6 +50,10 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
         return resCondition;
     }
 
+    public void reset(){
+        resCondition = null;
+        refresh();
+    }
 
     @Observer(value = "erp.storeResLocateSelected", create = false)
     public void selectedStoreRes(StoreRes storeRes) {

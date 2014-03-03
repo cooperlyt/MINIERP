@@ -1,8 +1,10 @@
 package com.dgsoft.erp.model.api;
 
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -12,11 +14,13 @@ import java.util.*;
  */
 public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<StoreRes, V> {
 
-    private List<V> getValueList() {
+    public List<V> getStoreResCountList() {
+
         return new ArrayList<V>(values());
     }
 
     public V put(V v) {
+
         V result = get(v.getStoreRes());
         if (result == null) {
             return super.put(v.getStoreRes(), v);
@@ -37,6 +41,7 @@ public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<S
             List<V> rv = result.get(v.getStoreRes().getRes());
             if (rv == null) {
                 rv = new ArrayList<V>();
+                result.put(v.getStoreRes().getRes(),rv);
             }
             rv.add(v);
         }
@@ -83,16 +88,16 @@ public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<S
             for (E e: values){
                 result = result.add(e.getMasterCount());
             }
-            return result;
+            return DataFormat.format(result,res.getUnitGroup().getMasterUnit().getCountFormate());
         }
 
         public BigDecimal getTotalAuxCount(){
-           if (res.getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+           if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
                BigDecimal result = BigDecimal.ZERO;
                for (E e: values){
                    result = result.add(e.getAuxCount());
                }
-               return result;
+               return DataFormat.format(result,res.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
            }else{
                return null;
            }

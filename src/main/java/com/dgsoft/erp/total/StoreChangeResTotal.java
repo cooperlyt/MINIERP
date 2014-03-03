@@ -17,9 +17,12 @@ public class StoreChangeResTotal extends ErpEntityQuery<StockChangeItem> {
     protected static final String EJBQL = "select stockChangeItem from StockChangeItem stockChangeItem  where stockChangeItem.stockChange.verify = true";
 
     public StoreChangeResTotal() {
+
         setEjbql(EJBQL);
         setRestrictionLogicOperator("and");
         setOrderColumn("stockChangeItem.stockChange.operDate");
+        dateFrom = new Date();
+        dateTo = new Date();
     }
 
     private Date dateFrom;

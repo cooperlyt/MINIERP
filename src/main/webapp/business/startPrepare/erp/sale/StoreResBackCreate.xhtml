@@ -56,6 +56,25 @@
 
         <rich:toolbarGroup>
             <h:panelGrid columns="10">
+                #{messages.OrderBack_field_createDate}
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        required="true"
+                        defaultLabel="#{currentDate}"
+                        label="#{messages.OrderBack_field_createDate}"
+                        value="#{orderBackHome.instance.createDate}">
+                    <rich:validator event="change"/>
+                    <rich:placeholder value="#{messages.OrderBack_field_createDate}"/>
+                </rich:calendar>
+            </h:panelGrid>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
+            <h:panelGrid columns="10">
                 #{messages.OrderBack_field_SaveMoney}
                 <a:outputPanel ajaxRendered="true">
                     <h:inputText id="saveMoneyInput" styleClass="barOrderNumber"

@@ -5,12 +5,11 @@ import com.dgsoft.erp.action.StoreResList;
 import com.dgsoft.erp.model.ProductGroup;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
-import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.model.api.StoreResCountGroup;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Logging;
 
 import java.util.*;
 
@@ -29,9 +28,6 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
             "stockChangeItem.storeRes.floatConversionRate = #{storeResList.resultSearchFloatConvertRate}",
             "stockChangeItem.storeRes in (#{storeResList.filterResultList})"};
 
-    @In(create = true)
-    private StoreResList storeResList;
-
 
     public ProductGroupStoreInTotal() {
         super();
@@ -45,17 +41,21 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
 
     public Map<Date,Map<ProductGroup,StoreResCountGroup<StoreResCountEntity>>> getDayTotalMap(){
         Map<Date,Map<ProductGroup,StoreResCountGroup<StoreResCountEntity>>> result = new HashMap<Date, Map<ProductGroup, StoreResCountGroup<StoreResCountEntity>>>();
+        Logging.getLog(getClass()).debug("resultList Count:" + getResultList().size());
         for (StockChangeItem item: getResultList()){
             Map<ProductGroup,StoreResCountGroup<StoreResCountEntity>> psMap = result.get(DataFormat.halfTime(item.getStockChange().getOperDate()));
             if (psMap == null){
                 psMap = new HashMap<ProductGroup, StoreResCountGroup<StoreResCountEntity>>();
+                result.put(DataFormat.halfTime(item.getStockChange().getOperDate()),psMap);
             }
             StoreResCountGroup<StoreResCountEntity> srcg = psMap.get(item.getStockChange().getProductStoreIn().getProductGroup());
             if (srcg == null){
                 srcg = new StoreResCountGroup<StoreResCountEntity>();
+                psMap.put(item.getStockChange().getProductStoreIn().getProductGroup(),srcg);
             }
             srcg.put(item);
         }
+        Logging.getLog(getClass()).debug("total result Count:" + result.size());
         return result;
     }
 
