@@ -101,7 +101,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.order_search_BETWEEN_createDate}"
-                    value="#{customerShipTotal.shipDateFrom}">
+                    value="#{customerShipTotal.searchDateArea.dateFrom}">
             </rich:calendar>
 
             --
@@ -113,7 +113,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.order_search_BETWEEN_createDate}"
-                    value="#{customerShipTotal.shipDateTo}">
+                    value="#{customerShipTotal.searchDateArea.dateTo}">
             </rich:calendar>
         </s:decorate>
 
@@ -151,11 +151,15 @@
 
 <a:outputPanel id="totalResults">
 
-    <rich:dataTable style="width: 100%" value="#{customerShipTotal.customerTotalResultList}" var="_citem">
+
+    <rich:dataTable style="width: 100%" value="#{collectionTools.mapToList(customerShipTotal.customerTotalResultMap)}" var="_citem">
         <f:facet name="header">
             <rich:columnGroup>
                 <rich:column rowspan="2">
                     #{messages.StoreRes}
+                </rich:column>
+                <rich:column rowspan="2">
+                    #{messages.Store}
                 </rich:column>
                 <rich:column colspan="2">
                     #{messages.count}
@@ -175,7 +179,7 @@
             #{_citem.key.customerArea.name} - #{_citem.key.name}
         </rich:column>
 
-        <rich:collapsibleSubTable value="#{_citem.value}" var="_ritem" id="sbtb1" expandMode="client">
+        <rich:collapsibleSubTable value="#{_citem.value.getStoreResCountList()}" var="_ritem" id="sbtb1" expandMode="client">
 
             <rich:column>
 
@@ -198,39 +202,10 @@
     </rich:dataTable>
 
     <br/>
-    <rich:dataTable style="width: 100%" value="#{customerShipTotal.resTotalResultList}" var="_rtitem">
-        <f:facet name="header">
-            <rich:columnGroup>
-                <rich:column rowspan="2">
-                    #{messages.StoreRes}
-                </rich:column>
-                <rich:column colspan="2">
-                    #{messages.count}
-                </rich:column>
-                <rich:column breakRowBefore="true">
-                    #{messages.MasterUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.AuxUnitCount}
-                </rich:column>
-            </rich:columnGroup>
-        </f:facet>
 
-        <rich:column>
-
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{_rtitem.storeRes}"/>
-            </ui:include>
-
-        </rich:column>
-        <rich:column>
-            #{_rtitem.displayMasterCount}
-        </rich:column>
-
-        <rich:column>
-            #{_rtitem.displayAuxCount}
-        </rich:column>
-    </rich:dataTable>
+    <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
+        <ui:param name="value" value="#{customerShipTotal.totalOutResultList}"  />
+    </ui:include>
 
 </a:outputPanel>
 <!--

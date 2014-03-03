@@ -23,7 +23,7 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
     private StoreRes storeRes;
     private Stock stock;
     private StockChange stockChange;
-    private boolean storeOut;
+    //private boolean storeOut;
     private BigDecimal count;
     private Batch batch;
 
@@ -45,18 +45,16 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
     }
 
 
-    public StockChangeItem(StockChange stockChange, StoreRes storeRes, BigDecimal count, boolean storeOut) {
+    public StockChangeItem(StockChange stockChange, StoreRes storeRes, BigDecimal count) {
         this.stockChange = stockChange;
         this.storeRes = storeRes;
-        this.storeOut = storeOut;
         this.count = count;
     }
 
-    public StockChangeItem(StockChange stockChange, Stock stock, BigDecimal count, boolean storeOut) {
+    public StockChangeItem(StockChange stockChange, Stock stock, BigDecimal count) {
         this.stockChange = stockChange;
         this.storeRes = stock.getStoreRes();
         this.stock = stock;
-        this.storeOut = storeOut;
         this.count = count;
     }
 
@@ -109,14 +107,11 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.stockChange = stockChange;
     }
 
-    @Column(name = "STORE_OUT", nullable = false)
+    @Transient
     public boolean isStoreOut() {
-        return this.storeOut;
+        return getStockChange().getOperType().isOut();
     }
 
-    public void setStoreOut(boolean storeOut) {
-        this.storeOut = storeOut;
-    }
 
     @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull

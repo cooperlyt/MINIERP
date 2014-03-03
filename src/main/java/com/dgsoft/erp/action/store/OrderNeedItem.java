@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.model.*;
 
 import java.math.BigDecimal;

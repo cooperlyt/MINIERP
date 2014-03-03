@@ -1,10 +1,13 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.action.StoreResList;
 import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.model.api.StoreResCountGroup;
 import org.jboss.seam.annotations.In;
 
 import java.util.*;
@@ -21,66 +24,34 @@ public class StoreChangeResTotal extends ErpEntityQuery<StockChangeItem> {
         setEjbql(EJBQL);
         setRestrictionLogicOperator("and");
         setOrderColumn("stockChangeItem.stockChange.operDate");
-        dateFrom = new Date();
-        dateTo = new Date();
     }
 
-    private Date dateFrom;
-    private Date dateTo;
+    private SearchDateArea searchDateArea = new SearchDateArea(new Date(), new Date());
 
-    public Date getSearchDateTo() {
-        if (dateTo == null) {
-            return null;
-        }
-        return new Date(dateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
+    public SearchDateArea getSearchDateArea() {
+        return searchDateArea;
     }
 
-    public Date getDateTo() {
-        return dateTo;
+    public StoreResCountGroup<StoreResCountEntity> getTotalInResultList() {
+        return getTotalResCountGroup(false);
     }
 
-    public void setDateTo(Date dateTo) {
-        this.dateTo = dateTo;
+    public StoreResCountGroup<StoreResCountEntity> getTotalOutResultList() {
+        return getTotalResCountGroup(true);
     }
 
-    public Date getDateFrom() {
-        return dateFrom;
+    public StoreResCountGroup<StoreResCountEntity> getTotalResCountGroup(){
+        return new StoreResCountGroup<StoreResCountEntity>(getResultList());
     }
 
-    public void setDateFrom(Date dateFrom) {
-        this.dateFrom = dateFrom;
-    }
-
-    public List<StoreResCount> getTotalInResultList() {
-        return getTotalResCounts(false);
-    }
-
-    public List<StoreResCount> getTotalOutResultList() {
-        return getTotalResCounts(true);
-    }
-
-    private List<StoreResCount> getTotalResCounts(boolean out) {
-        Map<StoreRes, StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
-        List<StockChangeItem> changeItems = getResultList();
-        for (StockChangeItem item : changeItems) {
-            if (item.getStockChange().getOperType().isOut() == out) {
-                StoreResCount storeResCount = result.get(item.getStoreRes());
-                if (storeResCount == null) {
-                    storeResCount = new StoreResCount(item.getStoreRes(), item.getCount());
-                    result.put(item.getStoreRes(), storeResCount);
-                } else {
-                    storeResCount.setMasterCount(storeResCount.getMasterCount().add(item.getCount()));
-                }
+    private StoreResCountGroup<StoreResCountEntity> getTotalResCountGroup(boolean out){
+        StoreResCountGroup<StoreResCountEntity> result = new StoreResCountGroup<StoreResCountEntity>();
+        for (StockChangeItem item : getResultList()) {
+            if (item.isStoreOut() == out) {
+                result.put(item);
             }
-
         }
-        List<StoreResCount> resultList = new ArrayList<StoreResCount>(result.values());
-        Collections.sort(resultList, new Comparator<StoreResCount>() {
-            @Override
-            public int compare(StoreResCount o1, StoreResCount o2) {
-                return o1.getStoreRes().compareTo(o2.getStoreRes());
-            }
-        });
-        return resultList;
+        return result;
     }
+
 }

@@ -1,6 +1,6 @@
 package com.dgsoft.erp.business.order;
 
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.MiddleManHome;
 import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.CustomerOrder;

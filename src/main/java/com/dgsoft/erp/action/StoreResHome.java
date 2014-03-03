@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;

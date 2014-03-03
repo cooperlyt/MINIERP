@@ -1,14 +1,14 @@
 package com.dgsoft.erp.total;
 
-import com.dgsoft.common.helper.DataFormat;
-import com.dgsoft.erp.action.StoreResList;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.model.ProductGroup;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.model.api.StoreResCountGroup;
-import org.jboss.seam.annotations.In;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Logging;
 
 import java.util.*;
@@ -17,13 +17,14 @@ import java.util.*;
  * Created by cooper on 3/3/14.
  */
 @Name("productGroupStoreInTotal")
+@Scope(ScopeType.CONVERSATION)
 public class ProductGroupStoreInTotal extends StoreChangeResTotal {
 
 
     private static final String[] RESTRICTIONS = {
             "stockChangeItem.stockChange.operType = #{productGroupStoreInTotal.changeType}",
-            "stockChangeItem.stockChange.operDate >= #{productGroupStoreInTotal.dateFrom}",
-            "stockChangeItem.stockChange.operDate <= #{productGroupStoreInTotal.searchDateTo}",
+            "stockChangeItem.stockChange.operDate >= #{productGroupStoreInTotal.searchDateArea.dateFrom}",
+            "stockChangeItem.stockChange.operDate <= #{productGroupStoreInTotal.searchDateArea.searchDateTo}",
             "stockChangeItem.storeRes.res.id = #{storeResList.resultSearchResId}",
             "stockChangeItem.storeRes.floatConversionRate = #{storeResList.resultSearchFloatConvertRate}",
             "stockChangeItem.storeRes in (#{storeResList.filterResultList})"};

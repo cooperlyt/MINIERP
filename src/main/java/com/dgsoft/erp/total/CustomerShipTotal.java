@@ -5,6 +5,8 @@ import com.dgsoft.erp.action.StoreResList;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.model.api.StoreResCountGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -21,142 +23,50 @@ import java.util.logging.Logger;
  */
 @Name("customerShipTotal")
 @Scope(ScopeType.CONVERSATION)
-public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
+public class CustomerShipTotal extends StoreChangeResTotal {
 
-    private static final String EJBQL = "select dispatchItem from DispatchItem dispatchItem  where dispatchItem.dispatch.storeOut = true";
+    //private static final String EJBQL = "select dispatchItem from DispatchItem dispatchItem  where dispatchItem.dispatch.storeOut = true";
+
+    protected static final String EJBQL = "select stockChangeItem from StockChangeItem stockChangeItem left join fetch stockChangeItem.stockChange sc left join fetch sc.orderDispatch od left join fetch od.needRes nr left join fetch nr.customerOrder co left join fetch co.customer customer where stockChangeItem.stockChange.verify = true";
+
+
 
     private static final String[] RESTRICTIONS = {
-            "dispatchItem.dispatch.sendTime >= #{customerShipTotal.shipDateFrom}",
-            "dispatchItem.dispatch.sendTime <= #{customerShipTotal.searchShipDateTo}",
-            "dispatchItem.storeRes.res.id = #{storeResList.resultSearchResId}",
-            "dispatchItem.storeRes.floatConversionRate = #{storeResList.resultSearchFloatConvertRate}",
-            "dispatchItem.storeRes in (#{storeResList.filterResultList})"};
-
+            "stockChangeItem.stockChange.operType = #{customerShipTotal.changeType}",
+            "stockChangeItem.stockChange.operDate >= #{customerShipTotal.searchDateArea.dateFrom}",
+            "stockChangeItem.stockChange.operDate <= #{customerShipTotal.searchDateArea.searchDateTo}",
+            "stockChangeItem.storeRes.res.id = #{storeResList.resultSearchResId}",
+            "stockChangeItem.storeRes.floatConversionRate = #{storeResList.resultSearchFloatConvertRate}",
+            "stockChangeItem.storeRes in (#{storeResList.filterResultList})"};
 
     public CustomerShipTotal() {
+        super();
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
-        setRestrictionLogicOperator("and");
-        shipDateFrom = new Date();
-        shipDateTo = new Date();
     }
 
 
-    @org.jboss.seam.annotations.Logger
-    private Log log;
-
-    private Date shipDateFrom;
-
-    private Date shipDateTo;
-
-    private Map<Customer,List<StoreResCount>> resultMap;
-
-    public Date getShipDateFrom() {
-        return shipDateFrom;
+    public StockChange.StoreChangeType getChangeType(){
+        return StockChange.StoreChangeType.SELL_OUT;
     }
 
-    public void setShipDateFrom(Date shipDateFrom) {
-        this.shipDateFrom = shipDateFrom;
-    }
-
-    public Date getShipDateTo() {
-        return shipDateTo;
-    }
-
-    public void setShipDateTo(Date shipDateTo) {
-        this.shipDateTo = shipDateTo;
-
-    }
-
-    public Date getSearchShipDateTo() {
-        if (shipDateTo == null) {
-            return null;
-        }
-        return new Date(shipDateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
-    }
+    //private Map<Customer,List<StoreResCount>> resultMap;
 
 
+    public Map<Customer,StoreResCountGroup<StoreResCountEntity>> getCustomerTotalResultMap() {
 
-    public Map<Customer,List<StoreResCount>> getCustomerTotalResultMap() {
-        if (isAnyParameterDirty()) {
-            refresh();
-        }
-        initResultMap();
-
-        return resultMap;
-    }
-
-    public List<Map.Entry<Customer,List<StoreResCount>>> getCustomerTotalResultList(){
-        List<Map.Entry<Customer,List<StoreResCount>>> result = new ArrayList<Map.Entry<Customer, List<StoreResCount>>>(getCustomerTotalResultMap().entrySet());
-        Collections.sort(result,new Comparator<Map.Entry<Customer, List<StoreResCount>>>() {
-            @Override
-            public int compare(Map.Entry<Customer, List<StoreResCount>> o1, Map.Entry<Customer, List<StoreResCount>> o2) {
-                return o1.getKey().getId().compareTo(o2.getKey().getId());
+        Map<Customer,StoreResCountGroup<StoreResCountEntity>> result =new HashMap<Customer,StoreResCountGroup<StoreResCountEntity>>();
+        for (StockChangeItem item: getResultList()){
+            Customer customer = item.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
+            StoreResCountGroup<StoreResCountEntity> mapValue = result.get(customer);
+            if (mapValue == null){
+                mapValue = new StoreResCountGroup<StoreResCountEntity>();
+                result.put(customer,mapValue);
             }
-        });
+            mapValue.put(item);
+        }
+
         return result;
-    }
-
-    public Map<StoreRes,StoreResCount> getResTotalResultMap(){
-        Map<StoreRes,StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
-        for (List<StoreResCount> storeResCounts: getCustomerTotalResultMap().values()){
-            for (StoreResCount storeResCount: storeResCounts){
-                StoreResCount c = result.get(storeResCount.getStoreRes());
-
-                if (c == null){
-                    result.put(storeResCount.getStoreRes(),storeResCount);
-                }else{
-                    c.add(storeResCount);
-                }
-            }
-        }
-        return result;
-    }
-
-    public List<StoreResCount> getResTotalResultList(){
-        List<StoreResCount> result = new ArrayList<StoreResCount>(getResTotalResultMap().values());
-        Collections.sort(result,new Comparator<StoreResCount>() {
-            @Override
-            public int compare(StoreResCount o1, StoreResCount o2) {
-                return o1.getStoreRes().compareTo(o2.getStoreRes());
-            }
-        });
-        return result;
-    }
-
-
-
-    private void initResultMap(){
-        if (resultMap == null){
-            Map<Customer,List<StoreResCount>> result =new HashMap<Customer,List<StoreResCount>>();
-            for (DispatchItem item: getResultList()){
-                List<StoreResCount> mapValue = result.get(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer());
-                if (mapValue == null){
-                    mapValue = new ArrayList<StoreResCount>();
-                    result.put(item.getDispatch().getNeedRes().getCustomerOrder().getCustomer(),mapValue);
-                }
-
-                StoreResCount count = null;
-                for (StoreResCount c: mapValue){
-                    if (c.getStoreRes().equals(item.getStoreRes())){
-                        count = c;
-                        break;
-                    }
-                }
-                if (count == null){
-                    mapValue.add(new StoreResCount(item.getStoreRes(),item.getResCount().getMasterCount()) );
-                }else{
-                    count.setMasterCount(count.getMasterCount().add(item.getResCount().getMasterCount()));
-                }
-            }
-            resultMap = result;
-        }
-    }
-
-    @Override
-    public void refresh() {
-        super.refresh();
-        resultMap = null;
     }
 
     public String showReport(){

@@ -1,10 +1,9 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
-import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -13,6 +12,15 @@ import java.util.*;
  * Created by cooper on 3/3/14.
  */
 public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<StoreRes, V> {
+
+    public <E extends V> StoreResCountGroup(Collection<E> values) {
+        super();
+        putAll(values);
+    }
+
+    public StoreResCountGroup() {
+        super();
+    }
 
     public List<V> getStoreResCountList() {
 
@@ -27,6 +35,12 @@ public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<S
         } else {
             result.add(v);
             return result;
+        }
+    }
+
+    public <E extends V> void putAll(Collection<E> values){
+        for (V v: values){
+            put(v);
         }
     }
 

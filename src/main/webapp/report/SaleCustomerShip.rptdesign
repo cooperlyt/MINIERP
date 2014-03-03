@@ -25,8 +25,8 @@ resHelper = Component.getInstance("resHelper", false);
             <method name="open"><![CDATA[customerShipTotal = Component.getInstance("customerShipTotal", false);
 
 
-totalDataMap = customerShipTotal.getResTotalResultList();
-dataMap = customerShipTotal.getCustomerTotalResultList();
+totalDataMap = customerShipTotal.getTotalOutResultList();
+dataMap = customerShipTotal.getCustomerTotalResultMap();
 
 ]]></method>
         </script-data-source>
@@ -163,10 +163,10 @@ dataMap = customerShipTotal.getCustomerTotalResultList();
             <method name="open"><![CDATA[
 
 
-cit = dataMap.iterator();
+cit = dataMap.entrySet().iterator();
 if (cit.hasNext()){
 	curEntry = cit.next();
-	rit = curEntry.getValue().iterator();
+	rit = curEntry.getValue().getStoreResCountList().iterator();
 }else{
 	rit = null;
 }
@@ -178,7 +178,7 @@ if (cit.hasNext()){
 if (!rit.hasNext()){
 	if (cit.hasNext()){
 		curEntry = cit.next();
-		rit = curEntry.getValue().iterator();
+		rit = curEntry.getValue().getStoreResCountList().iterator();
 		resEntry = rit.next();
 	}else{
 		return false;
@@ -308,7 +308,7 @@ return true;
             <property name="dataSource">Data Source</property>
             <method name="open"><![CDATA[
 
-tit = totalDataMap.iterator();]]></method>
+tit = totalDataMap.getStoreResCountList().iterator();]]></method>
             <method name="fetch"><![CDATA[if(tit.hasNext()){
 	entry = tit.next();
 	row['RES_ID'] = entry.getRes().getId();

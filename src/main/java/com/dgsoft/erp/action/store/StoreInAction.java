@@ -116,7 +116,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
 
     private void storeInNow(StoreInItem storeInItem) {
         StockChangeItem stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
-                storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount(), false);
+                storeResHome.getInstance(), storeInItem.getStoreResCountInupt().getMasterCount());
         stockChangeItem.setNoConvertCounts(storeInItem.getStoreResCountInupt().getNoConvertCounts());
         for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
             noConvertCount.setStockChangeItem(stockChangeItem);

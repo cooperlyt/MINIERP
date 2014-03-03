@@ -2,7 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.NamedEntity;
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.ResCount;

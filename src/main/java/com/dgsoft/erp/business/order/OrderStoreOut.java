@@ -146,7 +146,7 @@ public class OrderStoreOut extends OrderTaskHandle {
             }
 
             StockChangeItem stockChangeItem = new StockChangeItem(dispatchHome.getInstance().getStockChange(),
-                    stock, item.getResCount().getMasterCount(), true);
+                    stock, item.getResCount().getMasterCount());
             dispatchHome.getInstance().getStockChange().getStockChangeItems()
                     .add(stockChangeItem);
             if (stockChangeItem.isStoreOut()){

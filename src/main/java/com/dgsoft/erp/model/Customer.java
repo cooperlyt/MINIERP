@@ -296,4 +296,36 @@ public class Customer extends BatchOperEntity implements java.io.Serializable, N
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
+
+    @Override
+    @Transient
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Customer)) {
+            return false;
+        }
+        Customer other = (Customer) obj;
+
+        if ((getId() != null) && (!"".equals(getId().trim()))) {
+            return getId().equals(other.getId());
+        }
+
+        return false;
+    }
+
+    @Override
+    @Transient
+    public int hashCode() {
+        if ((getId() != null) && (!"".equals(getId().trim()))) {
+            return getId().hashCode();
+        }else{
+            return super.hashCode();
+        }
+
+    }
 }

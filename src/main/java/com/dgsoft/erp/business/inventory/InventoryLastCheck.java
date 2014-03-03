@@ -51,7 +51,7 @@ public class InventoryLastCheck extends InventoryTaskHandle {
                         stock = new Stock(inventoryHome.getInstance().getStore(), prepareStockChange.getStoreRes(), BigDecimal.ZERO);
                     }
 
-                    StockChangeItem item = new StockChangeItem(addStockChange, stock, prepareStockChange.getCount(), false);
+                    StockChangeItem item = new StockChangeItem(addStockChange, stock, prepareStockChange.getCount());
 
 
                     addStockChange.getStockChangeItems().add(item);
@@ -85,7 +85,7 @@ public class InventoryLastCheck extends InventoryTaskHandle {
                     }
 
 
-                    StockChangeItem item = new StockChangeItem(loseStockChange, stock, prepareStockChange.getCount(), true);
+                    StockChangeItem item = new StockChangeItem(loseStockChange, stock, prepareStockChange.getCount());
 
 
                     loseStockChange.getStockChangeItems().add(item);

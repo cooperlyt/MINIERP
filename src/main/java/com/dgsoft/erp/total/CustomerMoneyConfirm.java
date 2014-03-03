@@ -1,8 +1,11 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.AccountOper;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -16,8 +19,8 @@ public class CustomerMoneyConfirm extends ErpEntityQuery<AccountOper> {
     private static final String EJBQL = "select accountOper from AccountOper accountOper";
 
     private static final String[] RESTRICTIONS = {
-            "accountOper.operDate >= #{customerMoneyConfirm.dateFrom}",
-            "accountOper.operDate <= #{customerMoneyConfirm.searchDateTo}",
+            "accountOper.operDate >= #{customerMoneyConfirm.searchDateArea.dateFrom}",
+            "accountOper.operDate <= #{customerMoneyConfirm.searchDateArea.searchDateTo}",
             "accountOper.customer.id = #{customerMoneyConfirm.coustomerId}"};
 
 
@@ -29,9 +32,11 @@ public class CustomerMoneyConfirm extends ErpEntityQuery<AccountOper> {
         setOrderColumn("accountOper.operDate");
     }
 
-    private Date dateFrom;
+    private SearchDateArea searchDateArea = new SearchDateArea(new Date(), new Date());
 
-    private Date dateTo;
+    public SearchDateArea getSearchDateArea() {
+        return searchDateArea;
+    }
 
     private String coustomerId;
 
@@ -43,26 +48,5 @@ public class CustomerMoneyConfirm extends ErpEntityQuery<AccountOper> {
         this.coustomerId = coustomerId;
     }
 
-    public Date getSearchDateTo() {
-        if (dateTo == null) {
-            return null;
-        }
-        return new Date(dateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
-    }
 
-    public Date getDateTo() {
-        return dateTo;
-    }
-
-    public void setDateTo(Date dateTo) {
-        this.dateTo = dateTo;
-    }
-
-    public Date getDateFrom() {
-        return dateFrom;
-    }
-
-    public void setDateFrom(Date dateFrom) {
-        this.dateFrom = dateFrom;
-    }
 }

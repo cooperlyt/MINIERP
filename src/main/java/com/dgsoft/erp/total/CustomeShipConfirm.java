@@ -3,7 +3,9 @@ package com.dgsoft.erp.total;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -17,8 +19,8 @@ public class CustomeShipConfirm extends CustomerResConfirm {
 
     private static final String[] RESTRICTIONS = {
             "stockChangeItem.stockChange.operType = #{customerShipConfirm.changeType}",
-            "stockChangeItem.stockChange.operDate >= #{customerShipConfirm.dateFrom}",
-            "stockChangeItem.stockChange.operDate <= #{customerShipConfirm.searchDateTo}",
+            "stockChangeItem.stockChange.operDate >= #{customerShipConfirm.searchDateArea.dateFrom}",
+            "stockChangeItem.stockChange.operDate <= #{customerShipConfirm.searchDateArea.searchDateTo}",
             "stockChangeItem.stockChange.orderDispatch.needRes.customerOrder.customer.id = #{customerShipConfirm.coustomerId}"};
 
 

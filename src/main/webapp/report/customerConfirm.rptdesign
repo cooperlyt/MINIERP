@@ -65,20 +65,20 @@ resHelper = Component.getInstance("resHelper", false);]]></method>
         <script-data-source name="Data Source" id="7">
             <method name="open"><![CDATA[customerMoneyConfirm = Component.getInstance("customerMoneyConfirm", true); 
 customerMoneyConfirm.setCoustomerId(params['customerId'].value); 
-customerMoneyConfirm.setDateFrom(params['dateFrom'].value);
-customerMoneyConfirm.setDateTo(params['dateTo'].value);
+customerMoneyConfirm.getSearchDateArea().setDateFrom(params['dateFrom'].value);
+customerMoneyConfirm.getSearchDateArea().setDateTo(params['dateTo'].value);
 
 
 customerBackStoreConfirm = Component.getInstance("customerBackStoreConfirm", true); 
 customerBackStoreConfirm.setCoustomerId(params['customerId'].value); 
-customerBackStoreConfirm.setDateFrom(params['dateFrom'].value);
-customerBackStoreConfirm.setDateTo(params['dateTo'].value);
+customerBackStoreConfirm.getSearchDateArea().setDateFrom(params['dateFrom'].value);
+customerBackStoreConfirm.getSearchDateArea().setDateTo(params['dateTo'].value);
 
 
 customerShipConfirm = Component.getInstance("customerShipConfirm", true); 
 customerShipConfirm.setCoustomerId(params['customerId'].value); 
-customerShipConfirm.setDateFrom(params['dateFrom'].value);
-customerShipConfirm.setDateTo(params['dateTo'].value);
+customerShipConfirm.getSearchDateArea().setDateFrom(params['dateFrom'].value);
+customerShipConfirm.getSearchDateArea().setDateTo(params['dateTo'].value);
 
 ]]></method>
         </script-data-source>
@@ -513,7 +513,7 @@ return false;]]></method>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
-            <method name="open"><![CDATA[btIt = customerBackStoreConfirm.getTotalInResultList().iterator();]]></method>
+            <method name="open"><![CDATA[btIt = customerBackStoreConfirm.getTotalInResultList().getStoreResCountList().iterator();]]></method>
             <method name="fetch"><![CDATA[if (btIt.hasNext()){
 	item = btIt.next();
 	row['ResId'] = item.getRes().getId();
@@ -631,7 +631,7 @@ return false;]]></method>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
-            <method name="open"><![CDATA[stIt = customerShipConfirm.getTotalOutResultList().iterator();]]></method>
+            <method name="open"><![CDATA[stIt = customerShipConfirm.getTotalOutResultList().getStoreResCountList().iterator();]]></method>
             <method name="fetch"><![CDATA[if (stIt.hasNext()){
 	item = stIt.next();
 	row['ResId'] = item.getRes().getId();

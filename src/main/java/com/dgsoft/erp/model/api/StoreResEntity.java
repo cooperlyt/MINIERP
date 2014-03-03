@@ -1,6 +1,6 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 

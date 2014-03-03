@@ -1,0 +1,68 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <!-- params value -->
+    <f:subview>
+        <rich:dataTable style="width: 100%" value="#{value.getResGroupList()}" var="_item">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column rowspan="2">
+                        #{messages.StoreRes}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.count}
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+
+            <rich:column colspan="3">
+                <rich:collapsibleSubTableToggler for="sbtb1"/>
+                #{_item.res.name}
+            </rich:column>
+
+            <rich:collapsibleSubTable value="#{_item.values}" var="_item1" id="sbtb1">
+                <rich:column>
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item1.storeRes}"/>
+                    </ui:include>
+                    <f:facet name="footer">
+                        #{_item.values.size}
+                    </f:facet>
+                </rich:column>
+
+
+                <rich:column>
+                    #{_item1.displayMasterCount}
+                    <f:facet name="footer">
+                        #{_item.totalMasterCount}
+
+                        #{_item.res.unitGroup.masterUnit.name}
+                    </f:facet>
+                </rich:column>
+
+                <rich:column>
+                    #{_item1.displayAuxCount}
+                    <f:facet name="footer">
+                        #{_item.totalAuxCount}
+                        <h:outputText value="#{_item.res.unitGroup.floatAuxiliaryUnit.name}"
+                                      rendered="#{_item.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                    </f:facet>
+                </rich:column>
+
+            </rich:collapsibleSubTable>
+        </rich:dataTable>
+    </f:subview>
+</ui:composition>

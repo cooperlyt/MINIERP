@@ -26,7 +26,6 @@ public class Allocation implements java.io.Serializable {
     private String memo;
     private String state;
     private Date createDate;
-    private Date completeDate;
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
 
     public Allocation() {
@@ -34,7 +33,7 @@ public class Allocation implements java.io.Serializable {
 
     public Allocation(String id, Store storeByTargetStore,
                       Store storeByApplyStore, String applyEmp, String reason,
-                      String state, Date createDate, Date completeDate) {
+                      String state, Date createDate) {
         this.id = id;
         this.storeByTargetStore = storeByTargetStore;
         this.storeByApplyStore = storeByApplyStore;
@@ -42,7 +41,6 @@ public class Allocation implements java.io.Serializable {
         this.reason = reason;
         this.state = state;
         this.createDate = createDate;
-        this.completeDate = completeDate;
     }
 
 
@@ -162,17 +160,6 @@ public class Allocation implements java.io.Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "COMPLETE_DATE", nullable = false, length = 19, columnDefinition = "DATETIME")
-    @NotNull
-    public Date getCompleteDate() {
-        return this.completeDate;
-    }
-
-    public void setCompleteDate(Date completeDate) {
-        this.completeDate = completeDate;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "allocation")

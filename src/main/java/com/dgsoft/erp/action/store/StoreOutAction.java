@@ -154,7 +154,7 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
     private void storeOutNow(StoreOutItem outItem) {
 
         StockChangeItem stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
-                outItem.getStock(), outItem.getStoreResCountInupt().getMasterCount(), true);
+                outItem.getStock(), outItem.getStoreResCountInupt().getMasterCount());
         stockChangeItem.setNoConvertCounts(outItem.getStoreResCountInupt().getNoConvertCounts());
         for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
             noConvertCount.setStockChangeItem(stockChangeItem);

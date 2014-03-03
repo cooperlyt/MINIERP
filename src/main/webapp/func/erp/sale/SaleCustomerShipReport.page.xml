@@ -5,7 +5,5 @@
 
     <begin-conversation join="true"/>
 
-    <param name="shipDateFrom" value="#{customerShipTotal.shipDateFrom}" converterId="searchDateConverter"/>
-    <param name="shipDateTo" value="#{customerShipTotal.shipDateTo}" converterId="searchDateConverter"/>
 
 </page>

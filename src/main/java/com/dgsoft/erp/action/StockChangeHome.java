@@ -50,7 +50,7 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
         } else
             inStock.setCount(inStock.getCount().add(inCount.getMasterCount()));
         getInstance().getStockChangeItems().add(new StockChangeItem(getInstance(), inStock,
-                inCount.getMasterCount(), getInstance().getOperType().isOut()));
+                inCount.getMasterCount()));
 
     }
 

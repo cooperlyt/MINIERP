@@ -1,7 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;

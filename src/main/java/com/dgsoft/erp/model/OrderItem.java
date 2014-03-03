@@ -1,7 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.helper.DataFormat;
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 

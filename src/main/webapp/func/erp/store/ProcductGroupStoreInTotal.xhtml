@@ -100,7 +100,7 @@
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
-                    value="#{productGroupStoreInTotal.dateFrom}">
+                    value="#{productGroupStoreInTotal.searchDateArea.dateFrom}">
             </rich:calendar>
 
             --
@@ -111,7 +111,7 @@
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
-                    value="#{productGroupStoreInTotal.dateTo}">
+                    value="#{productGroupStoreInTotal.searchDateArea.dateTo}">
             </rich:calendar>
         </s:decorate>
 
@@ -234,6 +234,12 @@
     </rich:dataTable>
 
 
+
+    <br/>
+
+    <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
+        <ui:param name="value" value="#{productGroupStoreInTotal.totalInResultList}"  />
+    </ui:include>
 </a:outputPanel>
 <!--
 <rich:panel id="resultReport">

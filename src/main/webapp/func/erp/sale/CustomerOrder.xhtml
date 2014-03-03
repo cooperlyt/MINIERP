@@ -101,14 +101,14 @@
         </s:decorate>
 
         <s:decorate template="/layout/seam-display.xhtml">
-            <ui:define name="label">#{messages.order_search_BETWEEN_createDate}</ui:define>
+            <ui:define name="label">#{messages.order_field_createDate}</ui:define>
             <rich:calendar
                     enableManualInput="true"
                     inputSize="10"
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
-                    label="#{messages.order_search_BETWEEN_createDate}"
+                    label="#{messages.order_field_createDate}"
                     value="#{orderList.createDateFrom}">
             </rich:calendar>
 
@@ -120,7 +120,7 @@
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
-                    label="#{messages.order_search_BETWEEN_createDate}"
+                    label="#{messages.order_field_createDate}"
                     value="#{orderList.createDateTo}">
             </rich:calendar>
         </s:decorate>

@@ -265,6 +265,5 @@ public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity
             return super.hashCode();
         }
 
-
     }
 }
