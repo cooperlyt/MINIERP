@@ -1,13 +1,12 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.system.model.Word;
-import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
-import org.apache.poi.ss.formula.functions.T;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -48,7 +47,7 @@ public class ResHelper {
 
 
         if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            result += " " + BigDecimalFormat.format(storeRes.getFloatConversionRate(),
+            result += " " + DataFormat.format(storeRes.getFloatConversionRate(),
                     storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString();
             result += storeRes.getRes().getUnitGroup().getName();
         }
@@ -145,7 +144,7 @@ public class ResHelper {
     public String genStoreResCode(StoreRes storeRes) {
         return genStoreResCode(storeRes.getRes().getCode(), storeRes.getFormatList(),
                 (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) ?
-                        BigDecimalFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null);
+                        DataFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null);
     }
 
     public List<OrderItem> totalOrderItem(List<OrderItem> items) {
@@ -220,7 +219,7 @@ public class ResHelper {
                 setParameter("floatConvertType",UnitGroup.UnitGroupType.FLOAT_CONVERT).setParameter("resId",res.getId()).getResultList();
         List<BigDecimal> result = new ArrayList<BigDecimal>(queryResult.size());
         for (BigDecimal rate: queryResult){
-            result.add(BigDecimalFormat.format(rate,res.getUnitGroup().getFloatConvertRateFormat()));
+            result.add(DataFormat.format(rate, res.getUnitGroup().getFloatConvertRateFormat()));
         }
         return result;
     }

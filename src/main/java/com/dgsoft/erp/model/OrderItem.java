@@ -1,8 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
-import com.dgsoft.erp.action.OrderHome;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -225,12 +224,12 @@ public class OrderItem implements java.io.Serializable {
 
     @Transient
     public BigDecimal getTotalMoney() {
-        return BigDecimalFormat.halfUpCurrency(getMoney().multiply(getCount()).multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
+        return DataFormat.halfUpCurrency(getMoney().multiply(getCount()).multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
     }
 
     @Transient
     public BigDecimal getRebateUnitPrice(){
-        return BigDecimalFormat.halfUpCurrency(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
+        return DataFormat.halfUpCurrency(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
 
     }
 

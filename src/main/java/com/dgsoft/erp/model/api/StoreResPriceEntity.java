@@ -1,13 +1,10 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.model.*;
-import org.jboss.seam.log.Logging;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,7 +64,7 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
         if ((getMasterCount() == null) || (price == null)) {
             setMoney(null);
         } else
-            setMoney(BigDecimalFormat.halfUpCurrency(price.divide(getCountByResUnit(getUseUnit()), MONEY_MAX_SCALE, BigDecimal.ROUND_HALF_UP)));
+            setMoney(DataFormat.halfUpCurrency(price.divide(getCountByResUnit(getUseUnit()), MONEY_MAX_SCALE, BigDecimal.ROUND_HALF_UP)));
     }
 
     public boolean isSameItem(StoreResPriceEntity other) {

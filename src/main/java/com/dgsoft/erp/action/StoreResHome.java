@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.utils.StringUtil;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
@@ -90,7 +90,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
     public void resSelected(Res res) {
         if (isEditing() && !isManaged()) {
             getInstance().setRes(res);
-            if (StringUtil.isEmpty(getInstance().getCode())) {
+            if (DataFormat.isEmpty(getInstance().getCode())) {
                 if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ||
                         getInstance().getFloatConversionRate() != null)
                     getInstance().setCode(resHelper.genStoreResCode(getReadyInstance()));

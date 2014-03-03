@@ -1,10 +1,9 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +91,7 @@ public class StoreResEntity {
         if (floatConvertRate == null){
             return null;
         }
-        return BigDecimalFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
+        return DataFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
 
     }
 
@@ -100,7 +99,7 @@ public class StoreResEntity {
         if (floatConvertRate == null) {
             this.floatConvertRate = null;
         } else
-            this.floatConvertRate = BigDecimalFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
+            this.floatConvertRate = DataFormat.format(floatConvertRate, getRes().getUnitGroup().getFloatConvertRateFormat());
     }
 
 

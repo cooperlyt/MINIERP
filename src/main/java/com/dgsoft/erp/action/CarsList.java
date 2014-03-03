@@ -1,7 +1,7 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.common.system.model.Employee;
-import com.dgsoft.common.utils.StringUtil;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.Cars;
 import org.jboss.seam.annotations.In;
@@ -44,7 +44,7 @@ public class CarsList extends ErpEntityQuery<Cars> {
     private EntityManager systemEntityManager;
 
     public List<String> getSearchDriverIds() {
-        if (!StringUtil.isEmpty(searchDriverName)) {
+        if (!DataFormat.isEmpty(searchDriverName)) {
             List<String> result = new ArrayList<String>();
 
             for (Employee emp : systemEntityManager.createQuery("select emp from Employee emp where lower(emp.person.name) like lower(concat(:searchName,'%'))", Employee.class).setParameter("searchName", searchDriverName).getResultList()) {

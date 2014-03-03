@@ -19,7 +19,8 @@ import java.util.Set;
 @Scope(ScopeType.STATELESS)
 public class CollectionTools {
 
-    public List mapToList(Map map){
+    public <K,V> List<Map.Entry<K,V>> mapToList(Map<K,V> map){
+
         return new ArrayList(map.entrySet());
     }
 

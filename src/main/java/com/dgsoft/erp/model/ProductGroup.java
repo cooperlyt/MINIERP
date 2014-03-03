@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 
 import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.system.model.Role;
+import com.dgsoft.erp.action.ResHelper;
 import com.google.common.collect.Iterators;
 
 import javax.persistence.*;
@@ -232,5 +233,38 @@ public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity
     @Override
     public Enumeration children() {
         return Iterators.asEnumeration(getChildrenGroupList().iterator());
+    }
+
+    @Override
+    @Transient
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ProductGroup)) {
+            return false;
+        }
+        ProductGroup other = (ProductGroup) obj;
+
+        if ((getId() != null) && (!"".equals(getId().trim()))) {
+            return getId().equals(other.getId());
+        }
+
+        return false;
+    }
+
+    @Override
+    @Transient
+    public int hashCode() {
+        if ((getId() != null) && (!"".equals(getId().trim()))) {
+            return getId().hashCode();
+        }else{
+            return super.hashCode();
+        }
+
+
     }
 }

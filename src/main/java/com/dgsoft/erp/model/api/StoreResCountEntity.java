@@ -1,9 +1,8 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.model.*;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -71,7 +70,7 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (getStoreRes() == null) {
             return super.getFloatConvertRate();
         } else {
-            return BigDecimalFormat.format(getStoreRes().getFloatConversionRate(), getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat());
+            return DataFormat.format(getStoreRes().getFloatConversionRate(), getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat());
         }
     }
 
@@ -82,9 +81,9 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         }
 
         if (getUseUnit().isMasterUnit()) {
-            return BigDecimalFormat.format(getMasterCount(), getUseUnit().getCountFormate());
+            return DataFormat.format(getMasterCount(), getUseUnit().getCountFormate());
         } else if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-            return BigDecimalFormat.format(
+            return DataFormat.format(
                     getMasterCount().divide(getUseUnit().getConversionRate(),
                             FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP), getUseUnit().getCountFormate());
 
@@ -101,10 +100,10 @@ public abstract class StoreResCountEntity extends StoreResEntity {
             return;
         }
         if (getUseUnit().isMasterUnit()) {
-            setMasterCount(BigDecimalFormat.format(count, getUseUnit().getCountFormate()));
+            setMasterCount(DataFormat.format(count, getUseUnit().getCountFormate()));
         } else {
             if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-                setMasterCount(BigDecimalFormat.format(count.multiply(getUseUnit().getConversionRate()), getUseUnit().getCountFormate()));
+                setMasterCount(DataFormat.format(count.multiply(getUseUnit().getConversionRate()), getUseUnit().getCountFormate()));
             } else if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                 setAuxCount(count);
             }
@@ -120,7 +119,7 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (getMasterCount() == null) {
             return null;
         }
-        return BigDecimalFormat.format(getMasterCount().multiply(getFloatConvertRate()),
+        return DataFormat.format(getMasterCount().multiply(getFloatConvertRate()),
                 getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
     }
 
@@ -132,7 +131,7 @@ public abstract class StoreResCountEntity extends StoreResEntity {
             setMasterCount(null);
             return;
         }
-        setMasterCount(BigDecimalFormat.
+        setMasterCount(DataFormat.
                 format(count.divide(getFloatConvertRate(),
                         FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP),
                         getRes().getUnitGroup().getMasterUnit().getCountFormate()));
@@ -190,7 +189,7 @@ public abstract class StoreResCountEntity extends StoreResEntity {
                     return getAuxCount();
                 }
             case FIX_CONVERT:
-                return BigDecimalFormat.format(getMasterCount().divide(resUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP), resUnit.getCountFormate());
+                return DataFormat.format(getMasterCount().divide(resUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP), resUnit.getCountFormate());
 
             default:
                 return null;

@@ -28,9 +28,9 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
     private static final String[] RESTRICTIONS = {
             "dispatchItem.dispatch.sendTime >= #{customerShipTotal.shipDateFrom}",
             "dispatchItem.dispatch.sendTime <= #{customerShipTotal.searchShipDateTo}",
-            "dispatchItem.storeRes.res.id = #{customerShipTotal.searchResId}",
-            "dispatchItem.storeRes.floatConversionRate = #{customerShipTotal.searchFloatConvertRate}",
-            "dispatchItem.storeRes in (#{customerShipTotal.filterStoreReses})"};
+            "dispatchItem.storeRes.res.id = #{storeResList.resultSearchResId}",
+            "dispatchItem.storeRes.floatConversionRate = #{storeResList.resultSearchFloatConvertRate}",
+            "dispatchItem.storeRes in (#{storeResList.filterResultList})"};
 
 
     public CustomerShipTotal() {
@@ -44,9 +44,6 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
 
     @org.jboss.seam.annotations.Logger
     private Log log;
-
-    @In(create = true)
-    private StoreResList storeResList;
 
     private Date shipDateFrom;
 
@@ -78,33 +75,7 @@ public class CustomerShipTotal extends ErpEntityQuery<DispatchItem> {
         return new Date(shipDateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
     }
 
-    public String getSearchResId() {
-        if (storeResList.isResSearch()) {
-            return storeResList.getSearchResId();
-        } else {
 
-            return null;
-        }
-    }
-
-    public BigDecimal getSearchFloatConvertRate() {
-        if (storeResList.isResSearch()) {
-            return storeResList.getSearchFloatConvertRate();
-        } else {
-            return null;
-        }
-
-    }
-
-    public List<StoreRes> getFilterStoreReses(){
-
-        if (!storeResList.isAllStoreRes() && !storeResList.isResSearch()) {
-
-            return storeResList.getResultList();
-        }else{
-            return null;
-        }
-    }
 
     public Map<Customer,List<StoreResCount>> getCustomerTotalResultMap() {
         if (isAnyParameterDirty()) {

@@ -1,26 +1,15 @@
 package com.dgsoft.erp.business.order;
 
-import com.dgsoft.common.helper.ActionExecuteState;
-import com.dgsoft.common.utils.StringUtil;
-import com.dgsoft.common.utils.math.BigDecimalFormat;
-import com.dgsoft.erp.action.NeedResHome;
-import com.dgsoft.erp.action.OrderHome;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.annotations.web.RequestParameter;
-import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 
 import javax.faces.event.ValueChangeEvent;
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -113,7 +102,7 @@ public class OrderChange extends OrderTaskHandle {
     }
 
     public void calcByRate() {
-        orderTotalMoney = BigDecimalFormat.halfUpCurrency(getOrderResTotalMoney().multiply(
+        orderTotalMoney = DataFormat.halfUpCurrency(getOrderResTotalMoney().multiply(
                 orderRebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
     }
 

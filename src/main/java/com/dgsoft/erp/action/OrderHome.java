@@ -1,7 +1,7 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
-import com.dgsoft.common.utils.StringUtil;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
@@ -83,7 +83,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                 for (DispatchItem item : dispatch.getDispatchItemList()) {
                     result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
                     result.append(item.getResCount().getMasterDisplayCount());
-                    if (!StringUtil.isEmpty(item.getResCount().getDisplayAuxCount()))
+                    if (!DataFormat.isEmpty(item.getResCount().getDisplayAuxCount()))
                         result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
                 }
             }
@@ -93,7 +93,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
                 result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
                 result.append(item.getStoreResCount().getMasterDisplayCount());
-                if (!StringUtil.isEmpty(item.getStoreResCount().getDisplayAuxCount()))
+                if (!DataFormat.isEmpty(item.getStoreResCount().getDisplayAuxCount()))
                     result.append("(" + item.getStoreResCount().getDisplayAuxCount() + ")\n");
 
             }

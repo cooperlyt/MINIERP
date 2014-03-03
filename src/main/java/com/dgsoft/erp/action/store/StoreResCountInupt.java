@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import org.jboss.seam.core.Events;
@@ -49,7 +49,7 @@ public class StoreResCountInupt extends ResCount {
     }
 
     private BigDecimal countFormat(BigDecimal count, ResUnit unit) {
-        return BigDecimalFormat.format(count,unit.getCountFormate());
+        return DataFormat.format(count, unit.getCountFormate());
     }
 
     public Res getRes() {
@@ -121,7 +121,7 @@ public class StoreResCountInupt extends ResCount {
 
     public void setMasterCount(BigDecimal count){
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)){
-            this.count = BigDecimalFormat.format(count.divide(useUnit.getConversionRate(),FLOAT_CONVERT_SCALE,BigDecimal.ROUND_HALF_UP),useUnit.getCountFormate());
+            this.count = DataFormat.format(count.divide(useUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP), useUnit.getCountFormate());
         }else{
             this.count = count;
         }

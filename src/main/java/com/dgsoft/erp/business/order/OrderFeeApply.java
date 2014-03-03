@@ -1,15 +1,11 @@
 package com.dgsoft.erp.business.order;
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.action.MiddleManHome;
 import com.dgsoft.erp.action.OrderHome;
-import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.OrderFee;
 import com.dgsoft.erp.model.OrderItem;
-import com.dgsoft.erp.model.UnitGroup;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -194,7 +190,7 @@ public class OrderFeeApply extends OrderTaskHandle {
                 item.setMiddleMoney(item.getStoreResCount().getCountByResUnit(item.getMiddleUnit()).multiply(item.getMiddleRate()));
 
             } else if (item.getMiddleMoneyCalcType().equals(OrderItem.MiddleMoneyCalcType.MONEY_RATE)) {
-                item.setMiddleMoney(BigDecimalFormat.halfUpCurrency(item.getTotalMoney().multiply(item.getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+                item.setMiddleMoney(DataFormat.halfUpCurrency(item.getTotalMoney().multiply(item.getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
             }
         }
 

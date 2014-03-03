@@ -1,17 +1,12 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.utils.StringUtil;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResEntity;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
-import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -107,7 +102,7 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
                 boolean add = true;
                 Map<FormatDefine, Format> storeResFormatMap = storeRes.getFormatMap();
                 for (Format format : resCondition.getFormats()) {
-                    if (!StringUtil.isEmpty(format.getFormatValue()) &&
+                    if (!DataFormat.isEmpty(format.getFormatValue()) &&
                             !storeResFormatMap.get(format.getFormatDefine()).equals(format)) {
                         add = false;
                         break;
@@ -124,5 +119,33 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
         }
         log.debug("getResultList:" + result.size());
         return result;
+    }
+
+    public String getResultSearchResId() {
+        if (isResSearch()) {
+            return getSearchResId();
+        } else {
+
+            return null;
+        }
+    }
+
+    public BigDecimal getResultSearchFloatConvertRate() {
+        if (isResSearch()) {
+            return getSearchFloatConvertRate();
+        } else {
+            return null;
+        }
+
+    }
+
+    public List<StoreRes> getFilterResultList(){
+
+        if (!isAllStoreRes() && !isResSearch()) {
+
+            return getResultList();
+        }else{
+            return null;
+        }
     }
 }

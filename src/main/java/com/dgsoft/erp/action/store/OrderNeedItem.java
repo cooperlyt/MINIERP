@@ -1,6 +1,6 @@
 package com.dgsoft.erp.action.store;
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.model.*;
 
 import java.math.BigDecimal;
@@ -121,7 +121,7 @@ public class OrderNeedItem extends StoreChangeItem {
         totalPrice = unitPrice.multiply(rebate.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)).
                 multiply(getCount());
 
-        totalPrice = BigDecimalFormat.halfUpCurrency(totalPrice);
+        totalPrice = DataFormat.halfUpCurrency(totalPrice);
 
     }
 
@@ -132,7 +132,7 @@ public class OrderNeedItem extends StoreChangeItem {
                 Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),
                 BigDecimal.ROUND_HALF_UP);
 
-        result = BigDecimalFormat.halfUpCurrency(result);
+        result = DataFormat.halfUpCurrency(result);
         return result;
 
     }

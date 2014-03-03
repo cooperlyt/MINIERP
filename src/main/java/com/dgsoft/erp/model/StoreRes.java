@@ -2,11 +2,9 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.NamedEntity;
-import com.dgsoft.common.system.DictionaryWord;
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.action.store.StoreChangeHelper;
 import com.dgsoft.erp.model.api.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 import org.jboss.seam.international.StatusMessage;
@@ -319,7 +317,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     @Transient
     public String getDisplayFloatRate() {
-        return BigDecimalFormat.format(getFloatConversionRate(), getRes().getUnitGroup().getFloatConvertRateFormat()) + getRes().getUnitGroup().getName();
+        return DataFormat.format(getFloatConversionRate(), getRes().getUnitGroup().getFloatConvertRateFormat()) + getRes().getUnitGroup().getName();
     }
 
     @Override
@@ -393,7 +391,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 //        }
 //
 //        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-//            result += BigDecimalFormat.format(getFloatConversionRate(),
+//            result += DataFormat.format(getFloatConversionRate(),
 //                    getRes().getUnitGroup().getFloatConvertRateFormat()).toString();
 //            result += getRes().getUnitGroup().getName();
 //        }

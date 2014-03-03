@@ -1,13 +1,12 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
-import com.dgsoft.common.utils.StringUtil;
-import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.action.store.OrderNeedItem;
@@ -136,7 +135,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public void calcEarnest() {
-        getInstance().setEarnest(BigDecimalFormat.halfUpCurrency(getInstance().getMoney()
+        getInstance().setEarnest(DataFormat.halfUpCurrency(getInstance().getMoney()
                 .multiply(earnestScale.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
     }
 
@@ -153,7 +152,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public void calcOrderPrice() {
 
-        getInstance().setMoney(BigDecimalFormat.halfUpCurrency(getOrderTotalPrice().multiply(getInstance().getTotalRebate().
+        getInstance().setMoney(DataFormat.halfUpCurrency(getOrderTotalPrice().multiply(getInstance().getTotalRebate().
                 divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
         calcEarnest();
 
@@ -170,7 +169,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public void orderTelChanged() {
-        if ((!StringUtil.isEmpty(getInstance().getTel())) && (StringUtil.isEmpty(getInstance().getContact()))) {
+        if ((!DataFormat.isEmpty(getInstance().getTel())) && (DataFormat.isEmpty(getInstance().getContact()))) {
             for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
                 if ((contact.getTel() != null) && contact.getTel().equals(getInstance().getTel())) {
                     getInstance().setContact(contact.getName());
@@ -182,7 +181,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     public void orderContactChanged() {
-        if ((StringUtil.isEmpty(getInstance().getTel())) && (!StringUtil.isEmpty(getInstance().getContact()))) {
+        if ((DataFormat.isEmpty(getInstance().getTel())) && (!DataFormat.isEmpty(getInstance().getContact()))) {
             for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
                 if ((contact.getName() != null) && contact.getName().equals(getInstance().getContact())) {
                     getInstance().setTel(contact.getTel());
@@ -194,15 +193,15 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     private void orderContactInfoChanged() {
-        if ((!StringUtil.isEmpty(getInstance().getTel())) && (!StringUtil.isEmpty(getInstance().getContact())))
-            if ((StringUtil.isEmpty(getNeedRes().getReceiveTel())) && (StringUtil.isEmpty(getNeedRes().getReceivePerson()))) {
+        if ((!DataFormat.isEmpty(getInstance().getTel())) && (!DataFormat.isEmpty(getInstance().getContact())))
+            if ((DataFormat.isEmpty(getNeedRes().getReceiveTel())) && (DataFormat.isEmpty(getNeedRes().getReceivePerson()))) {
                 getNeedRes().setReceiveTel(getInstance().getTel());
                 getNeedRes().setReceivePerson(getInstance().getContact());
             }
     }
 
     public void orderReceivceTelChanged() {
-        if ((!StringUtil.isEmpty(getNeedRes().getReceiveTel())) && (StringUtil.isEmpty(getNeedRes().getReceivePerson()))) {
+        if ((!DataFormat.isEmpty(getNeedRes().getReceiveTel())) && (DataFormat.isEmpty(getNeedRes().getReceivePerson()))) {
             for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
                 if ((contact.getTel() != null) && contact.getTel().equals(getNeedRes().getReceiveTel())) {
                     getNeedRes().setReceivePerson(contact.getName());
@@ -214,15 +213,15 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
     private void orderReceiveInfoChanged() {
-        if ((!StringUtil.isEmpty(getNeedRes().getReceiveTel())) && (!StringUtil.isEmpty(getNeedRes().getReceivePerson())))
-            if ((StringUtil.isEmpty(getInstance().getTel())) && (StringUtil.isEmpty(getInstance().getContact()))) {
+        if ((!DataFormat.isEmpty(getNeedRes().getReceiveTel())) && (!DataFormat.isEmpty(getNeedRes().getReceivePerson())))
+            if ((DataFormat.isEmpty(getInstance().getTel())) && (DataFormat.isEmpty(getInstance().getContact()))) {
                 getInstance().setTel(getNeedRes().getReceiveTel());
                 getInstance().setContact(getNeedRes().getReceivePerson());
             }
     }
 
     public void orderReceivceContactChanged() {
-        if ((!StringUtil.isEmpty(getNeedRes().getReceivePerson())) && (StringUtil.isEmpty(getNeedRes().getReceiveTel()))) {
+        if ((!DataFormat.isEmpty(getNeedRes().getReceivePerson())) && (DataFormat.isEmpty(getNeedRes().getReceiveTel()))) {
             for (CustomerContact contact : customerHome.getInstance().getCustomerContacts()) {
                 if ((contact.getName() != null) && contact.getName().equals(getNeedRes().getReceivePerson())) {
                     getNeedRes().setReceiveTel(contact.getTel());

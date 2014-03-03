@@ -1,26 +1,14 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessDefineException;
-import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.business.TaskDescription;
-import com.dgsoft.common.utils.StringUtil;
-import com.dgsoft.common.utils.math.BigDecimalFormat;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.

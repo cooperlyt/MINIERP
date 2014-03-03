@@ -1,6 +1,6 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.common.utils.math.BigDecimalFormat;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.model.NoConvertCount;
 import com.dgsoft.erp.model.ResUnit;
 import com.dgsoft.erp.model.UnitGroup;
@@ -128,7 +128,7 @@ public class ResCount implements java.io.Serializable {
         } else {
 
             this.count = count.divide(floatConvertRate, FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP);
-            this.count = BigDecimalFormat.format(this.count, useUnit.getCountFormate());
+            this.count = DataFormat.format(this.count, useUnit.getCountFormate());
         }
     }
 
@@ -167,7 +167,7 @@ public class ResCount implements java.io.Serializable {
             return BigDecimal.ZERO;
         }
         if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            return BigDecimalFormat.format(count.multiply(floatConvertRate),
+            return DataFormat.format(count.multiply(floatConvertRate),
                     useUnit.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
         } else
 
@@ -191,7 +191,7 @@ public class ResCount implements java.io.Serializable {
                     return getAuxCount();
                 }
             case FIX_CONVERT:
-                return BigDecimalFormat.format(getMasterCount().divide(resUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP), resUnit.getCountFormate());
+                return DataFormat.format(getMasterCount().divide(resUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP), resUnit.getCountFormate());
             case NO_CONVERT:
                 if (resUnit.isMasterUnit()) {
                     return count;
@@ -312,10 +312,10 @@ public class ResCount implements java.io.Serializable {
 
 
         if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-            count = BigDecimalFormat.format(count.subtract(otherCount.getMasterCount().divide(useUnit.getConversionRate(),FLOAT_CONVERT_SCALE,BigDecimal.ROUND_HALF_UP)),useUnit.getCountFormate());
+            count = DataFormat.format(count.subtract(otherCount.getMasterCount().divide(useUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP)), useUnit.getCountFormate());
 
         } else {
-            count = BigDecimalFormat.format(count.subtract(otherCount.count),useUnit.getCountFormate());
+            count = DataFormat.format(count.subtract(otherCount.count), useUnit.getCountFormate());
 
 
             if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
@@ -341,10 +341,10 @@ public class ResCount implements java.io.Serializable {
         }
 
         if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-           count = BigDecimalFormat.format(count.add( otherCount.getMasterCount().divide(useUnit.getConversionRate(),FLOAT_CONVERT_SCALE,BigDecimal.ROUND_HALF_UP)),useUnit.getCountFormate());
+           count = DataFormat.format(count.add(otherCount.getMasterCount().divide(useUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP)), useUnit.getCountFormate());
 
         } else {
-            count = BigDecimalFormat.format(count.add(otherCount.count),useUnit.getCountFormate());
+            count = DataFormat.format(count.add(otherCount.count), useUnit.getCountFormate());
 
 
             if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {

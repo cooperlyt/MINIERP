@@ -1,7 +1,7 @@
 package com.dgsoft.erp.business.order.cancel;
 
 import com.dgsoft.common.helper.ActionExecuteState;
-import com.dgsoft.common.utils.StringUtil;
+import com.dgsoft.common.helper.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
@@ -96,7 +96,7 @@ public class ResBackDispatch {
 
     public void setSelectWaitDispatchItemId(String id) {
         selectDispatchStoreRes = null;
-        if (!StringUtil.isEmpty(id)) {
+        if (!DataFormat.isEmpty(id)) {
             for (Map.Entry<StoreRes, StoreResCount> entry : waitDispatchItems.entrySet()) {
                 if (entry.getKey().getId().equals(id)) {
                     selectDispatchStoreRes = entry.getKey();
