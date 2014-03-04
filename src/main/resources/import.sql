@@ -108,7 +108,7 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.saler.middleManMgr','客户关系人','erp.sale.mgr','','/func/erp/sale/mgr/MiddleManMgr.seam','','100','');
 
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.customerShip','客户发货汇总','erp.search','','/func/erp/sale/mgr/SaleCustomerShipReport.seam','','400','');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.customerShip','客户发货汇总','erp.search','','/func/erp/sale/SaleCustomerShipReport.seam','','400','');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.groupStoreInTotal','生产小组入库汇总','erp.search','','/func/erp/store/ProcductGroupStoreInTotal.seam','','500','');
 -- 角色
 INSERT INTO DG_SYSTEM.ROLE (ID, NAME, DESCRIPTION,PRIORITY) VALUES ('system.config', '系统设置', '调整系统运行方式', 1);
