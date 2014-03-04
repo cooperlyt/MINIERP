@@ -247,6 +247,7 @@
                                      onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
                                      immediate="true" execute="@this" render="resDatas">
                         <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_res.id}" assignTo="#{resHome.id}"/>
                     </a:commandButton>
                 </rich:column>
 
