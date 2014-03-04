@@ -61,6 +61,7 @@ public class InventoryLastCheck extends InventoryTaskHandle {
                         stock.setCount(stock.getCount().add(prepareStockChange.getCount()));
                     }
                 }
+                addStockChange.setOperDate(inventoryHome.getInstance().getCheckedDate());
                 addStockChange.setVerify(true);
             }
 
@@ -95,6 +96,7 @@ public class InventoryLastCheck extends InventoryTaskHandle {
                         stock.setCount(stock.getCount().add(prepareStockChange.getCount()));
                     }
                 }
+                loseStockChange.setOperDate(inventoryHome.getInstance().getCheckedDate());
                 loseStockChange.setVerify(true);
             }
             inventoryHome.getInstance().setStockChanged(true);

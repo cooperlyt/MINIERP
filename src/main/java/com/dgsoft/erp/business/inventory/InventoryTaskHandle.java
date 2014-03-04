@@ -115,6 +115,7 @@ public abstract class InventoryTaskHandle extends TaskHandle {
     }
 
 
+
     public static class InventoryItem {
 
         private StoreRes storeRes;

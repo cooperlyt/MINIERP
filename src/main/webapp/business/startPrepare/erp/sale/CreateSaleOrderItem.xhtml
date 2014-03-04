@@ -50,19 +50,19 @@
                 </h:inputText>
 
 
-                <a:commandButton value="#{messages.search}" execute="@region"
+                <a:commandButton styleClass="toolBarBtn" value="#{messages.search}" execute="@region"
                                  render="resSearchForm,orderItemDetails,orderItemActionMessages"
                                  action="#{resLocate.locateByCode('SELL_OUT')}">
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
 
-                <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                <a:commandButton styleClass="toolBarBtn" image="/img/onetomany.gif" execute="@this" immediate="true"
                                  title="#{messages.resSelect}"
                                  onclick="#{rich:component('resSelectPanel')}.show();return false;">
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
 
-                <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                <a:commandButton styleClass="toolBarBtn" image="/img/onetomany.gif" execute="@this" immediate="true"
                                  title="#{messages.storeResSelect}"
                                  onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
                     <a:attachQueue requestDelay="0"/>

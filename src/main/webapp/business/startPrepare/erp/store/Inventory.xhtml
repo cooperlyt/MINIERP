@@ -31,11 +31,11 @@
                         <rich:placeholder value="#{messages.invertory_field_id}"/>
                     </h:inputText>
 
-                    <s:button value="#{messages.cancel}" propagation="end"
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
 
-                    <h:commandButton value="#{messages.BeginInventory}" action="#{businessCreate.create}"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.BeginInventory}" action="#{businessCreate.create}"/>
 
                 </rich:toolbarGroup>
             </rich:toolbar>
@@ -56,18 +56,17 @@
 
 
             <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">
-                <ui:define name="label">#{messages.storeIn_field_dateTime}</ui:define>
+                <ui:define name="label">#{messages.inventory_field_applyDate}</ui:define>
                 <rich:calendar
                         enableManualInput="true"
                         inputSize="20"
                         timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                         showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                        datePattern="#{messages.datetimepattern}"
-                        defaultTime="#{currentTime}"
-                        defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                        datePattern="#{messages.datePattern}"
+                        defaultLabel="#{currentDate}"
                         required="true"
-                        label="#{messages.inventory_field_checkDate}"
-                        value="#{inventoryHome.instance.checkDate}"/>
+                        label="#{messages.inventory_field_applyDate}"
+                        value="#{inventoryHome.instance.applyDate}"/>
             </s:decorate>
 
 

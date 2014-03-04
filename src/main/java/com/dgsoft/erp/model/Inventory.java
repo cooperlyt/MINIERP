@@ -22,6 +22,8 @@ public class Inventory implements java.io.Serializable {
 	private StockChange stockChangeLoss;
 	private StockChange stockChangeAdd;
 	private Date checkDate;
+    private Date checkedDate;
+    private Date applyDate;
 	private String memo;
     private InventoryType type;
     private String applyEmp;
@@ -79,8 +81,7 @@ public class Inventory implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CHECK_DATE", nullable = false, length = 19)
-	@NotNull
+	@Column(name = "CHECK_DATE", nullable = true, length = 19)
 	public Date getCheckDate() {
 		return this.checkDate;
 	}
@@ -89,7 +90,28 @@ public class Inventory implements java.io.Serializable {
 		this.checkDate = checkDate;
 	}
 
-	@Column(name = "MEMO", length = 200)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CHECKED_DATE", nullable = true, length = 19)
+    public Date getCheckedDate() {
+        return checkedDate;
+    }
+
+    public void setCheckedDate(Date checkedDate) {
+        this.checkedDate = checkedDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "APPLY_DATE", nullable = false, length = 19)
+    @NotNull
+    public Date getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(Date applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    @Column(name = "MEMO", length = 200)
 	@Size(max = 200)
 	public String getMemo() {
 		return this.memo;

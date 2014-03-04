@@ -42,6 +42,23 @@
 
             <rich:panel>
 
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.inventory_field_chedkedDate}</ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="20"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datetimepattern}"
+                            required="true"
+                            defaultTime="#{currentTime}"
+                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                            label="#{messages.inventory_field_chedkedDate}"
+                            value="#{inventoryHome.instance.checkedDate}">
+
+                    </rich:calendar>
+                </s:decorate>
+
                  <s:decorate template="/layout/seam-edit.xhtml">
                      <ui:define name="label">#{messages.check_pass}</ui:define>
                      <h:selectBooleanCheckbox value="#{inventoryLastCheck.pass}"/>

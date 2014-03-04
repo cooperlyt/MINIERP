@@ -93,14 +93,14 @@
 
 
         <s:decorate template="/layout/seam-display.xhtml">
-            <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
+            <ui:define name="label">#{messages.storeOut_field_dateTime}</ui:define>
             <rich:calendar
                     enableManualInput="true"
                     inputSize="10"
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
-                    label="#{messages.order_search_BETWEEN_createDate}"
+                    label="#{messages.storeOut_field_dateTime}"
                     value="#{customerShipTotal.searchDateArea.dateFrom}">
             </rich:calendar>
 
@@ -112,7 +112,7 @@
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
-                    label="#{messages.order_search_BETWEEN_createDate}"
+                    label="#{messages.storeOut_field_dateTime}"
                     value="#{customerShipTotal.searchDateArea.dateTo}">
             </rich:calendar>
         </s:decorate>
@@ -157,9 +157,6 @@
             <rich:columnGroup>
                 <rich:column rowspan="2">
                     #{messages.StoreRes}
-                </rich:column>
-                <rich:column rowspan="2">
-                    #{messages.Store}
                 </rich:column>
                 <rich:column colspan="2">
                     #{messages.count}

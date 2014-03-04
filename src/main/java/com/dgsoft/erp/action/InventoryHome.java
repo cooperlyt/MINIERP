@@ -183,14 +183,14 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
 
         haveStock = false;
-        for (Stock stock: getInstance().getStore().getStocks()){
-            if (stock.getStoreRes().equals(storeResHome.getInstance())){
+        for (Stock stock : getInstance().getStore().getStocks()) {
+            if (stock.getStoreRes().equals(storeResHome.getInstance())) {
                 haveStock = true;
                 break;
             }
         }
 
-        if (!haveStock){
+        if (!haveStock) {
             checkLose = false;
         } else if ((findItems == null) && (loseStockChange != null)) {
             for (PrepareStockChange prepareStockChange : loseStockChange.getPrepareStockChanges()) {
@@ -215,6 +215,15 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
                 break;
             }
         }
+    }
+
+    private Date getStoreChangeDate() {
+        if (getInstance().getCheckedDate() != null) {
+            return getInstance().getCheckedDate();
+        } else if (getInstance().getCheckDate() != null) {
+            return getInstance().getCheckDate();
+        } else
+            return getInstance().getApplyDate();
     }
 
     public void saveCheckItem() {
@@ -257,7 +266,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             if (checkLose) {
                 if (loseStockChange == null) {
                     stockChange = new StockChange("L" + getInstance().getId(), getInstance().getStore(),
-                            new Date(), credentials.getUsername(), StockChange.StoreChangeType.STORE_CHECK_LOSS, null, false);
+                            getStoreChangeDate(), credentials.getUsername(), StockChange.StoreChangeType.STORE_CHECK_LOSS, null, false);
                     getInstance().setStockChangeLoss(stockChange);
                     loseStockChange = stockChange;
                 } else {
@@ -268,7 +277,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             } else {
                 if (addStockChange == null) {
                     stockChange = new StockChange("A" + getInstance().getId(), getInstance().getStore(),
-                            new Date(), credentials.getUsername(), StockChange.StoreChangeType.STORE_CHECK_ADD, null, false);
+                            getStoreChangeDate(), credentials.getUsername(), StockChange.StoreChangeType.STORE_CHECK_ADD, null, false);
                     getInstance().setStockChangeAdd(stockChange);
                     addStockChange = stockChange;
                 } else {
@@ -350,7 +359,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
             if (addStockChange == null) {
                 addStockChange = new StockChange("A_" + getInstance().getId(),
-                        getInstance().getStore(), new Date(),
+                        getInstance().getStore(), getStoreChangeDate(),
                         credentials.getUsername(),
                         StockChange.StoreChangeType.STORE_CHECK_ADD, null, false);
                 addStockChange.setInventoryAdd(getInstance());
@@ -373,10 +382,10 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
         //resHome.clearInstance();
         //storeResHome.clearInstance();
-        if (storeResHome.isIdDefined()){
+        if (storeResHome.isIdDefined()) {
             storeResFormatFilter.selectedStoreRes(storeResHome.getInstance());
             generateStoreInItemByStoreRes(storeResHome.getInstance());
-        }else if (resHome.isIdDefined()){
+        } else if (resHome.isIdDefined()) {
             storeResFormatFilter.selectedRes(resHome.getInstance());
             generateStoreInItemByRes(resHome.getInstance());
         }
