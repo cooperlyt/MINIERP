@@ -41,7 +41,7 @@
 		<suspend_validator>false</suspend_validator>
 		<export_setting>
 			<category_name_to_export>All</category_name_to_export>
-			<ddl_output>/home/cooper/workspace_erp/MINIERP/design/database/CUSTOM_ERP.sql</ddl_output>
+			<ddl_output>/home/cooperlee/workspace_erp/MINIERP/design/database/CUSTOM_ERP.sql</ddl_output>
 			<excel_output></excel_output>
 			<excel_template></excel_template>
 			<image_output></image_output>
@@ -110,7 +110,7 @@
 			</connections>
 			<display>false</display>
 			<creation_date>2013-09-21 15:05:12</creation_date>
-			<updated_date>2014-03-04 16:32:59</updated_date>
+			<updated_date>2014-03-04 16:35:10</updated_date>
 			<model_property>
 				<name>Project Name</name>
 				<value></value>
