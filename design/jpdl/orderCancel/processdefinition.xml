@@ -9,14 +9,11 @@
 
 
 	<decision name="定单状态判断">
-		<transition to="fork1" name="同时退款退货">
-			<condition expression="#{(not orderBackHome.instance.moneyComplete) and (not orderBackHome.instance.resComplete)}"></condition>
-		</transition>
 		<transition to="退款" name="仅退款">
-			<condition expression="#{(not orderBackHome.instance.moneyComplete) and orderBackHome.instance.resComplete}"></condition>
+			<condition expression="#{orderBackHome.instance.resComplete}"></condition>
 		</transition>
 		<transition to="调度判断" name="仅退货">
-			<condition expression="#{(orderBackHome.instance.moneyComplete) and (not orderBackHome.instance.resComplete)}"></condition>
+			<condition expression="#{not orderBackHome.instance.resComplete}"></condition>
 		</transition>
 	</decision>
 
@@ -40,26 +37,14 @@
 		<transition to="退款完成"></transition>
 	</task-node>
 
-	<fork name="fork1">
-		<transition to="退款" name="退款"></transition>
-		<transition to="调度判断" name="退货"></transition>
-	</fork>
-
-	<join name="join1">
-		<transition to="结束" name="完成"></transition>
-	</join>
-
 	<decision name="退款完成">
-		<transition to="join1">
-			<condition expression="#{orderBackHome.needBackRes}"></condition>
-		</transition>
 		<transition to="结束" name="结束仅退款">
 			<condition expression="#{not orderBackHome.needBackRes}"></condition>
 		</transition>
 	</decision>
 
 	<decision name="退货完成">
-		<transition to="join1">
+		<transition to="退款">
 			<condition expression="#{orderBackHome.needBackMoney}"></condition>
 		</transition>
 		<transition to="结束" name="结束仅退货">
@@ -154,6 +139,8 @@
 			<condition expression="#{orderBackHome.instance.dispatched}"></condition>
 		</transition>
 	</decision>
+
+	<task-node name="退货更改"></task-node>
 
 
 	<end-state name="结束"></end-state>

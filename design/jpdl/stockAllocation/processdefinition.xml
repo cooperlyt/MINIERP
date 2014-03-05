@@ -17,8 +17,8 @@
 	</task-node>
 
 	<decision name="出库判断">
-		<transition to="end-state1" name="取消调拨"></transition>
 		<transition to="调拨入库" name="调拨已出库"></transition>
+		<transition to="end-state1" name="取消调拨"></transition>
 	</decision>
 
 

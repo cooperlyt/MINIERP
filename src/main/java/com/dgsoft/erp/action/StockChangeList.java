@@ -33,6 +33,7 @@ public class StockChangeList extends ErpEntityQuery<StockChange> {
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
         setMaxResults(25);
+        setOrderColumn("stockChange.operDate");
     }
 
     @Factory(value = "allStoreChangeTypes", scope = ScopeType.SESSION)

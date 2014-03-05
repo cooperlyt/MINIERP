@@ -19,6 +19,8 @@ public class BankAccount implements java.io.Serializable, NamedEntity {
     private String number;
     private String bank;
     private String memo;
+    private String openBank;
+    private String accountOwner;
 
     private boolean enable;
 
@@ -80,6 +82,26 @@ public class BankAccount implements java.io.Serializable, NamedEntity {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    @Column(name="OPEN_BANK", nullable = true, length = 200)
+    @Size(max = 200)
+    public String getOpenBank() {
+        return openBank;
+    }
+
+    public void setOpenBank(String openBank) {
+        this.openBank = openBank;
+    }
+
+    @Column(name="ACCOUNT_OWNER",nullable = true,length = 50)
+    @Size(max = 50)
+    public String getAccountOwner() {
+        return accountOwner;
+    }
+
+    public void setAccountOwner(String accountOwner) {
+        this.accountOwner = accountOwner;
     }
 
     @Override

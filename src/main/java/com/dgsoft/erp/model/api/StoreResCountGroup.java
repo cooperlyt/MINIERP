@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Created by cooper on 3/3/14.
  */
-public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<StoreRes, V> {
+public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<StoreRes, V> implements java.io.Serializable{
 
     public <E extends V> StoreResCountGroup(Collection<E> values) {
         super();

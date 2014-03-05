@@ -77,6 +77,24 @@
         </s:decorate>
 
         <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.BankAccount_field_accountOwner}</ui:define>
+            <h:inputText value="#{bankAccountHome.instance.accountOwner}"
+                         readonly="#{not bankAccountHome.editing}"
+                         label="#{messages.BankAccount_field_accountOwner}"
+                         size="20" maxlength="50"/>
+
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.BankAccount_field_openBank}</ui:define>
+            <h:inputText value="#{bankAccountHome.instance.openBank}"
+                         readonly="#{not bankAccountHome.editing}"
+                         label="#{messages.BankAccount_field_openBank}"
+                         size="50" maxlength="200"/>
+
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
             <ui:define name="label">#{messages.field_memo}</ui:define>
             <h:inputTextarea readonly="#{not bankAccountHome.editing}" cols="50" value="#{bankAccountHome.instance.memo}"/>
         </s:decorate>

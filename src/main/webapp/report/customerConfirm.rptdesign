@@ -686,6 +686,7 @@ return false;]]></method>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
+            <property name="orientation">portrait</property>
             <page-header>
                 <text id="11">
                     <property name="fontFamily">"SimSun"</property>
