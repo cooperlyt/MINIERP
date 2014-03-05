@@ -1,12 +1,215 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
 
-</body>
-</html>
+<ui:define name="body">
+
+
+    <h:form styleClass="edit">
+
+        <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.storeChangeSharchDateArea}
+                </ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        value="#{stockChangeList.searchDateArea.dateFrom}">
+                </rich:calendar>
+
+                --
+
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        value="#{stockChangeList.searchDateArea.dateTo}">
+                </rich:calendar>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.Store}
+                </ui:define>
+                <h:selectOneMenu value="#{stockChangeList.storeId}">
+                    <s:selectItems value="#{storeList.resultList}" var="_store"
+                                   itemValue="#{_store.id}" label="#{_store.name}"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.storeChangeDirection}
+                </ui:define>
+                <h:selectOneMenu value="#{stockChangeList.out}">
+                    <f:selectItem itemLabel="#{messages.storeChangeDirection_out}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.storeChangeDirection_in}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.searchNoSelectLabel}" noSelectionOption="true"/>
+                    <a:ajax event="valueChange" render="operTypeField"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate id="operTypeField" template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.StoreChangeType}
+                </ui:define>
+                <h:selectOneMenu disabled="#{not empty stockChangeList.out}"
+                                 value="#{stockChangeList.storeChangeType}">
+                    <s:selectItems value="#{allStoreChangeTypes}" var="_type"
+                                   label="#{messages[_type.name()]}"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                    <s:convertEnum/>
+
+                </h:selectOneMenu>
+            </s:decorate>
+
+
+            <div style="clear:both"/>
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+            <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                <a:outputPanel id="#{panelId}_buttons">
+                    <div class="actionButtons">
+
+                        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                        <a:outputPanel id="searchButton">
+                            <a:commandButton value="#{messages.search}"
+                                             execute="@form" render="dataListResult" action="#{stockChangeList.first}">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </a:outputPanel>
+                    </div>
+                </a:outputPanel>
+            </h:panelGrid>
+        </rich:collapsiblePanel>
+
+
+    </h:form>
+
+    <br/>
+    <rich:popupPanel id="stockChangeDetails" modal="true"
+                     autosized="true"
+                     moveable="true" resizeable="false">
+
+        <f:facet name="header">
+            <h:panelGroup>
+                <h:outputText value="#{messages.details}"/>
+            </h:panelGroup>
+        </f:facet>
+        <f:facet name="controls">
+            <h:panelGrid columns="3">
+                <h:panelGroup>
+                    <a:commandButton immediate="true"
+                                     execute="@this" image="/img/close.png"
+                                     onclick="#{rich:component('stockChangeDetails')}.hide(); return false;">
+                    </a:commandButton>
+                </h:panelGroup>
+            </h:panelGrid>
+        </f:facet>
+
+        <a:outputPanel id="stockChangeDetailsTable">
+            #{stockChangeList.dataModel.rowAvailable}
+            <a:outputPanel style="width: 500px" rendered="#{stockChangeList.dataModel.rowAvailable}">
+
+                <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
+                    <ui:param name="value" value="#{stockChangeList.dataModelSelection.changeDetails}"/>
+                </ui:include>
+            </a:outputPanel>
+        </a:outputPanel>
+
+    </rich:popupPanel>
+
+    <h:form>
+        <rich:dataTable id="dataListResult" style="width: 100%" value="#{stockChangeList.dataModel}" var="_change"
+                        noDataLabel="#{messages.emptyResult}">
+            <f:facet name="footer">
+                <a:outputPanel rendered="#{not empty stockChangeList.resultList}">
+                    <ui:include src="/layout/pageA4jNavigation.xhtml">
+                        <ui:param name="entityList" value="#{stockChangeList}"/>
+                    </ui:include>
+                </a:outputPanel>
+            </f:facet>
+
+            <rich:column>
+                <f:facet name="header">
+
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{stockChangeList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.StoreChange_field_id}"/>
+                        <ui:param name="propertyPath" value="stockChange.id"/>
+                    </ui:include>
+                </f:facet>
+                <a:commandLink value="#{_change.id}" render="stockChangeDetailsTable"
+                               oncomplete="#{rich:component('stockChangeDetails')}.show()"/>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{stockChangeList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.Store}"/>
+                        <ui:param name="propertyPath" value="stockChange.store"/>
+                    </ui:include>
+                </f:facet>
+                #{_change.store.name}
+                <f:facet name="footer">
+                    #{messages.recordTotal} #{stockChangeList.resultCount} #{messages.item}
+                </f:facet>
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{stockChangeList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.orderCustomer}"/>
+                        <ui:param name="propertyPath" value="stockChange.operDate"/>
+                    </ui:include>
+
+                </f:facet>
+                <h:outputText value="#{_change.operDate}">
+                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{stockChangeList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.StoreChange_field_operType}"/>
+                        <ui:param name="propertyPath" value="stockChange.operType"/>
+                    </ui:include>
+                </f:facet>
+                #{messages[_change.operType.name()]}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{stockChangeList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.StoreChange_field_operEmp}"/>
+                        <ui:param name="propertyPath" value="stockChange.operEmp"/>
+                    </ui:include>
+                </f:facet>
+                #{dictionary.getEmpNameById(_change.operEmp)}
+            </rich:column>
+        </rich:dataTable>
+    </h:form>
+</ui:define>
+
+</ui:composition>
