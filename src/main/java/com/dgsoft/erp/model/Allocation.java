@@ -15,28 +15,36 @@ import java.util.Set;
 @Table(name = "ALLOCATION", catalog = "MINI_ERP")
 public class Allocation implements java.io.Serializable {
 
+    public enum AllocationType{
+        ALLOCATION_APPLY,ALLOCATION;
+    }
+
+    public enum AllocationState{
+        WAITING_OUT,WAITING_IN,ALLOCATION_COMPLETE,ALLOCATION_CANCEL;
+    }
+
     private String id;
-    private Store storeByTargetStore;
+    private Store inStore;
     private StockChange stockChangeByStoreIn;
-    private Store storeByApplyStore;
+    private Store outStore;
     private StockChange stockChangeByStoreOut;
     private String applyEmp;
-    private String allocationEmp;
     private String reason;
     private String memo;
-    private String state;
+    private AllocationState state;
+    private AllocationType allocationType;
     private Date createDate;
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
 
     public Allocation() {
     }
 
-    public Allocation(String id, Store storeByTargetStore,
-                      Store storeByApplyStore, String applyEmp, String reason,
-                      String state, Date createDate) {
+    public Allocation(String id, Store inStore,
+                      Store outStore, String applyEmp, String reason,
+                      AllocationState state, Date createDate) {
         this.id = id;
-        this.storeByTargetStore = storeByTargetStore;
-        this.storeByApplyStore = storeByApplyStore;
+        this.inStore = inStore;
+        this.outStore = outStore;
         this.applyEmp = applyEmp;
         this.reason = reason;
         this.state = state;
@@ -59,12 +67,12 @@ public class Allocation implements java.io.Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TARGET_STORE", nullable = false)
     @NotNull
-    public Store getStoreByTargetStore() {
-        return this.storeByTargetStore;
+    public Store getInStore() {
+        return this.inStore;
     }
 
-    public void setStoreByTargetStore(Store storeByTargetStore) {
-        this.storeByTargetStore = storeByTargetStore;
+    public void setInStore(Store storeByTargetStore) {
+        this.inStore = storeByTargetStore;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY)
@@ -80,12 +88,12 @@ public class Allocation implements java.io.Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPLY_STORE", nullable = false)
     @NotNull
-    public Store getStoreByApplyStore() {
-        return this.storeByApplyStore;
+    public Store getOutStore() {
+        return this.outStore;
     }
 
-    public void setStoreByApplyStore(Store storeByApplyStore) {
-        this.storeByApplyStore = storeByApplyStore;
+    public void setOutStore(Store storeByApplyStore) {
+        this.outStore = storeByApplyStore;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY)
@@ -109,14 +117,14 @@ public class Allocation implements java.io.Serializable {
         this.applyEmp = applyEmp;
     }
 
-    @Column(name = "ALLOCATION_EMP", length = 32)
-    @Size(max = 32)
-    public String getAllocationEmp() {
-        return this.allocationEmp;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE",nullable = false,length = 32)
+    public AllocationType getAllocationType() {
+        return allocationType;
     }
 
-    public void setAllocationEmp(String allocationEmp) {
-        this.allocationEmp = allocationEmp;
+    public void setAllocationType(AllocationType allocationType) {
+        this.allocationType = allocationType;
     }
 
     @Column(name = "REASON", nullable = false, length = 32)
@@ -140,14 +148,15 @@ public class Allocation implements java.io.Serializable {
         this.memo = memo;
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATE", nullable = false, length = 20)
     @NotNull
     @Size(max = 20)
-    public String getState() {
+    public AllocationState getState() {
         return this.state;
     }
 
-    public void setState(String state) {
+    public void setState(AllocationState state) {
         this.state = state;
     }
 

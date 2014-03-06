@@ -115,7 +115,7 @@
 
                     <s:decorate template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{messages.store_field_role}</ui:define>
-                        <h:selectOneMenu value="#{storeHome.instance.roleId}" required="true"
+                        <h:selectOneMenu value="#{storeHome.instance.role}" required="true"
                                          disabled="#{not storeHome.editing}"
                                          label="#{messages.store_field_role}" style="width: 185px;">
                             <s:selectItems value="#{roleList.resultList}" var="_role"

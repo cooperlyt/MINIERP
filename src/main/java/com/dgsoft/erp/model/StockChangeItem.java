@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,6 +32,14 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
     public StockChangeItem() {
+    }
+
+    public StockChangeItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
+        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    }
+
+    public StockChangeItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
+        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
     @Override
@@ -58,7 +68,13 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.count = count;
     }
 
-
+    public StockChangeItem(StockChange stockChange, Stock stock, BigDecimal count, Batch batch) {
+        this.stockChange = stockChange;
+        this.storeRes = stock.getStoreRes();
+        this.stock = stock;
+        this.count = count;
+        this.batch = batch;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)

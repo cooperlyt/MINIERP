@@ -25,7 +25,7 @@ public class StoreHome extends ErpEntityHome<Store> {
     public synchronized String getStoreRole(String id) {
         this.setId(id);
         try {
-            return getInstance().getRoleId();
+            return getInstance().getRole();
         } catch (EntityNotFoundException e) {
             setId(null);
             return "erp.storage.manager";
@@ -115,7 +115,7 @@ public class StoreHome extends ErpEntityHome<Store> {
         if (store == null) {
             return null;
         } else {
-            return store.getRoleId();
+            return store.getRole();
         }
     }
 
@@ -126,7 +126,7 @@ public class StoreHome extends ErpEntityHome<Store> {
         List<Store> result = new ArrayList<Store>();
 
         for (Store store : getEntityManager().createQuery("select store from Store store where store.enable = true", Store.class).getResultList()) {
-            if (identity.hasRole(store.getRoleId())) {
+            if (identity.hasRole(store.getRole())) {
                 result.add(store);
             }
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="stockAllocation" width="942" height="737">
+<root-container name="stockAllocation" width="725" height="737">
   <node name="调拨申请" x="101" y="24" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -11,7 +11,7 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="调拨入库" x="38" y="269" width="132" height="36">
+  <node name="调拨入库" x="31" y="267" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -24,5 +24,5 @@
       <label x="-16" y="-12"/>
     </edge>
   </node>
-  <node name="end-state1" x="211" y="265" width="132" height="36"/>
+  <node name="end-state1" x="206" y="269" width="132" height="36"/>
 </root-container>

@@ -24,7 +24,7 @@ public class Store implements java.io.Serializable, TreeNode {
     private boolean enable;
     private boolean open;
     private Integer version;
-    private String roleId;
+    private String role;
     private String shipRole;
     private Set<StoreArea> storeAreas = new HashSet<StoreArea>(0);
     private Set<Inventory> inventories = new HashSet<Inventory>(0);
@@ -134,12 +134,12 @@ public class Store implements java.io.Serializable, TreeNode {
     @Column(name="ROLE_ID",nullable = false,length = 32)
     @NotNull
     @Size(max = 32)
-    public String getRoleId() {
-        return roleId;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
+    public void setRole(String roleId) {
+        this.role = roleId;
     }
 
     @Column(name = "SHIP_ROLE",nullable = false,length = 32)
@@ -189,7 +189,7 @@ public class Store implements java.io.Serializable, TreeNode {
         this.stocks = stocks;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeByApplyStore")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "outStore")
     public Set<Allocation> getAllocationsForApplyStore() {
         return this.allocationsForApplyStore;
     }
@@ -199,7 +199,7 @@ public class Store implements java.io.Serializable, TreeNode {
         this.allocationsForApplyStore = allocationsForApplyStore;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeByTargetStore")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "inStore")
     public Set<Allocation> getAllocationsForTargetStore() {
         return this.allocationsForTargetStore;
     }

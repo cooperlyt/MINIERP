@@ -44,7 +44,7 @@
 	</decision>
 
 	<decision name="退货完成">
-		<transition to="退款">
+		<transition to="退货确认">
 			<condition expression="#{orderBackHome.needBackMoney}"></condition>
 		</transition>
 		<transition to="结束" name="结束仅退货">
@@ -140,7 +140,15 @@
 		</transition>
 	</decision>
 
-	<task-node name="退货更改"></task-node>
+	<task-node name="退货确认">
+		<task name="退货确认">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/ResBackConfirm.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{orderBackHome.instance.customer.customerArea.role}"></assignment>
+		</task>
+		<transition to="退款"></transition>
+	</task-node>
 
 
 	<end-state name="结束"></end-state>

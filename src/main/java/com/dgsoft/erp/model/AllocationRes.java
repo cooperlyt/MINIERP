@@ -1,6 +1,9 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.StoreResCountEntity;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,84 +14,67 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "ALLOCATION_RES", catalog = "MINI_ERP")
-public class AllocationRes implements java.io.Serializable {
+public class AllocationRes extends StoreResCountEntity implements java.io.Serializable {
 
-	private String id;
-	private StoreRes storeRes;
-	private Allocation allocation;
-	private BigDecimal floatConversionRate;
-	private BigDecimal count;
+    private String id;
+    private StoreRes storeRes;
+    private Allocation allocation;
+    private BigDecimal masterCount;
 
-	public AllocationRes() {
-	}
+    public AllocationRes() {
+    }
 
-	public AllocationRes(String id, StoreRes storeRes, Allocation allocation,
-			BigDecimal count) {
-		this.id = id;
-		this.storeRes = storeRes;
-		this.allocation = allocation;
-		this.count = count;
-	}
-	public AllocationRes(String id, StoreRes storeRes, Allocation allocation,
-			BigDecimal floatConversionRate, BigDecimal count) {
-		this.id = id;
-		this.storeRes = storeRes;
-		this.allocation = allocation;
-		this.floatConversionRate = floatConversionRate;
-		this.count = count;
-	}
+    public AllocationRes(StoreRes storeRes, Allocation allocation,
+                         BigDecimal masterCount) {
+        this.storeRes = storeRes;
+        this.allocation = allocation;
+        this.masterCount = masterCount;
+    }
 
-	@Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE_RES", nullable = false)
-	@NotNull
-	public StoreRes getStoreRes() {
-		return this.storeRes;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STORE_RES", nullable = false)
+    @NotNull
+    public StoreRes getStoreRes() {
+        return this.storeRes;
+    }
 
-	public void setStoreRes(StoreRes storeRes) {
-		this.storeRes = storeRes;
-	}
+    public void setStoreRes(StoreRes storeRes) {
+        this.storeRes = storeRes;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ALLOCATION", nullable = false)
-	@NotNull
-	public Allocation getAllocation() {
-		return this.allocation;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ALLOCATION", nullable = false)
+    @NotNull
+    public Allocation getAllocation() {
+        return this.allocation;
+    }
 
-	public void setAllocation(Allocation allocation) {
-		this.allocation = allocation;
-	}
+    public void setAllocation(Allocation allocation) {
+        this.allocation = allocation;
+    }
 
-	@Column(name = "FLOAT_CONVERSION_RATE", scale = 10)
-	public BigDecimal getFloatConversionRate() {
-		return this.floatConversionRate;
-	}
+    @Column(name = "COUNT", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getMasterCount() {
+        return this.masterCount;
+    }
 
-	public void setFloatConversionRate(BigDecimal floatConversionRate) {
-		this.floatConversionRate = floatConversionRate;
-	}
-
-	@Column(name = "COUNT", nullable = false, scale = 4)
-	@NotNull
-	public BigDecimal getCount() {
-		return this.count;
-	}
-
-	public void setCount(BigDecimal count) {
-		this.count = count;
-	}
+    public void setMasterCount(BigDecimal count) {
+        this.masterCount = count;
+    }
 
 }

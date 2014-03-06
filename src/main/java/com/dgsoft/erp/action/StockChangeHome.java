@@ -11,6 +11,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,8 +32,29 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
         return true;
     }
 
+    public void resStockChanges(List<StockChangeItem> items){
+        for(StockChangeItem item: items){
+            resStockChange(item);
+        }
+    }
+
+    public void resStockChange(StockChangeItem item){
+        stockChangeFindStock(item);
+        getInstance().getStockChangeItems().add(item);
+    }
+
+    private void stockChangeFindStock(StockChangeItem item){
+        item.setStock(findOrCreactStock(item,item.getBatch()));
+    }
 
     public void resStockChange(StoreResCountEntity inCount, Batch batch) {
+        Stock inStock = findOrCreactStock(inCount, batch);
+        getInstance().getStockChangeItems().add(new StockChangeItem(getInstance(), inStock,
+                inCount.getMasterCount(),batch));
+
+    }
+
+    private Stock findOrCreactStock(StoreResCountEntity inCount, Batch batch) {
         Stock inStock = null;
         for (Stock stock : inCount.getStoreRes().getStocks()) {
             if ((stock.getBatch() == batch) &&
@@ -49,9 +71,7 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
             inStock.setCount(inStock.getCount().subtract(inCount.getMasterCount()));
         } else
             inStock.setCount(inStock.getCount().add(inCount.getMasterCount()));
-        getInstance().getStockChangeItems().add(new StockChangeItem(getInstance(), inStock,
-                inCount.getMasterCount()));
-
+        return inStock;
     }
 
 

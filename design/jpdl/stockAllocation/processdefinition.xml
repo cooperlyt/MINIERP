@@ -9,6 +9,12 @@
 
 
 	<task-node name="调拨出库">
+		<task name="调拨出库">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/AllocationStoreOut.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{allocationHome.instance.outStore.role}"></assignment>
+		</task>
 		<transition to="出库判断"></transition>
 	</task-node>
 
@@ -17,8 +23,12 @@
 	</task-node>
 
 	<decision name="出库判断">
-		<transition to="调拨入库" name="调拨已出库"></transition>
-		<transition to="end-state1" name="取消调拨"></transition>
+		<transition to="调拨入库" name="调拨已出库">
+			<condition expression="#{allocationHome.instance.state eq ''}"></condition>
+		</transition>
+		<transition to="end-state1" name="取消调拨">
+			<condition expression="#{allocationHome.instance.state eq 'ALLOCATION_CANCEL'}"></condition>
+		</transition>
 	</decision>
 
 
