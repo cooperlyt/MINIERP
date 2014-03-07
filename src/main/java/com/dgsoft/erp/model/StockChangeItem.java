@@ -27,6 +27,7 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
     private StockChange stockChange;
     //private boolean storeOut;
     private BigDecimal count;
+    private String memo;
     private Batch batch;
 
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
@@ -156,6 +157,15 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
 
     public void setBatch(Batch batch) {
         this.batch = batch;
+    }
+
+    @Column(name = "MEMO",nullable = true,length = 200)
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 
     @Transient

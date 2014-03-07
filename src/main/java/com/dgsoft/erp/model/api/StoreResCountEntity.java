@@ -54,6 +54,15 @@ public abstract class StoreResCountEntity extends StoreResEntity {
     }
 
     @Override
+    public String getCode(){
+        if (getStoreRes() == null) {
+            return super.getCode();
+        } else {
+            return getStoreRes().getCode();
+        }
+    }
+
+    @Override
     public Res getRes() {
         if (getStoreRes() == null) {
             return super.getRes();

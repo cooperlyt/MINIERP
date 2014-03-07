@@ -68,9 +68,10 @@
             <span class="value">
             <h:inputText id="masterUnitCount" required="true" style="width: 70px"
                          label="#{messages.storeResCountInupt}"
-                         value="#{inputValue.masterCount}" converter="javax.faces.BigDecimal">
+                         value="#{inputValue.masterCount}">
                 <f:validateDoubleRange minimum="0"/>
                 <rich:validator/>
+                <f:convertNumber pattern="#{inputValue.res.unitGroup.masterUnit.countFormate}"/>
                 <a:ajax event="blur" execute="@this,floatConvertRateRegion"
                         render="floatConvertAuxCount,masterUnitCount,#{countChangeRender}">
                     <a:attachQueue requestDelay="0"/>

@@ -47,6 +47,9 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
     protected NumberBuilder numberBuilder;
 
     @In
+    private ActionExecuteState actionExecuteState;
+
+    @In
     private ResHelper resHelper;
 
     @In(create = true)
@@ -58,6 +61,8 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
     @DataModelSelection
     private ResBackItem resBackItem;
 
+    private ResBackItem editingItem;
+
     private StockChangeItem newStockChangeItem;
 
     public StockChangeItem getNewStockChangeItem() {
@@ -66,6 +71,14 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
 
     public void setNewStockChangeItem(StockChangeItem newStockChangeItem) {
         this.newStockChangeItem = newStockChangeItem;
+    }
+
+    public ResBackItem getEditingItem() {
+        return editingItem;
+    }
+
+    public void setEditingItem(ResBackItem editingItem) {
+        this.editingItem = editingItem;
     }
 
     @Observer(value = "erp.storeResLocateSelected", create = false)
@@ -90,27 +103,48 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
 
     private String addLastState = null;
 
+    public String getAddLastState() {
+        return addLastState;
+    }
+
+    public void setAddLastState(String addLastState) {
+        this.addLastState = addLastState;
+    }
+
+    private String addNewInItemSuccess(){
+        newStockChangeItem =  new StockChangeItem(newStockChangeItem.getStoreRes(),
+                resHelper.getFormatHistory(newStockChangeItem.getRes()),
+                resHelper.getFloatConvertRateHistory(newStockChangeItem.getRes()),
+                newStockChangeItem.getRes().getResUnitByInDefault());
+
+        addLastState = "added";
+        return  addLastState;
+    }
+
     public String addNewInItem() {
         storeResHome.setRes(newStockChangeItem.getRes(), newStockChangeItem.getFormats(), newStockChangeItem.getFloatConvertRate());
-        if (!storeResHome.isIdDefined() && DataFormat.isEmpty(storeResHome.getInstance().getCode())){
+
+
+        if (!storeResHome.isIdDefined() && DataFormat.isEmpty(newStockChangeItem.getCode())){
             addLastState = "newStoreRes";
             return  addLastState;
         }else{
+            if (!storeResHome.isIdDefined()){
+                storeResHome.getInstance().setCode(newStockChangeItem.getCode());
+            }
             newStockChangeItem.setStoreRes(storeResHome.getInstance());
 
             for (ResBackItem item : inItems) {
                 if (item.getStockChangeItem().getStoreRes().equals(newStockChangeItem.getStoreRes())){
                     item.getStockChangeItem().add(newStockChangeItem);
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,"StoreChangeItemIsExists",newStockChangeItem.getStoreRes().getCode());
-                    newStockChangeItem = null;
-                    addLastState = "added";
-                    return  addLastState;
+
+                    return  addNewInItemSuccess();
                 }
             }
             inItems.add(new ResBackItem(newStockChangeItem));
-            newStockChangeItem = null;
-            addLastState = "added";
-            return  addLastState;
+
+            return  addNewInItemSuccess();
 
         }
     }
@@ -121,6 +155,11 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
             return ;
         }
         inItems.remove(resBackItem);
+    }
+
+    public void editInItem(){
+        editingItem = resBackItem;
+        actionExecuteState.clearState();
     }
 
     @Override

@@ -8,101 +8,283 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-    <ui:param name="functionTitle" value="#{storeResBackStoreIn.taskName}"/>
+<ui:param name="functionTitle" value="#{storeResBackStoreIn.taskName}"/>
 
-    <ui:define name="func-body">
+<ui:define name="func-body">
 
-        <h:form>
-            <rich:toolbar>
+<ui:include src="/layout/erp/ResSelectTree.xhtml">
+    <ui:param name="render" value="itemCreateFields"/>
+    <ui:param name="treeValue" value="#{saleResTree}"/>
+</ui:include>
 
-                <rich:toolbarGroup location="right">
-                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+<ui:include src="/layout/erp/StoreResSelectTree.xhtml">
+    <ui:param name="render" value="itemCreateFields"/>
+    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+</ui:include>
 
-                    <h:commandButton  styleClass="toolBarBtn" value="#{messages.complete}"
-                                      action="#{storeResBackStoreIn.complete}"/>
+<h:form>
+    <rich:toolbar>
 
-                </rich:toolbarGroup>
+        <rich:toolbarGroup location="right">
+            <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                      view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
-            </rich:toolbar>
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                             action="#{storeResBackStoreIn.complete}"/>
 
-            <rich:panel>
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">
-                        #{messages.storeIn_field_dateTime}
-                    </ui:define>
-                    <rich:calendar
-                            enableManualInput="true"
-                            inputSize="20"
-                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                            datePattern="#{messages.datetimepattern}"
-                            required="true"
-                            defaultTime="#{currentTime}"
-                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
-                            label="#{messages.storeIn_field_dateTime}"
-                            value="#{stockChangeHome.instance.operDate}">
+        </rich:toolbarGroup>
 
-                    </rich:calendar>
+    </rich:toolbar>
 
-                </s:decorate>
+    <rich:panel>
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">
+                #{messages.storeIn_field_dateTime}
+            </ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="20"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datetimepattern}"
+                    required="true"
+                    defaultTime="#{currentTime}"
+                    defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                    label="#{messages.storeIn_field_dateTime}"
+                    value="#{stockChangeHome.instance.operDate}">
 
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">
-                        #{messages.field_memo}
-                    </ui:define>
-                    <h:inputTextarea cols="80" value="#{stockChangeHome.instance.memo}"/>
-                </s:decorate>
+            </rich:calendar>
 
-                <div style="clear:both">
-                    <span class="required">*</span>
-                    #{messages.requiredFields}
-                </div>
-            </rich:panel>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">
+                #{messages.field_memo}
+            </ui:define>
+            <h:inputTextarea cols="80" value="#{stockChangeHome.instance.memo}"/>
+        </s:decorate>
+
+        <div style="clear:both">
+            <span class="required">*</span>
+            #{messages.requiredFields}
+        </div>
+    </rich:panel>
 
 
-        </h:form>
-        <br/>
-        <rich:dataTable style="width: 100%" value="#{productBackStoreInHome.instance.backDispatchItemList}" var="_item">
-            <f:facet name="header">
-                <rich:columnGroup>
-                    <rich:column rowspan="2">
-                        #{messages.StoreRes}
-                    </rich:column>
-                    <rich:column colspan="2">
-                        #{messages.count}
-                    </rich:column>
-                    <rich:column breakRowBefore="true">
-                        #{messages.MasterUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.AuxUnitCount}
-                    </rich:column>
-                </rich:columnGroup>
-            </f:facet>
+</h:form>
+<br/>
 
-            <rich:column>
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
-                </ui:include>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.displayMasterCount}"/>
-            </rich:column>
-            <rich:column>
-                #{_item.displayAuxCount}
-            </rich:column>
-        </rich:dataTable>
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelTitle" value="#{messages.storeRes_field_code}"/>
+    <ui:param name="panelId" value="newStoreResCodeInputPanel"/>
+    <ui:define name="controls">
+    </ui:define>
 
-        <br/>
 
-        <rich:collapsiblePanel switchType="client" header="#{messages.details}">
+    <s:decorate rendered="#{not empty storeResBackStoreIn.newStockChangeItem}" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.storeRes_field_code}</ui:define>
+        <h:inputText label="#{messages.storeRes_field_code}"
+                     required="true" size="27" maxlength="50"
+                     value="#{storeResBackStoreIn.newStockChangeItem.code}"/>
+    </s:decorate>
 
-            <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
-
-        </rich:collapsiblePanel>
+    <ui:define name="actionButtons">
+        <a:commandButton immediate="true"
+                         execute="@this" value="#{messages.cancel}"
+                         oncomplete="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
+            <a:param value="" assignTo="#{storeResBackStoreIn.newStockChangeItem.code}"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        <a:commandButton value="#{messages.addItem}" execute="@form"
+                         action="#{storeResBackStoreIn.addNewInItem}" data="#{storeResBackStoreIn.addLastState}"
+                         oncomplete="if (event.data == 'added')#{rich:component('newStoreResCodeInputPanel')}.hide();"
+                         render="itemCreateFields,inItemsTable,newStoreResCodeInputPanel_inputs">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
 
     </ui:define>
+
+</s:decorate>
+
+<h:form>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">
+            #{messages.res_field_code}
+        </ui:define>
+
+        <h:inputText styleClass="barOrderNumber"
+                     label="#{messages.res_field_code}"
+                     id="resItemCode" value="#{resLocate.code}"
+                     required="true">
+            <rich:placeholder value="#{messages.res_field_code}"/>
+        </h:inputText>
+
+        <ui:define name="tail">
+            <h:panelGrid columns="4">
+                <a:commandButton value="#{messages.search}" execute="@region"
+                                 render="itemCreateFields"
+                                 action="#{resLocate.locateByCode('SELL_BACK')}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+                <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                 title="#{messages.resSelect}"
+                                 onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+                <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                 title="#{messages.storeResSelect}"
+                                 onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+            </h:panelGrid>
+        </ui:define>
+    </s:decorate>
+</h:form>
+
+<div style="clear: both;"/>
+<h:form>
+    <a:outputPanel id="itemCreateFields">
+        <rich:panel rendered="#{resHome.idDefined}">
+
+            <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+                <ui:param name="inputValue" value="#{storeResBackStoreIn.newStockChangeItem}"/>
+                <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                <ui:param name="countLableStyleClass" value="name"/>
+            </ui:include>
+
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+                <h:inputTextarea value="#{storeResBackStoreIn.newStockChangeItem.memo}" cols="65"/>
+            </s:decorate>
+
+
+            <s:span styleClass="value">
+                <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                                 action="#{resHome.clearInstance}" render="itemCreateFields">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </s:span>
+            <s:span styleClass="value">
+                <a:commandButton value="#{messages.addItem}" execute="@form"
+                                 action="#{storeResBackStoreIn.addNewInItem}"
+                                 data="#{storeResBackStoreIn.addLastState}"
+                                 oncomplete="if (event.data == 'newStoreRes')#{rich:component('newStoreResCodeInputPanel')}.hide();"
+                                 render="itemCreateFields,inItemsTable,newStoreResCodeInputPanel_inputs">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </s:span>
+
+
+            <div style="clear: both"/>
+        </rich:panel>
+    </a:outputPanel>
+</h:form>
+<br/>
+<h:form>
+    <rich:dataTable id="inItemsTable" style="width: 100%" value="#{storeResBackStoreInItems}" var="_item">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column rowspan="2">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.applyCount}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.storeOutCount}
+
+                </rich:column>
+                <rich:column rowspan="2"/>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column>
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="#{_item.stockChangeItem.storeRes}"/>
+            </ui:include>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.backDispatchItem.displayMasterCount}"
+                          rendered="#{not empty _item.backDispatchItem}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.backDispatchItem.displayAuxCount}"
+                          rendered="#{not empty _item.backDispatchItem}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.stockChangeItem.displayMasterCount}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_item.stockChangeItem.displayAuxCount}"/>
+        </rich:column>
+        <rich:column style="text-align: center;">
+            <a:commandButton image="/img/delete.png" title="#{messages.delete}"
+                             action="#{storeResBackStoreIn.deleteInItem}"
+                             rendered="#{empty _item.backDispatchItem}" render="inItemsTable"/>
+            <a:commandButton image="/img/edit.png" title="#{messages.edit}"
+                             action="#{storeResBackStoreIn.editInItem}"
+                             render="inItemCountChangePanel_form"
+                             oncomplete="#{rich:component('inItemCountChangePanel')}.show();">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+        </rich:column>
+    </rich:dataTable>
+</h:form>
+<br/>
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="inItemCountChangePanel"/>
+    <ui:param name="panelTitle" value="#{messages.edit}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+        </a:commandButton>
+    </ui:define>
+
+    <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+        <ui:param name="inputValue" value="#{storeResBackStoreIn.editingItem.stockChangeItem}"/>
+        <ui:param name="formatTemplate" value="/layout/edit.xhtml"/>
+        <ui:param name="countLableStyleClass" value="small_name"/>
+    </ui:include>
+
+    <ui:define name="actionButtons">
+        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                         onclick="#{rich:component(panelId)}.hide(); return false;"/>
+        <a:commandButton value="#{messages.ok}" execute="@form" action="#{actionExecuteState.actionExecute}"
+                         render="inItemsTable"
+                         data="#{actionExecuteState.lastState}"
+                         oncomplete="if (event.data == 'success')#{rich:component(panelId)}.hide();">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+</s:decorate>
+
+<rich:collapsiblePanel switchType="client" header="#{messages.details}">
+
+    <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
+
+</rich:collapsiblePanel>
+
+</ui:define>
 
 
 </ui:composition>

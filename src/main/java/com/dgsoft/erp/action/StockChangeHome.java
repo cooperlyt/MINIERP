@@ -40,6 +40,7 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
 
     public void resStockChange(StockChangeItem item){
         stockChangeFindStock(item);
+        item.setStockChange(getInstance());
         getInstance().getStockChangeItems().add(item);
     }
 

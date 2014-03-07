@@ -62,9 +62,19 @@ public class StoreResEntity {
 
     private Res res;
 
+    private String code;
+
     private List<Format> formats;
 
     private Map<String, Set<Object>> formatHistory;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     private List<BigDecimal> floatConvertRateHistory;
 

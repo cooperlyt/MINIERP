@@ -1,12 +1,127 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{storeResBackConfirm.taskName}"/>
+
+    <ui:define name="func-body">
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup>
+                    <h:panelGrid columns="10">
+                        #{messages.OrderBack_field_SaveMoney}
+                        <a:outputPanel ajaxRendered="true">
+                            <h:inputText id="saveMoneyInput" styleClass="barOrderNumber"
+                                         label="#{messages.OrderBack_field_SaveMoney}" rendered="true"
+                                         value="#{orderBackHome.instance.saveMoney}">
+                                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                                 type="currency" groupingUsed="false"/>
+                                <f:validateDoubleRange maximum="#{storeResBackConfirm.resTotalMoney}"/>
+                                <a:ajax event="blur" execute="@this" listener="#{storeResBackConfirm.calcBackMoney}"/>
+                            </h:inputText>
+                            <rich:message for="saveMoneyInput" styleClass="message-icon"
+                                          showDetail="true" showSummary="true" tooltip="true"/>
+
+                            <h:outputText value="#{orderBackHome.instance.money}">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                            </h:outputText>
+                        </a:outputPanel>
+                    </h:panelGrid>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup location="right">
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                     action="#{storeResBackConfirm.complete}"/>
+
+                </rich:toolbarGroup>
+            </rich:toolbar>
+        </h:form>
+
+        <br/>
+        <rich:dataTable style="width: 100%" id="backResEditTable" value="#{confirmBackItems}" var="_item">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column rowspan="2">
+                        #{messages.StoreRes}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.storeOutCount}
+                    </rich:column>
+                    <rich:column colspan="3">
+                        #{messages.orderItemPrice}
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.Res_Unit}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.orderItemUnitPrice}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.orderItemTotalPrice}
+                    </rich:column>
+
+                </rich:columnGroup>
+            </f:facet>
+            <rich:column>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                </ui:include>
+            </rich:column>
+            <rich:column>
+                #{_item.displayMasterCount}
+            </rich:column>
+            <rich:column>
+                #{_item.displayAuxCount}
+            </rich:column>
+            <rich:column>
+                <rich:inplaceSelect style="width: 90%"
+                                    value="#{_item.resUnit}" required="true">
+                    <s:selectItems value="#{_item.resUnit.unitGroup.resUnitList}" var="_unit"
+                                   label="#{_unit.name}"/>
+                    <a:ajax event="blur" render="backResEditTable"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                </rich:inplaceSelect>
+            </rich:column>
+            <rich:column>
+                <s:decorate template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceInput label="#{messages.count}" style="width: 90%"
+                                       value="#{_item.useUnitCount}" required="true"
+                                       converter="javax.faces.BigDecimal">
+                        <f:convertNumber pattern="#0.####"/>
+                        <a:ajax event="blur" listener="#{storeResBackConfirm.calcBackMoney}"
+                                render="backResEditTable"/>
+                    </rich:inplaceInput>
+                </s:decorate>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.totalPrice}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
+        </rich:dataTable>
+    </ui:define>
+
+    <br/>
+    <rich:collapsiblePanel switchType="client" header="#{messages.details}">
+
+        <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
+
+    </rich:collapsiblePanel>
+
+</ui:composition>

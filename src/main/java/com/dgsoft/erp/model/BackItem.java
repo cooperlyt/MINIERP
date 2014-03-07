@@ -51,6 +51,15 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
         this.orderBack = orderBack;
     }
 
+    public BackItem(BigDecimal count, BigDecimal money, String memo, StoreRes storeRes, ResUnit resUnit, OrderBack orderBack) {
+        this.count = count;
+        this.money = money;
+        this.memo = memo;
+        this.storeRes = storeRes;
+        this.resUnit = resUnit;
+        this.orderBack = orderBack;
+    }
+
     public BackItem(OrderBack orderBack,StoreRes storeRes, ResCount resCount) {
         this.orderBack = orderBack;
         this.storeRes = storeRes;
