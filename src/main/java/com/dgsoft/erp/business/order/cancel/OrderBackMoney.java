@@ -29,7 +29,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
     @Override
     protected void initCancelOrderTask() {
         accountOper = new AccountOper(orderBackHome.getInstance(),
-                credentials.getUsername());
+                credentials.getUsername(),BigDecimal.ZERO);
     }
 
     public AccountOper getAccountOper() {
@@ -47,7 +47,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
 
         if (!getAccountOper().getPayType().equals(PayType.FROM_PRE_DEPOSIT)) {
-            AccountOper backAccountOper = new AccountOper(orderBackHome.getInstance(), credentials.getUsername());
+            AccountOper backAccountOper = new AccountOper(orderBackHome.getInstance(), credentials.getUsername(),getAccountOper().getRemitFee());
 
             backAccountOper.setPayType(getAccountOper().getPayType());
             backAccountOper.setOperMoney(getAccountOper().getOperMoney());
@@ -55,7 +55,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
             getAccountOper().setBankAccount(null);
             backAccountOper.setCheckNumber(getAccountOper().getCheckNumber());
             getAccountOper().setCheckNumber(null);
-            backAccountOper.setRemitFee(getAccountOper().getRemitFee());
+            //backAccountOper.setRemitFee(getAccountOper().getRemitFee());
             getAccountOper().setRemitFee(BigDecimal.ZERO);
             backAccountOper.setOperType(AccountOper.AccountOperType.ORDER_BACK);
             backAccountOper.setOperDate(new Date(getAccountOper().getOperDate().getTime() + 1001));

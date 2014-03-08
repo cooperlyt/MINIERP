@@ -19,14 +19,9 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="退款" x="291" y="137" width="132" height="36">
+  <node name="退款" x="313" y="135" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
-    </edge>
-  </node>
-  <node name="退款完成" x="476" y="136" width="132" height="36">
-    <edge>
-      <label x="-83" y="19"/>
     </edge>
   </node>
   <node name="退货完成" x="637" y="308" width="132" height="36">
@@ -115,7 +110,7 @@
       <label x="-13" y="-19"/>
     </edge>
   </node>
-  <node name="退货确认" x="480" y="213" width="132" height="36">
+  <node name="退货确认" x="477" y="213" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>

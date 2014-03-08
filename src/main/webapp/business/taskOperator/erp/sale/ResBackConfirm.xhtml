@@ -47,81 +47,94 @@
         </h:form>
 
         <br/>
-        <rich:dataTable style="width: 100%" id="backResEditTable" value="#{confirmBackItems}" var="_item">
-            <f:facet name="header">
-                <rich:columnGroup>
-                    <rich:column rowspan="2">
-                        #{messages.StoreRes}
-                    </rich:column>
-                    <rich:column colspan="2">
-                        #{messages.storeOutCount}
-                    </rich:column>
-                    <rich:column colspan="3">
-                        #{messages.orderItemPrice}
-                    </rich:column>
-                    <rich:column breakRowBefore="true">
-                        #{messages.MasterUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.AuxUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.Res_Unit}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.orderItemUnitPrice}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.orderItemTotalPrice}
-                    </rich:column>
+        <h:form>
+            <rich:dataTable style="width: 100%" id="backResEditTable" value="#{confirmBackItems}" var="_item">
+                <f:facet name="header">
+                    <rich:columnGroup>
+                        <rich:column rowspan="2">
+                            #{messages.StoreRes}
+                        </rich:column>
+                        <rich:column colspan="2">
+                            #{messages.storeOutCount}
+                        </rich:column>
+                        <rich:column colspan="3">
+                            #{messages.orderItemPrice}
+                        </rich:column>
+                        <rich:column breakRowBefore="true">
+                            #{messages.MasterUnitCount}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.AuxUnitCount}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.Res_Unit}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.orderItemUnitPrice}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.orderItemTotalPrice}
+                        </rich:column>
 
-                </rich:columnGroup>
-            </f:facet>
-            <rich:column>
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
-                </ui:include>
-            </rich:column>
-            <rich:column>
-                #{_item.displayMasterCount}
-            </rich:column>
-            <rich:column>
-                #{_item.displayAuxCount}
-            </rich:column>
-            <rich:column>
-                <rich:inplaceSelect style="width: 90%"
-                                    value="#{_item.resUnit}" required="true">
-                    <s:selectItems value="#{_item.resUnit.unitGroup.resUnitList}" var="_unit"
-                                   label="#{_unit.name}"/>
-                    <a:ajax event="blur" render="backResEditTable"/>
-                    <f:converter converterId="erpEntityConverter"/>
-                </rich:inplaceSelect>
-            </rich:column>
-            <rich:column>
-                <s:decorate template="/layout/grid-inside-edit.xhtml">
-                    <rich:inplaceInput label="#{messages.count}" style="width: 90%"
-                                       value="#{_item.useUnitCount}" required="true"
-                                       converter="javax.faces.BigDecimal">
-                        <f:convertNumber pattern="#0.####"/>
-                        <a:ajax event="blur" listener="#{storeResBackConfirm.calcBackMoney}"
-                                render="backResEditTable"/>
-                    </rich:inplaceInput>
-                </s:decorate>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.totalPrice}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </rich:column>
+                    </rich:columnGroup>
+                </f:facet>
+                <rich:column>
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                    </ui:include>
+                    <f:facet name="footer">
+                        #{messages.recordTotal} #{confirmBackItems.size} #{messages.item}
+                    </f:facet>
+                </rich:column>
+                <rich:column>
+                    #{_item.displayMasterCount}
+                </rich:column>
+                <rich:column>
+                    #{_item.displayAuxCount}
+                </rich:column>
+                <rich:column>
+                    <rich:inplaceSelect style="width: 90%"
+                                        value="#{_item.resUnit}" required="true">
+                        <s:selectItems value="#{_item.resUnit.unitGroup.resUnitList}" var="_unit"
+                                       label="#{_unit.name}"/>
+                        <a:ajax event="selectitem" render="backResEditTable"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                    </rich:inplaceSelect>
+                </rich:column>
+                <rich:column style="text-align: right;">
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:inplaceInput label="#{messages.orderItemUnitPrice}" style="width: 90%"
+                                           value="#{_item.money}" required="true"
+                                           converter="javax.faces.BigDecimal">
+                            <f:convertNumber pattern="#0.####"/>
+                            <a:ajax event="blur" listener="#{storeResBackConfirm.calcBackMoney}"
+                                    render="backResEditTable"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                </rich:column>
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_item.totalPrice}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="#{storeResBackConfirm.resTotalMoney}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </rich:column>
 
-        </rich:dataTable>
+            </rich:dataTable>
+
+
+        </h:form>
+
+        <br/>
+        <rich:collapsiblePanel switchType="client" header="#{messages.details}">
+
+            <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
+
+        </rich:collapsiblePanel>
+
     </ui:define>
-
-    <br/>
-    <rich:collapsiblePanel switchType="client" header="#{messages.details}">
-
-        <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
-
-    </rich:collapsiblePanel>
 
 </ui:composition>

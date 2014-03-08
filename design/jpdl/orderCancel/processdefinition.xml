@@ -34,14 +34,8 @@
 			</description>
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>
-		<transition to="退款完成"></transition>
+		<transition to="结束"></transition>
 	</task-node>
-
-	<decision name="退款完成">
-		<transition to="结束" name="结束仅退款">
-			<condition expression="#{not orderBackHome.needBackRes}"></condition>
-		</transition>
-	</decision>
 
 	<decision name="退货完成">
 		<transition to="退货确认">

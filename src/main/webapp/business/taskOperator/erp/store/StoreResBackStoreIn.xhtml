@@ -254,10 +254,7 @@
     <ui:param name="panelId" value="inItemCountChangePanel"/>
     <ui:param name="panelTitle" value="#{messages.edit}"/>
     <ui:define name="controls">
-        <a:commandButton immediate="true"
-                         execute="@this" image="/img/close.png"
-                         onclick="#{rich:component(panelId)}.hide(); return false;">
-        </a:commandButton>
+
     </ui:define>
 
     <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
@@ -267,8 +264,7 @@
     </ui:include>
 
     <ui:define name="actionButtons">
-        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
-                         onclick="#{rich:component(panelId)}.hide(); return false;"/>
+
         <a:commandButton value="#{messages.ok}" execute="@form" action="#{actionExecuteState.actionExecute}"
                          render="inItemsTable"
                          data="#{actionExecuteState.lastState}"

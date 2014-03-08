@@ -97,8 +97,9 @@ public class AccountOper implements java.io.Serializable {
     }
 
 
-    public AccountOper(OrderBack orderBack, String operEmp) {
+    public AccountOper(OrderBack orderBack, String operEmp,BigDecimal remitFee) {
         this.orderBack = orderBack;
+        this.remitFee = remitFee;
         this.customer = orderBack.getCustomer();
         this.operEmp = operEmp;
         this.operType = AccountOperType.ORDER_BACK_SAVINGS;
