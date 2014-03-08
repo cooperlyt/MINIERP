@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,11 +14,11 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "OVERLY_OUT", catalog = "MINI_ERP")
-public class OverlyOut {
+public class OverlyOut extends StoreResCountEntity implements java.io.Serializable{
 
     private String id;
     private StoreRes storeRes;
-    private BigDecimal count;
+    private BigDecimal masterCount;
     private String description;
     private Dispatch dispatch;
     private boolean add;
@@ -25,9 +26,9 @@ public class OverlyOut {
     public OverlyOut() {
     }
 
-    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count, boolean add) {
+    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal masterCount, boolean add) {
         this.storeRes = storeRes;
-        this.count = count;
+        this.masterCount = masterCount;
         this.dispatch = dispatch;
         this.add = add;
     }
@@ -48,12 +49,12 @@ public class OverlyOut {
 
     @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull
-    public BigDecimal getCount() {
-        return count;
+    public BigDecimal getMasterCount() {
+        return masterCount;
     }
 
-    public void setCount(BigDecimal count) {
-        this.count = count;
+    public void setMasterCount(BigDecimal count) {
+        this.masterCount = count;
     }
 
     @Column(name = "DESCRIPTION", length = 200)
@@ -84,11 +85,6 @@ public class OverlyOut {
 
     public void setDispatch(Dispatch dispatch) {
         this.dispatch = dispatch;
-    }
-
-    @Transient
-    public ResCount getResCount() {
-        return storeRes.getResCount(getCount());
     }
 
     @Column(name = "IS_ADD",nullable = false)

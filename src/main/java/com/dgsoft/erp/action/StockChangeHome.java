@@ -8,7 +8,6 @@ import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -69,9 +68,9 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
         }
 
         if (getInstance().getOperType().isOut()) {
-            inStock.setCount(inStock.getCount().subtract(inCount.getMasterCount()));
+            inStock.setMasterCount(inStock.getMasterCount().subtract(inCount.getMasterCount()));
         } else
-            inStock.setCount(inStock.getCount().add(inCount.getMasterCount()));
+            inStock.setMasterCount(inStock.getMasterCount().add(inCount.getMasterCount()));
         return inStock;
     }
 

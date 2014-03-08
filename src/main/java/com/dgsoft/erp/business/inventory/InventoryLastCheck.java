@@ -56,9 +56,9 @@ public class InventoryLastCheck extends InventoryTaskHandle {
 
                     addStockChange.getStockChangeItems().add(item);
                     if (item.isStoreOut()){
-                        stock.setCount(stock.getCount().subtract(prepareStockChange.getCount()));
+                        stock.setMasterCount(stock.getMasterCount().subtract(prepareStockChange.getCount()));
                     }else{
-                        stock.setCount(stock.getCount().add(prepareStockChange.getCount()));
+                        stock.setMasterCount(stock.getMasterCount().add(prepareStockChange.getCount()));
                     }
                 }
                 addStockChange.setOperDate(inventoryHome.getInstance().getCheckedDate());
@@ -81,7 +81,7 @@ public class InventoryLastCheck extends InventoryTaskHandle {
                         throw new IllegalArgumentException("stock not exists");
                     }
 
-                    if (stock.getCount().compareTo(prepareStockChange.getCount()) < 0 ){
+                    if (stock.getMasterCount().compareTo(prepareStockChange.getCount()) < 0 ){
                         throw new IllegalArgumentException("lose count less stock");
                     }
 
@@ -91,9 +91,9 @@ public class InventoryLastCheck extends InventoryTaskHandle {
 
                     loseStockChange.getStockChangeItems().add(item);
                     if (item.isStoreOut()){
-                        stock.setCount(stock.getCount().subtract(prepareStockChange.getCount()));
+                        stock.setMasterCount(stock.getMasterCount().subtract(prepareStockChange.getCount()));
                     }else{
-                        stock.setCount(stock.getCount().add(prepareStockChange.getCount()));
+                        stock.setMasterCount(stock.getMasterCount().add(prepareStockChange.getCount()));
                     }
                 }
                 loseStockChange.setOperDate(inventoryHome.getInstance().getCheckedDate());

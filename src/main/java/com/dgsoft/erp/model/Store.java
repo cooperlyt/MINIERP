@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.StoreResCount;
 import com.google.common.collect.Iterators;
 
 import javax.persistence.*;

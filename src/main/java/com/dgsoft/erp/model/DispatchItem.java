@@ -2,6 +2,8 @@ package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -14,24 +16,23 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "DISPATCH_ITEM", catalog = "MINI_ERP")
-public class DispatchItem implements java.io.Serializable {
+public class DispatchItem extends StoreResCountEntity implements java.io.Serializable {
 
     private String id;
-    private BigDecimal count;
+    private BigDecimal masterCount;
     private Dispatch dispatch;
     private StoreRes storeRes;
-    private ResUnit resUnit;
+    private String memo;
 
     public DispatchItem() {
     }
 
 
-    public DispatchItem(ResUnit resUnit, BigDecimal count, Dispatch dispatch,
+    public DispatchItem(BigDecimal masterCount, Dispatch dispatch,
                         StoreRes storeRes) {
-        this.count = count;
+        this.masterCount = masterCount;
         this.dispatch = dispatch;
         this.storeRes = storeRes;
-        this.resUnit = resUnit;
     }
 
     @Id
@@ -50,12 +51,12 @@ public class DispatchItem implements java.io.Serializable {
 
     @Column(name = "COUNT", scale = 4, nullable = false)
     @NotNull
-    public BigDecimal getCount() {
-        return this.count;
+    public BigDecimal getMasterCount() {
+        return this.masterCount;
     }
 
-    public void setCount(BigDecimal count) {
-        this.count = count;
+    public void setMasterCount(BigDecimal masterCount) {
+        this.masterCount = masterCount;
     }
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -81,33 +82,14 @@ public class DispatchItem implements java.io.Serializable {
         this.storeRes = storeRes;
     }
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "COUNT_UNIT", nullable = false)
-    @NotNull
-    public ResUnit getResUnit() {
-        return resUnit;
+    @Column(name="MEMO",nullable = true,length = 200)
+    public String getMemo() {
+        return memo;
     }
 
-    public void setResUnit(ResUnit resUnit) {
-        this.resUnit = resUnit;
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
-
-    @Transient
-    public ResCount getResCount() {
-        if (getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            return new ResCount(getCount(), getResUnit(), getStoreRes().getFloatConversionRate());
-        } else {
-            return new ResCount(getCount(), getResUnit());
-        }
-    }
-
-    @Transient
-    public void addResCount(ResCount addCount) {
-        if (!addCount.canMerger(getResCount()))
-            throw new IllegalArgumentException("Res count cant add");
-        setCount(getCount().add(addCount.getCountByResUnit(getResUnit())));
-    }
-
 
     @Transient
     public Stock getStock() {
@@ -119,26 +101,15 @@ public class DispatchItem implements java.io.Serializable {
         return null;
     }
 
-    @Transient
-    public ResCount getStockCount() {
-        Stock stock = getStock();
-        if (stock != null) {
-            return stock.getResCount();
-        } else
-            return getStoreRes().getResCount(BigDecimal.ZERO, getStoreRes().getRes().getUnitGroup().getMasterUnit());
-    }
 
     @Transient
     public boolean isEnough() {
-        return getStockCount().getMasterCount().compareTo(getResCount().getMasterCount()) >= 0;
+        return getStock().getMasterCount().compareTo(getMasterCount()) >= 0;
     }
 
 
     @Transient
-    public ResCount getDisparity() {
-
-        ResCount result = getResCount();
-        result.subtract(getStockCount());
-        return getStoreRes().getResCount(result.getMasterCount(), getStoreRes().getRes().getUnitGroup().getMasterUnit());
+    public StoreResCount getDisparity() {
+        return new StoreResCount(getStoreRes(),getMasterCount().subtract(getStock().getMasterCount()));
     }
 }

@@ -5,7 +5,7 @@
     <method name="initialize"><![CDATA[importPackage(Packages.java.lang);
 importPackage(Packages.org.jboss.seam);  
 importPackage(Packages.com.dgsoft.erp.model); 
-importPackage(Packages.com.dgsoft.common.utils.math); 
+importPackage(Packages.com.dgsoft.common); 
 dictionary = Component.getInstance("dictionary", false);
 messages = Component.getInstance("org.jboss.seam.international.messages", false);
 
@@ -157,19 +157,20 @@ it=items.iterator();]]></method>
 	itemTitle = item.getStoreRes().getRes().getName() + " ";
 	
 		storeRes = item.getStoreRes();
-		formats = storeRes.getFormatList(); 
-		for(i=0;i++;i<formats.size() -1){
-			format = formats.get(i);
+	
+		fit = storeRes.getFormatList().iterator(); 
+		while(fit.hasNext()){
+			format = fit.next();
 			itemTitle += format.getFormatDefine().getName() + ":";
 			if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)){
-				itemTitle += dictionary.getWordValue(format.getFormatValue());
+				itemTitle += dictionary.getWordValue(format.getFormatValue()) + ' ';
 			}else{
-				itemTitle += format.getFormatValue();
+				itemTitle += format.getFormatValue() + ' ';
 			}						
 		}
 		if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
 			
-			itemTitle +=  BigDecimalFormat.format(storeRes.getFloatConversionRate(),item.getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat());
+			itemTitle +=  DataFormat.format(storeRes.getFloatConversionRate(),item.getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat());
 			itemTitle += item.getStoreRes().getRes().getUnitGroup().getName();
 		}
 		
@@ -438,6 +439,7 @@ it=items.iterator();]]></method>
             </row>
         </grid>
         <table id="9">
+            <property name="width">7.967479674796748in</property>
             <property name="dataSet">Data Set</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -495,13 +497,27 @@ it=items.iterator();]]></method>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
-            <column id="48"/>
-            <column id="49"/>
-            <column id="50"/>
-            <column id="51"/>
-            <column id="52"/>
-            <column id="53"/>
-            <column id="54"/>
+            <column id="48">
+                <property name="width">3.1463414634146343in</property>
+            </column>
+            <column id="49">
+                <property name="width">0.8292682926829268in</property>
+            </column>
+            <column id="50">
+                <property name="width">0.8048780487804879in</property>
+            </column>
+            <column id="51">
+                <property name="width">0.8211382113821138in</property>
+            </column>
+            <column id="52">
+                <property name="width">0.7886178861788617in</property>
+            </column>
+            <column id="53">
+                <property name="width">0.7967479674796748in</property>
+            </column>
+            <column id="54">
+                <property name="width">0.7804878048780488in</property>
+            </column>
             <header>
                 <row id="63">
                     <cell id="64">

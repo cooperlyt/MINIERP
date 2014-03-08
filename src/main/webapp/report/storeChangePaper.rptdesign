@@ -23,14 +23,11 @@ if ((dispatchHome != null) &amp;&amp; dispatchHome.isIdDefined()){
 	}else{
 		proxyMoney = 0;
 	}	
-	dispatchItems = Component.getInstance("orderStoreOutItems",true);
-	
 }else{
-	stockChangeHome = Component.getInstance("stockChangeHome",true);
-	stockChangeHome.setId(params['stockChangeId'].value);
-	//orderHome = Component.getInstance("orderHome",true);
-	//orderHome.setId();
-	order = stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getCustomerOrder();
+
+	orderHome = Component.getInstance("orderHome",true);
+	orderHome.setId(params["orderId"].value);
+	order = orderHome.getInstance();
 	masterNeedRes = orderHome.getMasterNeedRes();
 	//TODO NeedResID
 	dispatchIt = masterNeedRes.getDispatchList().iterator();
@@ -49,7 +46,7 @@ if ((dispatchHome != null) &amp;&amp; dispatchHome.isIdDefined()){
 	
 }
 
-
+dispatchItems = Component.getInstance("orderStoreOutItems",true);
 
 
 	salerName = dictionary.getEmpNameById(order.getOrderEmp());
@@ -63,18 +60,23 @@ if ((dispatchHome != null) &amp;&amp; dispatchHome.isIdDefined()){
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="stockChangeId" id="405">
-            <property name="hidden">true</property>
+        <scalar-parameter name="orderId" id="149">
             <property name="valueType">static</property>
-            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant"></value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="storeId" id="171">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>

@@ -28,7 +28,9 @@ INSERT INTO DG_SYSTEM.BUSINESS_CATEGORY(ID, NAME, PRIORITY) VALUES('erp.storage'
 -- 业务
 
 INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.order','销售订单','order','/business/startPrepare/erp/sale/CreateSaleOrder.xhtml','','','erp.sale','销售订单',0);
-INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION, START_PROPAGATION) VALUES('erp.business.orderCancel','撤消订单','orderCancel','/func/erp/sale/CustomerOrder.xhtml','','','erp.sale','撤消订单',0,'');
+INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.orderCancel','退货','orderCancel','/business/startPrepare/erp/sale/StoreResBackCreate.xhtml','','','erp.sale','撤消订单',0);
+INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.allocation','仓库调拨','stockAllocation','/business/startPrepare/erp/store/AllocationCreate.xhtml','','','erp.storage','仓库调拨',0);
+
 
 
 INSERT INTO DG_SYSTEM.BUSINESS_DEFINE(ID, NAME, WF_NAME, START_PAGE, START_DATA_VALIDATOR, TASK_SERVICE, CATEGORY, MEMO, VERSION) VALUES('erp.business.inventory','盘点','inventory','/business/startPrepare/erp/store/Inventory.xhtml','','','erp.storage','盘点',0);

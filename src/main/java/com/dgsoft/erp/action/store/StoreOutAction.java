@@ -132,8 +132,8 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
             storeOutItems.add(editingItem);
         }
 
-        if (editingItem.getStoreResCountInupt().getMasterCount().compareTo(editingItem.getStock().getCount()) > 0){
-            editingItem.getStoreResCountInupt().setMasterCount(editingItem.getStock().getCount());
+        if (editingItem.getStoreResCountInupt().getMasterCount().compareTo(editingItem.getStock().getMasterCount()) > 0){
+            editingItem.getStoreResCountInupt().setMasterCount(editingItem.getStock().getMasterCount());
             facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN,"storeOutCountNotEnough");
         }
         editingItem = null;
@@ -160,9 +160,9 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
             noConvertCount.setStockChangeItem(stockChangeItem);
         }
         if (stockChangeItem.isStoreOut()){
-            stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().subtract(outItem.getStoreResCountInupt().getMasterCount()));
+            stockChangeItem.getStock().setMasterCount(stockChangeItem.getStock().getMasterCount().subtract(outItem.getStoreResCountInupt().getMasterCount()));
         }else{
-            stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(outItem.getStoreResCountInupt().getMasterCount()));
+            stockChangeItem.getStock().setMasterCount(stockChangeItem.getStock().getMasterCount().add(outItem.getStoreResCountInupt().getMasterCount()));
         }
 
 

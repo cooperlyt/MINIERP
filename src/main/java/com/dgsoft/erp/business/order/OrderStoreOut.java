@@ -8,18 +8,19 @@ import com.dgsoft.erp.action.DispatchHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.log.Logging;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -93,22 +94,9 @@ public class OrderStoreOut extends OrderTaskHandle {
 
     public void editOverlay() {
         operOutItem = selectOutItem;
-        selectOutItem.generateOverlayInput();
         actionExecuteState.clearState();
     }
 
-    public void saveOverlay() {
-
-
-        if (!operOutItem.getOverlyOut().isAdd() &&
-                (operOutItem.getOverlayCount().getMasterCount().compareTo(operOutItem.getDispatchMaterCount()) > 0)) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "sale_store_out_must_less_need", operOutItem.getDispatchCount().getMasterDisplayCount());
-            return;
-        }
-
-        operOutItem.assignOverlayCount();
-        actionExecuteState.actionExecute();
-    }
 
     @Override
     protected String completeOrderTask() {
@@ -150,12 +138,12 @@ public class OrderStoreOut extends OrderTaskHandle {
             dispatchHome.getInstance().getStockChange().getStockChangeItems()
                     .add(stockChangeItem);
             if (stockChangeItem.isStoreOut()){
-                stock.setCount(stock.getCount().subtract(item.getResCount().getMasterCount()));
+                stock.setMasterCount(stock.getMasterCount().subtract(item.getResCount().getMasterCount()));
             }else{
-                stock.setCount(stock.getCount().add(item.getResCount().getMasterCount()));
+                stock.setMasterCount(stock.getMasterCount().add(item.getResCount().getMasterCount()));
             }
 
-            if ((item.getOverlyOut() != null) && (item.getOverlyOut().getCount().compareTo(BigDecimal.ZERO) > 0)) {
+            if ((item.getOverlyOut() != null) && (item.getOverlyOut().getMasterCount().compareTo(BigDecimal.ZERO) > 0)) {
                 dispatchHome.getInstance().getOverlyOuts().add(item.getOverlyOut());
             }
 
@@ -267,129 +255,72 @@ public class OrderStoreOut extends OrderTaskHandle {
     }
 
 
-    @Deprecated
-    public class OrderStoreOutItem {
+    public class OrderStoreOutItem extends StoreResCountEntity implements Serializable{
 
-        private List<DispatchItem> dispatchItems = new ArrayList<DispatchItem>();
+        private DispatchItem dispatchItem;
 
         private OverlyOut overlyOut;
-
-        private StoreRes storeRes;
-
-        private StoreResCountInupt overlayCount;
-
-        public StoreRes getStoreRes() {
-            return storeRes;
-        }
 
         public OverlyOut getOverlyOut() {
             return overlyOut;
         }
 
-        public StoreResCountInupt getOverlayCount() {
-            return overlayCount;
-        }
-
-        public void generateOverlayInput() {
-            overlayCount = new StoreResCountInupt(storeRes);
-            overlayCount.setMasterCount(overlyOut.getCount());
-        }
-
-        public void assignOverlayCount() {
-
-            overlyOut.setCount(overlayCount.getMasterCount());
+        public DispatchItem getDispatchItem() {
+            return dispatchItem;
         }
 
         public OrderStoreOutItem(DispatchItem dispatchItem) {
-
-            dispatchItems.add(dispatchItem);
-            storeRes = dispatchItem.getStoreRes();
-
-            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO, false);
-        }
-
-        public OrderStoreOutItem(DispatchItem dispatchItem, StoreRes storeRes) {
-
-            dispatchItems.add(dispatchItem);
-            this.storeRes = storeRes;
-
-            overlyOut = new OverlyOut(getDispatch(), storeRes, BigDecimal.ZERO, false);
-        }
-
-        public void addDispatchItem(DispatchItem dispatchItem) {
-
-            if (!dispatchItem.getStoreRes().getId().equals(storeRes.getId())) {
-                throw new IllegalArgumentException("not same storeRes can't add");
-            }
-
-
-            dispatchItems.add(dispatchItem);
-        }
-
-
-        public void addOverly(BigDecimal count) {
-            this.overlyOut.setCount(this.overlyOut.getCount().add(count));
-        }
-
-        private BigDecimal getDispatchMaterCount() {
-            BigDecimal masterCount = BigDecimal.ZERO;
-            for (DispatchItem dispatchItem : dispatchItems) {
-                masterCount = masterCount.add(storeRes.getResCount(dispatchItem.getCount(), dispatchItem.getResUnit()).getMasterCount());
-            }
-            return masterCount;
-        }
-
-        public ResCount getDispatchCount() {
-
-            return storeRes.getResCount(getDispatchMaterCount());
-        }
-
-        public ResCount getResCount() {
-            BigDecimal masterCount = getDispatchMaterCount();
-            if (overlyOut != null) {
-                if (overlyOut.isAdd()) {
-                    masterCount = masterCount.add(overlyOut.getCount());
-                } else {
-                    masterCount = masterCount.subtract(overlyOut.getCount());
-                }
-            }
-
-            return storeRes.getResCount(masterCount);
-        }
-
-        private Dispatch getDispatch() {
-            return dispatchItems.get(0).getDispatch();
+            this.dispatchItem = dispatchItem;
+            overlyOut = new OverlyOut(dispatchItem.getDispatch(), dispatchItem.getStoreRes(), BigDecimal.ZERO, false);
         }
 
         public Stock getStock() {
-            for (Stock stock : storeRes.getStocks()) {
-                if (stock.getStore().getId().equals(getDispatch().getStore().getId())) {
+            for (Stock stock : dispatchItem.getStoreRes().getStocks()) {
+                if (stock.getStore().getId().equals(dispatchItem.getDispatch().getStore().getId())) {
                     return stock;
                 }
             }
             return null;
         }
 
-        public ResCount getStockCount() {
-            Stock stock = getStock();
-            if (stock != null) {
-                return stock.getResCount();
-            } else
-                return storeRes.getResCount(BigDecimal.ZERO);
-        }
-
         public boolean isEnough() {
-            return getStockCount().getMasterCount().compareTo(getResCount().getMasterCount()) >= 0;
+            return getStock().getMasterCount().compareTo(getMasterCount()) >= 0;
         }
 
 
-        public ResCount getDisparity() {
+        public StoreResCount getDisparity() {
 
-            ResCount result = getResCount();
-            result.subtract(getStockCount());
-            return result;
+            return new StoreResCount(dispatchItem.getStoreRes(),getMasterCount().subtract(getStock().getMasterCount()));
         }
 
+        @Override
+        public BigDecimal getMasterCount() {
+            BigDecimal masterCount = dispatchItem.getMasterCount();
+            if (overlyOut != null) {
+                if (overlyOut.isAdd()) {
+                    masterCount = masterCount.add(overlyOut.getMasterCount());
+                } else {
+                    masterCount = masterCount.subtract(overlyOut.getMasterCount());
+                }
+            }
+
+            return masterCount;
+        }
+
+        @Override
+        public void setMasterCount(BigDecimal count) {
+            throw new IllegalArgumentException("this is readonly")
+        }
+
+        @Override
+        public StoreRes getStoreRes() {
+            return dispatchItem.getStoreRes();
+        }
+
+        @Override
+        public void setStoreRes(StoreRes storeRes) {
+            throw new IllegalArgumentException("this is readonly")
+        }
     }
 
 

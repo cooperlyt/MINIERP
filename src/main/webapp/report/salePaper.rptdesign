@@ -6,7 +6,7 @@
 importPackage(Packages.java.lang);
 importPackage(Packages.org.jboss.seam);  
 importPackage(Packages.com.dgsoft.erp.model); 
-importPackage(Packages.com.dgsoft.common.utils.math);
+importPackage(Packages.com.dgsoft.common);
 importPackage(Packages.java.math); 
 dictionary = Component.getInstance("dictionary", false);
 messages = Component.getInstance("org.jboss.seam.international.messages", false);
@@ -209,7 +209,7 @@ it=orderItems.iterator();
 		}
 		if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
 			
-			itemTitle +=  BigDecimalFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat());
+			itemTitle +=  DataFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat());
 			itemTitle += item.getStoreRes().getRes().getUnitGroup().getName();
 		}
 		
@@ -220,7 +220,7 @@ it=orderItems.iterator();
 
 
    	row['UNIT'] = item.getMoneyUnit().getName();
-    row['COUNT'] = BigDecimalFormat.format(item.getCount(),item.getMoneyUnit().getCountFormate());
+    row['COUNT'] = DataFormat.format(item.getCount(),item.getMoneyUnit().getCountFormate());
     row['TOTAL_PRICE'] = item.getTotalMoney();
     row['PRICE'] = item.getMoney();
     row['REBATE'] = item.getRebate();

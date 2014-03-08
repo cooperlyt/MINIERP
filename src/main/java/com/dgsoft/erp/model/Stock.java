@@ -3,6 +3,7 @@ package com.dgsoft.erp.model;
 
 import com.dgsoft.common.OrderBeanComparator;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,13 +17,13 @@ import java.util.*;
  */
 @Entity
 @Table(name = "STOCK", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = {"RES", "STORE","BATCH"}))
-public class Stock implements java.io.Serializable {
+public class Stock extends StoreResCountEntity implements java.io.Serializable {
 
     private String id;
     private Integer version;
     private StoreRes storeRes;
     private Store store;
-    private BigDecimal count;
+    private BigDecimal masterCount;
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<StockDetailsCheckout> stockDetailsCheckouts = new HashSet<StockDetailsCheckout>(0);
@@ -31,21 +32,21 @@ public class Stock implements java.io.Serializable {
     public Stock() {
     }
 
-    public Stock(StoreRes storeRes, BigDecimal count) {
+    public Stock(StoreRes storeRes, BigDecimal masterCount) {
         this.storeRes = storeRes;
-        this.count = count;
+        this.masterCount = masterCount;
     }
 
-    public Stock(Store store, StoreRes storeRes, BigDecimal count) {
+    public Stock(Store store, StoreRes storeRes, BigDecimal masterCount) {
         this.storeRes = storeRes;
         this.store = store;
-        this.count = count;
+        this.masterCount = masterCount;
     }
 
-    public Stock(Store store,Batch batch, StoreRes storeRes, BigDecimal count){
+    public Stock(Store store,Batch batch, StoreRes storeRes, BigDecimal masterCount){
         this.storeRes = storeRes;
         this.store = store;
-        this.count = count;
+        this.masterCount = masterCount;
         this.batch = batch;
     }
 
@@ -98,12 +99,12 @@ public class Stock implements java.io.Serializable {
 
     @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull
-    public BigDecimal getCount() {
-        return this.count;
+    public BigDecimal getMasterCount() {
+        return this.masterCount;
     }
 
-    public void setCount(BigDecimal count) {
-        this.count = count;
+    public void setMasterCount(BigDecimal count) {
+        this.masterCount = count;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")
@@ -143,19 +144,6 @@ public class Stock implements java.io.Serializable {
         this.batch = batch;
     }
 
-    @Transient
-    public ResCount getResCount() {
-        switch (getStoreRes().getRes().getUnitGroup().getType()) {
-            case FIX_CONVERT:
-                return new ResCount(getCount(), getStoreRes().getRes().getUnitGroup());
-            case FLOAT_CONVERT:
-                return new ResCount(getCount(), getStoreRes().getRes().getUnitGroup(), getStoreRes().getFloatConversionRate());
-            case NO_CONVERT:
-                return new ResCount(getCount(), getStoreRes().getRes().getUnitGroup(), getNoConvertCountList());
-            default:
-                throw new IllegalStateException("stock res define error");
-        }
-    }
 
     @Transient
     public List<StockChangeItem> getStoreChangeItemList() {

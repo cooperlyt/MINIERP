@@ -9,13 +9,11 @@ import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StockChangeModel;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -126,7 +124,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             Stock stock = storeResHome.getStock(stockChangeHome.getInstance().getStore());
             if (stock != null) {
                 stockChangeItem.setStock(stock);
-                stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
+                stockChangeItem.getStock().setMasterCount(stockChangeItem.getStock().getMasterCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
             }
         }
         if (stockChangeItem.getStock() == null) {

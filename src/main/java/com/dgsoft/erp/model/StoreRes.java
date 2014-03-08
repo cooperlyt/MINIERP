@@ -6,6 +6,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
 import org.hibernate.annotations.GenericGenerator;
 import org.jboss.seam.international.StatusMessage;
 
@@ -208,7 +209,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         this.dispatchItems = dispatchItems;
     }
 
-    @OneToMany(fetch= FetchType.LAZY,mappedBy = "storeRes")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
     public Set<Batch> getBatches() {
         return batches;
     }
@@ -217,7 +218,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         this.batches = batches;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "storeRes")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
     public Set<BackItem> getBackItems() {
         return backItems;
     }
@@ -226,7 +227,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         this.backItems = backItems;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "storeRes")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
     public Set<BackDispatchItem> getBackDispatchItems() {
         return backDispatchItems;
     }
@@ -239,7 +240,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     public List<Stock> getVaildStockList() {
         List<Stock> result = new ArrayList<Stock>();
         for (Stock stock : getStocks()) {
-            if (stock.getCount().compareTo(BigDecimal.ZERO) > 0) {
+            if (stock.getMasterCount().compareTo(BigDecimal.ZERO) > 0) {
                 result.add(stock);
             }
         }
@@ -254,33 +255,13 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @Transient
-    public ResCount getResCount(BigDecimal count, ResUnit unit) {
-        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            return new ResCount(count, unit, getFloatConversionRate());
-        } else {
-            return new ResCount(count, unit);
-        }
-    }
-
-    @Transient
-    public ResCount getResCount(BigDecimal count) {
-        return getResCount(count, getRes().getUnitGroup().getMasterUnit());
-    }
-
-    @Transient
-    public ResCount getTotalCount() {
-        ResCount resCount = null;
+    public StoreResCount getTotalCount() {
+        StoreResCount resCount = new StoreResCount(this, BigDecimal.ZERO);
         for (Stock stock : getVaildStockList()) {
-            if (resCount == null) {
-                resCount = stock.getResCount();
-            } else
-                resCount.add(stock.getResCount());
+            resCount.add(stock);
+
         }
-        if (resCount == null) {
-            return getResCount(BigDecimal.ZERO);
-        } else {
-            return resCount;
-        }
+        return resCount;
     }
 
     @Transient
@@ -307,10 +288,10 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @Transient
-    public Map<FormatDefine, Format> getFormatMap(){
+    public Map<FormatDefine, Format> getFormatMap() {
         Map<FormatDefine, Format> result = new HashMap<FormatDefine, Format>();
-        for (Format format : getFormats()){
-            result.put(format.getFormatDefine(),format);
+        for (Format format : getFormats()) {
+            result.put(format.getFormatDefine(), format);
         }
         return result;
     }
