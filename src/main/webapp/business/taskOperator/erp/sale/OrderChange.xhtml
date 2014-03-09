@@ -330,7 +330,7 @@
 
                     <s:decorate template="/layout/single-edit.xhtml">
                         <h:selectOneMenu label="#{messages.Res_Unit}" style="min-width: 70px"
-                                         value="#{_reSendItem.moneyUnit}"
+                                         value="#{_reSendItem.resUnit}"
                                          required="true" valueChangeListener="#{orderReSenderCreate.itemUnitChange}">
                             <s:selectItems value="#{_reSendItem.storeRes.res.unitGroup.resUnitList}"
                                            var="_unit" label="#{_unit.name}"/>
@@ -446,7 +446,7 @@
                     #{messages.Res_Unit}
                 </f:facet>
                 <s:decorate template="/layout/single-edit.xhtml">
-                    <h:selectOneMenu label="#{messages.Res_Unit}" style="min-width: 70px" value="#{_item.moneyUnit}"
+                    <h:selectOneMenu label="#{messages.Res_Unit}" style="min-width: 70px" value="#{_item.resUnit}"
                                      required="true" valueChangeListener="#{orderChange.itemUnitChange}">
                         <s:selectItems value="#{_item.storeRes.res.unitGroup.resUnitList}"
                                        var="_unit" label="#{_unit.name}"/>

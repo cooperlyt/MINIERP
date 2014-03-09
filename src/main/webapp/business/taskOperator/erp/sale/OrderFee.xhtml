@@ -201,7 +201,7 @@
                 <h:outputText value="#{_orderItem.count}">
                     <f:convertNumber pattern="#0.####"/>
                 </h:outputText>
-                #{_orderItem.moneyUnit.name}
+                #{_orderItem.resUnit.name}
             </a:outputPanel>
         </rich:column>
 
@@ -260,8 +260,8 @@
                 <s:decorate template="/layout/single-edit.xhtml">
                     <h:selectOneMenu value="#{_orderItem.middleUnit}" required="true"
                                      label="#{messages.order_middle_money_unit}"
-                                     rendered="#{not (_orderItem.moneyUnit.unitGroup.type eq 'FLOAT_CONVERT')}">
-                        <s:selectItems value="#{_orderItem.moneyUnit.unitGroup.resUnitList}" var="_unit"
+                                     rendered="#{not (_orderItem.resUnit.unitGroup.type eq 'FLOAT_CONVERT')}">
+                        <s:selectItems value="#{_orderItem.resUnit.unitGroup.resUnitList}" var="_unit"
                                        label="#{_unit.name}" noSelectionLabel="#{messages.noSelectLabelShort}"/>
                         <f:converter converterId="erpEntityConverter"/>
                         <a:ajax event="valueChange" render="middleMoneyCalcInputTable,payMiddleMoneyField"

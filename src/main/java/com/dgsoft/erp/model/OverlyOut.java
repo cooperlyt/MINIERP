@@ -1,6 +1,5 @@
 package com.dgsoft.erp.model;
 
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,7 +17,7 @@ public class OverlyOut extends StoreResCountEntity implements java.io.Serializab
 
     private String id;
     private StoreRes storeRes;
-    private BigDecimal masterCount;
+    private BigDecimal count;
     private String description;
     private Dispatch dispatch;
     private boolean add;
@@ -26,9 +25,9 @@ public class OverlyOut extends StoreResCountEntity implements java.io.Serializab
     public OverlyOut() {
     }
 
-    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal masterCount, boolean add) {
+    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count, boolean add) {
         this.storeRes = storeRes;
-        this.masterCount = masterCount;
+        this.count = count;
         this.dispatch = dispatch;
         this.add = add;
     }
@@ -49,12 +48,12 @@ public class OverlyOut extends StoreResCountEntity implements java.io.Serializab
 
     @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull
-    public BigDecimal getMasterCount() {
-        return masterCount;
+    public BigDecimal getCount() {
+        return count;
     }
 
-    public void setMasterCount(BigDecimal count) {
-        this.masterCount = count;
+    public void setCount(BigDecimal count) {
+        this.count = count;
     }
 
     @Column(name = "DESCRIPTION", length = 200)

@@ -68,9 +68,9 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
         }
 
         if (getInstance().getOperType().isOut()) {
-            inStock.setMasterCount(inStock.getMasterCount().subtract(inCount.getMasterCount()));
+            inStock.setCount(inStock.getCount().subtract(inCount.getMasterCount()));
         } else
-            inStock.setMasterCount(inStock.getMasterCount().add(inCount.getMasterCount()));
+            inStock.setCount(inStock.getCount().add(inCount.getMasterCount()));
         return inStock;
     }
 

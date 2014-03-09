@@ -4,7 +4,6 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.system.model.Word;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.Component;
@@ -56,14 +55,14 @@ public class ResHelper {
         return result;
     }
 
-    public static Map<StoreRes, ResCount> totalStockChangeItem(List<StockChangeItem> items) {
-        Map<StoreRes, ResCount> result = new HashMap<StoreRes, ResCount>();
+    public static Map<StoreRes, StoreResCount> totalStockChangeItem(List<StockChangeItem> items) {
+        Map<StoreRes, StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
         for (StockChangeItem item : items) {
-            ResCount count = result.get(item.getStoreRes());
+            StoreResCount count = result.get(item.getStoreRes());
             if (count == null) {
-                result.put(item.getStoreRes(), item.getResCount());
+                result.put(item.getStoreRes(), new StoreResCount(item.getStoreRes(),item.getMasterCount()));
             } else {
-                count.add(item.getResCount());
+                count.add(item);
             }
         }
         return result;
@@ -147,32 +146,6 @@ public class ResHelper {
                         DataFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null);
     }
 
-    public List<OrderItem> totalOrderItem(List<OrderItem> items) {
-        List<OrderItem> result = new ArrayList<OrderItem>();
-        for (OrderItem item : items) {
-            boolean find = false;
-            for (OrderItem totalItem : result) {
-                if (totalItem.getMoneyUnit().getId().equals(item.getMoneyUnit().getId()) &&
-                        (totalItem.getMoney().compareTo(item.getMoney()) == 0) &&
-                        (totalItem.getRebate().compareTo(item.getRebate()) == 0)) {
-
-                    if (totalItem.getStoreRes().equals(item.getStoreRes())) {
-                        find = true;
-                        totalItem.addCount(item);
-                        break;
-                    }
-
-                }
-            }
-            if (!find) {
-                result.add(new OrderItem(item.getStoreRes(),
-                        item.getMoneyUnit(), item.getCount(), item.getMoney(), item.getRebate()));
-
-
-            }
-        }
-        return result;
-    }
 
     public <T extends StoreResCountEntity> Map<StoreRes,StoreResCount> groupByStoreRes(List<T> items){
         Map<StoreRes,StoreResCount> result = new HashMap<StoreRes, StoreResCount>();

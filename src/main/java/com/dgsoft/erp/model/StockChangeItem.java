@@ -168,8 +168,4 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.memo = memo;
     }
 
-    @Transient
-    public ResCount getResCount(){
-       return getStoreRes().getResCount(getCount());
-    }
 }

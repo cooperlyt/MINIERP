@@ -60,11 +60,10 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
         this.orderBack = orderBack;
     }
 
-    public BackItem(OrderBack orderBack,StoreRes storeRes, ResCount resCount) {
+    public BackItem(OrderBack orderBack,StoreRes storeRes, BigDecimal masterCount) {
         this.orderBack = orderBack;
         this.storeRes = storeRes;
-        this.count = resCount.getMasterCount();
-        this.resUnit = storeRes.getRes().getUnitGroup().getMasterUnit();
+        this.count = masterCount;
     }
 
     @Id
@@ -85,12 +84,12 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     @Override
     @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull
-    public BigDecimal getMasterCount() {
+    public BigDecimal getCount() {
         return count;
     }
 
     @Override
-    public void setMasterCount(BigDecimal count) {
+    public void setCount(BigDecimal count) {
         this.count = count;
     }
 
@@ -134,6 +133,17 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
 
     public void setResUnit(ResUnit resUnit) {
         this.resUnit = resUnit;
+    }
+
+    @Override
+    @Transient
+    public void setRebate(BigDecimal rebate) {
+    }
+
+    @Override
+    @Transient
+    public BigDecimal getRebate() {
+        return new BigDecimal("100");
     }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

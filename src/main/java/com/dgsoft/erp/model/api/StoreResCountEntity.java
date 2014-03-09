@@ -35,9 +35,17 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         setUseUnit(defaultUnit);
     }
 
-    public abstract BigDecimal getMasterCount();
+    public abstract BigDecimal getCount();
 
-    public abstract void setMasterCount(BigDecimal count);
+    public abstract void setCount(BigDecimal count);
+
+    public BigDecimal getMasterCount(){
+        return getCount();
+    }
+
+    public void setMasterCount(BigDecimal count){
+        setCount(count);
+    }
 
     public abstract StoreRes getStoreRes();
 

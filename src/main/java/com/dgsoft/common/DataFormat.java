@@ -62,7 +62,7 @@ public class DataFormat {
     }
 
     public static boolean isEmpty(BigDecimal value) {
-        return value != null && (value.compareTo(BigDecimal.ZERO) != 0);
+        return (value == null) || (value.compareTo(BigDecimal.ZERO) == 0);
     }
 
 }

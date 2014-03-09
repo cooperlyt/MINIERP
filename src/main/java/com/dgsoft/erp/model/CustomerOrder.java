@@ -4,6 +4,7 @@ package com.dgsoft.erp.model;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.BatchOperEntity;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -426,7 +427,7 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
     public BigDecimal getResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : getAllOrderItemList()) {
-            result = result.add(item.getTotalMoney());
+            result = result.add(item.getTotalPrice());
         }
         return result;
     }
@@ -448,18 +449,18 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
     }
 
     @Transient
-    public Map<StoreRes, ResCount> getAllShipStoreReses() {
-        Map<StoreRes, ResCount> result = new HashMap<StoreRes, ResCount>();
+    public Map<StoreRes, StoreResCount> getAllShipStoreReses() {
+        Map<StoreRes, StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
 
         for (NeedRes nr : getNeedReses()) {
             for (Dispatch dispatch : nr.getDispatches()) {
                 if (dispatch.isStoreOut() && (dispatch.getStockChange() != null))
                     for (StockChangeItem sci : dispatch.getStockChange().getStockChangeItems()) {
-                        ResCount count = result.get(sci.getStoreRes());
+                        StoreResCount count = result.get(sci.getStoreRes());
                         if (count == null) {
-                            result.put(sci.getStoreRes(), sci.getResCount());
+                            result.put(sci.getStoreRes(),new StoreResCount(sci.getStoreRes(),sci.getMasterCount()));
                         } else {
-                            count.add(sci.getResCount());
+                            count.add(sci);
                         }
                     }
             }

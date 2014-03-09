@@ -124,7 +124,7 @@ public abstract class StoreInAction<E extends StockChangeModel> extends StoreCha
             Stock stock = storeResHome.getStock(stockChangeHome.getInstance().getStore());
             if (stock != null) {
                 stockChangeItem.setStock(stock);
-                stockChangeItem.getStock().setMasterCount(stockChangeItem.getStock().getMasterCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
+                stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().add(storeInItem.getStoreResCountInupt().getMasterCount()));
             }
         }
         if (stockChangeItem.getStock() == null) {

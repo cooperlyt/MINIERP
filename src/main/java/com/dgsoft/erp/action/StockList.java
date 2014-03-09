@@ -139,7 +139,7 @@ public class StockList extends ErpEntityQuery<Stock> {
 
 
             if (storeResId != null) {
-                String sql = "select sum(stock.masterCount * stock.storeRes.floatConversionRate) from Stock stock where stock.storeRes.res.unitGroup.type = :unitType and stock.storeRes.id = :storeResId";
+                String sql = "select sum(stock.count * stock.storeRes.floatConversionRate) from Stock stock where stock.storeRes.res.unitGroup.type = :unitType and stock.storeRes.id = :storeResId";
                 if (storeId != null) {
                     sql += " and stock.store.id = :storeId";
                 }
@@ -152,7 +152,7 @@ public class StockList extends ErpEntityQuery<Stock> {
 
             } else if (resId != null) {
                 BigDecimal result = BigDecimal.ZERO;
-                String sql = "select sum(stock.masterCount * stock.storeRes.floatConversionRate) from Stock stock where stock.storeRes.res.unitGroup.type = :unitType and stock.storeRes.res.id = :resId";
+                String sql = "select sum(stock.count * stock.storeRes.floatConversionRate) from Stock stock where stock.storeRes.res.unitGroup.type = :unitType and stock.storeRes.res.id = :resId";
                 if (storeId != null) {
                     sql += " and stock.store.id = :storeId";
                 }

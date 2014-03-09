@@ -6,6 +6,7 @@ import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -82,9 +83,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                 result.append(dispatch.getStore().getName() + "\n");
                 for (DispatchItem item : dispatch.getDispatchItemList()) {
                     result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-                    result.append(item.getResCount().getMasterDisplayCount());
-                    if (!DataFormat.isEmpty(item.getResCount().getDisplayAuxCount()))
-                        result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
+                    result.append(item.getDisplayMasterCount());
+                    if (!DataFormat.isEmpty(item.getDisplayAuxCount()))
+                        result.append("(" + item.getDisplayAuxCount() + ")");
                 }
             }
 
@@ -92,9 +93,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             for (OrderItem item : getMasterNeedRes().getOrderItems()) {
 
                 result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-                result.append(item.getStoreResCount().getMasterDisplayCount());
-                if (!DataFormat.isEmpty(item.getStoreResCount().getDisplayAuxCount()))
-                    result.append("(" + item.getStoreResCount().getDisplayAuxCount() + ")\n");
+                result.append(item.getDisplayMasterCount());
+                if (!DataFormat.isEmpty(item.getDisplayAuxCount()))
+                    result.append("(" + item.getDisplayAuxCount() + ")\n");
 
             }
         }
@@ -168,12 +169,12 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     @DataModel
-    public List<Map.Entry<StoreRes, ResCount>> getAllShipStoreResEntrySet() {
-        List<Map.Entry<StoreRes, ResCount>> result = new ArrayList<Map.Entry<StoreRes, ResCount>>(allShipStoreReses().entrySet());
+    public List<Map.Entry<StoreRes, StoreResCount>> getAllShipStoreResEntrySet() {
+        List<Map.Entry<StoreRes, StoreResCount>> result = new ArrayList<Map.Entry<StoreRes, StoreResCount>>(allShipStoreReses().entrySet());
 
-        Collections.sort(result, new Comparator<Map.Entry<StoreRes, ResCount>>() {
+        Collections.sort(result, new Comparator<Map.Entry<StoreRes, StoreResCount>>() {
             @Override
-            public int compare(Map.Entry<StoreRes, ResCount> o1, Map.Entry<StoreRes, ResCount> o2) {
+            public int compare(Map.Entry<StoreRes, StoreResCount> o1, Map.Entry<StoreRes, StoreResCount> o2) {
                 return o1.getKey().compareTo(o2.getKey());
             }
         });
@@ -185,7 +186,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         NeedRes needRes = getMasterNeedRes();
         if (needRes != null)
             for (OrderItem orderItem : needRes.getOrderItems()) {
-                result = result.add(orderItem.getTotalMoney());
+                result = result.add(orderItem.getTotalPrice());
             }
         return result;
     }
@@ -194,7 +195,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         BigDecimal result = BigDecimal.ZERO;
         for (NeedRes needRes : getInstance().getNeedReses()) {
             for (OrderItem orderItem : needRes.getOrderItems()) {
-                result = result.add(orderItem.getTotalMoney());
+                result = result.add(orderItem.getTotalPrice());
             }
         }
         return result;
@@ -257,7 +258,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-    public Map<StoreRes, ResCount> allShipStoreReses() {
+    public Map<StoreRes, StoreResCount> allShipStoreReses() {
         return getInstance().getAllShipStoreReses();
     }
 

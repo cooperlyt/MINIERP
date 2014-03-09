@@ -50,7 +50,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
             }
         }
 
-        orderDispatch.init(needResHome.getInstance());
+        orderDispatch.init(needResHome.getInstance().getOrderItems());
 
     }
 
@@ -61,7 +61,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
 
         if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
             boolean allCustomerSelf = true;
-            for (Dispatch dispatch : orderDispatch.getDispatchList()) {
+            for (Dispatch dispatch : orderDispatch.getDispatchList(needResHome.getInstance())) {
                 if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
                     allCustomerSelf = false;
                     break;
@@ -72,7 +72,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
                 return "falil";
             }
         }
-        needResHome.getInstance().getDispatches().addAll(orderDispatch.getDispatchList());
+        needResHome.getInstance().getDispatches().addAll(orderDispatch.getDispatchList(needResHome.getInstance()));
 
         needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
 
@@ -97,12 +97,12 @@ public class OrderDispatchTask extends OrderTaskHandle {
         result.append(messages.get("address") + ":" +  needResHome.getInstance().getAddress());
         result.append("\n");
 
-        for (Dispatch dispatch : orderDispatch.getDispatchList()) {
+        for (Dispatch dispatch : orderDispatch.getDispatchList(needResHome.getInstance())) {
             result.append(dispatch.getStore().getName() + "\n");
             for (DispatchItem item : dispatch.getDispatchItemList()) {
                 result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-                result.append(item.getResCount().getMasterDisplayCount());
-                result.append("(" + item.getResCount().getDisplayAuxCount() + ")");
+                result.append(item.getDisplayMasterCount());
+                result.append("(" + item.getDisplayAuxCount() + ")");
             }
         }
 

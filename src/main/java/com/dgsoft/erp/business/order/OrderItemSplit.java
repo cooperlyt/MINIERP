@@ -47,13 +47,13 @@ public class OrderItemSplit {
     }
 
     public void splitOrderItem(){
-        if ( operOrderItem.getCount().compareTo(splitCountInput.getCountByResUnit(operOrderItem.getMoneyUnit())) <= 0){
+        if ( operOrderItem.getCount().compareTo(splitCountInput.getCountByResUnit(operOrderItem.getResUnit())) <= 0){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"splitOrderCountMustLess");
             return;
         }
 
         OrderItem newItem = operOrderItem.cloneNew();
-        newItem.setCount(splitCountInput.getCountByResUnit(newItem.getMoneyUnit()));
+        newItem.setCount(splitCountInput.getCountByResUnit(newItem.getResUnit()));
         operOrderItem.setCount(operOrderItem.getCount().subtract(newItem.getCount()));
 
         orderItemList.add(newItem);

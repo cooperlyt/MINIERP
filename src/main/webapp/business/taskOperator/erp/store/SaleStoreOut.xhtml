@@ -24,21 +24,26 @@
         </a:commandButton>
     </ui:define>
 
-    <s:decorate template="/layout/edit.xhtml">
-        <ui:define name="label">#{messages.Type}</ui:define>
-        <h:selectOneMenu disabled="#{not dispatchHome.canAddRes}" value="#{orderStoreOut.operOutItem.overlyOut.add}" rendered="true"
-                         label="#{messages.Type}">
-            <f:selectItem itemLabel="#{messages.dispatch_overly_items}" itemValue="#{true}"/>
-            <f:selectItem itemLabel="#{messages.dispatch_overly_sub_items}" itemValue="#{false}"/>
-        </h:selectOneMenu>
+
+
+
+    <s:decorate template ="/layout/erp/res/StoreResCountInput.xhtml">
+        <ui:param name="inputValue" value="#{orderStoreOut.operOutItem.overlyOut}"/>
+        <ui:param name="formatTemplate" value="/layout/edit.xhtml" />
+        <ui:param name="countLableStyleClass" value="small_name"/>
+
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.Type}</ui:define>
+            <h:selectOneMenu disabled="#{not dispatchHome.canAddRes}" value="#{orderStoreOut.operOutItem.overlyOut.add}" rendered="true"
+                             label="#{messages.Type}">
+                <f:selectItem itemLabel="#{messages.dispatch_overly_items}" itemValue="#{true}"/>
+                <f:selectItem itemLabel="#{messages.dispatch_overly_sub_items}" itemValue="#{false}"/>
+            </h:selectOneMenu>
+        </s:decorate>
     </s:decorate>
 
 
-    <ui:include src="/layout/erp/ResCountInput.xhtml">
-        <ui:param name="resCountBean" value="#{orderStoreOut.operOutItem.overlayCount}"/>
-        <ui:param name="lableStyleClass" value="small_name"/>
-        <ui:param name="disabledFloatRate" value="true"/>
-    </ui:include>
+
 
     <s:decorate template="/layout/edit.xhtml">
         <ui:define name="label">
@@ -51,7 +56,7 @@
     <ui:define name="actionButtons">
         <a:commandButton value="#{messages.cancel}" onclick="#{rich:component(panelId)}.hide(); return false;"/>
         <a:commandButton value="#{messages.ok}" execute="@form" render="orderStoreOutItemsTable"
-                         action="#{orderStoreOut.saveOverlay}" data="#{actionExecuteState.lastState}"
+                         action="#{actionExecuteState.actionExecute}" data="#{actionExecuteState.lastState}"
                          oncomplete="if (event.data == 'success')#{rich:component(panelId)}.hide();">
             <a:attachQueue requestDelay="0"/>
 
@@ -205,52 +210,52 @@
 
         </rich:column>
         <rich:column>
-            #{_dispatchItem.stockCount.masterDisplayCount}
+            #{_dispatchItem.stock.displayMasterCount}
 
         </rich:column>
         <rich:column>
-            #{_dispatchItem.stockCount.displayAuxCount}
+            #{_dispatchItem.stock.displayAuxCount}
         </rich:column>
 
         <rich:column>
-            #{_dispatchItem.dispatchCount.masterDisplayCount}
+            #{_dispatchItem.dispatchItem.displayMasterCount}
         </rich:column>
 
         <rich:column>
-            #{_dispatchItem.dispatchCount.displayAuxCount}
+            #{_dispatchItem.dispatchItem.displayAuxCount}
         </rich:column>
 
         <rich:column>
-            <h:outputText value="#{_dispatchItem.overlyOut.resCount.masterDisplayCount}"
+            <h:outputText value="#{_dispatchItem.overlyOut.displayMasterCount}"
                           rendered="#{_dispatchItem.overlyOut.add}"/>
 
         </rich:column>
 
         <rich:column>
-            <h:outputText value="#{_dispatchItem.overlyOut.resCount.displayAuxCount}"
+            <h:outputText value="#{_dispatchItem.overlyOut.displayAuxCount}"
                           rendered="#{_dispatchItem.overlyOut.add}"/>
         </rich:column>
 
 
         <rich:column>
-            <h:outputText value="#{_dispatchItem.overlyOut.resCount.masterDisplayCount}"
+            <h:outputText value="#{_dispatchItem.overlyOut.displayMasterCount}"
                           rendered="#{not _dispatchItem.overlyOut.add}"/>
         </rich:column>
         <rich:column>
-            <h:outputText value="#{_dispatchItem.overlyOut.resCount.displayAuxCount}"
+            <h:outputText value="#{_dispatchItem.overlyOut.displayAuxCount}"
                           rendered="#{not _dispatchItem.overlyOut.add}"/>
         </rich:column>
 
 
         <rich:column>
-            #{_dispatchItem.resCount.masterDisplayCount}
+            #{_dispatchItem.displayMasterCount}
             <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
-                            title="#{messages.order_item_full}:#{_dispatchItem.stockCount.masterDisplayCount}(#{_dispatchItem.stockCount.displayAuxCount}) "
+                            title="#{messages.order_item_full}:#{_dispatchItem.stock.displayMasterCount}(#{_dispatchItem.displayAuxCount}) "
                             value="/img/full_tip.png"
                             rendered="#{_dispatchItem.enough}"/>
 
             <a:outputPanel style="float:right" rendered="#{not _dispatchItem.enough}">
-                <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.disparity.masterDisplayCount})"/>
+                <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.disparity.displayMasterCount})"/>
                 <h:graphicImage alt="#{messages.order_item_not_full}"
                                 value="/img/not_full_tip.png"/>
                 <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
@@ -261,18 +266,18 @@
 
                             <span style="white-space: nowrap;">
                            #{messages.InventoryCount}:
-                                #{_dispatchItem.stockCount.masterDisplayCount}
-                                (#{_dispatchItem.stockCount.displayAuxCount})  </span> <br/>
+                                #{_dispatchItem.stock.displayMasterCount}
+                                (#{_dispatchItem.stock.displayAuxCount})  </span> <br/>
                         <span style="white-space: nowrap;color: #FF0000;">
                                 #{messages.stockDisparity}:
-                            #{_dispatchItem.disparity.masterDisplayCount}
+                            #{_dispatchItem.disparity.displayMasterCount}
                             (#{_dispatchItem.disparity.displayAuxCount})
                                </span>
                 </rich:tooltip>
             </a:outputPanel>
         </rich:column>
         <rich:column>
-            #{_dispatchItem.resCount.displayAuxCount}
+            #{_dispatchItem.displayAuxCount}
         </rich:column>
         <rich:column style="text-align: center;">
             <a:commandButton image="/img/edit.png" action="#{orderStoreOut.editOverlay}"

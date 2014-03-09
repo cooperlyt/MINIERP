@@ -205,7 +205,7 @@
             </rich:column>
 
             <rich:column style="text-align: right">
-                <h:outputText value="#{_item.key.totalPrice}" rendered="#{_item.value.selected}">
+                <h:outputText value="#{_item.key.inputTotalPrice}" rendered="#{_item.value.selected}">
                     <f:convertNumber locale="#{calendarBean.locale}" type="currency"/>
                 </h:outputText>
 

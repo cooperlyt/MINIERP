@@ -5,9 +5,7 @@ import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.DispatchHome;
-import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.In;
@@ -134,16 +132,13 @@ public class OrderStoreOut extends OrderTaskHandle {
             }
 
             StockChangeItem stockChangeItem = new StockChangeItem(dispatchHome.getInstance().getStockChange(),
-                    stock, item.getResCount().getMasterCount());
+                    stock, item.getMasterCount());
             dispatchHome.getInstance().getStockChange().getStockChangeItems()
                     .add(stockChangeItem);
-            if (stockChangeItem.isStoreOut()){
-                stock.setMasterCount(stock.getMasterCount().subtract(item.getResCount().getMasterCount()));
-            }else{
-                stock.setMasterCount(stock.getMasterCount().add(item.getResCount().getMasterCount()));
-            }
+            stock.setCount(stock.getCount().subtract(item.getMasterCount()));
 
-            if ((item.getOverlyOut() != null) && (item.getOverlyOut().getMasterCount().compareTo(BigDecimal.ZERO) > 0)) {
+
+            if ((item.getOverlyOut() != null) && (item.getOverlyOut().getCount().compareTo(BigDecimal.ZERO) > 0)) {
                 dispatchHome.getInstance().getOverlyOuts().add(item.getOverlyOut());
             }
 
@@ -213,47 +208,15 @@ public class OrderStoreOut extends OrderTaskHandle {
                         orderStoreOutItems = new ArrayList<OrderStoreOutItem>();
                         noAssignedItems = new ArrayList<DispatchItem>();
                         for (DispatchItem dispatchItem : dispatchHome.getInstance().getDispatchItems()) {
-                            addDispatchItem(dispatchItem);
+                            //addDispatchItem(dispatchItem);
+                            orderStoreOutItems.add(new OrderStoreOutItem(dispatchItem));
                         }
 
                     }
                 }
             }
         }
-
-
     }
-
-    private void addDispatchItem(DispatchItem dispatchItem) {
-
-        boolean find = false;
-        for (OrderStoreOutItem item : orderStoreOutItems) {
-            if (item.getStoreRes().getId().equals(dispatchItem.getStoreRes().getId())) {
-                item.addDispatchItem(dispatchItem);
-                find = true;
-                break;
-            }
-        }
-        if (!find) {
-            orderStoreOutItems.add(new OrderStoreOutItem(dispatchItem));
-        }
-    }
-
-    private void addDispatchItem(DispatchItem dispatchItem, StoreRes storeRes) {
-
-        boolean find = false;
-        for (OrderStoreOutItem item : orderStoreOutItems) {
-            if (item.getStoreRes().getId().equals(storeRes.getId())) {
-                item.addDispatchItem(dispatchItem);
-                find = true;
-                break;
-            }
-        }
-        if (!find) {
-            orderStoreOutItems.add(new OrderStoreOutItem(dispatchItem, storeRes));
-        }
-    }
-
 
     public class OrderStoreOutItem extends StoreResCountEntity implements Serializable{
 
@@ -284,23 +247,23 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         public boolean isEnough() {
-            return getStock().getMasterCount().compareTo(getMasterCount()) >= 0;
+            return getStock().getCount().compareTo(getMasterCount()) >= 0;
         }
 
 
         public StoreResCount getDisparity() {
 
-            return new StoreResCount(dispatchItem.getStoreRes(),getMasterCount().subtract(getStock().getMasterCount()));
+            return new StoreResCount(dispatchItem.getStoreRes(),getMasterCount().subtract(getStock().getCount()));
         }
 
         @Override
-        public BigDecimal getMasterCount() {
-            BigDecimal masterCount = dispatchItem.getMasterCount();
+        public BigDecimal getCount() {
+            BigDecimal masterCount = dispatchItem.getCount();
             if (overlyOut != null) {
                 if (overlyOut.isAdd()) {
-                    masterCount = masterCount.add(overlyOut.getMasterCount());
+                    masterCount = masterCount.add(overlyOut.getCount());
                 } else {
-                    masterCount = masterCount.subtract(overlyOut.getMasterCount());
+                    masterCount = masterCount.subtract(overlyOut.getCount());
                 }
             }
 
@@ -308,8 +271,8 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         @Override
-        public void setMasterCount(BigDecimal count) {
-            throw new IllegalArgumentException("this is readonly")
+        public void setCount(BigDecimal count) {
+            throw new IllegalArgumentException("this is readonly");
         }
 
         @Override
@@ -319,7 +282,7 @@ public class OrderStoreOut extends OrderTaskHandle {
 
         @Override
         public void setStoreRes(StoreRes storeRes) {
-            throw new IllegalArgumentException("this is readonly")
+            throw new IllegalArgumentException("this is readonly");
         }
     }
 

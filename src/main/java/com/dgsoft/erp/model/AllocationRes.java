@@ -19,16 +19,16 @@ public class AllocationRes extends StoreResCountEntity implements java.io.Serial
     private String id;
     private StoreRes storeRes;
     private Allocation allocation;
-    private BigDecimal masterCount;
+    private BigDecimal count;
 
     public AllocationRes() {
     }
 
     public AllocationRes(StoreRes storeRes, Allocation allocation,
-                         BigDecimal masterCount) {
+                         BigDecimal count) {
         this.storeRes = storeRes;
         this.allocation = allocation;
-        this.masterCount = masterCount;
+        this.count = count;
     }
 
     @Id
@@ -69,12 +69,12 @@ public class AllocationRes extends StoreResCountEntity implements java.io.Serial
 
     @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull
-    public BigDecimal getMasterCount() {
-        return this.masterCount;
+    public BigDecimal getCount() {
+        return this.count;
     }
 
-    public void setMasterCount(BigDecimal count) {
-        this.masterCount = count;
+    public void setCount(BigDecimal count) {
+        this.count = count;
     }
 
 }

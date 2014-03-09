@@ -327,7 +327,7 @@
             <f:facet name="header">
                 #{messages.orderItemTotalPrice}
             </f:facet>
-            <h:outputText value="#{_item.totalPrice}">
+            <h:outputText value="#{_item.inputTotalPrice}">
                 <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
             </h:outputText>
             <f:facet name="footer">

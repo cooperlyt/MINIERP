@@ -3,8 +3,8 @@ package com.dgsoft.erp.action.store;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StockChangeModel;
+import com.dgsoft.erp.model.api.StoreResCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.international.StatusMessage;
 
@@ -34,11 +34,11 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
 
     private boolean groupByRes = true;
 
-    protected List<StoreOutItem> storeOutItems = new ArrayList<StoreOutItem>();
+    protected List<Stock> storeOutItems = new ArrayList<Stock>();
 
     private String selectStockId;
 
-    private StoreOutItem editingItem;
+    private Stock editingItem;
 
     public boolean isGroupByRes() {
         return groupByRes;
@@ -48,11 +48,11 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
         this.groupByRes = groupByRes;
     }
 
-    public List<StoreOutItem> getStoreOutItems() {
+    public List<Stock> getStoreOutItems() {
         return storeOutItems;
     }
 
-    public void setStoreOutItems(List<StoreOutItem> storeOutItems) {
+    public void setStoreOutItems(List<Stock> storeOutItems) {
         this.storeOutItems = storeOutItems;
     }
 
@@ -64,24 +64,24 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
         this.selectStockId = selectStockId;
     }
 
-    public StoreOutItem getEditingItem() {
+    public Stock getEditingItem() {
         return editingItem;
     }
 
-    public void setEditingItem(StoreOutItem editingItem) {
+    public void setEditingItem(Stock editingItem) {
         this.editingItem = editingItem;
     }
 
-    public void beginAddItem(){
+    public void beginAddItem() {
         editingItem = null;
-        for (StoreOutItem outItem: storeOutItems){
-            if (outItem.getStock().getId().equals(selectStockId)){
+        for (Stock outItem : storeOutItems) {
+            if (outItem.getId().equals(selectStockId)) {
                 editingItem = outItem;
                 break;
             }
         }
-        if (editingItem == null){
-            editingItem = new StoreOutItem(getEntityManager().find(Stock.class,selectStockId));
+        if (editingItem == null) {
+            editingItem = getEntityManager().find(Stock.class, selectStockId);
 
         }
 
@@ -90,29 +90,29 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
     @org.jboss.seam.annotations.Observer(value = "erp.resLocateSelected", create = false)
     public void codeTypeByRes(Res res) {
         editingItem = null;
-        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeOutOnlySelectStoreRes");
+        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeOutOnlySelectStoreRes");
     }
 
     @org.jboss.seam.annotations.Observer(value = "erp.storeResLocateSelected", create = false)
     public void generateStoreInItemByStoreRes(StoreRes storeRes) {
 
-        for (StoreOutItem item: storeOutItems){
-            if (item.getStock().getStoreRes().getId().equals(storeRes.getId())){
+        for (Stock item : storeOutItems) {
+            if (item.getStoreRes().getId().equals(storeRes.getId())) {
                 editingItem = item;
                 return;
             }
         }
 
-        for (Stock stock: stockChangeHome.getInstance().getStore().getStocks()){
-             if (stock.getStoreRes().getId().equals(storeRes.getId())){
+        for (Stock stock : stockChangeHome.getInstance().getStore().getStocks()) {
+            if (stock.getStoreRes().getId().equals(storeRes.getId())) {
 
-                 editingItem = new StoreOutItem(stock);
-                 return;
-             }
+                editingItem = stock;
+                return;
+            }
         }
 
         editingItem = null;
-        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"storeResNotInStore");
+        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeResNotInStore");
 
     }
 
@@ -120,21 +120,21 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
     @Override
     public String addItem() {
 
-        boolean inItems =false;
-        for (StoreOutItem outItem: storeOutItems){
-            if (outItem.getStock().getId().equals(editingItem.getStock().getId())){
+        boolean inItems = false;
+        for (Stock outItem : storeOutItems) {
+            if (outItem.getId().equals(editingItem.getId())) {
                 inItems = true;
                 break;
             }
         }
 
-        if (!inItems){
+        if (!inItems) {
             storeOutItems.add(editingItem);
         }
 
-        if (editingItem.getStoreResCountInupt().getMasterCount().compareTo(editingItem.getStock().getMasterCount()) > 0){
-            editingItem.getStoreResCountInupt().setMasterCount(editingItem.getStock().getMasterCount());
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN,"storeOutCountNotEnough");
+        if (editingItem.getCount().compareTo(editingItem.getCount()) > 0) {
+            editingItem.setCount(editingItem.getCount());
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "storeOutCountNotEnough");
         }
         editingItem = null;
         return "added";
@@ -143,28 +143,20 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
 
     @Override
     public void removeItem() {
-        for (StoreOutItem outItem: storeOutItems){
-            if (outItem.getStock().getId().equals(selectStockId)){
+        for (Stock outItem : storeOutItems) {
+            if (outItem.getId().equals(selectStockId)) {
                 storeOutItems.remove(outItem);
                 break;
             }
         }
     }
 
-    private void storeOutNow(StoreOutItem outItem) {
+    private void storeOutNow(Stock outItem) {
 
         StockChangeItem stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
-                outItem.getStock(), outItem.getStoreResCountInupt().getMasterCount());
-        stockChangeItem.setNoConvertCounts(outItem.getStoreResCountInupt().getNoConvertCounts());
-        for (NoConvertCount noConvertCount : stockChangeItem.getNoConvertCounts()) {
-            noConvertCount.setStockChangeItem(stockChangeItem);
-        }
-        if (stockChangeItem.isStoreOut()){
-            stockChangeItem.getStock().setMasterCount(stockChangeItem.getStock().getMasterCount().subtract(outItem.getStoreResCountInupt().getMasterCount()));
-        }else{
-            stockChangeItem.getStock().setMasterCount(stockChangeItem.getStock().getMasterCount().add(outItem.getStoreResCountInupt().getMasterCount()));
-        }
+                outItem, outItem.getCount());
 
+        stockChangeItem.getStock().setCount(stockChangeItem.getStock().getCount().subtract(outItem.getCount()));
 
 
         if (stockChangeItem.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
@@ -197,9 +189,9 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
     protected String storeChange(boolean verify) {
 
         boolean haveItem = false;
-        for (StoreOutItem outItem : storeOutItems) {
+        for (Stock outItem : storeOutItems) {
 
-            if (outItem.getStoreResCountInupt().getMasterCount().compareTo(BigDecimal.ZERO) == 0) {
+            if (outItem.getCount().compareTo(BigDecimal.ZERO) == 0) {
 
                 continue;
             }
@@ -226,16 +218,15 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
     }
 
 
-
     public List<StoreOutItemGroup> getStoreOutItemGroups() {
         List<StoreOutItemGroup> result = new ArrayList<StoreOutItemGroup>();
         if (groupByRes) {
-            Map<Res, List<StoreOutItem>> resGroup = new HashMap<Res, List<StoreOutItem>>();
-            for (StoreOutItem storeOutItem : storeOutItems) {
-                List<StoreOutItem> temp = resGroup.get(storeOutItem.getStock().getStoreRes().getRes());
+            Map<Res, List<Stock>> resGroup = new HashMap<Res, List<Stock>>();
+            for (Stock storeOutItem : storeOutItems) {
+                List<Stock> temp = resGroup.get(storeOutItem.getStoreRes().getRes());
                 if (temp == null) {
-                    temp = new ArrayList<StoreOutItem>();
-                    resGroup.put(storeOutItem.getStock().getStoreRes().getRes(), temp);
+                    temp = new ArrayList<Stock>();
+                    resGroup.put(storeOutItem.getStoreRes().getRes(), temp);
                 }
                 temp.add(storeOutItem);
             }
@@ -243,12 +234,12 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
                 result.add(new StoreOutItemGroup(res.getName() + "(" + res.getCode() + ")", resGroup.get(res)));
             }
         } else {
-            Map<StoreRes, List<StoreOutItem>> storeResGroup = new HashMap<StoreRes, List<StoreOutItem>>();
-            for (StoreOutItem storeOutItem : storeOutItems) {
-                List<StoreOutItem> temp = storeResGroup.get(storeOutItem.getStock().getStoreRes());
+            Map<StoreRes, List<Stock>> storeResGroup = new HashMap<StoreRes, List<Stock>>();
+            for (Stock storeOutItem : storeOutItems) {
+                List<Stock> temp = storeResGroup.get(storeOutItem.getStoreRes());
                 if (temp == null) {
-                    temp = new ArrayList<StoreOutItem>();
-                    storeResGroup.put(storeOutItem.getStock().getStoreRes(), temp);
+                    temp = new ArrayList<Stock>();
+                    storeResGroup.put(storeOutItem.getStoreRes(), temp);
                 }
                 temp.add(storeOutItem);
             }
@@ -261,23 +252,21 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
     }
 
 
-
-
     public static class StoreOutItemGroup {
 
         private String title;
 
-        private List<StoreOutItem> items;
+        private List<Stock> items;
 
         private StoreRes storeRes;
 
 
-        public StoreOutItemGroup(String title, List<StoreOutItem> items) {
+        public StoreOutItemGroup(String title, List<Stock> items) {
             this.title = title;
             this.items = items;
         }
 
-        public StoreOutItemGroup(StoreRes storeRes, List<StoreOutItem> items) {
+        public StoreOutItemGroup(StoreRes storeRes, List<Stock> items) {
             this.items = items;
             this.storeRes = storeRes;
         }
@@ -298,62 +287,24 @@ public abstract class StoreOutAction<E extends StockChangeModel> extends StoreCh
             this.storeRes = storeRes;
         }
 
-        public List<StoreOutItem> getItems() {
+        public List<Stock> getItems() {
             return items;
         }
 
-        public void setItems(List<StoreOutItem> items) {
+        public void setItems(List<Stock> items) {
             this.items = items;
         }
 
-        public ResCount getTotalCount() {
-            if (storeRes == null){
+        public StoreResCount getTotalCount() {
+            if (storeRes == null) {
                 return null;
             }
 
-            ResCount result = storeRes.getResCount(BigDecimal.ZERO);
-            for (StoreOutItem storeOutItem : items) {
-                result.add(storeOutItem.getStoreResCountInupt());
+            StoreResCount result = new StoreResCount(storeRes, BigDecimal.ZERO);
+            for (Stock storeOutItem : items) {
+                result.add(storeOutItem);
             }
             return result;
-        }
-    }
-
-    public static class StoreOutItem {
-
-        protected StoreResCountInupt storeResCountInupt;
-
-        private Stock stock;
-
-        public StoreOutItem(Stock stock) {
-            storeResCountInupt = new StoreResCountInupt(stock.getStoreRes().getRes(), stock.getStoreRes().getRes().getResUnitByOutDefault());
-            if (stock.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                storeResCountInupt.setFloatConvertRate(stock.getStoreRes().getFloatConversionRate());
-            }
-            this.stock = stock;
-        }
-
-        public StoreResCountInupt getStoreResCountInupt() {
-            return storeResCountInupt;
-        }
-
-        public void setStoreResCountInupt(StoreResCountInupt storeResCountInupt) {
-            this.storeResCountInupt = storeResCountInupt;
-        }
-
-        public Stock getStock() {
-            return stock;
-        }
-
-        public void setStock(Stock stock) {
-            this.stock = stock;
-        }
-
-        public boolean same(Stock other) {
-            if (other == null || stock == null) {
-                return false;
-            }
-            return other.getId().equals(stock.getId());
         }
     }
 }

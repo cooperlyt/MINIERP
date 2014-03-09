@@ -187,10 +187,10 @@ public class OrderFeeApply extends OrderTaskHandle {
     private void calcItemMiddleMoney(OrderItem item) {
         if ((item.getMiddleMoneyCalcType() != null) && (item.getMiddleRate() != null)) {
             if (item.getMiddleMoneyCalcType().equals(OrderItem.MiddleMoneyCalcType.COUNT_FIX) && (item.getMiddleUnit() != null)) {
-                item.setMiddleMoney(item.getStoreResCount().getCountByResUnit(item.getMiddleUnit()).multiply(item.getMiddleRate()));
+                item.setMiddleMoney(item.getCountByResUnit(item.getMiddleUnit()).multiply(item.getMiddleRate()));
 
             } else if (item.getMiddleMoneyCalcType().equals(OrderItem.MiddleMoneyCalcType.MONEY_RATE)) {
-                item.setMiddleMoney(DataFormat.halfUpCurrency(item.getTotalMoney().multiply(item.getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+                item.setMiddleMoney(DataFormat.halfUpCurrency(item.getTotalPrice().multiply(item.getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
             }
         }
 

@@ -5,7 +5,6 @@ import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import org.hibernate.annotations.GenericGenerator;
 import org.jboss.seam.international.StatusMessage;
@@ -240,7 +239,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     public List<Stock> getVaildStockList() {
         List<Stock> result = new ArrayList<Stock>();
         for (Stock stock : getStocks()) {
-            if (stock.getMasterCount().compareTo(BigDecimal.ZERO) > 0) {
+            if (stock.getCount().compareTo(BigDecimal.ZERO) > 0) {
                 result.add(stock);
             }
         }

@@ -16,7 +16,7 @@
 
     <f:subview>
         <div style="clear:both"/>
-        <a:outputPanel>
+        <a:outputPanel id="priceInputFields">
 
             <div>
                 <s:label styleClass="name">
@@ -28,12 +28,12 @@
                 <s:span styleClass="value">
                     #{messages.orderItemUnitPrice}
                     <h:inputText id="unitPriceInput" required="true" size="12" label="#{messages.orderItemUnitPrice}"
-                                 value="#{inputValue.money}">
+                                 value="#{inputValue.inputMoney}">
                         <f:validateDoubleRange minimum="0"/>
                         <rich:validator/>
                         <f:convertNumber groupingUsed="false" type="currency" locale="#{calendarBean.locale}"
                                          currencySymbol=""/>
-                        <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="itemTotalPriceInput,#{priceChangeRender}">
+                        <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="priceInputFields,#{priceChangeRender}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>
@@ -51,7 +51,7 @@
                             <s:selectItems value="#{inputValue.res.unitGroup.resUnitList}" var="_unit"
                                            label="#{_unit.name}"/>
                             <f:converter converterId="erpEntityConverter"/>
-                            <a:ajax event="valueChange" execute="@this" render="itemTotalPriceInput,#{priceChangeRender}">
+                            <a:ajax event="valueChange" execute="@this" render="priceInputFields,#{priceChangeRender}">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
                         </h:selectOneMenu>
@@ -61,13 +61,13 @@
                 <ui:insert name="priceExtend"/>
 
                 <s:span styleClass="value">
-                    <h:inputText id="itemTotalPriceInput" size="17" value="#{inputValue.totalPrice}"
+                    <h:inputText id="itemTotalPriceInput" size="17" value="#{inputValue.inputTotalPrice}"
                                  label="#{messages.orderItemPrice}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                          groupingUsed="false"/>
                         <f:validateDoubleRange minimum="0"/>
                         <rich:validator/>
-                        <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="unitPriceInput,#{priceChangeRender}">
+                        <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="priceInputFields,#{priceChangeRender}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>

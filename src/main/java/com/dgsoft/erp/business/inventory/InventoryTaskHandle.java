@@ -6,6 +6,8 @@ import com.dgsoft.erp.model.PrepareStockChange;
 import com.dgsoft.erp.model.Stock;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Observer;
 
@@ -81,18 +83,18 @@ public abstract class InventoryTaskHandle extends TaskHandle {
         }
 
         for (Stock stock : inventoryHome.getInstance().getStore().getStocks()) {
-            InventoryItem item = new InventoryItem(stock.getStoreRes(), stock.getResCount());
+            InventoryItem item = new InventoryItem(stock.getStoreRes(), stock);
             for (PrepareStockChange changeItem : addStocks) {
 
                 if (changeItem.getStoreRes().equals(stock.getStoreRes())) {
-                    item.setAddCount(changeItem.getResCount());
+                    item.setAddCount(changeItem);
                     newStocks.remove(changeItem);
                     break;
                 }
             }
             for (PrepareStockChange changeItem : loseStocks) {
                 if (changeItem.getStoreRes().equals(stock.getStoreRes())) {
-                    item.setLoseCount(changeItem.getResCount());
+                    item.setLoseCount(changeItem);
                     break;
                 }
             }
@@ -101,7 +103,7 @@ public abstract class InventoryTaskHandle extends TaskHandle {
 
         for (PrepareStockChange prepareStockChange: newStocks){
             InventoryItem item = new InventoryItem(prepareStockChange.getStoreRes());
-            item.setAddCount(prepareStockChange.getResCount());
+            item.setAddCount(prepareStockChange);
             inventoryItems.add(item);
         }
 
@@ -120,19 +122,19 @@ public abstract class InventoryTaskHandle extends TaskHandle {
 
         private StoreRes storeRes;
 
-        private ResCount stockCount;
+        private Stock stock;
 
-        private ResCount addCount;
+        private StoreResCountEntity addCount;
 
-        private ResCount loseCount;
+        private StoreResCountEntity loseCount;
 
         public InventoryItem(StoreRes storeRes){
             this.storeRes = storeRes;
         }
 
-        public InventoryItem(StoreRes storeRes, ResCount stockCount) {
+        public InventoryItem(StoreRes storeRes, Stock stock) {
             this.storeRes = storeRes;
-            this.stockCount = stockCount;
+            this.stock = stock;
         }
 
         public StoreRes getStoreRes() {
@@ -143,27 +145,27 @@ public abstract class InventoryTaskHandle extends TaskHandle {
             this.storeRes = storeRes;
         }
 
-        public ResCount getStockCount() {
-            return stockCount;
+        public Stock getStock() {
+            return stock;
         }
 
-        public void setStockCount(ResCount stockCount) {
-            this.stockCount = stockCount;
+        public void setStock(Stock stock) {
+            this.stock = stock;
         }
 
-        public ResCount getAddCount() {
+        public StoreResCountEntity getAddCount() {
             return addCount;
         }
 
-        public void setAddCount(ResCount addCount) {
+        public void setAddCount(StoreResCountEntity addCount) {
             this.addCount = addCount;
         }
 
-        public ResCount getLoseCount() {
+        public StoreResCountEntity getLoseCount() {
             return loseCount;
         }
 
-        public void setLoseCount(ResCount loseCount) {
+        public void setLoseCount(StoreResCountEntity loseCount) {
             this.loseCount = loseCount;
         }
     }

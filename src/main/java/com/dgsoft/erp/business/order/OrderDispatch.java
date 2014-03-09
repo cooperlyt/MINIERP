@@ -6,6 +6,9 @@ import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.model.api.StoreResCountGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -17,6 +20,7 @@ import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -53,10 +57,18 @@ public class OrderDispatch {
     }
 
     @DataModel("dispatchOrderItems")
-    private List<OrderItem> storeResOrderItems;
+    private List<StoreResCount> getNoDispatchItems() {
+        if (noDispatchItems == null) {
+            return null;
+        }
+        return noDispatchItems.getStoreResCountList();
+    }
+
+
+    private StoreResCountGroup<StoreResCount> noDispatchItems;
 
     @DataModelSelection
-    private OrderItem selectedOrderItem;
+    private StoreResCount selectedOrderItem;
 
     private List<ResOrderItem> resOrderItemList;
 
@@ -68,7 +80,8 @@ public class OrderDispatch {
     private Store store;
 
     //private BigDecimal count;
-    private StoreResCountInupt storeResCountInupt;
+    //private StoreResCountInupt storeResCountInupt;
+    private StoreResCount operCount;
 
     private ResUnit unit;
 
@@ -80,7 +93,7 @@ public class OrderDispatch {
 
     //private boolean dispatchStoreExists;
 
-    private OrderItem selectOrderItem;
+    private StoreResCount selectOrderItem;
 
     //----------------------
 
@@ -125,20 +138,20 @@ public class OrderDispatch {
         this.selectDispatch = selectDispatch;
     }
 
-    public OrderItem getSelectOrderItem() {
+    public StoreResCount getSelectOrderItem() {
         return selectOrderItem;
     }
 
-    public void setSelectOrderItem(OrderItem selectOrderItem) {
+    public void setSelectOrderItem(StoreResCount selectOrderItem) {
         this.selectOrderItem = selectOrderItem;
     }
 
-    public StoreResCountInupt getStoreResCountInupt() {
-        return storeResCountInupt;
+    public StoreResCount getOperCount() {
+        return operCount;
     }
 
-    public void setStoreResCountInupt(StoreResCountInupt storeResCountInupt) {
-        this.storeResCountInupt = storeResCountInupt;
+    public void setOperCount(StoreResCount operCount) {
+        this.operCount = operCount;
     }
 
     public ResUnit getUnit() {
@@ -173,7 +186,14 @@ public class OrderDispatch {
 //        this.storeResOrderItems = storeResOrderItems;
 //    }
 
-    public List<Dispatch> getDispatchList() {
+    public List<Dispatch> getDispatchList(){
+        return dispatchList;
+    }
+
+    public List<Dispatch> getDispatchList(NeedRes needRes) {
+        for (Dispatch d: dispatchList){
+            d.setNeedRes(needRes);
+        }
         return dispatchList;
     }
 
@@ -249,12 +269,8 @@ public class OrderDispatch {
 //        }
         selectOrderItem = selectedOrderItem;
 
-        storeResCountInupt = new StoreResCountInupt(selectOrderItem.getStoreRes().getRes(),
-                selectOrderItem.getStoreRes().getRes().getResUnitByOutDefault());
+        operCount = new StoreResCount(selectOrderItem.getStoreRes(), BigDecimal.ZERO);
 
-        if (selectOrderItem.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            storeResCountInupt.setFloatConvertRate(selectOrderItem.getStoreRes().getFloatConversionRate());
-        }
 
         actionExecuteState.clearState();
         clearDispatch();
@@ -275,40 +291,39 @@ public class OrderDispatch {
         if (!editInfo) {
 
 
-            if ((selectOrderItem != null) && (storeResCountInupt.getMasterCount().compareTo(BigDecimal.ZERO) <= 0)) {
+            if ((selectOrderItem != null) && (operCount.getMasterCount().compareTo(BigDecimal.ZERO) <= 0)) {
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_less_zero");
                 actionExecuteState.setState("fail");
                 return;
             }
 
 
-
-            if (!dispatchList.contains(selectDispatch)){
+            if (!dispatchList.contains(selectDispatch)) {
                 selectDispatch.setStoreOut(false);
                 dispatchList.add(selectDispatch);
             }
 
 
             if (selectOrderItem == null) {
-                for (OrderItem oi : storeResOrderItems) {
-                    dispatchItem( oi, oi.getStoreResCount());
+                for (StoreResCount oi : noDispatchItems.getStoreResCountList()) {
+                    dispatchItem(oi, oi);
                 }
-                storeResOrderItems.clear();
+                noDispatchItems.clear();
             } else {
 
-                if (storeResCountInupt.getMasterCount().compareTo(selectOrderItem.getStoreResCount().getMasterCount()) > 0) {
+                if (operCount.getMasterCount().compareTo(selectOrderItem.getMasterCount()) > 0) {
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "dispatch_item_count_over",
-                            storeResCountInupt.getMasterDisplayCount(),
-                            selectOrderItem.getStoreResCount().getMasterDisplayCount());
-                    storeResCountInupt.setCount(selectOrderItem.getStoreResCount().getCountByResUnit(storeResCountInupt.getUseUnit()));
+                            operCount.getDisplayMasterCount(),
+                            selectOrderItem.getDisplayMasterCount());
+                    operCount.setMasterCount(selectOrderItem.getMasterCount());
                 }
 
-                dispatchItem(selectOrderItem, storeResCountInupt);
+                dispatchItem(selectOrderItem, operCount);
 
 
-                selectOrderItem.getStoreResCount().subtract(storeResCountInupt);
-                if (selectOrderItem.getStoreResCount().getMasterCount().compareTo(BigDecimal.ZERO) <= 0) {
-                    storeResOrderItems.remove(selectOrderItem);
+                selectOrderItem.subtract(operCount);
+                if (selectOrderItem.getMasterCount().compareTo(BigDecimal.ZERO) <= 0) {
+                    noDispatchItems.remove(selectOrderItem.getStoreRes());
                 }
                 selectOrderItem = null;
             }
@@ -347,10 +362,10 @@ public class OrderDispatch {
         }
     }
 
-    private void dispatchItem(OrderItem oi, ResCount resCount) {
+    private void dispatchItem(StoreResCount dispathcItem, StoreResCountEntity resCount) {
         DispatchItem dispatchItem = null;
         for (DispatchItem di : selectDispatch.getDispatchItems()) {
-            if (di.getStoreRes().getId().equals(oi.getStoreRes().getId()) && di.getResCount().canMerger(oi.getStoreResCount())) {
+            if (di.getStoreRes().getId().equals(dispathcItem.getStoreRes().getId()) && di.isSameItem(dispathcItem)) {
                 dispatchItem = di;
                 break;
             }
@@ -359,21 +374,12 @@ public class OrderDispatch {
 
         if (dispatchItem == null) {
 
-
-            if (oi.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.NO_CONVERT)) {
-                selectDispatch.getDispatchItems().add(new DispatchItem(
-                        resCount.getSingleNoConverCount().getResUnit(),
-                        resCount.getSingleNoConverCount().getCount(),
-                        selectDispatch, oi.getStoreRes()));
-            } else {
-                selectDispatch.getDispatchItems().add(new DispatchItem(
-                        oi.getStoreRes().getRes().getUnitGroup().getMasterUnit(),
-                        resCount.getMasterCount(), selectDispatch, oi.getStoreRes()));
-            }
+            selectDispatch.getDispatchItems().add(new DispatchItem(
+                    resCount.getMasterCount(), selectDispatch, dispathcItem.getStoreRes()));
 
 
         } else {
-            dispatchItem.addResCount(resCount);
+            dispatchItem.add(resCount);
         }
     }
 
@@ -389,12 +395,12 @@ public class OrderDispatch {
     public void storeSelectListener() {
         selectDispatch = getStoreDispatch();
         if (selectDispatch == null) {
-            selectDispatch = new Dispatch(needRes, store);
-        }else{
-            switch (selectDispatch.getDeliveryType()){
+            selectDispatch = new Dispatch(store);
+        } else {
+            switch (selectDispatch.getDeliveryType()) {
                 case EXPRESS_SEND:
                 case FULL_CAR_SEND:
-                    if (selectDispatch.getTransCorp() != null){
+                    if (selectDispatch.getTransCorp() != null) {
                         shipDetails = true;
                         transCorpHome.clearInstance();
                         transCorpHome.setInstance(selectDispatch.getTransCorp());
@@ -404,7 +410,7 @@ public class OrderDispatch {
                     }
                     break;
                 case SEND_TO_DOOR:
-                    if (selectDispatch.getCar() != null){
+                    if (selectDispatch.getCar() != null) {
                         shipDetails = true;
                         carsHome.setId(selectDispatch.getCar().getId());
                     } else {
@@ -438,28 +444,18 @@ public class OrderDispatch {
 //    }
 
 
-    private NeedRes needRes;
+   // private NeedRes needRes;
+    private Collection<OrderItem> oldOrderItems;
 
-    public void init(NeedRes needRes) {
+    public void init(Collection<OrderItem> orderItems) {
 
-        this.needRes = needRes;
+        this.oldOrderItems = orderItems;
 
-        storeResOrderItems = new ArrayList<OrderItem>();
-        for (OrderItem oi : needRes.getOrderItems()) {
+        noDispatchItems = new StoreResCountGroup<StoreResCount>();
 
+        for (OrderItem oi : orderItems) {
 
-            oi.generateResCount();
-            boolean added = false;
-            for (OrderItem doi : storeResOrderItems) {
-                if (doi.getStoreRes().getId().equals(oi.getStoreRes().getId())) {
-                    doi.addCount(oi);
-                    added = true;
-                    break;
-                }
-            }
-            if (!added)
-                storeResOrderItems.add(oi);
-
+            noDispatchItems.put(new StoreResCount(oi.getStoreRes(), oi.getMasterCount()));
         }
 
         dispatchList = new ArrayList<Dispatch>();
@@ -467,12 +463,12 @@ public class OrderDispatch {
     }
 
     public void reset() {
-        init(needRes);
+        init(oldOrderItems);
     }
 
 
     public boolean isDispatchComplete() {
-        return storeResOrderItems.isEmpty();
+        return noDispatchItems.isEmpty();
     }
 
 }

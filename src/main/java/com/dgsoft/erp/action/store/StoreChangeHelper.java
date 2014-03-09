@@ -99,7 +99,6 @@ public abstract class StoreChangeHelper<E extends StockChangeModel> extends ErpE
         }else{
             return result;
         }
-
     }
 
 

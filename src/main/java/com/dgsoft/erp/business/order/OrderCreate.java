@@ -55,8 +55,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     @In(create = true)
     private StoreResHome storeResHome;
 
-    @In(create = true)
-    protected StoreResFormatFilter storeResFormatFilter;
+    // @In(create = true)
+//    protected StoreResFormatFilter storeResFormatFilter;
 
     @In(create = true)
     protected ResHome resHome;
@@ -91,22 +91,22 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     private NeedRes needRes;
 
     @DataModel("orderNeedItems")
-    private List<OrderNeedItem> orderNeedItems;
+    private List<OrderItem> orderNeedItems;
 
     @DataModelSelection
-    private OrderNeedItem orderNeedItem;
+    private OrderItem orderNeedItem;
 
-    private OrderNeedItem editingItem;
+    private OrderItem editingItem;
 
-    public List<OrderNeedItem> getOrderNeedItems() {
+    public List<OrderItem> getOrderNeedItems() {
         return orderNeedItems;
     }
 
-    public OrderNeedItem getEditingItem() {
+    public OrderItem getEditingItem() {
         return editingItem;
     }
 
-    public void setEditingItem(OrderNeedItem editingItem) {
+    public void setEditingItem(OrderItem editingItem) {
         this.editingItem = editingItem;
     }
 
@@ -245,34 +245,30 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         result.append(messages.get("address") + ":" + needRes.getAddress());
         result.append("\n");
 
-        for (OrderNeedItem item : orderNeedItems) {
+        for (OrderItem item : orderNeedItems) {
 
             result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-            result.append(item.getStoreResCountInupt().getMasterDisplayCount());
-            result.append("(" + item.getStoreResCountInupt().getDisplayAuxCount() + ")\n");
+            result.append(item.getDisplayMasterCount());
+            result.append("(" + item.getDisplayAuxCount() + ")\n");
 
         }
 
         return result.toString();
     }
 
-    @Observer(value = "storeResCountIsChanged", create = false)
-    public void itemCountChangeListener() {
-        if (editingItem != null) {
-            editingItem.calcPriceByCount();
-        }
-    }
-
     @Observer(value = "erp.resLocateSelected", create = false)
     public void generateSaleItemByRes(Res res) {
-        editingItem = new OrderNeedItem(res);
+        editingItem = new OrderItem(res, resHelper.getFormatHistory(res),
+                resHelper.getFloatConvertRateHistory(res), res.getResUnitByOutDefault());
+        editingItem.setNeedRes(needRes);
 
     }
 
     @Observer(value = "erp.storeResLocateSelected", create = false)
     public void generateSaleItemByStoreRes(StoreRes storeRes) {
-        editingItem = new OrderNeedItem(storeRes.getRes(), storeRes.getFloatConversionRate());
-
+        editingItem = new OrderItem(storeRes, resHelper.getFormatHistory(storeRes.getRes()),
+                resHelper.getFloatConvertRateHistory(storeRes.getRes()), storeRes.getRes().getResUnitByOutDefault());
+        editingItem.setNeedRes(needRes);
     }
 
     public int getItemsCount() {
@@ -281,7 +277,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public BigDecimal getOrderTotalPrice() {
         BigDecimal result = new BigDecimal("0");
-        for (OrderNeedItem item : orderNeedItems) {
+        for (OrderItem item : orderNeedItems) {
             result = result.add(item.getTotalPrice());
         }
         return result;
@@ -296,19 +292,13 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             throw new IllegalArgumentException("editingItem state error");
         }
 
-        if (editingItem.isZero()) {
+        if (editingItem.getMasterCount().equals(BigDecimal.ZERO)) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderItemZeroError");
             return;
         }
 
-        if (editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
-            editingItem.setUseUnit(editingItem.getStoreResCountInupt().getUseUnit());
-        }
 
-        editingItem.calcPriceByCount();
-
-
-        storeResHome.setRes(editingItem.getRes(), storeResFormatFilter.getResFormatList(), editingItem.getStoreResCountInupt().getFloatConvertRate());
+        storeResHome.setRes(editingItem.getRes(), editingItem.getFormats(), editingItem.getFloatConvertRate());
         if (storeResHome.isIdDefined()) {
             editingItem.setStoreRes(storeResHome.getInstance());
         } else {
@@ -317,10 +307,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         }
 
 
-        for (OrderNeedItem orderNeedItem : orderNeedItems) {
+        for (OrderItem orderNeedItem : orderNeedItems) {
 
-            if (orderNeedItem.same(editingItem)) {
-                orderNeedItem.merger(editingItem);
+            if (orderNeedItem.isSameItem(editingItem)) {
+                orderNeedItem.add(editingItem);
                 editingItem = null;
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "storeResInOrderItemMerger");
                 break;
@@ -344,14 +334,16 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         return "/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml";
     }
 
+    private boolean dispatched = false;
+
     public String saveOrderItem() {
 
         if (verifyItem()) {
-            if (wireOrder()) {
-                orderDispatch.init(needRes);
-                return "/business/startPrepare/erp/sale/CreateSaleOrderDispatch.xhtml";
-            } else
-                return "fail";
+
+            orderDispatch.init(orderNeedItems);
+            dispatched = true;
+            return "/business/startPrepare/erp/sale/CreateSaleOrderDispatch.xhtml";
+
         }
 
         return "fail";
@@ -363,7 +355,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         startData.generateKey();
         needRes = new NeedRes(getInstance(),
                 NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), NeedRes.NeedResStatus.CREATED);
-        orderNeedItems = new ArrayList<OrderNeedItem>();
+        orderNeedItems = new ArrayList<OrderItem>();
         //toDO read from customer level
 
         getInstance().setTotalRebate(new BigDecimal("100"));
@@ -382,15 +374,11 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                     NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), NeedRes.NeedResStatus.CREATED);
 
 
-            orderNeedItems = new ArrayList<OrderNeedItem>();
+            orderNeedItems = new ArrayList<OrderItem>();
 
             for (OrderItem orderItem : orderHome.getMasterNeedRes().getOrderItems()) {
-                OrderNeedItem cloneItem;
 
-                cloneItem = new OrderNeedItem(orderItem.getStoreRes(), orderItem.getMoneyUnit(),
-                        orderItem.getCount(), orderItem.getMoney(), orderItem.getRebate());
-
-                orderNeedItems.add(cloneItem);
+                orderNeedItems.add(orderItem);
             }
 
             getInstance().setPayType(orderHome.getInstance().getPayType());
@@ -427,7 +415,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
 
-    private boolean orderWired = false;
+    //private boolean orderWired = false;
 
     protected boolean wireOrder() {
 
@@ -458,18 +446,12 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             }
         }
 
+        needRes.getOrderItems().clear();
+        needRes.getOrderItems().addAll(orderNeedItems);
 
-        for (OrderNeedItem orderNeedItem : orderNeedItems) {
-            needRes.getOrderItems().add(new OrderItem(needRes, orderNeedItem.getStoreRes(),
-                    orderNeedItem.getUseUnit(),
-                    orderNeedItem.getCount(), orderNeedItem.getUnitPrice(), orderNeedItem.getRebate(), orderNeedItem.getMemo()));
-
-        }
-
-
+        getInstance().getNeedReses().clear();
         getInstance().getNeedReses().add(needRes);
-        //getInstance().setTotalMoney(getOrderTotalPrice());
-        orderWired = true;
+
         return true;
     }
 
@@ -513,11 +495,12 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
             throw new ProcessCreatePrepareException("order item verify fail");
         }
 
-        if (!orderWired) {
-            if (!wireOrder()) {
-                throw new ProcessCreatePrepareException("create order wire fail");
-            }
-        } else {
+
+        if (!wireOrder()) {
+            throw new ProcessCreatePrepareException("create order wire fail");
+        }
+
+        if (dispatched) {
 
             if (!orderDispatch.isDispatchComplete()) {
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_not_complete");
@@ -526,7 +509,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
             if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                 boolean allCustomerSelf = true;
-                for (Dispatch dispatch : orderDispatch.getDispatchList()) {
+                for (Dispatch dispatch : orderDispatch.getDispatchList(needRes)) {
                     if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
                         allCustomerSelf = false;
                         break;
@@ -537,10 +520,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                     throw new ProcessCreatePrepareException("dispatch error");
                 }
             }
-            needRes.getDispatches().addAll(orderDispatch.getDispatchList());
+            needRes.getDispatches().addAll(orderDispatch.getDispatchList(needRes));
 
             needRes.setStatus(NeedRes.NeedResStatus.DISPATCHED);
-
         }
 
         if (!"persisted".equals(persist())) {

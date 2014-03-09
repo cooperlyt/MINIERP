@@ -20,12 +20,12 @@ public class StoreResCount extends StoreResCountEntity{
     }
 
     @Override
-    public BigDecimal getMasterCount() {
+    public BigDecimal getCount() {
         return count;
     }
 
     @Override
-    public void setMasterCount(BigDecimal count) {
+    public void setCount(BigDecimal count) {
         this.count = count;
     }
 

@@ -2,7 +2,6 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.OrderBeanComparator;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,7 +22,7 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
     private Integer version;
     private StoreRes storeRes;
     private Store store;
-    private BigDecimal masterCount;
+    private BigDecimal count;
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<StockDetailsCheckout> stockDetailsCheckouts = new HashSet<StockDetailsCheckout>(0);
@@ -32,21 +31,21 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
     public Stock() {
     }
 
-    public Stock(StoreRes storeRes, BigDecimal masterCount) {
+    public Stock(StoreRes storeRes, BigDecimal count) {
         this.storeRes = storeRes;
-        this.masterCount = masterCount;
+        this.count = count;
     }
 
-    public Stock(Store store, StoreRes storeRes, BigDecimal masterCount) {
+    public Stock(Store store, StoreRes storeRes, BigDecimal count) {
         this.storeRes = storeRes;
         this.store = store;
-        this.masterCount = masterCount;
+        this.count = count;
     }
 
-    public Stock(Store store,Batch batch, StoreRes storeRes, BigDecimal masterCount){
+    public Stock(Store store,Batch batch, StoreRes storeRes, BigDecimal count){
         this.storeRes = storeRes;
         this.store = store;
-        this.masterCount = masterCount;
+        this.count = count;
         this.batch = batch;
     }
 
@@ -99,12 +98,12 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
 
     @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull
-    public BigDecimal getMasterCount() {
-        return this.masterCount;
+    public BigDecimal getCount() {
+        return this.count;
     }
 
-    public void setMasterCount(BigDecimal count) {
-        this.masterCount = count;
+    public void setCount(BigDecimal count) {
+        this.count = count;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock")

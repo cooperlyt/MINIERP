@@ -1,11 +1,9 @@
 package com.dgsoft.erp.business.order;
 
-import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.NeedRes;
 import com.dgsoft.erp.model.OrderItem;
 import com.dgsoft.erp.model.ResUnit;
@@ -15,8 +13,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 
 import javax.faces.event.ValueChangeEvent;
 import java.math.BigDecimal;
@@ -62,7 +58,7 @@ public class OrderReSenderCreate {
 
     public String beginDispatch() {
         wireReSenderItem();
-        orderDispatch.init(needResHome.getInstance());
+        orderDispatch.init(needResHome.getInstance().getOrderItems());
         dispatched = true;
         return "/business/taskOperator/erp/sale/OrderChangeDispatch.xhtml";
     }
@@ -74,7 +70,7 @@ public class OrderReSenderCreate {
 
     public NeedRes getReSenderNeedRes() {
         if (dispatched){
-            needResHome.getInstance().getDispatches().addAll(orderDispatch.getDispatchList());
+            needResHome.getInstance().getDispatches().addAll(orderDispatch.getDispatchList(needResHome.getInstance()));
             needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
         }else{
             wireReSenderItem();
@@ -90,19 +86,9 @@ public class OrderReSenderCreate {
     public BigDecimal getReSenderTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : reSendOrderItems) {
-            result = result.add(item.getTotalMoney());
+            result = result.add(item.getTotalPrice());
         }
         return result;
-    }
-
-    public void itemUnitChange(ValueChangeEvent event) {
-        ResUnit oldUnit = (ResUnit) event.getOldValue();
-        ResUnit newUnit = (ResUnit) event.getNewValue();
-        if (!oldUnit.getId().equals(newUnit.getId())) {
-            selectOrderItem.generateResCount();
-            selectOrderItem.setCount(selectOrderItem.getStoreResCount().
-                    getCountByResUnit(newUnit));
-        }
     }
 
 

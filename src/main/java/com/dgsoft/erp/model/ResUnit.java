@@ -30,7 +30,6 @@ public class ResUnit implements java.io.Serializable,OrderModel {
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
     private Set<OrderItem> orderItemsByMiddleUnit = new HashSet<OrderItem>(0);
     private Set<OrderItem> orderItemsByMoneyUnit = new HashSet<OrderItem>(0);
-    private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
 
 	public ResUnit() {
@@ -152,22 +151,13 @@ public class ResUnit implements java.io.Serializable,OrderModel {
         this.orderItemsByMiddleUnit = orderItems;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moneyUnit")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resUnit")
     public Set<OrderItem> getOrderItemsByMoneyUnit() {
         return orderItemsByMoneyUnit;
     }
 
     public void setOrderItemsByMoneyUnit(Set<OrderItem> orderItemsByMoneyUnit) {
         this.orderItemsByMoneyUnit = orderItemsByMoneyUnit;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY,  mappedBy = "resUnit")
-    public Set<DispatchItem> getDispatchItems() {
-        return dispatchItems;
-    }
-
-    public void setDispatchItems(Set<DispatchItem> dispatchItems) {
-        this.dispatchItems = dispatchItems;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "resUnit")

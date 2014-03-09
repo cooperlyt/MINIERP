@@ -6,18 +6,12 @@ import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.erp.action.OrderBackHome;
 import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.BatchOperEntity;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.annotations.datamodel.DataModelSelection;
-import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.graph.exe.ProcessInstance;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -120,8 +114,8 @@ public class CancelOrderCreate {
         List<BackItem> result = new ArrayList<BackItem>();
 
         if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL)) {
-            for (Map.Entry<StoreRes, ResCount> entry : orderHome.allShipStoreReses().entrySet()) {
-                result.add(new BackItem(orderBackHome.getInstance(), entry.getKey(), entry.getValue()));
+            for (Map.Entry<StoreRes, StoreResCount> entry : orderHome.allShipStoreReses().entrySet()) {
+                result.add(new BackItem(orderBackHome.getInstance(), entry.getKey(), entry.getValue().getMasterCount()));
             }
         } else {
             for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
@@ -137,7 +131,7 @@ public class CancelOrderCreate {
             return !orderHome.allShipStoreReses().isEmpty();
         } else {
             for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
-                if (item.getValue().isSelected() && (item.getKey().getMasterCount().compareTo(BigDecimal.ZERO) > 0))
+                if (item.getValue().isSelected() && (item.getKey().getCount().compareTo(BigDecimal.ZERO) > 0))
                     return true;
             }
             return false;
@@ -156,7 +150,7 @@ public class CancelOrderCreate {
         if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.PART_ORDER_BACK)) {
 
             for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
-                if (item.getValue().isSelected() && (item.getKey().getMasterCount().compareTo(item.getValue().getData().getMasterCount()) > 0)) {
+                if (item.getValue().isSelected() && (item.getKey().getCount().compareTo(item.getValue().getData().getMasterCount()) > 0)) {
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderBack_backCountLessOrderCountError",
                             item.getKey().getStoreRes().getCode(), item.getValue().getData().getDisplayMasterCount());
                     return false;
@@ -223,14 +217,14 @@ public class CancelOrderCreate {
     public void initBackOrderItem() {
         backOrderItems = new HashMap<BackItem, BatchOperData<StoreResCount>>();
         selectAll = true;
-        for (Map.Entry<StoreRes, ResCount> entry : orderHome.getInstance().getAllShipStoreReses().entrySet()) {
+        for (Map.Entry<StoreRes, StoreResCount> entry : orderHome.getInstance().getAllShipStoreReses().entrySet()) {
 
 
             for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
                 for (OrderItem orderItem : needRes.getOrderItems()) {
                     if (orderItem.getStoreRes().equals(entry.getKey())) {
-                        backOrderItems.put(new BackItem(orderBackHome.getInstance(), entry.getKey(), orderItem.getMoneyUnit(),
-                                entry.getValue().getCountByResUnit(orderItem.getMoneyUnit()),
+                        backOrderItems.put(new BackItem(orderBackHome.getInstance(), entry.getKey(), orderItem.getResUnit(),
+                                entry.getValue().getCountByResUnit(orderItem.getResUnit()),
                                 orderItem.getRebateUnitPrice()),
                                 new BatchOperData<StoreResCount>(new StoreResCount(entry.getKey(), entry.getValue().getMasterCount()), true));
                         break;
@@ -269,7 +263,7 @@ public class CancelOrderCreate {
         BigDecimal result = BigDecimal.ZERO;
         for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
             if (item.getValue().isSelected()) {
-                result = result.add(item.getKey().getTotalPrice());
+                result = result.add(item.getKey().getInputTotalPrice());
             }
 
         }

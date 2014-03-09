@@ -63,8 +63,7 @@ public class Dispatch implements java.io.Serializable {
 	public Dispatch() {
 	}
 
-    public Dispatch(NeedRes needRes, Store store){
-        this.needRes = needRes;
+    public Dispatch(Store store){
         this.store = store;
     }
 

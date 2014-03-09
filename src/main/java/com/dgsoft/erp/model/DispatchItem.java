@@ -1,7 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 1:46:18 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
@@ -19,7 +18,7 @@ import java.math.BigDecimal;
 public class DispatchItem extends StoreResCountEntity implements java.io.Serializable {
 
     private String id;
-    private BigDecimal masterCount;
+    private BigDecimal count;
     private Dispatch dispatch;
     private StoreRes storeRes;
     private String memo;
@@ -27,12 +26,18 @@ public class DispatchItem extends StoreResCountEntity implements java.io.Seriali
     public DispatchItem() {
     }
 
-
-    public DispatchItem(BigDecimal masterCount, Dispatch dispatch,
-                        StoreRes storeRes) {
-        this.masterCount = masterCount;
+    public DispatchItem(BigDecimal count, StoreRes storeRes) {
+        this.count = count;
         this.dispatch = dispatch;
         this.storeRes = storeRes;
+    }
+
+    public DispatchItem(BigDecimal count, Dispatch dispatch,
+                        StoreRes storeRes) {
+        this.count = count;
+        this.dispatch = dispatch;
+        this.storeRes = storeRes;
+        this.memo = memo;
     }
 
     @Id
@@ -51,12 +56,12 @@ public class DispatchItem extends StoreResCountEntity implements java.io.Seriali
 
     @Column(name = "COUNT", scale = 4, nullable = false)
     @NotNull
-    public BigDecimal getMasterCount() {
-        return this.masterCount;
+    public BigDecimal getCount() {
+        return this.count;
     }
 
-    public void setMasterCount(BigDecimal masterCount) {
-        this.masterCount = masterCount;
+    public void setCount(BigDecimal masterCount) {
+        this.count = masterCount;
     }
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -104,12 +109,12 @@ public class DispatchItem extends StoreResCountEntity implements java.io.Seriali
 
     @Transient
     public boolean isEnough() {
-        return getStock().getMasterCount().compareTo(getMasterCount()) >= 0;
+        return getStock().getCount().compareTo(getCount()) >= 0;
     }
 
 
     @Transient
     public StoreResCount getDisparity() {
-        return new StoreResCount(getStoreRes(),getMasterCount().subtract(getStock().getMasterCount()));
+        return new StoreResCount(getStoreRes(), getCount().subtract(getStock().getCount()));
     }
 }

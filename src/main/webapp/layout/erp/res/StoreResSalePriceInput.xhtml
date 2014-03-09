@@ -7,9 +7,23 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="StoreResPriceInput.xhtml">
-
+    <!--param inputValue formatTemplate countLableStyleClass ,priceChangeRender, -->
     <ui:define name="priceExtend">
+        <s:span styleClass="value">
+            #{messages.orderItemPriceRebate}
 
+            <h:inputText id="itemPriceRebateInput" required="true" label="#{messages.rebate}" size="7"
+                         value="#{inputValue.inputRebate}">
+                <f:convertNumber pattern="#0.##"/>
+                <f:validateDoubleRange minimum="0" maximum="100"/>
+                <rich:validator/>
+                <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="priceInputFields,#{priceChangeRender}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </h:inputText>
+            <rich:message for="itemPriceRebateInput" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+        </s:span>
 
     </ui:define>
 </ui:composition>

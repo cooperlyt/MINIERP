@@ -34,10 +34,10 @@
         </s:decorate>
 
         <a:outputPanel rendered="#{(not empty orderDispatch.selectOrderItem)}">
-            <ui:include src="/layout/erp/ResCountInput.xhtml">
-                <ui:param name="resCountBean" value="#{orderDispatch.storeResCountInupt}"/>
-                <ui:param name="lableStyleClass" value="small_name"/>
-                <ui:param name="disabledFloatRate" value="true"/>
+            <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+                <ui:param name="inputValue" value="#{orderDispatch.operCount}"/>
+                <ui:param name="countLableStyleClass" value="small_name"/>
+                <ui:param name="formatTemplate" value="/layout/edit.xhtml"/>
             </ui:include>
         </a:outputPanel>
         <a:outputPanel id="newDispatchFields">
@@ -205,8 +205,8 @@
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
                     <ui:param name="storeRes" value="#{_orderItem.storeRes}"/>
                 </ui:include>
-                [ #{messages.order_storeRes_count}: <b>#{_orderItem.storeResCount.masterDisplayCount}</b>
-                #{' '} #{_orderItem.storeResCount.displayAuxCount}]
+                [ #{messages.order_storeRes_count}: <b>#{_orderItem.displayMasterCount}</b>
+                #{' '} #{_orderItem.displayAuxCount}]
 
                 <a:commandButton style="float: right" value="#{messages.dispatch_item}" execute="@this"
                                  immediate="true" render="singleDispatchPanel_inputs"
@@ -225,15 +225,15 @@
                     <h:outputText value="#{_item.store.name}(#{_item.store.id})"/>
                 </rich:column>
                 <rich:column>
-                    <h:outputText value="#{_item.resCount.masterDisplayCount}"/>
+                    <h:outputText value="#{_item.displayMasterCount}"/>
                 </rich:column>
                 <rich:column>
-                    #{_item.resCount.displayAuxCount}
+                    #{_item.displayAuxCount}
                 </rich:column>
 
                 <f:facet name="footer">
                     <h:outputText
-                            value="#{messages.recordTotal} #{_orderItem.storeRes.vaildStockList.size} #{messages.total_in_store} [#{messages.total_count} #{_orderItem.storeRes.totalCount.masterDisplayCount} #{_orderItem.storeRes.totalCount.displayAuxCount}]"/>
+                            value="#{messages.recordTotal} #{_orderItem.storeRes.vaildStockList.size} #{messages.total_in_store} [#{messages.total_count} #{_orderItem.storeRes.totalCount.displayMasterCount} #{_orderItem.storeRes.totalCount.displayAuxCount}]"/>
                 </f:facet>
             </rich:collapsibleSubTable>
 
@@ -305,14 +305,14 @@
 
                 </rich:column>
                 <rich:column>
-                    #{_dispatchItem.resCount.masterDisplayCount}
+                    #{_dispatchItem.displayMasterCount}
                     <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
-                                    title="#{messages.order_item_full}:#{_dispatchItem.stockCount.masterDisplayCount}(#{_dispatchItem.stockCount.displayAuxCount}) "
+                                    title="#{messages.order_item_full}:#{_dispatchItem.stock.displayMasterCount}(#{_dispatchItem.stock.displayAuxCount}) "
                                     value="/img/full_tip.png"
                                     rendered="#{_dispatchItem.enough}"/>
 
                     <a:outputPanel style="float:right" rendered="#{not _dispatchItem.enough}">
-                        <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.disparity.masterDisplayCount})"/>
+                        <h:outputText style="color: #FF0000;" value="(#{_dispatchItem.disparity.displayMasterCount})"/>
                         <h:graphicImage alt="#{messages.order_item_not_full}"
                                         value="/img/not_full_tip.png"/>
                         <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
@@ -324,18 +324,18 @@
 
                             <span style="white-space: nowrap;">
                            #{messages.InventoryCount}:
-                                #{_dispatchItem.stockCount.masterDisplayCount}
-                                (#{_dispatchItem.stockCount.displayAuxCount})  </span> <br/>
+                                #{_dispatchItem.stock.displayMasterCount}
+                                (#{_dispatchItem.stock.displayAuxCount})  </span> <br/>
                         <span style="white-space: nowrap;color: #FF0000;">
                                 #{messages.stockDisparity}:
-                            #{_dispatchItem.disparity.masterDisplayCount}
+                            #{_dispatchItem.disparity.displayMasterCount}
                             (#{_dispatchItem.disparity.displayAuxCount})
                                </span>
                         </rich:tooltip>
                     </a:outputPanel>
                 </rich:column>
                 <rich:column>
-                    #{_dispatchItem.resCount.displayAuxCount}
+                    #{_dispatchItem.displayAuxCount}
                 </rich:column>
                 <rich:column>
 
