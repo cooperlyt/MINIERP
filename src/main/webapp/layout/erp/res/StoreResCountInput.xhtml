@@ -59,7 +59,7 @@
 
         <ui:insert/>
 
-        <div>
+        <a:outputPanel id="countInputArea">
 
             <s:label styleClass="#{empty countLableStyleClass ? 'name' : countLableStyleClass}">
                 #{messages.storeChangeCount}
@@ -110,7 +110,6 @@
                         <a:region id="floatConvertRateRegion">
 
 
-
                             <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
 
                                                disabled="#{not empty inputValue.storeRes}"
@@ -156,7 +155,7 @@
                 </a:outputPanel>
 
             </a:outputPanel>
-        </div>
+        </a:outputPanel>
 
         <ui:insert name="countInputTail"/>
 

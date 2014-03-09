@@ -197,7 +197,7 @@ public class OrderChange extends OrderTaskHandle {
             if (matchItem != null) {
                 matchItems.add(matchItem.getStoreRes());
                 OrderItem newItem = matchItem.cloneNew();
-                newItem.setCount(entry.getValue().getCountByResUnit(newItem.getResUnit()));
+                newItem.setCount(entry.getValue().getMasterCount());
                 newOrderItems.add(newItem);
             }
             oldOrderItem.remove(matchItem);
@@ -209,7 +209,7 @@ public class OrderChange extends OrderTaskHandle {
 
         for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
             newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), entry.getKey().getRes().getResUnitByOutDefault(),
-                    entry.getValue().getCountByResUnit(entry.getKey().getRes().getResUnitByOutDefault()), BigDecimal.ZERO, new BigDecimal("100"),""));
+                    entry.getValue().getMasterCount(), BigDecimal.ZERO, new BigDecimal("100"),""));
         }
 
 
@@ -265,7 +265,7 @@ public class OrderChange extends OrderTaskHandle {
                 newItem.setRebate(new BigDecimal("100"));
                 newItem.setMoney(BigDecimal.ZERO);
             }
-            newItem.setCount(overlyOut.getCountByResUnit(newItem.getResUnit()));
+            newItem.setCount(overlyOut.getMasterCount());
             reSenderOrderItems.add(newItem);
         }
 

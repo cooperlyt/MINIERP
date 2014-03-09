@@ -17,11 +17,7 @@
     <ui:param name="panelTitle" value="#{messages.dispatch_overly_items}"/>
 
     <ui:define name="controls">
-        <a:commandButton immediate="true"
-                         execute="@this" image="/img/close.png"
-                         onclick="#{rich:component(panelId)}.hide(); return false;">
 
-        </a:commandButton>
     </ui:define>
 
 
@@ -54,9 +50,8 @@
     </s:decorate>
 
     <ui:define name="actionButtons">
-        <a:commandButton value="#{messages.cancel}" onclick="#{rich:component(panelId)}.hide(); return false;"/>
-        <a:commandButton value="#{messages.ok}" execute="@form" render="orderStoreOutItemsTable"
-                         action="#{actionExecuteState.actionExecute}" data="#{actionExecuteState.lastState}"
+        <a:commandButton value="#{messages.ok}" execute="@form" render="overlayEditPanel_inputs,orderStoreOutItemsTable"
+                         action="#{orderStoreOut.saveOverlay}" data="#{actionExecuteState.lastState}"
                          oncomplete="if (event.data == 'success')#{rich:component(panelId)}.hide();">
             <a:attachQueue requestDelay="0"/>
 

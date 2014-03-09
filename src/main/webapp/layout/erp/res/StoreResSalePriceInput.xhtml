@@ -17,7 +17,7 @@
                 <f:convertNumber pattern="#0.##"/>
                 <f:validateDoubleRange minimum="0" maximum="100"/>
                 <rich:validator/>
-                <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="priceInputFields,#{priceChangeRender}">
+                <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="priceInputFields,countInputArea,#{priceChangeRender}">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
             </h:inputText>

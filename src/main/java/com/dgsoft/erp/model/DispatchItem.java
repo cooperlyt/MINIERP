@@ -87,7 +87,7 @@ public class DispatchItem extends StoreResCountEntity implements java.io.Seriali
         this.storeRes = storeRes;
     }
 
-    @Column(name="MEMO",nullable = true,length = 200)
+    @Column(name = "MEMO", nullable = true, length = 200)
     public String getMemo() {
         return memo;
     }
@@ -109,12 +109,21 @@ public class DispatchItem extends StoreResCountEntity implements java.io.Seriali
 
     @Transient
     public boolean isEnough() {
-        return getStock().getCount().compareTo(getCount()) >= 0;
+        Stock stock = getStock();
+        if (stock == null) {
+            return false;
+        } else {
+            return getStock().getCount().compareTo(getCount()) >= 0;
+        }
     }
 
 
     @Transient
     public StoreResCount getDisparity() {
-        return new StoreResCount(getStoreRes(), getCount().subtract(getStock().getCount()));
+        Stock stock = getStock();
+        if (stock == null) {
+            return new StoreResCount(getStoreRes(), getCount());
+        } else
+            return new StoreResCount(getStoreRes(), getCount().subtract(getStock().getCount()));
     }
 }

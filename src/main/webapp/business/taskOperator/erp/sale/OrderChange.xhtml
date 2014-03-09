@@ -216,14 +216,14 @@
             <f:facet name="header">
                 #{messages.MasterUnitCount}
             </f:facet>
-            #{_overly.resCount.masterDisplayCount}
+            #{_overly.displayMasterCount}
         </rich:column>
 
         <rich:column>
             <f:facet name="header">
                 #{messages.AuxUnitCount}
             </f:facet>
-            #{_overly.resCount.displayAuxCount}
+            #{_overly.displayAuxCount}
 
         </rich:column>
 
@@ -263,14 +263,14 @@
             <f:facet name="header">
                 #{messages.MasterUnitCount}
             </f:facet>
-            #{_overly.resCount.masterDisplayCount}
+            #{_overly.displayMasterCount}
         </rich:column>
 
         <rich:column>
             <f:facet name="header">
                 #{messages.AuxUnitCount}
             </f:facet>
-            #{_overly.resCount.displayAuxCount}
+            #{_overly.displayAuxCount}
 
         </rich:column>
 
@@ -318,7 +318,7 @@
                     <f:facet name="header">
                         #{messages.orderItemCount}
                     </f:facet>
-                    <h:outputText value="#{_reSendItem.count}">
+                    <h:outputText value="#{_reSendItem.useUnitCount}">
                         <f:convertNumber pattern="#0.####"/>
                     </h:outputText>
                 </rich:column>
@@ -331,7 +331,7 @@
                     <s:decorate template="/layout/single-edit.xhtml">
                         <h:selectOneMenu label="#{messages.Res_Unit}" style="min-width: 70px"
                                          value="#{_reSendItem.resUnit}"
-                                         required="true" valueChangeListener="#{orderReSenderCreate.itemUnitChange}">
+                                         required="true" >
                             <s:selectItems value="#{_reSendItem.storeRes.res.unitGroup.resUnitList}"
                                            var="_unit" label="#{_unit.name}"/>
                             <a:ajax event="valueChange" listener="#{orderChange.calcByRate}"
@@ -376,7 +376,7 @@
                     <f:facet name="header">
                         #{messages.orderItemTotalPrice}
                     </f:facet>
-                    <h:outputText value="#{_reSendItem.totalMoney}">
+                    <h:outputText value="#{_reSendItem.totalPrice}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -436,7 +436,7 @@
                 <f:facet name="header">
                     #{messages.orderItemCount}
                 </f:facet>
-                <h:outputText value="#{_item.count}">
+                <h:outputText value="#{_item.useUnitCount}">
                     <f:convertNumber pattern="#0.####"/>
                 </h:outputText>
             </rich:column>
@@ -447,7 +447,7 @@
                 </f:facet>
                 <s:decorate template="/layout/single-edit.xhtml">
                     <h:selectOneMenu label="#{messages.Res_Unit}" style="min-width: 70px" value="#{_item.resUnit}"
-                                     required="true" valueChangeListener="#{orderChange.itemUnitChange}">
+                                     required="true" >
                         <s:selectItems value="#{_item.storeRes.res.unitGroup.resUnitList}"
                                        var="_unit" label="#{_unit.name}"/>
                         <a:ajax event="valueChange" listener="#{orderChange.calcByRate}"
@@ -492,7 +492,7 @@
                     #{messages.orderItemTotalPrice}
                 </f:facet>
 
-                <h:outputText value="#{_item.totalMoney}">
+                <h:outputText value="#{_item.totalPrice}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>

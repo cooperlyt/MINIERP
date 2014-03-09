@@ -56,17 +56,6 @@ public class BackDispatchItem extends StoreResCountEntity implements java.io.Ser
         this.count = count;
     }
 
-    @Override
-    @Transient
-    public BigDecimal getMasterCount() {
-        return getCount();
-    }
-
-    @Override
-    public void setMasterCount(BigDecimal count) {
-       setCount(count);
-    }
-
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
     @JoinColumn(name="STORE_RES",nullable = false)
     @NotNull

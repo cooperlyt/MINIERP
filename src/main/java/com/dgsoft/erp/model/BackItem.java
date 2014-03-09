@@ -1,6 +1,5 @@
 package com.dgsoft.erp.model;
 
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.hibernate.annotations.GenericGenerator;
 

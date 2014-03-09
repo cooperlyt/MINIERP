@@ -34,7 +34,7 @@
             <f:facet name="header">
                 #{messages.orderItemCount}
             </f:facet>
-            <h:outputText value="#{_item.count}">
+            <h:outputText value="#{_item.useUnitCount}">
                 <f:convertNumber pattern="#0.####"/>
             </h:outputText>
 
@@ -45,7 +45,7 @@
             <f:facet name="header">
                 #{messages.Res_Unit}
             </f:facet>
-            #{_item.moneyUnit.name}
+            #{_item.resUnit.name}
         </rich:column>
 
         <rich:column style="text-align: right">
@@ -71,7 +71,7 @@
             <f:facet name="header">
                 #{messages.orderItemTotalPrice}
             </f:facet>
-            <h:outputText value="#{_item.totalMoney}">
+            <h:outputText value="#{_item.totalPrice}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>

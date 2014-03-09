@@ -80,7 +80,7 @@ public class OrderDispatch {
     private Store store;
 
     //private BigDecimal count;
-    //private StoreResCountInupt storeResCountInupt;
+
     private StoreResCount operCount;
 
     private ResUnit unit;

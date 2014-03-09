@@ -43,18 +43,6 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
-    @Override
-    @Transient
-    public BigDecimal getMasterCount() {
-        return getCount();
-    }
-
-    @Override
-    @Transient
-    public void setMasterCount(BigDecimal count) {
-        setCount(count);
-    }
-
 
     public StockChangeItem(StockChange stockChange, StoreRes storeRes, BigDecimal count) {
         this.stockChange = stockChange;

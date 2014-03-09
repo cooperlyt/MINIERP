@@ -95,6 +95,15 @@ public class OrderStoreOut extends OrderTaskHandle {
         actionExecuteState.clearState();
     }
 
+    public void saveOverlay() {
+        if (operOutItem.getMasterCount().compareTo(BigDecimal.ZERO) < 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "sale_store_out_must_less_need", operOutItem.getDispatchItem().getDisplayMasterCount());
+            operOutItem.getOverlyOut().setMasterCount(operOutItem.getDispatchItem().getMasterCount());
+            return;
+        }
+        actionExecuteState.actionExecute();
+    }
+
 
     @Override
     protected String completeOrderTask() {
@@ -218,7 +227,7 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
     }
 
-    public class OrderStoreOutItem extends StoreResCountEntity implements Serializable{
+    public class OrderStoreOutItem extends StoreResCountEntity implements Serializable {
 
         private DispatchItem dispatchItem;
 
@@ -247,13 +256,20 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
         public boolean isEnough() {
-            return getStock().getCount().compareTo(getMasterCount()) >= 0;
+            Stock stock = getStock();
+            if (stock == null) {
+                return false;
+            } else
+                return getStock().getCount().compareTo(getMasterCount()) >= 0;
         }
 
 
         public StoreResCount getDisparity() {
-
-            return new StoreResCount(dispatchItem.getStoreRes(),getMasterCount().subtract(getStock().getCount()));
+            Stock stock = getStock();
+            if (stock == null) {
+                return new StoreResCount(dispatchItem.getStoreRes(), getMasterCount());
+            } else
+                return new StoreResCount(dispatchItem.getStoreRes(), getMasterCount().subtract(getStock().getCount()));
         }
 
         @Override
