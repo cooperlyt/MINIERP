@@ -155,13 +155,13 @@
 
 	<decision name="发货判断">
 		<transition to="join2" name="已发货">
-			<condition expression="#{(not orderHome.lastNeedRes.allCustomerSelfTake) and (not (orderHome.instance.payType eq 'PAY_FIRST')) and (not (orderHome.instance.payType eq 'EXPRESS_PROXY'))  and (orderHome.lastNeedRes.type eq 'ORDER_SEND' ) }"></condition>
+			<condition expression="#{(not orderHome.lastNeedRes.allCustomerSelfTake) and (not (orderHome.instance.payType eq 'PAY_FIRST')) and (not (orderHome.instance.payType eq 'EXPRESS_PROXY'))}"></condition>
 		</transition>
 		<transition to="调度判断" name="款到发货">
 			<condition expression="#{orderHome.instance.payType eq 'PAY_FIRST' }"></condition>
 		</transition>
 		<transition to="订单完成" name="代收货款或自提">
-			<condition expression="#{((orderHome.instance.payType eq 'EXPRESS_PROXY') or (orderHome.lastNeedRes.allCustomerSelfTake)) and (orderHome.lastNeedRes.type eq 'ORDER_SEND' )}"></condition>
+			<condition expression="#{((orderHome.instance.payType eq 'EXPRESS_PROXY') or (orderHome.lastNeedRes.allCustomerSelfTake))}"></condition>
 		</transition>
 	</decision>
 

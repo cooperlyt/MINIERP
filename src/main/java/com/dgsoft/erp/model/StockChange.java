@@ -213,8 +213,8 @@ public class StockChange implements java.io.Serializable {
     }
 
     @Transient
-    public StoreResCountGroup<StockChangeItem> getChangeDetails(){
-        return new StoreResCountGroup<StockChangeItem>(getStockChangeItems());
+    public StoreResCountGroup getChangeDetails(){
+        return new StoreResCountGroup(getStockChangeItems());
     }
 
     @Transient

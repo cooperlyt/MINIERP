@@ -120,7 +120,7 @@
 <br/>
 <ui:include src="/layout/erp/OrderItemTable.xhtml">
     <ui:param name="orderItems" value="#{orderHome.instance.allOrderItemList}"/>
-    <ui:param name="totalItemMoney" value="#{orderHome.resTotalMoney}"/>
+    <ui:param name="totalItemMoney" value="#{orderHome.instance.allOrderItemList.getTotalPrice()}"/>
     <ui:param name="totalMiddleMoney" value="#{orderHome.totalItemMiddleMoney}"/>
 </ui:include>
 

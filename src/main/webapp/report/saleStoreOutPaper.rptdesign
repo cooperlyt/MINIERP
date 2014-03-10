@@ -184,8 +184,8 @@ it=dispatchItems.iterator();]]></method>
 
 	
 	row['NAME'] = itemTitle;
-    row['COUNT'] = DataFormat.format(item.getResCount().getCountByResUnit(storeRes.getRes().getResUnitByOutDefault()),storeRes.getRes().getResUnitByOutDefault().getCountFormate()); 
-    row['UNIT'] = storeRes.getRes().getResUnitByOutDefault().getName();
+    row['COUNT'] = DataFormat.format(item.getCountByResUnit(storeRes.getRes().getResUnitByInDefault()),storeRes.getRes().getResUnitByOutDefault().getCountFormate()); 
+    row['UNIT'] = storeRes.getRes().getResUnitByInDefault().getName();
     
     
 

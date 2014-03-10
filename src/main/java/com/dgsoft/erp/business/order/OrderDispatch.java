@@ -65,7 +65,7 @@ public class OrderDispatch {
     }
 
 
-    private StoreResCountGroup<StoreResCount> noDispatchItems;
+    private StoreResCountGroup noDispatchItems;
 
     @DataModelSelection
     private StoreResCount selectedOrderItem;
@@ -451,7 +451,7 @@ public class OrderDispatch {
 
         this.oldOrderItems = orderItems;
 
-        noDispatchItems = new StoreResCountGroup<StoreResCount>();
+        noDispatchItems = new StoreResCountGroup();
 
         for (OrderItem oi : orderItems) {
 

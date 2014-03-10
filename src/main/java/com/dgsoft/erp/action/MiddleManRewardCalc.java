@@ -392,15 +392,15 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
     private Set<Res> genContainOrderReses() {
         initContainOrders();
-        Set<Res> result = new HashSet<Res>();
-        for (CustomerOrder order : containOrders) {
-            if (order.isSelected()) {
-                for (OrderItem orderItem : order.getAllOrderItemList()) {
-                    //result.add(orderItem.getUseRes());
-                }
-            }
-        }
-        return result;
+//        Set<Res> result = new HashSet<Res>();
+//        for (CustomerOrder order : containOrders) {
+//            if (order.isSelected()) {
+//                for (OrderItem orderItem : order.getAllOrderItemList()) {
+//                    //result.add(orderItem.getUseRes());
+//                }
+//            }
+//        }
+        return null;
     }
 
     @Override

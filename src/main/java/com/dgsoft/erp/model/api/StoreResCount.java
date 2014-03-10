@@ -1,14 +1,14 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.erp.model.BackItem;
 import com.dgsoft.erp.model.StoreRes;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * Created by cooper on 2/27/14.
  */
-public class StoreResCount extends StoreResCountEntity{
+public class StoreResCount extends StoreResCountEntity implements Serializable{
 
     private BigDecimal count;
 
