@@ -128,7 +128,7 @@
                             <ui:param name="propertyPath" value="stock.count"/>
                         </ui:include>
                     </f:facet>
-                    #{_stock.resCount.masterDisplayCount}
+                    #{_stock.displayMasterCount}
                     <f:facet name="footer">
                         <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
                             <f:convertNumber pattern="#0.#####"
@@ -142,7 +142,7 @@
                     <f:facet name="header">
                         #{messages.AuxUnitCount}
                     </f:facet>
-                    #{_stock.resCount.displayAuxCount}
+                    #{_stock.displayAuxCount}
 
                     <f:facet name="footer">
                         <h:outputText value="#{stockList.totalAuxCount}">

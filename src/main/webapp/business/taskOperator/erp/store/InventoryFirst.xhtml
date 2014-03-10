@@ -209,13 +209,13 @@
             </ui:include>
         </rich:column>
         <rich:column>
-            <h:outputText value="#{_item.stockCount.masterDisplayCount}" rendered="#{not empty _item.stockCount}"/>
+            <h:outputText value="#{_item.stock.displayMasterCount}" rendered="#{not empty _item.stock}"/>
         </rich:column>
         <rich:column>
-            <h:outputText value="#{_item.stockCount.displayAuxCount}" rendered="#{not empty _item.stockCount}"/>
+            <h:outputText value="#{_item.stock.displayAuxCount}" rendered="#{not empty _item.stock}"/>
         </rich:column>
         <rich:column>
-            <h:outputText value="#{_item.addCount.masterDisplayCount}"
+            <h:outputText value="#{_item.addCount.displayMasterCount}"
                           rendered="#{not empty _item.addCount}"/>
         </rich:column>
         <rich:column>
@@ -223,7 +223,7 @@
                           rendered="#{not empty _item.addCount}"/>
         </rich:column>
         <rich:column>
-            <h:outputText value="#{_item.loseCount.masterDisplayCount}"
+            <h:outputText value="#{_item.loseCount.displayMasterCount}"
                           rendered="#{not empty _item.loseCount}"/>
         </rich:column>
         <rich:column>

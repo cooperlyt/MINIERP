@@ -44,27 +44,26 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
     }
 
     private void stockChangeFindStock(StockChangeItem item){
-        item.setStock(findOrCreactStock(item,item.getBatch()));
+        item.setStock(findOrCreactStock(item));
     }
 
-    public void resStockChange(StoreResCountEntity inCount, Batch batch) {
-        Stock inStock = findOrCreactStock(inCount, batch);
+    public void resStockChange(StoreResCountEntity inCount) {
+        Stock inStock = findOrCreactStock(inCount);
         getInstance().getStockChangeItems().add(new StockChangeItem(getInstance(), inStock,
-                inCount.getMasterCount(),batch));
+                inCount.getMasterCount()));
 
     }
 
-    private Stock findOrCreactStock(StoreResCountEntity inCount, Batch batch) {
+    private Stock findOrCreactStock(StoreResCountEntity inCount) {
         Stock inStock = null;
         for (Stock stock : inCount.getStoreRes().getStocks()) {
-            if ((stock.getBatch() == batch) &&
-                    (stock.getStore().getId().equals(getInstance().getStore().getId()))) {
+            if (stock.getStore().getId().equals(getInstance().getStore().getId())) {
                 inStock = stock;
                 break;
             }
         }
         if (inStock == null) {
-            inStock = new Stock(getInstance().getStore(), batch, inCount.getStoreRes(), BigDecimal.ZERO);
+            inStock = new Stock(getInstance().getStore(), inCount.getStoreRes(), BigDecimal.ZERO);
         }
 
         if (getInstance().getOperType().isOut()) {

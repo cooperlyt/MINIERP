@@ -23,8 +23,6 @@ public class Batch implements java.io.Serializable {
     private Date expDate;
     private Date lastInTime;
     private MaterialStoreOut materialStoreOut;
-    private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
-    private Set<Stock> stocks = new HashSet<Stock>(0);
     private boolean defaultBatch;
     private StoreRes storeRes;
 
@@ -147,21 +145,4 @@ public class Batch implements java.io.Serializable {
         this.storeIn = storeIn;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-    public Set<StockChangeItem> getStockChangeItems() {
-        return stockChangeItems;
-    }
-
-    public void setStockChangeItems(Set<StockChangeItem> stockChangeItems) {
-        this.stockChangeItems = stockChangeItems;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "batch")
-    public Set<Stock> getStocks() {
-        return stocks;
-    }
-
-    public void setStocks(Set<Stock> stocks) {
-        this.stocks = stocks;
-    }
 }
