@@ -10,6 +10,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -32,10 +33,14 @@ public class OrderItemSplit {
 
     private List<OrderItem> orderItemList;
 
-    private StoreResCountInupt splitCountInput;
+    private OrderItem newOrderItem;
 
-    public StoreResCountInupt getSplitCountInput() {
-        return splitCountInput;
+    public OrderItem getNewOrderItem() {
+        return newOrderItem;
+    }
+
+    public void setNewOrderItem(OrderItem newOrderItem) {
+        this.newOrderItem = newOrderItem;
     }
 
     public void beginSplit(List<OrderItem> orderItemList, OrderItem orderItem){
@@ -43,20 +48,20 @@ public class OrderItemSplit {
         this.operOrderItem = orderItem;
 
         actionExecuteState.clearState();
-        splitCountInput = new StoreResCountInupt(operOrderItem.getStoreRes());
+        newOrderItem = operOrderItem.cloneNew();
+        newOrderItem.setCount(BigDecimal.ZERO);
     }
 
     public void splitOrderItem(){
-        if ( operOrderItem.getCount().compareTo(splitCountInput.getCountByResUnit(operOrderItem.getResUnit())) <= 0){
+        if ( operOrderItem.getCount().compareTo(newOrderItem.getCount()) <= 0){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"splitOrderCountMustLess");
             return;
         }
 
-        OrderItem newItem = operOrderItem.cloneNew();
-        newItem.setCount(splitCountInput.getCountByResUnit(newItem.getResUnit()));
-        operOrderItem.setCount(operOrderItem.getCount().subtract(newItem.getCount()));
 
-        orderItemList.add(newItem);
+        operOrderItem.setCount(operOrderItem.getCount().subtract(newOrderItem.getCount()));
+
+        orderItemList.add(newOrderItem);
         actionExecuteState.actionExecute();
     }
 

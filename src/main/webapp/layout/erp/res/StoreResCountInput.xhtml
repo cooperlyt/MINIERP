@@ -59,8 +59,11 @@
 
         <ui:insert/>
 
-        <a:outputPanel id="countInputArea">
+        <div style="clear: both;"/>
 
+
+        <a:outputPanel id="countInputArea">
+            <div>
             <s:label styleClass="#{empty countLableStyleClass ? 'name' : countLableStyleClass}">
                 #{messages.storeChangeCount}
                 <s:span styleClass="required">*</s:span>
@@ -154,7 +157,7 @@
                                   value="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"/>
                 </a:outputPanel>
 
-            </a:outputPanel>
+            </a:outputPanel>     </div>
         </a:outputPanel>
 
         <ui:insert name="countInputTail"/>

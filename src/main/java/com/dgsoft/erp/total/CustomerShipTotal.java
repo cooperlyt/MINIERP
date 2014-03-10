@@ -53,14 +53,14 @@ public class CustomerShipTotal extends StoreChangeResTotal {
     //private Map<Customer,List<StoreResCount>> resultMap;
 
 
-    public Map<Customer,StoreResCountGroup<StoreResCountEntity>> getCustomerTotalResultMap() {
+    public Map<Customer,StoreResCountGroup> getCustomerTotalResultMap() {
 
-        Map<Customer,StoreResCountGroup<StoreResCountEntity>> result =new HashMap<Customer,StoreResCountGroup<StoreResCountEntity>>();
+        Map<Customer,StoreResCountGroup> result =new HashMap<Customer,StoreResCountGroup>();
         for (StockChangeItem item: getResultList()){
             Customer customer = item.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
-            StoreResCountGroup<StoreResCountEntity> mapValue = result.get(customer);
+            StoreResCountGroup mapValue = result.get(customer);
             if (mapValue == null){
-                mapValue = new StoreResCountGroup<StoreResCountEntity>();
+                mapValue = new StoreResCountGroup();
                 result.put(customer,mapValue);
             }
             mapValue.put(item);

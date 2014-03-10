@@ -5,6 +5,7 @@ import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.BatchOperEntity;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResPriceGroup;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -414,20 +415,10 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
     }
 
     @Transient
-    public List<OrderItem> getAllOrderItemList() {
-        List<OrderItem> result = new ArrayList<OrderItem>();
+    public StoreResPriceGroup getAllOrderItemList() {
+        StoreResPriceGroup result = new StoreResPriceGroup();
         for (NeedRes needRes : getNeedResList()) {
-            result.addAll(needRes.getOrderItemList());
-        }
-        return ResHelper.unionSeamOrderItem(result);
-    }
-
-
-    @Transient
-    public BigDecimal getResTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem item : getAllOrderItemList()) {
-            result = result.add(item.getTotalPrice());
+            result.putAll(needRes.getOrderItemList());
         }
         return result;
     }

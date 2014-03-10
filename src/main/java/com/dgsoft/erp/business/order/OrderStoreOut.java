@@ -233,6 +233,10 @@ public class OrderStoreOut extends OrderTaskHandle {
 
         private OverlyOut overlyOut;
 
+        public boolean isHaveOverlyOut(){
+            return overlyOut.getMasterCount().compareTo(BigDecimal.ZERO) > 0;
+        }
+
         public OverlyOut getOverlyOut() {
             return overlyOut;
         }

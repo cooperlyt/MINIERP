@@ -222,23 +222,23 @@
 
         <rich:column>
             <h:outputText value="#{_dispatchItem.overlyOut.displayMasterCount}"
-                          rendered="#{_dispatchItem.overlyOut.add}"/>
+                          rendered="#{_dispatchItem.overlyOut.add and _dispatchItem.haveOverlyOut}"/>
 
         </rich:column>
 
         <rich:column>
             <h:outputText value="#{_dispatchItem.overlyOut.displayAuxCount}"
-                          rendered="#{_dispatchItem.overlyOut.add}"/>
+                          rendered="#{_dispatchItem.overlyOut.add and _dispatchItem.haveOverlyOut}"/>
         </rich:column>
 
 
         <rich:column>
             <h:outputText value="#{_dispatchItem.overlyOut.displayMasterCount}"
-                          rendered="#{not _dispatchItem.overlyOut.add}"/>
+                          rendered="#{(not _dispatchItem.overlyOut.add) and _dispatchItem.haveOverlyOut }"/>
         </rich:column>
         <rich:column>
             <h:outputText value="#{_dispatchItem.overlyOut.displayAuxCount}"
-                          rendered="#{not _dispatchItem.overlyOut.add}"/>
+                          rendered="#{(not _dispatchItem.overlyOut.add) and _dispatchItem.haveOverlyOut }"/>
         </rich:column>
 
 

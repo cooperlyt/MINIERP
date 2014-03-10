@@ -59,21 +59,39 @@
         <rich:tree
                 var="_node"
                 value="#{allStoreResTree}"
-                nodeType="#{_node.type}"
+                nodeType="#{_node.nodeType}"
                 selectionChangeListener="#{stockList.treeSectionChanged}"
                 onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
                 render="dataListResult"
                 toggleType="client"
                 selectionType="ajax">
             <rich:treeNode type="category">
-                #{_node.resCategory.name}
+                #{_node.data.name}
             </rich:treeNode>
-            <rich:treeNode type="res">
-                #{_node.res.name}(#{_node.res.code})
+            <rich:treeNode type="res" iconLeaf="/img/res.png" iconCollapsed="/img/res.png"
+                           iconExpanded="/img/res.png">
+                #{_node.data.name}(#{_node.data.code})
             </rich:treeNode>
-            <rich:treeNode type="storeRes">
+            <rich:treeNode type="property">
+
+                #{_node.formatDefine.name}
+
+                <h:outputText value="#{messages.formatNotSet}" rendered="#{empty _node.data}"/>
+
+                <a:outputPanel rendered="#{not empty _node.data}">
+
+
+                    <h:outputText value="#{dictionary.getWordValue(_node.data.formatValue)}"
+                                  rendered="#{_node.data.formatDefine.dataType.name() eq 'WORD'}"/>
+                    <h:outputText value="#{_node.data.formatValue}"
+                                  rendered="#{not (_node.data.formatDefine.dataType.name() eq 'WORD')}"/>
+                </a:outputPanel>
+
+            </rich:treeNode>
+            <rich:treeNode type="storeRes" iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
+                           iconCollapsed="/img/store_res.png">
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_node.storeRes}"/>
+                    <ui:param name="storeRes" value="#{_node.data}"/>
                 </ui:include>
             </rich:treeNode>
         </rich:tree>
@@ -86,13 +104,13 @@
     <a:outputPanel id="outCountInput">
         <rich:panel rendered="#{not empty sotreOutAction.editingItem}">
             <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{sotreOutAction.editingItem.stock.storeRes}"/>
+                <ui:param name="storeRes" value="#{sotreOutAction.editingItem.storeRes}"/>
             </ui:include>
 
             <s:decorate template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.InventoryCount}</ui:define>
-                #{sotreOutAction.editingItem.stock.resCount.masterDisplayCount}
-                (#{sotreOutAction.editingItem.stock.resCount.displayAuxCount})
+                #{sotreOutAction.editingItem.stock.displayMasterCount}
+                (#{sotreOutAction.editingItem.stock.displayAuxCount})
             </s:decorate>
 
 
@@ -165,7 +183,7 @@
                         <ui:param name="propertyPath" value="stock.count"/>
                     </ui:include>
                 </f:facet>
-                #{_stock.resCount.masterDisplayCount}
+                #{_stock.displayMasterCount}
                 <f:facet name="footer">
                     <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
                         <f:convertNumber pattern="#0.#####"
@@ -179,7 +197,7 @@
                 <f:facet name="header">
                     #{messages.AuxUnitCount}
                 </f:facet>
-                #{_stock.resCount.displayAuxCount}
+                #{_stock.displayAuxCount}
 
                 <f:facet name="footer">
                     <h:outputText value="#{stockList.totalAuxCount}">
@@ -267,10 +285,10 @@
                     </ui:include>
                 </rich:column>
                 <rich:column>
-                    #{_item.stock.resCount.masterDisplayCount}
+                    #{_item.stock.displayMasterCount}
                 </rich:column>
                 <rich:column>
-                    #{_item.stock.resCount.displayAuxCount}
+                    #{_item.stock.displayAuxCount}
                 </rich:column>
                 <rich:column>
                     #{_item.storeResCountInupt.masterDisplayCount}

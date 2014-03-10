@@ -40,18 +40,18 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
         return StockChange.StoreChangeType.PRODUCE_IN;
     }
 
-    public Map<Date,Map<ProductGroup,StoreResCountGroup<StoreResCountEntity>>> getDayTotalMap(){
-        Map<Date,Map<ProductGroup,StoreResCountGroup<StoreResCountEntity>>> result = new HashMap<Date, Map<ProductGroup, StoreResCountGroup<StoreResCountEntity>>>();
+    public Map<Date,Map<ProductGroup,StoreResCountGroup>> getDayTotalMap(){
+        Map<Date,Map<ProductGroup,StoreResCountGroup>> result = new HashMap<Date, Map<ProductGroup, StoreResCountGroup>>();
         Logging.getLog(getClass()).debug("resultList Count:" + getResultList().size());
         for (StockChangeItem item: getResultList()){
-            Map<ProductGroup,StoreResCountGroup<StoreResCountEntity>> psMap = result.get(DataFormat.halfTime(item.getStockChange().getOperDate()));
+            Map<ProductGroup,StoreResCountGroup> psMap = result.get(DataFormat.halfTime(item.getStockChange().getOperDate()));
             if (psMap == null){
-                psMap = new HashMap<ProductGroup, StoreResCountGroup<StoreResCountEntity>>();
+                psMap = new HashMap<ProductGroup, StoreResCountGroup>();
                 result.put(DataFormat.halfTime(item.getStockChange().getOperDate()),psMap);
             }
-            StoreResCountGroup<StoreResCountEntity> srcg = psMap.get(item.getStockChange().getProductStoreIn().getProductGroup());
+            StoreResCountGroup srcg = psMap.get(item.getStockChange().getProductStoreIn().getProductGroup());
             if (srcg == null){
-                srcg = new StoreResCountGroup<StoreResCountEntity>();
+                srcg = new StoreResCountGroup();
                 psMap.put(item.getStockChange().getProductStoreIn().getProductGroup(),srcg);
             }
             srcg.put(item);

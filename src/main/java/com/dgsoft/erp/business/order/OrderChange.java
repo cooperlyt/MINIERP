@@ -2,6 +2,7 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
+import com.dgsoft.erp.action.store.StoreChangeItem;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
@@ -137,80 +138,93 @@ public class OrderChange extends OrderTaskHandle {
     protected void initOrderTask() {
 
         //----- match new OrderItems
-        StoreResCountGroup<StoreResCountEntity> storeOutItems = new StoreResCountGroup<StoreResCountEntity>();
+        StoreResCountGroup storeOutItems = new StoreResCountGroup();
         newOrderItems = new ArrayList<OrderItem>();
 
-        List<StoreRes> matchItems = new ArrayList<StoreRes>();
+        //List<StoreRes> matchItems = new ArrayList<StoreRes>();
         for (Dispatch dispatch : orderHome.getLastNeedRes().getDispatches()) {
             storeOutItems.putAll(dispatch.getStockChange().getStockChangeItemList());
         }
 
-        List<OrderItem> oldMatchOrderItems = new ArrayList<OrderItem>();
-        List<OrderItem> oldOrderItem = new ArrayList<OrderItem>(orderHome.getLastNeedRes().getOrderItems());
-
-        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
-            oldMatchOrderItems.clear();
-            StoreResCountEntity count = new StoreResCount(entry.getKey(),BigDecimal.ZERO);
-            for (OrderItem item : oldOrderItem) {
-
-                    if (item.getStoreRes().equals(entry.getKey())){
-                        count.add(item);
-                        oldMatchOrderItems.add(item);
-                    }
-
+        for (StoreResCount item: storeOutItems.getStoreResCountList()){
+            OrderItem oldOrderItem  = orderHome.getFirstResOrderItem(item.getStoreRes());
+            if (oldOrderItem != null){
+                newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), item.getStoreRes(), oldOrderItem.getResUnit(),
+                        item.getMasterCount(), oldOrderItem.getMoney(), oldOrderItem.getRebate(),""));
+            }else{
+                newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), item.getStoreRes(), item.getStoreRes().getRes().getResUnitByOutDefault(),
+                        item.getMasterCount(), BigDecimal.ZERO, new BigDecimal("100"),""));
             }
-            if (count.getMasterCount().compareTo(entry.getValue().getMasterCount()) == 0) {
-                matchItems.add(entry.getKey());
-
-                for (OrderItem oldItem : oldMatchOrderItems) {
-                    newOrderItems.add(oldItem.cloneNew());
-                }
-                oldOrderItem.removeAll(oldMatchOrderItems);
-            }
-
-
         }
 
-        for (StoreRes storeRes : matchItems) {
-            storeOutItems.remove(storeRes);
-        }
-
-        matchItems.clear();
-        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
-
-            OrderItem matchItem = null;
-            int orderContainCount = 0;
-            for (OrderItem item : oldOrderItem) {
-
-                    if (entry.getKey().equals(item.getStoreRes())) {
-                        orderContainCount++;
-                        if (orderContainCount == 1) {
-                            matchItem = item;
-                        } else {
-                            matchItem = null;
-                            break;
-                        }
-                    }
 
 
-            }
-            if (matchItem != null) {
-                matchItems.add(matchItem.getStoreRes());
-                OrderItem newItem = matchItem.cloneNew();
-                newItem.setCount(entry.getValue().getMasterCount());
-                newOrderItems.add(newItem);
-            }
-            oldOrderItem.remove(matchItem);
-        }
+//        List<OrderItem> oldMatchOrderItems = new ArrayList<OrderItem>();
+//        List<OrderItem> oldOrderItem = new ArrayList<OrderItem>(orderHome.getLastNeedRes().getOrderItems());
+//
+//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
+//            oldMatchOrderItems.clear();
+//            StoreResCountEntity count = new StoreResCount(entry.getKey(),BigDecimal.ZERO);
+//            for (OrderItem item : oldOrderItem) {
+//
+//                    if (item.getStoreRes().equals(entry.getKey())){
+//                        count.add(item);
+//                        oldMatchOrderItems.add(item);
+//                    }
+//
+//            }
+//            if (count.getMasterCount().compareTo(entry.getValue().getMasterCount()) == 0) {
+//                matchItems.add(entry.getKey());
+//
+//                for (OrderItem oldItem : oldMatchOrderItems) {
+//                    newOrderItems.add(oldItem.cloneNew());
+//                }
+//                oldOrderItem.removeAll(oldMatchOrderItems);
+//            }
+//
+//
+//        }
+//
+//        for (StoreRes storeRes : matchItems) {
+//            storeOutItems.remove(storeRes);
+//        }
+//
+//        matchItems.clear();
+//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
+//
+//            OrderItem matchItem = null;
+//            int orderContainCount = 0;
+//            for (OrderItem item : oldOrderItem) {
+//
+//                    if (entry.getKey().equals(item.getStoreRes())) {
+//                        orderContainCount++;
+//                        if (orderContainCount == 1) {
+//                            matchItem = item;
+//                        } else {
+//                            matchItem = null;
+//                            break;
+//                        }
+//                    }
+//
+//
+//            }
+//            if (matchItem != null) {
+//                matchItems.add(matchItem.getStoreRes());
+//                OrderItem newItem = matchItem.cloneNew();
+//                newItem.setCount(entry.getValue().getMasterCount());
+//                newOrderItems.add(newItem);
+//            }
+//            oldOrderItem.remove(matchItem);
+//        }
+//
+//        for (StoreRes storeRes : matchItems) {
+//            storeOutItems.remove(storeRes);
+//        }
 
-        for (StoreRes storeRes : matchItems) {
-            storeOutItems.remove(storeRes);
-        }
-
-        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
-            newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), entry.getKey().getRes().getResUnitByOutDefault(),
-                    entry.getValue().getMasterCount(), BigDecimal.ZERO, new BigDecimal("100"),""));
-        }
+//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
+//            newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), entry.getKey().getRes().getResUnitByOutDefault(),
+//                    entry.getValue().getMasterCount(), BigDecimal.ZERO, new BigDecimal("100"),""));
+//        }
 
 
         //-----------------------
@@ -234,32 +248,18 @@ public class OrderChange extends OrderTaskHandle {
         List<OrderItem> reSenderOrderItems = new ArrayList<OrderItem>();
 
         for(OverlyOut overlyOut: subOverlyOutItems){
-            OrderItem matchOrderItem = null;
-            int matchCount = 0;
-            for(OrderItem orderItem: orderHome.getLastNeedRes().getOrderItems()){
+            OrderItem oldOrderItem  = orderHome.getFirstResOrderItem(overlyOut.getStoreRes());
 
-                    if (overlyOut.getStoreRes().equals(orderItem.getStoreRes())){
-                        matchCount ++;
-                        if (matchCount == 1){
-                            matchOrderItem = orderItem;
-                        }else{
-                            matchOrderItem = null;
-                            break;
-                        }
-                    }
-
-
-            }
 
             OrderItem newItem = new OrderItem();
             newItem.setStoreRes(overlyOut.getStoreRes());
 
 
 
-            if (matchOrderItem != null){
-                newItem.setResUnit(matchOrderItem.getResUnit());
-                newItem.setRebate(matchOrderItem.getRebate());
-                newItem.setMoney(matchOrderItem.getMoney());
+            if (oldOrderItem != null){
+                newItem.setResUnit(oldOrderItem.getResUnit());
+                newItem.setRebate(oldOrderItem.getRebate());
+                newItem.setMoney(oldOrderItem.getMoney());
             }else{
                 newItem.setResUnit(overlyOut.getStoreRes().getRes().getResUnitByOutDefault());
                 newItem.setRebate(new BigDecimal("100"));

@@ -84,61 +84,6 @@
         </rich:column>
 
 
-        <rich:column rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and  s:hasRole('erp.sale.manager')}">
-            <f:facet name="header">#{messages.order_middle_money_itemCalcType}</f:facet>
-
-            <h:outputText value="#{messages[_item.middleMoneyCalcType.name()]}"
-                          rendered="#{not empty _item.middleMoneyCalcType}"/>
-
-
-        </rich:column>
-
-        <rich:column rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and  s:hasRole('erp.sale.manager')}">
-            <f:facet name="header">#{messages.order_middle_money_unit}</f:facet>
-
-            <h:outputText value="#{_item.middleUnit.name}"
-                          rendered="#{(not empty _item.middleMoneyCalcType) and (_item.middleMoneyCalcType eq 'COUNT_FIX') and (not empty _item.middleUnit)}"/>
-        </rich:column>
-
-        <rich:column rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and s:hasRole('erp.sale.manager')}">
-            <f:facet name="header">
-                #{messages.order_field_middleMoney_Rate}
-            </f:facet>
-
-            <a:outputPanel rendered="#{(not empty _item.middleMoneyCalcType) and (not empty _item.middleRate)}">
-
-                <h:outputText value="#{_item.middleRate}"
-                              rendered="#{_item.middleMoneyCalcType eq 'COUNT_FIX'}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency"/>
-                </h:outputText>
-
-                <h:outputText value="%#{_item.middleRate}"
-                              rendered="#{_item.middleMoneyCalcType eq 'MONEY_RATE'}">
-                    <f:convertNumber pattern="#0.##"/>
-                </h:outputText>
-
-
-            </a:outputPanel>
-        </rich:column>
-
-
-        <rich:column style="text-align: right" rendered="#{((empty showMiddleMoney) or  showMiddleMoney) and s:hasRole('erp.sale.manager')}">
-            <f:facet name="header">#{messages.order_field_middleMoney}</f:facet>
-            <h:outputText value="#{_item.middleMoney}">
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency"/>
-            </h:outputText>
-
-            <f:facet name="footer">
-                <h:outputText value="#{totalMiddleMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency"/>
-                </h:outputText>
-            </f:facet>
-        </rich:column>
-
-
     </rich:dataTable>
 
 </ui:composition>

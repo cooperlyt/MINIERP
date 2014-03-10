@@ -32,20 +32,20 @@ public class StoreChangeResTotal extends ErpEntityQuery<StockChangeItem> {
         return searchDateArea;
     }
 
-    public StoreResCountGroup<StoreResCountEntity> getTotalInResultList() {
+    public StoreResCountGroup getTotalInResultList() {
         return getTotalResCountGroup(false);
     }
 
-    public StoreResCountGroup<StoreResCountEntity> getTotalOutResultList() {
+    public StoreResCountGroup getTotalOutResultList() {
         return getTotalResCountGroup(true);
     }
 
-    public StoreResCountGroup<StoreResCountEntity> getTotalResCountGroup(){
-        return new StoreResCountGroup<StoreResCountEntity>(getResultList());
+    public StoreResCountGroup getTotalResCountGroup(){
+        return new StoreResCountGroup(getResultList());
     }
 
-    private StoreResCountGroup<StoreResCountEntity> getTotalResCountGroup(boolean out){
-        StoreResCountGroup<StoreResCountEntity> result = new StoreResCountGroup<StoreResCountEntity>();
+    private StoreResCountGroup getTotalResCountGroup(boolean out){
+        StoreResCountGroup result = new StoreResCountGroup();
         for (StockChangeItem item : getResultList()) {
             if (item.isStoreOut() == out) {
                 result.put(item);

@@ -29,9 +29,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     private Map<String, String> messages;
 
     @In
-    private DictionaryWord dictionary;
-
-    @In
     private ResHelper resHelper;
 
     @Factory(value = "feePayTypes", scope = ScopeType.CONVERSATION)
@@ -274,6 +271,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
+    public OrderItem getFirstResOrderItem(StoreRes storeRes) {
+        for (NeedRes needRes : getInstance().getNeedReses()) {
+            for (OrderItem oi : needRes.getOrderItems()) {
+                if (oi.getStoreRes().equals(storeRes) && (oi.getMoney().compareTo(BigDecimal.ZERO) > 0)) {
+                    return oi;
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean isAnyOneMoneyPay() {
         return !getInstance().getAccountOpers().isEmpty();
     }
@@ -290,7 +298,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 //        return null;
 //    }
 
-    public boolean isComplete(){
+    public boolean isComplete() {
         return !getInstance().isCanceled() && getInstance().isAllStoreOut() && getInstance().isMoneyComplete() && getInstance().isResReceived();
     }
 

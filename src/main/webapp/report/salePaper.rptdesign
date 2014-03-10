@@ -15,7 +15,7 @@ messages = Component.getInstance("org.jboss.seam.international.messages", false)
 		orderHome = Component.getInstance("orderHome",true);
 		orderHome.setId(params["orderId"].value);
 	}
-	orderItems = Component.getInstance("orderHome",false).getMasterNeedRes().getOrderItemList();
+	orderItems = Component.getInstance("orderHome",false).getInstance().getAllOrderItemList();
 	salerName = dictionary.getEmpNameById(orderHome.getInstance().getOrderEmp());
 	saleDate = orderHome.getInstance().getCreateDate();
 	orderNumber = orderHome.getInstance().getId();
@@ -219,9 +219,9 @@ it=orderItems.iterator();
     
 
 
-   	row['UNIT'] = item.getMoneyUnit().getName();
-    row['COUNT'] = DataFormat.format(item.getCount(),item.getMoneyUnit().getCountFormate());
-    row['TOTAL_PRICE'] = item.getTotalMoney();
+   	row['UNIT'] = item.getResUnit().getName();
+    row['COUNT'] = DataFormat.format(item.getUseUnitCount(),item.getResUnit().getCountFormate());
+    row['TOTAL_PRICE'] = item.getTotalPrice();
     row['PRICE'] = item.getMoney();
     row['REBATE'] = item.getRebate();
   

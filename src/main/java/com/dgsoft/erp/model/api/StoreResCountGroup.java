@@ -11,9 +11,9 @@ import java.util.*;
 /**
  * Created by cooper on 3/3/14.
  */
-public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<StoreRes, V> implements java.io.Serializable{
+public class StoreResCountGroup extends HashMap<StoreRes, StoreResCount> implements java.io.Serializable {
 
-    public <E extends V> StoreResCountGroup(Collection<E> values) {
+    public <E extends StoreResCountEntity> StoreResCountGroup(Collection<E> values) {
         super();
         putAll(values);
     }
@@ -22,40 +22,43 @@ public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<S
         super();
     }
 
-    public List<V> getStoreResCountList() {
+    public List<StoreResCount> getStoreResCountList() {
 
-        return new ArrayList<V>(values());
+        return new ArrayList<StoreResCount>(values());
     }
 
-    public V put(V v) {
 
-        V result = get(v.getStoreRes());
+    public <E extends StoreResCountEntity> StoreResCount put(E v) {
+
+        resGroupList = null;
+        StoreResCount result = get(v.getStoreRes());
         if (result == null) {
-            return super.put(v.getStoreRes(), v);
+            return super.put(v.getStoreRes(), new StoreResCount(v.getStoreRes(),v.getMasterCount()));
         } else {
             result.add(v);
             return result;
         }
     }
 
-    public <E extends V> void putAll(Collection<E> values){
-        for (V v: values){
+    public <E extends StoreResCountEntity> void putAll(Collection<E> values) {
+        for (E v : values) {
             put(v);
         }
+
     }
 
     @Override
-    public V put(StoreRes k, V v) {
+    public StoreResCount put(StoreRes k, StoreResCount v) {
         throw new IllegalArgumentException("cant't this function");
     }
 
-    public Map<Res, List<V>> getResGroupMap() {
-        Map<Res, List<V>> result = new HashMap<Res, List<V>>();
-        for (V v : values()) {
-            List<V> rv = result.get(v.getStoreRes().getRes());
+    public Map<Res, List<StoreResCount>> getResGroupMap() {
+        Map<Res, List<StoreResCount>> result = new HashMap<Res, List<StoreResCount>>();
+        for (StoreResCount v : values()) {
+            List<StoreResCount> rv = result.get(v.getStoreRes().getRes());
             if (rv == null) {
-                rv = new ArrayList<V>();
-                result.put(v.getStoreRes().getRes(),rv);
+                rv = new ArrayList<StoreResCount>();
+                result.put(v.getStoreRes().getRes(), rv);
             }
             rv.add(v);
         }
@@ -63,28 +66,36 @@ public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<S
         return result;
     }
 
-    public List<ResCountTotal<V>> getResGroupList() {
-        List<ResCountTotal<V>> result = new ArrayList<ResCountTotal<V>>();
-        for (Map.Entry<Res,List<V>> entry: getResGroupMap().entrySet()){
-            result.add(new ResCountTotal(entry.getKey(),entry.getValue()));
-        }
-        Collections.sort(result,new Comparator<ResCountTotal<V>>() {
-            @Override
-            public int compare(ResCountTotal<V> o1, ResCountTotal<V> o2) {
-                return o1.getRes().getId().compareTo(o2.getRes().getId());
+    private List<ResCountTotal<StoreResCount>> resGroupList = null;
+
+    public List<ResCountTotal<StoreResCount>> getResGroupList() {
+        initResGroupList();
+        return resGroupList;
+    }
+
+    public void initResGroupList() {
+        if (resGroupList == null) {
+            resGroupList = new ArrayList<ResCountTotal<StoreResCount>>();
+            for (Map.Entry<Res, List<StoreResCount>> entry : getResGroupMap().entrySet()) {
+                resGroupList.add(new ResCountTotal(entry.getKey(), entry.getValue()));
             }
-        });
-        return result;
+            Collections.sort(resGroupList, new Comparator<ResCountTotal<StoreResCount>>() {
+                @Override
+                public int compare(ResCountTotal<StoreResCount> o1, ResCountTotal<StoreResCount> o2) {
+                    return o1.getRes().getId().compareTo(o2.getRes().getId());
+                }
+            });
+        }
     }
 
 
-    public static class ResCountTotal<E extends StoreResCountEntity>{
+    public static class ResCountTotal<E extends StoreResCountEntity> {
 
         private Res res;
 
         private List<E> values;
 
-        public ResCountTotal(Res res, List<E> values){
+        public ResCountTotal(Res res, List<E> values) {
             this.res = res;
             this.values = values;
         }
@@ -99,22 +110,22 @@ public class StoreResCountGroup<V extends StoreResCountEntity> extends HashMap<S
 
         public BigDecimal getTotalMasterCount() {
             BigDecimal result = BigDecimal.ZERO;
-            for (E e: values){
+            for (E e : values) {
                 result = result.add(e.getMasterCount());
             }
-            return DataFormat.format(result,res.getUnitGroup().getMasterUnit().getCountFormate());
+            return DataFormat.format(result, res.getUnitGroup().getMasterUnit().getCountFormate());
         }
 
-        public BigDecimal getTotalAuxCount(){
-           if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-               BigDecimal result = BigDecimal.ZERO;
-               for (E e: values){
-                   result = result.add(e.getAuxCount());
-               }
-               return DataFormat.format(result,res.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
-           }else{
-               return null;
-           }
+        public BigDecimal getTotalAuxCount() {
+            if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                BigDecimal result = BigDecimal.ZERO;
+                for (E e : values) {
+                    result = result.add(e.getAuxCount());
+                }
+                return DataFormat.format(result, res.getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
+            } else {
+                return null;
+            }
         }
 
     }

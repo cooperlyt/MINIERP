@@ -532,9 +532,13 @@
         </a:commandButton>
     </ui:define>
 
-    <ui:include src="/layout/erp/ResCountInput.xhtml">
-        <ui:param name="resCountBean" value="#{orderItemSplit.splitCountInput}"/>
-        <ui:param name="disabledFloatRate" value="true"/>
+    <div style="clear: both"/>
+
+    <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+
+        <ui:param name="inputValue" value="#{orderItemSplit.newOrderItem}"/>
+        <ui:param name="formatTemplate" value="/layout/edit.xhtml"/>
+        <ui:param name="countLableStyleClass" value="small_name"/>
     </ui:include>
 
     <ui:define name="actionButtons">

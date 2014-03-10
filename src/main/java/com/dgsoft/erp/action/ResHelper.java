@@ -10,6 +10,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -88,6 +89,7 @@ public class ResHelper {
     }
 
     public static List<OrderItem> unionSeamOrderItem(List<OrderItem> orderItems) {
+        Logging.getLog(ResHelper.class).debug("call unionSeamOrderItem:" + orderItems.size() );
         List<OrderItem> result = new ArrayList<OrderItem>();
         for (OrderItem orderItem : orderItems) {
             boolean finded = false;
@@ -95,9 +97,12 @@ public class ResHelper {
                 if (item.isSameItem(orderItem)) {
                     finded = true;
                     item.setCount(item.getCount().add(orderItem.getCount()));
+                    Logging.getLog(ResHelper.class).debug("fount add count:" + item.getCount() + "|" + orderItem.getCount());
+                    break;
                 }
             }
             if (!finded) {
+                Logging.getLog(ResHelper.class).debug("not fount add:" + orderItem.getCount());
                 result.add(orderItem);
             }
         }
