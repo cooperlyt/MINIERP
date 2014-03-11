@@ -117,16 +117,6 @@ public class Allocation implements java.io.Serializable {
         this.applyEmp = applyEmp;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "TYPE",nullable = false,length = 32)
-    public AllocationType getAllocationType() {
-        return allocationType;
-    }
-
-    public void setAllocationType(AllocationType allocationType) {
-        this.allocationType = allocationType;
-    }
-
     @Column(name = "REASON", nullable = false, length = 32)
     @NotNull
     @Size(max = 32)
