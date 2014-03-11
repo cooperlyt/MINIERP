@@ -322,7 +322,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
             return false;
         }
 
-        return ResHelper.sameFormat(other.getFormats(), getFormats())
+        return ResHelper.instance().sameFormat(other.getFormats(), getFormats())
                 && (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || getFloatConversionRate().equals(other.getFloatConversionRate()));
     }

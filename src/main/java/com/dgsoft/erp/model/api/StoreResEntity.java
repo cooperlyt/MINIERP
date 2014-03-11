@@ -115,7 +115,7 @@ public class StoreResEntity {
 
     public boolean isSameItem(StoreResEntity other) {
 
-        return ResHelper.sameFormat(other.getFormats(), getFormats())
+        return ResHelper.instance().sameFormat(other.getFormats(), getFormats())
                 && (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || getFloatConvertRate().equals(other.getFloatConvertRate()));
 

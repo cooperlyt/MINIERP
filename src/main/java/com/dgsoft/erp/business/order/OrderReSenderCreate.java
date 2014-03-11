@@ -65,7 +65,7 @@ public class OrderReSenderCreate {
 
     private void wireReSenderItem(){
         needResHome.getInstance().getOrderItems().clear();
-        needResHome.getInstance().getOrderItems().addAll(ResHelper.unionSeamOrderItem(reSendOrderItems));
+        needResHome.getInstance().getOrderItems().addAll(reSendOrderItems);
     }
 
     public NeedRes getReSenderNeedRes() {

@@ -136,7 +136,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                         srcParentFormats.remove(srcParentFormats.size() - 1);
                     }
 
-                    if (ResHelper.sameFormat(node.getFormats().values(), srcParentFormats)) {
+                    if (ResHelper.instance().sameFormat(node.getFormats().values(), srcParentFormats)) {
                         node.addChild(new StoreResTreeNode(sr, node, (define == null) ? sr.getDisplayFloatRate() : ResHelper.instance().formatDisplayValue(sr.getFormatMap().get(define))));
                         find = true;
                         break;
@@ -280,6 +280,17 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
 
 
         return result;
+    }
+
+    public Res getResParent(){
+        TreeNode node = getParent();
+        while (node != null){
+            if (node instanceof Res){
+                return (Res)node;
+            }
+            node = node.getParent();
+        }
+        return null;
     }
 
     private Format format;

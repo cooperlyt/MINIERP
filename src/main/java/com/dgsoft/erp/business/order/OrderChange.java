@@ -282,7 +282,7 @@ public class OrderChange extends OrderTaskHandle {
     protected String completeOrderTask() {
 
         orderHome.getLastNeedRes().getOrderItems().clear();
-        orderHome.getLastNeedRes().getOrderItems().addAll(ResHelper.unionSeamOrderItem(newOrderItems));
+        orderHome.getLastNeedRes().getOrderItems().addAll(newOrderItems);
 
         orderHome.getInstance().setTotalRebate(orderRebate);
         orderHome.getInstance().setMoney(orderTotalMoney);

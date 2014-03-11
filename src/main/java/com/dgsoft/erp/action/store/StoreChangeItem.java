@@ -54,6 +54,6 @@ public abstract class StoreChangeItem implements java.io.Serializable {
         return res.getId().equals(storeChangeItem.getRes().getId()) &&
                 (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || storeResCountInupt.getFloatConvertRate().compareTo(storeChangeItem.storeResCountInupt.getFloatConvertRate()) == 0) &&
-                ResHelper.sameFormat(storeChangeItem.getFormats(), getFormats());
+                ResHelper.instance().sameFormat(storeChangeItem.getFormats(), getFormats());
     }
 }

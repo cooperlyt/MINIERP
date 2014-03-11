@@ -26,6 +26,7 @@ import java.util.Map;
  * Date: 10/20/13
  * Time: 7:32 PM
  */
+@Deprecated
 public abstract class StoreChangeHelper<E extends StockChangeModel> extends ErpEntityHome<E> implements StoreChangeAction {
 
     private static final String BUSINESS_DEFINE_ID_PREFIX ="stockChange.";
@@ -33,8 +34,6 @@ public abstract class StoreChangeHelper<E extends StockChangeModel> extends ErpE
     protected abstract String beginStoreChange();
 
     protected abstract String storeChange(boolean verify);
-
-
 
     protected abstract StockChange.StoreChangeType getStoreChangeType();
 

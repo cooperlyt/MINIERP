@@ -141,7 +141,11 @@ public class Format implements java.io.Serializable {
             return true;
         }
 
-        if (!otherRes.getFormatDefine().getDataType().equals(getFormatDefine().getDataType())) {
+        if ((otherRes.getFormatDefine() == null) || (getFormatDefine() == null)){
+            return false;
+        }
+
+        if (!otherRes.getFormatDefine().equals(getFormatDefine())) {
             return false;
         }
 

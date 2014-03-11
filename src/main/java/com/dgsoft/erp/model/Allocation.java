@@ -32,7 +32,7 @@ public class Allocation implements java.io.Serializable {
     private String reason;
     private String memo;
     private AllocationState state;
-    private AllocationType allocationType;
+    private AllocationType type;
     private Date createDate;
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
 
@@ -151,7 +151,6 @@ public class Allocation implements java.io.Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "STATE", nullable = false, length = 20)
     @NotNull
-    @Size(max = 20)
     public AllocationState getState() {
         return this.state;
     }
@@ -180,4 +179,15 @@ public class Allocation implements java.io.Serializable {
         this.allocationReses = allocationReses;
     }
 
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE", nullable = false, length = 32)
+    @NotNull
+    public AllocationType getType() {
+        return type;
+    }
+
+    public void setType(AllocationType type) {
+        this.type = type;
+    }
 }

@@ -7,14 +7,15 @@
      <ui:define name="rightToolbarGroup">
          <s:button styleClass="toolBarBtn" value="#{messages.cancel}" action="#{otherStockOut.cancel}"/>
 
-         <s:button styleClass="toolBarBtn" value="#{messages.storeOut}" action="#{otherStockOut.saveStoreChange}"/>
+         <s:button styleClass="toolBarBtn" value="#{messages.storeOut}" action="#{otherStockOut.complete}"/>
 
      </ui:define>
 
+    <ui:param name="outItemsDataValue" value="#{otherStockOutItems}"/>
 
     <ui:param name="storeChangeType" value="STORE_CHANGE_OUT"/>
 
-    <ui:param name="functionTitle" value="#{messages.StockInOrOutChange}-#{messages[otherStockOut.instance.reason.name()]}"/>
+    <ui:param name="functionTitle" value="#{messages.StockInOrOutChange}-#{messages[otherStoreChangeHome.instance.reason.name()]}"/>
 
 
     <ui:param name="sotreOutAction" value="#{otherStockOut}"/>

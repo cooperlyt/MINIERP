@@ -41,7 +41,7 @@ public class StockChangeList extends ErpEntityQuery<StockChange> {
         return StockChange.StoreChangeType.values();
     }
 
-    private Store storeId;
+    private String storeId;
 
     private Boolean out;
 
@@ -65,11 +65,11 @@ public class StockChangeList extends ErpEntityQuery<StockChange> {
         this.searchDateArea = searchDateArea;
     }
 
-    public Store getStoreId() {
+    public String getStoreId() {
         return storeId;
     }
 
-    public void setStoreId(Store storeId) {
+    public void setStoreId(String storeId) {
         this.storeId = storeId;
     }
 

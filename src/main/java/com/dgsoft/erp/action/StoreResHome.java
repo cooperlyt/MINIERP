@@ -46,7 +46,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
 
             log.debug("very StoreRes :" + storeRes.getName() + "| format count:" + storeRes.getFormats().size() + "| covnertRate:"
                     + storeRes.getFloatConversionRate());
-            if (ResHelper.sameFormat(storeRes.getFormats(), formatList)
+            if (ResHelper.instance().sameFormat(storeRes.getFormats(), formatList)
                     && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                     || (storeRes.getFloatConversionRate().compareTo(floatConvertRate) == 0))) {
 

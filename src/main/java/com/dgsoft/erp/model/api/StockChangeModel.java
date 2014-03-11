@@ -8,6 +8,7 @@ import com.dgsoft.erp.model.StockChange;
  * Date: 10/18/13
  * Time: 11:36 AM
  */
+@Deprecated
 public interface StockChangeModel {
 
     public abstract String getId() ;

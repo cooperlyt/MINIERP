@@ -31,20 +31,22 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
         return true;
     }
 
-    public void resStockChanges(List<StockChangeItem> items){
+    public void resStockChange(List<StockChangeItem> items){
         for(StockChangeItem item: items){
             resStockChange(item);
         }
     }
 
     public void resStockChange(StockChangeItem item){
-        stockChangeFindStock(item);
-        item.setStockChange(getInstance());
+        if (item.getStock() == null){
+            item.setStock(findOrCreactStock(item));
+        }else{
+            if (getInstance().getOperType().isOut()) {
+                item.getStock().setCount(item.getStock().getCount().subtract(item.getMasterCount()));
+            } else
+                item.getStock().setCount(item.getStock().getCount().add(item.getMasterCount()));
+        }
         getInstance().getStockChangeItems().add(item);
-    }
-
-    private void stockChangeFindStock(StockChangeItem item){
-        item.setStock(findOrCreactStock(item));
     }
 
     public void resStockChange(StoreResCountEntity inCount) {

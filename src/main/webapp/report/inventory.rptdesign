@@ -177,16 +177,16 @@ it=items.iterator();]]></method>
 
 	
 	row['storeResTitle'] = itemTitle;
-	if (item.getStockCount() != null){
-		row['stockMasterCount'] = item.getStockCount().getMasterDisplayCount();
-		row['stockAuxCount'] = item.getStockCount().getDisplayAuxCount();
+	if (item.getStock() != null){
+		row['stockMasterCount'] = item.getStock().getDisplayMasterCount();
+		row['stockAuxCount'] = item.getStock().getDisplayAuxCount();
 	}else{
 		row['stockMasterCount'] = '';
 		row['stockAuxCount'] = '';
 	}
 	
 	if (item.getAddCount() != null){
-		row['checkAddMasterCount'] = item.getAddCount().getMasterDisplayCount();
+		row['checkAddMasterCount'] = item.getAddCount().getDisplayMasterCount();
 		row['checkAddAuxCount'] = item.getAddCount().getDisplayAuxCount();
 	}else{
 		row['checkAddMasterCount'] = '';
@@ -194,7 +194,7 @@ it=items.iterator();]]></method>
 	}
 	
 	if (item.getLoseCount() != null){
-		row['checkLoseMasterCount'] = item.getLoseCount().getMasterDisplayCount();
+		row['checkLoseMasterCount'] = item.getLoseCount().getDisplayMasterCount();
 		row['checkLoseAuxCount'] = item.getLoseCount().getDisplayAuxCount();
 	}else{
 		row['checkLoseMasterCount'] = '';

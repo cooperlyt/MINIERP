@@ -13,7 +13,7 @@
         <h:form id="beginActions">
             <rich:toolbar height="26">
                 <rich:toolbarGroup location="right">
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{otherStockChange.begin}">
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{otherStoreChangeHome.begin}">
 
                     </h:commandButton>
                 </rich:toolbarGroup>
@@ -25,7 +25,7 @@
 
             <s:decorate template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.OtherStockChangeReason}</ui:define>
-                <h:selectOneMenu value="#{otherStockChange.storeChangeReason}"
+                <h:selectOneMenu value="#{otherStoreChangeHome.storeChangeReason}"
                                  required="true" label="#{messages.OtherStockChangeReason}">
                     <s:selectItems value="#{stockChangeReasons}" var="_reason" label="#{messages[_reason.name()]}"
                                    noSelectionLabel="#{messages.noSelectLabel}"/>

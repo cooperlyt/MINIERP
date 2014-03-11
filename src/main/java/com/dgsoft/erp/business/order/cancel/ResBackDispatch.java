@@ -5,6 +5,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -28,7 +29,7 @@ public class ResBackDispatch {
     //@In
     //private OrderBackHome orderBackHome;
 
-    private Map<StoreRes, StoreResCount> waitDispatchItems;
+    private StoreResCountGroup waitDispatchItems;
 
     @In
     private ActionExecuteState actionExecuteState;
@@ -60,8 +61,7 @@ public class ResBackDispatch {
 
     public void init(List<BackItem> backItems) {
         this.backItems = backItems;
-        waitDispatchItems = new HashMap<StoreRes, StoreResCount>(backItems.size());
-        waitDispatchItems = resHelper.groupByStoreRes(backItems);
+        waitDispatchItems = new StoreResCountGroup(backItems);
         resBackDispatcheds = new ArrayList<ProductBackStoreIn>();
         selectStore = null;
     }

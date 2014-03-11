@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="stockAllocation" width="725" height="737">
-  <node name="调拨申请" x="101" y="24" width="132" height="36">
+<root-container name="stockAllocation" width="720" height="533">
+  <node name="调拨申请" x="104" y="23" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="调拨出库" x="99" y="99" width="132" height="36">
+  <node name="调拨出库" x="50" y="186" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="调拨入库" x="31" y="267" width="132" height="36">
+  <node name="调拨入库" x="259" y="255" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="出库判断" x="98" y="168" width="132" height="36">
+  <node name="出库判断" x="49" y="255" width="132" height="36">
     <edge>
-      <label x="-47" y="-9"/>
+      <label x="-25" y="-8"/>
     </edge>
     <edge>
-      <label x="-16" y="-12"/>
+      <label x="-25" y="-13"/>
     </edge>
   </node>
-  <node name="end-state1" x="206" y="269" width="132" height="36"/>
+  <node name="end-state1" x="143" y="363" width="132" height="36"/>
+  <node name="类型判断" x="103" y="93" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+    <edge>
+      <label x="-37" y="-9"/>
+    </edge>
+  </node>
 </root-container>

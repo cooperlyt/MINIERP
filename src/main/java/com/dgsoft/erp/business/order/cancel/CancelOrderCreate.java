@@ -263,7 +263,7 @@ public class CancelOrderCreate {
         BigDecimal result = BigDecimal.ZERO;
         for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
             if (item.getValue().isSelected()) {
-                result = result.add(item.getKey().getInputTotalPrice());
+                result = result.add(item.getKey().getTotalPrice());
             }
 
         }

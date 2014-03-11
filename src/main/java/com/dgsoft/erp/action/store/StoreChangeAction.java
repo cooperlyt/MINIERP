@@ -6,6 +6,8 @@ package com.dgsoft.erp.action.store;
  * Date: 10/18/13
  * Time: 11:13 AM
  */
+
+@Deprecated
 public interface StoreChangeAction {
 
     public abstract String begin();

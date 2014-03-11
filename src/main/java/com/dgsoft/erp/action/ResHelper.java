@@ -56,21 +56,45 @@ public class ResHelper {
         return result;
     }
 
-    public static Map<StoreRes, StoreResCount> totalStockChangeItem(List<StockChangeItem> items) {
-        Map<StoreRes, StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
-        for (StockChangeItem item : items) {
-            StoreResCount count = result.get(item.getStoreRes());
-            if (count == null) {
-                result.put(item.getStoreRes(), new StoreResCount(item.getStoreRes(),item.getMasterCount()));
-            } else {
-                count.add(item);
+
+//    public static List<OrderItem> unionSeamOrderItem(List<OrderItem> orderItems) {
+//        Logging.getLog(ResHelper.class).debug("call unionSeamOrderItem:" + orderItems.size() );
+//        List<OrderItem> result = new ArrayList<OrderItem>();
+//        for (OrderItem orderItem : orderItems) {
+//            boolean finded = false;
+//            for (OrderItem item : result) {
+//                if (item.isSameItem(orderItem)) {
+//                    finded = true;
+//                    item.setCount(item.getCount().add(orderItem.getCount()));
+//                    Logging.getLog(ResHelper.class).debug("fount add count:" + item.getCount() + "|" + orderItem.getCount());
+//                    break;
+//                }
+//            }
+//            if (!finded) {
+//                Logging.getLog(ResHelper.class).debug("not fount add:" + orderItem.getCount());
+//                result.add(orderItem);
+//            }
+//        }
+//        return result;
+//    }
+
+    public boolean matchFormat(Collection<Format> formats, StoreRes storeRes) {
+        for (Format cFormat : formats) {
+            boolean find = false;
+            for (Format f : storeRes.getFormats()) {
+                if (cFormat.equals(f)) {
+                    find = true;
+                    break;
+                }
+            }
+            if (!find) {
+                return false;
             }
         }
-        return result;
+        return true;
     }
 
-
-    public static boolean sameFormat(Collection<Format> formatList1, Collection<Format> formatList2) {
+    public boolean sameFormat(Collection<Format> formatList1, Collection<Format> formatList2) {
         if (formatList1.size() != formatList2.size()) {
             return false;
         }
@@ -86,27 +110,6 @@ public class ResHelper {
             }
         }
         return true;
-    }
-
-    public static List<OrderItem> unionSeamOrderItem(List<OrderItem> orderItems) {
-        Logging.getLog(ResHelper.class).debug("call unionSeamOrderItem:" + orderItems.size() );
-        List<OrderItem> result = new ArrayList<OrderItem>();
-        for (OrderItem orderItem : orderItems) {
-            boolean finded = false;
-            for (OrderItem item : result) {
-                if (item.isSameItem(orderItem)) {
-                    finded = true;
-                    item.setCount(item.getCount().add(orderItem.getCount()));
-                    Logging.getLog(ResHelper.class).debug("fount add count:" + item.getCount() + "|" + orderItem.getCount());
-                    break;
-                }
-            }
-            if (!finded) {
-                Logging.getLog(ResHelper.class).debug("not fount add:" + orderItem.getCount());
-                result.add(orderItem);
-            }
-        }
-        return result;
     }
 
     public String formatDisplayValue(Format format) {
@@ -151,20 +154,6 @@ public class ResHelper {
                         DataFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null);
     }
 
-
-    public <T extends StoreResCountEntity> Map<StoreRes,StoreResCount> groupByStoreRes(List<T> items){
-        Map<StoreRes,StoreResCount> result = new HashMap<StoreRes, StoreResCount>();
-        for (T item: items){
-            StoreResCount count = result.get(item.getStoreRes());
-            if (count == null){
-                result.put(item.getStoreRes(),new StoreResCount(item.getStoreRes(),item.getMasterCount()));
-            }else{
-                count.add(item);
-            }
-        }
-        return result;
-    }
-
     @In
     private EntityManager erpEntityManager;
 
@@ -176,9 +165,9 @@ public class ResHelper {
 
         for (Format format : formats) {
             Set<Object> historys = result.get(format.getFormatDefine().getId());
-            if (historys == null){
+            if (historys == null) {
                 historys = new HashSet<Object>();
-                result.put(format.getFormatDefine().getId(),historys);
+                result.put(format.getFormatDefine().getId(), historys);
             }
 
             if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.INTEGER)) {
@@ -193,10 +182,10 @@ public class ResHelper {
     }
 
     public List<BigDecimal> getFloatConvertRateHistory(Res res) {
-        List<BigDecimal> queryResult = erpEntityManager.createQuery("select distinct storeRes.floatConversionRate from StoreRes storeRes where storeRes.enable = true and storeRes.res.unitGroup.type = :floatConvertType and storeRes.res.id = :resId",BigDecimal.class).
-                setParameter("floatConvertType",UnitGroup.UnitGroupType.FLOAT_CONVERT).setParameter("resId",res.getId()).getResultList();
+        List<BigDecimal> queryResult = erpEntityManager.createQuery("select distinct storeRes.floatConversionRate from StoreRes storeRes where storeRes.enable = true and storeRes.res.unitGroup.type = :floatConvertType and storeRes.res.id = :resId", BigDecimal.class).
+                setParameter("floatConvertType", UnitGroup.UnitGroupType.FLOAT_CONVERT).setParameter("resId", res.getId()).getResultList();
         List<BigDecimal> result = new ArrayList<BigDecimal>(queryResult.size());
-        for (BigDecimal rate: queryResult){
+        for (BigDecimal rate : queryResult) {
             result.add(DataFormat.format(rate, res.getUnitGroup().getFloatConvertRateFormat()));
         }
         return result;

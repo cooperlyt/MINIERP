@@ -11,7 +11,7 @@
     <param name="storeId" value="#{stockChangeList.storeId}"/>
     <param name="out" value="#{stockChangeList.out}"/>
 
-    <param name="storeChangeType" value="#{stockChangeList.storeChangeType}" converterId="enumConverter"/>
+    <param name="storeChangeType" value="#{stockChangeList.storeChangeType}"/>
     <param name="dateFrom" value="#{stockChangeList.searchDateArea.dateFrom}"  converterId="searchDateConverter"/>
     <param name="dateTo" value="#{stockChangeList.searchDateArea.dateTo}"  converterId="searchDateConverter"/>
 

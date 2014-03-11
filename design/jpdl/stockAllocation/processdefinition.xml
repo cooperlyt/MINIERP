@@ -4,7 +4,7 @@
 
 
 	<start-state name="调拨申请">
-		<transition to="调拨出库"></transition>
+		<transition to="类型判断"></transition>
 	</start-state>
 
 
@@ -23,11 +23,20 @@
 	</task-node>
 
 	<decision name="出库判断">
-		<transition to="调拨入库" name="调拨已出库">
-			<condition expression="#{allocationHome.instance.state eq ''}"></condition>
+		<transition to="调拨入库" name="已出库">
+			<condition expression="#{allocationHome.instance.state eq 'WAITING_IN'}"></condition>
 		</transition>
 		<transition to="end-state1" name="取消调拨">
 			<condition expression="#{allocationHome.instance.state eq 'ALLOCATION_CANCEL'}"></condition>
+		</transition>
+	</decision>
+
+	<decision name="类型判断">
+		<transition to="调拨入库" name="调拨">
+			<condition expression="#{allocationHome.instance.type eq 'ALLOCATION'}"></condition>
+		</transition>
+		<transition to="调拨出库" name="调拨申请">
+			<condition expression="#{allocationHome.instance.type eq 'ALLOCATION_APPLY'}"></condition>
 		</transition>
 	</decision>
 

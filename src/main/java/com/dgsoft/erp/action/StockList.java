@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -56,6 +57,8 @@ public class StockList extends ErpEntityQuery<Stock> {
     private String selectedTitle;
 
     private StoreRes selectedStoreRes;
+
+    private Map<FormatDefine, Format> filterFormats;
 
     public String getStoreId() {
         return storeId;
@@ -120,12 +123,20 @@ public class StockList extends ErpEntityQuery<Stock> {
         storeResId = null;
         selectedTitle = null;
         selectedStoreRes = null;
+        filterFormats = null;
+        setMaxResults(25);
         if (selected instanceof ResCategory) {
             resCategoryId = ((ResCategory) selected).getId();
             selectedTitle = ((ResCategory) selected).getName();
         } else if (selected instanceof Res) {
             resId = ((Res) selected).getId();
             selectedTitle = ((Res) selected).getName();
+        } else if (selected instanceof StoreResPropertyTreeNode){
+            Res res = ((StoreResPropertyTreeNode)selected).getResParent();
+            resId = res.getId();
+            selectedTitle = res.getName();
+            filterFormats = ((StoreResPropertyTreeNode)selected).getFormats();
+            setMaxResults(null);
         } else if (selected instanceof StoreResPropertyTreeNode.StoreResTreeNode) {
             storeResId = ((StoreResPropertyTreeNode.StoreResTreeNode) selected).getStoreRes().getId();
             selectedStoreRes = ((StoreResPropertyTreeNode.StoreResTreeNode) selected).getStoreRes();
@@ -169,11 +180,24 @@ public class StockList extends ErpEntityQuery<Stock> {
                     result = result.add((BigDecimal) obj);
                 }
                 totalAuxCount = result;
+
+
             }
 
         }
 
-        return super.getResultList();
+
+        if (filterFormats == null){
+            return super.getResultList();
+        }else{
+            List<Stock> result = new ArrayList<Stock>();
+            for (Stock stock: super.getResultList()){
+                if (ResHelper.instance().matchFormat(filterFormats.values(),stock.getStoreRes())){
+                    result.add(stock);
+                }
+            }
+            return result;
+        }
     }
 
 
