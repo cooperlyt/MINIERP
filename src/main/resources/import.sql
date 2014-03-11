@@ -279,8 +279,13 @@ INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.custome
 INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.customerContactType.main','main','采购联系人','erp.customerContactType','',1, b'1');
 INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.customerContactType.finance','finance','财务','erp.customerContactType','',2, b'1');
 
+INSERT INTO DG_SYSTEM.WORD_CATEGORY(ID, NAME, MEMO, SYSTEM) VALUES ('erp.allocationReason','调库原因','',b'1');
 
-
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.allocationReason.order','order','订单发货调库','erp.allocationReason','',1, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.allocationReason.full','full','仓库储存空间不足','erp.allocationReason','',2, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.allocationReason.save','save','售销备货','erp.allocationReason','',3, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.allocationReason.task','task','日常调库','erp.allocationReason','',4, b'1');
+INSERT INTO DG_SYSTEM.WORD(ID, _KEY, _VALUE, CATEGORY, DESCRIPTION, PRIORITY, ENABLE) VALUES ('erp.allocationReason.other','other','其它原因','erp.allocationReason','',5, b'1');
 
 INSERT INTO DG_SYSTEM.PROVINCE(PID,NAME,SORT)VALUES(11,'北京市',0);
 INSERT INTO DG_SYSTEM.PROVINCE(PID,NAME,SORT)VALUES(12,'天津市',0);

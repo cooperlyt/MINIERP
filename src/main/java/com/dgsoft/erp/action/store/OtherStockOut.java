@@ -28,8 +28,13 @@ public class OtherStockOut extends StoreOutAction {
     @In
     private OtherStoreChangeHome otherStoreChangeHome;
 
-    @Override
-    protected String storeOut() {
+    public String begin(){
+        super.init();
+        return "BeginOtherStockOut";
+    }
+
+    public String complete(){
+        super.storeChange(true);
         stockChangeHome.getInstance().setVerify(true);
         stockChangeHome.getInstance().setStoreChange(otherStoreChangeHome.getInstance());
         otherStoreChangeHome.getInstance().setStockChange(stockChangeHome.getReadyInstance());
@@ -39,16 +44,6 @@ public class OtherStockOut extends StoreOutAction {
         }else{
             return null;
         }
-
-    }
-
-    @Override
-    protected String beginStoreOut() {
-        return "BeginOtherStockOut";
-    }
-
-    public String complete(){
-        return super.storeChange(true);
     }
 
     @DataModel(value = "otherStockOutItems")

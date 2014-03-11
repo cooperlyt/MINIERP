@@ -160,7 +160,7 @@ public class Allocation implements java.io.Serializable {
         this.createDate = createDate;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "allocation")
+    @OneToMany(orphanRemoval = true,fetch = FetchType.LAZY, mappedBy = "allocation")
     public Set<AllocationRes> getAllocationReses() {
         return this.allocationReses;
     }

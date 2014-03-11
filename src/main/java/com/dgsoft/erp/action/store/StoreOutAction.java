@@ -39,10 +39,6 @@ public abstract class StoreOutAction {
     @In(create = true)
     protected StockChangeHome stockChangeHome;
 
-    protected abstract String storeOut();
-
-    protected abstract String beginStoreOut();
-
     protected abstract StockChangeItem getSelectOutItem();
 
     @In(create = true)
@@ -122,15 +118,14 @@ public abstract class StoreOutAction {
     }
 
 
-    public String begin() {
+    public void init() {
         if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
             stockChangeHome.getInstance().setId("O" + numberBuilder.getDateNumber("storeOutCode"));
         }
-        return beginStoreOut();
     }
 
 
-    protected String storeChange(boolean verify) {
+    protected void storeChange(boolean verify) {
 
         if (verify) {
             stockChangeHome.resStockChange(storeOutItems);
@@ -138,7 +133,6 @@ public abstract class StoreOutAction {
             throw new IllegalStateException("not implement");
         }
 
-        return storeOut();
     }
 
 

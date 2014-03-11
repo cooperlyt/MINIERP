@@ -1,12 +1,165 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{messages.AllocationBusiness}"/>
+
+    <ui:define name="func-body">
+
+        <h:form id="beginActions">
+            <rich:toolbar height="26">
+                <rich:toolbarGroup location="right">
+
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
+
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{allocationHome.createItem}">
+
+                    </h:commandButton>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.Allocation_field_type}</ui:define>
+                <h:selectOneMenu value="#{allocationHome.instance.type}" required="true"
+                                 label="#{messages.Allocation_field_type}">
+                    <s:selectItems value="#{allAllocationTypes}" var="_type"
+                                   label="#{messages[_type.name()]}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <s:convertEnum/>
+                    <a:ajax event="valueChange" render="details"/>
+                </h:selectOneMenu>
+
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.Allocation_field_reason}</ui:define>
+                <h:selectOneMenu value="#{allocationHome.instance.reason}" required="true"
+                                 label="#{messages.Allocation_field_reason}">
+                    <s:selectItems var="_word" label="#{_word.value}"
+                                   itemValue="#{_word.id}"
+                                   value="#{dictionary.getWordList('erp.allocationReason')}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <a:outputPanel id="details">
+
+
+                <a:outputPanel rendered="#{allocationHome.instance.type eq 'ALLOCATION_APPLY'}">
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">
+                            #{messages.Allocation_field_createDate}
+                        </ui:define>
+
+                        <rich:calendar
+                                enableManualInput="true"
+                                inputSize="20"
+                                timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                datePattern="#{messages.datePattern}"
+                                defaultLabel="#{currentDate}"
+                                required="true"
+                                label="#{messages.Allocation_field_createDate}"
+                                value="#{allocationHome.instance.createDate}"/>
+
+
+                    </s:decorate>
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.Allocation_field_outStore}</ui:define>
+                        <rich:select label="#{messages.Allocation_field_outStore}"
+                                     required="true" value="#{allocationHome.instance.outStore}">
+                            <s:selectItems value="#{storeList.resultList}" var="_store" itemValue="#{_store}"
+                                           label="#{_store.name}"/>
+                            <f:converter converterId="erpEntityConverter"/>
+                        </rich:select>
+                    </s:decorate>
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.Allocation_field_inStore}</ui:define>
+                        <rich:select label="#{messages.Allocation_field_inStore}"
+                                     required="true" value="#{allocationHome.instance.inStore}">
+                            <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store}"
+                                           label="#{_store.name}"/>
+                            <f:converter converterId="erpEntityConverter"/>
+                        </rich:select>
+                    </s:decorate>
+                </a:outputPanel>
+
+
+                <a:outputPanel rendered="#{allocationHome.instance.type eq 'ALLOCATION'}">
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">
+                            #{messages.Allocation_field_storeOutDate}
+                        </ui:define>
+
+
+                            <rich:calendar
+                                    enableManualInput="true"
+                                    inputSize="20"
+                                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                    datePattern="#{messages.datetimepattern}"
+                                    defaultTime="#{currentTime}"
+                                    defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                                    required="true"
+                                    label="#{messages.Allocation_field_storeOutDate}"
+                                    value="#{stockChangeHome.instance.operDate}"/>
+
+
+
+                    </s:decorate>
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.Allocation_field_outStore}</ui:define>
+                        <rich:select label="#{messages.Allocation_field_outStore}"
+                                     required="true" value="#{allocationHome.instance.outStore}">
+                            <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store}"
+                                           label="#{_store.name}"/>
+                            <f:converter converterId="erpEntityConverter"/>
+                        </rich:select>
+                    </s:decorate>
+
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.Allocation_field_inStore}</ui:define>
+                        <rich:select label="#{messages.Allocation_field_inStore}"
+                                     required="true" value="#{allocationHome.instance.inStore}">
+                            <s:selectItems value="#{storeList.resultList}" var="_store" itemValue="#{_store}"
+                                           label="#{_store.name}"/>
+                            <f:converter converterId="erpEntityConverter"/>
+                        </rich:select>
+                    </s:decorate>
+
+                </a:outputPanel>
+
+            </a:outputPanel>
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+                <h:inputTextarea value="#{allocationHome.instance.memo}" cols="70"/>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
+
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
