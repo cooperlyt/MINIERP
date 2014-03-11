@@ -28,12 +28,6 @@ import java.util.Map;
 public abstract class StoreOutAction {
 
     @In
-    protected RunParam runParam;
-
-    @In
-    protected NumberBuilder numberBuilder;
-
-    @In
     protected FacesMessages facesMessages;
 
     @In(create = true)
@@ -115,13 +109,6 @@ public abstract class StoreOutAction {
 
     public void removeItem() {
         storeOutItems.remove(getSelectOutItem());
-    }
-
-
-    public void init() {
-        if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
-            stockChangeHome.getInstance().setId("O" + numberBuilder.getDateNumber("storeOutCode"));
-        }
     }
 
 

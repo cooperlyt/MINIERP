@@ -1,5 +1,7 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.common.system.NumberBuilder;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.OtherStoreChangeHome;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
@@ -25,29 +27,41 @@ import java.util.List;
 @Scope(ScopeType.CONVERSATION)
 public class OtherStockOut extends StoreOutAction {
 
+
+    @In
+    protected RunParam runParam;
+
+    @In
+    protected NumberBuilder numberBuilder;
+
+
     @In
     private OtherStoreChangeHome otherStoreChangeHome;
 
-    public String begin(){
-        super.init();
+    public String begin() {
+
+        if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
+            stockChangeHome.getInstance().setId("O" + numberBuilder.getDateNumber("storeOutCode"));
+        }
+
         return "BeginOtherStockOut";
     }
 
-    public String complete(){
+    public String complete() {
         super.storeChange(true);
         stockChangeHome.getInstance().setVerify(true);
         stockChangeHome.getInstance().setStoreChange(otherStoreChangeHome.getInstance());
         otherStoreChangeHome.getInstance().setStockChange(stockChangeHome.getReadyInstance());
 
-        if ("persisted".equals(otherStoreChangeHome.persist())){
+        if ("persisted".equals(otherStoreChangeHome.persist())) {
             return "OtherStockChangeComplete";
-        }else{
+        } else {
             return null;
         }
     }
 
     @DataModel(value = "otherStockOutItems")
-    public List<StockChangeItem> getStoreOutItems(){
+    public List<StockChangeItem> getStoreOutItems() {
         return storeOutItems;
     }
 
