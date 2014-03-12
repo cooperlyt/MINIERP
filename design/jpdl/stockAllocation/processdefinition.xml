@@ -19,6 +19,12 @@
 	</task-node>
 
 	<task-node name="调拨入库">
+		<task name="调拨入库">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/AllocationStoreIn.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{allocationHome.instance.inStore.role}"></assignment>
+		</task>
 		<transition to="end-state1"></transition>
 	</task-node>
 

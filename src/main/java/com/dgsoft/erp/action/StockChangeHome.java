@@ -26,21 +26,27 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
     private org.jboss.seam.security.Credentials credentials;
 
     @Override
+    protected StockChange createInstance(){
+        return new StockChange(true);
+    }
+
+    @Override
     protected boolean wire() {
-        getInstance().setOperEmp(credentials.getUsername());
+        if (!isManaged())
+            getInstance().setOperEmp(credentials.getUsername());
         return true;
     }
 
-    public void resStockChange(List<StockChangeItem> items){
-        for(StockChangeItem item: items){
+    public void resStockChange(List<StockChangeItem> items) {
+        for (StockChangeItem item : items) {
             resStockChange(item);
         }
     }
 
-    public void resStockChange(StockChangeItem item){
-        if (item.getStock() == null){
+    public void resStockChange(StockChangeItem item) {
+        if (item.getStock() == null) {
             item.setStock(findOrCreactStock(item));
-        }else{
+        } else {
             if (getInstance().getOperType().isOut()) {
                 item.getStock().setCount(item.getStock().getCount().subtract(item.getMasterCount()));
             } else

@@ -84,6 +84,11 @@ public class StockChange implements java.io.Serializable {
     public StockChange() {
     }
 
+    public StockChange(boolean verify) {
+        this.verify = verify;
+    }
+
+
     public StockChange(Store store, String operEmp,
                        StoreChangeType operType, boolean verify) {
         this.store = store;

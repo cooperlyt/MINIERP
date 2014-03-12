@@ -24,7 +24,6 @@
       <label x="-25" y="-13"/>
     </edge>
   </node>
-  <node name="end-state1" x="143" y="363" width="132" height="36"/>
   <node name="类型判断" x="103" y="93" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -33,4 +32,5 @@
       <label x="-37" y="-9"/>
     </edge>
   </node>
+  <node name="end-state1" x="143" y="363" width="132" height="36"/>
 </root-container>

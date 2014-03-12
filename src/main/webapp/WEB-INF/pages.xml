@@ -77,7 +77,7 @@
 
     <page view-id="/business/startPrepare/*" login-required="true">
         <param name="from"/>
-        <navigation from-action="#{businessCreate.create}">
+        <navigation>
             <rule if-outcome="businessCreated" if="#{empty from}">
                 <end-conversation/>
 

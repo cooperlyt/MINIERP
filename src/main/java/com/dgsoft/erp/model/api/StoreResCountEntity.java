@@ -243,7 +243,7 @@ public abstract class StoreResCountEntity extends StoreResEntity {
 
     public void add(StoreResCountEntity otherCount) {
         if (!isSameItem(otherCount)) {
-            throw new IllegalArgumentException("not seam unit cant subtract");
+            throw new IllegalArgumentException("not seam unit cant add");
         }
         if (otherCount.getMasterCount() == null) {
             return;

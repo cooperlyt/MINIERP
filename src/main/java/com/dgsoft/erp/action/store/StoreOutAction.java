@@ -60,6 +60,7 @@ public abstract class StoreOutAction {
                 }
             }
             editStockOutItem = new StockChangeItem(stockChangeHome.getInstance(), stockHome.getInstance(), BigDecimal.ZERO);
+            editStockOutItem.setUseUnit(editStockOutItem.getRes().getResUnitByInDefault());
         }
         Logging.getLog(this.getClass()).warn("store out beginAdd not set STOCK");
 

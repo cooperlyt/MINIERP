@@ -23,7 +23,7 @@ public class AllocationCreateStoreOut extends StoreOutAction{
     @In
     private AllocationHome allocationHome;
 
-    @In
+    @In(create=true)
     private BusinessCreate businessCreate;
 
     @DataModel(value = "allocationCreateStockOutItems")

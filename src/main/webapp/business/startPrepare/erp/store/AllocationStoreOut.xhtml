@@ -6,12 +6,24 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
-                template="/layout/full-template.xhtml">
+                template="/layout/erp/storeOut.xhtml">
 
     <ui:param name="functionTitle" value="#{messages.Allocation_StoreOut}"/>
 
-    <ui:define name="func-body">
+    <ui:define name="rightToolbarGroup">
+
+        <s:button styleClass="toolBarBtn" propagation="end"
+                  value="#{messages.cancel}" view="#{(empty from) ? '/func/system/business/start.xhtml' : from}"/>
+
+        <s:button styleClass="toolBarBtn" value="#{messages.storeOut}"
+                  action="#{allocationCreateStoreOut.create}"/>
 
     </ui:define>
+
+    <ui:param name="outItemsDataValue" value="#{allocationCreateStockOutItems}"/>
+
+    <ui:param name="storeChangeType" value="ALLOCATION_OUT"/>
+
+    <ui:param name="sotreOutAction" value="#{allocationCreateStoreOut}"/>
 
 </ui:composition>

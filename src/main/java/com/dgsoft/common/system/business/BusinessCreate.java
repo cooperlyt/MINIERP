@@ -133,6 +133,7 @@ public class BusinessCreate {
             //ownerTaskInstanceListener.refresh();
             int findTask = 0;
             TaskInstance findTaskInstance = null;
+            ownerTaskInstanceCacheList.refresh();
             for (TaskInstance taskInstance : ownerTaskInstanceCacheList.getTaskInstanceCreateList()) {
                 if (taskInstance.getProcessInstance().getKey().equals(businessKey)) {
                     findTask++;
