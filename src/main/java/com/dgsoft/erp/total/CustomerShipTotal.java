@@ -1,22 +1,12 @@
 package com.dgsoft.erp.total;
 
-import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.action.StoreResList;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
-import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountGroup;
+import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 
-import java.math.BigDecimal;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Created by cooper on 2/18/14.
@@ -53,14 +43,14 @@ public class CustomerShipTotal extends StoreChangeResTotal {
     //private Map<Customer,List<StoreResCount>> resultMap;
 
 
-    public Map<Customer,StoreResCountGroup> getCustomerTotalResultMap() {
+    public Map<Customer,StoreResCountTotalGroup> getCustomerTotalResultMap() {
 
-        Map<Customer,StoreResCountGroup> result =new HashMap<Customer,StoreResCountGroup>();
+        Map<Customer,StoreResCountTotalGroup> result =new HashMap<Customer,StoreResCountTotalGroup>();
         for (StockChangeItem item: getResultList()){
             Customer customer = item.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
-            StoreResCountGroup mapValue = result.get(customer);
+            StoreResCountTotalGroup mapValue = result.get(customer);
             if (mapValue == null){
-                mapValue = new StoreResCountGroup();
+                mapValue = new StoreResCountTotalGroup();
                 result.put(customer,mapValue);
             }
             mapValue.put(item);

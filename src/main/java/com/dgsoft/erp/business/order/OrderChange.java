@@ -1,19 +1,14 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.DataFormat;
-import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.action.store.StoreChangeItem;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountGroup;
+import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 
-import javax.faces.event.ValueChangeEvent;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -138,12 +133,12 @@ public class OrderChange extends OrderTaskHandle {
     protected void initOrderTask() {
 
         //----- match new OrderItems
-        StoreResCountGroup storeOutItems = new StoreResCountGroup();
+        StoreResCountTotalGroup storeOutItems = new StoreResCountTotalGroup();
         newOrderItems = new ArrayList<OrderItem>();
 
         //List<StoreRes> matchItems = new ArrayList<StoreRes>();
         for (Dispatch dispatch : orderHome.getLastNeedRes().getDispatches()) {
-            storeOutItems.putAll(dispatch.getStockChange().getStockChangeItemList());
+            storeOutItems.put(dispatch.getStockChange().getStockChangeItemList());
         }
 
         for (StoreResCount item: storeOutItems.getStoreResCountList()){

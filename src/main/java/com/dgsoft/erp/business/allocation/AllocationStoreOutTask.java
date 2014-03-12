@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.allocation;
 
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.StockChangeHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
@@ -7,8 +8,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.international.StatusMessage;
 
 import javax.persistence.Transient;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,13 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
             this.allocationRes = allocationRes;
         }
 
+        public double getMaxOutCount() {
+            if (stock == null) {
+                return BigDecimal.ZERO.doubleValue();
+            } else
+                return stock.getCountByResUnit(stockChangeItem.getUseUnit()).doubleValue();
+        }
+
         @Transient
         public boolean isEnough() {
             Stock stock = getStock();
@@ -43,11 +53,11 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
             }
         }
 
-        public StoreResCount getDisparity(){
+        public StoreResCount getDisparity() {
             if (stock == null) {
-                return new StoreResCount(allocationRes.getStoreRes(),allocationRes.getCount());
-            }else {
-                return new StoreResCount(allocationRes.getStoreRes(),allocationRes.getCount().subtract(stock.getCount()));
+                return new StoreResCount(allocationRes.getStoreRes(), allocationRes.getCount());
+            } else {
+                return new StoreResCount(allocationRes.getStoreRes(), allocationRes.getCount().subtract(stock.getCount()));
             }
         }
 
@@ -76,6 +86,9 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
         }
     }
 
+    @In
+    protected RunParam runParam;
+
     @In(create = true)
     private StockChangeHome stockChangeHome;
 
@@ -99,6 +112,10 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
     protected void initOrderTask() {
         outItems = new ArrayList<AllocationStockOutItem>();
 
+        if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
+            stockChangeHome.getInstance().setId("AO-" + allocationHome.getInstance().getId());
+        }
+
         stockChangeHome.getInstance().setStore(allocationHome.getInstance().getOutStore());
         stockChangeHome.getInstance().setAllocationForStoreOut(allocationHome.getInstance());
         stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.ALLOCATION_OUT);
@@ -117,7 +134,7 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
             if (item.getStock() != null) {
                 StockChangeItem stockChangeItem =
                         new StockChangeItem(stockChangeHome.getInstance(), item.getStock(),
-                                (allocationRes.getCount().compareTo(item.getStock().getCount()) > 0) ? item.getStock().getCount() : allocationRes.getCount() );
+                                (allocationRes.getCount().compareTo(item.getStock().getCount()) > 0) ? item.getStock().getCount() : allocationRes.getCount());
                 stockChangeItem.setUseUnit(allocationRes.getRes().getResUnitByInDefault());
                 item.setStockChangeItem(stockChangeItem);
             }
@@ -126,19 +143,38 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
         }
     }
 
-    public void fullOut(){
+    public void passedItem() {
         selectItem.getStockChangeItem().setCount(selectItem.getAllocationRes().getCount());
+    }
+
+    public void resetItem() {
+        selectItem.getStockChangeItem().setCount(BigDecimal.ZERO);
+        selectItem.getStockChangeItem().setUseUnit(selectItem.allocationRes.getRes().getResUnitByInDefault());
     }
 
     @Override
     protected String completeOrderTask() {
-        if (!cancelOrder) {
+        if (cancelOrder) {
             allocationHome.getInstance().setState(Allocation.AllocationState.ALLOCATION_CANCEL);
         } else {
-            allocationHome.getInstance().setStockChangeByStoreOut(stockChangeHome.getReadyInstance());
-            allocationHome.getInstance().setState(Allocation.AllocationState.WAITING_OUT);
+            for (AllocationStockOutItem item : outItems) {
+                if ((item.getStockChangeItem() != null) && (item.getStockChangeItem().getCount().compareTo(BigDecimal.ZERO) > 0)) {
+                    stockChangeHome.resStockChange(item.getStockChangeItem());
+                }
+            }
+            if (stockChangeHome.getInstance().getStockChangeItems().isEmpty()) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "allocationStoreOutIsNullWarn");
+                allocationHome.getInstance().setState(Allocation.AllocationState.ALLOCATION_CANCEL);
+            } else {
+                allocationHome.getInstance().setStockChangeByStoreOut(stockChangeHome.getReadyInstance());
+                allocationHome.getInstance().setState(Allocation.AllocationState.WAITING_IN);
+            }
         }
 
-        return "taskComplete";
+        if ("updated".equals(allocationHome.update())) {
+            return "taskComplete";
+        } else
+            return null;
+
     }
 }

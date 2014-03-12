@@ -28,6 +28,19 @@
 
         <rich:toolbarGroup location="right">
 
+            <h:inputText id="storeOrderCodeInput"
+                         required="true"
+                         maxlength="32"
+                         styleClass="barsearch"
+                         valueChangeListener="#{stockChangeHome.verifyIdAvailable}"
+                         label="#{messages.StoreChange_field_id}"
+                         value="#{stockChangeHome.instance.id}">
+                <rich:placeholder value="#{messages.StoreChange_field_id}"/>
+                <rich:validator/>
+            </h:inputText>
+            <rich:message for="storeOrderCodeInput" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+
             <ui:insert name="rightToolbarGroup"/>
 
         </rich:toolbarGroup>

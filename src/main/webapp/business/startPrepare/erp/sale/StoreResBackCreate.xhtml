@@ -82,7 +82,7 @@
                                  value="#{orderBackHome.instance.saveMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                          type="currency" groupingUsed="false"/>
-                        <f:validateDoubleRange maximum="#{storeResBackCreate.resTotalMoney}"/>
+                        <f:validateDoubleRange minimum="0" maximum="#{storeResBackCreate.resTotalMoney}"/>
                         <a:ajax event="blur" execute="@this" listener="#{storeResBackCreate.calcBackMoney}"/>
                     </h:inputText>
                     <rich:message for="saveMoneyInput" styleClass="message-icon"

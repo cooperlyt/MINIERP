@@ -2,13 +2,8 @@ package com.dgsoft.erp.total;
 
 import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.action.StoreResList;
 import com.dgsoft.erp.model.StockChangeItem;
-import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountGroup;
-import org.jboss.seam.annotations.In;
+import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 
 import java.util.*;
 
@@ -32,20 +27,20 @@ public class StoreChangeResTotal extends ErpEntityQuery<StockChangeItem> {
         return searchDateArea;
     }
 
-    public StoreResCountGroup getTotalInResultList() {
+    public StoreResCountTotalGroup getTotalInResultList() {
         return getTotalResCountGroup(false);
     }
 
-    public StoreResCountGroup getTotalOutResultList() {
+    public StoreResCountTotalGroup getTotalOutResultList() {
         return getTotalResCountGroup(true);
     }
 
-    public StoreResCountGroup getTotalResCountGroup(){
-        return new StoreResCountGroup(getResultList());
+    public StoreResCountTotalGroup getTotalResCountGroup(){
+        return new StoreResCountTotalGroup(getResultList());
     }
 
-    private StoreResCountGroup getTotalResCountGroup(boolean out){
-        StoreResCountGroup result = new StoreResCountGroup();
+    private StoreResCountTotalGroup getTotalResCountGroup(boolean out){
+        StoreResCountTotalGroup result = new StoreResCountTotalGroup();
         for (StockChangeItem item : getResultList()) {
             if (item.isStoreOut() == out) {
                 result.put(item);

@@ -3,12 +3,10 @@ package com.dgsoft.erp.business.order;
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.action.CarsHome;
 import com.dgsoft.erp.action.TransCorpHome;
-import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountGroup;
+import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -65,7 +63,7 @@ public class OrderDispatch {
     }
 
 
-    private StoreResCountGroup noDispatchItems;
+    private StoreResCountTotalGroup noDispatchItems;
 
     @DataModelSelection
     private StoreResCount selectedOrderItem;
@@ -451,7 +449,7 @@ public class OrderDispatch {
 
         this.oldOrderItems = orderItems;
 
-        noDispatchItems = new StoreResCountGroup();
+        noDispatchItems = new StoreResCountTotalGroup();
 
         for (OrderItem oi : orderItems) {
 

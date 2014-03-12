@@ -11,9 +11,9 @@ import java.util.*;
 /**
  * Created by cooper on 3/3/14.
  */
-public class StoreResCountGroup extends HashMap<StoreRes, StoreResCount> implements java.io.Serializable {
+public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<StoreRes, E> implements java.io.Serializable {
 
-    public <E extends StoreResCountEntity> StoreResCountGroup(Collection<E> values) {
+    public StoreResCountGroup(Collection<E> values) {
         super();
         putAll(values);
     }
@@ -22,25 +22,26 @@ public class StoreResCountGroup extends HashMap<StoreRes, StoreResCount> impleme
         super();
     }
 
-    public List<StoreResCount> getStoreResCountList() {
+    public List<E> getStoreResCountList() {
 
-        return new ArrayList<StoreResCount>(values());
+        return new ArrayList<E>(values());
     }
 
 
-    public <E extends StoreResCountEntity> StoreResCount put(E v) {
+    public E put(E v) {
 
         resGroupList = null;
-        StoreResCount result = get(v.getStoreRes());
+        E result = get(v.getStoreRes());
         if (result == null) {
-            return super.put(v.getStoreRes(), new StoreResCount(v.getStoreRes(),v.getMasterCount()));
+            return super.put(v.getStoreRes(), v);
         } else {
             result.add(v);
             return result;
         }
     }
 
-    public <E extends StoreResCountEntity> void putAll(Collection<E> values) {
+
+    public void putAll(Collection<E> values) {
         for (E v : values) {
             put(v);
         }
@@ -48,16 +49,16 @@ public class StoreResCountGroup extends HashMap<StoreRes, StoreResCount> impleme
     }
 
     @Override
-    public StoreResCount put(StoreRes k, StoreResCount v) {
+    public E put(StoreRes k, E v) {
         throw new IllegalArgumentException("cant't this function");
     }
 
-    public Map<Res, List<StoreResCount>> getResGroupMap() {
-        Map<Res, List<StoreResCount>> result = new HashMap<Res, List<StoreResCount>>();
-        for (StoreResCount v : values()) {
-            List<StoreResCount> rv = result.get(v.getStoreRes().getRes());
+    public Map<Res, List<E>> getResGroupMap() {
+        Map<Res, List<E>> result = new HashMap<Res, List<E>>();
+        for (E v : values()) {
+            List<E> rv = result.get(v.getStoreRes().getRes());
             if (rv == null) {
-                rv = new ArrayList<StoreResCount>();
+                rv = new ArrayList<E>();
                 result.put(v.getStoreRes().getRes(), rv);
             }
             rv.add(v);
@@ -76,7 +77,7 @@ public class StoreResCountGroup extends HashMap<StoreRes, StoreResCount> impleme
     public void initResGroupList() {
         if (resGroupList == null) {
             resGroupList = new ArrayList<ResCountTotal<StoreResCount>>();
-            for (Map.Entry<Res, List<StoreResCount>> entry : getResGroupMap().entrySet()) {
+            for (Map.Entry<Res, List<E>> entry : getResGroupMap().entrySet()) {
                 resGroupList.add(new ResCountTotal(entry.getKey(), entry.getValue()));
             }
             Collections.sort(resGroupList, new Comparator<ResCountTotal<StoreResCount>>() {

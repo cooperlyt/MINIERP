@@ -1,7 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.erp.model.api.StoreResCountGroup;
+import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -218,8 +218,8 @@ public class StockChange implements java.io.Serializable {
     }
 
     @Transient
-    public StoreResCountGroup getChangeDetails(){
-        return new StoreResCountGroup(getStockChangeItems());
+    public StoreResCountTotalGroup getChangeDetails(){
+        return new StoreResCountTotalGroup(getStockChangeItems());
     }
 
     @Transient

@@ -232,7 +232,7 @@
                      value="#{orderBackHome.instance.saveMoney}">
             <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                              type="currency" groupingUsed="false"/>
-            <f:validateDoubleRange maximum="#{cancelOrderCreate.maxSaveMoney}"/>
+            <f:validateDoubleRange minimum="0" maximum="#{cancelOrderCreate.maxSaveMoney}"/>
             <a:ajax event="blur" execute="@this" listener="#{cancelOrderCreate.calcBackMoney}"/>
         </h:inputText>
 

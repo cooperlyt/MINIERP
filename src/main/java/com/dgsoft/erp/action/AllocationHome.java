@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.erp.ErpEntityHome;
@@ -25,6 +26,9 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
     @In(create = true)
     protected StartData startData;
 
+    @In
+    protected RunParam runParam;
+
     @In(required = false)
     private StockChangeHome stockChangeHome;
 
@@ -41,7 +45,7 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
 
     @Override
     protected boolean wire() {
-        if (!isManaged()){
+        if (!isManaged()) {
             getInstance().setApplyEmp(credentials.getUsername());
         }
 
@@ -66,7 +70,9 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
         if (getInstance().getType().equals(Allocation.AllocationType.ALLOCATION)) {
             getInstance().setState(Allocation.AllocationState.WAITING_IN);
             stockChangeHome.getInstance().setStore(getInstance().getOutStore());
-            stockChangeHome.getInstance().setId("AO-" + startData.getBusinessKey());
+            if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
+                stockChangeHome.getInstance().setId("AO-" + startData.getBusinessKey());
+            }
             stockChangeHome.getInstance().setMemo(getInstance().getMemo());
             stockChangeHome.getInstance().setVerify(true);
             stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.ALLOCATION_OUT);
