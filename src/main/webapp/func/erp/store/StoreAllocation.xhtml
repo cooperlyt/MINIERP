@@ -1,12 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
 
-</body>
-</html>
+    <ui:define name="toolbar">
+        <rich:toolbar>
+
+
+            <rich:toolbarGroup location="right">
+                <s:button value="#{messages.CreateAllocation}"
+                          view="/business/startPrepare/erp/store/AllocationCreate.xhtml"/>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+    </ui:define>
+
+    <ui:define name="body">
+
+    </ui:define>
+
+
+</ui:composition>
