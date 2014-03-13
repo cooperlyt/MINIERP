@@ -23,8 +23,14 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
     }
 
     public List<E> getStoreResCountList() {
-
-        return new ArrayList<E>(values());
+         List<E> result = new ArrayList<E>(values());
+        Collections.sort(result,new Comparator<E>() {
+            @Override
+            public int compare(E o1, E o2) {
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            }
+        });
+        return result;
     }
 
 
@@ -83,9 +89,10 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
             Collections.sort(resGroupList, new Comparator<ResCountTotal<StoreResCount>>() {
                 @Override
                 public int compare(ResCountTotal<StoreResCount> o1, ResCountTotal<StoreResCount> o2) {
-                    return o1.getRes().getId().compareTo(o2.getRes().getId());
+                    return o1.getRes().compareTo(o2.getRes());
                 }
             });
+
         }
     }
 

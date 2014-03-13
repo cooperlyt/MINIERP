@@ -56,6 +56,7 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
             srcg.put(item);
         }
         Logging.getLog(getClass()).debug("total result Count:" + result.size());
+
         return result;
     }
 

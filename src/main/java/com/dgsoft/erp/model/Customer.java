@@ -16,7 +16,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "CUSTOMER", catalog = "MINI_ERP")
-public class Customer extends BatchOperEntity implements java.io.Serializable, NamedEntity {
+public class Customer extends BatchOperEntity implements Comparable<Customer>, java.io.Serializable, NamedEntity {
 
     private String id;
     private Integer version;
@@ -325,6 +325,20 @@ public class Customer extends BatchOperEntity implements java.io.Serializable, N
             return getId().hashCode();
         }else{
             return super.hashCode();
+        }
+
+    }
+
+    @Override
+    public int compareTo(Customer o) {
+        if ((getId() == null) || (o.getId() == null)){
+            if ((getName() != null) && (o.getName() != null)){
+                return getName().compareTo(o.getName());
+            }else{
+                return 0;
+            }
+        } else{
+            return getId().compareTo(o.getId());
         }
 
     }

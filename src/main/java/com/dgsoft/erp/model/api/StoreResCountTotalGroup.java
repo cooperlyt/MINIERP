@@ -14,7 +14,7 @@ import java.util.*;
 public class StoreResCountTotalGroup extends StoreResCountGroup<StoreResCount> implements java.io.Serializable {
 
 
-    public <E extends StoreResCountEntity> StoreResCountTotalGroup(Collection<E> values) {
+    public StoreResCountTotalGroup(Collection<? extends StoreResCountEntity> values) {
         super();
         put(values);
     }
@@ -26,8 +26,8 @@ public class StoreResCountTotalGroup extends StoreResCountGroup<StoreResCount> i
         return super.put(new StoreResCount(v.getStoreRes(), v.getMasterCount()));
     }
 
-    public <E extends StoreResCountEntity> void put(Collection<E> values) {
-        for (E v : values) {
+    public void put(Collection<? extends StoreResCountEntity> values) {
+        for (StoreResCountEntity v : values) {
             put(v);
         }
     }

@@ -19,7 +19,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "RES", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
-public class Res implements java.io.Serializable, ResTreeNode {
+public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
 
     private String id;
     private ResCategory resCategory;
@@ -360,5 +360,19 @@ public class Res implements java.io.Serializable, ResTreeNode {
     @Override
     public Enumeration children() {
         return Iterators.asEnumeration(getChildList().iterator());
+    }
+
+    @Transient
+    @Override
+    public int compareTo(Res o) {
+        if ((o.getId() == null) || (getId() == null)){
+            if ((o.getName() == null) || (getName() == null)){
+                return 0;
+            }else{
+                return getName().compareTo(o.getName());
+            }
+        }else{
+            return o.getId().compareTo(getId());
+        }
     }
 }

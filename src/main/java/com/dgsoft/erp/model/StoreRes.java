@@ -344,9 +344,18 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     @Override
     @Transient
     public int compareTo(StoreRes o) {
-        int result = getRes().getId().compareTo(o.getRes().getId());
+        int result = getRes().compareTo(o.getRes());
         if (result == 0) {
-            result = o.getId().compareTo(getId());
+            if ((o.getId() == null) || (getId() == null)){
+                if ((o.getName() == null) || (getName() == null)){
+                    return 0;
+                }else{
+                    return getName().compareTo(o.getName());
+                }
+            }else{
+                result = o.getId().compareTo(getId());
+            }
+
         }
         return result;
     }

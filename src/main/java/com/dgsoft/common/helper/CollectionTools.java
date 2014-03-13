@@ -4,10 +4,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,12 +16,19 @@ import java.util.Set;
 @Scope(ScopeType.STATELESS)
 public class CollectionTools {
 
-    public <K,V> List<Map.Entry<K,V>> mapToList(Map<K,V> map){
 
-        return new ArrayList(map.entrySet());
+    public <K extends Comparable<K>,V> List<Map.Entry<K,V>> mapToList(Map<K,V> map){
+        List<Map.Entry<K,V>> result = new ArrayList<Map.Entry<K,V>>(map.entrySet());
+        Collections.sort(result,new Comparator<Map.Entry<K, V>>() {
+            @Override
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
+        return result ;
     }
 
-    public List setToList(Set set){
-       return new ArrayList(set);
+    public <E extends Comparable<E>> List<E> setToList(Set<E> set){
+       return new ArrayList<E>(set);
     }
 }
