@@ -14,9 +14,7 @@ import java.util.Date;
  * Created by cooper on 3/2/14.
  */
 @Name("customerMoneyConfirm")
-public class CustomerMoneyConfirm extends ErpEntityQuery<AccountOper> {
-
-    private static final String EJBQL = "select accountOper from AccountOper accountOper";
+public class CustomerMoneyConfirm extends CustomerMoneyTotalBase {
 
     private static final String[] RESTRICTIONS = {
             "accountOper.operDate >= #{customerMoneyConfirm.searchDateArea.dateFrom}",
@@ -25,18 +23,11 @@ public class CustomerMoneyConfirm extends ErpEntityQuery<AccountOper> {
 
 
     public CustomerMoneyConfirm() {
-        setEjbql(EJBQL);
+        super();
 
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
-        setRestrictionLogicOperator("and");
-        setOrderColumn("accountOper.operDate");
     }
 
-    private SearchDateArea searchDateArea = new SearchDateArea(new Date(), new Date());
-
-    public SearchDateArea getSearchDateArea() {
-        return searchDateArea;
-    }
 
     private String coustomerId;
 

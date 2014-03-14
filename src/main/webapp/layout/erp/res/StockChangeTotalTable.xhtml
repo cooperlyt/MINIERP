@@ -13,7 +13,11 @@
         <rich:dataTable style="width: 100%" value="#{value.getResGroupList()}" var="_item">
             <f:facet name="header">
                 <rich:columnGroup>
-                    <rich:column rowspan="2">
+                    <rich:column colspan="3" rendered="#{not empty tableHeader}">
+                        #{tableHeader}
+                    </rich:column>
+
+                    <rich:column rowspan="2" breakRowBefore="true">
                         #{messages.StoreRes}
                     </rich:column>
                     <rich:column colspan="2">

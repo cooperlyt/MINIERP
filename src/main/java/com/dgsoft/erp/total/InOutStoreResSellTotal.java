@@ -19,6 +19,7 @@ import java.util.List;
 @Name("inOutStoreResSellTotal")
 public class InOutStoreResSellTotal extends InOutStoreResTotal{
 
+
     private static final String[] RESTRICTIONS = {
             "stockChangeItem.stockChange.operType = #{inOutStoreResSellTotal.changeType}",
             "stockChangeItem.stockChange.operDate >= #{inOutMoneyTotal.searchDateArea.dateFrom}",

@@ -1,6 +1,9 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.SearchDateArea;
+import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.Customer;
@@ -30,18 +33,89 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
         return searchDateArea;
     }
 
-    public Map<Customer, List<AccountOper>> getMoneyOperMap() {
-        Map<Customer, List<AccountOper>> result = new HashMap<Customer, List<AccountOper>>();
-        for (AccountOper accountOper : getResultList()) {
-            List<AccountOper> aos = result.get(accountOper.getCustomer());
-            if (aos == null) {
-                aos = new ArrayList<AccountOper>();
-                result.put(accountOper.getCustomer(), aos);
-            }
-            aos.add(accountOper);
+
+    private List<TotalDataGroup<Customer, AccountOper>> customerGroupResultList = null;
+
+    private void initCustomerGroupResultList(){
+        if (customerGroupResultList == null){
+            customerGroupResultList = TotalDataGroup.groupBy(getResultList(),new TotalGroupStrategy<Customer, AccountOper>() {
+                @Override
+                public Customer getKey(AccountOper accountOper) {
+                    return accountOper.getCustomerOrder().getCustomer();
+                }
+            });
         }
-        return result;
+    }
+
+    public List<TotalDataGroup<Customer, AccountOper>> getCustomerGroupResultList(){
+        if (isAnyParameterDirty()) {
+            refresh();
+        }
+        initCustomerGroupResultList();
+        return customerGroupResultList;
+    }
+
+    private List<TotalDataGroup<Date, AccountOper>> dayGroupResultList = null;
+
+    private void initDayGroupResultList() {
+        if (dayGroupResultList == null) {
+            dayGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<Date, AccountOper>() {
+                @Override
+                public Date getKey(AccountOper accountOper) {
+                    return DataFormat.halfTime(accountOper.getOperDate());
+                }
+            });
+        }
     }
 
 
+    public List<TotalDataGroup<Date, AccountOper>> getDayGroupResultList() {
+
+        if (isAnyParameterDirty()) {
+            refresh();
+        }
+        initDayGroupResultList();
+        return dayGroupResultList;
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        dayGroupResultList = null;
+        customerGroupResultList = null;
+    }
+
+
+    public class CustomerMoneyTotalData {
+
+        BigDecimal outMoney;
+
+        BigDecimal inMoney;
+
+        BigDecimal outRealMoney;
+
+        BigDecimal inRealMoney;
+
+        BigDecimal remitFee;
+
+        public BigDecimal getOutMoney() {
+            return outMoney;
+        }
+
+        public BigDecimal getInMoney() {
+            return inMoney;
+        }
+
+        public BigDecimal getOutRealMoney() {
+            return outRealMoney;
+        }
+
+        public BigDecimal getInRealMoney() {
+            return inRealMoney;
+        }
+
+        public BigDecimal getRemitFee() {
+            return remitFee;
+        }
+    }
 }

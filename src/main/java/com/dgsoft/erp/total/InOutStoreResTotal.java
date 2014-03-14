@@ -18,6 +18,12 @@ import java.util.List;
  */
 public abstract class InOutStoreResTotal extends StoreChangeResTotal{
 
+    protected static final String EJBQL = "select stockChangeItem from StockChangeItem stockChangeItem left join fetch stockChangeItem.stockChange sc left join fetch sc.orderDispatch od left join fetch od.needRes nr left join fetch nr.customerOrder co left join fetch co.customer customer where stockChangeItem.stockChange.verify = true";
+
+    public InOutStoreResTotal(){
+       super();
+        setEjbql(EJBQL);
+    }
 
     protected abstract StockChange.StoreChangeType getChangeType();
 

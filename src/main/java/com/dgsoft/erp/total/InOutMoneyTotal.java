@@ -15,7 +15,7 @@ import java.util.*;
  * Time: 12:06
  */
 @Name("inOutMoneyTotal")
-public class InOutMoneyTotal extends CustomerMoneyTotalBase{
+public class InOutMoneyTotal extends CustomerMoneyTotalBase {
 
     protected static final String[] RESTRICTIONS = {
             "accountOper.operDate >= #{inOutMoneyTotal.searchDateArea.dateFrom}",
@@ -23,13 +23,14 @@ public class InOutMoneyTotal extends CustomerMoneyTotalBase{
             "accountOper.operType in (#{inOutMoneyTotal.showTypes})"};
 
 
-    public InOutMoneyTotal(){
+    public InOutMoneyTotal() {
         super();
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
     }
 
-    public List<AccountOper.AccountOperType> getShowTypes(){
-         return new ArrayList<AccountOper.AccountOperType>(EnumSet.of(AccountOper.AccountOperType.ORDER_SAVINGS,
+
+    public List<AccountOper.AccountOperType> getShowTypes() {
+        return new ArrayList<AccountOper.AccountOperType>(EnumSet.of(AccountOper.AccountOperType.ORDER_SAVINGS,
                 AccountOper.AccountOperType.PRE_DEPOSIT,
                 AccountOper.AccountOperType.DEPOSIT_BACK,
                 AccountOper.AccountOperType.ORDER_FREE,
@@ -37,12 +38,4 @@ public class InOutMoneyTotal extends CustomerMoneyTotalBase{
     }
 
 
-    public List<TotalDataGroup<Date,AccountOper>> getGroupResultList(){
-        return TotalDataGroup.groupBy(getResultList(),new TotalGroupStrategy<Date, AccountOper>() {
-            @Override
-            public Date getKey(AccountOper accountOper) {
-                return DataFormat.halfTime(accountOper.getOperDate());
-            }
-        });
-    }
 }
