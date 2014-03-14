@@ -5,60 +5,92 @@ import java.util.*;
 /**
  * Created by cooper on 3/13/14.
  */
-public class TotalDataGroup<K, V> extends HashMap<K, List<V>> {
+public class TotalDataGroup<K extends Comparable, V> implements Comparable<TotalDataGroup> {
 
-    private TotalDataGroup() {
+
+    private TotalDataGroup(K key) {
         super();
+        this.key = key;
     }
 
-    public static <K, V> TotalDataGroup<K, V> groupBy(Collection<V> values, TotalGroupStrategy<K, V> groupStrategy) {
-        TotalDataGroup<K, V> result = new TotalDataGroup<K, V>();
+    private K key;
+
+    private List<TotalDataGroup<?, V>> childGroup;
+
+    private List<V> values = new ArrayList<V>();
+
+    public boolean isLeaf() {
+        return ((childGroup == null) || childGroup.isEmpty());
+    }
+
+    public K getKey() {
+        return key;
+    }
+
+
+    public List<TotalDataGroup<?, V>> getChildGroup() {
+        return childGroup;
+    }
+
+    public List<V> getValues() {
+        return values;
+    }
+
+
+
+    //public static        Object... params
+
+    public static <K extends Comparable<? super K>, V> List<TotalDataGroup<K, V>> groupBy(Collection<V> values,
+                                                                                            TotalGroupStrategy<K, V> groupStrategy,
+                                                                                            TotalGroupStrategy<?, V>... groupStrategys) {
+        List<TotalDataGroup<K, V>> result = groupCollection(values, groupStrategy);
+
+
+
+        for (TotalGroupStrategy<?, V> stragegy : groupStrategys) {
+            for (TotalDataGroup<K, V> l : result) {
+                groupChildBy(l, stragegy);
+            }
+        }
+        return result;
+    }
+
+    private static <K extends Comparable<? super K>, V> List<TotalDataGroup<K, V>> groupCollection(Collection<V> values,
+                                                                                                     TotalGroupStrategy<K, V> groupStrategy) {
+        Map<K, TotalDataGroup<K, V>> result = new HashMap<K, TotalDataGroup<K, V>>();
         for (V value : values) {
             K valueKey = groupStrategy.getKey(value);
 
-            List<V> valueList = result.get(valueKey);
+
+            TotalDataGroup<K, V> valueList = result.get(valueKey);
             if (valueList == null) {
-                valueList = new ArrayList<V>();
+                valueList = new TotalDataGroup<K, V>(valueKey);
                 result.put(valueKey, valueList);
             }
-            valueList.add(value);
+            valueList.getValues().add(value);
         }
 
-        return result;
+        List<TotalDataGroup<K, V>> listResult = new ArrayList<TotalDataGroup<K, V>>(result.values());
+        Collections.sort(listResult);
+        return listResult;
     }
 
-
-    public static <K, V, T> TotalDataGroup<T, TotalDataGroup<K, V>> groupBy(TotalDataGroup<T, V> values,
-                                                                            TotalGroupStrategy<K, V> groupStrategy) {
-        TotalDataGroup<T, TotalDataGroup<K, V>> result = new TotalDataGroup<T, TotalDataGroup<K, V>>();
-        for (Map.Entry<T,List<V>> entry: values.entrySet()){
-
-            TotalDataGroup<K, V> subGroup = groupBy(entry.getValue(), groupStrategy);
-            result.put(entry.getKey(), );
-        }
-    }
-
-
-    public static <V extends Comparable<? super V>> void sort(TotalDataGroup<?, V> group) {
-        for (List<V> value : group.values()) {
-            Collections.sort(value);
-        }
-    }
-
-    public static <V> void sort(TotalDataGroup<?, V> group, Comparator<? super V> c) {
-        for (List<V> value : group.values()) {
-            Collections.sort(value, c);
+    private static <K extends Comparable<? super K>, V> void groupChildBy(TotalDataGroup<?, V> values, TotalGroupStrategy<K, V> groupStrategy) {
+        if (values.isLeaf()) {
+            values.childGroup = new ArrayList<TotalDataGroup<? extends Comparable, V>>();
+            for (TotalDataGroup<K, V> c : groupCollection(values.getValues(), groupStrategy)) {
+                values.childGroup.add(c);
+            }
+        } else {
+            for (TotalDataGroup<?, V> c : values.getChildGroup()) {
+                groupChildBy(c, groupStrategy);
+            }
         }
     }
 
 
-    public List<V> allValues() {
-        List<V> result = new ArrayList<V>();
-        for (List<V> value : values()) {
-            result.addAll(value);
-        }
-        return result;
+    @Override
+    public int compareTo(TotalDataGroup o) {
+        return getKey().compareTo(o.getKey());
     }
-
-
 }

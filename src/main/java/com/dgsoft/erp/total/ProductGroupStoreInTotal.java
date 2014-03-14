@@ -1,6 +1,8 @@
 package com.dgsoft.erp.total;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.model.ProductGroup;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;

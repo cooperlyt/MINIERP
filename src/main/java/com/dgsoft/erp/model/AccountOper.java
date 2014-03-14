@@ -298,4 +298,20 @@ public class AccountOper implements java.io.Serializable {
     public void setBankAccount(BankAccount bankAccount) {
         this.bankAccount = bankAccount;
     }
+
+    @Transient
+    public BigDecimal getRealMoney(){
+        if (getRemitFee() != null){
+           switch (getOperType()){
+               case PRE_DEPOSIT:
+               case ORDER_SAVINGS:
+                   return getOperMoney().subtract(getRemitFee());
+
+               case DEPOSIT_BACK:
+               case ORDER_BACK:
+                   return getOperMoney().add(getRemitFee());
+           }
+        }
+        return getOperMoney();
+    }
 }

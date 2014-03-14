@@ -15,39 +15,17 @@ import java.util.*;
  */
 @Name("customerMoneyTotal")
 @Scope(ScopeType.CONVERSATION)
-public class CustomerMoneyTotal extends ErpEntityQuery<AccountOper> {
+public class CustomerMoneyTotal extends CustomerMoneyTotalBase {
 
-    private static final String EJBQL = "select accountOper from AccountOper accountOper left join fetch accountOper.customer customer ";
-
-    private static final String[] RESTRICTIONS = {
+    protected static final String[] RESTRICTIONS = {
             "accountOper.operDate >= #{customerMoneyTotal.searchDateArea.dateFrom}",
             "accountOper.operDate <= #{customerMoneyTotal.searchDateArea.searchDateTo}"};
 
 
     public CustomerMoneyTotal() {
-        setEjbql(EJBQL);
-
+        super();
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
-        setRestrictionLogicOperator("and");
-        setOrderColumn("accountOper.operDate");
+
     }
 
-    private SearchDateArea searchDateArea = new SearchDateArea(new Date(), new Date());
-
-    public SearchDateArea getSearchDateArea() {
-        return searchDateArea;
-    }
-
-    public Map<Customer, List<AccountOper>> getMoneyOperMap() {
-        Map<Customer, List<AccountOper>> result = new HashMap<Customer, List<AccountOper>>();
-        for (AccountOper accountOper : getResultList()) {
-            List<AccountOper> aos = result.get(accountOper.getCustomer());
-            if (aos == null) {
-                aos = new ArrayList<AccountOper>();
-                result.put(accountOper.getCustomer(), aos);
-            }
-            aos.add(accountOper);
-        }
-        return result;
-    }
 }

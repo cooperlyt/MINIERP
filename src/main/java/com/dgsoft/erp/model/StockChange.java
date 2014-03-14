@@ -13,7 +13,13 @@ import java.util.*;
  */
 @Entity
 @Table(name = "STOCK_CHANGE", catalog = "MINI_ERP")
-public class StockChange implements java.io.Serializable {
+public class StockChange implements Comparable<StockChange>,java.io.Serializable {
+
+    @Override
+    @Transient
+    public int compareTo(StockChange o) {
+        return getOperDate().compareTo(o.getOperDate());
+    }
 
     public enum StoreChangeType {
         MATERIAL_IN(EnumSet.of(ResCategory.ResType.MATERIAL, ResCategory.ResType.OUTER_MATERIAL), false),
