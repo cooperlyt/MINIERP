@@ -43,6 +43,11 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
                 public Customer getKey(AccountOper accountOper) {
                     return accountOper.getCustomerOrder().getCustomer();
                 }
+
+                @Override
+                public Object totalGroupData(Collection<AccountOper> datas){
+                    return
+                }
             });
         }
     }
@@ -64,8 +69,19 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
                 public Date getKey(AccountOper accountOper) {
                     return DataFormat.halfTime(accountOper.getOperDate());
                 }
+
+                @Override
+                public Object totalGroupData(Collection<AccountOper> datas){
+                    return
+                }
+
             });
         }
+    }
+
+    private CustomerMoneyTotalData totalData(Collection<AccountOper> datas){
+        CustomerMoneyTotalData result = new CustomerMoneyTotalData();
+
     }
 
 
@@ -97,6 +113,14 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
         BigDecimal inRealMoney;
 
         BigDecimal remitFee;
+
+        public CustomerMoneyTotalData() {
+            outMoney = BigDecimal.ZERO;
+            inMoney = BigDecimal.ZERO;
+            outRealMoney = BigDecimal.ZERO;
+            inRealMoney = BigDecimal.ZERO;
+            remitFee = BigDecimal.ZERO;
+        }
 
         public BigDecimal getOutMoney() {
             return outMoney;

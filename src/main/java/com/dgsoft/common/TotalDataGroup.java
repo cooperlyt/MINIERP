@@ -72,6 +72,9 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
 
         List<TotalDataGroup<K, V>> listResult = new ArrayList<TotalDataGroup<K, V>>(result.values());
         Collections.sort(listResult);
+        for (TotalDataGroup<K, V> group: listResult){
+            group.totalData = groupStrategy.totalGroupData(group.values);
+        }
         return listResult;
     }
 
@@ -92,5 +95,11 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
     @Override
     public int compareTo(TotalDataGroup o) {
         return getKey().compareTo(o.getKey());
+    }
+
+    private Object totalData;
+
+    public Object getTotalData() {
+        return totalData;
     }
 }
