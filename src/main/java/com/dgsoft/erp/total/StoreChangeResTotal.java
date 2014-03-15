@@ -3,6 +3,8 @@ package com.dgsoft.erp.total;
 import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.StockChangeItem;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 
 import java.util.*;

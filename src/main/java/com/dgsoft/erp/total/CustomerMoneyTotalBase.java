@@ -41,12 +41,12 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
             customerGroupResultList = TotalDataGroup.groupBy(getResultList(),new TotalGroupStrategy<Customer, AccountOper>() {
                 @Override
                 public Customer getKey(AccountOper accountOper) {
-                    return accountOper.getCustomerOrder().getCustomer();
+                    return accountOper.getCustomer();
                 }
 
                 @Override
                 public Object totalGroupData(Collection<AccountOper> datas){
-                    return
+                    return totalData(datas);
                 }
             });
         }
@@ -72,7 +72,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
                 @Override
                 public Object totalGroupData(Collection<AccountOper> datas){
-                    return
+                    return totalData(datas);
                 }
 
             });
@@ -81,7 +81,10 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
     private CustomerMoneyTotalData totalData(Collection<AccountOper> datas){
         CustomerMoneyTotalData result = new CustomerMoneyTotalData();
-
+        for (AccountOper oper: datas){
+            result.add(oper);
+        }
+        return result;
     }
 
 
@@ -99,6 +102,10 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
         super.refresh();
         dayGroupResultList = null;
         customerGroupResultList = null;
+    }
+
+    public CustomerMoneyTotalData getResultTotalData(){
+        return  totalData(getResultList());
     }
 
 
@@ -120,6 +127,19 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
             outRealMoney = BigDecimal.ZERO;
             inRealMoney = BigDecimal.ZERO;
             remitFee = BigDecimal.ZERO;
+        }
+
+        public void add(AccountOper oper){
+            if (oper.getOperType().isAdd()){
+                inMoney = inMoney.add(oper.getOperMoney());
+                inRealMoney = inRealMoney.add(oper.getRealMoney());
+            }else{
+                outMoney = outMoney.add(oper.getOperMoney());
+                outRealMoney = outRealMoney.add(oper.getRealMoney());
+            }
+            if (oper.getRemitFee() != null){
+                remitFee = remitFee.add(oper.getRemitFee());
+            }
         }
 
         public BigDecimal getOutMoney() {

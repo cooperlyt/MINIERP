@@ -3,10 +3,12 @@ package com.dgsoft.erp.total;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
+import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -33,10 +35,21 @@ public abstract class InOutStoreResTotal extends StoreChangeResTotal{
                     public Date getKey(StockChangeItem stockChangeItem) {
                         return DataFormat.halfTime(stockChangeItem.getStockChange().getOperDate());
                     }
+
+                    @Override
+                    public Object totalGroupData(Collection<StockChangeItem> datas){
+                        return null;
+                    }
+
                 } , new TotalGroupStrategy<StockChange, StockChangeItem>() {
                     @Override
                     public StockChange getKey(StockChangeItem stockChangeItem) {
                         return stockChangeItem.getStockChange();
+                    }
+
+                    @Override
+                    public Object totalGroupData(Collection<StockChangeItem> datas){
+                        return null;
                     }
                 });
     }
