@@ -45,9 +45,8 @@
                 #{messages.Store}
             </ui:define>
             <h:selectOneMenu value="#{stockChangeList.storeId}">
-                <s:selectItems value="#{storeList.resultList}" var="_store"
-                               itemValue="#{_store.id}" label="#{_store.name}"
-                               noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                <s:selectItems value="#{myStores}" var="_store"
+                               itemValue="#{_store.id}" label="#{_store.name}"/>
             </h:selectOneMenu>
         </s:decorate>
 
@@ -128,7 +127,9 @@
                 <a:param value="#{_change.id}" assignTo="#{stockChangeHome.id}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandLink>
-
+            <f:facet name="footer">
+                #{messages.recordTotal} #{stockChangeList.resultCount} #{messages.item}
+            </f:facet>
         </rich:column>
 
         <rich:column>
@@ -140,9 +141,7 @@
                 </ui:include>
             </f:facet>
             #{_change.store.name}
-            <f:facet name="footer">
-                #{messages.recordTotal} #{stockChangeList.resultCount} #{messages.item}
-            </f:facet>
+
         </rich:column>
 
 

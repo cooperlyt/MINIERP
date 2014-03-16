@@ -26,12 +26,29 @@
             <rich:panel>
 
                 <h:form>
-                    <h:selectOneMenu style="width: 100%" value="#{stockList.storeId}">
-                        <s:selectItems value="#{allStoreList.resultList}" var="_store"
-                                       itemValue="#{_store.id}" label="#{_store.name}"
-                                       noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                        <a:ajax event="valueChange" render="dataListResult"/>
-                    </h:selectOneMenu>
+
+                    <a:outputPanel
+                            rendered="#{s:hasRole('erp.storage.manager') or s:hasRole('erp.finance.cashier') or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}">
+                        <h:selectOneMenu style="width: 100%" value="#{stockList.storeId}">
+                            <s:selectItems value="#{allStoreList.resultList}" var="_store"
+                                           itemValue="#{_store.id}" label="#{_store.name}"
+                                           noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                            <a:ajax event="valueChange" render="dataListResult"/>
+                        </h:selectOneMenu>
+                    </a:outputPanel>
+
+                    <a:outputPanel
+                            rendered="#{ (not s:hasRole('erp.storage.manager')) and (not s:hasRole('erp.finance.cashier')) and (not s:hasRole('erp.sale.manager')) and (not s:hasRole('erp.sale.saler'))}">
+
+
+                        <h:selectOneMenu style="width: 100%" value="#{stockList.storeId}">
+                            <s:selectItems value="#{myStores}" var="_store"
+                                           itemValue="#{_store.id}" label="#{_store.name}"
+                                           noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                            <a:ajax event="valueChange" render="dataListResult"/>
+                        </h:selectOneMenu>
+                    </a:outputPanel>
+
                 </h:form>
                 <br/>
                 <h:form>
@@ -64,98 +81,109 @@
             </rich:panel>
 
 
-            <rich:dataTable id="dataListResult" style="width: 100%" value="#{stockList.resultList}" var="_stock"
-                            noDataLabel="#{messages.emptyResult}">
+            <h:panelGroup>
 
-                <f:facet name="header">
-                    <h:outputText value="#{stockList.selectedTitle}" rendered="#{empty stockList.selectedStoreRes}"/>
-                    <a:outputPanel rendered="#{not empty stockList.selectedStoreRes}">
+                <rich:dataTable id="dataListResult" style="width: 100%" value="#{stockList.resultList}" var="_stock"
+                                noDataLabel="#{messages.emptyResult}">
+
+                    <f:facet name="header">
+                        <h:outputText value="#{stockList.selectedTitle}"
+                                      rendered="#{empty stockList.selectedStoreRes}"/>
+                        <a:outputPanel rendered="#{not empty stockList.selectedStoreRes}">
+                            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                                <ui:param name="storeRes" value="#{stockList.selectedStoreRes}"/>
+                            </ui:include>
+                        </a:outputPanel>
+                    </f:facet>
+
+                    <f:facet name="footer">
+                        <a:outputPanel rendered="#{not empty stockList.resultList}">
+                            <ui:include src="/layout/pageA4jNavigation.xhtml">
+                                <ui:param name="entityList" value="#{stockList}"/>
+                            </ui:include>
+                        </a:outputPanel>
+
+                    </f:facet>
+
+                    <rich:column>
+                        <f:facet name="header">
+
+                            <ui:include src="/layout/a4jSort.xhtml">
+                                <ui:param name="entityList" value="#{stockList}"/>
+                                <ui:param name="propertyLabel" value="#{messages.Store}"/>
+                                <ui:param name="propertyPath" value="stock.store.id"/>
+                            </ui:include>
+
+
+                        </f:facet>
+                        #{_stock.store.name}(#{_stock.store.id})
+                        <f:facet name="footer">
+                            #{messages.recordTotal}#{stockList.resultCount}#{messages.item}
+                        </f:facet>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+
+                            <ui:include src="/layout/a4jSort.xhtml">
+                                <ui:param name="entityList" value="#{stockList}"/>
+                                <ui:param name="propertyLabel" value="#{messages.StoreRes}"/>
+                                <ui:param name="propertyPath" value="stock.storeRes.id"/>
+                            </ui:include>
+                        </f:facet>
+
+
                         <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                            <ui:param name="storeRes" value="#{stockList.selectedStoreRes}"/>
-                        </ui:include>
-                    </a:outputPanel>
-                </f:facet>
-
-                <f:facet name="footer">
-                    <a:outputPanel rendered="#{not empty stockList.resultList}">
-                        <ui:include src="/layout/pageA4jNavigation.xhtml">
-                            <ui:param name="entityList" value="#{stockList}"/>
-                        </ui:include>
-                    </a:outputPanel>
-
-                </f:facet>
-
-                <rich:column>
-                    <f:facet name="header">
-
-                        <ui:include src="/layout/a4jSort.xhtml">
-                            <ui:param name="entityList" value="#{stockList}"/>
-                            <ui:param name="propertyLabel" value="#{messages.Store}"/>
-                            <ui:param name="propertyPath" value="stock.store.id"/>
+                            <ui:param name="storeRes" value="#{_stock.storeRes}"/>
                         </ui:include>
 
 
-                    </f:facet>
-                    #{_stock.store.name}(#{_stock.store.id})
-                    <f:facet name="footer">
-                        #{messages.recordTotal}#{stockList.resultCount}#{messages.item}
-                    </f:facet>
-                </rich:column>
+                    </rich:column>
 
-                <rich:column>
-                    <f:facet name="header">
+                    <rich:column>
+                        <f:facet name="header">
+                            <ui:include src="/layout/a4jSort.xhtml">
+                                <ui:param name="entityList" value="#{stockList}"/>
+                                <ui:param name="propertyLabel" value="#{messages.MasterUnitCount}"/>
+                                <ui:param name="propertyPath" value="stock.count"/>
+                            </ui:include>
+                        </f:facet>
+                        #{_stock.displayMasterCount}
+                        <f:facet name="footer">
+                            <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
+                                <f:convertNumber pattern="#0.#####"
+                                                 groupingUsed="false"/>
+                            </h:outputText>
 
-                        <ui:include src="/layout/a4jSort.xhtml">
-                            <ui:param name="entityList" value="#{stockList}"/>
-                            <ui:param name="propertyLabel" value="#{messages.StoreRes}"/>
-                            <ui:param name="propertyPath" value="stock.storeRes.id"/>
-                        </ui:include>
-                    </f:facet>
+                        </f:facet>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.AuxUnitCount}
+                        </f:facet>
+                        #{_stock.displayAuxCount}
+
+                        <f:facet name="footer">
+                            <h:outputText value="#{stockList.totalAuxCount}">
+                                <f:convertNumber pattern="#0.#####"
+                                                 groupingUsed="false"/>
+                            </h:outputText>
+
+                        </f:facet>
+
+                    </rich:column>
+
+                </rich:dataTable>
+
+                <br/>
+
+                <a:outputPanel
+                        rendered="#{s:hasRole('erp.storage.manager') or s:hasRole('erp.finance.cashier') or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}">
 
 
-                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                        <ui:param name="storeRes" value="#{_stock.storeRes}"/>
-                    </ui:include>
-
-
-                </rich:column>
-
-                <rich:column>
-                    <f:facet name="header">
-                        <ui:include src="/layout/a4jSort.xhtml">
-                            <ui:param name="entityList" value="#{stockList}"/>
-                            <ui:param name="propertyLabel" value="#{messages.MasterUnitCount}"/>
-                            <ui:param name="propertyPath" value="stock.count"/>
-                        </ui:include>
-                    </f:facet>
-                    #{_stock.displayMasterCount}
-                    <f:facet name="footer">
-                        <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
-                            <f:convertNumber pattern="#0.#####"
-                                             groupingUsed="false"/>
-                        </h:outputText>
-
-                    </f:facet>
-                </rich:column>
-
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.AuxUnitCount}
-                    </f:facet>
-                    #{_stock.displayAuxCount}
-
-                    <f:facet name="footer">
-                        <h:outputText value="#{stockList.totalAuxCount}">
-                            <f:convertNumber pattern="#0.#####"
-                                             groupingUsed="false"/>
-                        </h:outputText>
-
-                    </f:facet>
-
-                </rich:column>
-
-            </rich:dataTable>
-
+                </a:outputPanel>
+            </h:panelGroup>
         </h:panelGrid>
 
     </ui:define>

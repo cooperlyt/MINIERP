@@ -23,7 +23,10 @@
         <h:panelGrid id="storeAreaField" columns="4">
 
 
-            <s:decorate id="selectStoreField" template="/layout/seam-edit.xhtml">
+
+
+            <s:decorate id="selectStoreField" template="/layout/seam-edit.xhtml"
+                        rendered="#{s:hasRole('erp.storage.manager') or s:hasRole('erp.finance.cashier') or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}">
                 <ui:define name="label">#{messages.Store}</ui:define>
                 <rich:select label="#{messages.Store}" value="#{stockList.store}">
                     <s:selectItems value="#{storeList.resultList}" var="_store" itemValue="#{_store}"
@@ -31,6 +34,17 @@
                     <f:converter converterId="erpEntityConverter"/>
                 </rich:select>
             </s:decorate>
+
+            <s:decorate template="/layout/seam-edit.xhtml"
+                        rendered="#{ (not s:hasRole('erp.storage.manager')) and (not s:hasRole('erp.finance.cashier')) and (not s:hasRole('erp.sale.manager')) and (not s:hasRole('erp.sale.saler'))}">
+                <ui:define name="label">#{messages.Store}</ui:define>
+                <rich:select label="#{messages.Store}" value="#{stockList.store}">
+                    <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store}"
+                                   label="#{_store.name}"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                </rich:select>
+            </s:decorate>
+
 
 
             <a:commandLink

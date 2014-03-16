@@ -41,7 +41,7 @@ public class StockChangeList extends ErpEntityQuery<StockChange> {
         return StockChange.StoreChangeType.values();
     }
 
-    private String storeId;
+    private String storeId = "noSelected";
 
     private Boolean out;
 

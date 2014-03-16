@@ -185,7 +185,8 @@
         <f:facet name="header">
             <rich:columnGroup>
                 <rich:column colspan="7">
-                    #{messages.customerStoreResSellDetails}
+                    #{customerShipTotal.sellOutTotal ? messages.customerStoreResSellDetails : messages.customerStoreResBackDetails}
+
                 </rich:column>
 
                 <rich:column colspan="2" rowspan="2" breakRowBefore="true">
@@ -264,7 +265,7 @@
         <f:facet name="header">
             <rich:columnGroup>
                 <rich:column colspan="5">
-                    #{messages.customerStoreResSellTotal}
+                    #{customerShipTotal.sellOutTotal ? messages.customerStoreResSellTotal : messages.customerStoreResBackTotal}
                 </rich:column>
                 <rich:column colspan="3" rowspan="2" breakRowBefore="true">
                     #{messages.StoreRes}

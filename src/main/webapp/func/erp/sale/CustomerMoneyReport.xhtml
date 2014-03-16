@@ -1,0 +1,210 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="func-body">
+    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+        <h:form>
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.dateTime}</ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        label="#{messages.dateTime}"
+                        value="#{customerMoneyTotal.searchDateArea.dateFrom}">
+                </rich:calendar>
+
+                --
+
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        label="#{messages.dateTime}"
+                        value="#{customerMoneyTotal.searchDateArea.dateTo}">
+                </rich:calendar>
+            </s:decorate>
+
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.CustomerArea}
+                </ui:define>
+                <h:selectOneMenu value="#{customerMoneyTotal.sellAreaId}">
+                    <s:selectItems value="#{customerAreaList.resultList}" var="_area"
+                                   itemValue="#{_area.id}" label="#{_area.name}"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                </h:selectOneMenu>
+
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.Customer}
+                </ui:define>
+                <h:inputText value="#{customerMoneyTotal.customerName}"/>
+
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.accountOper_field_operType}
+                </ui:define>
+                <h:selectOneMenu value="#{customerMoneyTotal.accountOperType}">
+                    <s:selectItems value="#{customerMoneyTotal.showTypes}" var="_operType"
+                                   label="#{messages[_operType.name()]}"  itemValue="#{_operType}"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                    <s:convertEnum/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <div style="clear:both"/>
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+            <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                <a:outputPanel>
+                    <div class="actionButtons">
+
+
+                        <s:button styleClass="toolBarBtn" value="#{messages.reset}" includePageParams="false"/>
+
+
+                        <a:commandButton value="#{messages.total}" execute="@form">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+
+
+                    </div>
+                </a:outputPanel>
+            </h:panelGrid>
+        </h:form>
+
+        <div style="clear:both"/>
+    </rich:collapsiblePanel>
+
+
+    <a:outputPanel ajaxRendered="true">
+        <rich:dataTable style="width: 100%" var="_moneyOper" value="#{customerMoneyTotal.customerGroupResultList}">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column colspan="10">
+                        #{messages.customerMoneyInOutDetails}
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        #{messages.dateTime}
+                    </rich:column>
+
+                    <rich:column>
+                        #{messages.accountOper_field_operType}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.accountOper_field_operMoney}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.accountOper_field_fee}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.accountOper_field_realMoney}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.accountOper_field_payType}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.BankAccount}
+                    </rich:column>
+
+                    <rich:column>
+                        #{messages.accountOper_field_checkNumber}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.accountOper_field_operEmp}
+                    </rich:column>
+
+                </rich:columnGroup>
+            </f:facet>
+
+            <rich:column colspan="10">
+                <rich:collapsibleSubTableToggler for="sbtbl"/>
+                <h:outputText value="#{_moneyOper.key.name}"/>
+
+                <f:facet name="footer">
+                    <ui:include src="AccountOperMoneyTotalData.xhtml">
+                        <ui:param name="itemCount" value="#{customerMoneyTotal.resultCount}"/>
+                        <ui:param name="totalData" value="#{customerMoneyTotal.resultTotalData}"/>
+                    </ui:include>
+
+                </f:facet>
+            </rich:column>
+
+            <rich:collapsibleSubTable value="#{_moneyOper.values}" var="_operItem" id="sbtbl">
+                <rich:column>
+                    <h:outputText value="#{_operItem.operDate}">
+                        <f:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    #{messages[_operItem.operType.name()]}
+                </rich:column>
+
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_operItem.operMoney}"
+                                  style="#{(not _operItem.operType.add) ? 'color: red;' : ''}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_operItem.remitFee}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_operItem.realMoney}"
+                                  style="#{(not _operItem.operType.add) ? 'color: red;' : ''}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    #{messages[_operItem.payType.name()]}
+                </rich:column>
+                <rich:column>
+                    <h:outputText
+                            value="#{dictionary.getWordValue(_operItem.bankAccount.bank)} - #{_operItem.bankAccount.number} "
+                            rendered="#{(not empty _operItem.bankAccount) and (_operItem.payType eq 'BANK_TRANSFER') }"/>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_operItem.checkNumber}"
+                                  rendered="#{(not empty _operItem.checkNumber) and (_operItem.payType eq 'CHECK')}"/>
+                </rich:column>
+                <rich:column>
+                    #{dictionary.getEmpNameById(_operItem.operEmp)}
+                </rich:column>
+
+                <f:facet name="footer">
+
+                    <ui:include src="AccountOperMoneyTotalData.xhtml">
+                        <ui:param name="itemCount" value="#{_moneyOper.values.size}"/>
+                        <ui:param name="totalData" value="#{_moneyOper.totalData}"/>
+                    </ui:include>
+                </f:facet>
+
+            </rich:collapsibleSubTable>
+        </rich:dataTable>
+    </a:outputPanel>
+</ui:define>
+
+
+</ui:composition>
