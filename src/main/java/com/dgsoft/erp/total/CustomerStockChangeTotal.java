@@ -31,7 +31,12 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
             customerResultGroup = TotalDataGroup.allGroupBy(new ArrayList<StoreResCountEntity>(getResultList()), new TotalGroupStrategy<Customer, StoreResCountEntity>() {
                 @Override
                 public Customer getKey(StoreResCountEntity stockChangeItem) {
-                    return ((StockChangeItem) stockChangeItem).getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
+                    if (((StockChangeItem) stockChangeItem).getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {
+                        return ((StockChangeItem) stockChangeItem).getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
+
+                    } else {
+                        return ((StockChangeItem) stockChangeItem).getStockChange().getProductBackStoreIn().getOrderBack().getCustomer();
+                    }
                 }
 
                 @Override
@@ -40,7 +45,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                 }
             }, StoreResGroupStrategy.getInstance());
 
-            TotalDataGroup.unionData(customerResultGroup,StoreResCountUnionStrategy.getInstance());
+            TotalDataGroup.unionData(customerResultGroup, StoreResCountUnionStrategy.getInstance());
 
             TotalDataGroup.sort(customerResultGroup, new Comparator<StoreResCountEntity>() {
                 @Override
@@ -53,35 +58,66 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
     }
 
     public TotalDataGroup<?, StoreResCountEntity> getCustomerResultGroup() {
-        if ( isAnyParameterDirty() )
-        {
+        if (isAnyParameterDirty()) {
             refresh();
         }
         initCustomerGroupResultList();
         return customerResultGroup;
     }
 
+    private TotalDataGroup<?, StockChangeItem> customerDetailsResultGroup = null;
 
-    @Override
-    public void refresh(){
-        super.refresh();
-        customerResultGroup = null;
-    }
+    private void initCustomerDetailsResultGroup() {
+        if (customerDetailsResultGroup == null) {
+            customerDetailsResultGroup = TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Customer, StockChangeItem>() {
+                @Override
+                public Customer getKey(StockChangeItem stockChangeItem) {
+                    if (stockChangeItem.getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {
+                        return stockChangeItem.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
+                    } else {
+                        return stockChangeItem.getStockChange().getProductBackStoreIn().getOrderBack().getCustomer();
+                    }
+                }
 
-    @Deprecated
-    public Map<Customer, StoreResCountTotalGroup> getCustomerTotalResultMap() {
-
-        Map<Customer, StoreResCountTotalGroup> result = new HashMap<Customer, StoreResCountTotalGroup>();
-        for (StockChangeItem item : getResultList()) {
-            Customer customer = item.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
-            StoreResCountTotalGroup mapValue = result.get(customer);
-            if (mapValue == null) {
-                mapValue = new StoreResCountTotalGroup();
-                result.put(customer, mapValue);
-            }
-            mapValue.put(item);
+                @Override
+                public Object totalGroupData(Collection<StockChangeItem> datas) {
+                    return null;
+                }
+            });
         }
 
-        return result;
     }
+
+    public TotalDataGroup<?, StockChangeItem> getCustomerDetailsResultGroup() {
+        if (isAnyParameterDirty()) {
+            refresh();
+        }
+        initCustomerDetailsResultGroup();
+        return customerDetailsResultGroup;
+    }
+
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        customerResultGroup = null;
+        customerDetailsResultGroup = null;
+    }
+
+//    @Deprecated
+//    public Map<Customer, StoreResCountTotalGroup> getCustomerTotalResultMap() {
+//
+//        Map<Customer, StoreResCountTotalGroup> result = new HashMap<Customer, StoreResCountTotalGroup>();
+//        for (StockChangeItem item : getResultList()) {
+//            Customer customer = item.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
+//            StoreResCountTotalGroup mapValue = result.get(customer);
+//            if (mapValue == null) {
+//                mapValue = new StoreResCountTotalGroup();
+//                result.put(customer, mapValue);
+//            }
+//            mapValue.put(item);
+//        }
+//
+//        return result;
+//    }
 }

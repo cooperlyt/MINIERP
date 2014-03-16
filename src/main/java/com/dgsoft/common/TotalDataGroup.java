@@ -19,6 +19,14 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
 
     private List<V> values = new ArrayList<V>();
 
+    public Map<Object,List<V>> getChildMap(){
+        Map<Object,List<V>> result = new HashMap<Object, List<V>>();
+        for (TotalDataGroup<? extends Comparable<?>, V> cg: childGroup){
+            result.put(cg.getKey(),cg.values);
+        }
+        return result;
+    }
+
     public boolean isLeaf() {
         return ((childGroup == null) || childGroup.isEmpty());
     }
@@ -39,13 +47,15 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
 
     //public static        Object... params
 
-    public static <V> TotalDataGroup<?, V> allGroupBy(Collection<V> values,
-                                                                                          TotalGroupStrategy<?, V> groupStrategy,
-                                                                                          TotalGroupStrategy<?, V>... groupStrategys){
+    public static <V> TotalDataGroup<?, V> allGroupBy(Collection<V> values,TotalGroupStrategy<?, V>... groupStrategys){
 
         TotalDataGroup<?, V> result =  new TotalDataGroup<Comparable, V>(null);
         result.values = new ArrayList<V>(values);
-        result.childGroup =  groupBy(values,groupStrategy,groupStrategys);
+        //result.childGroup =  groupBy(values,groupStrategy,groupStrategys);
+        for (TotalGroupStrategy<?, V> stragegy : groupStrategys) {
+            groupChildBy(result,stragegy);
+        }
+
         return result;
     }
 
@@ -99,7 +109,7 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
         }
     }
 
-    public static <K, V, T> void unionData(TotalDataGroup<?, V> data, TotalDataUnionStrategy<K, V> unionStrategy) {
+    public static <K, V> void unionData(TotalDataGroup<?, V> data, TotalDataUnionStrategy<K, V> unionStrategy) {
 
         Map<K, V> result = new HashMap<K, V>();
         for (V v : data.values) {
@@ -117,6 +127,8 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
                 unionData(d, unionStrategy);
             }
         }
+
+        data.values = new ArrayList<V>(result.values());
 
     }
 

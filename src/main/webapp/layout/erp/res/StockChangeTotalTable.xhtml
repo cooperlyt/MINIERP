@@ -8,16 +8,16 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <!-- params value -->
+    <!-- params value tableHeader-->
     <f:subview>
         <rich:dataTable style="width: 100%" value="#{value.getResGroupList()}" var="_item">
             <f:facet name="header">
                 <rich:columnGroup>
-                    <rich:column colspan="3" rendered="#{not empty tableHeader}">
+                    <rich:column colspan="4" rendered="#{not empty tableHeader}">
                         #{tableHeader}
                     </rich:column>
 
-                    <rich:column rowspan="2" breakRowBefore="true">
+                    <rich:column colspan="2" rowspan="2" breakRowBefore="true">
                         #{messages.StoreRes}
                     </rich:column>
                     <rich:column colspan="2">
@@ -32,12 +32,14 @@
                 </rich:columnGroup>
             </f:facet>
 
-            <rich:column colspan="3">
+            <rich:column colspan="4">
                 <rich:collapsibleSubTableToggler for="sbtb1"/>
                 #{_item.res.name}
             </rich:column>
 
             <rich:collapsibleSubTable value="#{_item.values}" var="_item1" id="sbtb1">
+                <rich:column/>
+
                 <rich:column>
                     <ui:include src="/layout/erp/StoreResTitle.xhtml">
                         <ui:param name="storeRes" value="#{_item1.storeRes}"/>

@@ -117,6 +117,35 @@
             </rich:calendar>
         </s:decorate>
 
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.StockChange_field_operType}
+            </ui:define>
+            <h:selectOneMenu value="#{customerShipTotal.sellOutTotal}">
+                <f:selectItem itemValue="#{true}" itemLabel="#{messages.SELL_OUT}"/>
+                <f:selectItem itemValue="#{false}" itemLabel="#{messages.SELL_BACK}"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.CustomerArea}
+            </ui:define>
+            <h:selectOneMenu value="#{customerShipTotal.sellAreaId}">
+                 <s:selectItems value="#{customerAreaList.resultList}" var="_area"
+                                itemValue="#{_area.id}" label="#{_area.name}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+            </h:selectOneMenu>
+
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.Customer}
+            </ui:define>
+            <h:inputText value="#{customerShipTotal.customerName}"/>
+
+        </s:decorate>
 
         <div style="clear:both"/>
         <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
@@ -151,11 +180,93 @@
 
 <a:outputPanel id="totalResults">
 
-
-    <rich:dataTable style="width: 100%" value="#{collectionTools.mapToList(customerShipTotal.customerTotalResultMap)}" var="_citem">
+    <rich:dataTable value="#{customerShipTotal.customerDetailsResultGroup.childGroup}" style="width: 100%"
+                    var="_dcitem">
         <f:facet name="header">
             <rich:columnGroup>
+                <rich:column colspan="7">
+                    #{messages.customerStoreResSellDetails}
+                </rich:column>
+
+                <rich:column colspan="2" rowspan="2" breakRowBefore="true">
+                    #{messages.storeOut_field_dateTime}
+                </rich:column>
                 <rich:column rowspan="2">
+                    #{messages.Store}
+                </rich:column>
+                <rich:column rowspan="2">
+                    #{messages.StoreRes}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+                <rich:column rowspan="2">
+                    #{messages.StockChange_field_operEMP}
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+
+
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="7">
+            <rich:collapsibleSubTableToggler for="sellDetailsSbtb"/>
+            #{_dcitem.key.customerArea.name} - #{_dcitem.key.name}
+
+        </rich:column>
+
+        <rich:collapsibleSubTable value="#{_dcitem.values}" var="_changeItem" id="sellDetailsSbtb" expandMode="client">
+            <rich:column/>
+
+            <rich:column>
+                <h:outputText value="#{_changeItem.stockChange.operDate}">
+                    <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+                </h:outputText>
+
+            </rich:column>
+            <rich:column>
+                #{_changeItem.stockChange.store.name}
+            </rich:column>
+
+            <rich:column>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_changeItem.storeRes}"/>
+                </ui:include>
+            </rich:column>
+
+
+            <rich:column>
+                #{_changeItem.displayMasterCount}
+            </rich:column>
+
+            <rich:column>
+                #{_changeItem.displayAuxCount}
+            </rich:column>
+
+            <rich:column>
+                #{dictionary.getEmpNameById(_changeItem.stockChange.operEmp)}
+            </rich:column>
+
+
+        </rich:collapsibleSubTable>
+
+    </rich:dataTable>
+
+    <br/>
+
+    <rich:dataTable style="width: 100%" value="#{customerShipTotal.customerResultGroup.childGroup}" var="_citem">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="5">
+                    #{messages.customerStoreResSellTotal}
+                </rich:column>
+                <rich:column colspan="3" rowspan="2" breakRowBefore="true">
                     #{messages.StoreRes}
                 </rich:column>
                 <rich:column colspan="2">
@@ -171,37 +282,74 @@
 
         </f:facet>
 
-        <rich:column colspan="3">
-            <rich:collapsibleSubTableToggler for="sbtb1"/>
+        <rich:column colspan="5">
+            <rich:collapsibleSubTableToggler for="storeResSbtb"/>
             #{_citem.key.customerArea.name} - #{_citem.key.name}
         </rich:column>
 
-        <rich:collapsibleSubTable value="#{_citem.value.getStoreResCountList()}" var="_ritem" id="sbtb1" expandMode="client">
+        <rich:collapsibleSubTable value="#{_citem.childGroup}" var="_sritem" id="storeResSbtb" expandMode="client">
 
-            <rich:column>
+            <rich:column/>
 
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_ritem.storeRes}"/>
-                </ui:include>
-
+            <rich:column colspan="4">
+                <rich:collapsibleSubTableToggler for="resSbtb"/>
+                #{_sritem.key.name} (#{_sritem.key.code})
             </rich:column>
 
-            <rich:column>
-                #{_ritem.displayMasterCount}
-            </rich:column>
 
-            <rich:column>
-                #{_ritem.displayAuxCount}
-            </rich:column>
+            <rich:collapsibleSubTable value="#{_sritem.values}" var="_ritem" id="resSbtb" expandMode="client">
+
+                <rich:column/>
+                <rich:column/>
+
+                <rich:column>
+
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_ritem.storeRes}"/>
+                    </ui:include>
+
+                </rich:column>
+
+                <rich:column>
+                    #{_ritem.displayMasterCount}
+
+                    <f:facet name="footer">
+                        <h:outputText value="#{_sritem.totalData.masterUnitCount}">
+                            <f:convertNumber pattern="#{_sritem.key.unitGroup.masterUnit.countFormate}"/>
+                        </h:outputText>
+                        #{_sritem.key.unitGroup.masterUnit.name}
+                    </f:facet>
+                </rich:column>
+
+                <rich:column>
+                    #{_ritem.displayAuxCount}
+
+                    <f:facet name="footer">
+                        <a:outputPanel rendered="#{_sritem.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                            <h:outputText value="#{_sritem.totalData.auxUnitCount}">
+                                <f:convertNumber pattern="#{_sritem.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                            </h:outputText>
+
+                            #{_sritem.key.unitGroup.floatAuxiliaryUnit.name}
+                        </a:outputPanel>
+
+                    </f:facet>
+                </rich:column>
+
+            </rich:collapsibleSubTable>
+
+
         </rich:collapsibleSubTable>
 
 
     </rich:dataTable>
 
+
     <br/>
 
     <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
-        <ui:param name="value" value="#{customerShipTotal.totalOutResultList}"  />
+        <ui:param name="value" value="#{customerShipTotal.totalResCountGroup}"/>
+        <ui:param name="tableHeader" value="#{messages.storeResTotalHeader}"/>
     </ui:include>
 
 </a:outputPanel>
