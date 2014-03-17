@@ -78,6 +78,8 @@ public class ResHelper {
 //        return result;
 //    }
 
+
+
     public boolean matchFormat(Collection<Format> formats, StoreRes storeRes) {
         for (Format cFormat : formats) {
             boolean find = false;

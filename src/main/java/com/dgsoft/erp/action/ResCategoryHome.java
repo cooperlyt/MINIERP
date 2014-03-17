@@ -48,6 +48,19 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         this.parentId = parentId;
     }
 
+    public List<String> getMatchIds() {
+        return getMatchResCategoryIds(getInstance());
+    }
+
+    private List<String> getMatchResCategoryIds(ResCategory category) {
+        List<String> result = new ArrayList<String>();
+        result.add(category.getId());
+        for (ResCategory sub : category.getResCategories()) {
+            result.addAll(getMatchResCategoryIds(sub));
+        }
+        return result;
+    }
+
 //    public static class StoreResNode implements TreeNode {
 //
 //        private TreeNode parent;
@@ -336,7 +349,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
 
 
     @Factory(value = "allStoreResTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategory> getAllStoreResTree(){
+    public List<ResCategory> getAllStoreResTree() {
 //        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
 //        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
 //        for (ResCategory resCategory : rootCategories) {
@@ -348,7 +361,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
     }
 
     @Factory(value = "allStoreResManagerTree", scope = ScopeType.EVENT)
-    public List<ResCategory> getAllStoreResManagerTree(){
+    public List<ResCategory> getAllStoreResManagerTree() {
 //        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
 //        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true ").getResultList();
 //        for (ResCategory resCategory : rootCategories) {
@@ -360,7 +373,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
     }
 
     @Factory(value = "allResTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategory> getAllResTree(){
+    public List<ResCategory> getAllResTree() {
 //        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
 //        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true").getResultList();
 //        for (ResCategory resCategory : rootCategories) {
@@ -373,7 +386,7 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
 
 
     @Factory(value = "allResManagerTree", scope = ScopeType.EVENT)
-    public List<ResCategory> getAllResManagerTree(){
+    public List<ResCategory> getAllResManagerTree() {
 //        List<ResCategoryNode> result = new ArrayList<ResCategoryNode>();
 //        List<ResCategory> rootCategories = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true").getResultList();
 //        for (ResCategory resCategory : rootCategories) {
@@ -397,41 +410,41 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
 
     private List<ResCategory> genResTree(ResTreeFilter filter) {
         List<ResCategory> result;
-        if (filter.containDisable()){
+        if (filter.containDisable()) {
             result = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.type in (:changeTypes)")
-                    .setParameter("changeTypes",filter.getCategoryTypes()).getResultList();
-        }else
+                    .setParameter("changeTypes", filter.getCategoryTypes()).getResultList();
+        } else
             result = getEntityManager().createQuery("select resCategory from ResCategory resCategory where resCategory.root = true and resCategory.enable = true and resCategory.type in (:changeTypes)")
-                .setParameter("changeTypes",filter.getCategoryTypes()).getResultList();
+                    .setParameter("changeTypes", filter.getCategoryTypes()).getResultList();
 
-        for (ResCategory rc: result){
+        for (ResCategory rc : result) {
             rc.setTreeFilter(filter);
         }
         return result;
     }
 
-    @Factory(value="produceInResTree",scope = ScopeType.CONVERSATION)
-    public List<ResCategory> getProduceInResTree(){
+    @Factory(value = "produceInResTree", scope = ScopeType.CONVERSATION)
+    public List<ResCategory> getProduceInResTree() {
         return genResTree(new ProduceInResTreeFilter());
-                //getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,false);
+        //getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,false);
     }
 
-    @Factory(value = "produceInStoreResTree",scope = ScopeType.CONVERSATION)
-    public List<ResCategory> getProduceInStoreResTree(){
-        return  genResTree(new ProduceInStoreResTreeFilter());
-                //getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,true);
+    @Factory(value = "produceInStoreResTree", scope = ScopeType.CONVERSATION)
+    public List<ResCategory> getProduceInStoreResTree() {
+        return genResTree(new ProduceInStoreResTreeFilter());
+        //getStoreChangeResLimitTree(StockChange.StoreChangeType.PRODUCE_IN,true);
     }
 
-    @Factory(value = "saleResTree",scope = ScopeType.CONVERSATION)
-    public List<ResCategory> getSaleResTree(){
-        return  genResTree(new SaleResTreeFilter());
-                //getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,false);
+    @Factory(value = "saleResTree", scope = ScopeType.CONVERSATION)
+    public List<ResCategory> getSaleResTree() {
+        return genResTree(new SaleResTreeFilter());
+        //getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,false);
     }
 
     @Factory(value = "saleStoreResTree", scope = ScopeType.CONVERSATION)
-    public List<ResCategory> getSaleStoreTree(){
-        return  genResTree(new SaleStoreResTreeFilter());
-                //getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,true);
+    public List<ResCategory> getSaleStoreTree() {
+        return genResTree(new SaleStoreResTreeFilter());
+        //getStoreChangeResLimitTree(StockChange.StoreChangeType.SELL_OUT,true);
     }
 
     @Override

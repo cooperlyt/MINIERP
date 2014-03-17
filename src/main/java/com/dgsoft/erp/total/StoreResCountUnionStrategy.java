@@ -8,22 +8,11 @@ import com.dgsoft.erp.model.api.StoreResCountEntity;
 /**
  * Created by cooper on 3/16/14.
  */
-public class StoreResCountUnionStrategy implements TotalDataUnionStrategy<StoreRes, StoreResCountEntity> {
+public class StoreResCountUnionStrategy<E extends StoreResCountEntity> implements TotalDataUnionStrategy<StoreRes, E> {
 
-    private static StoreResCountUnionStrategy instance;
-
-    public static StoreResCountUnionStrategy getInstance(){
-        if (instance == null){
-            instance = new StoreResCountUnionStrategy();
-        }
-        return instance;
-    }
-
-    private StoreResCountUnionStrategy() {
-    }
 
     @Override
-    public StoreRes getKey(StoreResCountEntity v) {
+    public StoreRes getKey(E v) {
         return v.getStoreRes();
     }
 

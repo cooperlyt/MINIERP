@@ -37,6 +37,7 @@ public class OrderItem extends StoreResPriceEntity
     private BigDecimal middleMoney;
     private BigDecimal middleRate;
     private MiddleMoneyCalcType middleMoneyCalcType;
+    private boolean presentation;
     private String memo;
 
     public OrderItem() {
@@ -198,6 +199,15 @@ public class OrderItem extends StoreResPriceEntity
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    @Column(name = "PRESENTATION", nullable = false)
+    public boolean isPresentation() {
+        return presentation;
+    }
+
+    public void setPresentation(boolean presentation) {
+        this.presentation = presentation;
     }
 
     @Transient

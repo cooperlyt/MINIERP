@@ -12,33 +12,22 @@ import java.util.Collection;
 /**
  * Created by cooper on 3/16/14.
  */
-public class StoreResGroupStrategy implements TotalGroupStrategy<Res, StoreResCountEntity> {
+public class StoreResGroupStrategy<E extends StoreResCountEntity> implements TotalGroupStrategy<Res,E> {
 
-    private static StoreResGroupStrategy instance;
-
-    public static  StoreResGroupStrategy getInstance(){
-        if (instance == null){
-            instance = new StoreResGroupStrategy();
-        }
-        return instance;
-    }
-
-    private StoreResGroupStrategy(){
+    @Override
+    public Res getKey(E e) {
+        return e.getRes();
     }
 
     @Override
-    public Res getKey(StoreResCountEntity storeResCountEntity) {
-        return storeResCountEntity.getRes();
-    }
-
-    @Override
-    public Object totalGroupData(Collection<StoreResCountEntity> datas) {
+    public Object totalGroupData(Collection<E> datas) {
         ResTotalData result = new ResTotalData();
         for (StoreResCountEntity data: datas){
             result.add(data);
         }
         return result;
     }
+
 
     public class ResTotalData {
 

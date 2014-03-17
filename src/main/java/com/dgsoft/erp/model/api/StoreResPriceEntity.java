@@ -42,7 +42,22 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
 
     public abstract BigDecimal getRebate();
 
-    public void setInputMoney(BigDecimal money) {
+    public abstract boolean isPresentation();
+
+    public abstract void setPresentation(boolean presentation);
+
+    public boolean isFree() {
+        return isPresentation();
+    }
+
+    public void setFree(boolean free) {
+        setPresentation(free);
+        if (free){
+            setMoney(BigDecimal.ZERO);
+        }
+    }
+
+    public  void setInputMoney(BigDecimal money) {
         setMoney(money);
         calcPriceByUnitPrice();
     }
@@ -112,6 +127,7 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
 
     public boolean isSameItem(StoreResPriceEntity other) {
         return super.isSameItem(other) && getUseUnit().equals(other.getUseUnit()) &&
+                (isPresentation() == other.isPresentation()) &&
                 getMoney().equals(other.getMoney()) && getRebate().equals(other.getRebate());
     }
 

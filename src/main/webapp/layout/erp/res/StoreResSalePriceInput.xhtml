@@ -8,6 +8,15 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="StoreResPriceInput.xhtml">
     <!--param inputValue formatTemplate countLableStyleClass ,priceChangeRender, -->
+
+    <ui:define name="countAfter">
+        <s:span styleClass="value">
+            <h:selectBooleanCheckbox value="#{inputValue.free}">
+                <a:ajax immediate="true" execute="@this" event="click" render="priceInputFields"/>
+            </h:selectBooleanCheckbox>  #{messages.Presentation}
+        </s:span>
+    </ui:define>
+
     <ui:define name="priceExtend">
         <s:span styleClass="value">
             #{messages.orderItemPriceRebate}

@@ -259,7 +259,10 @@
             <f:facet name="header">
                 #{messages.orderItemUnitPrice}
             </f:facet>
-            <h:outputText value="#{_item.money}">
+
+            <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
+
+            <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>

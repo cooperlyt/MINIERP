@@ -28,24 +28,22 @@ if ((dispatchHome != null) &amp;&amp; dispatchHome.isIdDefined()){
 }else{
 	stockChangeHome = Component.getInstance("stockChangeHome",true);
 	stockChangeHome.setId(params['stockChangeId'].value);
-	//orderHome = Component.getInstance("orderHome",true);
-	//orderHome.setId();
+	orderHome = Component.getInstance("orderHome",true);
+	orderHome.setId(stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getCustomerOrder().getId());
 	order = stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getCustomerOrder();
-	masterNeedRes = orderHome.getMasterNeedRes();
-	//TODO NeedResID
-	dispatchIt = masterNeedRes.getDispatchList().iterator();
-	while(dispatchIt.hasNext()){
-		dispatch = dispatchIt.next();
-		if (dispatch.getStore().getId().equals(params["storeId"].value)){
-			//dispatchItems = dispatch.getDispatchItemList();
-			outDate = dispatch.getStockChange().operDate();
-			store = dispatch.getStore().getName() + "(" + dispatch.getStore().getId() + ")";
-			shipAddres = masterNeedRes.getAddress() + "   " + masterNeedRes.getPostCode() ;
-			
-			
-		}	
-	}
-
+	
+	outDate = stockChangeHome.getInstance().getOperDate();
+	store = stockChangeHome.getInstance().getStore().getName() + "("  + stockChangeHome.getInstance().getStore().getId() + ")";
+	
+	shipAddres = stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getAddress() +  "    " + stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getPostCode();
+	
+	if (order.payType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
+		proxyMoney = orderHome.getShortageMoney(); 
+	}else{
+		proxyMoney = 0;
+	}	
+	
+	dispatchItems = stockChangeHome.getInstance().getStockChangeItems();
 	
 }
 

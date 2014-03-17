@@ -8,5 +8,6 @@
     <restrict>#{s:hasRole('erp.storage.store')}</restrict>
     <param name="orderId"/>
     <param name="storeId"/>
+    <param name="stockChangeId"/>
 
 </page>

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.swing.tree.TreeNode;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -15,7 +16,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "STORE", catalog = "MINI_ERP")
-public class Store implements java.io.Serializable, TreeNode {
+public class Store implements Serializable, TreeNode, Comparable<Store> {
 
     private String id;
     private String name;
@@ -287,5 +288,11 @@ public class Store implements java.io.Serializable, TreeNode {
     @Transient
     public Enumeration children() {
         return Iterators.asEnumeration(getRootStoreAreaList(false).iterator());
+    }
+
+    @Override
+    @Transient
+    public int compareTo(Store o) {
+        return getId().compareTo(o.getId());
     }
 }

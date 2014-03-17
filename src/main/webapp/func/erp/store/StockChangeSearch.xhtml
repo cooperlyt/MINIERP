@@ -125,6 +125,8 @@
             <a:commandLink value="#{_change.id}" render="stockChangeDetailsTable"
                            oncomplete="#{rich:component('stockChangeDetails')}.show()">
                 <a:param value="#{_change.id}" assignTo="#{stockChangeHome.id}"/>
+                <a:param value="#{_change.orderDispatch.needRes.customerOrder.id}"
+                         assignTo="#{orderHome.id}" rendered="#{_change.operType eq 'SELL_OUT'}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandLink>
             <f:facet name="footer">
@@ -207,7 +209,79 @@
     <a:outputPanel id="stockChangeDetailsTable">
 
         <a:outputPanel rendered="#{stockChangeHome.idDefined}">
+            <rich:collapsiblePanel switchType="client" expanded="false"
+                                   header="#{messages[stockChangeHome.instance.operType.name()]}">
 
+
+
+
+                <a:outputPanel rendered="#{stockChangeHome.instance.operType eq 'SELL_OUT'}">
+
+                    <h:graphicImage value="/img/print.png"/>
+
+                    <s:link target="_blank" value="#{messages.orderStoreOutPrint}"
+                            view="/report/saleStoreOutPaper.xhtml">
+                        <f:param value="#{stockChangeHome.instance.id}" name="stockChangeId"/>
+
+                    </s:link>
+
+                    <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+                        <s:decorate
+                                rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and (not orderHome.getInstance().moneyComplete)}"
+                                template="/layout/display.xhtml">
+                            <ui:define name="label">
+                                #{messages.EXPRESS_PROXY}
+                            </ui:define>
+                            <h:outputText value="#{orderHome.shortageMoney}">
+                                <f:convertNumber locale="#{calendarBean.locale}"
+                                                 type="currency" groupingUsed="true"/>
+                            </h:outputText>
+                        </s:decorate>
+
+
+                        <s:decorate template="/layout/seam-display.xhtml">
+                            <ui:define name="label">#{messages.order_fare_by_customer}</ui:define>
+                            <h:selectBooleanCheckbox disabled="true"
+                                                     value="#{stockChangeHome.instance.orderDispatch.needRes.fareByCustomer}"/>
+                        </s:decorate>
+
+
+                        <s:decorate template="/layout/seam-display.xhtml">
+                            <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
+                            #{stockChangeHome.instance.orderDispatch.needRes.receivePerson}
+                        </s:decorate>
+
+                        <s:decorate template="/layout/seam-display.xhtml">
+                            <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
+                            #{stockChangeHome.instance.orderDispatch.needRes.receiveTel}
+                        </s:decorate>
+
+                        <s:decorate template="/layout/seam-display.xhtml">
+                            <ui:define name="label">#{messages.order_field_address}</ui:define>
+                            <h:outputText value="#{stockChangeHome.instance.orderDispatch.needRes.address}"/>
+                        </s:decorate>
+
+                        <s:decorate template="/layout/seam-display.xhtml">
+                            <ui:define name="label">#{messages.order_field_postCode}</ui:define>
+                            <h:outputText value="#{stockChangeHome.instance.orderDispatch.needRes.postCode}"/>
+                        </s:decorate>
+
+                        <div style="clear: both;"/>
+
+                        <ui:include src="/layout/erp/biz/DeliverTypeView.xhtml">
+                            <ui:param name="dispatch" value="#{stockChangeHome.instance.orderDispatch}"/>
+                        </ui:include>
+
+                        <div style="clear: both;"/>
+                    </s:decorate>
+
+
+                </a:outputPanel>
+
+
+            </rich:collapsiblePanel>
+
+            <br/>
             <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
                 <ui:param name="value" value="#{stockChangeHome.instance.changeDetails}"/>
             </ui:include>

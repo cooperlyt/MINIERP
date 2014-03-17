@@ -15,9 +15,15 @@
     </ui:include>
 
     <f:subview>
-        <div style="clear:both"/>
-        <a:outputPanel id="priceInputFields">
 
+
+        <ui:insert name="countAfter"/>
+
+        <div style="clear:both"/>
+
+
+        <a:outputPanel id="priceInputFields">
+            <a:outputPanel rendered="#{not inputValue.free}">
             <div>
                 <s:label styleClass="name">
                     #{messages.orderItemPrice}
@@ -77,6 +83,7 @@
 
 
             </div>
+            </a:outputPanel>
         </a:outputPanel>
     </f:subview>
 

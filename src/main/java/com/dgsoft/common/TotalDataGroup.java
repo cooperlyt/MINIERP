@@ -47,7 +47,7 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
 
     //public static        Object... params
 
-    public static <V> TotalDataGroup<?, V> allGroupBy(Collection<V> values,TotalGroupStrategy<?, V>... groupStrategys){
+    public static <V> TotalDataGroup<?, V> allGroupBy(Collection<? extends V> values,TotalGroupStrategy<?, V>... groupStrategys){
 
         TotalDataGroup<?, V> result =  new TotalDataGroup<Comparable, V>(null);
         result.values = new ArrayList<V>(values);

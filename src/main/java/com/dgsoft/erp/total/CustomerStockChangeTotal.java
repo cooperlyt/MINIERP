@@ -43,9 +43,9 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                 public Object totalGroupData(Collection<StoreResCountEntity> datas) {
                     return null;
                 }
-            }, StoreResGroupStrategy.getInstance());
+            }, new StoreResGroupStrategy<StoreResCountEntity>());
 
-            TotalDataGroup.unionData(customerResultGroup, StoreResCountUnionStrategy.getInstance());
+            TotalDataGroup.unionData(customerResultGroup,new StoreResCountUnionStrategy<StoreResCountEntity>());
 
             TotalDataGroup.sort(customerResultGroup, new Comparator<StoreResCountEntity>() {
                 @Override
