@@ -20,9 +20,8 @@ public class CustomerMoneyTotal extends CustomerMoneyTotalBase {
             "accountOper.operDate <= #{customerMoneyTotal.searchDateArea.searchDateTo}",
             "accountOper.operType = #{customerMoneyTotal.accountOperType}",
             "accountOper.operType in (#{customerMoneyTotal.showTypes})",
-            "accountOper.customer.customerArea.id = #{customerMoneyTotal.sellAreaId}} ",
-            "lower(accountOper.customer.name) like lower(concat(#{customerMoneyTotal.customerName},'%'))",
-    };
+            "accountOper.customer.customerArea.id = #{customerMoneyTotal.sellAreaId} ",
+            "lower(accountOper.customer.name) like lower(concat(#{customerMoneyTotal.customerName},'%'))" };
 
 
     public CustomerMoneyTotal() {

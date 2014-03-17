@@ -111,6 +111,11 @@ customerShipConfirm.getSearchDateArea().setDateTo(params['dateTo'].value);
                     <property name="name">red</property>
                     <property name="dataType">boolean</property>
                 </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">bank</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
@@ -127,6 +132,9 @@ customerShipConfirm.getSearchDateArea().setDateTo(params['dateTo'].value);
                 </structure>
                 <structure>
                     <property name="columnName">red</property>
+                </structure>
+                <structure>
+                    <property name="columnName">bank</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -156,6 +164,11 @@ customerShipConfirm.getSearchDateArea().setDateTo(params['dateTo'].value);
                         <property name="name">red</property>
                         <property name="dataType">boolean</property>
                     </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">bank</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -171,6 +184,9 @@ mIt = customerMoneyConfirm.getResultList().iterator();
 	if (accountOper.getDisplayPayType() != null){
 		row['PayType'] = messages.get(accountOper.getDisplayPayType().name());
 	}
+	
+	if (accountOper.getPayType().equals(com.dgsoft.erp.model.api.PayType.BANK_TRANSFER) &amp;&amp; (accountOper.getBankAccount() != null))
+		row['bank'] = dictionary.getWordValue(accountOper.getBankAccount().getBank());
 	return true;
 }else
 	return false;]]></method>
@@ -878,6 +894,7 @@ return false;]]></method>
 </H3>]]></text-property>
         </text>
         <table id="15">
+            <property name="width">7.764227642276423in</property>
             <property name="dataSet">MoneyDataSet</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -929,11 +946,28 @@ return false;]]></method>
                     <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">bank</property>
+                    <expression name="expression" type="javascript">dataSetRow["bank"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
-            <column id="34"/>
-            <column id="35"/>
-            <column id="36"/>
-            <column id="256"/>
+            <column id="34">
+                <property name="width">1.5528455284552845in</property>
+            </column>
+            <column id="35">
+                <property name="width">1.5528455284552845in</property>
+            </column>
+            <column id="36">
+                <property name="width">1.5528455284552845in</property>
+            </column>
+            <column id="256">
+                <property name="width">1.2276422764227641in</property>
+            </column>
+            <column id="589">
+                <property name="width">1.8780487804878048in</property>
+            </column>
             <header>
                 <row id="16">
                     <cell id="17">
@@ -991,6 +1025,19 @@ return false;]]></method>
                             <text-property name="text">支付方式</text-property>
                         </label>
                     </cell>
+                    <cell id="586">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="590">
+                            <text-property name="text">支付方式</text-property>
+                        </label>
+                    </cell>
                 </row>
             </header>
             <detail>
@@ -1007,8 +1054,7 @@ return false;]]></method>
                         <data id="25">
                             <property name="fontFamily">"SimSun"</property>
                             <structure name="dateTimeFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">y年M月d日</property>
+                                <property name="category">Unformatted</property>
                                 <property name="locale">zh_Hans_CN</property>
                             </structure>
                             <property name="resultSetColumn">OperDate</property>
@@ -1069,12 +1115,26 @@ return false;]]></method>
                             <property name="resultSetColumn">PayType</property>
                         </data>
                     </cell>
+                    <cell id="587">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="591">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">bank</property>
+                        </data>
+                    </cell>
                 </row>
             </detail>
             <footer>
                 <row id="30">
                     <cell id="31">
-                        <property name="colSpan">4</property>
+                        <property name="colSpan">5</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>

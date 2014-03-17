@@ -190,7 +190,7 @@
                 </rich:column>
 
                 <rich:column colspan="2" rowspan="2" breakRowBefore="true">
-                    #{messages.storeOut_field_dateTime}
+                    #{customerShipTotal.sellOutTotal ? messages.storeOut_field_dateTime : messages.storeIn_field_dateTime}
                 </rich:column>
                 <rich:column rowspan="2">
                     #{messages.Store}

@@ -11,6 +11,8 @@ importPackage(Packages.java.math);
 
 resHelper = Component.getInstance("resHelper", false); 
 
+dictionary = Component.getInstance("dictionary", false);
+
 
 
 
@@ -25,8 +27,9 @@ resHelper = Component.getInstance("resHelper", false);
             <method name="open"><![CDATA[customerShipTotal = Component.getInstance("customerShipTotal", false);
 
 
-totalDataMap = customerShipTotal.getTotalOutResultList();
-dataMap = customerShipTotal.getCustomerTotalResultMap();
+totalDataMap = customerShipTotal.getTotalResCountGroup();
+dataMap = customerShipTotal.getCustomerResultGroup().getChildMap();
+
 
 ]]></method>
         </script-data-source>
@@ -166,7 +169,7 @@ dataMap = customerShipTotal.getCustomerTotalResultMap();
 cit = dataMap.entrySet().iterator();
 if (cit.hasNext()){
 	curEntry = cit.next();
-	rit = curEntry.getValue().getStoreResCountList().iterator();
+	rit = curEntry.getValue().iterator();
 }else{
 	rit = null;
 }
@@ -178,7 +181,7 @@ if (cit.hasNext()){
 if (!rit.hasNext()){
 	if (cit.hasNext()){
 		curEntry = cit.next();
-		rit = curEntry.getValue().getStoreResCountList().iterator();
+		rit = curEntry.getValue().iterator();
 		resEntry = rit.next();
 	}else{
 		return false;
@@ -326,6 +329,173 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
 	return false;
 }]]></method>
         </script-data-set>
+        <script-data-set name="DetailsDataSet" id="417">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">0</property>
+                    <property name="name">CUSTOMER_ID</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">CUSTOMER_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">DATETIME</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">STORE_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">STORE_RES</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">MASTER_COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">MASTER_UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">AUX_COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">AUX_UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">OPER_EMP</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">CUSTOMER_ID</property>
+                </structure>
+                <structure>
+                    <property name="columnName">CUSTOMER_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">DATETIME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">STORE_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">STORE_RES</property>
+                </structure>
+                <structure>
+                    <property name="columnName">MASTER_COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">MASTER_UNIT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">AUX_COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">AUX_UNIT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">OPER_EMP</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">CUSTOMER_ID</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">CUSTOMER_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">DATETIME</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">STORE_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">STORE_RES</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">MASTER_COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">MASTER_UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">AUX_COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">AUX_UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">OPER_EMP</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[dit = customerShipTotal.getResultList().iterator();]]></method>
+            <method name="fetch"><![CDATA[if (dit.hasNext()){
+	item = dit.next();
+	if (customerShipTotal.isSellOutTotal()){
+		row['CUSTOMER_ID'] = item.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer().getId();
+		row['CUSTOMER_NAME'] = item.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer().getName();
+		
+	}else{
+		row['CUSTOMER_ID'] = item.getStockChange().getProductBackStoreIn().getOrderBack().getCustomer().getId();
+		row['CUSTOMER_NAME'] = item.getStockChange().getProductBackStoreIn().getOrderBack().getCustomer().getName();
+		
+	}
+	
+	row['DATETIME'] = item.getStockChange().getOperDate();
+	row['STORE_NAME'] = item.getStockChange().getStore().getName();
+	row['STORE_RES'] = resHelper.generateStoreResTitle(item.getStoreRes());
+	row['MASTER_COUNT'] = item.getMasterCount();
+	row['MASTER_UNIT'] = item.getRes().getUnitGroup().getMasterUnit().getName();
+	row['AUX_COUNT'] = item.getAuxCount();
+	row['AUX_UNIT'] = item.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
+	row['OPER_EMP'] = dictionary.getEmpNameById(item.getStockChange().getOperEmp()); 
+
+  return true;
+}else{
+return false;
+}]]></method>
+        </script-data-set>
     </data-sets>
     <styles>
         <style name="report" id="4">
@@ -381,6 +551,546 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
         </simple-master-page>
     </page-setup>
     <body>
+        <table id="418">
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">medium</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">medium</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">medium</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">medium</property>
+            <property name="width">7.764227642276423in</property>
+            <property name="dataSet">DetailsDataSet</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">CUSTOMER_ID</property>
+                    <text-property name="displayName">CUSTOMER_ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CUSTOMER_ID"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CUSTOMER_NAME</property>
+                    <text-property name="displayName">CUSTOMER_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CUSTOMER_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">DATETIME</property>
+                    <text-property name="displayName">DATETIME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DATETIME"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">STORE_NAME</property>
+                    <text-property name="displayName">STORE_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["STORE_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">STORE_RES</property>
+                    <text-property name="displayName">STORE_RES</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["STORE_RES"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">MASTER_COUNT</property>
+                    <text-property name="displayName">MASTER_COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MASTER_COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">MASTER_UNIT</property>
+                    <text-property name="displayName">MASTER_UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MASTER_UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">AUX_COUNT</property>
+                    <text-property name="displayName">AUX_COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AUX_COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">AUX_UNIT</property>
+                    <text-property name="displayName">AUX_UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AUX_UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">OPER_EMP</property>
+                    <text-property name="displayName">OPER_EMP</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["OPER_EMP"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["DATETIME"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["DATETIME"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_2</property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["DATETIME"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_3</property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["CUSTOMER_ID"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="472">
+                <property name="width">0.11382113821138211in</property>
+            </column>
+            <column id="473">
+                <property name="width">1.7804878048780488in</property>
+            </column>
+            <column id="475">
+                <property name="width">0.5447154471544715in</property>
+            </column>
+            <column id="476">
+                <property name="width">3.0569105691056913in</property>
+            </column>
+            <column id="477">
+                <property name="width">0.5447154471544715in</property>
+            </column>
+            <column id="478">
+                <property name="width">0.2845528455284553in</property>
+            </column>
+            <column id="479">
+                <property name="width">0.5853658536585366in</property>
+            </column>
+            <column id="480">
+                <property name="width">0.2845528455284553in</property>
+            </column>
+            <column id="481">
+                <property name="width">0.5691056910569106in</property>
+            </column>
+            <header>
+                <row id="505">
+                    <cell id="506">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">2</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="528">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">时间</text-property>
+                        </label>
+                    </cell>
+                    <cell id="508">
+                        <property name="colSpan">1</property>
+                        <property name="rowSpan">2</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="564">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">仓库</text-property>
+                        </label>
+                    </cell>
+                    <cell id="509">
+                        <property name="colSpan">1</property>
+                        <property name="rowSpan">2</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="565">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">货品</text-property>
+                        </label>
+                    </cell>
+                    <cell id="510">
+                        <property name="colSpan">4</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="527">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">数量</text-property>
+                        </label>
+                    </cell>
+                    <cell id="514">
+                        <property name="colSpan">1</property>
+                        <property name="rowSpan">2</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="529">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">操作人</text-property>
+                        </label>
+                    </cell>
+                </row>
+                <row id="545">
+                    <property name="height">0.18699186991869918in</property>
+                    <cell id="597">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="605">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">主计量单位</text-property>
+                        </label>
+                    </cell>
+                    <cell id="599">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">2px</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">2px</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">2px</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">2px</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="606">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">辅计量单位</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="482">
+                <property name="groupName">NewTableGroup1</property>
+                <expression name="keyExpr" type="javascript">row["CUSTOMER_ID"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["CUSTOMER_ID"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="483">
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <cell id="484">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <data id="444">
+                                <property name="fontFamily">"SimSun"</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="resultSetColumn">CUSTOMER_NAME</property>
+                            </data>
+                        </cell>
+                        <cell id="487"/>
+                        <cell id="488"/>
+                        <cell id="489">
+                            <property name="textAlign">center</property>
+                        </cell>
+                        <cell id="490"/>
+                        <cell id="491"/>
+                        <cell id="492"/>
+                        <cell id="493"/>
+                    </row>
+                </header>
+                <footer>
+                    <row id="494">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <cell id="495"/>
+                        <cell id="496">
+                            <property name="fontFamily">"SimSun"</property>
+                            <grid id="566">
+                                <property name="width">1.6097560975609757in</property>
+                                <column id="567">
+                                    <property name="width">0.36585365853658536in</property>
+                                </column>
+                                <column id="568">
+                                    <property name="width">1.2439024390243902in</property>
+                                </column>
+                                <row id="569">
+                                    <cell id="570">
+                                        <label id="561">
+                                            <property name="fontFamily">"SimSun"</property>
+                                            <property name="fontWeight">bold</property>
+                                            <text-property name="text">合计</text-property>
+                                        </label>
+                                    </cell>
+                                    <cell id="571">
+                                        <data id="559">
+                                            <property name="fontWeight">bold</property>
+                                            <property name="resultSetColumn">Aggregation_2</property>
+                                        </data>
+                                    </cell>
+                                </row>
+                            </grid>
+                        </cell>
+                        <cell id="498">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                        </cell>
+                        <cell id="500"/>
+                        <cell id="501"/>
+                        <cell id="502"/>
+                        <cell id="503"/>
+                        <cell id="504"/>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="440">
+                    <cell id="441">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="443">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="446">
+                            <property name="fontFamily">"SimSun"</property>
+                            <structure name="dateTimeFormat">
+                                <property name="category">Unformatted</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="resultSetColumn">DATETIME</property>
+                        </data>
+                    </cell>
+                    <cell id="447">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="448">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">STORE_NAME</property>
+                        </data>
+                    </cell>
+                    <cell id="449">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="450">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">STORE_RES</property>
+                        </data>
+                    </cell>
+                    <cell id="451">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="452">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">MASTER_COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="453">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="454">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">MASTER_UNIT</property>
+                        </data>
+                    </cell>
+                    <cell id="455">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="456">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">AUX_COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="457">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="458">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">AUX_UNIT</property>
+                        </data>
+                    </cell>
+                    <cell id="459">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="460">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="resultSetColumn">OPER_EMP</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="461">
+                    <cell id="462"/>
+                    <cell id="463">
+                        <grid id="572">
+                            <property name="width">1.6097560975609757in</property>
+                            <column id="573">
+                                <property name="width">0.4634146341463415in</property>
+                            </column>
+                            <column id="574">
+                                <property name="width">1.146341463414634in</property>
+                            </column>
+                            <row id="575">
+                                <cell id="576">
+                                    <label id="563">
+                                        <property name="fontFamily">"SimSun"</property>
+                                        <property name="fontSize">11pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">总计</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="577">
+                                    <data id="560">
+                                        <property name="fontFamily">"SimSun"</property>
+                                        <property name="fontSize">11pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="resultSetColumn">Aggregation_3</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </grid>
+                    </cell>
+                    <cell id="465"/>
+                    <cell id="466"/>
+                    <cell id="467"/>
+                    <cell id="468"/>
+                    <cell id="469"/>
+                    <cell id="470"/>
+                    <cell id="471"/>
+                </row>
+            </footer>
+        </table>
         <table id="161">
             <property name="borderBottomStyle">solid</property>
             <property name="borderBottomWidth">thick</property>
@@ -546,7 +1256,7 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
                 <row id="281">
                     <cell id="282">
                         <property name="colSpan">3</property>
-                        <property name="rowSpan">3</property>
+                        <property name="rowSpan">2</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">2px</property>
                         <property name="borderLeftStyle">solid</property>
@@ -578,7 +1288,7 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
                             <property name="fontFamily">"SimSun"</property>
                             <property name="fontSize">11pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">发货数量</text-property>
+                            <text-property name="text">数量</text-property>
                         </label>
                     </cell>
                 </row>
@@ -617,74 +1327,6 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
                             <property name="fontSize">11pt</property>
                             <property name="fontWeight">bold</property>
                             <text-property name="text">辅计量单位</text-property>
-                        </label>
-                    </cell>
-                </row>
-                <row id="162">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">3px</property>
-                    <cell id="173">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="174">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">数量</text-property>
-                        </label>
-                    </cell>
-                    <cell id="177">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="178">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">单位</text-property>
-                        </label>
-                    </cell>
-                    <cell id="175">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="176">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">数量</text-property>
-                        </label>
-                    </cell>
-                    <cell id="179">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="180">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">单位</text-property>
                         </label>
                     </cell>
                 </row>
@@ -1223,7 +1865,7 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
                 <row id="394">
                     <cell id="395">
                         <property name="colSpan">2</property>
-                        <property name="rowSpan">3</property>
+                        <property name="rowSpan">2</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">2px</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1255,7 +1897,7 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
                             <property name="fontFamily">"SimSun"</property>
                             <property name="fontSize">11pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">发货数量</text-property>
+                            <text-property name="text">数量</text-property>
                         </label>
                     </cell>
                 </row>
@@ -1294,74 +1936,6 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
                             <property name="fontSize">11pt</property>
                             <property name="fontWeight">bold</property>
                             <text-property name="text">辅计量单位</text-property>
-                        </label>
-                    </cell>
-                </row>
-                <row id="324">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">2px</property>
-                    <cell id="331">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="404">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">数量</text-property>
-                        </label>
-                    </cell>
-                    <cell id="333">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="405">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">单位</text-property>
-                        </label>
-                    </cell>
-                    <cell id="335">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="406">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">数量</text-property>
-                        </label>
-                    </cell>
-                    <cell id="337">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">2px</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">2px</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">2px</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">2px</property>
-                        <label id="407">
-                            <property name="fontFamily">"SimSun"</property>
-                            <property name="fontSize">11pt</property>
-                            <property name="fontWeight">bold</property>
-                            <text-property name="text">单位</text-property>
                         </label>
                     </cell>
                 </row>
@@ -1555,6 +2129,9 @@ tit = totalDataMap.getStoreResCountList().iterator();]]></method>
                     </cell>
                     <cell id="357">
                         <data id="416">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
                             <property name="resultSetColumn">Aggregation_3</property>
                         </data>
                     </cell>
