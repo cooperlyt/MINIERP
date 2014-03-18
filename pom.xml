@@ -65,7 +65,7 @@
         <repository>
             <id>in-project</id>
             <name>In Project Repo</name>
-            <url>file://${project.basedir}/lib</url>
+            <url>file://${project.basedir}/lib/</url>
         </repository>
     </repositories>
 
@@ -454,6 +454,30 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.jboss.seam</groupId>
+            <artifactId>jboss-seam-pdf</artifactId>
+
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>local</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13.cn</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-asian</artifactId>
+            <version>5.2.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jboss.seam</groupId>

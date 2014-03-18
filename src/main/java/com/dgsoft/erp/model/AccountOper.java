@@ -314,4 +314,13 @@ public class AccountOper implements java.io.Serializable {
         }
         return getOperMoney();
     }
+
+    @Transient
+    public BigDecimal getBankRemitFee(){
+        if (getOperType().equals(AccountOperType.DEPOSIT_BACK) ||
+                getOperType().equals(AccountOperType.ORDER_BACK)){
+            return getRemitFee();
+        }
+        return BigDecimal.ZERO;
+    }
 }

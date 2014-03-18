@@ -1,0 +1,62 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://jboss.org/schema/seam/pdf"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="func-body">
+
+        <h:panelGrid style="width: 100%; text-align: center;" columns="1">
+
+            <p:piechart title="#{messages.customerBalanceChart} #{customerMoneySum.customerCount}"
+                        legend="false" borderVisible="false"
+                        borderBackgroundPaint="white"
+                            width="600"
+                        plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                        baseSectionPaint="white"
+                        circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+                <ui:repeat value="#{collectionTools.mapToList(customerMoneySum.customerMoneyCountSum)}" var="_count">
+                    <p:data key="#{_count.value} #{messages[_count.key]}"  value="#{_count.value}"/>
+                </ui:repeat>
+            </p:piechart>
+
+            <p:piechart title="#{messages.customerOverdraftChart} #{customerMoneySum.customerOverdraftMoneyTotal}"
+                        legend="false" borderVisible="false"
+                        borderBackgroundPaint="white"  width="600"
+                        plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                        baseSectionPaint="white"
+                        circular="true" is3D="true" plotForegroundAlpha="0.9">
+                <ui:repeat value="#{collectionTools.mapToList(customerMoneySum.customerOverdraftMoneySum)}" var="_count">
+                    <p:data key="#{_count.key}"  value="#{_count.value}"/>
+                </ui:repeat>
+            </p:piechart>
+
+
+            <p:piechart title="#{messages.customerDepositChart} #{customerMoneySum.customerDepositMoneyTotal}"
+                        legend="false" borderVisible="false"
+                        borderBackgroundPaint="white"   width="600"
+                        plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                        baseSectionPaint="white"
+                        circular="true" is3D="true" plotForegroundAlpha="0.9">
+                <ui:repeat value="#{collectionTools.mapToList(customerMoneySum.customerDepositMoneySum)}" var="_count">
+                    <p:data key="#{_count.key}"  value="#{_count.value}"/>
+                </ui:repeat>
+            </p:piechart>
+
+
+        </h:panelGrid>
+
+
+
+
+
+
+    </ui:define>
+
+</ui:composition>

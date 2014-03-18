@@ -43,6 +43,14 @@
                     </a:commandLink>
 
                 </rich:column>
+                <rich:column rendered="#{s:hasRole('erp.finance.cashier') or s:hasRole('erp.finance.accountancy')}">
+                    <s:link target="_blank" view="/report/bankConfirm.xhtml">
+                        <s:graphicImage value="/img/match_price.png" title="#{messages.bankConfirmPager}"/>
+                        <f:param name="bankId" value="#{_dataItem.number}"/>
+                        <f:param name="bankTitle" value="#{_dataItem.bank}"/>
+                    </s:link>
+                </rich:column>
+
             </ui:insert>
         </rich:dataTable>
 
