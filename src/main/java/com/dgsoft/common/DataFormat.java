@@ -21,7 +21,7 @@ public class DataFormat {
 
 
     public static BigDecimal halfUpCurrency(BigDecimal number, Locale locale) {
-        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance();
+        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(locale);
         try {
             return new BigDecimal(currencyFormat.parse(currencyFormat.format(number)).toString());
         } catch (ParseException e) {

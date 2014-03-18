@@ -1,5 +1,6 @@
 package com.dgsoft;
 
+import com.dgsoft.common.DataFormat;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
@@ -44,65 +45,12 @@ public class TestKnow {
 
 
     public static void main(String[] args){
+       BigDecimal number = new BigDecimal("99.000");
 
-        TestAnn testAnn = new TestAnn();
-        testAnn.setName("pppp");
-        try {
-            try {
-                Field field = TestAnn.class.getDeclaredField("name");
-                field.setAccessible(true);
-                System.out.println(field.get(testAnn));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(Locale.CHINA);
+        System.out.println(DecimalFormat.getCurrencyInstance(Locale.CHINA).format(number));
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        System.out.println(new BigDecimal("10.0000000000").compareTo(new BigDecimal("10")));
-
-        NumberFormat df = DecimalFormat.getCurrencyInstance(Locale.CHINA);
-        //DecimalFormat df = new DecimalFormat("###,###,##0");
-
-         //df.setRoundingMode(RoundingMode.HALF_UP);
-        BigDecimal bd = new BigDecimal("-9999999.22222");
-
-
-        //String vv = df.format(bd).replace(String.valueOf(df.getDecimalFormatSymbols().getGroupingSeparator()),"");
-
-        try {
-            System.out.println(df.format(bd));
-            System.out.println(df.parse( df.format(bd)));
-
-            System.out.println(df.format(new BigDecimal(df.parse( df.format(bd)).toString())));
-        } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        //df.format(bd);
-
-        //df.format((new BigDecimal(df.format(bd))));
-
-        //System.out.println(df.format((new BigDecimal(vv))));
     }
 
     private String v1;

@@ -7,8 +7,10 @@ import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -52,7 +54,8 @@ public class CustomerMoneySum {
         Map<String,Number> result = new HashMap<String, Number>();
         List qResult = erpEntityManager.createQuery("select count(customer.id) as c, sum(customer.balance) * -1 as b ,max(customer.customerArea.name) as n from Customer customer where customer.balance < 0 and customer.enable = true group by customer.customerArea.id").getResultList();
         for(Object o: qResult){
-            result.put(((Object[])o)[2] + " " + DataFormat.halfUpCurrency((BigDecimal)((Object[]) o)[1]) + "(" + ((Object[])o)[0] + ")" ,  (Number)((Object[])o)[1]);
+
+            result.put(((Object[])o)[2] + " " + DecimalFormat.getCurrencyInstance(Locale.CHINA).format((BigDecimal) ((Object[]) o)[1]) + "(" + ((Object[])o)[0] + ")" ,  (Number)((Object[])o)[1]);
         }
         return result;
     }
@@ -67,7 +70,7 @@ public class CustomerMoneySum {
         Map<String,Number> result = new HashMap<String, Number>();
         List qResult = erpEntityManager.createQuery("select count(customer.id) as c, sum(customer.balance) as b ,max(customer.customerArea.name) as n from Customer customer where customer.balance > 0 and customer.enable = true group by customer.customerArea.id").getResultList();
         for(Object o: qResult){
-            result.put(((Object[])o)[2] + " " + DataFormat.halfUpCurrency((BigDecimal)((Object[]) o)[1]) + "(" + ((Object[])o)[0] + ")" , (Number)((Object[])o)[1]);
+            result.put(((Object[])o)[2] + " " + DecimalFormat.getCurrencyInstance(Locale.CHINA).format((BigDecimal)((Object[]) o)[1]) + "(" + ((Object[])o)[0] + ")" , (Number)((Object[])o)[1]);
         }
         return result;
     }
