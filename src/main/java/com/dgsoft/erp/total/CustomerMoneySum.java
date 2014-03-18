@@ -46,8 +46,8 @@ public class CustomerMoneySum {
         return result;
     }
 
-    public Number getCustomerOverdraftMoneyTotal(){
-        return (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance < 0 and customer.enable = true ").getSingleResult();
+    public String getCustomerOverdraftMoneyTotal(){
+        return DecimalFormat.getCurrencyInstance(Locale.CHINA).format((BigDecimal) erpEntityManager.createQuery("select sum(customer.balance) as c from Customer customer where customer.balance < 0 and customer.enable = true ").getSingleResult());
     }
 
     public Map<String,Number> getCustomerOverdraftMoneySum(){
@@ -61,8 +61,8 @@ public class CustomerMoneySum {
     }
 
 
-    public Number getCustomerDepositMoneyTotal(){
-        return (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance > 0 and customer.enable = true ").getSingleResult();
+    public String getCustomerDepositMoneyTotal(){
+        return DecimalFormat.getCurrencyInstance(Locale.CHINA).format((Number) erpEntityManager.createQuery("select sum(customer.balance) as c from Customer customer where customer.balance > 0 and customer.enable = true ").getSingleResult());
     }
 
 
