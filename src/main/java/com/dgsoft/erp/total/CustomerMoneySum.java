@@ -35,10 +35,10 @@ public class CustomerMoneySum {
         Map<String,Number> result = new HashMap<String, Number>();
 
         result.put("overdraftCount",
-                (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance > 0 and customer.enable = true").getSingleResult());
+                (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance < 0 and customer.enable = true").getSingleResult());
 
         result.put("depositCount",
-                (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance < 0 and customer.enable = true").getSingleResult());
+                (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance > 0 and customer.enable = true").getSingleResult());
 
         result.put("zeroCount",
                 (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance = 0 and customer.enable = true").getSingleResult());
