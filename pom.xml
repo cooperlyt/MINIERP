@@ -470,7 +470,7 @@
         <dependency>
             <groupId>local</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.13.cn</version>
+            <version>1.0.13-CN</version>
         </dependency>
 
         <dependency>
