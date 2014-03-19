@@ -42,6 +42,8 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
 
     private Set<ProductGroup> productGroups = new HashSet<ProductGroup>(0);
 
+    private Set<OrderItemRebate> orderItemRebates = new HashSet<OrderItemRebate>(0);
+
     public Res() {
     }
 
@@ -183,6 +185,15 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
 
     public void setStoreReses(Set<StoreRes> storeReses) {
         this.storeReses = storeReses;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "res")
+    public Set<OrderItemRebate> getOrderItemRebates() {
+        return orderItemRebates;
+    }
+
+    public void setOrderItemRebates(Set<OrderItemRebate> orderItemRebates) {
+        this.orderItemRebates = orderItemRebates;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "res", orphanRemoval = true, cascade = {CascadeType.ALL})

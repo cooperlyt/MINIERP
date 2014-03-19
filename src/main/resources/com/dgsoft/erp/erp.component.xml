@@ -108,4 +108,13 @@
         <property name="ejbql">select bankAccount from BankAccount bankAccount where enable=true</property>
     </component>
 
+    <component name="validRebateProgramList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select rebateProgram from RebateProgram rebateProgram where enable=true</property>
+    </component>
+
+    <component name="allRebateProgramList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select rebateProgram from RebateProgram rebateProgram</property>
+    </component>
+
+
 </components>

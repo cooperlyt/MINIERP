@@ -1,0 +1,56 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/layout/simpleDataCURD.xhtml">
+    <h:outputStylesheet>
+        .leftColumn {
+            vertical-align: top;
+            width: 120px;
+        }
+
+        .rightColumn {
+            vertical-align: top;
+        }
+    </h:outputStylesheet>
+
+    <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
+    <ui:param name="dataList" value="#{allRebateProgramList.resultList}"/>
+    <ui:param name="dataListHeaderTitle" value="#{messages.RebateProgram}"/>
+    <ui:param name="dataHome" value="#{rebateProgramHome}"/>
+
+    <ui:define name="listColumns">
+
+
+        <rich:column>
+            <f:facet name="header">
+                <h:outputText value="#{messages.RebateProgram}"/>
+            </f:facet>
+            <a:commandLink style="#{_dataItem.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                           value="#{_dataItem.name}" immediate="true"
+                           execute="@this" image="/img/edit.png"
+                           render="#{detailsRender},details">
+                <a:param value="#{_dataItem.id}" assignTo="#{dataHome.id}"/>
+                <s:conversationPropagation type="end"/>
+            </a:commandLink>
+
+        </rich:column>
+
+    </ui:define>
+
+    <ui:define name="editFields">
+        <s:decorate template="/layout/seam-edit.xhtml">
+
+        </s:decorate>
+        <s:decorate template="/layout/seam-edit.xhtml">
+
+        </s:decorate>
+
+    </ui:define>
+
+</ui:composition>
