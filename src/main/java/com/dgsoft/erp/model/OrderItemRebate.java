@@ -134,6 +134,9 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
 
     @Transient
     public List<StoreResRebate> getStoreResRebateList(){
+        if (!getRebateProgram().isCalcItem()){
+            return new ArrayList<StoreResRebate>(0);
+        }
         List<StoreResRebate> result = new ArrayList<StoreResRebate>(getStoreResRebates());
         Collections.sort(result);
         return result;

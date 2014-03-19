@@ -224,7 +224,7 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
         return result;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY,targetEntity = Supplier.class)
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Supplier.class)
     @JoinTable(name = "SUPPLIER_RES", joinColumns = @JoinColumn(name = "RES"), inverseJoinColumns = @JoinColumn(name = "SUPPLIER"))
     public Set<Supplier> getSuppliers() {
         return this.suppliers;
@@ -308,9 +308,22 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
     }
 
     @Transient
+    private ResTreeFilter resTreeFilter = null;
+
+    @Transient
+    public void setResTreeFilter(ResTreeFilter resTreeFilter) {
+        this.resTreeFilter = resTreeFilter;
+    }
+
+    @Transient
     @Override
     public ResTreeFilter getTreeFilter() {
-       return getResCategory().getTreeFilter();
+        if (resTreeFilter == null) {
+            return getResCategory().getTreeFilter();
+        } else {
+            return resTreeFilter;
+        }
+
     }
 
     @Transient
@@ -319,7 +332,7 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
     @Transient
     @Override
     public boolean isExpanded() {
-        if (expanded == null){
+        if (expanded == null) {
             expanded = getTreeFilter().expandedDefault();
         }
         return expanded;
@@ -346,7 +359,11 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
     @Transient
     @Override
     public TreeNode getParent() {
-        return getResCategory();
+        if (resTreeFilter == null) {
+            return getResCategory();
+        }else{
+            return null;
+        }
     }
 
     @Transient
@@ -376,13 +393,13 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
     @Transient
     @Override
     public int compareTo(Res o) {
-        if ((o.getId() == null) || (getId() == null)){
-            if ((o.getName() == null) || (getName() == null)){
+        if ((o.getId() == null) || (getId() == null)) {
+            if ((o.getName() == null) || (getName() == null)) {
                 return 0;
-            }else{
+            } else {
                 return getName().compareTo(o.getName());
             }
-        }else{
+        } else {
             return o.getId().compareTo(getId());
         }
     }
