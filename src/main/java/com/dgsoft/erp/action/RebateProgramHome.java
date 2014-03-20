@@ -178,13 +178,20 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
 
     @Override
     protected boolean wire() {
+        if (getInstance().getOrderMode().equals(RebateProgram.OrderRebateMode.NOT_CALC)){
+            getInstance().setRebate(null);
+        }
         getInstance().getOrderItemRebates().clear();
         if (getInstance().isCalcItem()) {
 
-            getInstance().getOrderItemRebates().clear();
-
             for (OrderItemRebate rebate : orderItemRebateList) {
                 if (!rebate.getMode().equals(OrderItemRebate.ItemRebateModel.NOT_CALC)) {
+                    for (StoreResRebate storeResRebate: rebate.getStoreResRebates()){
+                        if (storeResRebate.getMode().equals(OrderItemRebate.ItemRebateModel.NOT_CALC)){
+                            storeResRebate.setRebate(null);
+                            storeResRebate.setCalcUnit(null);
+                        }
+                    }
                     getInstance().getOrderItemRebates().add(rebate);
                 }
             }

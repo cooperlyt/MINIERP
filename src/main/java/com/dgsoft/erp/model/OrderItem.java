@@ -22,9 +22,6 @@ import java.util.Set;
 public class OrderItem extends StoreResPriceEntity
         implements java.io.Serializable {
 
-    public enum MiddleMoneyCalcType {
-        COUNT_FIX, MONEY_RATE;
-    }
 
     private String id;
     private StoreRes storeRes;
@@ -36,7 +33,7 @@ public class OrderItem extends StoreResPriceEntity
     private BigDecimal rebate;
     private BigDecimal middleMoney;
     private BigDecimal middleRate;
-    private MiddleMoneyCalcType middleMoneyCalcType;
+    private OrderItemRebate.ItemRebateModel middleMoneyCalcType;
     private boolean presentation;
     private String memo;
 
@@ -183,11 +180,11 @@ public class OrderItem extends StoreResPriceEntity
 
     @Enumerated(EnumType.STRING)
     @Column(name = "MIDDLE_CALC_TYPE", nullable = true)
-    public MiddleMoneyCalcType getMiddleMoneyCalcType() {
+    public OrderItemRebate.ItemRebateModel getMiddleMoneyCalcType() {
         return middleMoneyCalcType;
     }
 
-    public void setMiddleMoneyCalcType(MiddleMoneyCalcType middleMoneyCalcType) {
+    public void setMiddleMoneyCalcType(OrderItemRebate.ItemRebateModel middleMoneyCalcType) {
         this.middleMoneyCalcType = middleMoneyCalcType;
     }
 

@@ -23,9 +23,10 @@ import java.util.*;
 @Scope(ScopeType.CONVERSATION)
 public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
-    private static final String EJBQL = "select customerOrder from CustomerOrder customerOrder left join fetch customerOrder.customer customer left join fetch customer.customerArea customerArea";
+    private static final String EJBQL = "select customerOrder from CustomerOrder customerOrder left join fetch customerOrder.customer customer left join fetch customer.customerArea customerArea left join fetch customer.middleMan";
 
     private static final String[] RESTRICTIONS = {
+            "lower(customerOrder.id) like lower(concat('%',#{middleManRewardCalc.orderId},'%'))",
             "customerOrder.customer.middleMan.id = #{middleManHome.instance.id}",
             "customerOrder.createDate >= #{middleManRewardCalc.searchDateArea.dateFrom}",
             "customerOrder.createDate <= #{middleManRewardCalc.searchDateArea.searchDateTo}",
@@ -35,29 +36,14 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             "customerOrder.moneyComplete = #{middleManRewardCalc.moneyComplete}",
             "customerOrder.middlePayed = #{middleManRewardCalc.containPayed}"};
 
-    private boolean allCustomerSelected = false;
-
-    private boolean allOrderSelected = false;
-
-
-    //private CustomerOrder.MiddleMoneyCalcType orderCalcType;
-
-    //public BigDecimal allOrderRate;
-
-    //public BigDecimal allOrderMiddleMoney;
-
-    public List<BatchOperData<Customer>> containCustomers;
-
-    public List<OrderCalcItem> containOrders;
 
     public MiddleManRewardCalc() {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
-        //setMaxResults(100);
     }
 
-    private SearchDateArea searchDateArea = new SearchDateArea(new Date(),new Date());
+    private SearchDateArea searchDateArea = new SearchDateArea(new Date(), new Date());
 
     private Boolean containPayed = false;
 
@@ -68,6 +54,8 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
     private Boolean moneyComplete = true;
 
     private Boolean customerConfirm;
+
+    private Boolean orderId;
 
 
     public Boolean getContainPayed() {
@@ -114,8 +102,28 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         this.customerConfirm = customerConfirm;
     }
 
+    public Boolean getOrderId() {
+        return orderId;
+    }
 
-    //------------------------------------
+    public void setOrderId(Boolean orderId) {
+        this.orderId = orderId;
+    }
+
+//------------------------------------
+
+    private boolean allCustomerSelected = false;
+
+    private boolean allOrderSelected = false;
+
+    private boolean allMiddleManSelected = false;
+
+    public List<BatchOperData<Customer>> containCustomers;
+
+    public List<BatchOperData<MiddleMan>> containMiddleMan;
+
+    public List<OrderCalcItem> containOrders;
+
 
     public boolean isAllOrderSelected() {
         return allOrderSelected;
@@ -133,6 +141,13 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         this.allCustomerSelected = allCustomerSelected;
     }
 
+    public boolean isAllMiddleManSelected() {
+        return allMiddleManSelected;
+    }
+
+    public void setAllMiddleManSelected(boolean allMiddleManSelected) {
+        this.allMiddleManSelected = allMiddleManSelected;
+    }
 
     private RebateProgram selectProgram;
 
@@ -144,17 +159,23 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         this.selectProgram = selectProgram;
     }
 
-//    public void calcAllOrderMiddleMoney() {
-//        for (BatchOperData<CustomerOrder> order : getContainOrders()) {
-//            if (order.isSelected()) {
-//                order.getData().setMiddleMoneyCalcType(orderCalcType);
-//                order.getData().setMiddleRate(allOrderRate);
-//                order.getData().setMiddleMoney(allOrderMiddleMoney);
-//                order.getData().calcOrderMiddleMoney();
-//            }
-//        }
-//    }
+    public void setAllOrderRebateProgram(){
+        for (OrderCalcItem item: containOrders){
+            if (item.isSelected()){
+                item.setRebateProgram(selectProgram);
+                item.init();
+            }
+        }
+    }
 
+
+    public void allMiddleManCheckChange(){
+        //TODO
+    }
+
+    public void middleManCheckChange(){
+        //TODO
+    }
 
     public void allCustomerCheckChange() {
         for (BatchOperData<Customer> customer : getContainCustomers()) {
@@ -176,7 +197,6 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         refreshOrder();
 
     }
-
 
 
     public void allOrderCheckChange() {
@@ -218,11 +238,19 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
     }
 
 
-    private void refreshOrder() {
-        containOrders = null;
-        allOrderSelected = false;
+    private List<BatchOperData<MiddleMan>> getContainMiddleMan(){
+        if (isAnyParameterDirty()) {
+            refresh();
+        }
+        initContainMiddleMan();
+        return containMiddleMan;
     }
 
+    private void initContainMiddleMan(){
+        if (containMiddleMan == null){
+            //TODO
+        }
+    }
 
     public List<BatchOperData<Customer>> getContainCustomers() {
         if (isAnyParameterDirty()) {
@@ -236,10 +264,10 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         if (containCustomers == null) {
             Set<Customer> customers = new HashSet<Customer>();
             for (CustomerOrder order : getResultList()) {
-               // order.getCustomer().setSelected(false);
+                // order.getCustomer().setSelected(false);
                 customers.add(order.getCustomer());
             }
-            containCustomers = new ArrayList<BatchOperData<Customer>>(BatchOperData.createBatchOperDataList(customers,false));
+            containCustomers = new ArrayList<BatchOperData<Customer>>(BatchOperData.createBatchOperDataList(customers, false));
         }
     }
 
@@ -264,12 +292,35 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
                         order.setMiddleMoneyCalcType(RebateProgram.OrderRebateMode.NOT_CALC);
                         order.setMiddleTotal(null);
                         order.setMiddleRate(null);
-                        containOrders.add(new OrderCalcItem(order,false));
+                        containOrders.add(new OrderCalcItem(order, false));
                         break;
                     }
                 }
             }
         }
+    }
+
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        refreshMiddleMan();
+        containCustomers = null;
+        allCustomerSelected = false;
+    }
+
+
+
+    private void refreshOrder() {
+        containOrders = null;
+        allOrderSelected = false;
+    }
+
+    private void refreshMiddleMan(){
+        refreshOrder();
+
+        containMiddleMan = null;
+        allMiddleManSelected = false;
     }
 
     public int getSelectOrderCount() {
@@ -307,15 +358,9 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         return result;
     }
 
-    @Override
-    public void refresh() {
-        super.refresh();
-        refreshOrder();
-        containCustomers = null;
-        allCustomerSelected = false;
-    }
 
-    public static class OrderCalcItem extends BatchOperData<CustomerOrder>{
+
+    public static class OrderCalcItem extends BatchOperData<CustomerOrder> {
 
         private RebateProgram rebateProgram;
 
@@ -323,26 +368,67 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
         public OrderCalcItem(CustomerOrder data, boolean selected) {
             super(data, selected);
-            if (getData().getCustomer().getMiddleMan() != null){
+            if (getData().getCustomer().getMiddleMan() != null) {
                 rebateProgram = getData().getCustomer().getMiddleMan().getRebateProgram();
             }
             init();
         }
 
-        private void init(){
+        private void matchOrderItem(OrderItem item) {
+            OrderItemRebate resRebate = null;
 
-            if (rebateProgram != null){
+            for (OrderItemRebate orderItemRebate : rebateProgram.getOrderItemRebates()) {
+                if (orderItemRebate.getRes().equals(item.getRes())) {
+                    resRebate = orderItemRebate;
+                    break;
+                }
+            }
+            if (resRebate == null) {
+                item.setMiddleMoneyCalcType(OrderItemRebate.ItemRebateModel.NOT_CALC);
+                item.setMiddleRate(null);
+                item.setMiddleUnit(null);
+                return;
+            }
+
+            StoreResRebate storeResRebate = null;
+
+            for (StoreResRebate rebate : resRebate.getStoreResRebates()) {
+                if (rebate.getStoreRes().equals(item.getStoreRes())) {
+                    storeResRebate = rebate;
+                    break;
+                }
+            }
+
+
+            if (storeResRebate == null) {
+                item.setMiddleMoneyCalcType(resRebate.getMode());
+                item.setMiddleRate(resRebate.getRebate());
+                item.setMiddleUnit(resRebate.getCalcUnit());
+            } else {
+                item.setMiddleMoneyCalcType(storeResRebate.getMode());
+                item.setMiddleRate(storeResRebate.getRebate());
+                item.setMiddleUnit(storeResRebate.getCalcUnit());
+            }
+        }
+
+        private void init() {
+
+            if (rebateProgram != null) {
                 getData().setMiddleMoneyCalcType(rebateProgram.getOrderMode());
                 getData().setMiddleRate(rebateProgram.getRebate());
                 calcItem = rebateProgram.isCalcItem();
-                if (calcItem){
-                    for (NeedRes needRes: getData().getNeedReses()){
-                        for(OrderItem orderItem: needRes.getOrderItems()){
-                            orderItem.setMiddleRate();
+
+                for (NeedRes needRes : getData().getNeedReses()) {
+                    for (OrderItem orderItem : needRes.getOrderItems()) {
+                        if (calcItem) {
+                            matchOrderItem(orderItem);
+                        } else {
+                            orderItem.setMiddleMoneyCalcType(OrderItemRebate.ItemRebateModel.NOT_CALC);
+                            orderItem.setMiddleRate(null);
+                            orderItem.setMiddleUnit(null);
                         }
                     }
                 }
-
 
                 calcOrderRebate();
             }
@@ -364,8 +450,39 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             this.calcItem = calcItem;
         }
 
-        public void calcOrderRebate(){
+        public void calcOrderRebate() {
+            switch (getData().getMiddleMoneyCalcType()) {
 
+                case NOT_CALC:
+                    getData().setMiddleMoney(BigDecimal.ZERO);
+                    break;
+                case CONSULT_FIX:
+                    getData().setMiddleMoney(getData().getMiddleRate());
+                    break;
+                case TOTAL_MONEY_RATE:
+                    getData().setMiddleMoney(getData().getMoney().multiply(getData().getMiddleRate().divide(new BigDecimal("100"), Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(), BigDecimal.ROUND_HALF_UP)));
+                    break;
+            }
+
+            BigDecimal totalMiddleMoney = getData().getMiddleMoney();
+            for (NeedRes needRes : getData().getNeedReses()) {
+                for (OrderItem orderItem : needRes.getOrderItems()) {
+                    if (calcItem && !orderItem.getMiddleMoneyCalcType().equals(OrderItemRebate.ItemRebateModel.NOT_CALC)) {
+                        if (orderItem.getMiddleMoneyCalcType().equals(OrderItemRebate.ItemRebateModel.BY_COUNT)){
+                            orderItem.setMiddleMoney(orderItem.getCountByResUnit(orderItem.getMiddleUnit()).multiply(orderItem.getRebate()));
+                        }else{
+                            orderItem.setMiddleMoney(orderItem.getTotalPrice().multiply(
+                                    orderItem.getMiddleRate().divide(
+                                            new BigDecimal("100"),Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(),BigDecimal.ROUND_HALF_UP)));
+                        }
+                        totalMiddleMoney = totalMiddleMoney.add(orderItem.getMiddleMoney());
+                    } else {
+                       orderItem.setMiddleMoney(BigDecimal.ZERO);
+                    }
+                }
+            }
+
+            getData().setMiddleTotal(totalMiddleMoney);
         }
     }
 
