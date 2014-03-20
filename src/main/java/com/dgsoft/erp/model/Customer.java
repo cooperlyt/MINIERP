@@ -16,7 +16,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "CUSTOMER", catalog = "MINI_ERP")
-public class Customer extends BatchOperEntity implements Comparable<Customer>, java.io.Serializable, NamedEntity {
+public class Customer implements Comparable<Customer>, java.io.Serializable, NamedEntity {
 
     private String id;
     private Integer version;

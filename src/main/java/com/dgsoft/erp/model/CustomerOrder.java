@@ -18,15 +18,11 @@ import java.util.*;
  */
 @Entity
 @Table(name = "CUSTOMER_ORDER", catalog = "MINI_ERP")
-public class CustomerOrder extends BatchOperEntity implements java.io.Serializable {
+public class CustomerOrder implements java.io.Serializable {
 
     public enum OrderPayType {
         COMPLETE_PAY, PAY_FIRST, EXPRESS_PROXY, OVERDRAFT;
 
-    }
-
-    public enum MiddleMoneyCalcType {
-        NOT_CALC, CONSULT_FIX, TOTAL_MONEY_RATE;
     }
 
     private String id;
@@ -61,7 +57,7 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
     private boolean moneyComplete;
     private boolean earnestFirst;
 
-    private MiddleMoneyCalcType middleMoneyCalcType;
+    private RebateProgram.OrderRebateMode middleMoneyCalcType;
     private OrderBack orderBack;
     private MiddleMoneyPay middleMoneyPay;
 
@@ -202,11 +198,11 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
 
     @Enumerated(EnumType.STRING)
     @Column(name = "MIDDLE_CALC_TYPE", nullable = true)
-    public MiddleMoneyCalcType getMiddleMoneyCalcType() {
+    public RebateProgram.OrderRebateMode getMiddleMoneyCalcType() {
         return middleMoneyCalcType;
     }
 
-    public void setMiddleMoneyCalcType(MiddleMoneyCalcType middleMoneyCalcType) {
+    public void setMiddleMoneyCalcType(RebateProgram.OrderRebateMode middleMoneyCalcType) {
         this.middleMoneyCalcType = middleMoneyCalcType;
     }
 
@@ -423,21 +419,21 @@ public class CustomerOrder extends BatchOperEntity implements java.io.Serializab
         return result;
     }
 
-    @Transient
-    public void calcOrderMiddleMoney() {
-        switch (getMiddleMoneyCalcType()) {
-            case NOT_CALC:
-                setMiddleRate(null);
-                setMiddleMoney(BigDecimal.ZERO);
-                break;
-            case CONSULT_FIX:
-                setMiddleRate(null);
-                break;
-            case TOTAL_MONEY_RATE:
-                setMiddleMoney(getMoney().multiply(getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
-                break;
-        }
-    }
+//    @Transient
+//    public void calcOrderMiddleMoney() {
+//        switch (getMiddleMoneyCalcType()) {
+//            case NOT_CALC:
+//                setMiddleRate(null);
+//                setMiddleMoney(BigDecimal.ZERO);
+//                break;
+//            case CONSULT_FIX:
+//                setMiddleRate(null);
+//                break;
+//            case TOTAL_MONEY_RATE:
+//                setMiddleMoney(getMoney().multiply(getMiddleRate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)));
+//                break;
+//        }
+//    }
 
     @Transient
     public Map<StoreRes, StoreResCount> getAllShipStoreReses() {

@@ -75,7 +75,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.order_search_BETWEEN_createDate}"
-                    value="#{middleManRewardCalc.calcDateFrom}">
+                    value="#{middleManRewardCalc.searchDateArea.dateFrom}">
             </rich:calendar>
 
             --
@@ -87,7 +87,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.order_search_BETWEEN_createDate}"
-                    value="#{middleManRewardCalc.calcDateTo}">
+                    value="#{middleManRewardCalc.searchDateArea.dateTo}">
             </rich:calendar>
         </s:decorate>
 
@@ -406,90 +406,6 @@
 
 <br/>
 
-<h:form id="containRes">
-    <rich:dataTable style="width: 100%" noDataLabel="#{messages.middleMan_reward_res_empty}"
-                    value="#{middleManRewardCalc.containReses}" var="_res">
-        <rich:column style="text-align: center; width: 15px">
-            <f:facet name="header">
-                <h:selectBooleanCheckbox value="#{middleManRewardCalc.allResSelected}">
-                    <a:ajax event="click" render="containRes"/>
-                </h:selectBooleanCheckbox>
-            </f:facet>
-            <h:selectBooleanCheckbox value="#{_res.selected}">
-                <a:ajax event="click" render="containRes"/>
-            </h:selectBooleanCheckbox>
-
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.res_field_code}
-            </f:facet>
-
-            <h:outputText style="text-decoration:line-through; color: red;" value="#{_res.res.code}"
-                          rendered="#{not _res.res.enable}"/>
-            <h:outputText value="#{_res.res.code}"
-                          rendered="#{_res.res.enable}"/>
-        </rich:column>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.res_field_name}
-            </f:facet>
-            #{_res.res.name}
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.order_middle_money_itemCalcType}
-            </f:facet>
-            <rich:inplaceSelect style="width: 90%" required="true" value="#{_res.calcType}"
-                                defaultLabel="#{messages.order_middle_money_itemCalcType}" rendered="#{_res.selected}">
-                <s:selectItems value="#{itemMiddleMoneyCalcTypes}" var="_type" label="#{messages[_type.name()]}"/>
-                <s:convertEnum/>
-                <a:ajax event="selectitem" render="containRes"/>
-            </rich:inplaceSelect>
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.order_middle_money_unit}
-            </f:facet>
-            <rich:inplaceSelect style="width: 90%" required="true" value="#{_res.calcUnit}" label="#{messages.order_middle_money_unit}"
-                                defaultLabel="#{messages.order_middle_money_unit}"
-                                rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'COUNT_FIX')}">
-                <s:selectItems value="#{_res.res.unitGroup.resUnitList}" var="_unit"
-                               label="#{messages[_unit.name]}"/>
-                <f:converter converterId="erpEntityConverter"/>
-                <a:ajax event="selectitem" render="containRes"/>
-            </rich:inplaceSelect>
-        </rich:column>
-
-        <rich:column style="text-align: right">
-            <f:facet name="header">
-                #{messages.order_middle_money_rate}
-            </f:facet>
-            <rich:inplaceInput style="width: 90%" label="#{messages.order_middle_money_rate}"
-                               value="#{_res.rate}" required="true"
-                               defaultLabel="#{messages.order_middle_money_rate}"
-                               rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'COUNT_FIX')}">
-                <f:validateDoubleRange minimum="0" maximum="100"/>
-                <a:ajax event="blur" render="containRes"/>
-            </rich:inplaceInput>
-
-            <rich:inplaceInput style="width: 90%" label="#{messages.order_middle_money_rate}"
-                               value="#{_res.rate}" required="true"
-                               defaultLabel="#{messages.order_middle_money_rate}"
-                               rendered="#{_res.selected and (not empty _res.calcType) and (_res.calcType eq 'MONEY_RATE')}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                 groupingUsed="false"/>
-                <a:ajax event="blur" render="containRes"/>
-            </rich:inplaceInput>
-        </rich:column>
-
-    </rich:dataTable>
-</h:form>
-
-<br/>
 
 <h:form>
     <a:outputPanel ajaxRendered="true">
