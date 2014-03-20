@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,15 +18,21 @@ import javax.validation.constraints.Size;
 public class StoreResRebate implements Comparable<StoreResRebate>, java.io.Serializable {
 
     private String id;
-
     private OrderItemRebate.ItemRebateModel mode;
-
     private StoreRes storeRes;
-
     private ResUnit calcUnit;
+    private BigDecimal rebate;
 
     private OrderItemRebate orderItemRebate;
 
+    public StoreResRebate() {
+    }
+
+    public StoreResRebate(OrderItemRebate.ItemRebateModel mode, StoreRes storeRes, OrderItemRebate orderItemRebate) {
+        this.mode = mode;
+        this.storeRes = storeRes;
+        this.orderItemRebate = orderItemRebate;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -42,7 +49,7 @@ public class StoreResRebate implements Comparable<StoreResRebate>, java.io.Seria
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="MODE", nullable = false,length = 20)
+    @Column(name = "MODE", nullable = false, length = 20)
     @NotNull
     public OrderItemRebate.ItemRebateModel getMode() {
         return mode;
@@ -52,8 +59,8 @@ public class StoreResRebate implements Comparable<StoreResRebate>, java.io.Seria
         this.mode = model;
     }
 
-    @ManyToOne(optional = false,fetch = FetchType.EAGER)
-    @JoinColumn(name = "STORE_RES",nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "STORE_RES", nullable = false)
     @NotNull
     public StoreRes getStoreRes() {
         return storeRes;
@@ -64,7 +71,7 @@ public class StoreResRebate implements Comparable<StoreResRebate>, java.io.Seria
     }
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "CALC_UNIT",nullable = true)
+    @JoinColumn(name = "CALC_UNIT", nullable = true)
     public ResUnit getCalcUnit() {
         return calcUnit;
     }
@@ -84,14 +91,18 @@ public class StoreResRebate implements Comparable<StoreResRebate>, java.io.Seria
         this.orderItemRebate = orderItemRebate;
     }
 
+    @Column(name = "REBATE", nullable = false, scale = 6)
+    public BigDecimal getRebate() {
+        return rebate;
+    }
+
+    public void setRebate(BigDecimal rebate) {
+        this.rebate = rebate;
+    }
+
     @Override
     @Transient
     public int compareTo(StoreResRebate o) {
-        int result = getMode().compareTo(o.getMode());
-        if (result == 0){
-            return getStoreRes().compareTo(o.getStoreRes());
-        }else{
-            return result;
-        }
+        return getStoreRes().compareTo(o.getStoreRes());
     }
 }

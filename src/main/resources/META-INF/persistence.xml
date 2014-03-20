@@ -111,6 +111,9 @@
         <class>com.dgsoft.erp.model.BackDispatchItem</class>
         <class>com.dgsoft.erp.model.BackItem</class>
         <class>com.dgsoft.erp.model.BankAccount</class>
+        <class>com.dgsoft.erp.model.RebateProgram</class>
+        <class>com.dgsoft.erp.model.OrderItemRebate</class>
+        <class>com.dgsoft.erp.model.StoreResRebate</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

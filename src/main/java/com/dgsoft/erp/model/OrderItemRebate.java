@@ -15,22 +15,17 @@ import java.util.*;
  * Time: 14:21
  */
 @Entity
-@Table(name = "ORDER_ITEM_REBATE", catalog = "MINI_ERP" ,uniqueConstraints = @UniqueConstraint(columnNames = {"RES", "PROGRAM"}))
+@Table(name = "ORDER_ITEM_REBATE", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = {"RES", "PROGRAM"}))
 public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Serializable {
 
     @Override
     @Transient
     public int compareTo(OrderItemRebate o) {
-        int result = getMode().compareTo(o.getMode());
-        if (result == 0){
-            return getRes().compareTo(o.getRes());
-        }else{
-            return result;
-        }
+        return getRes().compareTo(o.getRes());
     }
 
-    public enum ItemRebateModel{
-        NO_CALC, BY_COUNT, BY_MONEY;
+    public enum ItemRebateModel {
+        NOT_CALC, BY_COUNT, BY_MONEY;
     }
 
     private String id;
@@ -44,12 +39,12 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
     public OrderItemRebate() {
     }
 
-    public OrderItemRebate(RebateProgram rebateProgram,ItemRebateModel mode) {
+    public OrderItemRebate(RebateProgram rebateProgram, ItemRebateModel mode) {
         this.mode = mode;
         this.rebateProgram = rebateProgram;
     }
 
-    public OrderItemRebate(RebateProgram rebateProgram,ItemRebateModel mode, Res res) {
+    public OrderItemRebate(RebateProgram rebateProgram, ItemRebateModel mode, Res res) {
         this.mode = mode;
         this.res = res;
         this.rebateProgram = rebateProgram;
@@ -70,7 +65,7 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="MODE",nullable = false,length = 20)
+    @Column(name = "MODE", nullable = false, length = 20)
     @NotNull
     public ItemRebateModel getMode() {
         return mode;
@@ -81,8 +76,8 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
     }
 
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "PROGRAM",nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROGRAM", nullable = false)
     @NotNull
     public RebateProgram getRebateProgram() {
         return rebateProgram;
@@ -104,8 +99,8 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
         this.res = res;
     }
 
-    @ManyToOne(optional = true,fetch = FetchType.EAGER)
-    @JoinColumn(name="CALC_UNIT", nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "CALC_UNIT", nullable = true)
     public ResUnit getCalcUnit() {
         return calcUnit;
     }
@@ -114,7 +109,7 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
         this.calcUnit = calcUnit;
     }
 
-    @Column(name = "REBATE", nullable = true ,scale = 6)
+    @Column(name = "REBATE", nullable = true, scale = 6)
     public BigDecimal getRebate() {
         return rebate;
     }
@@ -133,8 +128,8 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
     }
 
     @Transient
-    public List<StoreResRebate> getStoreResRebateList(){
-        if (!getRebateProgram().isCalcItem()){
+    public List<StoreResRebate> getStoreResRebateList() {
+        if (!getRebateProgram().isCalcItem()) {
             return new ArrayList<StoreResRebate>(0);
         }
         List<StoreResRebate> result = new ArrayList<StoreResRebate>(getStoreResRebates());

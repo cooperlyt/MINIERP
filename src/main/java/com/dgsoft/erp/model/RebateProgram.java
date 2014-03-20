@@ -36,9 +36,10 @@ public class RebateProgram implements java.io.Serializable,NamedEntity {
     public RebateProgram() {
     }
 
-    public RebateProgram(OrderRebateMode orderMode, boolean calcItem) {
+    public RebateProgram(OrderRebateMode orderMode, boolean calcItem, boolean enable) {
         this.orderMode = orderMode;
         this.calcItem = calcItem;
+        this.enable = enable;
     }
 
     @Id

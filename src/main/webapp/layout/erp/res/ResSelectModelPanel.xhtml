@@ -1,0 +1,91 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <!--required param:  panelId  treeValue-->
+
+
+    <rich:popupPanel id="#{panelId}"
+                     moveable="true" autosized="true">
+
+        <f:facet name="header">
+            <h:panelGroup id="#{panelId}_title">
+
+                <ui:insert name="panelTitle">
+                    <h:outputText value="#{panelTitle}"/>
+                </ui:insert>
+            </h:panelGroup>
+        </f:facet>
+        <f:facet name="controls">
+            <a:commandButton immediate="true"
+                             execute="@this" image="/img/close.png"
+                             onclick="#{rich:component(panelId)}.hide(); return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </f:facet>
+        <rich:messages ajaxRendered="true" globalOnly="true"/>
+        <ui:insert name="panelContent">
+            <h:form id="#{panelId}_form">
+                <rich:panel style="min-width: 300px;min-height: 360px">
+
+                    <rich:tree
+                            var="_node"
+                            value="#{treeValue}"
+                            nodeType="#{_node.nodeType}"
+                            onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} "
+                            toggleType="client"
+                            selectionType="client">
+                        <rich:treeNode type="category">
+                            <ui:insert name="categoryNode">
+                                <h:outputText value="#{_node.data.name}"
+                                              style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"/>
+                            </ui:insert>
+                        </rich:treeNode>
+
+
+                        <rich:treeNode type="res" iconLeaf="/img/res.png" iconCollapsed="/img/res.png"
+                                       iconExpanded="/img/res.png">
+                            <ui:insert name="resNode">
+                                <h:outputText value=" #{_node.data.name}(#{_node.data.code})"
+                                              style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"/>
+                            </ui:insert>
+                        </rich:treeNode>
+
+                        <rich:treeNode type="property">
+                            <ui:insert name="propertyNode">
+
+                                #{_node.formatDefine.name}
+
+                                <h:outputText value="#{messages.formatNotSet}" rendered="#{empty _node.data}"/>
+
+                                <a:outputPanel rendered="#{not empty _node.data}">
+
+
+                                    <h:outputText value="#{dictionary.getWordValue(_node.data.formatValue)}"
+                                                  rendered="#{_node.data.formatDefine.dataType.name() eq 'WORD'}"/>
+                                    <h:outputText value="#{_node.data.formatValue}"
+                                                  rendered="#{not (_node.data.formatDefine.dataType.name() eq 'WORD')}"/>
+                                </a:outputPanel>
+                            </ui:insert>
+                        </rich:treeNode>
+
+                        <rich:treeNode type="storeRes" iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
+                                       iconCollapsed="/img/store_res.png">
+                            <ui:insert name="storeResNode">
+                                <h:outputText value="#{_node.data.code}#{' '}#{(not empty _node.title) ? _node.title :_node.data.displayFloatRate}#{(empty _node.title) ? _node.data.res.unitGroup.name : ''}"/>
+                            </ui:insert>
+                        </rich:treeNode>
+                    </rich:tree>
+                </rich:panel>
+            </h:form>
+        </ui:insert>
+
+    </rich:popupPanel>
+
+</ui:composition>

@@ -7,13 +7,16 @@
                 xmlns:h="http://java.sun.com/jsf/html"
         >
 
-    <!-- param: storeRes , showResName -->
+    <!-- param: storeRes , showResName ,showPropertyLabel, showCode-->
 
 
-    <h:outputText value="#{storeRes.res.name}(#{storeRes.code}) #{' '}"
+    <h:outputText value="#{storeRes.res.name}"
                   rendered="#{empty showResName ? true : showResName}"/>
+
+    <h:outputText value="#{' '}(#{storeRes.code})" rendered="#{empty showCode ? true : showCode}" />
     <a:repeat value="#{storeRes.formatList}" var="_format">
         #{' '}
+        <h:outputText rendered="#{(empty showPropertyLabel) ? false :  showPropertyLabel}" value="#{_format.formatDefine.name}:" />
         <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
                       rendered="#{_format.formatDefine.dataType.name() eq 'WORD'}"/>
         <h:outputText value="#{_format.formatValue}"

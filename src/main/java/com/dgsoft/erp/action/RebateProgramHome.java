@@ -26,12 +26,12 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
     private FacesMessages facesMessages;
 
     @org.jboss.seam.annotations.Factory(value = "orderRebateCalcModes", scope = ScopeType.SESSION)
-    public RebateProgram.OrderRebateMode[] getOrderRebateCalcModes(){
+    public RebateProgram.OrderRebateMode[] getOrderRebateCalcModes() {
         return RebateProgram.OrderRebateMode.values();
     }
 
     @Factory(value = "orderItemRebateCalcModes", scope = ScopeType.SESSION)
-    public OrderItemRebate.ItemRebateModel[] getOrderItemRebateCalcModes(){
+    public OrderItemRebate.ItemRebateModel[] getOrderItemRebateCalcModes() {
         return OrderItemRebate.ItemRebateModel.values();
     }
 
@@ -49,6 +49,7 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
         for (OrderItemRebate rebate : orderItemRebateList) {
             if (rebate.getRes().getId().equals(resId)) {
                 selectOrderItemRebate = rebate;
+                return;
             }
         }
         selectOrderItemRebate = null;
@@ -85,16 +86,16 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
             List<Res> allRes = getEntityManager().createQuery("select res from Res res where res.enable = true and res.resCategory.type = :type", Res.class).setParameter("type", ResCategory.ResType.PRODUCT).getResultList();
             for (Res res : allRes) {
                 if (!containRes(res)) {
-                    orderItemRebateList.add(new OrderItemRebate(getInstance(), OrderItemRebate.ItemRebateModel.NO_CALC, res));
+                    orderItemRebateList.add(new OrderItemRebate(getInstance(), OrderItemRebate.ItemRebateModel.NOT_CALC, res));
                 }
             }
             Collections.sort(orderItemRebateList);
         }
     }
 
-    public List<Res> getSelectItemResTree(){
+    public List<Res> getSelectItemResTree() {
         List<Res> result = new ArrayList<Res>();
-        if (selectOrderItemRebate != null){
+        if (selectOrderItemRebate != null) {
             result.add(selectOrderItemRebate.getRes());
             selectOrderItemRebate.getRes().setResTreeFilter(new ResTreeFilter() {
                 @Override
@@ -129,23 +130,34 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
     }
 
 
-    public void clearStoreResItem(){
+    public void clearStoreResItem() {
         selectOrderItemRebate.getStoreResRebates().clear();
     }
 
-    public void deleteStoreResItem(){
-        for(StoreResRebate rebate: selectOrderItemRebate.getStoreResRebates()){
-            if  (rebate.getStoreRes().getId().equals(selectStoreResId)){
+    public void deleteStoreResItem() {
+        for (StoreResRebate rebate : selectOrderItemRebate.getStoreResRebates()) {
+            if (rebate.getStoreRes().getId().equals(selectStoreResId)) {
                 selectOrderItemRebate.getStoreResRebates().remove(rebate);
                 return;
             }
         }
+    }
 
+    public void storeResSelected() {
+        for (StoreResRebate resRebate : selectOrderItemRebate.getStoreResRebates()) {
+            if (resRebate.getStoreRes().getId().equals(selectStoreResId)) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeResRebateIsExists");
+                return;
+            }
+        }
+        selectOrderItemRebate.getStoreResRebates().add(
+                new StoreResRebate(OrderItemRebate.ItemRebateModel.NOT_CALC,
+                        getEntityManager().find(StoreRes.class, selectStoreResId), selectOrderItemRebate));
     }
 
     @Override
     protected RebateProgram createInstance() {
-        return new RebateProgram(RebateProgram.OrderRebateMode.NOT_CALC, true);
+        return new RebateProgram(RebateProgram.OrderRebateMode.NOT_CALC, true, true);
     }
 
 
@@ -172,7 +184,7 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
             getInstance().getOrderItemRebates().clear();
 
             for (OrderItemRebate rebate : orderItemRebateList) {
-                if (!rebate.getMode().equals(OrderItemRebate.ItemRebateModel.NO_CALC)) {
+                if (!rebate.getMode().equals(OrderItemRebate.ItemRebateModel.NOT_CALC)) {
                     getInstance().getOrderItemRebates().add(rebate);
                 }
             }
