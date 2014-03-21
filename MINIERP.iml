@@ -47,8 +47,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: local.birt:servlet:1.0" level="project" />
-    <orderEntry type="library" name="Maven: local.birt:jbossseambirt:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.birt.runtime:org.eclipse.birt.runtime:4.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.birt.runtime:org.eclipse.datatools.connectivity:1.2.9.v201307261105" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.birt.runtime:org.eclipse.datatools.enablement.oda.ws:1.2.6.v201307051812" level="project" />
@@ -191,7 +189,6 @@
     <orderEntry type="library" name="Maven: com.lowagie:itext:2.1.2" level="project" />
     <orderEntry type="library" name="Maven: com.lowagie:itext-rtf:2.1.2" level="project" />
     <orderEntry type="library" name="Maven: jfree:jcommon:1.0.6" level="project" />
-    <orderEntry type="library" name="Maven: local:jfreechart:1.0.13-CN" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf:itext-asian:5.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.seam:jboss-seam-debug:2.3.1.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.hibernate:hibernate-entitymanager:4.2.0.Final" level="project" />

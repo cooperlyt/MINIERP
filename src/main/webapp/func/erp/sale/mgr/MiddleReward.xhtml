@@ -115,6 +115,67 @@
 </rich:collapsiblePanel>
 <br/>
 <h:form>
+    <rich:dataTable id="constainMiddleMans" value="#{middleManRewardCalc.containMiddleMan}" var="_middleMan"
+                    noDataLabel="#{messages.middleMan_reward_middleMan_empty}" style="width: 100%">
+        <rich:column style="text-align: center; width: 15px">
+            <f:facet name="header">
+                <h:selectBooleanCheckbox id="allConstainSelectedCheckbox"
+                                         value="#{middleManRewardCalc.allMiddleManSelected}">
+                    <a:ajax event="click" listener="#{middleManRewardCalc.allMiddleManCheckChange}"
+                            render="constainMiddleMans,allOrderMiddleMoneyCalcType,constainCustomers,containOrders"/>
+                </h:selectBooleanCheckbox>
+            </f:facet>
+
+
+            <h:selectBooleanCheckbox value="#{_middleMan.selected}">
+                <a:ajax event="click" execute="@form" listener="#{middleManRewardCalc.middleManCheckChange}"
+                        render="constainMiddleMans,constainCustomers,containOrders"/>
+            </h:selectBooleanCheckbox>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.middleMan_field_name}
+            </f:facet>
+            #{_middleMan.data.name}
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.middleMan_field_contact}
+            </f:facet>
+            #{_middleMan.data.contact}
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.middleMan_field_tel}
+            </f:facet>
+            #{_middleMan.data.tel}
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.middleMan_field_type}
+            </f:facet>
+            #{dictionary.getWordValue(_middleMan.data.type)}
+        </rich:column>
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.middleMan_reward}
+            </f:facet>
+            <h:outputText value="#{_middleMan.rebate}" rendered="#{_middleMan.selected}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{middleManRewardCalc.totalRebateMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+    </rich:dataTable>
+
+</h:form>
+
+<br/>
+<h:form>
     <rich:dataTable id="constainCustomers" value="#{middleManRewardCalc.containCustomers}" var="_customer"
                     noDataLabel="#{messages.middleMan_reward_customer_empty}" style="width: 100%">
         <rich:column style="text-align: center; width: 15px">
