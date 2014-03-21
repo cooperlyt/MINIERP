@@ -114,176 +114,301 @@
     </h:form>
 </rich:collapsiblePanel>
 <br/>
+<rich:messages ajaxRendered="true" globalOnly="false"/>
 <h:form>
-    <rich:dataTable id="constainMiddleMans" value="#{middleManRewardCalc.containMiddleMan}" var="_middleMan"
-                    noDataLabel="#{messages.middleMan_reward_middleMan_empty}" style="width: 100%">
-        <rich:column style="text-align: center; width: 15px">
-            <f:facet name="header">
-                <h:selectBooleanCheckbox id="allConstainSelectedCheckbox"
-                                         value="#{middleManRewardCalc.allMiddleManSelected}">
-                    <a:ajax event="click" listener="#{middleManRewardCalc.allMiddleManCheckChange}"
-                            render="constainMiddleMans,allOrderMiddleMoneyCalcType,constainCustomers,containOrders"/>
+    <h:panelGrid columns="2">
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.RebateProgram}</ui:define>
+            <h:selectOneMenu required="true" label="#{messages.RebateProgram}"
+                             value="#{middleManRewardCalc.selectProgram}">
+                <s:selectItems value="#{validRebateProgramList.resultList}" var="_program"
+                               label="#{_program.name}(#{_program.id})"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                <f:converter converterId="erpEntityConverter"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <a:commandButton value="#{messages.ok}"
+                         action="#{middleManRewardCalc.acceptAllOrderRebateProgram}"
+                         execute="@form" render="constainCustomers,containOrders">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </h:panelGrid>
+</h:form>
+
+<h:form>
+    <a:outputPanel ajaxRendered="true">
+        <rich:dataTable id="constainMiddleMans" value="#{middleManRewardCalc.containMiddleMan}" var="_middleMan"
+                        noDataLabel="#{messages.middleMan_reward_middleMan_empty}" style="width: 100%">
+            <rich:column style="text-align: center; width: 15px">
+                <f:facet name="header">
+                    <h:selectBooleanCheckbox id="allConstainSelectedCheckbox"
+                                             value="#{middleManRewardCalc.allMiddleManSelected}">
+                        <a:ajax event="click"
+                                render="constainCustomers,containOrders"/>
+                    </h:selectBooleanCheckbox>
+                </f:facet>
+
+
+                <h:selectBooleanCheckbox value="#{_middleMan.selected}">
+                    <a:ajax event="click" execute="@form"
+                            render="constainCustomers,containOrders"/>
                 </h:selectBooleanCheckbox>
-            </f:facet>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.middleMan_field_name}
+                </f:facet>
 
 
-            <h:selectBooleanCheckbox value="#{_middleMan.selected}">
-                <a:ajax event="click" execute="@form" listener="#{middleManRewardCalc.middleManCheckChange}"
-                        render="constainMiddleMans,constainCustomers,containOrders"/>
-            </h:selectBooleanCheckbox>
-        </rich:column>
+            </rich:column>
 
-        <rich:column>
-            <f:facet name="header">
-                #{messages.middleMan_field_name}
-            </f:facet>
-            #{_middleMan.data.name}
-        </rich:column>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.middleMan_field_contact}
-            </f:facet>
-            #{_middleMan.data.contact}
-        </rich:column>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.middleMan_field_tel}
-            </f:facet>
-            #{_middleMan.data.tel}
-        </rich:column>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.middleMan_field_type}
-            </f:facet>
-            #{dictionary.getWordValue(_middleMan.data.type)}
-        </rich:column>
-        <rich:column style="text-align: right">
-            <f:facet name="header">
-                #{messages.middleMan_reward}
-            </f:facet>
-            <h:outputText value="#{_middleMan.rebate}" rendered="#{_middleMan.selected}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-            <f:facet name="footer">
-                <h:outputText value="#{middleManRewardCalc.totalRebateMoney}">
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.middleMan_field_type}
+                </f:facet>
+
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.middleMan_field_contact}
+                </f:facet>
+                <h:outputText value="#{_middleMan.data.contact}" rendered="#{not empty _middleMan.data}"/>
+
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.middleMan_field_tel}
+                </f:facet>
+                <h:outputText value="#{_middleMan.data.tel}" rendered="#{not empty _middleMan.data}"/>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.RebateProgram}
+                </f:facet>
+                <s:decorate template="/layout/grid-inside-edit.xhtml">
+                    <h:selectOneMenu value="#{_middleMan.rebateProgram}" required="true"
+                                     label="#{messages.RebateProgram}">
+                        <s:selectItems value="#{validRebateProgramList.resultList}" var="_program"
+                                       label="#{_program.name}(#{_program.id})"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.middleMan_reward}
+                </f:facet>
+                <h:outputText value="#{_middleMan.rebate}" rendered="#{_middleMan.selected}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
-            </f:facet>
-        </rich:column>
-    </rich:dataTable>
-
+                <f:facet name="footer">
+                    <h:outputText value="#{middleManRewardCalc.totalRebateMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+        </rich:dataTable>
+    </a:outputPanel>
 </h:form>
 
 <br/>
 <h:form>
-    <rich:dataTable id="constainCustomers" value="#{middleManRewardCalc.containCustomers}" var="_customer"
+    <rich:dataTable id="constainCustomers" value="#{middleManRewardCalc.selectedMiddleMan}" var="_middleMan"
                     noDataLabel="#{messages.middleMan_reward_customer_empty}" style="width: 100%">
-        <rich:column style="text-align: center; width: 15px">
-            <f:facet name="header">
-                <h:selectBooleanCheckbox id="allCustomerSelectedCheckbox"
-                                         value="#{middleManRewardCalc.allCustomerSelected}">
-                    <a:ajax event="click" listener="#{middleManRewardCalc.allCustomerCheckChange}"
-                            render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders,containRes"/>
+
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column style="text-align: center; width: 15px">
+                    <h:selectBooleanCheckbox id="allCustomerSelectedCheckbox"
+                                             value="#{middleManRewardCalc.allCustomerSelected}">
+                        <a:ajax event="click"
+                                render="constainCustomers,containOrders"/>
+                    </h:selectBooleanCheckbox>
+                </rich:column>
+                <rich:column>
+                    #{messages.order_field_id}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.customer_field_type}
+                </rich:column>
+                <rich:column>
+                    #{messages.CustomerArea}
+                </rich:column>
+                <rich:column>
+                    #{messages.customer_field_level}
+                </rich:column>
+                <rich:column>
+                    #{messages.customer_field_province}
+                </rich:column>
+                <rich:column>
+                    #{messages.RebateProgram}
+                </rich:column>
+                <rich:column>
+                    #{messages.middleMan_reward}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="6">
+            <rich:collapsibleSubTableToggler for="sbtbc1"/>
+            <h:outputText value="#{_middleMan.data.name}"
+                          style="#{_middleMan.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                          rendered="#{not empty _middleMan.data}"/>
+
+            <h:outputText value="#{messages.noHaveMiddleManCustomer}" rendered="#{empty _middleMan.data}"/>
+
+            <h:outputText value=" -- #{dictionary.getWordValue(_middleMan.data.type)}"
+                          rendered="#{not empty _middleMan.data}"/>
+        </rich:column>
+
+        <rich:column>
+
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <h:selectOneMenu value="#{_middleMan.rebateProgram}" required="true"
+                                 label="#{messages.RebateProgram}">
+                    <s:selectItems value="#{validRebateProgramList.resultList}" var="_program"
+                                   label="#{_program.name}(#{_program.id})"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                    <a:ajax event="valueChange"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <h:outputText value="#{_middleMan.rebate}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+
+        </rich:column>
+
+        <rich:collapsibleSubTable expanded="false" value="#{_middleMan.customers}"
+                                  var="_customer" id="sbtbc1" expandMode="client">
+
+            <rich:column>
+                <h:selectBooleanCheckbox value="#{_customer.selected}">
+                    <a:ajax event="click"/>
                 </h:selectBooleanCheckbox>
-            </f:facet>
-            <h:selectBooleanCheckbox value="#{_customer.selected}">
-                <a:ajax event="click" execute="@form" listener="#{middleManRewardCalc.customerCheckChange}"
-                        render="constainCustomers,allOrderMiddleMoneyCalcType,containOrders,containRes">
-                </a:ajax>
-            </h:selectBooleanCheckbox>
-        </rich:column>
+            </rich:column>
 
-        <rich:column>
-            <f:facet name="header">
-                #{messages.customer_field_name}
-            </f:facet>
-            <h:outputText style="text-decoration:line-through; color: red;" value=" #{_customer.name}"
-                          rendered="#{not _customer.enable}"/>
-            <h:outputText value=" #{_customer.name}"
-                          rendered="#{_customer.enable}"/>
-        </rich:column>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.customer_field_type}
-            </f:facet>
-            #{dictionary.getWordValue(_customer.type)}
-        </rich:column>
+            <rich:column colspan="6">
 
-        <rich:column>
-            <f:facet name="header">
-                #{messages.CustomerArea}
-            </f:facet>
-            #{_customer.customerArea.name}
-        </rich:column>
+                <rich:collapsibleSubTableToggler for="sbtbo1"/>
 
-        <rich:column>
-            <f:facet name="header">
-                #{messages.customer_field_level}
-            </f:facet>
-            #{_customer.customerLevel.name}(#{_customer.customerLevel.priority})
-        </rich:column>
+                <h:outputText style="text-decoration:line-through; color: red;" value="#{_customer.data.name}"
+                              rendered="#{not _customer.data.enable}"/>
 
-        <rich:column>
-            <f:facet name="header">
-                #{messages.customer_field_province}
-            </f:facet>
-            #{dictionary.getCityName(_customer.provinceCode)}
-        </rich:column>
+                <h:outputText value=" #{_customer.data.name}" rendered="#{_customer.data.enable}"/>
 
+                #{dictionary.getWordValue(_customer.data.type)}
+
+                #{_customer.data.customerArea.name}
+
+                #{_customer.data.customerLevel.name}(#{_customer.data.customerLevel.priority})
+                #{dictionary.getCityName(_customer.data.provinceCode)}
+
+            </rich:column>
+
+            <rich:column>
+                <s:decorate template="/layout/grid-inside-edit.xhtml">
+                    <h:selectOneMenu value="#{_customer.rebateProgram}" required="true"
+                                     label="#{messages.RebateProgram}">
+                        <s:selectItems value="#{validRebateProgramList.resultList}" var="_program"
+                                       label="#{_program.name}(#{_program.id})"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                        <a:ajax event="valueChange"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+            </rich:column>
+
+            <rich:column>
+                <h:outputText value="#{_customer.rebate}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:collapsibleSubTable expanded="false" value="#{_customer.orders}"
+                                      var="_order" id="sbtbo1" expandMode="client">
+
+                <rich:column>
+                    <h:selectBooleanCheckbox value="#{_order.selected}">
+                        <a:ajax event="click"/>
+                    </h:selectBooleanCheckbox>
+                </rich:column>
+
+                <rich:column colspan="6">
+                    <rich:collapsibleSubTableToggler for="sbtboi1"/>
+
+                    <s:link style="text-decoration:line-through; color: red;" value="#{_order.id}"
+                            rendered="#{_order.canceled}" target="_blank" view="/func/erp/sale/OrderDetails.xhtml">
+                        <f:param name="orderId" value="#{_order.id}"/>
+                        <f:param name="from" value=""/>
+                    </s:link>
+
+                    <s:link value="#{_order.id}" rendered="#{not _order.canceled}"
+                            target="_blank" view="/func/erp/sale/OrderDetails.xhtml">
+                        <f:param name="orderId" value="#{_order.id}"/>
+                        <f:param name="from" value=""/>
+                    </s:link>
+
+                </rich:column>
+
+
+
+                <rich:column>
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <h:selectOneMenu value="#{_order.rebateProgram}" required="true"
+                                         label="#{messages.RebateProgram}">
+                            <s:selectItems value="#{validRebateProgramList.resultList}" var="_program"
+                                           label="#{_program.name}(#{_program.id})"/>
+                            <f:converter converterId="erpEntityConverter"/>
+                            <a:ajax event="valueChange"/>
+                        </h:selectOneMenu>
+                    </s:decorate>
+                </rich:column>
+
+                <rich:column>
+
+                </rich:column>
+
+                <rich:column>
+
+                </rich:column>
+
+                <rich:column>
+                    <h:outputText value="#{_order.rebate}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:collapsibleSubTable expanded="false" value="#{_order.data.needResList}"
+                                          var="_order" id="sbtboi1" expandMode="client">
+
+
+                </rich:collapsibleSubTable>
+
+            </rich:collapsibleSubTable>
+
+
+        </rich:collapsibleSubTable>
     </rich:dataTable>
 
 </h:form>
-<rich:messages ajaxRendered="true" globalOnly="false"/>
+
 <br/>
-<h:form id="allOrderMiddleMoneyCalcType">
-    <s:decorate template="/layout/seam-edit.xhtml">
-        <ui:define name="label">
-            #{messages.orderMiddleMoneyMainCalcType}
-        </ui:define>
-        <h:selectOneMenu value="#{middleManRewardCalc.orderCalcType}">
-            <s:selectItems value="#{middleMoneyCalcTypes}" var="_type"
-                           label="#{messages[_type.name()]}"/>
-            <s:convertEnum/>
-            <a:ajax event="valueChange" render="allOrderCalcTypeFields"/>
-        </h:selectOneMenu>
-    </s:decorate>
-
-    <a:outputPanel id="allOrderCalcTypeFields">
-        <a:outputPanel rendered="#{not empty middleManRewardCalc.orderCalcType}">
-            <s:decorate id="allOrderMiddleMoneyRateField"
-                        rendered="#{middleManRewardCalc.orderCalcType eq 'TOTAL_MONEY_RATE' }"
-                        template="/layout/seam-edit.xhtml">
-                <ui:define name="label">
-                    #{messages.orderMiddleMoneyRate}
-                </ui:define>
-                <h:inputText required="true" value="#{middleManRewardCalc.allOrderRate}"
-                             label="#{messages.orderMiddleMoneyRate}">
-
-                </h:inputText>
-            </s:decorate>
-
-            <s:decorate rendered="#{middleManRewardCalc.orderCalcType eq 'CONSULT_FIX'}"
-                        id="allOrderMiddleMoneyField" template="/layout/seam-edit.xhtml">
-                <ui:define name="label">
-                    #{messages.orderMiddleMoney}
-                </ui:define>
-                <h:inputText required="true" value="#{middleManRewardCalc.allOrderMiddleMoney}"
-                             label="#{messages.orderMiddleMoney}">
-
-                </h:inputText>
-            </s:decorate>
 
 
-        </a:outputPanel>
-    </a:outputPanel>
-
-    <a:commandButton value="#{messages.ok}" action="#{middleManRewardCalc.calcAllOrderMiddleMoney}"
-                     execute="@form" render="containOrders" style="float: left;margin-top: 7px;">
-        <a:attachQueue requestDelay="0"/>
-    </a:commandButton>
-</h:form>
-
-<div style="clear: both"/>
 <h:outputStylesheet>
     .containOrdersSelectFooter {
         width: 18px;
@@ -315,7 +440,7 @@
         </rich:column>
         <rich:column>
             <f:facet name="header">
-                #{messages.order_field_id}
+
             </f:facet>
             <s:link style="text-decoration:line-through; color: red;" value="#{_order.id}"
                     rendered="#{_order.canceled}" target="_blank" view="/func/erp/sale/OrderDetails.xhtml">
@@ -467,12 +592,6 @@
 
 <br/>
 
-
-<h:form>
-    <a:outputPanel ajaxRendered="true">
-
-    </a:outputPanel>
-</h:form>
 
 </ui:define>
 

@@ -115,38 +115,6 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
     public List<MiddleCalcItem> containMiddleMan;
 
-    public boolean isAllOrderSelected() {
-        for (OrderCalcItem item: getContainOrders()){
-            if (!item.isSelected()){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void setAllOrderSelected(boolean allOrderSelected) {
-
-        for (OrderCalcItem item: getContainOrders()){
-            item.setSelected(allOrderSelected);
-        }
-
-    }
-
-    public boolean isAllCustomerSelected() {
-
-        for (CustomerCalcItem item : getContainCustomers()){
-            if (!item.isSelected())
-                return false;
-        }
-        return true;
-    }
-
-    public void setAllCustomerSelected(boolean allCustomerSelected) {
-
-        for (CustomerCalcItem item : getContainCustomers()){
-            item.setSelected(allCustomerSelected);
-        }
-    }
 
     public boolean isAllMiddleManSelected() {
 
@@ -175,7 +143,7 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         this.selectProgram = selectProgram;
     }
 
-    public void setAllOrderRebateProgram() {
+    public void acceptAllOrderRebateProgram() {
         for (MiddleCalcItem item: containMiddleMan){
             if (item.isSelected()){
                 item.setRebateProgram(selectProgram);
@@ -191,6 +159,7 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         initContainMiddleMan();
         return containMiddleMan;
     }
+
 
     private void initContainMiddleMan() {
         if (containMiddleMan == null) {
@@ -298,6 +267,14 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             init();
         }
 
+        @Override
+        public void setSelected(boolean selected){
+            super.setSelected(selected);
+            for (CustomerCalcItem item: customerItems){
+                item.setSelected(selected);
+            }
+        }
+
         private void init() {
             customerItems = new ArrayList<CustomerCalcItem>();
             Set<Customer> customers = new HashSet<Customer>();
@@ -328,6 +305,14 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             return customerItems;
         }
 
+        public List<CustomerCalcItem> getCustomers(){
+           if (isSelected()){
+               return getCustomerItems();
+           }else{
+               return new ArrayList<CustomerCalcItem>(0);
+           }
+        }
+
 
         public BigDecimal getRebate() {
             BigDecimal result = BigDecimal.ZERO;
@@ -349,6 +334,14 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         public CustomerCalcItem(Customer data, boolean selected) {
             super(data, selected);
             rebateProgram = data.getMiddleMan().getRebateProgram();
+        }
+
+        @Override
+        public void setSelected(boolean selected){
+            super.setSelected(selected);
+            for (OrderCalcItem item: orderCalcItems){
+                item.setSelected(selected);
+            }
         }
 
         private void init() {
@@ -374,6 +367,14 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
         public List<OrderCalcItem> getOrderCalcItems() {
             return orderCalcItems;
+        }
+
+        public List<OrderCalcItem> getOrders(){
+            if (isSelected()){
+                return getOrderCalcItems();
+            }else{
+                return new ArrayList<OrderCalcItem>(0);
+            }
         }
 
         public BigDecimal getRebate() {
