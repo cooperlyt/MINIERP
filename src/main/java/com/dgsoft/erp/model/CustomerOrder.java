@@ -240,7 +240,7 @@ public class CustomerOrder implements java.io.Serializable {
         Collections.sort(result, new Comparator<NeedRes>() {
             @Override
             public int compare(NeedRes o1, NeedRes o2) {
-                return o1.getId().compareTo(o2.getId());
+                return o1.getCreateDate().compareTo(o2.getCreateDate());
             }
         });
         return result;

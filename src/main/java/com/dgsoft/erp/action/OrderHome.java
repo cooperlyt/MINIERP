@@ -36,16 +36,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return new PayType[]{PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK};
     }
 
-    @Factory(value = "middleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
-    public CustomerOrder.MiddleMoneyCalcType[] getMiddleMoneyCalcTypes() {
-        return CustomerOrder.MiddleMoneyCalcType.values();
-    }
-
-    @Factory(value = "itemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
-    public OrderItem.MiddleMoneyCalcType[] getItemMiddleMoneyCalcTypes() {
-        return OrderItem.MiddleMoneyCalcType.values();
-    }
-
     public enum ItemMiddleMoneyCalcType {
         NOT_CALC, ITEM_FIX, ITEM_RATE, CROSS_CALC;
     }
