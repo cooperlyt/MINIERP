@@ -167,7 +167,7 @@ public class OrderItem extends StoreResPriceEntity
         this.middleMoney = middleMoney;
     }
 
-    @Column(name = "MIDDLE_RATE", nullable = true, scale = 4)
+    @Column(name = "MIDDLE_RATE", nullable = true, scale = 6)
     public BigDecimal getMiddleRate() {
         return this.middleRate;
     }
@@ -214,12 +214,20 @@ public class OrderItem extends StoreResPriceEntity
     }
 
     @Transient
+    public BigDecimal getMiddleUnitCount(){
+        if ((getMiddleUnit() != null) && (getCount() != null)){
+            return getCountByResUnit(getMiddleUnit());
+        }
+        return null;
+    }
+
+    @Transient
     public BigDecimal getCalcMiddleMoney() {
         if ((getMiddleMoneyCalcType() == null) || getMiddleMoneyCalcType().equals(OrderItemRebate.ItemRebateModel.NOT_CALC)) {
             return BigDecimal.ZERO;
         }
         //BigDecimal totalMiddleMoney = BigDecimal.ZERO;
-        if (getRebate() != null) {
+        if (getMiddleRate() != null) {
             if (getMiddleMoneyCalcType().equals(OrderItemRebate.ItemRebateModel.BY_COUNT)) {
                 if (getMiddleUnit() != null)
                     return getCountByResUnit(getMiddleUnit()).multiply(getMiddleRate());

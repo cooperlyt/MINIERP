@@ -8,6 +8,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
+    <!--required param: order -->
+
     <h:outputText rendered="#{order.moneyComplete}" style="color: green"
                   value="#{messages.order_field_moneyComplete_true}"  />
     <h:outputText rendered="#{not order.moneyComplete}"
@@ -26,6 +28,16 @@
                   value="#{messages.order_field_resReceived_true}"  />
     <h:outputText rendered="#{not order.resReceived}"
                   value="#{messages.order_field_resReceived_false}" style="color: red;"/>
+
+    <a:outputPanel rendered="#{s:hasRole('erp.sale.manager')}">
+        #{' '}/#{' '}
+
+        <h:outputText rendered="#{order.middlePayed}" style="color: green"
+                      value="#{messages.order_field_middlePayed_true}"  />
+        <h:outputText rendered="#{not order.middlePayed}"
+                      value="#{messages.order_field_middlePayed_false}" style="color: red;"/>
+
+    </a:outputPanel>
 
 
 </ui:composition>

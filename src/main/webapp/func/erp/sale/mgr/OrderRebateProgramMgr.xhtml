@@ -48,7 +48,7 @@
     <ui:define name="label">#{messages.RebateProgram_field_id}</ui:define>
     <h:inputText
             required="true" disabled="#{not rebateProgramHome.editing}"
-            maxlength="32" readonly="#{rebateProgramHome.managed}"
+            maxlength="8" readonly="#{rebateProgramHome.managed}" size="8"
             valueChangeListener="#{rebateProgramHome.verifyIdAvailable}"
             label="#{messages.RebateProgram_field_id}"
             value="#{rebateProgramHome.instance.id}">
@@ -108,12 +108,32 @@
 
 </a:outputPanel>
 
-<s:decorate template="/layout/seam-edit.xhtml">
-    <ui:define name="label">#{messages.RebateProgram_field_calcItem}</ui:define>
-    <h:selectBooleanCheckbox disabled="#{not rebateProgramHome.editing}"  value="#{rebateProgramHome.instance.calcItem}">
+
+
+<s:decorate template="/layout/seam-display.xhtml">
+    <h:selectBooleanCheckbox disabled="#{not rebateProgramHome.editing}"
+                             value="#{rebateProgramHome.instance.calcItem}">
         <a:ajax event="click" render="itemCalcType"/>
     </h:selectBooleanCheckbox>
+
+    #{messages.RebateProgram_field_calcItem}
 </s:decorate>
+
+
+
+<s:decorate rendered="#{rebateProgramHome.instance.calcItem}" template="/layout/seam-edit.xhtml">
+    <h:selectBooleanCheckbox  disabled="#{not rebateProgramHome.editing}"
+                              value="#{rebateProgramHome.instance.zeroItem}" />
+    #{messages.RebateProgram_field_zeroItem}
+</s:decorate>
+
+<s:decorate rendered="#{rebateProgramHome.instance.calcItem}" template="/layout/seam-edit.xhtml">
+    <h:selectBooleanCheckbox  disabled="#{not rebateProgramHome.editing}"
+                              value="#{rebateProgramHome.instance.patchItem}" />
+    #{messages.RebateProgram_field_onlyMaster}
+</s:decorate>
+
+
 
 <div style="clear: both"/>
 <br/>

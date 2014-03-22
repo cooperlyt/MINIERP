@@ -203,6 +203,17 @@ public class NeedRes implements java.io.Serializable {
         return result;
     }
 
+    @Transient
+    public List<OrderItem> getNoZeroItemList(){
+        List<OrderItem> result = new ArrayList<OrderItem>();
+        for (OrderItem item: getOrderItemList()){
+            if (item.getTotalPrice().compareTo(BigDecimal.ZERO) > 0){
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", cascade = {CascadeType.ALL})
     public Set<Dispatch> getDispatches() {
         return this.dispatches;

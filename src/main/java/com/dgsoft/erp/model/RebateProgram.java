@@ -1,7 +1,6 @@
 package com.dgsoft.erp.model;
 
 import com.dgsoft.common.NamedEntity;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -30,6 +29,8 @@ public class RebateProgram implements java.io.Serializable,NamedEntity {
     private boolean enable;
     private BigDecimal rebate;
     private boolean calcItem;
+    private boolean zeroItem;
+    private boolean patchItem;
     private Set<OrderItemRebate> orderItemRebates = new HashSet<OrderItemRebate>(0);
     private Set<MiddleMan> middleMans = new HashSet<MiddleMan>(0);
 
@@ -129,6 +130,24 @@ public class RebateProgram implements java.io.Serializable,NamedEntity {
 
     public void setMiddleMans(Set<MiddleMan> middleMans) {
         this.middleMans = middleMans;
+    }
+
+    @Column(name="ZERO_ITEM", nullable = false)
+    public boolean isZeroItem() {
+        return zeroItem;
+    }
+
+    public void setZeroItem(boolean zeroItem) {
+        this.zeroItem = zeroItem;
+    }
+
+    @Column(name= "PATCH_ITEM", nullable = false)
+    public boolean isPatchItem() {
+        return patchItem;
+    }
+
+    public void setPatchItem(boolean onlyMaster) {
+        this.patchItem = onlyMaster;
     }
 
     @Transient

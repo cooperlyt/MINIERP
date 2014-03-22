@@ -196,6 +196,9 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
                 }
             }
 
+        }else{
+            getInstance().setZeroItem(false);
+            getInstance().setPatchItem(false);
         }
         return true;
     }

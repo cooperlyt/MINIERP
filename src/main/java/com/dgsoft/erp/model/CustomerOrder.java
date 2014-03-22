@@ -178,7 +178,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.totalCost = totalCost;
     }
 
-    @Column(name = "MIDDLE_RATE", nullable = true, scale = 4)
+    @Column(name = "MIDDLE_RATE", nullable = true, scale = 6)
     public BigDecimal getMiddleRate() {
         return this.middleRate;
     }
