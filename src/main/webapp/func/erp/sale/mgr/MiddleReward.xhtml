@@ -224,7 +224,7 @@
 </rich:column>
 
 <rich:column colspan="10" style="font-size: 14px; font-weight: bold; color: darkorange;">
-    <rich:collapsibleSubTableToggler for="sbtbc1"/>
+    <rich:collapsibleSubTableToggler id="sbtbc1Toggler" for="sbtbc1"/>
 
 
     <h:outputText value="#{_middleMan.data.name}"
@@ -275,7 +275,7 @@
 
 <rich:column colspan="9" style="font-size: 14px;color: purple">
 
-    <rich:collapsibleSubTableToggler for="sbtbo1"/>
+    <rich:collapsibleSubTableToggler event="none" for="sbtbo1"/>
 
     #{_customer.data.customerArea.name} --
 
@@ -323,7 +323,7 @@
 
 
 <rich:column colspan="7" style="font-size: 13px; font-weight: bold;">
-    <rich:collapsibleSubTableToggler for="sbtbn1"/>
+    <rich:collapsibleSubTableToggler event="none"  for="sbtbn1"/>
 
     <s:link style="text-decoration:line-through; color: red;font-size: 13px; font-weight: bold; " value="#{_order.data.id}"
             rendered="#{_order.data.canceled}" target="_blank" view="/func/erp/sale/OrderDetails.xhtml">
@@ -448,7 +448,7 @@
 
 
     <rich:column colspan="6" style="font-size: 13px;color: darkgoldenrod">
-        <rich:collapsibleSubTableToggler for="sbtboi1"/>
+        <rich:collapsibleSubTableToggler event="none"  for="sbtboi1"/>
         #{messages[_needres.data.type.name()]}(
         <h:outputText value="#{_needres.data.createDate}">
             <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
