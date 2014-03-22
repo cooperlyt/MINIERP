@@ -7,10 +7,7 @@ import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 import javax.faces.event.ValueChangeEvent;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +36,10 @@ public class CalendarBean implements java.io.Serializable {
         timeZone = TimeZone.getTimeZone("GMT+8");
         popup = true;
         //pattern = this.getMsgs("calendarPattern");
+    }
+
+    public String getCurrencySymbol(){
+       return Currency.getInstance(locale).getSymbol(locale);
     }
 
     public Locale getLocale() {

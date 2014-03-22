@@ -14,8 +14,9 @@
     <h:panelGrid columns="3" columnClasses="noWidthColumns,,noWidthColumns" style="width: 100%">
 
         <h:panelGroup>
-            <ui:insert name="label"/>
+
             <s:span styleClass="required" rendered="#{required}">*</s:span>
+            <ui:insert name="label"/>
         </h:panelGroup>
         <s:span class="small_value #{invalid?'errors':''}">
             <s:validateAll>

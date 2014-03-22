@@ -363,6 +363,7 @@
     <a:outputPanel rendered="#{_order.selected}">
         <s:decorate rendered="#{_order.data.middleMoneyCalcType eq 'TOTAL_MONEY_RATE'}"
                     template="/layout/grid-inside-edit.xhtml">
+            <ui:define name="label">%</ui:define>
             <rich:inplaceInput value="#{_order.data.middleRate}" required="true" style="width: 95%"
                                label="#{messages.RebateProgram_field_rebate}"
                                converter="javax.faces.BigDecimal">
@@ -373,6 +374,7 @@
 
         <s:decorate rendered="#{_order.data.middleMoneyCalcType eq 'CONSULT_FIX'}"
                     template="/layout/grid-inside-edit.xhtml">
+            <ui:define name="label">#{calendarBean.currencySymbol}</ui:define>
             <rich:inplaceInput value="#{_order.data.middleRate}" required="true" style="width: 95%"
                                label="#{messages.RebateProgram_field_rebate}">
                 <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
@@ -506,7 +508,8 @@
         </rich:column>
         <rich:column>
             <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_COUNT'}" template="/layout/grid-inside-edit.xhtml">
-                <rich:inplaceInput value="#{_item.middleRate}" rendered="true" style="width: 95%"
+                <ui:define name="label">#{calendarBean.currencySymbol}</ui:define>
+                <rich:inplaceInput value="#{_item.middleRate}" required="true" style="width: 95%"
                                    label="#{messages.OrderItemRebate_field_rebate}">
                     <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                      type="currency" groupingUsed="false"/>
@@ -515,9 +518,11 @@
             </s:decorate>
 
             <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_MONEY'}" template="/layout/grid-inside-edit.xhtml">
-                <rich:inplaceInput value="#{_item.middleRate}" rendered="true" style="width: 95%"
+                <ui:define name="label">%</ui:define>
+                <rich:inplaceInput value="#{_item.middleRate}" required="true" style="width: 95%"
                                    label="#{messages.OrderItemRebate_field_rebate}" converter="javax.faces.BigDecimal">
                     <f:validateDoubleRange minimum="0" maximum="100"/>
+                    <f:convertNumber pattern="#0.######"/>
                     <a:ajax event="blur"/>
                 </rich:inplaceInput>
             </s:decorate>
