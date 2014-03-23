@@ -7,6 +7,7 @@ import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -23,6 +24,8 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
     private static final String[] RESTRICTIONS = {
             "lower(customerOrder.id) like lower(concat('%',#{middleManRewardCalc.orderId},'%'))",
             "customerOrder.customer.middleMan.id = #{middleManHome.instance.id}",
+            "lower(customerOrder.customer.middleMan.name) like lower(concat('%',#{middleManRewardCalc.middleManName},'%'))",
+            "lower(customerOrder.customer.name) like lower(concat('%',#{middleManRewardCalc.customerName},'%'))",
             "customerOrder.createDate >= #{middleManRewardCalc.searchDateArea.dateFrom}",
             "customerOrder.createDate <= #{middleManRewardCalc.searchDateArea.searchDateTo}",
             "customerOrder.canceled = #{middleManRewardCalc.canceled}",
@@ -50,7 +53,11 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
     private Boolean customerConfirm;
 
-    private Boolean orderId;
+    private String orderId;
+
+    private String customerName;
+
+    private String middleManName;
 
 
     public Boolean getContainPayed() {
@@ -97,14 +104,29 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         this.customerConfirm = customerConfirm;
     }
 
-    public Boolean getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Boolean orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getMiddleManName() {
+        return middleManName;
+    }
+
+    public void setMiddleManName(String middleManName) {
+        this.middleManName = middleManName;
+    }
 //------------------------------------
 
     public List<MiddleCalcItem> containMiddleMan;
@@ -195,22 +217,32 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 //        return result;
 //    }
 //
-//    public BigDecimal getContainOrderTotalMoney() {
-//        BigDecimal result = BigDecimal.ZERO;
-//        for (BatchOperData<CustomerOrder> order : getContainOrders()) {
-//            result = result.add(order.getData().getMoney());
-//        }
-//        return result;
-//    }
-//
-//    public BigDecimal getSelectOrderTotalMiddleMoney() {
-//        BigDecimal result = BigDecimal.ZERO;
-//        for (BatchOperData<CustomerOrder> order : getContainOrders()) {
-//            if (order.isSelected() && (order.getData().getMiddleMoney() != null))
-//                result = result.add(order.getData().getMiddleMoney());
-//        }
-//        return result;
-//    }
+
+    public long getOrderCount() {
+        return getResultCount();
+    }
+
+    public int getMiddleManCount() {
+        return containMiddleMan.size();
+    }
+
+    public int getCustomerCount() {
+        int result = 0;
+        for (MiddleCalcItem item : containMiddleMan) {
+            result += item.customerItems.size();
+        }
+        return result;
+    }
+
+
+    public BigDecimal getContainOrderTotalPrice() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (MiddleCalcItem item : containMiddleMan) {
+            result = result.add(item.getTotalPrice());
+        }
+        return result;
+    }
+
 
     public BigDecimal getTotalRebateMoney() {
         BigDecimal result = BigDecimal.ZERO;
@@ -221,11 +253,31 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         return result;
     }
 
+
+    @Transactional
+    public String saveCustomerOrder(){
+        for (MiddleCalcItem middleItem : containMiddleMan) {
+            if (middleItem.isSelected()){
+                for (CustomerCalcItem customerItem: middleItem.getCustomers()){
+                    for (OrderCalcItem orderItem: customerItem.getOrders()){
+                        orderItem.wirteToOrder();
+
+                    }
+                }
+            }
+        }
+
+        joinTransaction();
+        getEntityManager().flush();
+        refresh();
+        return "updated";
+    }
+
     public class MiddleCalcItem extends BatchOperData<MiddleMan> {
 
         private RebateProgram rebateProgram;
 
-        private List<CustomerCalcItem> customerItems;
+        List<CustomerCalcItem> customerItems;
 
         public MiddleCalcItem(MiddleMan data, boolean selected) {
             super(data, selected);
@@ -274,6 +326,14 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             } else {
                 return new ArrayList<CustomerCalcItem>(0);
             }
+        }
+
+        public BigDecimal getTotalPrice() {
+            BigDecimal result = BigDecimal.ZERO;
+            for (CustomerCalcItem item : customerItems) {
+                result = result.add(item.getTotalPrice());
+            }
+            return result;
         }
 
 
@@ -351,6 +411,16 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             }
             return result;
         }
+
+
+        public BigDecimal getTotalPrice() {
+            BigDecimal result = BigDecimal.ZERO;
+            for (OrderCalcItem item : orderCalcItems) {
+                result = result.add(item.getData().getMoney());
+            }
+            return result;
+        }
+
 
         public boolean isExpanded() {
             return expanded;
@@ -446,10 +516,17 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         public void wirteToOrder() {
             getData().setMiddleMoney(getOrderRebate());
             getData().setMiddleTotal(getRebate());
+            for (NeedResCalcItem item: needResCalcItems){
+                item.wirteToOrder();
+            }
+            getData().setMiddlePayed(true);
             // for ()
         }
 
         private BigDecimal getOrderRebate() {
+            if (!isSelected()) {
+                return BigDecimal.ZERO;
+            }
             switch (getData().getMiddleMoneyCalcType()) {
 
                 case NOT_CALC:
@@ -611,6 +688,12 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             acceptProgram();
         }
 
+
+        public void wirteToOrder() {
+            for (OrderItem item: getData().getOrderItems()){
+                item.setMiddleMoney(item.getCalcMiddleMoney());
+            }
+        }
 
         public BigDecimal getRebate() {
 
