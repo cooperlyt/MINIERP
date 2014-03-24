@@ -30,14 +30,10 @@ public class RunParam {
     @Create
     @Transactional
     public void load() {
-        systemParams.clear();
 
         EntityQuery<SystemParam> systemParamList = (EntityQuery<SystemParam>) Component.getInstance("systemParamList", true, true);
 
-        for (SystemParam param : systemParamList.getResultList()) {
-            systemParams.put(param.getId(), param);
-        }
-
+        loadParams(systemParamList);
 
         SystemParam runCounterParam = systemParams.get(PARAM_RUN_COUNT_ID);
 
@@ -52,6 +48,21 @@ public class RunParam {
         }
         systemParamList.getEntityManager().flush();
     }
+
+    private void loadParams(EntityQuery<SystemParam> systemParamList){
+        systemParams.clear();
+
+        for (SystemParam param : systemParamList.getResultList()) {
+            systemParams.put(param.getId(), param);
+        }
+
+    }
+
+    public void refresh(){
+        loadParams((EntityQuery<SystemParam>) Component.getInstance("systemParamList", true, true));
+    }
+
+
 
     public int getIntParamValue(String name){
         SystemParam systemParam = systemParams.get(name);

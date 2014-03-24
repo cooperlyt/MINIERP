@@ -17,6 +17,7 @@ INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.dispatch.QQKe
 
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.sale.receiveAddress','STRING','CITY','收货地址默认提取字段 CITY 城市 ADD 地址');
 
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM(ID,TYPE,VALUE,MEMO) VALUES('erp.customer.balanceInput','BOOLEAN','true','是否可修改客户帐户余额');
 
 
 -- 业务类别

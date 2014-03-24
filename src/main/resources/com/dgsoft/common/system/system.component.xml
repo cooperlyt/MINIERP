@@ -76,6 +76,7 @@
 
     <event type="org.jboss.seam.afterTransactionSuccess.SystemParam">
         <action execute="#{systemParamList.refresh}"/>
+        <action execute="#{runParam.refresh}"/>
     </event>
 
     <event type="org.jboss.seam.afterTransactionSuccess.Person">

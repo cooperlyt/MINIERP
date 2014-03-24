@@ -272,10 +272,11 @@
             </h:selectOneMenu>
         </s:decorate>
 
-        <s:decorate rendered="#{not customerHome.managed}" template="/layout/edit.xhtml">
+        <s:decorate rendered="#{runParam.getBooleanParamValue('erp.customer.balanceInput')}" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.customer_field_balance}</ui:define>
             <h:inputText required="true" value="#{customerHome.instance.balance}" converter="javax.faces.BigDecimal">
-
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
             </h:inputText>
         </s:decorate>
 

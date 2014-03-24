@@ -123,40 +123,44 @@
             <h:outputText value="#{messages.systemParam} #{messages.emptyResult}"
                           rendered="#{empty systemParamList.resultList}"/>
 
-            <rich:dataTable id="systemParamList"
-                            var="_systemParam"
-                            value="#{systemParamList.resultList}"
-                            rendered="#{not empty systemParamList.resultList}">
-                <h:column>
+            <rich:extendedDataTable id="systemParamList"
+
+                             clientRows="0"
+                             style="width: 100%;" selectionMode="none"
+                             var="_systemParam"
+                            value="#{systemParamList.resultList}">
+
+
+                <rich:column width="32">
                     <f:facet name="header">
                         #{messages.systemParam_field_id}
                     </f:facet>
                     <h:outputText value="#{_systemParam.id}"/>
-                </h:column>
+                </rich:column>
 
 
-                <h:column>
+                <rich:column>
                     <f:facet name="header">
                         #{messages.systemParam_field_value}
                     </f:facet>
                     <h:outputText value="#{_systemParam.value}"/>
-                </h:column>
+                </rich:column>
 
-                <h:column>
+                <rich:column>
                     <f:facet name="header">
                         #{messages.systemParam_field_type}
                     </f:facet>
                     <h:outputText value="#{messages[_systemParam.type.name()]}"/>
-                </h:column>
+                </rich:column>
 
 
-                <h:column>
+                <rich:column >
                     <f:facet name="header">
                         #{messages.field_memo}
                     </f:facet>
                     <h:outputText value="#{_systemParam.memo}"/>
-                </h:column>
-                <rich:column styleClass="action">
+                </rich:column>
+                <rich:column >
                     <f:facet name="header">#{messages.action}</f:facet>
 
                     <a:commandLink styleClass="no-decor" immediate="true" execute="@this"
@@ -179,7 +183,7 @@
                     </a:commandLink>
 
                 </rich:column>
-            </rich:dataTable>
+            </rich:extendedDataTable>
 
         </div>
     </rich:panel>
