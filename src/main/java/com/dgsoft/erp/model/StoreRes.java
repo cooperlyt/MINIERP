@@ -46,6 +46,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
     private Set<BackDispatchItem> backDispatchItems = new HashSet<BackDispatchItem>(0);
     private Set<StoreResRebate> storeResRebates = new HashSet<StoreResRebate>(0);
+    private Set<PriceItem> priceItems = new HashSet<PriceItem>(0);
     private boolean enable;
 
     public StoreRes() {
@@ -243,6 +244,15 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     public void setStoreResRebates(Set<StoreResRebate> storeResRebates) {
         this.storeResRebates = storeResRebates;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
+    public Set<PriceItem> getPriceItems() {
+        return priceItems;
+    }
+
+    public void setPriceItems(Set<PriceItem> priceItems) {
+        this.priceItems = priceItems;
     }
 
     @Transient

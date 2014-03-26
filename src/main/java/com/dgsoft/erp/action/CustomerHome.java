@@ -118,6 +118,13 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     }
 
 
+    public void clearCustomerAndMiddleMan() {
+        clearInstance();
+        setHaveMiddleMan(false);
+        middleManHome.clearInstance();
+    }
+
+
     public void middleManPayChangeListener() {
 
 

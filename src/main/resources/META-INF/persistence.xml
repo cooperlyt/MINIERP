@@ -114,6 +114,8 @@
         <class>com.dgsoft.erp.model.RebateProgram</class>
         <class>com.dgsoft.erp.model.OrderItemRebate</class>
         <class>com.dgsoft.erp.model.StoreResRebate</class>
+        <class>com.dgsoft.erp.model.PriceItem</class>
+        <class>com.dgsoft.erp.model.QuotedPrice</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
