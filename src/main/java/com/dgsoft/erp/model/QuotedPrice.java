@@ -71,7 +71,7 @@ public class QuotedPrice implements Serializable {
         this.createEmp = createEmp;
     }
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "CUSTOMER", nullable = false)
     @NotNull
     public Customer getCustomer() {

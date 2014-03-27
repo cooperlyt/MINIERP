@@ -46,7 +46,7 @@
                                    label="#{messages.order_field_createDate}"
                                    value="#{quotedPriceHome.instance.createDate}">
                         <rich:validator event="change"/>
-                        <rich:placeholder value="#{messages.order_field_createDate}"/>
+                        <rich:placeholder value="#{messages.QuotedPrice_field_date}"/>
                     </rich:calendar>
                     <rich:message for="createDateField" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
@@ -58,6 +58,7 @@
                                        label="#{_type.value}" itemValue="#{_type.id}"
                                        noSelectionLabel="#{messages.noSelectLabel}"/>
                         <rich:validator event="change"/>
+                        <rich:placeholder value="#{messages.QuotedPrice_field_type}"/>
                     </rich:select >
                     <rich:message for="quotedTypeField" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
@@ -67,7 +68,7 @@
                        <s:button value="#{messages.cancel}"
                                  view="#{(empty from) ? '/func/erp/sale/QuotedPrice.xhtml' : from}" propagation="end"/>
 
-                        <h:commandButton value="#{messages.ok}"
+                        <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{quotedPriceHome.genPriceItem}"/>
                 </rich:toolbarGroup>
             </rich:toolbar>
             <br/>
@@ -128,6 +129,7 @@
                     </s:decorate>
                 </h:panelGrid>
             </a:region>
+            <div style="clear: both;"/>
             <a:outputPanel id="customerInfo">
                 <a:outputPanel rendered="#{customerAreaHome.idDefined}">
                     <rich:panel>
@@ -169,6 +171,15 @@
                     <div style="clear: both"/>
                 </a:outputPanel>
             </a:outputPanel>
+
+            <div style="clear: both"/>
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.field_memo}</ui:define>
+                <h:inputTextarea value="#{quotedPriceHome.instance.memo}" cols="60" rows="2"/>
+            </s:decorate>
+
+            <div style="clear: both;"/>
         </h:form>
     </ui:define>
 

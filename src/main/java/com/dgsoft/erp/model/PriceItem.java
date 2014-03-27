@@ -8,6 +8,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +31,16 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
     private QuotedPrice quotedPrice;
 
     public PriceItem() {
+    }
+
+    public PriceItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, QuotedPrice quotedPrice) {
+        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+        this.quotedPrice = quotedPrice;
+    }
+
+    public PriceItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, QuotedPrice quotedPrice) {
+        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+        this.quotedPrice = quotedPrice;
     }
 
     public PriceItem(QuotedPrice quotedPrice, StoreRes storeRes, BigDecimal count, BigDecimal money, ResUnit resUnit, String memo) {
