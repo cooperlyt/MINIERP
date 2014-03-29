@@ -8,89 +8,102 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
+<ui:define name="toolbar">
+    <rich:toolbar height="34" itemSeparator="line">
+        <rich:toolbarGroup>
+
+            <h:graphicImage value="/img/create.gif"/>
+            <h:form>
+                <a:commandLink value="#{messages.createNewCustomer}" immediate="true"
+                               render="customerEditPanel_form,customerEditPanel_title"
+                               oncomplete="#{rich:component('customerEditPanel')}.show()">
+                    <a:attachQueue requestDelay="0"/>
+                    <s:conversationPropagation type="begin"/>
+                    <a:param value="" assignTo="#{customerHome.id}"/>
+                </a:commandLink>
+            </h:form>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/price.png"/>
+            <s:link value="#{messages.createQuoted}" propagation="begin"
+                      view="/func/erp/sale/QuotedCreateCustomer.xhtml">
+                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
+            </s:link>
+        </rich:toolbarGroup>
+
+    </rich:toolbar>
+</ui:define>
+
 <ui:define name="body">
-
-
-<h:form>
-    <h:panelGrid columns="2">
-        <h:graphicImage value="/img/create.gif"/>
-        <a:commandLink value="#{messages.createNewCustomer}" immediate="true"
-                       render="customerEditPanel_form,customerEditPanel_title"
-                       oncomplete="#{rich:component('customerEditPanel')}.show()">
-            <a:attachQueue requestDelay="0"/>
-            <s:conversationPropagation type="begin"/>
-            <a:param value="" assignTo="#{customerHome.id}"/>
-        </a:commandLink>
-    </h:panelGrid>
-</h:form>
-
+<br/>
 
 <h:form styleClass="edit">
 
     <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
 
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.CustomerArea}</ui:define>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.CustomerArea}</ui:define>
 
-                <h:selectOneMenu value="#{customerList.customerAreaId}">
-                    <s:selectItems value="#{mySaleArea}" var="_customerArea"
-                                   noSelectionLabel="#{messages.searchNoSelectLabel}"
-                                   label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
-                </h:selectOneMenu>
-            </s:decorate>
+            <h:selectOneMenu value="#{customerList.customerAreaId}">
+                <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"
+                               label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+            </h:selectOneMenu>
+        </s:decorate>
 
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.customer_field_name}</ui:define>
-                <h:inputText value="#{customerList.customer.name}"/>
-            </s:decorate>
-
-
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.customer_field_type}</ui:define>
-
-                <h:selectOneMenu value="#{customerList.type}">
-
-                    <s:selectItems var="_word" label="#{_word.value}"
-                                   itemValue="#{_word.id}"
-                                   value="#{dictionary.getWordList('erp.customerType')}"
-                                   noSelectionLabel="#{messages.noSelectLabel}"/>
-                </h:selectOneMenu>
-            </s:decorate>
-
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.customer_field_level}</ui:define>
-                <h:panelGroup>
-                    <h:inputText value="#{customerList.levelFrom}" size="5"
-                                 converter="javax.faces.Integer"/>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.customer_field_name}</ui:define>
+            <h:inputText value="#{customerList.customer.name}"/>
+        </s:decorate>
 
 
-                    --
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.customer_field_type}</ui:define>
 
-                    <h:inputText value="#{customerList.levelTo}" size="5" converter="javax.faces.Integer"/>
+            <h:selectOneMenu value="#{customerList.type}">
 
-                </h:panelGroup>
+                <s:selectItems var="_word" label="#{_word.value}"
+                               itemValue="#{_word.id}"
+                               value="#{dictionary.getWordList('erp.customerType')}"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+            </h:selectOneMenu>
+        </s:decorate>
 
-            </s:decorate>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.customer_field_level}</ui:define>
+            <h:panelGroup>
+                <h:inputText value="#{customerList.levelFrom}" size="5"
+                             converter="javax.faces.Integer"/>
 
-            <div style="clear:both"/>
-            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-            <h:panelGrid columns="1" style="width: 100%; text-align: right">
-                <a:outputPanel id="search_buttons">
-                    <div class="actionButtons">
 
-                        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+                --
 
-                        <a:outputPanel id="searchButton">
-                            <a:commandButton value="#{messages.search}"
-                                             execute="@form" render="dataListResult"
-                                             action="#{customerList.first}">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:commandButton>
-                        </a:outputPanel>
-                    </div>
-                </a:outputPanel>
-            </h:panelGrid>
+                <h:inputText value="#{customerList.levelTo}" size="5" converter="javax.faces.Integer"/>
+
+            </h:panelGroup>
+
+        </s:decorate>
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="search_buttons">
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="dataListResult"
+                                         action="#{customerList.first}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
 
     </rich:collapsiblePanel>
 
@@ -117,10 +130,13 @@
                 </ui:include>
 
             </f:facet>
-            <h:outputText style="text-decoration:line-through; color: red;" value=" #{_customer.name}"
-                          rendered="#{not _customer.enable}"/>
-            <h:outputText  value=" #{_customer.name}"
-                           rendered="#{_customer.enable}"/>
+
+
+            <s:link view="/func/erp/sale/CustomerView.xhtml" value="#{_customer.name}"
+                    style="#{_customer.enable ? '' : 'text-decoration:line-through; color: red;'}">
+                <f:param name="customerId" value="#{_customer.id}"/>
+                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
+            </s:link>
         </rich:column>
 
         <rich:column>
@@ -176,7 +192,7 @@
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
                     <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.order_field_createDate}"/>
+                    <ui:param name="propertyLabel" value="#{messages.customer_field_createDate}"/>
                     <ui:param name="propertyPath" value="customer.createDate"/>
                 </ui:include>
 
@@ -195,7 +211,7 @@
                 </ui:include>
 
             </f:facet>
-            <h:outputText value="#{_customer.balance}">
+            <h:outputText value="#{_customer.balance}" style="#{(_customer.balance lt 0) ? 'color: red;' : ''}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
@@ -220,12 +236,7 @@
                 <a:attachQueue requestDelay="0"/>
                 <a:param value="#{_customer.id}" assignTo="#{customerHome.id}"/>
             </a:commandButton>
-            #{' '}
-            <s:link view="/func/erp/sale/CustomerView.xhtml">
-                <s:graphicImage value="/img/view.png" title="#{messages.viewDetails}"/>
-                <f:param name="customerId" value="#{_customer.id}"/>
-                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
-            </s:link>
+
             #{' '}
 
             <s:link view="/func/erp/finance/cashier/CustomerMoneySavings.xhtml"
@@ -236,7 +247,7 @@
             #{' '}
             <s:link view="/func/erp/finance/cashier/CustomerMoneyRefund.xhtml"
                     propagation="begin" rendered="#{s:hasRole('erp.finance.cashier')}">
-                <s:graphicImage value="/img/refundMoney.png" title="#{messages.CustomerMoneySavings}"/>
+                <s:graphicImage value="/img/refundMoney.png" title="#{messages.CustomerMoneyRefund}"/>
                 <f:param name="customerId" value="#{_customer.id}"/>
             </s:link>
 
@@ -245,6 +256,10 @@
                 <s:graphicImage value="/img/match_price.png" title="#{messages.customerConfirmPager}"/>
                 <f:param name="customerId" value="#{_customer.id}"/>
             </s:link>
+
+            #{' '}
+
+
 
         </rich:column>
 
@@ -263,7 +278,7 @@
         <s:decorate template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.CustomerArea}</ui:define>
             <h:selectOneMenu value="#{customerHome.instance.customerArea}" required="true"
-                         label="#{messages.CustomerArea}">
+                             label="#{messages.CustomerArea}">
                 <s:selectItems value="#{mySaleArea}" var="_customerArea"
                                noSelectionLabel="#{messages.noSelectLabel}"
                                label="#{_customerArea.name}"/>
@@ -272,7 +287,8 @@
             </h:selectOneMenu>
         </s:decorate>
 
-        <s:decorate rendered="#{runParam.getBooleanParamValue('erp.customer.balanceInput')}" template="/layout/edit.xhtml">
+        <s:decorate rendered="#{runParam.getBooleanParamValue('erp.customer.balanceInput')}"
+                    template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.customer_field_balance}</ui:define>
             <h:inputText required="true" value="#{customerHome.instance.balance}" converter="javax.faces.BigDecimal">
                 <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""

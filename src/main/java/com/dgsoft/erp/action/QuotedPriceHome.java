@@ -54,6 +54,8 @@ public class QuotedPriceHome extends ErpEntityHome<QuotedPrice> {
     @DataModel(value = "quotedPriceItems")
     private List<PriceItem> priceItems;
 
+
+
     public String genPriceItem() {
 
         if (priceItems == null) {
@@ -139,5 +141,23 @@ public class QuotedPriceHome extends ErpEntityHome<QuotedPrice> {
 
     public void setEditingItem(PriceItem editingItem) {
         this.editingItem = editingItem;
+    }
+
+
+    public void setMiddleManId(String id){
+        List<QuotedPrice> history = getEntityManager().createQuery("select quotedPrice from QuotedPrice quotedPrice where quotedPrice.customer.id = :customerId order by quotedPrice.createDate", QuotedPrice.class)
+                .setParameter("customerId", id).setFirstResult(0).setMaxResults(1).getResultList();
+        if (history.isEmpty()){
+            clearInstance();
+        }else{
+            setId(history.get(0).getId());
+        }
+    }
+    public String getMiddleManId(){
+        if(isIdDefined()){
+            return getInstance().getCustomer().getId();
+        } else {
+            return null;
+        }
     }
 }
