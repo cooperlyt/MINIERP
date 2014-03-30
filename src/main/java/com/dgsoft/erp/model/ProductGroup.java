@@ -19,7 +19,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "PRODUCT_GROUP", catalog = "MINI_ERP")
-public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity {
+public class ProductGroup implements Comparable<ProductGroup>, java.io.Serializable, TreeNode, NamedEntity {
 
     private String id;
 
@@ -128,18 +128,18 @@ public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity
     }
 
     @Transient
-    public Set<Res> getProducts(){
+    public Set<Res> getProducts() {
         Set<Res> result = new HashSet<Res>(getReses());
-        for(ProductGroup pg: getChildrenGroups()){
+        for (ProductGroup pg : getChildrenGroups()) {
             result.addAll(pg.getProducts());
         }
         return result;
     }
 
     @Transient
-    public List<Res> getProductList(){
+    public List<Res> getProductList() {
         List<Res> result = new ArrayList<Res>(getProducts());
-        Collections.sort(result,new Comparator<Res>() {
+        Collections.sort(result, new Comparator<Res>() {
             @Override
             public int compare(Res o1, Res o2) {
                 return o1.getId().compareTo(o2.getId());
@@ -180,16 +180,16 @@ public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity
     }
 
     @Transient
-    public String getTitle(){
-        if (getParentGroup() == null){
+    public String getTitle() {
+        if (getParentGroup() == null) {
             return getFactory().getName() + "->" + getName();
-        }else{
+        } else {
             return getParentGroup().getTitle() + "->" + getName();
         }
     }
 
     @Transient
-    public String getType(){
+    public String getType() {
         return "group";
     }
 
@@ -261,9 +261,19 @@ public class ProductGroup implements java.io.Serializable, TreeNode, NamedEntity
     public int hashCode() {
         if ((getId() != null) && (!"".equals(getId().trim()))) {
             return getId().hashCode();
-        }else{
+        } else {
             return super.hashCode();
         }
 
+    }
+
+    @Override
+    public int compareTo(ProductGroup o) {
+        if (o.getId() != null)                  {
+            return o.getId().compareTo(getId());
+        }else if (o.getName() != null){
+            return o.getName().compareTo(getName());
+        }else
+            return 0;
     }
 }
