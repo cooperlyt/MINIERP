@@ -9,7 +9,7 @@
                 xmlns:rich="http://richfaces.org/rich">
     <!--param inputValue formatTemplate-->
 
-    <h:panelGrid columns="4">
+    <h:panelGrid columns="4" rendered="#{(empty showTitle) ? true : showTitle}">
         <h:outputText value="#{inputValue.res.name}(#{inputValue.res.code})"/>
     </h:panelGrid>
 

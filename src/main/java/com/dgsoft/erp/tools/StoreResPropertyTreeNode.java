@@ -1,5 +1,6 @@
 package com.dgsoft.erp.tools;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResTreeNode;
@@ -133,7 +134,9 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                     List<Format> srcParentFormats = new ArrayList<Format>(sr.getFormatList());
 
                     if (!sr.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-                        srcParentFormats.remove(srcParentFormats.size() - 1);
+                        if (!srcParentFormats.isEmpty())
+                            srcParentFormats.remove(srcParentFormats.size() - 1);
+                        //TODO no format
                     }
 
                     if (ResHelper.instance().sameFormat(node.getFormats().values(), srcParentFormats)) {
@@ -188,7 +191,17 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
         }
 
         public String getTitle() {
-            return title;
+             return title;
+        }
+
+        public String getShowTitle(){
+            if (!DataFormat.isEmpty(title)){
+                return title;
+            }else if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                return storeRes.getDisplayFloatRate() + " " + storeRes.getRes().getUnitGroup().getName();
+            }else {
+                return storeRes.getRes().getName();
+            }
         }
 
         public StoreRes getStoreRes() {
@@ -198,6 +211,8 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
         public void setStoreRes(StoreRes storeRes) {
             this.storeRes = storeRes;
         }
+
+
 
         @Override
         public Object getData() {

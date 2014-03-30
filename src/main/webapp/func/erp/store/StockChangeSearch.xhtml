@@ -187,7 +187,7 @@
 
 
 <rich:popupPanel id="stockChangeDetails" modal="true"
-                 autosized="true"
+                 autosized="false" height="600" width="600"
                  moveable="true" resizeable="false">
 
     <f:facet name="header">
@@ -212,8 +212,37 @@
             <rich:collapsiblePanel switchType="client" expanded="false"
                                    header="#{messages[stockChangeHome.instance.operType.name()]}">
 
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">
+                        #{messages.storeIn_field_dateTime}
+                    </ui:define>
+                    <h:outputText value="#{stockChangeHome.instance.operDate}">
+                        <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+                    </h:outputText>
+                </s:decorate>
 
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.Store}</ui:define>
+                    #{stockChangeHome.instance.store.name}(#{stockChangeHome.instance.store.id})
+                </s:decorate>
 
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.Store}</ui:define>
+                    #{stockChangeHome.instance.store.name}(#{stockChangeHome.instance.store.id})
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.StoreChange_field_operEmp}</ui:define>
+                    #{dictionary.getEmpNameById(stockChangeHome.instance.operEmp)}
+                </s:decorate>
+
+                <a:outputPanel rendered="#{stockChangeHome.instance.operType eq 'PRODUCE_IN'}">
+                    <s:decorate template="/layout/seam-display.xhtml">
+
+                     <ui:define name="label">#{messages.ProductGroup}</ui:define>
+                    #{stockChangeHome.instance.productStoreIn.productGroup.factory.name} - #{stockChangeHome.instance.productStoreIn.productGroup.name}
+                    </s:decorate>
+                </a:outputPanel>
 
                 <a:outputPanel rendered="#{stockChangeHome.instance.operType eq 'SELL_OUT'}">
 
@@ -268,23 +297,28 @@
 
                         <div style="clear: both;"/>
 
+
                         <ui:include src="/layout/erp/biz/DeliverTypeView.xhtml">
                             <ui:param name="dispatch" value="#{stockChangeHome.instance.orderDispatch}"/>
                         </ui:include>
 
-                        <div style="clear: both;"/>
+
+
                     </s:decorate>
 
 
                 </a:outputPanel>
-
+                <div style="clear: both;"/>
 
             </rich:collapsiblePanel>
 
             <br/>
+
+
             <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
                 <ui:param name="value" value="#{stockChangeHome.instance.changeDetails}"/>
             </ui:include>
+
         </a:outputPanel>
     </a:outputPanel>
 

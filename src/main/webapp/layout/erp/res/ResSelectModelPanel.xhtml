@@ -9,7 +9,7 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <!--required param:  panelId  treeValue-->
-
+    <!-- onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} " -->
 
     <rich:popupPanel id="#{panelId}"
                      moveable="true" autosized="true">
@@ -38,7 +38,6 @@
                             var="_node"
                             value="#{treeValue}"
                             nodeType="#{_node.nodeType}"
-                            onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} "
                             toggleType="client"
                             selectionType="client">
                         <rich:treeNode type="category">
@@ -78,7 +77,7 @@
                         <rich:treeNode type="storeRes" iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
                                        iconCollapsed="/img/store_res.png">
                             <ui:insert name="storeResNode">
-                                <h:outputText value="#{_node.data.code}#{' '}#{(not empty _node.title) ? _node.title :_node.data.displayFloatRate}#{(empty _node.title) ? _node.data.res.unitGroup.name : ''}"/>
+                                <h:outputText value="#{_node.data.code}#{' '}#{ _node.showTitle}"/>
                             </ui:insert>
                         </rich:treeNode>
                     </rich:tree>

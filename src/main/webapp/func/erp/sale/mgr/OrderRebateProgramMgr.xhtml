@@ -358,7 +358,7 @@
     <ui:define name="storeResNode">
         <a:commandLink action="#{rebateProgramHome.storeResSelected}" execute="@this" render="itemCalcType"
                        oncomplete="#{rich:component(panelId)}.hide();"
-                       value="#{_node.data.code}#{' '}#{(not empty _node.title) ? _node.title :_node.data.displayFloatRate}#{(empty _node.title) ? _node.data.res.unitGroup.name : ''}">
+                       value="#{_node.data.code}#{' '}#{ _node.showTitle}">
             <a:param value="#{_node.data.id}" assignTo="#{rebateProgramHome.selectStoreResId}"/>
             <a:attachQueue requestDelay="0"/>
         </a:commandLink>

@@ -11,7 +11,7 @@
     <ui:define name="toolbar">
         <rich:toolbar>
             <rich:toolbarGroup location="right">
-                <s:button value="#{messages.createQuoted}" propagation="begin"
+                <s:button styleClass="toolBarBtn" value="#{messages.createQuoted}" propagation="begin"
                           view="/func/erp/sale/QuotedCreateCustomer.xhtml">
                     <f:param name="from" value="/func/erp/sale/QuotedPrice.xhtml"/>
                 </s:button>
@@ -21,6 +21,98 @@
 
     <ui:define name="body">
 
+        <h:form>
+            <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.order_field_createDate}</ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_field_createDate}"
+                            value="#{quotedPriceList.searchDateArea.dateFrom}">
+                    </rich:calendar>
+
+                    --
+
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_field_createDate}"
+                            value="#{quotedPriceList.searchDateArea.dateTo}">
+                    </rich:calendar>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.CustomerArea}</ui:define>
+
+                    <h:selectOneMenu value="#{quotedPriceList.customerAreaId}">
+                        <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                                       noSelectionLabel="#{messages.searchNoSelectLabel}"
+                                       label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.customer_field_name}</ui:define>
+                    <h:inputText value="#{quotedPriceList.customerName}"/>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.customer_field_type}</ui:define>
+
+                    <h:selectOneMenu value="#{quotedPriceList.type}">
+
+                        <s:selectItems var="_word" label="#{_word.value}"
+                                       itemValue="#{_word.id}"
+                                       value="#{dictionary.getWordList('erp.quotType')}"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.customer_field_level}</ui:define>
+                    <h:panelGroup>
+                        <h:inputText value="#{quotedPriceList.levelFrom}" size="5"
+                                     converter="javax.faces.Integer"/>
+
+
+                        --
+
+                        <h:inputText value="#{quotedPriceList.levelTo}" size="5" converter="javax.faces.Integer"/>
+
+                    </h:panelGroup>
+
+                </s:decorate>
+
+                <div style="clear:both"/>
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                    <a:outputPanel id="search_buttons">
+                        <div class="actionButtons">
+
+                            <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                            <a:outputPanel id="searchButton">
+                                <a:commandButton value="#{messages.search}"
+                                                 execute="@form" render="dataListResult"
+                                                 action="#{customerList.first}">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandButton>
+                            </a:outputPanel>
+                        </div>
+                    </a:outputPanel>
+                </h:panelGrid>
+            </rich:collapsiblePanel>
+        </h:form>
     </ui:define>
 
 </ui:composition>

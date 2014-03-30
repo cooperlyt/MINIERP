@@ -19,7 +19,7 @@ import org.jboss.seam.annotations.Name;
 @Name("otherStoreChangeHome")
 public class OtherStoreChangeHome extends ErpEntityHome<StoreChange>{
 
-    @In(required = false)
+    @In(create = true)
     private StockChangeHome stockChangeHome;
 
     @Factory(value = "stockChangeReasons" ,scope = ScopeType.CONVERSATION)
@@ -38,15 +38,17 @@ public class OtherStoreChangeHome extends ErpEntityHome<StoreChange>{
     }
 
     public String begin() {
+        getInstance().setReason(storeChangeReason);
+        stockChangeHome.getInstance().setOperType(storeChangeReason.getStoreChangeType());
         if (!storeChangeReason.getStoreChangeType().isOut()){
 
             OtherStockIn otherStockIn = ((OtherStockIn) Component.getInstance("otherStockIn", true, true));
-            otherStockIn.getInstance().setReason(storeChangeReason);
+
             return otherStockIn.begin();
         }else{
             OtherStockOut otherStockOut = (OtherStockOut) Component.getInstance("otherStockOut", true, true);
-            getInstance().setReason(storeChangeReason);
-            stockChangeHome.getInstance().setOperType(storeChangeReason.getStoreChangeType());
+
+
             ((StockList)Component.getInstance("stockList", true, true)).setStoreId(stockChangeHome.getInstance().getStore().getId());
             return otherStockOut.begin();
         }

@@ -25,16 +25,41 @@
     </h:outputStylesheet>
 
 
-    <ui:include src="/layout/erp/ResSelectTree.xhtml">
-        <ui:param name="render" value="storeInItem"/>
-        <ui:param name="treeValue" value="#{resTreeValue}"/>
-    </ui:include>
-
-    <ui:include src="/layout/erp/StoreResSelectTree.xhtml">
-        <ui:param name="render" value="storeInItem"/>
+    <s:decorate template="/layout/erp/res/ResSelectModelPanel.xhtml">
+        <ui:param name="panelId" value="resSelectPanel"/>
         <ui:param name="treeValue" value="#{storeResTreeValue}"/>
-    </ui:include>
+        <ui:param name="panelTitle" value="#{messages.res}"/>
+        <ui:define name="categoryNode">
+            <a:commandLink execute="@this" render="storeInItem" value="#{_node.data.name}"
+                           oncomplete="#{rich:component('resSelectPanel')}.hide()"
+                           style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                           action="#{sotreInAction.resCategorySelected}">
+                <a:param value="#{_node.data.id}" assignTo="#{resCategoryHome.id}"/>
+                <s:conversationId/>
+            </a:commandLink>
+        </ui:define>
 
+        <ui:define name="resNode">
+
+            <a:commandLink execute="@this" render="storeInItem" action="#{sotreInAction.resSelected}"
+                           value=" #{_node.data.name}(#{_node.data.code})"
+                           oncomplete="#{rich:component('resSelectPanel')}.hide()"
+                           style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}">
+                <a:param value="#{_node.data.id}" assignTo="#{resHome.id}"/>
+                <s:conversationId/>
+            </a:commandLink>
+
+        </ui:define>
+
+        <ui:define name="storeResNode">
+            <a:commandLink execute="@this" render="storeInItem" action="#{sotreInAction.storeResSelected}"
+                           value="#{_node.data.code}#{' '}#{ _node.showTitle}" oncomplete="#{rich:component('resSelectPanel')}.hide()">
+                <a:param value="#{_node.data.id}" assignTo="#{storeResHome.id}"/>
+                <s:conversationId/>
+            </a:commandLink>
+
+        </ui:define>
+    </s:decorate>
 
     <rich:toolbar height="26">
 
@@ -50,19 +75,14 @@
 
                     <a:commandButton value="#{messages.search}" execute="@region"
                                      render="storeInItem,resSearchForm"
-                                     action="#{resLocate.locateByCode(storeChangeType)}">
+                                     action="#{sotreInAction.locateByCode}">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
 
-                    <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
-                                     title="#{messages.resSelect}"
-                                     onclick="#{rich:component('resSelectPanel')}.show();return false;">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:commandButton>
 
                     <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
                                      title="#{messages.storeResSelect}"
-                                     onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
+                                     onclick="#{rich:component('resSelectPanel')}.show();return false;">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
                 </h:panelGrid>
@@ -85,11 +105,8 @@
                     <rich:message for="storeOrderCodeInput" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
 
-                    <ui:insert name="cancelButton">
+                    <ui:insert name="commanButton">
                     </ui:insert>
-
-                    <h:commandButton value="#{messages.storeIn}" action="#{sotreInAction.saveStoreChange}"/>
-
 
                 </h:panelGrid>
             </h:form>
@@ -113,14 +130,14 @@
             <ui:define name="label">#{messages.storeRes_field_code}</ui:define>
             <h:inputText label="#{messages.storeRes_field_code}"
                          required="true" size="27" maxlength="50"
-                         value="#{sotreInAction.editingItem.storeResCode}"/>
+                         value="#{sotreInAction.editStockInItem.code}"/>
         </s:decorate>
 
         <ui:define name="actionButtons">
             <a:commandButton immediate="true"
                              execute="@this" value="#{messages.cancel}"
                              oncomplete="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
-                <a:param value="" assignTo="#{sotreInAction.editingItem.storeResCode}"/>
+                <a:param value="" assignTo="#{sotreInAction.editStockInItem.code}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
             <a:commandButton value="#{messages.addItem}" execute="@form"
@@ -135,49 +152,52 @@
     </s:decorate>
 
     <h:form id="storeInItem">
-        <rich:panel rendered="#{resHome.idDefined}">
+        <rich:panel rendered="#{resCategoryHome.idDefined or (not (empty sotreInAction.editStockInItem))}">
+            <a:outputPanel rendered="#{resCategoryHome.idDefined}">
+                <h:panelGrid columns="1">
+                    <h:outputText value="#{resCategoryHome.instance.name}" styleClass="auto_width_name"/>
+                </h:panelGrid>
 
 
-            <h:panelGrid columns="1">
-                <h:outputText value="#{resHome.resTitle}" styleClass="name"/>
-            </h:panelGrid>
-
-
-            <a:outputPanel id="itemFormats">
-                <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
-                    <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
-                        <ui:define name="label">#{_format.formatDefine.name}</ui:define>
-                        <ui:include src="/layout/erp/ResFormatVarInput.xhtml">
-                            <ui:param name="format" value="#{_format}"/>
-                            <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
-
-                        </ui:include>
-                    </s:decorate>
-                </a:repeat>
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res}</ui:define>
+                     <h:selectOneMenu value="#{resHome.id}" required="true" label="#{messages.res}">
+                          <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                         label="#{_res.name}" itemValue="#{_res.id}"
+                                         noSelectionLabel="#{messages.noSelectLabel}"/>
+                         <a:ajax event="valueChange" listener="#{sotreInAction.resChange}" render="storeInItem"/>
+                     </h:selectOneMenu>
+                </s:decorate>
             </a:outputPanel>
 
-            <ui:insert name="addItemAction">
-                <s:decorate rendered="#{storeResFormatFilter.res.batchMgr}" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messagse.ProductBatch}</ui:define>
-                    <!-- TODO BATCH -->
+            <a:outputPanel rendered="#{not (empty sotreInAction.editStockInItem)}">
 
-                </s:decorate>
-
-                <ui:include src="/layout/erp/ResCountInput.xhtml">
-                    <ui:param name="resCountBean" value="#{sotreInAction.editingItem.storeResCountInupt}"/>
+                <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+                    <ui:param name="inputValue" value="#{sotreInAction.editStockInItem}"/>
+                    <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                    <ui:param name="countLableStyleClass" value="name"/>
+                    <ui:param name="showTitle" value="false"/>
                 </ui:include>
 
 
+                <ui:insert name="addItemAction">
 
-                <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
-                                 render="storeInItem,storeInItems,newStoreResCodeInputPanel_inputs"
-                                 data="#{sotreInAction.addItemLastState}"
-                                 oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
-                                 action="#{sotreInAction.addItem}">
-                    <a:attachQueue requestDelay="0"/>
+                        <!-- TODO BATCH -->
 
-                </a:commandButton>
-            </ui:insert>
+
+
+
+
+                    <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
+                                     render="storeInItem,storeInItems,newStoreResCodeInputPanel_inputs"
+                                     data="#{sotreInAction.addItemLastState}"
+                                     oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
+                                     action="#{sotreInAction.addItem}">
+                        <a:attachQueue requestDelay="0"/>
+
+                    </a:commandButton>
+                </ui:insert>
+            </a:outputPanel>
 
             <div style="clear:both">
                 <span class="required">*</span>
@@ -195,27 +215,23 @@
                             var="_item">
                 <rich:column>
                     <f:facet name="header">
-                        #{messages.res}
+                        #{messages.StoreRes}
                     </f:facet>
 
-
-                    <ui:include src="/layout/erp/ChangeItemResTitle.xhtml">
-                        <ui:param name="storeRes" value="#{_item}"/>
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item.storeRes}"/>
                     </ui:include>
 
+
                 </rich:column>
 
-                <rich:column>
-                    <f:facet name="header">#{messages.storeIn_field_floatConvertRate}</f:facet>
-                    <h:outputText value="#{_item.storeResCountInupt.floatConvertRate} #{_item.res.unitGroup.name}"
-                                  rendered="#{_item.res.unitGroup.type == 'FLOAT_CONVERT'}"/>
-                </rich:column>
+
 
                 <rich:column>
                     <f:facet name="header">
                         #{messages.MasterUnitCount}
                     </f:facet>
-                    <h:outputText value="#{_item.storeResCountInupt.masterDisplayCount}">
+                    <h:outputText value="#{_item.displayMasterCount}">
                     </h:outputText>
 
                 </rich:column>
@@ -224,7 +240,7 @@
                     <f:facet name="header">
                         #{messages.AuxUnitCount}
                     </f:facet>
-                    #{_item.storeResCountInupt.displayAuxCount}
+                    #{_item.displayAuxCount}
 
                 </rich:column>
                 <rich:column style="width: 20px;text-align: center;">

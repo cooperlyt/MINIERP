@@ -101,6 +101,10 @@ public class ResHelper {
             return false;
         }
 
+        if (formatList1.isEmpty() && formatList2.isEmpty()){
+            return true;
+        }
+
         Map<FormatDefine, Format> format1Values = new HashMap<FormatDefine, Format>();
         for (Format format : formatList1) {
             format1Values.put(format.getFormatDefine(), format);

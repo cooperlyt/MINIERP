@@ -1,12 +1,18 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.common.system.NumberBuilder;
+import com.dgsoft.common.system.RunParam;
+import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.ProductGroupSelect;
+import com.dgsoft.erp.action.StockChangeHome;
 import com.dgsoft.erp.model.ProductStoreIn;
 import com.dgsoft.erp.model.StockChange;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 
 import java.util.List;
 
@@ -18,50 +24,59 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Name("produceStoreInHome")
-public class ProduceStoreInHome extends StoreInAction<ProductStoreIn> {
+public class ProduceStoreInHome extends ErpEntityHome<ProductStoreIn> {
+
+    @In
+    protected FacesMessages facesMessages;
+
+    @In(create = true)
+    private StockChangeHome stockChangeHome;
+
+    @In
+    protected NumberBuilder numberBuilder;
 
     @In(create = true)
     private ProductGroupSelect productGroupSelect;
 
-    @DataModelSelection
-    private StoreInItem selectedStoreInItem;
+    @In(create = true)
+    private ProduceStoreInAction produceStoreInAction;
 
-    @DataModel("porduceStoreInItems")
-    public List<StoreInItem> getStoreInItems() {
-        return storeInItems;
-    }
-
-    public void setStoreInItems(List<StoreInItem> storeInItems) {
-        this.storeInItems = storeInItems;
-    }
-
-    @Override
-    public void removeItem() {
-        storeInItems.remove(selectedStoreInItem);
-    }
+    @In
+    protected RunParam runParam;
 
 
-    @Override
-    public String beginStoreIn() {
+    public String begin() {
+
         getInstance().setProductGroup(productGroupSelect.getProductGroup());
+        stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.PRODUCE_IN);
+        if (runParam.getBooleanParamValue("erp.autoGenerateStoreInCode")) {
+            stockChangeHome.getInstance().setId("I" + numberBuilder.getDateNumber("storeInCode"));
+        }
         return "ProcduceBeginStoreIn";
     }
 
-    @Override
-    protected String storeIn() {
+    public String complete() {
+        if (produceStoreInAction.getStoreChangeItems().isEmpty()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeInNotItem");
+            return null;
+        }
 
-        return "ProcduceStoreInComplete";
+        produceStoreInAction.storeChange(true);
+        stockChangeHome.getInstance().setVerify(true);
+        stockChangeHome.getInstance().setProductStoreIn(getInstance());
+        getInstance().setStockChange(stockChangeHome.getReadyInstance());
+
+        if ("persisted".equals(persist())) {
+            return "ProcduceStoreInComplete";
+        } else {
+            return null;
+        }
     }
 
-    @Override
+
     public String cancel() {
         clearInstance();
-        storeInItems.clear();
         return "ProcduceStoreInCancel";
     }
 
-    @Override
-    protected StockChange.StoreChangeType getStoreChangeType() {
-        return StockChange.StoreChangeType.PRODUCE_IN;
-    }
 }

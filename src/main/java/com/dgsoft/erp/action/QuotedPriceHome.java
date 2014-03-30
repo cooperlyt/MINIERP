@@ -1,9 +1,11 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.total.StoreResGroupStrategy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -144,7 +146,7 @@ public class QuotedPriceHome extends ErpEntityHome<QuotedPrice> {
     }
 
 
-    public void setMiddleManId(String id){
+    public void setCustomerId(String id){
         List<QuotedPrice> history = getEntityManager().createQuery("select quotedPrice from QuotedPrice quotedPrice where quotedPrice.customer.id = :customerId order by quotedPrice.createDate", QuotedPrice.class)
                 .setParameter("customerId", id).setFirstResult(0).setMaxResults(1).getResultList();
         if (history.isEmpty()){
@@ -153,11 +155,15 @@ public class QuotedPriceHome extends ErpEntityHome<QuotedPrice> {
             setId(history.get(0).getId());
         }
     }
-    public String getMiddleManId(){
+    public String getCustomerId(){
         if(isIdDefined()){
             return getInstance().getCustomer().getId();
         } else {
             return null;
         }
+    }
+
+    public TotalDataGroup<?, PriceItem> getPriceItemGroup(){
+       return TotalDataGroup.allGroupBy(getInstance().getPriceItems(),new StoreResGroupStrategy<PriceItem>());
     }
 }

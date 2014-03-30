@@ -1,10 +1,19 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.common.system.NumberBuilder;
+import com.dgsoft.common.system.RunParam;
+import com.dgsoft.erp.action.OtherStoreChangeHome;
 import com.dgsoft.erp.model.StockChange;
+import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.StoreChange;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.international.StatusMessage;
 
 import java.util.List;
 
@@ -17,45 +26,59 @@ import java.util.List;
  */
 
 @Name("otherStockIn")
-public class OtherStockIn extends StoreInAction<StoreChange> {
+@Scope(ScopeType.CONVERSATION)
+public class OtherStockIn extends StoreInAction {
+
+    @In
+    protected NumberBuilder numberBuilder;
 
 
-    @DataModelSelection
-    private StoreInItem selectedStoreInItem;
+    @In
+    private OtherStoreChangeHome otherStoreChangeHome;
 
-    @DataModel("otherStoreInItems")
-    public List<StoreInItem> getStoreInItems() {
-        return storeInItems;
-    }
+    @Transactional
+    public String begin() {
 
-    public void setStoreInItems(List<StoreInItem> storeInItems) {
-        this.storeInItems = storeInItems;
-    }
 
-    @Override
-    public void removeItem() {
-        storeInItems.remove(selectedStoreInItem);
-    }
-
-    @Override
-    protected String beginStoreIn() {
+        if (runParam.getBooleanParamValue("erp.autoGenerateStoreInCode")) {
+            stockChangeHome.getInstance().setId("I" + numberBuilder.getDateNumber("storeInCode"));
+        }
         return "BeginOtherStockIn";
     }
 
-    @Override
-    protected String storeIn() {
-        return "OtherStockChangeComplete";
+    @Transactional
+    public String complete() {
+        if (storeChangeItems.isEmpty()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeInNotItem");
+            return null;
+        }
+        super.storeChange(true);
+        stockChangeHome.getInstance().setVerify(true);
+        stockChangeHome.getInstance().setStoreChange(otherStoreChangeHome.getInstance());
+        otherStoreChangeHome.getInstance().setStockChange(stockChangeHome.getReadyInstance());
+
+        if ("persisted".equals(otherStoreChangeHome.persist())) {
+            return "OtherStockChangeComplete";
+        } else {
+            return null;
+        }
     }
 
-    @Override
-    protected StockChange.StoreChangeType getStoreChangeType() {
-        return getInstance().getReason().getStoreChangeType();
+    @DataModel(value = "otherStoreInItems")
+    public List<StockChangeItem> getStoreOutItems() {
+        return storeChangeItems;
     }
 
+    @DataModelSelection
+    private StockChangeItem stockChangeItem;
+
     @Override
+    protected StockChangeItem getSelectInItem() {
+        return stockChangeItem;
+    }
+
     public String cancel() {
-        storeInItems.clear();
-        clearInstance();
+        storeChangeItems.clear();
         stockChangeHome.clearInstance();
         return "OtherStockChangeCancel";
     }

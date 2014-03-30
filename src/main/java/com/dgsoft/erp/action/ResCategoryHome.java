@@ -16,10 +16,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
 import javax.swing.tree.TreeNode;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,6 +43,20 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public Set<Res> getReses(){
+        return getContainRes(getInstance());
+    }
+
+    private Set<Res> getContainRes(ResCategory category){
+        Set<Res> result = new HashSet<Res>();
+        result.addAll(category.getReses());
+
+        for (ResCategory sub: category.getResCategories()){
+            result.addAll(getContainRes(sub));
+        }
+        return result;
     }
 
     public List<String> getMatchIds() {

@@ -64,10 +64,10 @@
 
         <a:outputPanel id="countInputArea">
             <div>
-            <s:label styleClass="#{empty countLableStyleClass ? 'name' : countLableStyleClass}">
-                #{messages.storeChangeCount}
-                <s:span styleClass="required">*</s:span>
-            </s:label>
+                <s:label styleClass="#{empty countLableStyleClass ? 'name' : countLableStyleClass}">
+                    #{messages.storeChangeCount}
+                    <s:span styleClass="required">*</s:span>
+                </s:label>
 
 
             <span class="value">
@@ -86,8 +86,8 @@
                            showDetail="true" showSummary="true" tooltip="true"/>
             </span>
 
-            <h:outputText styleClass="unit_label" value="#{inputValue.res.resUnitByMasterUnit.name}"
-                          rendered="#{not (inputValue.res.unitGroup.type.name() eq 'FIX_CONVERT')}"/>
+                <h:outputText styleClass="unit_label" value="#{inputValue.res.resUnitByMasterUnit.name}"
+                              rendered="#{not (inputValue.res.unitGroup.type.name() eq 'FIX_CONVERT')}"/>
 
             <span class="value">
             <rich:select value="#{inputValue.useUnit}" listWidth="87px" required="true"
@@ -103,12 +103,12 @@
             </span>
 
 
-            <a:outputPanel>
+                <a:outputPanel>
 
 
-                <a:outputPanel id="floatConvertUnitRate"
-                               rendered="#{inputValue.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
-                    <h:outputText styleClass="auto_width_unit_label" value="*"/>
+                    <a:outputPanel id="floatConvertUnitRate"
+                                   rendered="#{inputValue.res.unitGroup.type.name() eq 'FLOAT_CONVERT'}">
+                        <h:outputText styleClass="auto_width_unit_label" value="*"/>
                     <span class="value">
                         <a:region id="floatConvertRateRegion">
 
@@ -138,7 +138,7 @@
                             </rich:autocomplete>
                         </a:region>
                     </span>
-                    <h:outputText styleClass="auto_width_unit_label" value="="/>
+                        <h:outputText styleClass="auto_width_unit_label" value="="/>
                     <span class="value">
                     <h:inputText id="floatConvertAuxCount" required="true" style="width: 80px"
                                  label="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"
@@ -153,11 +153,11 @@
                         <rich:message for="floatConvertAuxCount" styleClass="message-icon"
                                       showDetail="true" showSummary="true" tooltip="true"/>
                     </span>
-                    <h:outputText styleClass="unit_label"
-                                  value="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"/>
-                </a:outputPanel>
+                        <h:outputText styleClass="unit_label"
+                                      value="#{inputValue.res.unitGroup.floatAuxiliaryUnit.name}"/>
+                    </a:outputPanel>
 
-            </a:outputPanel>     </div>
+                </a:outputPanel></div>
         </a:outputPanel>
 
         <ui:insert name="countInputTail"/>

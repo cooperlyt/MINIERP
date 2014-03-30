@@ -27,7 +27,7 @@
         <rich:toolbarGroup>
             <h:graphicImage value="/img/price.png"/>
             <s:link value="#{messages.createQuoted}" propagation="begin"
-                      view="/func/erp/sale/QuotedCreateCustomer.xhtml">
+                    view="/func/erp/sale/QuotedCreateCustomer.xhtml">
                 <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
             </s:link>
         </rich:toolbarGroup>
@@ -259,7 +259,11 @@
 
             #{' '}
 
-
+            <a:commandButton image="/img/price.png" render="quotedDetails" execute="@this" immediate="true"
+                             oncomplete="#{rich:component('quotedDetailsPanel')}.show()">
+                <a:attachQueue requestDelay="0"/>
+                <a:param value="#{_customer.id}" assignTo="#{quotedPriceHome.customerId}"/>
+            </a:commandButton>
 
         </rich:column>
 
@@ -363,6 +367,31 @@
 
     </ui:define>
 </s:decorate>
+
+<rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="true"
+                 moveable="true" resizeable="false">
+    <f:facet name="header">
+        #{messages.QuotedPrice}
+    </f:facet>
+    <f:facet name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component('quotedDetailsPanel')}.hide(); return false;">
+        </a:commandButton>
+    </f:facet>
+    <a:outputPanel id="quotedDetails">
+        <a:outputPanel rendered="#{quotedPriceHome.idDefined}">
+            <ui:include src="QuotedDetails.xhtml"/>
+
+        </a:outputPanel>
+
+        <a:outputPanel rendered="#{not quotedPriceHome.idDefined}">
+            #{messages.customerNotHaveQuote}
+        </a:outputPanel>
+        <br/>
+    </a:outputPanel>
+</rich:popupPanel>
+
 
 </ui:define>
 

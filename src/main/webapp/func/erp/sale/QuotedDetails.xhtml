@@ -1,0 +1,118 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <s:decorate template="/layout/display.xhtml">
+        <ui:define name="label">
+            #{messages.QuotedPrice_field_date}
+        </ui:define>
+        <h:outputText value="#{quotedPriceHome.instance.createDate}">
+            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+        </h:outputText>
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml">
+        <ui:define name="label">
+            #{messages.QuotedPrice_field_type}
+        </ui:define>
+        #{dictionary.getWordValue(quotedPriceHome.instance.type)}
+    </s:decorate>
+
+    <s:decorate template="/layout/display.xhtml">
+        <ui:define name="label">
+            #{messages.QuotedPrice_field_emp}
+        </ui:define>
+        #{dictionary.getEmpNameById(quotedPriceHome.instance.createEmp)}
+    </s:decorate>
+
+    <div style="clear: both"/>
+    <br/>
+
+    <rich:dataTable value="#{quotedPriceHome.priceItemGroup.childGroup}" var="_itemGroup">
+
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="2">
+                    #{messages.StoreRes}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.field_memo}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Res_Unit}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.quotedItemCount}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.orderItemUnitPrice}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.orderItemTotalPrice}
+                </rich:column>
+
+
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="7">
+            <rich:collapsibleSubTableToggler for="sbtbl"/>
+            #{_itemGroup.key.name}
+        </rich:column>
+
+        <rich:collapsibleSubTable value="#{_itemGroup.values}" var="_item" id="sbtbl"
+                                  expandMode="client">
+
+            <rich:column/>
+            <rich:column>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                </ui:include>
+
+            </rich:column>
+
+            <rich:column>
+                #{_item.memo}
+            </rich:column>
+
+            <rich:column>
+                #{_item.resUnit.name}
+            </rich:column>
+
+            <rich:column>
+                <h:outputText value="#{_item.useUnitCount}">
+                    <f:convertNumber pattern="#{_item.useUnit.countFormate}"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <h:outputText value="#{_item.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <h:outputText value="#{_item.totalPrice}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
+        </rich:collapsibleSubTable>
+
+    </rich:dataTable>
+
+
+
+</ui:composition>

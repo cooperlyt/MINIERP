@@ -99,6 +99,13 @@ public class ResLocate {
         this.result = result;
     }
 
+
+    public LocateResult locateByCode(StockChange.StoreChangeType changeType){
+        storeChangeType = changeType;
+        locateByCode();
+        return result;
+    }
+
     public void locateByCode(String changeType){
         setChangeType(changeType);
         locateByCode();

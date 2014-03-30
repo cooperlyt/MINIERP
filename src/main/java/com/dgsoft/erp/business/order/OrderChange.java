@@ -157,7 +157,7 @@ public class OrderChange extends OrderTaskHandle {
 //        List<OrderItem> oldMatchOrderItems = new ArrayList<OrderItem>();
 //        List<OrderItem> oldOrderItem = new ArrayList<OrderItem>(orderHome.getLastNeedRes().getOrderItems());
 //
-//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
+//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeChangeItems.entrySet()) {
 //            oldMatchOrderItems.clear();
 //            StoreResCountEntity count = new StoreResCount(entry.getKey(),BigDecimal.ZERO);
 //            for (OrderItem item : oldOrderItem) {
@@ -181,11 +181,11 @@ public class OrderChange extends OrderTaskHandle {
 //        }
 //
 //        for (StoreRes storeRes : matchItems) {
-//            storeOutItems.remove(storeRes);
+//            storeChangeItems.remove(storeRes);
 //        }
 //
 //        matchItems.clear();
-//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
+//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeChangeItems.entrySet()) {
 //
 //            OrderItem matchItem = null;
 //            int orderContainCount = 0;
@@ -213,10 +213,10 @@ public class OrderChange extends OrderTaskHandle {
 //        }
 //
 //        for (StoreRes storeRes : matchItems) {
-//            storeOutItems.remove(storeRes);
+//            storeChangeItems.remove(storeRes);
 //        }
 
-//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeOutItems.entrySet()) {
+//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeChangeItems.entrySet()) {
 //            newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), entry.getKey().getRes().getResUnitByOutDefault(),
 //                    entry.getValue().getMasterCount(), BigDecimal.ZERO, new BigDecimal("100"),""));
 //        }
