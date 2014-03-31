@@ -1,0 +1,93 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://jboss.org/schema/seam/pdf"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="func-body">
+        <h:form>
+            <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+
+                <ui:include src="/layout/erp/biz/OrderStateCondition.xhtml">
+                    <ui:param name="condition" value="#{saleMoneySum.orderState}"/>
+                </ui:include>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.order_search_BETWEEN_createDate}</ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_search_BETWEEN_createDate}"
+                            value="#{saleMoneySum.dateArea.dateFrom}">
+                    </rich:calendar>
+
+                    --
+
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_search_BETWEEN_createDate}"
+                            value="#{saleMoneySum.dateArea.dateTo}">
+                    </rich:calendar>
+                </s:decorate>
+
+
+                <div style="clear:both"/>
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                <h:panelGrid columns="1" style="width: 100%; text-align: right">
+
+                    <div class="actionButtons">
+
+                        <a:outputPanel id="searchButton">
+                            <a:commandButton value="#{messages.search}"
+                                             execute="@form">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </a:outputPanel>
+                    </div>
+
+                </h:panelGrid>
+            </rich:collapsiblePanel>
+
+        </h:form>
+
+
+        <br/>
+        <a:outputPanel ajaxRendered="true">
+
+            <h:panelGrid style="width: 100%; text-align: center;" columns="1">
+                <p:barchart title="#{messages.SaleMoney_OrderTotalMoney}"
+                            legend="false" borderVisible="false"
+                            borderBackgroundPaint="white"
+                            width="600"
+                            plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                            baseSectionPaint="white"
+                            circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+                    <p:series key="#{messages.Sum_Money}">
+                        <p:data key="#{messages.SaleMoneySum_totalMoney} #{saleMoneySum.orderMoneySum.displayMoney}" value="#{saleMoneySum.orderMoneySum.money}"/>
+                        <p:data key="#{messages.SaleMoneySum_customerOrderPay} #{saleMoneySum.orderPayMoneySum.displayMoney}"
+                                value="#{saleMoneySum.orderPayMoneySum.money}"/>
+                        <p:data key="#{messages.SaleMoneySum_customerPrePay} #{saleMoneySum.prepareMoney.displayMoney}"
+                                value="#{saleMoneySum.prepareMoney.money}"/>
+                    </p:series>
+
+                </p:barchart>
+
+            </h:panelGrid>
+        </a:outputPanel>
+
+    </ui:define>
+
+</ui:composition>

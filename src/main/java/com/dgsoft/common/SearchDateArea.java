@@ -1,5 +1,6 @@
 package com.dgsoft.common;
 
+import javax.persistence.Query;
 import java.util.Date;
 
 /**
@@ -42,5 +43,32 @@ public class SearchDateArea {
 
     public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
+    }
+
+    public String genConditionSQL(String path, boolean addAnd){
+        String result = "";
+        if (dateFrom != null){
+            result = path + " >= :dateFrom";
+        }
+        if (dateTo != null){
+            if (!result.trim().equals("")){
+                result += " AND ";
+            }
+            result += path + " <= :dateTo";
+        }
+        if (addAnd && !result.trim().equals("")){
+            result = " AND " + result;
+        }
+        return result;
+    }
+
+    public Query setQueryParam(Query query){
+        if (dateFrom != null){
+            query.setParameter("dateFrom", getDateFrom());
+        }
+        if (dateTo != null){
+            query.setParameter("dateTo", getSearchDateTo());
+        }
+        return query;
     }
 }

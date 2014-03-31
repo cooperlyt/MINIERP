@@ -168,10 +168,15 @@
             </ui:include>
         </f:facet>
 
-        <h:outputText style="text-decoration:line-through; color: red;" value=" #{_order.id}"
-                      rendered="#{_order.canceled}"/>
-        <h:outputText  value=" #{_order.id}"
-                      rendered="#{not _order.canceled}"/>
+
+        <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.id}" target="_blank"
+                style="#{_order.canceled ? 'text-decoration:line-through; color: red;' : ''}">
+            <f:param name="orderId" value="#{_order.id}"/>
+        </s:link>
+
+        <f:facet name="footer">
+            #{messages.recordTotal} #{orderList.resultCount} #{messages.item}
+        </f:facet>
     </rich:column>
 
     <rich:column>
@@ -183,9 +188,7 @@
             </ui:include>
         </f:facet>
         #{_order.customer.customerArea.name}
-        <f:facet name="footer">
-            #{messages.recordTotal} #{orderList.resultCount} #{messages.item}
-        </f:facet>
+
     </rich:column>
 
 
@@ -281,11 +284,7 @@
             <f:param name="orderId" value="#{_order.id}"/>
         </s:link>
 
-        <s:link view="/func/erp/sale/OrderDetails.xhtml">
-            <s:graphicImage value="/img/view.png" title="#{messages.viewDetails}"/>
-            <f:param name="orderId" value="#{_order.id}"/>
-            <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-        </s:link>
+
 
         <s:link view="/business/startPrepare/erp/sale/CancelOrderCreate.xhtml" propagation="begin"
                 rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
