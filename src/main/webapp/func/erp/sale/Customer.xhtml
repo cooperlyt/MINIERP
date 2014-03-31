@@ -24,7 +24,7 @@
             </h:form>
         </rich:toolbarGroup>
 
-        <rich:toolbarGroup>
+        <rich:toolbarGroup rendered="#{s:hasRole('erp.sale.saler')}">
             <h:graphicImage value="/img/price.png"/>
             <s:link value="#{messages.createQuoted}" propagation="begin"
                     view="/func/erp/sale/QuotedCreateCustomer.xhtml">
@@ -132,10 +132,9 @@
             </f:facet>
 
 
-            <s:link view="/func/erp/sale/CustomerView.xhtml" value="#{_customer.name}"
+            <s:link target="_blank" view="/func/erp/sale/CustomerView.xhtml" value="#{_customer.name}"
                     style="#{_customer.enable ? '' : 'text-decoration:line-through; color: red;'}">
                 <f:param name="customerId" value="#{_customer.id}"/>
-                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
             </s:link>
         </rich:column>
 
@@ -259,7 +258,7 @@
 
             #{' '}
 
-            <a:commandButton image="/img/price.png" render="quotedDetails" execute="@this" immediate="true"
+            <a:commandButton rendered="#{s:hasRole('erp.sale.saler')}" image="/img/price.png" render="quotedDetails" execute="@this" immediate="true"
                              oncomplete="#{rich:component('quotedDetailsPanel')}.show()">
                 <a:attachQueue requestDelay="0"/>
                 <a:param value="#{_customer.id}" assignTo="#{quotedPriceHome.customerId}"/>
@@ -368,7 +367,7 @@
     </ui:define>
 </s:decorate>
 
-<rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="true"
+<rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="false" width="600" height="600"
                  moveable="true" resizeable="false">
     <f:facet name="header">
         #{messages.QuotedPrice}

@@ -124,6 +124,7 @@ public class QuotedPriceHome extends ErpEntityHome<QuotedPrice> {
             getInstance().getPriceItems().addAll(priceItems);
             if (!customerHome.isIdDefined()){
                 customerHome.getInstance().setCustomerArea(customerAreaHome.getReadyInstance());
+                customerHome.getInstance().setEnable(true);
             }
             getInstance().setCustomer(customerHome.getReadyInstance());
 

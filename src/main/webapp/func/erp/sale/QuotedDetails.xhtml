@@ -8,33 +8,39 @@
                 xmlns:rich="http://richfaces.org/rich">
 
 
-    <s:decorate template="/layout/display.xhtml">
-        <ui:define name="label">
-            #{messages.QuotedPrice_field_date}
-        </ui:define>
-        <h:outputText value="#{quotedPriceHome.instance.createDate}">
-            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-        </h:outputText>
-    </s:decorate>
+    <rich:collapsiblePanel switchType="client" expanded="false" header="#{dictionary.getWordValue(quotedPriceHome.instance.type)}" >
+        <s:decorate template="/layout/display.xhtml">
+            <ui:define name="label">
+                #{messages.QuotedPrice_field_date}
+            </ui:define>
+            <h:outputText value="#{quotedPriceHome.instance.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
-        <ui:define name="label">
-            #{messages.QuotedPrice_field_type}
-        </ui:define>
-        #{dictionary.getWordValue(quotedPriceHome.instance.type)}
-    </s:decorate>
 
-    <s:decorate template="/layout/display.xhtml">
-        <ui:define name="label">
-            #{messages.QuotedPrice_field_emp}
-        </ui:define>
-        #{dictionary.getEmpNameById(quotedPriceHome.instance.createEmp)}
-    </s:decorate>
 
-    <div style="clear: both"/>
+        <s:decorate template="/layout/display.xhtml">
+            <ui:define name="label">
+                #{messages.QuotedPrice_field_emp}
+            </ui:define>
+            #{dictionary.getEmpNameById(quotedPriceHome.instance.createEmp)}
+        </s:decorate>
+
+        <s:decorate template="/layout/display.xhtml">
+            <ui:define name="label">
+                #{messages.field_memo}
+            </ui:define>
+            #{quotedPriceHome.instance.memo}
+        </s:decorate>
+
+        <div style="clear: both"/>
+    </rich:collapsiblePanel>
+
+
     <br/>
 
-    <rich:dataTable value="#{quotedPriceHome.priceItemGroup.childGroup}" var="_itemGroup">
+    <rich:dataTable style="width: 100%" value="#{quotedPriceHome.priceItemGroup.childGroup}" var="_itemGroup">
 
         <f:facet name="header">
             <rich:columnGroup>

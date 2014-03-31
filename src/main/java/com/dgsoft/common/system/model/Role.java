@@ -23,6 +23,7 @@ public class Role implements java.io.Serializable, OrderModel {
 
     private Set<BusinessDefine> businessDefines = new HashSet<BusinessDefine>(0);
     private Set<Function> functions = new HashSet<Function>(0);
+    private Set<Employee> employees = new HashSet<Employee>(0);
 
     public Role() {
     }
@@ -102,6 +103,15 @@ public class Role implements java.io.Serializable, OrderModel {
 
     public void setFunctions(Set<Function> functions) {
         this.functions = functions;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY,targetEntity = Employee.class,mappedBy = "roles")
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     @Override

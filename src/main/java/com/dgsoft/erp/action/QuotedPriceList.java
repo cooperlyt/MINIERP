@@ -19,7 +19,7 @@ public class QuotedPriceList extends ErpEntityQuery<QuotedPrice>{
     private static final String[] RESTRICTIONS = {
             "quotedPrice.createEmp = #{quotedPriceList.empId}",
             "quotedPrice.customer.customerArea.id = #{quotedPriceList.customerAreaId}",
-            "lower(quotedPrice.customer) like lower(concat('%','#{quotedPriceList.customerName},'%'))",
+            "lower(quotedPrice.customer.name) like lower(concat('%',#{quotedPriceList.customerName},'%'))",
             "quotedPrice.createDate >= #{quotedPriceList.searchDateArea.dateFrom}",
             "quotedPrice.createDate <= #{quotedPriceList.searchDateArea.searchDateTo}",
             "quotedPrice.type = #{quotedPriceList.type}",
@@ -39,9 +39,9 @@ public class QuotedPriceList extends ErpEntityQuery<QuotedPrice>{
 
     private String customerAreaId;
 
-    private String levelFrom;
+    private Integer levelFrom;
 
-    private String levelTo;
+    private Integer levelTo;
 
     private String empId;
 
@@ -67,20 +67,20 @@ public class QuotedPriceList extends ErpEntityQuery<QuotedPrice>{
         this.customerAreaId = customerAreaId;
     }
 
-    public String getLevelFrom() {
-        return levelFrom;
-    }
-
-    public void setLevelFrom(String levelFrom) {
-        this.levelFrom = levelFrom;
-    }
-
-    public String getLevelTo() {
+    public Integer getLevelTo() {
         return levelTo;
     }
 
-    public void setLevelTo(String levelTo) {
+    public void setLevelTo(Integer levelTo) {
         this.levelTo = levelTo;
+    }
+
+    public Integer getLevelFrom() {
+        return levelFrom;
+    }
+
+    public void setLevelFrom(Integer levelFrom) {
+        this.levelFrom = levelFrom;
     }
 
     public String getEmpId() {

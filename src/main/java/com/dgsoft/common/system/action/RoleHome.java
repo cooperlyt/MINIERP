@@ -2,6 +2,7 @@ package com.dgsoft.common.system.action;
 
 import com.dgsoft.common.system.SystemEntityHome;
 import com.dgsoft.common.system.model.BusinessDefine;
+import com.dgsoft.common.system.model.Employee;
 import com.dgsoft.common.system.model.Role;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -9,6 +10,8 @@ import org.jboss.seam.annotations.FlushModeType;
 import org.jboss.seam.annotations.Name;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -84,6 +87,19 @@ public class RoleHome extends SystemEntityHome<Role> {
             }
         }
         editing = false;
+        return result;
+    }
+
+    public List<Employee> getEmployeeByRole(String roleId){
+        setId(roleId);
+
+        List<Employee> result = new ArrayList<Employee>(getInstance().getEmployees());
+        Collections.sort(result,new Comparator<Employee>() {
+            @Override
+            public int compare(Employee o1, Employee o2) {
+                return o1.getJoinDate().compareTo(o2.getJoinDate());
+            }
+        });
         return result;
     }
 }
