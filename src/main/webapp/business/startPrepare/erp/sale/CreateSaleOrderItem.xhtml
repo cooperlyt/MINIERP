@@ -84,18 +84,41 @@
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
-                    * #{' '} %
-                    <h:inputText id="orderTotalRebateField" value="#{orderCreate.instance.totalRebate}"
-                                 required="true" size="5" label="#{messages.orderRebate}">
-                        <f:convertNumber pattern="#0.##" groupingUsed="false"/>
-                        <a:ajax event="blur" execute="@this" listener="#{orderCreate.calcOrderPrice}"
-                                render="orderTotalPrice">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:ajax>
-                        <rich:validator/>
-                        <f:validateDoubleRange minimum="0" maximum="100"/>
-                        <rich:placeholder value="#{messages.orderRebate}"/>
-                    </h:inputText>
+                    #{' '}
+
+                    <h:selectOneMenu value="#{orderCreate.rebateUseMoney}">
+                        <f:selectItem itemValue="#{true}" itemLabel="-"/>
+                        <f:selectItem itemValue="#{false}" itemLabel="%"/>
+                        <a:ajax event="click" listener="#{orderCreate.calcOrderPrice}" render="orderTotalRebateField,orderTotalPrice"/>
+                    </h:selectOneMenu>
+                    <a:outputPanel id="orderTotalRebateField">
+                        <h:inputText rendered="#{not orderCreate.rebateUseMoney}"
+                                     value="#{orderCreate.totalRebate}"
+                                     required="true" size="5" label="#{messages.orderRebate}">
+                            <f:convertNumber pattern="#0.##" groupingUsed="false"/>
+                            <a:ajax event="blur" execute="@this" listener="#{orderCreate.calcOrderPrice}"
+                                    render="orderTotalPrice">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                            <rich:validator/>
+                            <f:validateDoubleRange minimum="0" maximum="100"/>
+                            <rich:placeholder value="#{messages.orderRebate}"/>
+                        </h:inputText>
+
+                        <h:inputText rendered="#{orderCreate.rebateUseMoney}"
+                                     value="#{orderCreate.instance.totalRebateMoney}"
+                                     required="true" size="5" label="#{messages.orderRebate}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"
+                                             groupingUsed="false" currencySymbol=""/>
+                            <a:ajax event="blur" execute="@this" listener="#{orderCreate.calcOrderPrice}"
+                                    render="orderTotalPrice">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                            <rich:validator/>
+
+                            <rich:placeholder value="#{messages.orderRebate}"/>
+                        </h:inputText>
+                    </a:outputPanel>
                     <rich:message for="orderTotalRebateField" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
                     =
@@ -296,7 +319,7 @@
             <f:facet name="header">
                 #{messages.field_memo}
             </f:facet>
-                #{_item.memo}
+            #{_item.memo}
         </rich:column>
 
         <rich:column style="text-align: center">

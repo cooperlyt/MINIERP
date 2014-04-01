@@ -51,7 +51,7 @@
 
                         <a:outputPanel id="searchButton">
                             <a:commandButton value="#{messages.search}"
-                                             execute="@form">
+                                             execute="@form" action="#{saleMoneySum.totalData}">
                                 <a:attachQueue requestDelay="0"/>
                             </a:commandButton>
                         </a:outputPanel>
@@ -67,23 +67,74 @@
         <a:outputPanel ajaxRendered="true">
 
             <h:panelGrid style="width: 100%; text-align: center;" columns="1">
-                <p:barchart title="#{messages.SaleMoney_OrderTotalMoney}"
-                            legend="false" borderVisible="false"
+                <a:outputPanel rendered="#{not empty saleMoneySum.orderMoneySum}">
+                <p:barchart
+                            title="#{messages.SaleMoney_OrderTotalMoney}"
+                            legend="true" borderVisible="false"
                             borderBackgroundPaint="white"
                             width="600"
                             plotOutlinePaint="white" plotBackgroundAlpha="0.1"
                             baseSectionPaint="white"
                             circular="true" is3D="true" plotForegroundAlpha="0.9">
 
-                    <p:series key="#{messages.Sum_Money}">
-                        <p:data key="#{messages.SaleMoneySum_totalMoney} #{saleMoneySum.orderMoneySum.displayMoney}" value="#{saleMoneySum.orderMoneySum.money}"/>
-                        <p:data key="#{messages.SaleMoneySum_customerOrderPay} #{saleMoneySum.orderPayMoneySum.displayMoney}"
+                    <p:series key="#{messages.SaleMoneySum_totalMoney} #{saleMoneySum.orderMoneySum.displayMoney}">
+                        <p:data key="#{messages.Sum_Money}" value="#{saleMoneySum.orderMoneySum.money}"/>
+
+
+                    </p:series>
+
+                    <p:series
+                            key="#{messages.SaleMoneySum_customerOrderPay} #{saleMoneySum.orderPayMoneySum.displayMoney}">
+                        <p:data key="#{messages.Sum_Money}"
                                 value="#{saleMoneySum.orderPayMoneySum.money}"/>
-                        <p:data key="#{messages.SaleMoneySum_customerPrePay} #{saleMoneySum.prepareMoney.displayMoney}"
+                    </p:series>
+
+                    <p:series key="#{messages.SaleMoneySum_customerPrePay} #{saleMoneySum.prepareMoney.displayMoney}">
+                        <p:data key="#{messages.Sum_Money}"
                                 value="#{saleMoneySum.prepareMoney.money}"/>
                     </p:series>
 
                 </p:barchart>
+                </a:outputPanel>
+
+                 <br/>
+
+                <a:outputPanel rendered="#{not empty saleMoneySum.areaOrderMoneySum}">
+                    <p:barchart title="#{messages.SaleMoney_OrderTotalMoney}"
+                                legend="true" borderVisible="false"
+                                borderBackgroundPaint="white"
+                                width="600"
+                                plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                                baseSectionPaint="white"
+                                circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+
+                        <p:series key="#{messages.SaleMoneySum_totalMoney}">
+
+                            <ui:repeat value="#{collectionTools.mapToList(saleMoneySum.areaOrderMoneySum)}"
+                                       var="_totalMoney">
+                                <p:data key="#{_totalMoney.key}" value="#{_totalMoney.value.money}"/>
+                            </ui:repeat>
+
+
+                        </p:series>
+
+                        <p:series key="#{messages.SaleMoneySum_customerOrderPay}">
+                            <ui:repeat value="#{collectionTools.mapToList(saleMoneySum.areaOrderPayMoney)}"
+                                       var="_totalMoney">
+                                <p:data key="#{_totalMoney.key}" value="#{_totalMoney.value.money}"/>
+                            </ui:repeat>
+                        </p:series>
+
+                        <p:series key="#{messages.SaleMoneySum_customerPrePay}">
+                            <ui:repeat value="#{collectionTools.mapToList(saleMoneySum.areaPrepareMoney)}"
+                                       var="_totalMoney">
+                                <p:data key="#{_totalMoney.key}" value="#{_totalMoney.value.money}"/>
+                            </ui:repeat>
+                        </p:series>
+
+                    </p:barchart>
+                </a:outputPanel>
 
             </h:panelGrid>
         </a:outputPanel>

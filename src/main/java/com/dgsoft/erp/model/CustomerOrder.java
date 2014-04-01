@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.BatchOperEntity;
 import com.dgsoft.erp.model.api.ResCount;
@@ -44,7 +45,7 @@ public class CustomerOrder implements java.io.Serializable {
     private Boolean arrears;
 
     private BigDecimal earnest;
-    private BigDecimal totalRebate;
+    private BigDecimal totalRebateMoney;
     private BigDecimal middleMoney;
     private BigDecimal totalCost;
     private BigDecimal middleRate;
@@ -149,14 +150,23 @@ public class CustomerOrder implements java.io.Serializable {
         this.earnest = realMoney;
     }
 
-    @Column(name = "TOTAL_REBATE", nullable = false, scale = 4)
-    @NotNull
+    @Transient
     public BigDecimal getTotalRebate() {
-        return this.totalRebate;
+        if ((getTotalRebateMoney() != null) && (getMoney() != null)) {
+            BigDecimal resMoney = getMoney().add(getTotalRebateMoney());
+            return getMoney().divide(resMoney,4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
+        }
+        return null;
     }
 
-    public void setTotalRebate(BigDecimal totalRebate) {
-        this.totalRebate = totalRebate;
+    @Column(name = "TOTAL_REBATE", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getTotalRebateMoney() {
+        return totalRebateMoney;
+    }
+
+    public void setTotalRebateMoney(BigDecimal totalRebateMoney) {
+        this.totalRebateMoney = totalRebateMoney;
     }
 
     @Column(name = "MIDDLE_MONEY", scale = 3)
@@ -445,7 +455,7 @@ public class CustomerOrder implements java.io.Serializable {
                     for (StockChangeItem sci : dispatch.getStockChange().getStockChangeItems()) {
                         StoreResCount count = result.get(sci.getStoreRes());
                         if (count == null) {
-                            result.put(sci.getStoreRes(),new StoreResCount(sci.getStoreRes(),sci.getMasterCount()));
+                            result.put(sci.getStoreRes(), new StoreResCount(sci.getStoreRes(), sci.getMasterCount()));
                         } else {
                             count.add(sci);
                         }
@@ -482,9 +492,9 @@ public class CustomerOrder implements java.io.Serializable {
     @Override
     @Transient
     public int hashCode() {
-        if ((getId() != null) && !getId().trim().equals("")){
+        if ((getId() != null) && !getId().trim().equals("")) {
             return getId().hashCode();
-        }else{
+        } else {
             return this.toString().hashCode();
         }
 

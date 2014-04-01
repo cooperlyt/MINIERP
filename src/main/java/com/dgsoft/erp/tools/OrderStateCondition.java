@@ -1,6 +1,7 @@
 package com.dgsoft.erp.tools;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  * Created by cooper on 3/31/14.
@@ -78,6 +79,11 @@ public class OrderStateCondition {
             result = " AND " + result;
         }
         return result;
+    }
+
+    public <X> TypedQuery<X> setQueryParam(TypedQuery<X> query){
+        setQueryParam((Query)query);
+        return query;
     }
 
     public Query setQueryParam(Query query){

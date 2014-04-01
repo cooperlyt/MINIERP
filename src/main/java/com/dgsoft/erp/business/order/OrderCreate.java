@@ -148,21 +148,49 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     }
 
 
+    private boolean rebateUseMoney = true;
+
+    public boolean isRebateUseMoney() {
+        return rebateUseMoney;
+    }
+
+    public void setRebateUseMoney(boolean rebateUseMoney) {
+        this.rebateUseMoney = rebateUseMoney;
+    }
+
+    private BigDecimal totalRebate;
+
+    public BigDecimal getTotalRebate() {
+        return totalRebate;
+    }
+
+    public void setTotalRebate(BigDecimal totalRebate) {
+        this.totalRebate = totalRebate;
+    }
+
+
     public void calcOrderPrice() {
 
-        getInstance().setMoney(DataFormat.halfUpCurrency(getOrderTotalPrice().multiply(getInstance().getTotalRebate().
-                divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+        if (rebateUseMoney) {
+            getInstance().setMoney(DataFormat.halfUpCurrency(getOrderTotalPrice().subtract(getInstance().getTotalRebateMoney())));
+        } else
+            getInstance().setMoney(DataFormat.halfUpCurrency(getOrderTotalPrice().multiply(getTotalRebate().
+                    divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+
+
         calcEarnest();
 
     }
 
     public void calcOrderTotalRebate() {
         if (getOrderTotalPrice().compareTo(BigDecimal.ZERO) == 1) {
-            getInstance().setTotalRebate(getInstance().getMoney()
+            setTotalRebate(getInstance().getMoney()
                     .divide(getOrderTotalPrice(), 4, BigDecimal.ROUND_HALF_UP)
                     .multiply(new BigDecimal("100")));
+            getInstance().setTotalRebateMoney(getOrderTotalPrice().subtract(getInstance().getMoney()));
         } else {
-            getInstance().setTotalRebate(BigDecimal.ZERO);
+            setTotalRebate(BigDecimal.ZERO);
+            getInstance().setTotalRebateMoney(getOrderTotalPrice());
         }
     }
 
@@ -356,7 +384,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         orderNeedItems = new ArrayList<OrderItem>();
         //toDO read from customer level
 
-        getInstance().setTotalRebate(new BigDecimal("100"));
+        getInstance().setTotalRebateMoney(BigDecimal.ZERO);
         getInstance().setMoney(BigDecimal.ZERO);
         //getInstance().setTotalMoney(BigDecimal.ZERO);
         getInstance().setEarnest(BigDecimal.ZERO);
@@ -392,7 +420,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                 middleManHome.setId(orderHome.getInstance().getCustomer().getMiddleMan().getId());
             }
 
-            getInstance().setTotalRebate(orderHome.getInstance().getTotalRebate());
+            getInstance().setTotalRebateMoney(orderHome.getInstance().getTotalRebateMoney());
             getInstance().setEarnestFirst(orderHome.getInstance().isEarnestFirst());
             getInstance().setEarnest(orderHome.getInstance().getEarnest());
             getInstance().setMoney(orderHome.getInstance().getMoney());
@@ -420,6 +448,10 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         //TODO cost calc for  BOM table
         getInstance().setTotalCost(new BigDecimal(0));
         getInstance().setMoneyComplete(false);
+        if (!isRebateUseMoney()){
+            calcOrderPrice();
+            getInstance().setTotalRebateMoney(getOrderTotalPrice().subtract(getInstance().getMoney()));
+        }
 
         //getInstance().setCreateDate(new Date());
         getInstance().setOrderEmp(credentials.getUsername());

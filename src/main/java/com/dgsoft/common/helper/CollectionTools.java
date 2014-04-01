@@ -17,18 +17,24 @@ import java.util.*;
 public class CollectionTools {
 
 
-    public <K extends Comparable<K>,V> List<Map.Entry<K,V>> mapToList(Map<K,V> map){
-        List<Map.Entry<K,V>> result = new ArrayList<Map.Entry<K,V>>(map.entrySet());
-        Collections.sort(result,new Comparator<Map.Entry<K, V>>() {
+    public <K extends Comparable<K>, V> List<Map.Entry<K, V>> mapToList(Map<K, V> map) {
+        if (map == null) {
+            return null;
+        }
+        List<Map.Entry<K, V>> result = new ArrayList<Map.Entry<K, V>>(map.entrySet());
+        Collections.sort(result, new Comparator<Map.Entry<K, V>>() {
             @Override
             public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
                 return o1.getKey().compareTo(o2.getKey());
             }
         });
-        return result ;
+        return result;
     }
 
-    public <E extends Comparable<E>> List<E> setToList(Set<E> set){
-       return new ArrayList<E>(set);
+    public <E extends Comparable<E>> List<E> setToList(Set<E> set) {
+        if (set == null) {
+            return null;
+        }
+        return new ArrayList<E>(set);
     }
 }

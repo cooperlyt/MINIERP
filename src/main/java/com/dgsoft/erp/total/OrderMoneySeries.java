@@ -15,14 +15,29 @@ public class OrderMoneySeries {
     public OrderMoneySeries() {
     }
 
+    public OrderMoneySeries(String key, BigDecimal money, Long count) {
+        this.key = key;
+        this.money = money;
+        this.count = count;
+    }
+
     public OrderMoneySeries(BigDecimal money, Long count) {
         this.count = count;
         this.money = money;
     }
 
+    private String key;
+
     private BigDecimal money;
 
     private Long count;
+
+    public String getKey() {
+        if (key == null){
+            return "";
+        }
+        return key;
+    }
 
     public BigDecimal getMoney() {
         if (money == null) {

@@ -1,6 +1,7 @@
 package com.dgsoft.common;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.Date;
 
 /**
@@ -60,6 +61,11 @@ public class SearchDateArea {
             result = " AND " + result;
         }
         return result;
+    }
+
+    public <X> TypedQuery<X> setQueryParam(TypedQuery<X> query){
+        setQueryParam((Query)query);
+        return query;
     }
 
     public Query setQueryParam(Query query){
