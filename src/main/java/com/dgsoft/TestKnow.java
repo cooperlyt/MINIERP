@@ -45,10 +45,8 @@ public class TestKnow {
 
 
     public static void main(String[] args){
-       BigDecimal number = new BigDecimal("99.000");
+       System.out.println(new BigDecimal("98").divide(new BigDecimal(10),0,BigDecimal.ROUND_DOWN) );
 
-        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(Locale.CHINA);
-        System.out.println(DecimalFormat.getCurrencyInstance(Locale.CHINA).format(number));
 
 
     }

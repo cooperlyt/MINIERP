@@ -86,10 +86,11 @@
                     </h:outputText>
                     #{' '}
 
-                    <h:selectOneMenu value="#{orderCreate.rebateUseMoney}">
+                    <h:selectOneMenu id="orderRebateCalcTypeField" value="#{orderCreate.rebateUseMoney}">
                         <f:selectItem itemValue="#{true}" itemLabel="-"/>
                         <f:selectItem itemValue="#{false}" itemLabel="%"/>
-                        <a:ajax event="click" listener="#{orderCreate.calcOrderPrice}" render="orderTotalRebateField,orderTotalPrice"/>
+                        <a:ajax event="click" listener="#{orderCreate.calcOrderPrice}"
+                                render="orderTotalRebateField,orderTotalPrice"/>
                     </h:selectOneMenu>
                     <a:outputPanel id="orderTotalRebateField">
                         <h:inputText rendered="#{not orderCreate.rebateUseMoney}"
@@ -341,6 +342,100 @@
     </rich:dataTable>
 </h:form>
 
+<br/>
+<h:form>
+    <a:outputPanel ajaxRendered="true">
+        <rich:dataTable style="width: 100%" value="#{orderCreate.resItemList}" var="_resItem">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res}
+                </f:facet>
+                #{_resItem.res.name}
+            </rich:column>
+
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemUnitPrice}
+                </f:facet>
+                <h:outputText value="#{_resItem.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.Res_Unit}
+                </f:facet>
+                <h:outputText value="#{_resItem.resUnit.name}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.count}
+                </f:facet>
+                <h:outputText value="#{_resItem.count}">
+                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                </h:outputText>
+            </rich:column>
+
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemTotalPrice}
+                </f:facet>
+
+                <h:outputText value="#{_resItem.totalPrice}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCountRate}
+                </f:facet>
+                <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceInput value="#{_resItem.freeCountReate}" style="width: 95%"
+                                       label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax execute="@this" event="blur"/>
+                    </rich:inplaceInput>
+                </s:decorate>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCount}
+                </f:facet>
+                <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.freeCount}">
+                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemFreeMoney}
+                </f:facet>
+                <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.freeMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{orderCreate.totalResFreeMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+        </rich:dataTable>
+
+        <h:panelGrid style="width: 100%; text-align: right" columns="1">
+            <a:commandButton value="#{messages.setFreeMoneyToOrderRebate}" execute="@this" immediate="true"
+                             action="#{orderCreate.setResItemFreeMoneyToOrder}"
+                             render="orderRebateCalcTypeField,orderTotalRebateField,orderTotalPrice">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </h:panelGrid>
+    </a:outputPanel>
+</h:form>
 
 <a:outputPanel ajaxRendered="true">
     <script type="text/javascript">

@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
@@ -10,19 +11,19 @@ import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -311,6 +312,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     public void removeItem() {
         orderNeedItems.remove(orderNeedItem);
+        resItemList = null;
     }
 
     public void addOrderItem() {
@@ -345,6 +347,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         if (editingItem != null) {
             orderNeedItems.add(editingItem);
         }
+        resItemList = null;
         editingItem = null;
         resHome.clearInstance();
         storeResHome.clearInstance();
@@ -448,7 +451,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         //TODO cost calc for  BOM table
         getInstance().setTotalCost(new BigDecimal(0));
         getInstance().setMoneyComplete(false);
-        if (!isRebateUseMoney()){
+        if (!isRebateUseMoney()) {
             calcOrderPrice();
             getInstance().setTotalRebateMoney(getOrderTotalPrice().subtract(getInstance().getMoney()));
         }
@@ -567,6 +570,160 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         startData.setDescription(getInstance().getCustomer().getName());
         orderHome.setId(getInstance().getId());
         needResHome.setId(getInstance().getNeedResList().get(0).getId());
+    }
+
+    private List<TotalResItem> resItemList = null;
+
+    public List<TotalResItem> getResItemList() {
+        if (resItemList == null) {
+            resItemList = new ArrayList<TotalResItem>();
+            for (OrderItem item : orderNeedItems) {
+                boolean find = false;
+                for (TotalResItem tr : resItemList) {
+                    if (tr.isSameItem(item)) {
+                        tr.add(item);
+                        find = true;
+                    }
+                }
+                if (!find) {
+                    resItemList.add(new TotalResItem(item.getRes(), item.getResUnit(), item.getMoney(), item.getRebate(), item.getUseUnitCount()));
+                }
+
+            }
+        }
+        return resItemList;
+    }
+
+    public BigDecimal getTotalResFreeMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (TotalResItem item : getResItemList()) {
+            if (item.isCanRebate())
+                result = result.add(item.getFreeMoney());
+        }
+        return result;
+    }
+
+    public void setResItemFreeMoneyToOrder() {
+        rebateUseMoney = true;
+        getInstance().setTotalRebateMoney(getTotalResFreeMoney());
+        calcOrderPrice();
+    }
+
+    public class TotalResItem {
+
+        private Res res;
+
+        private ResUnit resUnit;
+
+        private BigDecimal money;
+
+        private BigDecimal rebate;
+
+        private BigDecimal count;
+
+        private BigDecimal freeCountReate = BigDecimal.ZERO;
+
+        public TotalResItem(Res res, ResUnit resUnit, BigDecimal money, BigDecimal rebate, BigDecimal count) {
+            this.res = res;
+            this.resUnit = resUnit;
+            this.money = money;
+            this.rebate = rebate;
+            this.count = count;
+        }
+
+        public void add(OrderItem other) {
+            if (!isSameItem(other))
+                throw new IllegalArgumentException("not same");
+            count = count.add(other.getUseUnitCount());
+        }
+
+        public boolean isSameItem(OrderItem other) {
+            return res.equals(other.getRes()) && resUnit.getId().equals(other.getResUnit().getId())
+                    && (other.getMoney().compareTo(money) == 0) &&
+                    (other.getRebate().compareTo(rebate) == 0);
+        }
+
+        public Res getRes() {
+            return res;
+        }
+
+        public BigDecimal getFreeCount() {
+            if (DataFormat.isEmpty(freeCountReate)) {
+                return BigDecimal.ZERO;
+            }
+            return count.divide(freeCountReate, 0, BigDecimal.ROUND_DOWN);
+        }
+
+        public boolean isCanRebate() {
+            return (getMoney().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        public BigDecimal getFreeMoney() {
+            if (DataFormat.isEmpty(freeCountReate)) {
+                return BigDecimal.ZERO;
+            }
+
+            return DataFormat.halfUpCurrency(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)).multiply(getFreeCount()));
+        }
+
+        public BigDecimal getTotalPrice() {
+
+            return DataFormat.halfUpCurrency(count.multiply(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+        }
+
+        public BigDecimal getMoney() {
+            return money;
+        }
+
+        public void setMoney(BigDecimal money) {
+            this.money = money;
+        }
+
+        public ResUnit getResUnit() {
+            return resUnit;
+        }
+
+        public void setResUnit(ResUnit resUnit) {
+            this.resUnit = resUnit;
+        }
+
+        public void setRebate(BigDecimal rebate) {
+            this.rebate = rebate;
+        }
+
+        public BigDecimal getRebate() {
+            return rebate;
+        }
+
+        public boolean isPresentation() {
+            return false;
+        }
+
+        public void setPresentation(boolean presentation) {
+        }
+
+        public BigDecimal getCount() {
+            return count;
+        }
+
+        public void setCount(BigDecimal count) {
+            this.count = count;
+        }
+
+        public StoreRes getStoreRes() {
+            return null;
+        }
+
+        public void setStoreRes(StoreRes storeRes) {
+        }
+
+        public BigDecimal getFreeCountReate() {
+            return freeCountReate;
+        }
+
+        public void setFreeCountReate(BigDecimal freeCountReate) {
+            this.freeCountReate = freeCountReate;
+        }
     }
 
 }
