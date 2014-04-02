@@ -1,18 +1,9 @@
 package com.dgsoft.erp.total;
 
-import com.dgsoft.common.DataFormat;
-import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.CustomerArea;
-import com.dgsoft.erp.tools.OrderStateCondition;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
-import javax.persistence.EntityManager;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -22,31 +13,8 @@ import java.util.*;
  * Time: 16:44
  */
 @Name("saleMoneySum")
-public class SaleMoneySum {
+public class SaleMoneyBaseSum extends SaleDayBaseSum {
 
-
-    @In(create = true)
-    private EntityManager erpEntityManager;
-
-    private OrderStateCondition orderState = new OrderStateCondition();
-
-    private SearchDateArea dateArea = new SearchDateArea(new Date(), new Date());
-
-    public OrderStateCondition getOrderState() {
-        return orderState;
-    }
-
-    public void setOrderState(OrderStateCondition orderState) {
-        this.orderState = orderState;
-    }
-
-    public SearchDateArea getDateArea() {
-        return dateArea;
-    }
-
-    public void setDateArea(SearchDateArea dateArea) {
-        this.dateArea = dateArea;
-    }
 
 
     public void totalData() {
@@ -79,15 +47,7 @@ public class SaleMoneySum {
 
     }
 
-    public Map<String, OrderMoneySeries> areaOrderMoneySum = null;
 
-    public void genAreaOrderMoneySum() {
-        List<OrderMoneySeries> list = dateArea.setQueryParam(orderState.setQueryParam(erpEntityManager.createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(o.customer.customerArea.name,sum(o.money),count(o.id) ) from CustomerOrder o where " + dateArea.genConditionSQL("o.createDate", false) + orderState.genConditionSQL("o", true) + " group by o.customer.customerArea.name", OrderMoneySeries.class))).getResultList();
-        areaOrderMoneySum = new HashMap<String, OrderMoneySeries>();
-        for (OrderMoneySeries series : list) {
-            areaOrderMoneySum.put(series.getKey(), series);
-        }
-    }
 
     public Map<String, OrderMoneySeries> areaOrderPayMoney = null;
 
@@ -110,15 +70,7 @@ public class SaleMoneySum {
     }
 
 
-    private OrderMoneySeries orderMoneySum = null;
 
-    public void genOrderMoneySum() {
-        orderMoneySum = (OrderMoneySeries) dateArea.setQueryParam(orderState.setQueryParam(erpEntityManager.createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(sum(o.money),count(o.id) ) from CustomerOrder o where " + dateArea.genConditionSQL("o.createDate", false) + orderState.genConditionSQL("o", true)))).getSingleResult();
-        if (orderMoneySum == null) {
-            orderMoneySum = new OrderMoneySeries();
-        }
-
-    }
 
     private OrderMoneySeries orderPayMoneySum = null;
 
@@ -138,9 +90,6 @@ public class SaleMoneySum {
         }
     }
 
-    public Map<String, OrderMoneySeries> getAreaOrderMoneySum() {
-        return areaOrderMoneySum;
-    }
 
     public Map<String, OrderMoneySeries> getAreaOrderPayMoney() {
         return areaOrderPayMoney;
@@ -150,9 +99,7 @@ public class SaleMoneySum {
         return areaPrepareMoney;
     }
 
-    public OrderMoneySeries getOrderMoneySum() {
-        return orderMoneySum;
-    }
+
 
     public OrderMoneySeries getOrderPayMoneySum() {
         return orderPayMoneySum;

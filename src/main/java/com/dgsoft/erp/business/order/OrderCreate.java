@@ -21,6 +21,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
+import javax.faces.event.ValueChangeEvent;
 import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.*;

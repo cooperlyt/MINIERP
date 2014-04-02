@@ -13,8 +13,12 @@ import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
+import org.jbpm.graph.def.ProcessDefinition;
 import org.jbpm.taskmgmt.exe.TaskInstance;
+
+import javax.faces.event.ValueChangeEvent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,8 +67,26 @@ public class BusinessCreate {
     private TaskPrepare taskPrepare;
 
 
+    public void verifyBusinessKeyAvailable(ValueChangeEvent event) {
+        String key = (String) event.getNewValue();
+        if (!verifyBusinessKey(key)){
+            facesMessages.addToControlFromResourceBundle(event.getComponent().getId(),
+                    StatusMessage.Severity.ERROR,"businessKeyConflict");
+        }
+    }
+
+
+
+    public boolean verifyBusinessKey(String key) {
+
+        ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition(businessDefineHome.getInstance().getWfName());
+        return ManagedJbpmContext.instance().getProcessInstance(definition,
+                startData.getBusinessKey()) == null;
+    }
+
     @Transactional
     public String create() {
+
         StartDataValidator dataValidator = getDataValidator();
 //        log.debug("create dataValidator:" + dataValidator == null ? "null" :dataValidator.verifyData());
         String verifyMsg;
@@ -83,11 +105,11 @@ public class BusinessCreate {
 
             log.debug("define Id:" + businessDefineHome.getInstance().getId());
 
-            try{
+            try {
                 events.raiseEvent("com.dgsoft.BusinessCreatePrepare." + businessDefineHome.getInstance().getWfName(),
                         businessDefineHome.getInstance());
-            }catch (ProcessCreatePrepareException e){
-                log.debug("prepare other business data exception",e);
+            } catch (ProcessCreatePrepareException e) {
+                log.debug("prepare other business data exception", e);
                 businessDefineId = "";
                 businessDescription = "";
                 businessName = "";
