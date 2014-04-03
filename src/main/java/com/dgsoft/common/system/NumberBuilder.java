@@ -1,5 +1,6 @@
 package com.dgsoft.common.system;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.model.NumberPool;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -8,6 +9,7 @@ import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +60,27 @@ public class NumberBuilder {
 //            numberPool.setNumber(entry.getValue().nextNumber);
 //        }
 //        entityManager.flush();
+    }
+
+    private Date dayNumberDate = DataFormat.halfTime(new Date());
+
+    private Map<String,Long> dayNumbers = new HashMap<String, Long>();
+
+    public Long getDayNumber(String type){
+
+        if (dayNumberDate.getTime() != DataFormat.halfTime(new Date()).getTime()){
+            dayNumbers.clear();
+            dayNumberDate =DataFormat.halfTime(new Date());
+        }
+
+        Long result = dayNumbers.get(type);
+        if (result == null){
+            result = new Long(1);
+        }else{
+            result++;
+        }
+        dayNumbers.put(type,result);
+        return result;
     }
 
     @In
