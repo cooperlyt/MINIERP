@@ -99,16 +99,5 @@ public class BussinessProcessUtils extends BusinessProcess {
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processSuspended");
     }
 
-//    @Override
-//    public boolean resumeProcess(String processDefinition, String key) {
-//        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processResumed");
-//        return super.resumeProcess(processDefinition, key);
-//    }
-//
-//    @Override
-//    public boolean resumeProcess(Long processId) {
-//        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.processResumed");
-//        return super.resumeProcess(processId);
-//    }
 
 }

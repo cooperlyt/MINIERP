@@ -77,7 +77,7 @@
 <s:decorate template="/layout/seam-edit.xhtml">
     <ui:define name="label">#{messages.OrderBack_field_BackType}</ui:define>
     <h:selectOneMenu value="#{orderBackHome.instance.orderBackType}"
-                     disabled="#{not (orderHome.anyOneStoreOut and (not orderHome.instance.allStoreOut))}"
+                     disabled="#{orderHome.anyOneStoreOut}"
                      label="#{orderBackHome.instance.orderBackType}" required="true">
         <s:selectItems value="#{orderBackTypes}" var="_type" label="#{messages[_type.name()]}"/>
         <s:convertEnum/>

@@ -21,7 +21,7 @@
             }
         </h:outputStylesheet>
 
-        <rich:toolbar rendered="#{not empty from }">
+        <rich:toolbar  height="34" itemSeparator="line">
             <rich:toolbarGroup>
                 <s:link target="_blank" view="/report/salePaper.xhtml"
                         rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role)}">
@@ -38,13 +38,15 @@
             </rich:toolbarGroup>
 
             <rich:toolbarGroup>
+                <h:graphicImage value="/img/qq.png"/>
+
                 <a id="clip-button-id" href="#" data-clipboard-text="#{orderHome.toastMessages}" class="clipboard">
                     #{messages.toastQQ}
                 </a>
 
             </rich:toolbarGroup>
 
-            <rich:toolbarGroup location="right">
+            <rich:toolbarGroup location="right" rendered="#{not empty from }">
                 <s:button styleClass="toolBarBtn" value="#{messages.return}"
                           view="#{empty from ? '/home.xhtml' : from}"/>
             </rich:toolbarGroup>
@@ -53,7 +55,7 @@
         <br/>
         <ui:include src="/layout/erp/OrderInfo.xhtml"/>
 
-        <a:outputPanel ajaxRendered="true" rendered="#{not empty from}">
+        <a:outputPanel ajaxRendered="true">
 
             <script type="text/javascript"
                     src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>

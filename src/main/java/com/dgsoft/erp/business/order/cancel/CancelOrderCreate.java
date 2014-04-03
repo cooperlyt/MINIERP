@@ -74,7 +74,7 @@ public class CancelOrderCreate {
     @Create
     public void init() {
         orderBackHome.init();
-        if (orderHome.getInstance().isAllStoreOut()) {
+        if (orderHome.isAnyOneStoreOut()) {
             orderBackHome.getInstance().setOrderBackType(OrderBack.OrderBackType.PART_ORDER_BACK);
 
         } else {
@@ -180,6 +180,7 @@ public class CancelOrderCreate {
     public String cancelOrder() {
         if (!isCanCancel()) return null;
         calcBackMoney();
+        boolean needSuspend = false;
         orderBackHome.getInstance().setCustomerOrder(orderHome.getInstance());
         orderBackHome.getInstance().setCustomer(orderHome.getInstance().getCustomer());
         if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL)) {
@@ -187,6 +188,7 @@ public class CancelOrderCreate {
                 orderBackHome.getInstance().getCustomerOrder().setCanceled(true);
                 return cancelSimpleOrder();
             }
+            needSuspend = true;
 
 //            ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition();
 //            ProcessInstance processInstance = definition==null ?
@@ -194,13 +196,16 @@ public class CancelOrderCreate {
 //
 //            processInstance.suspend();
 
-            businessProcess.suspendProcess("order", orderHome.getInstance().getId());
         }
 
         orderBackHome.getInstance().getBackItems().clear();
         orderBackHome.getInstance().getBackItems().addAll(genBackItem());
 
-        return businessCreate.create();
+        String result = businessCreate.create();
+        if (needSuspend && ("businessCreated".equals(result) || result.startsWith("/"))){
+            businessProcess.suspendProcess("order", orderHome.getInstance().getId());
+        }
+        return result;
     }
 
 
