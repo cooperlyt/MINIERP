@@ -66,7 +66,7 @@ public class NumberBuilder {
 
     private Map<String,Long> dayNumbers = new HashMap<String, Long>();
 
-    public Long getDayNumber(String type){
+    public String getDayNumber(String type){
 
         if (dayNumberDate.getTime() != DataFormat.halfTime(new Date()).getTime()){
             dayNumbers.clear();
@@ -80,7 +80,10 @@ public class NumberBuilder {
             result++;
         }
         dayNumbers.put(type,result);
-        return result;
+        SimpleDateFormat numberDateformat = new SimpleDateFormat("yyyyMMdd");
+        String datePart = numberDateformat.format(new Date());
+
+        return datePart + "-" + result;
     }
 
     @In

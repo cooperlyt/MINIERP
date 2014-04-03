@@ -109,6 +109,20 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
         }
     }
 
+    public static <K,V> Collection<V> unionData(List<? extends V> data, TotalDataUnionStrategy<K, V> unionStrategy){
+        Map<K, V> result = new HashMap<K, V>();
+        for (V v: data){
+            K k = unionStrategy.getKey(v);
+            V oldV = result.get(k);
+            if (oldV == null){
+               result.put(k,v);
+            }else{
+                result.put(k,unionStrategy.unionData(v,oldV));
+            }
+        }
+        return result.values();
+    }
+
     public static <K, V> void unionData(TotalDataGroup<?, V> data, TotalDataUnionStrategy<K, V> unionStrategy) {
 
         Map<K, V> result = new HashMap<K, V>();

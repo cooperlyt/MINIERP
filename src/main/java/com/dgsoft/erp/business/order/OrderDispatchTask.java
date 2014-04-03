@@ -101,8 +101,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
             result.append(dispatch.getStore().getName() + "\n");
             for (DispatchItem item : dispatch.getDispatchItemList()) {
                 result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-                result.append(item.getDisplayMasterCount());
-                result.append("(" + item.getDisplayAuxCount() + ")");
+                result.append(item.getCountByResUnit(item.getRes().getResUnitByInDefault()));
             }
         }
 

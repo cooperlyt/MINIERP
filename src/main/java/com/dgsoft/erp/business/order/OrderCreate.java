@@ -1,9 +1,11 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.common.TotalDataUnionStrategy;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
@@ -11,7 +13,11 @@ import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
+import com.dgsoft.erp.total.StoreResCountUnionStrategy;
+import com.dgsoft.erp.total.StoreResGroupStrategy;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Observer;
@@ -87,6 +93,9 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
     @In(create = true)
     protected OrderHome orderHome;
+
+    @In
+    private NumberBuilder numberBuilder;
 
     private NeedRes needRes;
 
@@ -273,11 +282,24 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         result.append(messages.get("address") + ":" + needRes.getAddress());
         result.append("\n");
 
-        for (OrderItem item : orderNeedItems) {
+
+        Collection<StoreResCountEntity> rg = TotalDataGroup.unionData(orderNeedItems,new TotalDataUnionStrategy<StoreRes, StoreResCountEntity>() {
+            @Override
+            public StoreRes getKey(StoreResCountEntity storeResCountEntity) {
+                return storeResCountEntity.getStoreRes();
+            }
+
+            @Override
+            public StoreResCountEntity unionData(StoreResCountEntity v1, StoreResCountEntity v2) {
+                return new StoreResCount(v1.getStoreRes(),v1.getCount().add(v2.getCount()));
+            }
+        });
+
+
+        for (StoreResCountEntity item : rg) {
 
             result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-            result.append(item.getDisplayMasterCount());
-            result.append("(" + item.getDisplayAuxCount() + ")\n");
+            result.append(item.getCountByResUnit(item.getRes().getResUnitByInDefault()));
 
         }
 
@@ -379,10 +401,17 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         return "fail";
     }
 
+    private void genBusinessKey(){
+        startData.setBusinessKey(numberBuilder.getDayNumber("order"));
+        while (getEntityManager().find(getEntityClass(), startData.getBusinessKey()) != null){
+            startData.setBusinessKey(numberBuilder.getDayNumber("order"));
+        }
+    }
 
     public String beginCreateOrder() {
         businessDefineHome.setId("erp.business.order");
-        startData.generateKey();
+        genBusinessKey();
+
         needRes = new NeedRes(getInstance(),
                 NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), NeedRes.NeedResStatus.CREATED);
         orderNeedItems = new ArrayList<OrderItem>();
@@ -399,7 +428,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         if (orderHome.isIdDefined()) {
 
             businessDefineHome.setId("erp.business.order");
-            startData.generateKey();
+            genBusinessKey();
             needRes = new NeedRes(getInstance(),
                     NeedRes.NeedResType.ORDER_SEND, ORDER_SEND_REASON_WORD_KEY, new Date(), NeedRes.NeedResStatus.CREATED);
 
