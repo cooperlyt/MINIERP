@@ -13,21 +13,21 @@
     <h:outputText rendered="#{order.moneyComplete}" style="color: green"
                   value="#{messages.order_field_moneyComplete_true}"  />
     <h:outputText rendered="#{not order.moneyComplete}"
-                  value="#{messages.order_field_moneyComplete_false}" style="color: red;"/>
+                  value="#{messages.order_field_moneyComplete_false}" style="color: darkred;"/>
 
     #{' '}/#{' '}
 
     <h:outputText rendered="#{order.allStoreOut}" style="color: green"
                   value="#{messages.order_field_allStoreOut_true}"  />
     <h:outputText rendered="#{not order.allStoreOut}"
-                  value="#{messages.order_field_allStoreOut_false}" style="color: red;"/>
+                  value="#{messages.order_field_allStoreOut_false}" style="color: darkred;"/>
 
     #{' '}/#{' '}
 
     <h:outputText rendered="#{order.resReceived}" style="color: green"
                   value="#{messages.order_field_resReceived_true}"  />
     <h:outputText rendered="#{not order.resReceived}"
-                  value="#{messages.order_field_resReceived_false}" style="color: red;"/>
+                  value="#{messages.order_field_resReceived_false}" style="color: darkred;"/>
 
     <a:outputPanel rendered="#{s:hasRole('erp.sale.manager')}">
         #{' '}/#{' '}
@@ -35,7 +35,7 @@
         <h:outputText rendered="#{order.middlePayed}" style="color: green"
                       value="#{messages.order_field_middlePayed_true}"  />
         <h:outputText rendered="#{not order.middlePayed}"
-                      value="#{messages.order_field_middlePayed_false}" style="color: red;"/>
+                      value="#{messages.order_field_middlePayed_false}" style="color: darkred;"/>
 
     </a:outputPanel>
 

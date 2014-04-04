@@ -133,6 +133,121 @@
 
 </h:form>
 <br/>
+
+<s:decorate template="/layout/erp/res/ResSelectModelPanel.xhtml">
+    <ui:param name="panelId" value="resSelectPanel"/>
+    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+    <ui:param name="panelTitle" value="#{messages.res}"/>
+    <ui:define name="categoryNode">
+        <a:commandLink execute="@this" render="storeInItem" value="#{_node.data.name}"
+                       oncomplete="#{rich:component('resSelectPanel')}.hide()"
+                       style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                       action="#{orderStoreOut.resCategorySelected}">
+            <a:param value="#{_node.data.id}" assignTo="#{resCategoryHome.id}"/>
+            <s:conversationId/>
+        </a:commandLink>
+    </ui:define>
+
+    <ui:define name="resNode">
+
+        <a:commandLink execute="@this" render="storeInItem"
+                       action="#{orderStoreOut.resSelected}"
+                       value=" #{_node.data.name}(#{_node.data.code})"
+                       oncomplete="#{rich:component('resSelectPanel')}.hide()"
+                       style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}">
+            <a:param value="#{_node.data.id}" assignTo="#{resHome.id}"/>
+            <s:conversationId/>
+        </a:commandLink>
+
+    </ui:define>
+
+    <ui:define name="storeResNode">
+        <a:commandLink execute="@this" render="storeInItem"
+                       action="#{orderStoreOut.storeResSelected}"
+                       value="#{_node.data.code}#{' '}#{ _node.showTitle}" oncomplete="#{rich:component('resSelectPanel')}.hide()">
+            <a:param value="#{_node.data.id}" assignTo="#{storeResHome.id}"/>
+            <s:conversationId/>
+        </a:commandLink>
+
+    </ui:define>
+</s:decorate>
+
+<h:form>
+    <h:panelGrid id="resSearchForm" columns="4">
+
+        <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocate.code}"
+                     required="true">
+            <rich:placeholder value="#{messages.res_field_code}"/>
+        </h:inputText>
+
+
+        <a:commandButton value="#{messages.search}" execute="@region"
+                         render="storeInItem"
+                         action="#{orderStoreOut.locateByCode}">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+
+        <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                         title="#{messages.storeResSelect}"
+                         onclick="#{rich:component('resSelectPanel')}.show();return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </h:panelGrid>
+</h:form>
+<h:form id="storeInItem">
+    <rich:panel rendered="#{resCategoryHome.idDefined or (not (empty orderStoreOut.newOverlyOut))}">
+        <a:outputPanel rendered="#{resCategoryHome.idDefined}">
+            <h:panelGrid columns="1">
+                <h:outputText value="#{resCategoryHome.instance.name}" styleClass="auto_width_name"/>
+            </h:panelGrid>
+
+
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.res}</ui:define>
+                <h:selectOneMenu value="#{resHome.id}" required="true"
+                                 label="#{messages.res}">
+                    <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                   label="#{_res.name}" itemValue="#{_res.id}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <a:ajax event="valueChange" listener="#{orderStoreOut.resChange}" render="storeInItem"/>
+                </h:selectOneMenu>
+            </s:decorate>
+        </a:outputPanel>
+
+        <a:outputPanel rendered="#{not (empty orderStoreOut.newOverlyOut)}">
+
+            <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+                <ui:param name="inputValue" value="#{orderStoreOut.newOverlyOut}"/>
+                <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                <ui:param name="countLableStyleClass" value="name"/>
+                <ui:param name="showTitle" value="false"/>
+            </ui:include>
+
+
+            <ui:insert name="addItemAction">
+
+                <!-- TODO BATCH -->
+
+                <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
+                                 render="storeInItem,orderStoreOutItemsTable"
+                                 action="#{orderStoreOut.addNewOverlyOut}">
+                    <a:attachQueue requestDelay="0"/>
+
+                </a:commandButton>
+            </ui:insert>
+        </a:outputPanel>
+
+        <div style="clear:both">
+            <span class="required">*</span>
+            #{messages.requiredFields}
+        </div>
+
+
+    </rich:panel>
+</h:form>
+
+<br/>
 <h:form>
     <rich:dataTable id="orderStoreOutItemsTable" style="width: 100%" value="#{orderStoreOutItems}" var="_dispatchItem">
         <f:facet name="header">

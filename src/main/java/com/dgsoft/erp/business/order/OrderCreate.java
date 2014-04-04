@@ -299,8 +299,8 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         for (StoreResCountEntity item : rg) {
 
             result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-            result.append(item.getCountByResUnit(item.getRes().getResUnitByInDefault()));
-
+            result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()),item.getRes().getResUnitByInDefault().getCountFormate() ) );
+            result.append(item.getRes().getResUnitByInDefault().getName());
         }
 
         return result.toString();

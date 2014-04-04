@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.ResHelper;
@@ -101,7 +102,8 @@ public class OrderDispatchTask extends OrderTaskHandle {
             result.append(dispatch.getStore().getName() + "\n");
             for (DispatchItem item : dispatch.getDispatchItemList()) {
                 result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-                result.append(item.getCountByResUnit(item.getRes().getResUnitByInDefault()));
+                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()) );
+                result.append(item.getRes().getResUnitByInDefault().getName());
             }
         }
 

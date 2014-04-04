@@ -7,13 +7,16 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by cooper on 1/5/14.
  */
 @Entity
 @Table(name = "OVERLY_OUT", catalog = "MINI_ERP")
-public class OverlyOut extends StoreResCountEntity implements java.io.Serializable{
+public class OverlyOut extends StoreResCountEntity implements java.io.Serializable {
 
     private String id;
     private StoreRes storeRes;
@@ -23,6 +26,18 @@ public class OverlyOut extends StoreResCountEntity implements java.io.Serializab
     private boolean add;
 
     public OverlyOut() {
+    }
+
+    public OverlyOut(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
+        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+        this.dispatch = dispatch;
+        this.add = true;
+    }
+
+    public OverlyOut(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
+        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+        this.dispatch = dispatch;
+        this.add = true;
     }
 
     public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count, boolean add) {
@@ -86,7 +101,7 @@ public class OverlyOut extends StoreResCountEntity implements java.io.Serializab
         this.dispatch = dispatch;
     }
 
-    @Column(name = "IS_ADD",nullable = false)
+    @Column(name = "IS_ADD", nullable = false)
     public boolean isAdd() {
         return add;
     }
