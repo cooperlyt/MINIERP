@@ -39,11 +39,11 @@ public abstract class StoreResCountEntity extends StoreResEntity {
 
     public abstract void setCount(BigDecimal count);
 
-    public BigDecimal getMasterCount(){
+    public BigDecimal getMasterCount() {
         return getCount();
     }
 
-    public void setMasterCount(BigDecimal count){
+    public void setMasterCount(BigDecimal count) {
         setCount(count);
     }
 
@@ -62,7 +62,7 @@ public abstract class StoreResCountEntity extends StoreResEntity {
     }
 
     @Override
-    public String getCode(){
+    public String getCode() {
         if (getStoreRes() == null) {
             return super.getCode();
         } else {
@@ -88,6 +88,15 @@ public abstract class StoreResCountEntity extends StoreResEntity {
             return super.getFloatConvertRate();
         } else {
             return DataFormat.format(getStoreRes().getFloatConversionRate(), getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat());
+        }
+    }
+
+    @Override
+    public List<Format> getFormats() {
+        if (getStoreRes() == null) {
+            return super.getFormats();
+        } else {
+            return getStoreRes().getFormatList();
         }
     }
 
@@ -214,11 +223,18 @@ public abstract class StoreResCountEntity extends StoreResEntity {
     }
 
 
-    public boolean isSameItem(StoreResCountEntity other) {
-        if ((getStoreRes() != null) && other.getStoreRes() != null) {
-            return getStoreRes().equals(other.getStoreRes());
-        } else {
-            return super.isSameItem(other);
+    @Override
+    public boolean isSameItem(StoreResEntity other) {
+
+        if (!(other instanceof StoreResCountEntity)) {
+            return false;
+        }
+
+        StoreResCountEntity otherCount = (StoreResCountEntity) other;
+        if ((otherCount.getStoreRes() == null) ||  (getStoreRes() == null)){
+             return super.isSameItem(other);
+        }else {
+            return getStoreRes().equals(otherCount.getStoreRes());
         }
     }
 

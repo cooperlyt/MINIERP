@@ -2,13 +2,10 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
-import com.dgsoft.common.TotalDataUnionStrategy;
 import com.dgsoft.common.TotalGroupStrategy;
-import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.ScopeType;
@@ -18,6 +15,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -54,42 +52,29 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return Dispatch.DeliveryType.values();
     }
 
-    public TotalDataGroup<?, StoreResCountEntity> getNeedStoreOutItemList() {
-        List<DispatchItem> needStoreOutItems = new ArrayList<DispatchItem>();
+    public List<OrderItem> getOrderItemByStatus(EnumSet<OrderItem.OrderItemStatus> statuses) {
+        List<OrderItem> result = new ArrayList<OrderItem>();
         for (NeedRes needRes : getInstance().getNeedReses()) {
-            if (needRes.getStatus().equals(NeedRes.NeedResStatus.DISPATCHED)) {
-                for (Dispatch dispatch : needRes.getDispatches()) {
-                    for (DispatchItem item : dispatch.getDispatchItems()) {
-                        needStoreOutItems.add(item);
+            for (OrderItem item : needRes.getOrderItems()) {
+                if (statuses.contains(item.getStatus())) {
+                    result.add(item);
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<OweOut> getNoAddOweItems() {
+        List<OweOut> result = new ArrayList<OweOut>();
+        for (NeedRes needRes : getInstance().getNeedReses()) {
+            for (Dispatch dispatch : needRes.getDispatches()) {
+                for (OweOut oweOut : dispatch.getOweOuts()) {
+                    if (!oweOut.isAdd()) {
+                        result.add(oweOut);
                     }
                 }
             }
         }
-
-
-        TotalDataGroup<?, StoreResCountEntity> result = TotalDataGroup.allGroupBy(needStoreOutItems, new TotalGroupStrategy<Store, StoreResCountEntity>() {
-            @Override
-            public Store getKey(StoreResCountEntity dispatchItem) {
-                return ((DispatchItem) dispatchItem).getDispatch().getStore();
-            }
-
-            @Override
-            public Object totalGroupData(Collection<StoreResCountEntity> datas) {
-                return null;
-            }
-        });
-
-        TotalDataGroup.unionData(result, new TotalDataUnionStrategy<StoreRes, StoreResCountEntity>() {
-            @Override
-            public StoreRes getKey(StoreResCountEntity dispatchItem) {
-                return dispatchItem.getStoreRes();
-            }
-
-            @Override
-            public StoreResCountEntity unionData(StoreResCountEntity v1, StoreResCountEntity v2) {
-                return new StoreResCount(v1.getStoreRes(), v1.getCount().add(v2.getCount()));
-            }
-        });
         return result;
     }
 
@@ -108,77 +93,98 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         result.append(messages.get("address") + ":" + getLastNeedRes().getAddress());
         result.append("\n");
 
-        for (TotalDataGroup<? extends Comparable<?>, StoreResCountEntity> sg : getNeedStoreOutItemList().getChildGroup()) {
-            result.append(((Store) sg.getKey()).getName() + "\n");
-            for (StoreResCountEntity item : sg.getValues()) {
+        result.append(messages.get(getInstance().getPayType().name()) + "   ");
+
+        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+            result.append(DecimalFormat.getCurrencyInstance(Locale.CHINA).
+                    format(getInstance().getMoney()) + "   ");
+        }
+
+        if (getLastNeedRes().isFareByCustomer()) {
+            result.append(messages.get("order_fare_by_customer"));
+        } else {
+            result.append(messages.get("order_fare_by_company"));
+        }
+
+
+        for (TotalDataGroup<Store, OrderItem> group : getDispatchItemGroups()) {
+
+            result.append(group.getKey().getName() + "\n");
+            for (StoreResCountEntity item : group.getValues()) {
                 result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()),item.getRes().getResUnitByInDefault().getCountFormate() ) );
+                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
                 result.append(item.getRes().getResUnitByInDefault().getName());
             }
-
             result.append("\n");
-
         }
 
 
-        List<OrderItem> orderItems = new ArrayList<OrderItem>();
-        for (NeedRes needRes : getInstance().getNeedReses()) {
-            if (needRes.getStatus().equals(NeedRes.NeedResStatus.CREATED)) {
-                orderItems.addAll(needRes.getOrderItems());
-            }
-
+        List<OrderItem> createdItems = getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED));
+        if (!createdItems.isEmpty()) {
+            result.append(messages.get("no_dispatch_order_items") + "\n");
         }
 
-        if (!orderItems.isEmpty()) {
-            result.append("\n");
-            result.append("\n");
-
-            Collection<StoreResCountEntity> rg = TotalDataGroup.unionData(orderItems, new TotalDataUnionStrategy<StoreRes, StoreResCountEntity>() {
-                @Override
-                public StoreRes getKey(StoreResCountEntity storeResCountEntity) {
-                    return storeResCountEntity.getStoreRes();
-                }
-
-                @Override
-                public StoreResCountEntity unionData(StoreResCountEntity v1, StoreResCountEntity v2) {
-                    return new StoreResCount(v1.getStoreRes(), v1.getCount().add(v2.getCount()));
-                }
-            });
-
-
-            for (StoreResCountEntity item : rg) {
-
-                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-
-                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()),item.getRes().getResUnitByInDefault().getCountFormate() ) );
-                result.append(item.getRes().getResUnitByInDefault().getName());
-            }
+        for (OrderItem item : createdItems) {
+            result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
+            result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
+            result.append(item.getRes().getResUnitByInDefault().getName());
         }
 
-//        if (getMasterNeedRes().getStatus().equals(NeedRes.NeedResStatus.DISPATCHED)) {
-//            for (Dispatch dispatch : getMasterNeedRes().getDispatches()) {
-//                result.append(dispatch.getStore().getName() + "\n");
-//                for (DispatchItem item : dispatch.getDispatchItemList()) {
-//                    result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-//                    result.append(item.getDisplayMasterCount());
-//                    if (!DataFormat.isEmpty(item.getDisplayAuxCount()))
-//                        result.append("(" + item.getDisplayAuxCount() + ")");
-//                }
-//            }
-//
-//        } else {
-//            for (OrderItem item : getMasterNeedRes().getOrderItems()) {
-//
-//                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + ": ");
-//                result.append(item.getDisplayMasterCount());
-//                if (!DataFormat.isEmpty(item.getDisplayAuxCount()))
-//                    result.append("(" + item.getDisplayAuxCount() + ")\n");
-//
-//            }
-//        }
+        List<OweOut> oweOutItems = getNoAddOweItems();
+        if (!oweOutItems.isEmpty()) {
+            result.append(messages.get("sub_overly_oper") + "\n");
+        }
+        for (OweOut oweOut : oweOutItems) {
+            result.append("\t" + resHelper.generateStoreResTitle(oweOut.getStoreRes()) + " ");
+            result.append("  " + DataFormat.format(oweOut.getCountByResUnit(oweOut.getRes().getResUnitByInDefault()), oweOut.getRes().getResUnitByInDefault().getCountFormate()));
+            result.append(oweOut.getRes().getResUnitByInDefault().getName());
+        }
 
 
         return result.toString();
+    }
+
+    public List<TotalDataGroup<Store, OrderItem>> getDispatchItemGroups() {
+        return TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.DISPATCHED)),
+                new TotalGroupStrategy<Store, OrderItem>() {
+                    @Override
+                    public Store getKey(OrderItem orderItem) {
+                        return orderItem.getDispatch().getStore();
+                    }
+
+                    @Override
+                    public Object totalGroupData(Collection<OrderItem> datas) {
+                        return null;
+                    }
+                });
+    }
+
+    public void calcTotalResMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderItem item : getOrderItemByStatus(
+                EnumSet.of(OrderItem.OrderItemStatus.CREATED, OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))){
+             result = result.add(item.getTotalMoney());
+        }
+        getInstance().setResMoney(result);
+    }
+
+    public void calcStoreResCompleted(){
+        for (NeedRes needRes: getInstance().getNeedReses()){
+            for(OrderItem item: needRes.getOrderItems()){
+                if (!item.getStatus().equals(OrderItem.OrderItemStatus.COMPLETED)){
+                    getInstance().setAllStoreOut(false);
+                    return;
+                }
+            }
+            for(Dispatch dispatch: needRes.getDispatches()){
+                if (dispatch.isHaveNoOutOweItem()){
+                    getInstance().setAllStoreOut(false);
+                }
+            }
+
+        }
+        getInstance().setAllStoreOut(true);
+
     }
 
 
@@ -198,16 +204,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             result = result.add(nr.getTotalFare());
         }
         return result;
-    }
-
-
-    public boolean isHaveOverlyOut() {
-        for (Dispatch dispatch : getLastNeedRes().getDispatches()) {
-            if (!dispatch.getOverlyOuts().isEmpty()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public NeedRes getLastNeedRes() {
@@ -255,26 +251,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                 return o1.getKey().compareTo(o2.getKey());
             }
         });
-        return result;
-    }
-
-    public BigDecimal getLastResTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        NeedRes needRes = getMasterNeedRes();
-        if (needRes != null)
-            for (OrderItem orderItem : needRes.getOrderItems()) {
-                result = result.add(orderItem.getTotalPrice());
-            }
-        return result;
-    }
-
-    public BigDecimal getResTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (NeedRes needRes : getInstance().getNeedReses()) {
-            for (OrderItem orderItem : needRes.getOrderItems()) {
-                result = result.add(orderItem.getTotalPrice());
-            }
-        }
         return result;
     }
 

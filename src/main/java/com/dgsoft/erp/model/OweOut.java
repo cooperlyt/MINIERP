@@ -15,37 +15,41 @@ import java.util.Set;
  * Created by cooper on 1/5/14.
  */
 @Entity
-@Table(name = "OVERLY_OUT", catalog = "MINI_ERP")
-public class OverlyOut extends StoreResCountEntity implements java.io.Serializable {
+@Table(name = "OWE_OUT", catalog = "MINI_ERP")
+public class OweOut extends StoreResCountEntity implements java.io.Serializable {
 
     private String id;
     private StoreRes storeRes;
     private BigDecimal count;
     private String description;
     private Dispatch dispatch;
+    private BigDecimal needConvertRate;
     private boolean add;
 
-    public OverlyOut() {
+    public OweOut() {
     }
 
-    public OverlyOut(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
+    public OweOut(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
         this.dispatch = dispatch;
         this.add = true;
     }
 
-    public OverlyOut(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
+    public OweOut(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
         this.dispatch = dispatch;
         this.add = true;
     }
 
-    public OverlyOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count, boolean add) {
+    public OweOut(Dispatch dispatch, StoreRes storeRes, BigDecimal count, String description,BigDecimal needConvertRate) {
+        this.dispatch = dispatch;
         this.storeRes = storeRes;
         this.count = count;
-        this.dispatch = dispatch;
-        this.add = add;
+        this.description = description;
+        this.needConvertRate = needConvertRate;
+        this.add = false;
     }
+
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -108,5 +112,15 @@ public class OverlyOut extends StoreResCountEntity implements java.io.Serializab
 
     public void setAdd(boolean add) {
         this.add = add;
+    }
+
+    @Column(name = "NEED_CONVERSION_RATE", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getNeedConvertRate() {
+        return needConvertRate;
+    }
+
+    public void setNeedConvertRate(BigDecimal needConvertRate) {
+        this.needConvertRate = needConvertRate;
     }
 }

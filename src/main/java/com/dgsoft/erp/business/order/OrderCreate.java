@@ -328,7 +328,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
     public BigDecimal getOrderTotalPrice() {
         BigDecimal result = new BigDecimal("0");
         for (OrderItem item : orderNeedItems) {
-            result = result.add(item.getTotalPrice());
+            result = result.add(item.getTotalMoney());
         }
         return result;
     }
@@ -392,7 +392,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
         if (verifyItem()) {
 
-            orderDispatch.init(orderNeedItems);
+            orderDispatch.init(needRes);
             dispatched = true;
             return "/business/startPrepare/erp/sale/CreateSaleOrderDispatch.xhtml";
 
@@ -572,7 +572,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
 
             if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                 boolean allCustomerSelf = true;
-                for (Dispatch dispatch : orderDispatch.getDispatchList(needRes)) {
+                for (Dispatch dispatch : orderDispatch.getDispatchList()) {
                     if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
                         allCustomerSelf = false;
                         break;
@@ -583,8 +583,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                     throw new ProcessCreatePrepareException("dispatch error");
                 }
             }
-            needRes.getDispatches().addAll(orderDispatch.getDispatchList(needRes));
-
+            orderDispatch.wire();
             needRes.setStatus(NeedRes.NeedResStatus.DISPATCHED);
         }
 
@@ -616,7 +615,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
                     }
                 }
                 if (!find) {
-                    resItemList.add(new TotalResItem(item.getRes(), item.getResUnit(), item.getMoney(), item.getRebate(), item.getUseUnitCount()));
+                    resItemList.add(new TotalResItem(item.getRes(), item.getResUnit(), item.getMoney(), item.getMoneyRebate(), item.getUseUnitCount()));
                 }
 
             }
@@ -670,7 +669,7 @@ public class OrderCreate extends ErpEntityHome<CustomerOrder> {
         public boolean isSameItem(OrderItem other) {
             return res.equals(other.getRes()) && resUnit.getId().equals(other.getResUnit().getId())
                     && (other.getMoney().compareTo(money) == 0) &&
-                    (other.getRebate().compareTo(rebate) == 0);
+                    (other.getMoneyRebate().compareTo(rebate) == 0);
         }
 
         public Res getRes() {

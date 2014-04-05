@@ -6,7 +6,6 @@ import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.Dispatch;
-import com.dgsoft.erp.model.DispatchItem;
 import com.dgsoft.erp.model.NeedRes;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -23,15 +22,6 @@ import java.util.Map;
  */
 @Name("orderDispatchTask")
 public class OrderDispatchTask extends OrderTaskHandle {
-
-    @In
-    private DictionaryWord dictionary;
-
-    @In(create = true)
-    private Map<String, String> messages;
-
-    @In
-    private ResHelper resHelper;
 
 
     @In(create = true)
@@ -51,7 +41,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
             }
         }
 
-        orderDispatch.init(needResHome.getInstance().getOrderItems());
+        orderDispatch.init(needResHome.getInstance());
 
     }
 
@@ -62,7 +52,7 @@ public class OrderDispatchTask extends OrderTaskHandle {
 
         if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
             boolean allCustomerSelf = true;
-            for (Dispatch dispatch : orderDispatch.getDispatchList(needResHome.getInstance())) {
+            for (Dispatch dispatch : orderDispatch.getDispatchList()) {
                 if (!dispatch.getDeliveryType().equals(Dispatch.DeliveryType.CUSTOMER_SELF)) {
                     allCustomerSelf = false;
                     break;
@@ -73,8 +63,8 @@ public class OrderDispatchTask extends OrderTaskHandle {
                 return "falil";
             }
         }
-        needResHome.getInstance().getDispatches().addAll(orderDispatch.getDispatchList(needResHome.getInstance()));
 
+        orderDispatch.wire();
         needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
 
         if (needResHome.update().equals("updated")) {
@@ -85,29 +75,29 @@ public class OrderDispatchTask extends OrderTaskHandle {
     }
 
 
-    public String getToastMessages() {
-        StringBuffer result = new StringBuffer();
-        result.append(messages.get("OrderCode") + ":" + orderHome.getInstance().getId() + "\n");
-
-        result.append(messages.get("Customer") + ":" + orderHome.getInstance().getCustomer().getName());
-        result.append("\n");
-        result.append(messages.get("order_field_reveiveContact") + ":" + needResHome.getInstance().getReceivePerson());
-        result.append(" ");
-        result.append(messages.get("order_field_reveiveTel") + " " + needResHome.getInstance().getReceiveTel());
-        result.append("\n");
-        result.append(messages.get("address") + ":" +  needResHome.getInstance().getAddress());
-        result.append("\n");
-
-        for (Dispatch dispatch : orderDispatch.getDispatchList(needResHome.getInstance())) {
-            result.append(dispatch.getStore().getName() + "\n");
-            for (DispatchItem item : dispatch.getDispatchItemList()) {
-                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()) );
-                result.append(item.getRes().getResUnitByInDefault().getName());
-            }
-        }
-
-        return result.toString();
-    }
+//    public String getToastMessages() {
+//        StringBuffer result = new StringBuffer();
+//        result.append(messages.get("OrderCode") + ":" + orderHome.getInstance().getId() + "\n");
+//
+//        result.append(messages.get("Customer") + ":" + orderHome.getInstance().getCustomer().getName());
+//        result.append("\n");
+//        result.append(messages.get("order_field_reveiveContact") + ":" + needResHome.getInstance().getReceivePerson());
+//        result.append(" ");
+//        result.append(messages.get("order_field_reveiveTel") + " " + needResHome.getInstance().getReceiveTel());
+//        result.append("\n");
+//        result.append(messages.get("address") + ":" +  needResHome.getInstance().getAddress());
+//        result.append("\n");
+//
+//        for (Dispatch dispatch : orderDispatch.getDispatchList(needResHome.getInstance())) {
+//            result.append(dispatch.getStore().getName() + "\n");
+//            for (DispatchItem item : dispatch.getDispatchItemList()) {
+//                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
+//                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()) );
+//                result.append(item.getRes().getResUnitByInDefault().getName());
+//            }
+//        }
+//
+//        return result.toString();
+//    }
 
 }

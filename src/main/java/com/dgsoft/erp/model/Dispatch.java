@@ -19,19 +19,27 @@ public class Dispatch implements java.io.Serializable {
 
     public enum DeliveryType {
 
-        FULL_CAR_SEND(true),
-        EXPRESS_SEND(true),
-        SEND_TO_DOOR(false),
-        CUSTOMER_SELF(false);
+        FULL_CAR_SEND(true,true),
+        EXPRESS_SEND(true,true),
+        SEND_TO_DOOR(false,true),
+        CUSTOMER_SELF(false,false),
+        STORE_ALLOCATION(false,false);
 
         private boolean haveFare;
+
+        private boolean ship;
 
         public boolean isHaveFare() {
             return haveFare;
         }
 
-        private DeliveryType(boolean haveFare){
+        public boolean isShip(){
+            return ship;
+        }
+
+        private DeliveryType(boolean haveFare,boolean ship){
             this.haveFare = haveFare;
+            this.ship = ship;
         }
 
     }
@@ -57,14 +65,15 @@ public class Dispatch implements java.io.Serializable {
     private TransCorp transCorp;
     private Cars car;
 
-    private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
-    private Set<OverlyOut> overlyOuts = new HashSet<OverlyOut>(0);
+    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
+    private Set<OweOut> oweOuts = new HashSet<OweOut>(0);
 
 	public Dispatch() {
 	}
 
-    public Dispatch(Store store){
+    public Dispatch(Store store, NeedRes needRes){
         this.store = store;
+        this.needRes = needRes;
     }
 
     public Dispatch(NeedRes needRes, Store store, DeliveryType deliveryType, String memo, boolean storeOut) {
@@ -250,43 +259,28 @@ public class Dispatch implements java.io.Serializable {
 		this.memo = memo;
 	}
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH, CascadeType.DETACH})
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch",orphanRemoval = true,cascade = {CascadeType.ALL})
-    public Set<DispatchItem> getDispatchItems() {
-        return dispatchItems;
+    public Set<OweOut> getOweOuts() {
+        return oweOuts;
     }
 
-    public void setDispatchItems(Set<DispatchItem> dispatchItems) {
-        this.dispatchItems = dispatchItems;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch",orphanRemoval = true,cascade = {CascadeType.ALL})
-    public Set<OverlyOut> getOverlyOuts() {
-        return overlyOuts;
-    }
-
-    public void setOverlyOuts(Set<OverlyOut> overlyOuts) {
-        this.overlyOuts = overlyOuts;
+    public void setOweOuts(Set<OweOut> oweOuts) {
+        this.oweOuts = oweOuts;
     }
 
     @Transient
-    public List<DispatchItem> getDispatchItemList(){
-        List<DispatchItem> result = new ArrayList<DispatchItem>(getDispatchItems());
-        Collections.sort(result,new Comparator<DispatchItem>() {
-            @Override
-            public int compare(DispatchItem o1, DispatchItem o2) {
-                return o1.getStoreRes().getId().compareTo(o2.getStoreRes().getId());
-            }
-        });
-        return result;
-    }
-
-    @Transient
-    public boolean haveSubOut(){
-        if (getOverlyOuts().isEmpty()){
-            return false;
-        }
-        for(OverlyOut overlyOut: getOverlyOuts()){
-            if (!overlyOut.isAdd()){
+    public boolean isHaveNoOutOweItem(){
+        for (OweOut oweOut: getOweOuts()){
+            if (!oweOut.isAdd()){
                 return true;
             }
         }

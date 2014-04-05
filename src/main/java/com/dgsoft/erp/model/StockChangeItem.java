@@ -1,7 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,6 +29,8 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
     private String memo;
 
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
+
+    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
 
     public StockChangeItem() {
     }
@@ -137,4 +138,12 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.memo = memo;
     }
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "stockChangeItem")
+    public Set<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(Set<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 }

@@ -1,8 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.DataFormat;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -21,6 +19,12 @@ public class OrderItem extends StoreResPriceEntity
         implements java.io.Serializable {
 
 
+    public enum OrderItemStatus{
+
+        CREATED, DISPATCHED, WAIT_PRICE, COMPLETED;
+
+    }
+
     private String id;
     private StoreRes storeRes;
     private ResUnit middleUnit;
@@ -28,12 +32,20 @@ public class OrderItem extends StoreResPriceEntity
     private NeedRes needRes;
     private BigDecimal count;
     private BigDecimal money;
-    private BigDecimal rebate;
     private BigDecimal middleMoney;
     private BigDecimal middleRate;
     private OrderItemRebate.ItemRebateModel middleMoneyCalcType;
     private boolean presentation;
     private String memo;
+
+    private Dispatch dispatch;
+    private OrderItemStatus status;
+    //private boolean storeOut;
+    //private StockChange stockChange;
+    private StockChangeItem stockChangeItem;
+    private boolean overlyOut;
+    private BigDecimal needConvertRate;
+    private BigDecimal totalMoney;
 
     public OrderItem() {
     }
@@ -46,30 +58,47 @@ public class OrderItem extends StoreResPriceEntity
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
-    public OrderItem(NeedRes needRes, StoreRes storeRes,
-                     ResUnit resUnit, BigDecimal count, BigDecimal money, BigDecimal rebate, String memo) {
+    //create Dispatch split item
+    public OrderItem(Dispatch dispatch,StoreRes storeRes, BigDecimal count, BigDecimal money,
+                     BigDecimal moneyRebate, ResUnit resUnit,boolean presentation,String memo,BigDecimal needConvertRate){
+        this.dispatch = dispatch;
+        this.needRes = dispatch.getNeedRes();
         this.storeRes = storeRes;
-        this.resUnit = resUnit;
         this.count = count;
         this.money = money;
-        this.rebate = rebate;
-        this.needRes = needRes;
+        this.resUnit = resUnit;
+        this.presentation = presentation;
         this.memo = memo;
+        this.status = OrderItemStatus.CREATED;
+        this.overlyOut = false;
+        this.needConvertRate = needConvertRate;
+
+        setMoneyRebate(moneyRebate);
     }
 
-    public OrderItem(NeedRes needRes, StoreRes storeRes) {
+    //create OverlyOut Item
+    public OrderItem(Dispatch dispatch, StoreRes storeRes) {
+        this.dispatch = dispatch;
+        this.needRes = dispatch.getNeedRes();
         this.storeRes = storeRes;
-        this.needRes = needRes;
+        status = OrderItemStatus.DISPATCHED;
+        overlyOut = true;
+        needConvertRate = storeRes.getFloatConversionRate();
+        presentation = false;
+        resUnit = storeRes.getRes().getResUnitByOutDefault();
     }
 
-    public OrderItem(StoreRes storeRes, ResUnit resUnit,
-                     BigDecimal count, BigDecimal money, BigDecimal rebate) {
+    public OrderItem(StoreRes storeRes,BigDecimal count, boolean presentation,
+                     OrderItemStatus status,boolean overlyOut, String memo,BigDecimal needConvertRate){
         this.storeRes = storeRes;
-        this.resUnit = resUnit;
         this.count = count;
-        this.money = money;
-        this.rebate = rebate;
+        this.presentation = presentation;
+        this.memo = memo;
+        this.status = status;
+        this.overlyOut = overlyOut;
+        this.needConvertRate = needConvertRate;
     }
+
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -138,24 +167,13 @@ public class OrderItem extends StoreResPriceEntity
         this.count = count;
     }
 
-    @Column(name = "MONEY", nullable = false, scale = 3)
-    @NotNull
+    @Column(name = "MONEY", nullable = true, scale = 3)
     public BigDecimal getMoney() {
         return this.money;
     }
 
     public void setMoney(BigDecimal money) {
         this.money = money;
-    }
-
-    @Column(name = "REBATE", nullable = false, scale = 4)
-    @NotNull
-    public BigDecimal getRebate() {
-        return this.rebate;
-    }
-
-    public void setRebate(BigDecimal rebate) {
-        this.rebate = rebate;
     }
 
     @Column(name = "MIDDLE_MONEY", nullable = true, scale = 3)
@@ -205,17 +223,68 @@ public class OrderItem extends StoreResPriceEntity
         this.presentation = presentation;
     }
 
-    @Transient
-    public OrderItem cloneNew() {
-        OrderItem result;
-        result = new OrderItem(getNeedRes(), getStoreRes(), getResUnit(), getCount(), getMoney(), getRebate(), getMemo());
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DISPATCH", nullable = true)
+    public Dispatch getDispatch() {
+        return dispatch;
+    }
 
-        return result;
+    public void setDispatch(Dispatch dispatch) {
+        this.dispatch = dispatch;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", nullable = false, length = 10)
+    @NotNull
+    public OrderItemStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderItemStatus status) {
+        this.status = status;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STOCK_CHANGE_ITEM", nullable = true)
+    public StockChangeItem getStockChangeItem() {
+        return stockChangeItem;
+    }
+
+    public void setStockChangeItem(StockChangeItem stockChangeItem) {
+        this.stockChangeItem = stockChangeItem;
+    }
+
+    @Column(name = "OVERLAY_OUT", nullable = false)
+    public boolean isOverlyOut() {
+        return overlyOut;
+    }
+
+    public void setOverlyOut(boolean overlyOut) {
+        this.overlyOut = overlyOut;
+    }
+
+    @Column(name = "NEED_CONVERSION_RATE", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getNeedConvertRate() {
+        return needConvertRate;
+    }
+
+    public void setNeedConvertRate(BigDecimal needConvertRate) {
+        this.needConvertRate = needConvertRate;
+    }
+
+    @Column(name = "TOTAL_MONEY", nullable = true, scale = 3)
+    public BigDecimal getTotalMoney() {
+        return totalMoney;
+    }
+
+    public void setTotalMoney(BigDecimal totalMoney) {
+        this.totalMoney = totalMoney;
     }
 
     @Transient
-    public BigDecimal getMiddleUnitCount(){
-        if ((getMiddleUnit() != null) && (getCount() != null)){
+    public BigDecimal getMiddleUnitCount() {
+        if ((getMiddleUnit() != null) && (getCount() != null)) {
             return getCountByResUnit(getMiddleUnit());
         }
         return null;
@@ -232,7 +301,7 @@ public class OrderItem extends StoreResPriceEntity
                 if (getMiddleUnit() != null)
                     return getCountByResUnit(getMiddleUnit()).multiply(getMiddleRate());
             } else {
-                return getTotalPrice().multiply(
+                return getTotalMoney().multiply(
                         getMiddleRate().divide(
                                 new BigDecimal("100"), Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(), BigDecimal.ROUND_HALF_UP));
             }

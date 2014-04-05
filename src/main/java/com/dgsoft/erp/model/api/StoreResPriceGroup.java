@@ -59,13 +59,14 @@ public class StoreResPriceGroup extends ArrayList<StoreResPrice> {
                 return true;
             }
         }
-        return super.add(new StoreResPrice(e.getMoney(), e.getResUnit(), e.getRebate(), e.getCount(), e.getStoreRes(),e.isPresentation()));
+
+        return super.add(new StoreResPrice(e.getMoney(), e.getResUnit(), e.getTotalMoney(), e.getCount(), e.getStoreRes(),e.isPresentation()));
     }
 
     public BigDecimal getTotalPrice() {
         BigDecimal result = BigDecimal.ZERO;
         for (StoreResPrice re : this) {
-            result = result.add(re.getTotalPrice());
+            result = result.add(re.getTotalMoney());
         }
         return result;
     }

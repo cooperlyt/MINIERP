@@ -5,8 +5,6 @@ import com.dgsoft.erp.action.InventoryHome;
 import com.dgsoft.erp.model.PrepareStockChange;
 import com.dgsoft.erp.model.Stock;
 import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.api.ResCount;
-import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Observer;

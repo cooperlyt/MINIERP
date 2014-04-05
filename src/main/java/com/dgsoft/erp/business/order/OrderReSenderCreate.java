@@ -49,16 +49,13 @@ public class OrderReSenderCreate {
     private NeedResHome needResHome;
 
     @In(create = true)
-    private OrderItemSplit orderItemSplit;
-
-    @In(create = true)
     private OrderDispatch orderDispatch;
 
     private boolean dispatched = false;
 
     public String beginDispatch() {
         wireReSenderItem();
-        orderDispatch.init(needResHome.getInstance().getOrderItems());
+        orderDispatch.init(needResHome.getInstance());
         dispatched = true;
         return "/business/taskOperator/erp/sale/OrderChangeDispatch.xhtml";
     }
@@ -66,34 +63,35 @@ public class OrderReSenderCreate {
     private void wireReSenderItem(){
         needResHome.getInstance().getOrderItems().clear();
         needResHome.getInstance().getOrderItems().addAll(reSendOrderItems);
+        for (OrderItem item: reSendOrderItems){
+            item.setStatus(OrderItem.OrderItemStatus.CREATED);
+            item.setDispatch(null);
+        }
+    }
+
+    public boolean isReady(){
+
+      return !(dispatched && !orderDispatch.isDispatchComplete());
+
     }
 
     public NeedRes getReSenderNeedRes() {
         if (dispatched){
-            needResHome.getInstance().getDispatches().addAll(orderDispatch.getDispatchList(needResHome.getInstance()));
+            orderDispatch.wire();
             needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
+
         }else{
             wireReSenderItem();
         }
         return needResHome.getInstance();
     }
 
-
-    public List<OrderItem> getReSendOrderItems() {
-        return reSendOrderItems;
-    }
-
     public BigDecimal getReSenderTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : reSendOrderItems) {
-            result = result.add(item.getTotalPrice());
+            result = result.add(item.getTotalMoney());
         }
         return result;
-    }
-
-
-    public void beginSplitOrderItem() {
-        orderItemSplit.beginSplit(reSendOrderItems, selectOrderItem);
     }
 
     public void subItemOperTypeChangeListener() {

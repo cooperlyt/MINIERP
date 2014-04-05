@@ -24,9 +24,4 @@ public class DispatchHome extends ErpEntityHome<Dispatch> {
                 getInstance().getNeedRes().getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.COMPLETE_PAY);
     }
 
-    public boolean isHaveOverlyOut(){
-        return !getInstance().getOverlyOuts().isEmpty();
-    }
-
-
 }

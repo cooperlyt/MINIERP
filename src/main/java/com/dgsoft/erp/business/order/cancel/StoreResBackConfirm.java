@@ -27,7 +27,7 @@ public class StoreResBackConfirm extends CancelOrderTaskHandle {
     public BigDecimal getResTotalMoney(){
         BigDecimal result = BigDecimal.ZERO;
         for (BackItem item: confirmBackItems){
-            result = result.add(item.getTotalPrice());
+            result = result.add(item.getTotalMoney());
         }
         return result;
     }

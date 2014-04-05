@@ -125,6 +125,16 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
         this.resUnit = resUnit;
     }
 
+    @Override
+    public void setTotalMoney(BigDecimal money) {
+
+    }
+
+    @Override
+    public BigDecimal getTotalMoney() {
+        return null;
+    }
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "QUOTED", nullable = false)
     @NotNull
@@ -134,17 +144,6 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
 
     public void setQuotedPrice(QuotedPrice quotedPrice) {
         this.quotedPrice = quotedPrice;
-    }
-
-    @Override
-    @Transient
-    public void setRebate(BigDecimal rebate) {
-    }
-
-    @Override
-    @Transient
-    public BigDecimal getRebate() {
-        return new BigDecimal("100");
     }
 
     @Override

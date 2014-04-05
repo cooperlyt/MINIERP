@@ -210,7 +210,7 @@
 
 <br/>
 
-<rich:panel rendered="#{not empty orderChange.addOverlyOutItems}">
+<rich:panel rendered="#{not empty orderChange.overlyItems}">
 
 
     <f:facet name="header">
@@ -218,7 +218,7 @@
     </f:facet>
 
 
-    <rich:dataTable style="width: 100%" value="#{orderChange.addOverlyOutItems}" var="_overly" id="overlyItems"
+    <rich:dataTable style="width: 100%" value="#{orderChange.overlyItems}" var="_overly" id="overlyItems"
                     noDataLabel="#{messages.dispatch_overly_empty}">
 
 
@@ -230,7 +230,7 @@
                 <ui:param name="storeRes" value="#{_overly.storeRes}"/>
             </ui:include>
             <f:facet name="footer">
-                #{messages.recordTotal}#{orderChange.addOverlyOutItems.size}#{messages.item};
+                #{messages.recordTotal}#{orderChange.overlyItems.size}#{messages.item};
             </f:facet>
         </rich:column>
 
@@ -258,7 +258,7 @@
     </rich:dataTable>
 </rich:panel>
 
-<rich:panel rendered="#{not empty orderChange.subOverlyOutItems}">
+<rich:panel rendered="#{not empty orderChange.oweItems}">
 
 
     <f:facet name="header">
@@ -266,7 +266,7 @@
     </f:facet>
 
 
-    <rich:dataTable style="width: 100%" value="#{orderChange.subOverlyOutItems}" var="_overly">
+    <rich:dataTable style="width: 100%" value="#{orderChange.oweItems}" var="_overly">
 
 
         <rich:column>
@@ -277,7 +277,7 @@
                 <ui:param name="storeRes" value="#{_overly.storeRes}"/>
             </ui:include>
             <f:facet name="footer">
-                #{messages.recordTotal}#{orderChange.subOverlyOutItems.size}#{messages.item};
+                #{messages.recordTotal}#{orderChange.oweItems.size}#{messages.item};
             </f:facet>
         </rich:column>
 

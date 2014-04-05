@@ -37,8 +37,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
-    private Set<DispatchItem> dispatchItems = new HashSet<DispatchItem>(0);
-    private Set<OverlyOut> overlyOuts = new HashSet<OverlyOut>(0);
+    private Set<OweOut> oweOuts = new HashSet<OweOut>(0);
 
     private Set<Stock> stocks = new HashSet<Stock>(0);
     private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
@@ -193,21 +192,12 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<OverlyOut> getOverlyOuts() {
-        return overlyOuts;
+    public Set<OweOut> getOweOuts() {
+        return oweOuts;
     }
 
-    public void setOverlyOuts(Set<OverlyOut> overlyOuts) {
-        this.overlyOuts = overlyOuts;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<DispatchItem> getDispatchItems() {
-        return dispatchItems;
-    }
-
-    public void setDispatchItems(Set<DispatchItem> dispatchItems) {
-        this.dispatchItems = dispatchItems;
+    public void setOweOuts(Set<OweOut> oweOuts) {
+        this.oweOuts = oweOuts;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
@@ -253,6 +243,16 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     public void setPriceItems(Set<PriceItem> priceItems) {
         this.priceItems = priceItems;
+    }
+
+    @Transient
+    public Stock getStock(Store store){
+        for (Stock stock: getStocks()){
+            if (stock.getStore().getId().equals(store.getId())){
+                 return stock;
+            }
+        }
+        return null;
     }
 
     @Transient

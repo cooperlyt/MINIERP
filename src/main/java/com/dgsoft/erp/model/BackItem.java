@@ -136,13 +136,14 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
 
     @Override
     @Transient
-    public void setRebate(BigDecimal rebate) {
+    public void setTotalMoney(BigDecimal money) {
+        //TODO addDB
     }
 
     @Override
     @Transient
-    public BigDecimal getRebate() {
-        return new BigDecimal("100");
+    public BigDecimal getTotalMoney() {
+        return null;
     }
 
     @Override

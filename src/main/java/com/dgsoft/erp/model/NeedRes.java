@@ -207,7 +207,7 @@ public class NeedRes implements java.io.Serializable {
     public List<OrderItem> getNoZeroItemList(){
         List<OrderItem> result = new ArrayList<OrderItem>();
         for (OrderItem item: getOrderItemList()){
-            if (item.getTotalPrice().compareTo(BigDecimal.ZERO) > 0){
+            if (item.getTotalMoney().compareTo(BigDecimal.ZERO) > 0){
                 result.add(item);
             }
         }

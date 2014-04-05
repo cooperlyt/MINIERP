@@ -8,6 +8,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -24,18 +25,15 @@ public class OrderChange extends OrderTaskHandle {
     @In(create = true)
     private OrderReSenderCreate orderReSenderCreate;
 
-    @DataModel(value = "newOrderItems")
-    private List<OrderItem> newOrderItems;
+//    @DataModel(value = "newOrderItems")
+//    private List<OrderItem> newOrderItems;
+//
+//    @DataModelSelection
+//    private OrderItem selectOrderItem;
 
-    @DataModelSelection
-    private OrderItem selectOrderItem;
+    private List<OrderItem> overlyItems;
 
-    @In(create = true)
-    private OrderItemSplit orderItemSplit;
-
-    private List<OverlyOut> addOverlyOutItems;
-
-    private List<OverlyOut> subOverlyOutItems;
+    private List<OrderItem> oweItems;
 
     private BigDecimal orderTotalMoney;
 
@@ -59,32 +57,17 @@ public class OrderChange extends OrderTaskHandle {
 
     public BigDecimal getNewItemTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem item : newOrderItems) {
-            result = result.add(item.getTotalPrice());
+        for (OrderItem item : oweItems) {
+            result = result.add(item.getTotalMoney());
         }
         return result;
     }
 
     public BigDecimal getOrderResTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-
-        for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
-            if (!needRes.getId().equals(orderHome.getLastNeedRes().getId())) {
-                for (OrderItem orderItem : needRes.getOrderItems()) {
-                    result = result.add(orderItem.getTotalPrice());
-                }
-            }
-        }
-
-
-        for (OrderItem item : newOrderItems) {
-            result = result.add(item.getTotalPrice());
-        }
-
+        orderHome.calcTotalResMoney();
+        BigDecimal result = orderHome.getInstance().getResMoney();
         if (reSend) {
-            for (OrderItem item : orderReSenderCreate.getReSendOrderItems()) {
-                result = result.add(item.getTotalPrice());
-            }
+            result = result.add(getNewItemTotalMoney());
         }
         return result;
     }
@@ -135,160 +118,53 @@ public class OrderChange extends OrderTaskHandle {
         totalRebate = orderTotalMoney.divide(getOrderResTotalMoney(), 4, BigDecimal.ROUND_UP).multiply(new BigDecimal("100"));
     }
 
-    public void beginSplitOrderItem() {
-        orderItemSplit.beginSplit(newOrderItems, selectOrderItem);
+    public List<OrderItem> getOweItems() {
+        return oweItems;
     }
 
-    public List<OverlyOut> getSubOverlyOutItems() {
-        return subOverlyOutItems;
-    }
-
-    public void setSubOverlyOutItems(List<OverlyOut> subOverlyOutItems) {
-        this.subOverlyOutItems = subOverlyOutItems;
-    }
-
-    public List<OverlyOut> getAddOverlyOutItems() {
-        return addOverlyOutItems;
-    }
-
-    public void setAddOverlyOutItems(List<OverlyOut> addOverlyOutItems) {
-        this.addOverlyOutItems = addOverlyOutItems;
+    public List<OrderItem> getOverlyItems() {
+        return overlyItems;
     }
 
     @Override
     protected void initOrderTask() {
 
-        //----- match new OrderItems
-        StoreResCountTotalGroup storeOutItems = new StoreResCountTotalGroup();
-        newOrderItems = new ArrayList<OrderItem>();
-
-        //List<StoreRes> matchItems = new ArrayList<StoreRes>();
-        for (Dispatch dispatch : orderHome.getLastNeedRes().getDispatches()) {
-            storeOutItems.put(dispatch.getStockChange().getStockChangeItemList());
-        }
-
-        for (StoreResCount item : storeOutItems.getStoreResCountList()) {
-            OrderItem oldOrderItem = orderHome.getFirstResOrderItem(item.getStoreRes());
-            if (oldOrderItem != null) {
-                newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), item.getStoreRes(), oldOrderItem.getResUnit(),
-                        item.getMasterCount(), oldOrderItem.getMoney(), oldOrderItem.getRebate(), ""));
-            } else {
-                newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), item.getStoreRes(), item.getStoreRes().getRes().getResUnitByOutDefault(),
-                        item.getMasterCount(), BigDecimal.ZERO, new BigDecimal("100"), ""));
-            }
-        }
+        overlyItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.WAIT_PRICE));
 
 
-//        List<OrderItem> oldMatchOrderItems = new ArrayList<OrderItem>();
-//        List<OrderItem> oldOrderItem = new ArrayList<OrderItem>(orderHome.getLastNeedRes().getOrderItems());
-//
-//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeChangeItems.entrySet()) {
-//            oldMatchOrderItems.clear();
-//            StoreResCountEntity count = new StoreResCount(entry.getKey(),BigDecimal.ZERO);
-//            for (OrderItem item : oldOrderItem) {
-//
-//                    if (item.getStoreRes().equals(entry.getKey())){
-//                        count.add(item);
-//                        oldMatchOrderItems.add(item);
-//                    }
-//
-//            }
-//            if (count.getMasterCount().compareTo(entry.getValue().getMasterCount()) == 0) {
-//                matchItems.add(entry.getKey());
-//
-//                for (OrderItem oldItem : oldMatchOrderItems) {
-//                    newOrderItems.add(oldItem.cloneNew());
-//                }
-//                oldOrderItem.removeAll(oldMatchOrderItems);
-//            }
-//
-//
-//        }
-//
-//        for (StoreRes storeRes : matchItems) {
-//            storeChangeItems.remove(storeRes);
-//        }
-//
-//        matchItems.clear();
-//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeChangeItems.entrySet()) {
-//
-//            OrderItem matchItem = null;
-//            int orderContainCount = 0;
-//            for (OrderItem item : oldOrderItem) {
-//
-//                    if (entry.getKey().equals(item.getStoreRes())) {
-//                        orderContainCount++;
-//                        if (orderContainCount == 1) {
-//                            matchItem = item;
-//                        } else {
-//                            matchItem = null;
-//                            break;
-//                        }
-//                    }
-//
-//
-//            }
-//            if (matchItem != null) {
-//                matchItems.add(matchItem.getStoreRes());
-//                OrderItem newItem = matchItem.cloneNew();
-//                newItem.setCount(entry.getValue().getMasterCount());
-//                newOrderItems.add(newItem);
-//            }
-//            oldOrderItem.remove(matchItem);
-//        }
-//
-//        for (StoreRes storeRes : matchItems) {
-//            storeChangeItems.remove(storeRes);
-//        }
 
-//        for (Map.Entry<StoreRes, StoreResCountEntity> entry : storeChangeItems.entrySet()) {
-//            newOrderItems.add(new OrderItem(orderHome.getLastNeedRes(), entry.getKey(), entry.getKey().getRes().getResUnitByOutDefault(),
-//                    entry.getValue().getMasterCount(), BigDecimal.ZERO, new BigDecimal("100"),""));
-//        }
-
-
-        //-----------------------
-
-        addOverlyOutItems = new ArrayList<OverlyOut>();
-        subOverlyOutItems = new ArrayList<OverlyOut>();
-
-        for (Dispatch dispatch : orderHome.getLastNeedRes().getDispatches()) {
-            for (OverlyOut overlyOut : dispatch.getOverlyOuts()) {
-                if (overlyOut.isAdd()) {
-                    addOverlyOutItems.add(overlyOut);
-                } else {
-                    subOverlyOutItems.add(overlyOut);
+        oweItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED));
+        for (OweOut oweOut: orderHome.getNoAddOweItems()){
+            OrderItem matchItem = null;
+            for(OrderItem orderItem: orderHome.getOrderItemByStatus(
+                    EnumSet.of(OrderItem.OrderItemStatus.CREATED,
+                            OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))){
+                if (orderItem.getStoreRes().equals(oweOut.getStoreRes())){
+                    matchItem = orderItem;
+                    break;
                 }
             }
+
+            OrderItem newItem = new OrderItem(oweOut.getStoreRes(),oweOut.getCount(),false,
+                    OrderItem.OrderItemStatus.CREATED,false,oweOut.getDescription(),oweOut.getNeedConvertRate());
+
+            if (matchItem != null){
+                newItem.setUseUnit(matchItem.getResUnit());
+                newItem.setMoney(matchItem.getMoney());
+                newItem.setMoneyRebate(newItem.getMoneyRebate());
+            }
+            if (newItem.getUseUnit() == null){
+                newItem.setUseUnit(newItem.getStoreRes().getRes().getResUnitByOutDefault());
+            }
+
+            oweItems.add(newItem);
         }
 
         //------------------------
 
         reSend = true;
-        List<OrderItem> reSenderOrderItems = new ArrayList<OrderItem>();
 
-        for (OverlyOut overlyOut : subOverlyOutItems) {
-            OrderItem oldOrderItem = orderHome.getFirstResOrderItem(overlyOut.getStoreRes());
-
-
-            OrderItem newItem = new OrderItem();
-            newItem.setStoreRes(overlyOut.getStoreRes());
-
-
-            if (oldOrderItem != null) {
-                newItem.setResUnit(oldOrderItem.getResUnit());
-                newItem.setRebate(oldOrderItem.getRebate());
-                newItem.setMoney(oldOrderItem.getMoney());
-            } else {
-                newItem.setResUnit(overlyOut.getStoreRes().getRes().getResUnitByOutDefault());
-                newItem.setRebate(new BigDecimal("100"));
-                newItem.setMoney(BigDecimal.ZERO);
-            }
-            newItem.setCount(overlyOut.getMasterCount());
-            reSenderOrderItems.add(newItem);
-        }
-
-        orderReSenderCreate.init(reSenderOrderItems);
+        orderReSenderCreate.init(oweItems);
 
         //-----------------------
 
@@ -301,21 +177,36 @@ public class OrderChange extends OrderTaskHandle {
     @Override
     protected String completeOrderTask() {
 
-        orderHome.getLastNeedRes().getOrderItems().clear();
-        orderHome.getLastNeedRes().getOrderItems().addAll(newOrderItems);
+
 
         calcByOrderTotalMoney();
         orderHome.getInstance().setTotalRebateMoney(totalRebateMoney);
-        //orderHome.getInstance().setTotalRebate(orderRebate);
         orderHome.getInstance().setMoney(orderTotalMoney);
+        orderHome.getInstance().setResMoney(getOrderResTotalMoney());
 
-
-        if (!reSend || subOverlyOutItems.isEmpty()) {
+        if (!reSend || oweItems.isEmpty()) {
             orderHome.getInstance().setAllStoreOut(true);
         } else {
+            if (!orderReSenderCreate.isReady()){
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"dispatchNotComplete");
+                return null;
+            }
+
+
             orderHome.getInstance().getNeedReses().add(orderReSenderCreate.getReSenderNeedRes());
             orderHome.getInstance().setAllStoreOut(false);
+
         }
+
+
+        for (OrderItem item: overlyItems){
+            item.setStatus(OrderItem.OrderItemStatus.COMPLETED);
+        }
+
+        for (OweOut oweOut: orderHome.getNoAddOweItems()){
+            oweOut.setAdd(true);
+        }
+
 
         if ("updated".equals(orderHome.update())) {
             return "taskComplete";

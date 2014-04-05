@@ -84,7 +84,7 @@ public class StoreResBackCreate {
     public BigDecimal getResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (BackItem item : backItems) {
-            result = result.add(item.getInputTotalPrice());
+            result = result.add(item.getTotalMoney());
         }
         return result;
     }

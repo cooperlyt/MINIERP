@@ -6,7 +6,6 @@ import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.erp.action.OrderBackHome;
 import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -268,7 +267,7 @@ public class CancelOrderCreate {
         BigDecimal result = BigDecimal.ZERO;
         for (Map.Entry<BackItem, BatchOperData<StoreResCount>> item : backOrderItems.entrySet()) {
             if (item.getValue().isSelected()) {
-                result = result.add(item.getKey().getTotalPrice());
+                result = result.add(item.getKey().getTotalMoney());
             }
 
         }

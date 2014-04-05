@@ -1,10 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.DataFormat;
-import com.dgsoft.erp.action.ResHelper;
-import com.dgsoft.erp.model.api.BatchOperEntity;
-import com.dgsoft.erp.model.api.ResCount;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResPriceGroup;
 
@@ -50,6 +46,7 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal totalCost;
     private BigDecimal middleRate;
     private BigDecimal money;
+    private BigDecimal resMoney;
     private BigDecimal middleTotal;
 
 
@@ -223,6 +220,15 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setProfit(BigDecimal profit) {
         this.profit = profit;
+    }
+
+    @Column(name="RES_MONEY",nullable = false,scale = 3)
+    public BigDecimal getResMoney() {
+        return resMoney;
+    }
+
+    public void setResMoney(BigDecimal resMoney) {
+        this.resMoney = resMoney;
     }
 
     @Column(name = "MEMO", length = 200)

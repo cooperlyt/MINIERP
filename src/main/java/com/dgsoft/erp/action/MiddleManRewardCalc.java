@@ -662,7 +662,7 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
         public BigDecimal getTotalPrice() {
             BigDecimal result = BigDecimal.ZERO;
             for (OrderItem item : getData().getOrderItemList()) {
-                result = result.add(item.getTotalPrice());
+                result = result.add(item.getTotalMoney());
             }
             return result;
         }

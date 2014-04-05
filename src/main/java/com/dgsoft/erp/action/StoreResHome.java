@@ -143,8 +143,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
         boolean result = getInstance().getStockChangeItems().isEmpty() &&
                 getInstance().getAllocationReses().isEmpty() &&
                 getInstance().getOrderItems().isEmpty() &&
-                getInstance().getDispatchItems().isEmpty() &&
-                getInstance().getOverlyOuts().isEmpty() &&
+                getInstance().getOweOuts().isEmpty() &&
                 getInstance().getStocks().isEmpty() &&
                 getInstance().getPrepareStockChanges().isEmpty();
         if (!result)

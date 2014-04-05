@@ -95,13 +95,12 @@
         <class>com.dgsoft.erp.model.Cars</class>
 
         <class>com.dgsoft.erp.model.Dispatch</class>
-        <class>com.dgsoft.erp.model.DispatchItem</class>
         <class>com.dgsoft.erp.model.OrderItem</class>
         <class>com.dgsoft.erp.model.NeedRes</class>
         <class>com.dgsoft.erp.model.OrderFee</class>
         <class>com.dgsoft.erp.model.PrepareStockChange</class>
         <class>com.dgsoft.erp.model.CustomerContact</class>
-        <class>com.dgsoft.erp.model.OverlyOut</class>
+        <class>com.dgsoft.erp.model.OweOut</class>
         <class>com.dgsoft.erp.model.ProductGroup</class>
         <class>com.dgsoft.erp.model.Factory</class>
 

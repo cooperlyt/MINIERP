@@ -33,7 +33,7 @@
             </h:selectOneMenu>
         </s:decorate>
 
-        <a:outputPanel rendered="#{(not empty orderDispatch.selectOrderItem)}">
+        <a:outputPanel rendered="#{(not empty orderDispatch.operOrderItem)}">
             <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
                 <ui:param name="inputValue" value="#{orderDispatch.operCount}"/>
                 <ui:param name="countLableStyleClass" value="small_name"/>
@@ -156,7 +156,7 @@
                          data="#{actionExecuteState.lastState}"
                          oncomplete="if (event.data == 'success')#{rich:component('singleDispatchPanel')}.hide();"
                          render="singleDispatchPanel_inputs,orderStoreResOrderItems,dispatchItems,#{render}"
-                         action="#{orderDispatch.dispatchAllStoreRes}">
+                         action="#{orderDispatch.dispatchAction}">
             <a:attachQueue requestDelay="0"/>
 
         </a:commandButton>
