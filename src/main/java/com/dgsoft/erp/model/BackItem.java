@@ -157,6 +157,18 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     public void setPresentation(boolean presentation) {
     }
 
+    @Override
+    @Transient
+    public BigDecimal getRebate() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public void setRebate(BigDecimal rebate) {
+
+    }
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "BACK_ORDER", nullable = false)
     @NotNull

@@ -30,16 +30,16 @@ public class OrderEarnestReceive extends FinanceReceivables{
 
     @Override
     public BigDecimal getShortageMoney(){
-        return  orderHome.getInstance().getEarnest().subtract(getTotalReveiveMoney());
+        return  orderHome.getInstance().getEarnest().subtract(orderHome.getInstance().getReceiveMoney());
     }
 
     @Override
     protected String completeOrderTask(){
-        if (getTotalReveiveMoney().compareTo(orderHome.getInstance().getEarnest()) < 0){
+        if (getShortageMoney().compareTo(BigDecimal.ZERO) > 0){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_earnest_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getEarnest()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getTotalReveiveMoney()),
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
 
             return null;

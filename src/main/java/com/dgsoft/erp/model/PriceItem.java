@@ -126,11 +126,13 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
     }
 
     @Override
+    @Transient
     public void setTotalMoney(BigDecimal money) {
-
+      //TODO
     }
 
     @Override
+    @Transient
     public BigDecimal getTotalMoney() {
         return null;
     }
@@ -155,5 +157,17 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
     @Override
     @Transient
     public void setPresentation(boolean presentation) {
+    }
+
+    @Override
+    @Transient
+    public BigDecimal getRebate() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public void setRebate(BigDecimal rebate) {
+
     }
 }

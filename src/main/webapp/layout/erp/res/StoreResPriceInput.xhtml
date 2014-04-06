@@ -52,7 +52,7 @@
                         rendered="#{not (inputValue.res.unitGroup.type eq 'FIX_CONVERT')}">
                     <h:outputText value="#{' / '}"/>
                     <a:region id="priceUnitSelectRegion">
-                        <h:selectOneMenu value="#{inputValue.resUnit}" style="width: 80px"
+                        <h:selectOneMenu value="#{inputValue.useUnit}" style="width: 80px"
                                          required="true">
                             <s:selectItems value="#{inputValue.res.unitGroup.resUnitList}" var="_unit"
                                            label="#{_unit.name}"/>
@@ -64,21 +64,27 @@
                     </a:region>
                 </s:span>
 
-                <ui:insert name="priceExtend"/>
-
                 <s:span styleClass="value">
-                    <h:inputText id="itemTotalPriceInput" size="17" value="#{inputValue.inputTotalPrice}"
-                                 label="#{messages.orderItemPrice}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                         groupingUsed="false"/>
-                        <f:validateDoubleRange minimum="0"/>
+                    #{messages.orderItemPriceRebate}%
+
+                    <h:inputText id="itemPriceRebateInput" required="true" label="#{messages.rebate}" size="7"
+                                 value="#{inputValue.inputRebate}">
+                        <f:convertNumber pattern="#0.##"/>
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
                         <rich:validator/>
                         <a:ajax event="blur" execute="@this,priceUnitSelectRegion" render="priceInputFields,countInputArea,#{priceChangeRender}">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:inputText>
-                    <rich:message for="itemTotalPriceInput" styleClass="message-icon"
+                    <rich:message for="itemPriceRebateInput" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
+                </s:span>
+
+                <s:span styleClass="value">
+                    <h:outputText id="itemTotalPriceInput" value="#{inputValue.totalMoney}" style="font-weight: bold">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+
                 </s:span>
 
 

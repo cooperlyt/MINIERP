@@ -24,26 +24,6 @@ public abstract class OrderTaskHandle extends TaskHandle {
         return "taskComplete";
     }
 
-
-    public BigDecimal getTotalReveiveMoney() {
-        return orderHome.getTotalReveiveMoney();
-//        BigDecimal result = BigDecimal.ZERO;
-//        for (AccountOper oper : orderHome.getInstance().getAccountOpers()) {
-//            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST) ||
-//                    oper.getOperType().equals(AccountOper.AccountOperType.ORDER_PAY))
-//            result = result.add(oper.getOperMoney());
-//        }
-//        return result;
-    }
-
-    public BigDecimal getShortageMoney(){
-        return getOrderShortageMoney();
-    }
-
-    public BigDecimal getOrderShortageMoney(){
-        return orderHome.getInstance().getMoney().subtract(getTotalReveiveMoney());
-    }
-
     @Override
     protected final String completeTask() {
 

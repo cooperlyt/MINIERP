@@ -28,38 +28,24 @@ public class OrderMoneyReceive extends FinanceReceivables {
         return AccountOper.AccountOperType.ORDER_PAY;
     }
 
-    @Override
-    public BigDecimal getShortageMoney() {
-        BigDecimal result = orderHome.getInstance().getMoney().subtract(getTotalReveiveMoney());
-        return result;
-    }
 
     @Override
     protected String completeOrderTask() {
-        if (getTotalReveiveMoney().compareTo(orderHome.getInstance().getMoney()) < 0) {
+        if (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0) {
 
 
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_money_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getTotalReveiveMoney()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getShortageMoney()));
 
             return null;
 
         }
 
         orderHome.getInstance().setMoneyComplete(true);
-        BigDecimal receiveMoney = BigDecimal.ZERO;
-        BigDecimal payMoney = BigDecimal.ZERO;
-        for (AccountOper accountOper: orderHome.getInstance().getAccountOpers()){
-            if (accountOper.getOperType().isAdd()){
-                receiveMoney = receiveMoney.add(accountOper.getOperMoney());
-            }else{
-                payMoney = payMoney.add(accountOper.getOperMoney());
-            }
-        }
-        orderHome.getInstance().setArrears(payMoney.compareTo(receiveMoney) > 0);
+
         if (orderHome.update().equals("updated")){
             if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)){
                 needResHome.setId(orderHome.getMasterNeedRes().getId());

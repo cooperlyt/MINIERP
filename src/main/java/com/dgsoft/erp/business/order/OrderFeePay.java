@@ -2,6 +2,9 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.model.MiddleMoneyPay;
 import com.dgsoft.erp.model.OrderFee;
+import com.dgsoft.erp.model.api.PayType;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.international.StatusMessage;
@@ -23,6 +26,19 @@ public class OrderFeePay extends OrderTaskHandle {
 
     private List<OrderFee> payCompleteOrderFeeList;
 
+    @Factory(value = "feePayTypes", scope = ScopeType.CONVERSATION)
+    public PayType[] getFeePayTypes() {
+        return new PayType[]{PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK};
+    }
+
+    public enum ItemMiddleMoneyCalcType {
+        NOT_CALC, ITEM_FIX, ITEM_RATE, CROSS_CALC;
+    }
+
+    @Factory(value = "allItemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
+    public ItemMiddleMoneyCalcType[] getAllItemMiddleMoneyCalcTypes() {
+        return ItemMiddleMoneyCalcType.values();
+    }
 
     public List<OrderFee> getNoPayOrderFeeList() {
         return noPayOrderFeeList;

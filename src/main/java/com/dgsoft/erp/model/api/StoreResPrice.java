@@ -26,6 +26,8 @@ public class StoreResPrice extends StoreResPriceEntity implements Serializable{
 
     private BigDecimal totalMoney;
 
+    private BigDecimal rebate;
+
     public StoreResPrice(BigDecimal money, ResUnit resUnit,
                          BigDecimal totalMoney, BigDecimal count, StoreRes storeRes, boolean presentation) {
         this.money = money;
@@ -95,5 +97,15 @@ public class StoreResPrice extends StoreResPriceEntity implements Serializable{
     @Override
     public void setStoreRes(StoreRes storeRes) {
        this.storeRes = storeRes;
+    }
+
+    @Override
+    public BigDecimal getRebate() {
+        return rebate;
+    }
+
+    @Override
+    public void setRebate(BigDecimal rebate) {
+        this.rebate = rebate;
     }
 }

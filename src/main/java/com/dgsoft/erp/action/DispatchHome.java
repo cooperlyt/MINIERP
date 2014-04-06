@@ -19,6 +19,11 @@ import java.util.List;
 @Name("dispatchHome")
 public class DispatchHome extends ErpEntityHome<Dispatch> {
 
+    @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)
+    public Dispatch.DeliveryType[] getDeliveryTypes() {
+        return Dispatch.DeliveryType.values();
+    }
+
     public boolean isCanAddRes(){
         return  getInstance().getNeedRes().getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.OVERDRAFT) ||
                 getInstance().getNeedRes().getCustomerOrder().getPayType().equals(CustomerOrder.OrderPayType.COMPLETE_PAY);

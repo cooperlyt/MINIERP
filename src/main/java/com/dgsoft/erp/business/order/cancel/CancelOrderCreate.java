@@ -83,18 +83,18 @@ public class CancelOrderCreate {
     }
 
     public void backAllMoney() {
-        orderBackHome.getInstance().setMoney(orderHome.getTotalReveiveMoney());
+        orderBackHome.getInstance().setMoney(orderHome.getInstance().getReceiveMoney());
         orderBackHome.getInstance().setSaveMoney(BigDecimal.ZERO);
     }
 
     public void backNoEarnestMoney() {
-        orderBackHome.getInstance().setMoney(orderHome.getTotalReveiveMoney().subtract(orderHome.getReveiveEarnest()));
+        orderBackHome.getInstance().setMoney(orderHome.getInstance().getReceiveMoney().subtract(orderHome.getReveiveEarnest()));
         orderBackHome.getInstance().setSaveMoney(orderHome.getReveiveEarnest());
     }
 
     public void calcBackMoney() {
         if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL)) {
-            orderBackHome.getInstance().setMoney(orderHome.getTotalReveiveMoney().subtract(orderBackHome.getInstance().getSaveMoney()));
+            orderBackHome.getInstance().setMoney(orderHome.getInstance().getReceiveMoney().subtract(orderBackHome.getInstance().getSaveMoney()));
         } else {
             orderBackHome.getInstance().setMoney(getResTotalMoney().subtract(orderBackHome.getInstance().getSaveMoney()));
         }
@@ -102,7 +102,7 @@ public class CancelOrderCreate {
 
     public BigDecimal getMaxSaveMoney() {
         if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL)) {
-            return orderHome.getTotalReveiveMoney();
+            return orderHome.getInstance().getReceiveMoney();
         } else {
             return getResTotalMoney();
         }

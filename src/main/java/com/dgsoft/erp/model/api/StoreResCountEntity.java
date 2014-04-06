@@ -145,8 +145,13 @@ public abstract class StoreResCountEntity extends StoreResEntity {
         if (getMasterCount() == null) {
             return null;
         }
-        return DataFormat.format(getMasterCount().multiply(getFloatConvertRate()),
+        return calcAuxCount(getMasterCount(),getFloatConvertRate(),
                 getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate());
+    }
+
+
+    protected BigDecimal calcAuxCount(BigDecimal masterCount, BigDecimal convertRate, String format){
+        return DataFormat.format(masterCount.multiply(convertRate),format);
     }
 
     public void setAuxCount(BigDecimal count) {
@@ -216,6 +221,7 @@ public abstract class StoreResCountEntity extends StoreResEntity {
                 }
             case FIX_CONVERT:
                 return DataFormat.format(getMasterCount().divide(resUnit.getConversionRate(), FLOAT_CONVERT_SCALE, BigDecimal.ROUND_HALF_UP), resUnit.getCountFormate());
+
 
             default:
                 return null;

@@ -33,25 +33,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     @In
     private ResHelper resHelper;
 
-    @Factory(value = "feePayTypes", scope = ScopeType.CONVERSATION)
-    public PayType[] getFeePayTypes() {
-        return new PayType[]{PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK};
-    }
-
-    public enum ItemMiddleMoneyCalcType {
-        NOT_CALC, ITEM_FIX, ITEM_RATE, CROSS_CALC;
-    }
-
-    @Factory(value = "allItemMiddleMoneyCalcTypes", scope = ScopeType.CONVERSATION)
-    public ItemMiddleMoneyCalcType[] getAllItemMiddleMoneyCalcTypes() {
-        return ItemMiddleMoneyCalcType.values();
-    }
-
-    @Factory(value = "deliveryTypes", scope = ScopeType.CONVERSATION)
-    public Dispatch.DeliveryType[] getDeliveryTypes() {
-        return Dispatch.DeliveryType.values();
-    }
-
     public List<OrderItem> getOrderItemByStatus(EnumSet<OrderItem.OrderItemStatus> statuses) {
         List<OrderItem> result = new ArrayList<OrderItem>();
         for (NeedRes needRes : getInstance().getNeedReses()) {
@@ -130,15 +111,15 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             result.append(item.getRes().getResUnitByInDefault().getName());
         }
 
-        List<OweOut> oweOutItems = getNoAddOweItems();
-        if (!oweOutItems.isEmpty()) {
-            result.append(messages.get("sub_overly_oper") + "\n");
-        }
-        for (OweOut oweOut : oweOutItems) {
-            result.append("\t" + resHelper.generateStoreResTitle(oweOut.getStoreRes()) + " ");
-            result.append("  " + DataFormat.format(oweOut.getCountByResUnit(oweOut.getRes().getResUnitByInDefault()), oweOut.getRes().getResUnitByInDefault().getCountFormate()));
-            result.append(oweOut.getRes().getResUnitByInDefault().getName());
-        }
+//        List<OweOut> oweOutItems = getNoAddOweItems();
+//        if (!oweOutItems.isEmpty()) {
+//            result.append(messages.get("sub_overly_oper") + "\n");
+//        }
+//        for (OweOut oweOut : oweOutItems) {
+//            result.append("\t" + resHelper.generateStoreResTitle(oweOut.getStoreRes()) + " ");
+//            result.append("  " + DataFormat.format(oweOut.getCountByResUnit(oweOut.getRes().getResUnitByInDefault()), oweOut.getRes().getResUnitByInDefault().getCountFormate()));
+//            result.append(oweOut.getRes().getResUnitByInDefault().getName());
+//        }
 
 
         return result.toString();
@@ -159,25 +140,56 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                 });
     }
 
-    public void calcTotalResMoney(){
+    public void calcTotalResMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : getOrderItemByStatus(
-                EnumSet.of(OrderItem.OrderItemStatus.CREATED, OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))){
-             result = result.add(item.getTotalMoney());
+                EnumSet.of(OrderItem.OrderItemStatus.CREATED, OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))) {
+            result = result.add(item.getTotalMoney());
         }
         getInstance().setResMoney(result);
     }
 
-    public void calcStoreResCompleted(){
-        for (NeedRes needRes: getInstance().getNeedReses()){
-            for(OrderItem item: needRes.getOrderItems()){
-                if (!item.getStatus().equals(OrderItem.OrderItemStatus.COMPLETED)){
+    public List<AccountOper> getAccountOperByType(EnumSet<AccountOper.AccountOperType> types) {
+        List<AccountOper> result = new ArrayList<AccountOper>();
+        for (AccountOper oper : getInstance().getAccountOpers()) {
+            if (types.contains(oper.getOperType())) {
+                result.add(oper);
+            }
+        }
+        return result;
+    }
+
+    public void calcReceiveMoney() {
+        BigDecimal money = BigDecimal.ZERO;
+        for (AccountOper oper : getAccountOperByType(
+                EnumSet.of(AccountOper.AccountOperType.ORDER_PAY, AccountOper.AccountOperType.ORDER_EARNEST))) {
+            money = money.add(oper.getOperMoney());
+        }
+        getInstance().setReceiveMoney(money);
+    }
+
+    public BigDecimal getEarnestScale() {
+        return getInstance().getEarnest().divide(getInstance().getMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
+    }
+
+    public void calcMoneys() {
+        calcTotalResMoney();
+        //TODO calc sale poly sub Moey
+        calcReceiveMoney();
+
+        getInstance().setMoney(getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney()));
+    }
+
+    public void calcStoreResCompleted() {
+        for (NeedRes needRes : getInstance().getNeedReses()) {
+            for (OrderItem item : needRes.getOrderItems()) {
+                if (!item.getStatus().equals(OrderItem.OrderItemStatus.COMPLETED)) {
                     getInstance().setAllStoreOut(false);
                     return;
                 }
             }
-            for(Dispatch dispatch: needRes.getDispatches()){
-                if (dispatch.isHaveNoOutOweItem()){
+            for (Dispatch dispatch : needRes.getDispatches()) {
+                if (dispatch.isHaveNoOutOweItem()) {
                     getInstance().setAllStoreOut(false);
                 }
             }
@@ -256,14 +268,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
     public List<AccountOper> getOrderPayOpers() {
-        List<AccountOper> result = new ArrayList<AccountOper>();
-        for (AccountOper oper : getInstance().getAccountOperList()) {
-            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_PAY) ||
-                    oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST)) {
-                result.add(oper);
-            }
-        }
-        return result;
+        return getAccountOperByType(EnumSet.of(AccountOper.AccountOperType.ORDER_PAY, AccountOper.AccountOperType.ORDER_EARNEST));
     }
 
 
@@ -283,20 +288,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderFee orderFee : getInstance().getOrderFees()) {
             result = result.add(orderFee.getMoney());
-        }
-        return result;
-    }
-
-    public BigDecimal getShortageMoney() {
-        return getInstance().getMoney().subtract(getTotalReveiveMoney());
-    }
-
-    public BigDecimal getTotalReveiveMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper oper : getInstance().getAccountOpers()) {
-            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST) ||
-                    oper.getOperType().equals(AccountOper.AccountOperType.ORDER_PAY))
-                result = result.add(oper.getOperMoney());
         }
         return result;
     }
@@ -356,6 +347,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public boolean isComplete() {
         return !getInstance().isCanceled() && getInstance().isAllStoreOut() && getInstance().isMoneyComplete() && getInstance().isResReceived();
+    }
+
+    @Deprecated
+    public boolean isHaveOverlyOut() {
+        return !getInstance().isAllStoreOut();
     }
 
 }

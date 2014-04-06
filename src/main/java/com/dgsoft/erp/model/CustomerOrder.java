@@ -38,7 +38,6 @@ public class CustomerOrder implements java.io.Serializable {
     private boolean resReceived;
     private boolean canceled;
     private boolean allStoreOut;
-    private Boolean arrears;
 
     private BigDecimal earnest;
     private BigDecimal totalRebateMoney;
@@ -48,6 +47,7 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal money;
     private BigDecimal resMoney;
     private BigDecimal middleTotal;
+    private BigDecimal receiveMoney;
 
 
     private boolean middlePayed;
@@ -64,12 +64,20 @@ public class CustomerOrder implements java.io.Serializable {
     private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
 
     public CustomerOrder() {
-        arrears = null;
-        resReceived = false;
-        canceled = false;
-        allStoreOut = false;
-        moneyComplete = false;
+    }
 
+    public CustomerOrder(String orderEmp,Date createDate){
+        this.orderEmp = orderEmp;
+        this.createDate = createDate;
+        this.resReceived = false;
+        this.canceled = false;
+        allStoreOut = false;
+        earnest = BigDecimal.ZERO;
+        totalRebateMoney = BigDecimal.ZERO;
+        middlePayed = false;
+        includeMiddleMan = false;
+        moneyComplete =false;
+        earnestFirst = false;
     }
 
     @Id
@@ -94,7 +102,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.version = version;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "CUSTOMER_ID", nullable = false)
     @NotNull
     public Customer getCustomer() {
@@ -386,15 +394,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.allStoreOut = allStoreOut;
     }
 
-    @Column(name = "ARREARS")
-    public Boolean getArrears() {
-        return arrears;
-    }
-
-    public void setArrears(Boolean arrears) {
-        this.arrears = arrears;
-    }
-
     @Column(name = "EARNEST_FIRST", nullable = false)
     public boolean isEarnestFirst() {
         return earnestFirst;
@@ -412,6 +411,21 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    @Column(name="RECEIVE_MONEY", nullable = false,scale = 3)
+    @NotNull
+    public BigDecimal getReceiveMoney() {
+        return receiveMoney;
+    }
+
+    public void setReceiveMoney(BigDecimal receiveMoney) {
+        this.receiveMoney = receiveMoney;
+    }
+
+    @Transient
+    public BigDecimal getShortageMoney(){
+       return getMoney().subtract(getReceiveMoney());
     }
 
     @Transient

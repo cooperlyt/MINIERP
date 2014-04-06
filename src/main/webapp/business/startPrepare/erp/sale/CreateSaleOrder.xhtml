@@ -72,14 +72,14 @@
                            datePattern="#{messages.datePattern}"
                            required="true"
                            label="#{messages.storeOutLimitDate}"
-                           value="#{orderCreate.needRes.limitTime}">
+                           value="#{needResHome.instance.limitTime}">
                 <rich:validator event="change"/>
                 <rich:placeholder value="#{messages.storeOutLimitDate}"/>
             </rich:calendar>
             <rich:message for="orderSendLimitDateField" styleClass="message-icon"
                           showDetail="true" showSummary="true" tooltip="true"/>
 
-            <h:selectBooleanCheckbox value="#{orderCreate.needRes.fareByCustomer}">
+            <h:selectBooleanCheckbox value="#{needResHome.instance.fareByCustomer}">
                 #{messages.order_fare_by_customer}
             </h:selectBooleanCheckbox>
 
@@ -98,7 +98,7 @@
     <rich:toolbarGroup location="right">
         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                   view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
-        <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}"
+        <h:commandButton styleClass="toolBarBtn" value="#{messages.Next}"
                          action="#{orderCreate.saveOrderCustomer}">
             <f:param name="from" value="#{from}"/>
         </h:commandButton>
@@ -139,7 +139,7 @@
                            fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
 
             <h:outputText value="#{_customer.name}"/>
-            <a:ajax event="selectitem" listener="#{orderCreate.customerChangeListener}"
+            <a:ajax event="selectitem" listener="#{needResHome.customerChangeListener}"
                     render="pinyinSearchCustomer,orderContactFields,customerInfo" execute="@this">
                 <a:attachQueue requestDelay="0"/>
             </a:ajax>
@@ -253,7 +253,7 @@
 
         <s:decorate id="orderPostCodeField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.order_field_postCode}</ui:define>
-            <h:inputText value="#{orderCreate.needRes.postCode}" label="#{messages.order_field_postCode}"
+            <h:inputText value="#{needResHome.instance.postCode}" label="#{messages.order_field_postCode}"
                          size="10" maxlength="10">
                 <a:ajax event="blur" render="orderPostCodeField" />
             </h:inputText>
@@ -269,7 +269,7 @@
                                label="#{messages.order_field_reveiveTel}"
                                clientFilterFunction="pinyinNameFilter"
                                autocompleteList="#{customerHome.allTelList}"
-                               value="#{orderCreate.needRes.receiveTel}"
+                               value="#{needResHome.instance.receiveTel}"
                                fetchValue="#{_tel}" var="_tel">
 
                 <h:outputText value="#{_tel}"/>
@@ -291,7 +291,7 @@
                                label="#{messages.order_field_reveiveContact}"
                                clientFilterFunction="pinyinNameFilter"
                                autocompleteList="#{customerHome.allContactList}"
-                               value="#{orderCreate.needRes.receivePerson}"
+                               value="#{needResHome.instance.receivePerson}"
                                fetchValue="#{_contact}" var="_contact">
 
                 <h:outputText value="#{_contact}"/>
@@ -310,7 +310,7 @@
 
         <s:decorate id="receiveAddressField" template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.order_field_address}</ui:define>
-            <h:inputText value="#{orderCreate.needRes.address}" label="#{messages.order_field_address}"
+            <h:inputText value="#{needResHome.instance.address}" label="#{messages.order_field_address}"
                          required="true" size="81" maxlength="200">
                 <a:ajax event="blur" render="receiveAddressField"/>
             </h:inputText>

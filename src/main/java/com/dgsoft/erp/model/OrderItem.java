@@ -19,7 +19,7 @@ public class OrderItem extends StoreResPriceEntity
         implements java.io.Serializable {
 
 
-    public enum OrderItemStatus{
+    public enum OrderItemStatus {
 
         CREATED, DISPATCHED, WAIT_PRICE, COMPLETED;
 
@@ -46,21 +46,45 @@ public class OrderItem extends StoreResPriceEntity
     private boolean overlyOut;
     private BigDecimal needConvertRate;
     private BigDecimal totalMoney;
+    private BigDecimal rebate;
+    private BigDecimal needMoney;
 
     public OrderItem() {
+        rebate = new BigDecimal("100");
     }
 
     public OrderItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+        needConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
     }
 
     public OrderItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+        needConvertRate = storeRes.getFloatConversionRate();
     }
 
-    //create Dispatch split item
+    //    //create by recreate order
+    public OrderItem(NeedRes needRes,StoreRes storeRes,ResUnit resUnit,BigDecimal count,
+                     BigDecimal money,BigDecimal rebate,boolean presentation,
+                     String memo,BigDecimal needConvertRate) {
+        this.needRes = needRes;
+        this.storeRes = storeRes;
+        this.resUnit = resUnit;
+        this.count = count;
+        this.money = money;
+        this.rebate = rebate;
+        this.presentation = presentation;
+        this.memo = memo;
+
+        this.needConvertRate = needConvertRate;
+        this.status = OrderItemStatus.CREATED;
+        overlyOut = false;
+        calcMoney();
+    }
+//
+//    //create Dispatch split item
     public OrderItem(Dispatch dispatch,StoreRes storeRes, BigDecimal count, BigDecimal money,
-                     BigDecimal moneyRebate, ResUnit resUnit,boolean presentation,String memo,BigDecimal needConvertRate){
+                     BigDecimal rebate, ResUnit resUnit,boolean presentation,String memo,BigDecimal needConvertRate){
         this.dispatch = dispatch;
         this.needRes = dispatch.getNeedRes();
         this.storeRes = storeRes;
@@ -72,11 +96,12 @@ public class OrderItem extends StoreResPriceEntity
         this.status = OrderItemStatus.CREATED;
         this.overlyOut = false;
         this.needConvertRate = needConvertRate;
+        this.rebate = rebate;
+        calcMoney();
 
-        setMoneyRebate(moneyRebate);
     }
 
-    //create OverlyOut Item
+//    //create OverlyOut Item
     public OrderItem(Dispatch dispatch, StoreRes storeRes) {
         this.dispatch = dispatch;
         this.needRes = dispatch.getNeedRes();
@@ -87,9 +112,10 @@ public class OrderItem extends StoreResPriceEntity
         presentation = false;
         resUnit = storeRes.getRes().getResUnitByOutDefault();
     }
-
-    public OrderItem(StoreRes storeRes,BigDecimal count, boolean presentation,
-                     OrderItemStatus status,boolean overlyOut, String memo,BigDecimal needConvertRate){
+//
+    // oweOut convert to orderItem
+    public OrderItem(StoreRes storeRes, BigDecimal count, boolean presentation,
+                     OrderItemStatus status, boolean overlyOut, String memo, BigDecimal needConvertRate) {
         this.storeRes = storeRes;
         this.count = count;
         this.presentation = presentation;
@@ -99,6 +125,65 @@ public class OrderItem extends StoreResPriceEntity
         this.needConvertRate = needConvertRate;
     }
 
+
+    @Override
+    public void setFree(boolean free){
+        super.setFree(free);
+        if (free){
+            setNeedMoney(BigDecimal.ZERO);
+        }
+    }
+
+    @Override
+    @Transient
+    public void setFloatConvertRate(BigDecimal floatConvertRate) {
+        if ((getNeedConvertRate() == null) || getNeedConvertRate().compareTo(getFloatConvertRate()) == 0) {
+            setInputNeedConvertRate(floatConvertRate);
+        }
+        super.setFloatConvertRate(floatConvertRate);
+    }
+
+    @Override
+    protected void calcTotalMoney() {
+        super.calcTotalMoney();
+        calcNeedMoney();
+    }
+
+    @Override
+    public void calcMoney(){
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) &&
+                (getNeedConvertRate() == null) && !getUseUnit().isMasterUnit()){
+            throw new IllegalArgumentException("param not enough can't calc");
+        }
+        super.calcMoney();
+    }
+
+    @Transient
+    private void calcNeedMoney() {
+
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) &&
+                (getMoney() != null) && (getCount() != null) && (!getUseUnit().isMasterUnit())) {
+
+            setNeedMoney(calcAuxCount(getCount(), getNeedConvertRate(),
+                    getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()).multiply(getRebateUnitPrice()));
+
+
+        } else {
+            setNeedMoney(getTotalMoney());
+        }
+
+    }
+
+    @Transient
+    public void setInputNeedConvertRate(BigDecimal floatConvertRate) {
+        setNeedConvertRate(floatConvertRate);
+        calcNeedMoney();
+    }
+
+    @Transient
+    public BigDecimal getInputNeedConvertRate() {
+        return getNeedConvertRate();
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -263,8 +348,7 @@ public class OrderItem extends StoreResPriceEntity
         this.overlyOut = overlyOut;
     }
 
-    @Column(name = "NEED_CONVERSION_RATE", nullable = false, scale = 3)
-    @NotNull
+    @Column(name = "NEED_CONVERSION_RATE", nullable = true, scale = 10)
     public BigDecimal getNeedConvertRate() {
         return needConvertRate;
     }
@@ -280,6 +364,25 @@ public class OrderItem extends StoreResPriceEntity
 
     public void setTotalMoney(BigDecimal totalMoney) {
         this.totalMoney = totalMoney;
+    }
+
+    @Column(name = "REBATE", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getRebate() {
+        return this.rebate;
+    }
+
+    public void setRebate(BigDecimal rebate) {
+        this.rebate = rebate;
+    }
+
+    @Column(name = "NEED_MONEY", nullable = true, scale = 3)
+    public BigDecimal getNeedMoney() {
+        return needMoney;
+    }
+
+    public void setNeedMoney(BigDecimal needMoney) {
+        this.needMoney = needMoney;
     }
 
     @Transient
@@ -308,5 +411,6 @@ public class OrderItem extends StoreResPriceEntity
         }
         return BigDecimal.ZERO;
     }
+
 
 }

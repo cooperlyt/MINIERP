@@ -36,6 +36,9 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
     private boolean freeMoney;
 
+    public BigDecimal getShortageMoney() {
+        return orderHome.getInstance().getShortageMoney();
+    }
 
     protected abstract AccountOper.AccountOperType getAccountOperType();
 
@@ -66,7 +69,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         this.freeMoney = freeMoney;
     }
 
-    private boolean isFreeForPay(){
+    private boolean isFreeForPay() {
         return freeMoney && debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
     }
 
@@ -141,9 +144,9 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
         if (saving) {
 
-            if (debitAccountOper.getOperMoney().compareTo(getOrderShortageMoney()) > 0) {
-                BigDecimal saveMoney = debitAccountOper.getOperMoney().subtract(getOrderShortageMoney());
-                debitAccountOper.setOperMoney(getOrderShortageMoney());
+            if (debitAccountOper.getOperMoney().compareTo(orderHome.getInstance().getShortageMoney()) > 0) {
+                BigDecimal saveMoney = debitAccountOper.getOperMoney().subtract(orderHome.getInstance().getShortageMoney());
+                debitAccountOper.setOperMoney(orderHome.getInstance().getShortageMoney());
                 customerHome.getInstance().setBalance(customerHome.getInstance().getBalance().add(saveMoney));
             }
 
@@ -161,7 +164,8 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
         customerHome.getInstance().getAccountOpers().add(debitAccountOper);
 
-        customerHome.update();
+        orderHome.calcMoneys();
+        orderHome.update();
 
 
         //orderHome.refresh();

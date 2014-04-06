@@ -151,7 +151,8 @@ public class OrderChange extends OrderTaskHandle {
             if (matchItem != null){
                 newItem.setUseUnit(matchItem.getResUnit());
                 newItem.setMoney(matchItem.getMoney());
-                newItem.setMoneyRebate(newItem.getMoneyRebate());
+                newItem.setRebate(matchItem.getRebate());
+                newItem.calcMoney();
             }
             if (newItem.getUseUnit() == null){
                 newItem.setUseUnit(newItem.getStoreRes().getRes().getResUnitByOutDefault());

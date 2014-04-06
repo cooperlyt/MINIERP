@@ -11,8 +11,8 @@
     <!--required param:  panelId  treeValue-->
     <!-- onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} " -->
 
-    <rich:popupPanel id="#{panelId}"
-                     moveable="true" autosized="true">
+    <rich:popupPanel id="#{panelId}" width="360" height="500"
+                     moveable="true" autosized="false">
 
         <f:facet name="header">
             <h:panelGroup id="#{panelId}_title">
@@ -32,7 +32,7 @@
         <rich:messages ajaxRendered="true" globalOnly="true"/>
         <ui:insert name="panelContent">
             <h:form id="#{panelId}_form">
-                <rich:panel style="min-width: 300px;min-height: 360px">
+                <a:outputPanel>
 
                     <rich:tree
                             var="_node"
@@ -81,7 +81,8 @@
                             </ui:insert>
                         </rich:treeNode>
                     </rich:tree>
-                </rich:panel>
+
+                </a:outputPanel>
             </h:form>
         </ui:insert>
 

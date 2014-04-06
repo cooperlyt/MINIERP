@@ -55,6 +55,11 @@ public class NeedRes implements java.io.Serializable {
         this.status = status;
     }
 
+    public NeedRes(Date createDate, NeedResStatus status) {
+        this.createDate = createDate;
+        this.status = status;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")

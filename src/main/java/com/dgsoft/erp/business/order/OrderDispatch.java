@@ -345,7 +345,7 @@ public class OrderDispatch {
 
 
             OrderItem splitItem = new OrderItem(selectDispatch,dispathcItem.getStoreRes(),resCount.getCount(),dispathcItem.getMoney(),
-                    dispathcItem.getMoneyRebate(),dispathcItem.getResUnit(),
+                    dispathcItem.getRebate(),dispathcItem.getResUnit(),
                     dispathcItem.isPresentation(),dispathcItem.getMemo(),dispathcItem.getNeedConvertRate());
 
             needRes.getOrderItems().add(splitItem);
