@@ -92,6 +92,9 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
             return;
         }
+        editingItem.setStatus(OrderItem.OrderItemStatus.CREATED);
+        editingItem.setOverlyOut(false);
+        editingItem.setNeedRes(getInstance());
         orderNeedItems.add(editingItem);
         orderItemCreate.createNext();
     }
@@ -106,8 +109,8 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
     }
 
     @Override
-    protected NeedRes createInstance(){
-        return new NeedRes(new Date(),NeedRes.NeedResStatus.CREATED);
+    protected NeedRes createInstance() {
+        return new NeedRes(new Date(), NeedRes.NeedResStatus.CREATED);
     }
 
 
@@ -125,15 +128,17 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
     public BigDecimal getResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : orderNeedItems) {
-            result = result.add(item.getTotalMoney());
+            if (item.getTotalMoney() != null)
+                result = result.add(item.getTotalMoney());
         }
         return result;
     }
 
-    public BigDecimal getResNeedTotalMoney(){
+    public BigDecimal getResNeedTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : orderNeedItems) {
-            result = result.add(item.getNeedMoney());
+            if (item.getNeedMoney() != null)
+                result = result.add(item.getNeedMoney());
         }
         return result;
     }

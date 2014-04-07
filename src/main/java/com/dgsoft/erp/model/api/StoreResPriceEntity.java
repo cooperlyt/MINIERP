@@ -141,6 +141,18 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
 
         StoreResPriceEntity other = (StoreResPriceEntity) otherEntity;
 
+        if ((getMoney() == null) || (other.getMoney() == null)){
+            return false;
+        }
+
+        if ((getUseUnit() == null) || other.getUseUnit() == null){
+            return false;
+        }
+
+        if ((getRebate() == null) || (other.getRebate() == null)){
+            return false;
+        }
+
 
         return super.isSameItem(other) && getUseUnit().equals(other.getUseUnit()) &&
                 (isPresentation() == other.isPresentation()) &&

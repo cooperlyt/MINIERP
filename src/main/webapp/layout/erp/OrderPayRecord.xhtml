@@ -62,6 +62,15 @@
 
                 </rich:column>
 
+                <rich:column style="text-align: right;">
+                    <f:facet name="header">
+                        #{messages.accountOper_field_fee}
+                    </f:facet>
+                    <h:outputText value="#{_oper.remitFee}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
                 <rich:column style="text-align: right">
                     <f:facet name="header">
                         #{messages.accountOper_field_afterBanance}

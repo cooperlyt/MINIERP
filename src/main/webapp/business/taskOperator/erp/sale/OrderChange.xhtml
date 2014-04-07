@@ -9,35 +9,55 @@
                 template="/layout/full-template.xhtml">
 
 
-<ui:param name="functionTitle" value="#{messages.orderChange}"/>
+<ui:param name="functionTitle" value="#{orderChange.taskName}"/>
 
 <ui:define name="func-body">
 
 
 <h:form>
 
-    <rich:toolbar>
-        <rich:toolbarGroup>
-            <a:region>
+<rich:toolbar>
+    <rich:toolbarGroup>
+        <a:region>
+
+            <rich:select id="oweOutItemIsSendSelect" value="#{orderChange.reSend}" required="true"
+                         disabled="#{orderHome.instance.payType eq 'PAY_FIRST'}"
+                         label="#{messages.sub_overly_oper_type}">
+                <f:selectItem itemLabel="#{messages.sub_overly_oper_render_true}" itemValue="#{true}"/>
+                <f:selectItem itemLabel="#{messages.sub_overly_oper_render_false}" itemValue="#{false}"/>
+                <a:ajax event="selectitem" listener="#{orderHome.calcMoneys}" execute="@region"
+                        render="subOverlyOrderItem,orderTotalPrice,newNeedResPanel,dispatchButton"/>
+            </rich:select>
+
+            <rich:message for="oweOutItemIsSendSelect" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+
+        </a:region>
+    </rich:toolbarGroup>
+
+    <rich:toolbarGroup location="right">
+        <a:region>
+            <a:outputPanel ajaxRendered="true">
                 <h:panelGrid id="orderTotalPrice" columns="20">
                     #{messages.orderPrice}:
-                    <h:outputText value="#{orderChange.orderResTotalMoney}">
+                    <h:outputText value="#{orderHome.instance.resMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
                     #{' '}
-                    <h:selectOneMenu value="#{orderChange.rebateUseMoney}">
-                        <f:selectItem itemValue="#{true}" itemLabel="-"/>
-                        <f:selectItem itemValue="#{false}" itemLabel="%"/>
-                        <a:ajax event="click" listener="#{orderChange.calcByRate}"
+                    <h:selectOneMenu value="#{orderHome.useScaleRebate}">
+                        <f:selectItem itemValue="#{false}" itemLabel="-"/>
+                        <f:selectItem itemValue="#{true}" itemLabel="%"/>
+                        <a:ajax event="click" listener="#{orderHome.calcMoneys}"
                                 render="orderTotalRebateField,orderTotalPrice"/>
                     </h:selectOneMenu>
 
-                    <a:outputPanel id="orderTotalRebateField" >
-                        <h:inputText rendered="#{not orderChange.rebateUseMoney}" value="#{orderChange.totalRebate}"
+                    <a:outputPanel id="orderTotalRebateField">
+                        <h:inputText id="scaleRebateInput" rendered="#{orderHome.useScaleRebate}"
+                                     value="#{orderHome.orderRebate}"
                                      required="true" size="5" label="#{messages.orderRebate}">
                             <f:convertNumber pattern="#0.##" groupingUsed="false"/>
-                            <a:ajax event="blur" execute="@region" listener="#{orderChange.calcByRate}"
+                            <a:ajax event="blur" execute="@region" listener="#{orderHome.calcMoneys}"
                                     render="orderTotalPrice">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
@@ -45,11 +65,12 @@
                             <f:validateDoubleRange minimum="0" maximum="100"/>
                             <rich:placeholder value="#{messages.orderRebate}"/>
                         </h:inputText>
-                        <h:inputText rendered="#{orderChange.rebateUseMoney}" value="#{orderChange.totalRebateMoney}"
+                        <h:inputText id="moneyRebateInput" rendered="#{not orderHome.useScaleRebate}"
+                                     value="#{orderHome.orderRebate}"
                                      required="true" size="5" label="#{messages.orderRebate}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"
                                              currencySymbol="" groupingUsed="false"/>
-                            <a:ajax event="blur" execute="@region" listener="#{orderChange.calcByRate}"
+                            <a:ajax event="blur" execute="@region" listener="#{orderHome.calcMoneys}"
                                     render="orderTotalPrice">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
@@ -59,14 +80,19 @@
 
 
                     </a:outputPanel>
-                    <rich:message for="orderTotalRebateField" styleClass="message-icon"
+                    <rich:message for="moneyRebateInput" styleClass="message-icon"
+                                  rendered="#{not orderHome.useScaleRebate}"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+
+                    <rich:message for="scaleRebateInput" styleClass="message-icon"
+                                  rendered="#{orderHome.useScaleRebate}"
                                   showDetail="true" showSummary="true" tooltip="true"/>
                     =
-                    <h:inputText id="orderMoneyField" value="#{orderChange.orderTotalMoney}"
+                    <h:inputText id="orderMoneyField" value="#{orderHome.inputOrderMoney}"
                                  label="#{messages.orderItemPrice}" required="true" size="9">
                         <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                          type="currency" groupingUsed="false"/>
-                        <a:ajax listener="#{orderChange.calcByOrderTotalMoney}" event="blur" execute="@region"
+                        <a:ajax event="blur" execute="@this" immediate="true"
                                 render="orderTotalPrice">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
@@ -76,370 +102,150 @@
                     <rich:message for="orderMoneyField" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
                 </h:panelGrid>
-            </a:region>
-        </rich:toolbarGroup>
+            </a:outputPanel>
+        </a:region>
+    </rich:toolbarGroup>
 
-        <rich:toolbarGroup location="right">
-            <s:button styleClass="toolBarBtn" value="#{messages.reset}" includePageParams="false"/>
-            <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                      view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-            <h:commandButton id="dispatchButton" styleClass="toolBarBtn" value="#{messages.Dispatch}"
-                             action="#{orderReSenderCreate.beginDispatch}" disabled="#{not orderChange.reSend}"/>
+    <rich:toolbarGroup location="right">
+        <s:button styleClass="toolBarBtn" value="#{messages.reset}" includePageParams="false"/>
+        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+        <h:commandButton id="dispatchButton" styleClass="toolBarBtn" value="#{messages.Dispatch}"
+                         action="#{orderReSenderCreate.beginDispatch}" disabled="#{not orderChange.reSend}"/>
 
-            <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                             action="#{orderChange.complete}">
-            </h:commandButton>
-        </rich:toolbarGroup>
-    </rich:toolbar>
-    <br/>
-    <a:outputPanel id="newNeedResPanel">
-        <rich:panel rendered="#{orderChange.reSend}">
-
-            <h:panelGrid columns="3">
-                <s:decorate template="/layout/edit.xhtml">
-
-
-                    <h:selectBooleanCheckbox required="true" value="#{needResHome.instance.fareByCustomer}">
-                        #{messages.order_fare_by_customer}
-                    </h:selectBooleanCheckbox>
-                </s:decorate>
-                <s:decorate template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.storeOutLimitDate}</ui:define>
-
-                    <rich:calendar id="orderSendLimitDateField"
-                                   enableManualInput="true"
-                                   inputSize="10"
-                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                                   datePattern="#{messages.datePattern}"
-                                   required="true"
-                                   label="#{messages.storeOutLimitDate}"
-                                   value="#{needResHome.instance.limitTime}">
-                    </rich:calendar>
-                </s:decorate>
-
-
-                <s:decorate id="orderPostCodeField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.order_field_postCode}</ui:define>
-                    <h:inputText value="#{needResHome.instance.postCode}" label="#{messages.order_field_postCode}"
-                                 size="10" maxlength="10">
-                        <a:ajax event="blur" render="orderPostCodeField"/>
-                    </h:inputText>
-                </s:decorate>
-
-                <s:decorate id="receiveTelField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
-
-                    <rich:autocomplete mode="client" minChars="1" autofill="false"
-                                       showButton="true"
-                                       selectFirst="true"
-                                       required="true"
-                                       label="#{messages.order_field_reveiveTel}"
-                                       clientFilterFunction="pinyinNameFilter"
-                                       autocompleteList="#{customerHome.allTelList}"
-                                       value="#{needResHome.instance.receiveTel}"
-                                       fetchValue="#{_tel}" var="_tel">
-
-                        <h:outputText value="#{_tel}"/>
-                        <a:ajax event="blur"
-                                render="receiveContactField,receiveTelField"/>
-
-                        <a:ajax event="selectitem"
-                                render="receiveContactField,receiveTelField"/>
-                    </rich:autocomplete>
-
-                </s:decorate>
-
-                <s:decorate id="receiveContactField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
-
-                    <rich:autocomplete mode="client" minChars="1" autofill="false"
-                                       showButton="true"
-                                       selectFirst="true"
-                                       required="true"
-                                       label="#{messages.order_field_reveiveContact}"
-                                       clientFilterFunction="pinyinNameFilter"
-                                       autocompleteList="#{customerHome.allContactList}"
-                                       value="#{needResHome.instance.receivePerson}"
-                                       fetchValue="#{_contact}" var="_contact">
-
-                        <h:outputText value="#{_contact}"/>
-                        <a:ajax event="blur"
-                                render="receiveContactField,receiveTelField"/>
-                        <a:ajax event="selectitem"
-                                render="receiveContactField,receiveTelField"/>
-                    </rich:autocomplete>
-
-                </s:decorate>
-
-            </h:panelGrid>
-
-            <h:panelGrid columns="1">
-
-
-                <s:decorate id="receiveAddressField" template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.order_field_address}</ui:define>
-                    <h:inputText value="#{needResHome.instance.address}" label="#{messages.order_field_address}"
-                                 required="true" size="80" maxlength="200">
-                        <a:ajax event="blur" render="receiveAddressField"/>
-                    </h:inputText>
-                </s:decorate>
-
-                <s:decorate template="/layout/edit.xhtml">
-                    <ui:define name="label">#{messages.field_memo}</ui:define>
-                    <h:inputTextarea label="#{messages.field_memo}"
-                                     value="#{needResHome.instance.memo}"
-                                     cols="81" rows="2"/>
-                </s:decorate>
-
-            </h:panelGrid>
-
-
-        </rich:panel>
-    </a:outputPanel>
-</h:form>
-
+        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                         action="#{orderChange.complete}">
+        </h:commandButton>
+    </rich:toolbarGroup>
+</rich:toolbar>
 <br/>
 
+<a:outputPanel id="newNeedResPanel">
+<rich:panel rendered="#{orderChange.reSend}">
 
-<ui:include src="/layout/erp/OrderItemTable.xhtml">
-    <ui:param name="orderItems" value="#{orderHome.lastNeedRes.orderItemList}"/>
-    <ui:param name="totalItemMoney" value="#{orderHome.lastResTotalMoney}"/>
-    <ui:param name="showMiddleMoney" value="false"/>
-</ui:include>
-
-<br/>
-
-<rich:panel rendered="#{not empty orderChange.overlyItems}">
+    <h:panelGrid columns="3">
+        <s:decorate template="/layout/edit.xhtml">
 
 
-    <f:facet name="header">
-        <span class="required">*</span> #{messages.add_overly_confirm}
-    </f:facet>
+            <h:selectBooleanCheckbox required="true" value="#{needResHome.instance.fareByCustomer}">
+                #{messages.order_fare_by_customer}
+            </h:selectBooleanCheckbox>
+        </s:decorate>
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.storeOutLimitDate}</ui:define>
 
-
-    <rich:dataTable style="width: 100%" value="#{orderChange.overlyItems}" var="_overly" id="overlyItems"
-                    noDataLabel="#{messages.dispatch_overly_empty}">
-
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.StoreRes}
-            </f:facet>
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{_overly.storeRes}"/>
-            </ui:include>
-            <f:facet name="footer">
-                #{messages.recordTotal}#{orderChange.overlyItems.size}#{messages.item};
-            </f:facet>
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.MasterUnitCount}
-            </f:facet>
-            #{_overly.displayMasterCount}
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.AuxUnitCount}
-            </f:facet>
-            #{_overly.displayAuxCount}
-
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.description}
-            </f:facet>
-            #{_overly.description}
-        </rich:column>
-    </rich:dataTable>
-</rich:panel>
-
-<rich:panel rendered="#{not empty orderChange.oweItems}">
-
-
-    <f:facet name="header">
-        <span class="required">*</span> #{messages.sub_overly_oper}
-    </f:facet>
-
-
-    <rich:dataTable style="width: 100%" value="#{orderChange.oweItems}" var="_overly">
-
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.StoreRes}
-            </f:facet>
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{_overly.storeRes}"/>
-            </ui:include>
-            <f:facet name="footer">
-                #{messages.recordTotal}#{orderChange.oweItems.size}#{messages.item};
-            </f:facet>
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.MasterUnitCount}
-            </f:facet>
-            #{_overly.displayMasterCount}
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.AuxUnitCount}
-            </f:facet>
-            #{_overly.displayAuxCount}
-
-        </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.description}
-            </f:facet>
-            #{_overly.description}
-        </rich:column>
-    </rich:dataTable>
-
-    <h:form>
-        <s:decorate template="/layout/seam-edit.xhtml">
-            <ui:define name="label">
-                #{messages.sub_overly_oper_type}
-            </ui:define>
-            <h:selectOneMenu value="#{orderChange.reSend}" required="true"
-                             disabled="#{orderHome.instance.payType eq 'PAY_FIRST'}"
-                             label="#{messages.sub_overly_oper_type}">
-                <f:selectItem itemLabel="#{messages.sub_overly_oper_render_true}" itemValue="#{true}"/>
-                <f:selectItem itemLabel="#{messages.sub_overly_oper_render_false}" itemValue="#{false}"/>
-                <a:ajax event="valueChange" listener="#{orderChange.calcByRate}"
-                        render="subOverlyOrderItem,orderTotalPrice,newNeedResPanel,dispatchButton"/>
-            </h:selectOneMenu>
+            <rich:calendar id="orderSendLimitDateField"
+                           enableManualInput="true"
+                           inputSize="10"
+                           timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                           showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                           datePattern="#{messages.datePattern}"
+                           required="true"
+                           label="#{messages.storeOutLimitDate}"
+                           value="#{needResHome.instance.limitTime}">
+            </rich:calendar>
         </s:decorate>
 
-        <div style="clear: both"/>
 
-        <a:outputPanel id="subOverlyOrderItem">
-            <rich:dataTable rendered="#{orderChange.reSend}" style="width: 100%" value="#{reSendOrder}"
-                            var="_reSendItem">
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.orderItems}
-                    </f:facet>
-                    #{messages.StoreRes}:
-                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                        <ui:param name="storeRes" value="#{_reSendItem.storeRes}"/>
-                    </ui:include>
-                    <f:facet name="footer">
-                        #{messages.recordTotal} #{reSendOrder.size} #{messages.item}
-                    </f:facet>
-                </rich:column>
+        <s:decorate id="orderPostCodeField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_postCode}</ui:define>
+            <h:inputText value="#{needResHome.instance.postCode}" label="#{messages.order_field_postCode}"
+                         size="10" maxlength="10">
+                <a:ajax event="blur" render="orderPostCodeField"/>
+            </h:inputText>
+        </s:decorate>
 
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.orderItemCount}
-                    </f:facet>
-                    <h:outputText value="#{_reSendItem.useUnitCount}">
-                        <f:convertNumber pattern="#0.####"/>
-                    </h:outputText>
-                </rich:column>
+        <s:decorate id="receiveTelField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
 
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.Res_Unit}
-                    </f:facet>
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               required="true"
+                               label="#{messages.order_field_reveiveTel}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allTelList}"
+                               value="#{needResHome.instance.receiveTel}"
+                               fetchValue="#{_tel}" var="_tel">
 
-                    <s:decorate template="/layout/single-edit.xhtml">
-                        <h:selectOneMenu label="#{messages.Res_Unit}" style="min-width: 70px"
-                                         value="#{_reSendItem.resUnit}"
-                                         required="true">
-                            <s:selectItems value="#{_reSendItem.storeRes.res.unitGroup.resUnitList}"
-                                           var="_unit" label="#{_unit.name}"/>
-                            <a:ajax event="valueChange" listener="#{orderChange.calcByRate}"
-                                    render="orderTotalPrice,subOverlyOrderItem"/>
-                            <f:converter converterId="erpEntityConverter"/>
-                        </h:selectOneMenu>
-                    </s:decorate>
-                </rich:column>
+                <h:outputText value="#{_tel}"/>
+                <a:ajax event="blur"
+                        render="receiveContactField,receiveTelField"/>
 
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.orderItemUnitPrice}
-                    </f:facet>
-                    <s:decorate template="/layout/single-edit.xhtml">
-                        <h:inputText value="#{_reSendItem.money}" required="true" size="10"
-                                     label="#{messages.orderItemUnitPrice}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                             groupingUsed="false"/>
-                            <a:ajax event="blur" listener="#{orderChange.calcByRate}"
-                                    render="orderTotalPrice,subOverlyOrderItem"/>
-                        </h:inputText>
-                    </s:decorate>
-                </rich:column>
+                <a:ajax event="selectitem"
+                        render="receiveContactField,receiveTelField"/>
+            </rich:autocomplete>
+
+        </s:decorate>
+
+        <s:decorate id="receiveContactField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               required="true"
+                               label="#{messages.order_field_reveiveContact}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allContactList}"
+                               value="#{needResHome.instance.receivePerson}"
+                               fetchValue="#{_contact}" var="_contact">
+
+                <h:outputText value="#{_contact}"/>
+                <a:ajax event="blur"
+                        render="receiveContactField,receiveTelField"/>
+                <a:ajax event="selectitem"
+                        render="receiveContactField,receiveTelField"/>
+            </rich:autocomplete>
+
+        </s:decorate>
+
+    </h:panelGrid>
+
+    <h:panelGrid columns="1">
 
 
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.orderItemPriceRebate}
-                    </f:facet>
-                    <s:decorate template="/layout/single-edit.xhtml">
-                        <h:inputText value="#{_reSendItem.rebate}" label="#{messages.orderItemPriceRebate}"
-                                     size="5" required="true">
-                            <f:validateLongRange minimum="0" maximum="100"/>
-                            <f:convertNumber pattern="#0.###"/>
-                            <a:ajax event="blur" listener="#{orderChange.calcByRate}"
-                                    render="orderTotalPrice,subOverlyOrderItem"/>
-                        </h:inputText>
-                    </s:decorate>
-                </rich:column>
+        <s:decorate id="receiveAddressField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_address}</ui:define>
+            <h:inputText value="#{needResHome.instance.address}" label="#{messages.order_field_address}"
+                         required="true" size="80" maxlength="200">
+                <a:ajax event="blur" render="receiveAddressField"/>
+            </h:inputText>
+        </s:decorate>
 
-                <rich:column style="text-align: right">
-                    <f:facet name="header">
-                        #{messages.orderItemTotalPrice}
-                    </f:facet>
-                    <h:outputText value="#{_reSendItem.totalPrice}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                    <f:facet name="footer">
-                        <h:outputText value="#{orderReSenderCreate.reSenderTotalMoney}">
-                            <f:convertNumber locale="#{calendarBean.locale}"
-                                             type="currency" groupingUsed="true"/>
-                        </h:outputText>
-                    </f:facet>
-                </rich:column>
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+            <h:inputTextarea label="#{messages.field_memo}"
+                             value="#{needResHome.instance.memo}"
+                             cols="81" rows="2"/>
+        </s:decorate>
 
-                <rich:column style="text-align: center;">
-                    <f:facet name="header">
+    </h:panelGrid>
 
-                    </f:facet>
-                    <a:commandButton image="/img/match_price.png"
-                                     title="#{messages.splitOrderItem}"
-                                     oncomplete="#{rich:component('splitItemCountInput')}.show();"
-                                     render="splitItemCountInput_inputs"
-                                     action="#{orderReSenderCreate.beginSplitOrderItem}">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:commandButton>
-
-                </rich:column>
-
-            </rich:dataTable>
-        </a:outputPanel>
-
-    </h:form>
 
 </rich:panel>
 
-<br/>
+<div style="clear: both"/>
 
-<rich:panel>
-    <f:facet name="header">
-        <span class="required">*</span> #{messages.new_orderItems}
-    </f:facet>
-    <h:form>
-        <rich:dataTable id="newOrderItemsTable" style="width:100%" value="#{newOrderItems}" var="_item">
+<br/>
+<a:region>
+
+    <a:outputPanel id="subOverlyOrderItem">
+        <rich:dataTable rendered="#{orderChange.reSend}" style="width: 100%" value="#{reSendOrder}"
+                        var="_item">
+            <f:facet name="header">
+                #{messages.oweOutRenderOrderItems}
+            </f:facet>
+            <rich:column style="text-align: center">
+                <f:facet name="header">
+                    #{messages.Presentation}
+                </f:facet>
+                <h:selectBooleanCheckbox value="#{_item.free}">
+                    <a:ajax event="click" execute="@this" listener="#{orderHome.calcMoneys}"
+                            render="newOrderItemsTable"/>
+                </h:selectBooleanCheckbox>
+            </rich:column>
+
             <rich:column>
                 <f:facet name="header">
                     #{messages.orderItems}
@@ -452,9 +258,17 @@
 
 
                 <f:facet name="footer">
-                    #{messages.recordTotal} #{newOrderItems.size} #{messages.item}
+                    #{messages.recordTotal} #{orderChange.overlyItems.size} #{messages.item}
                 </f:facet>
             </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.field_memo}
+                </f:facet>
+                <rich:inplaceInput value="#{_item.memo}" style="width: 95%"/>
+            </rich:column>
+
             <rich:column>
                 <f:facet name="header">
                     #{messages.orderItemCount}
@@ -464,50 +278,91 @@
                 </h:outputText>
             </rich:column>
 
+
             <rich:column>
                 <f:facet name="header">
                     #{messages.Res_Unit}
                 </f:facet>
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <h:selectOneMenu label="#{messages.Res_Unit}" style="min-width: 70px" value="#{_item.resUnit}"
-                                     required="true">
-                        <s:selectItems value="#{_item.storeRes.res.unitGroup.resUnitList}"
+                <s:decorate template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceSelect value="#{_item.useUnit}" style="width: 95%" required="true"
+                                        label="#{messages.Res_Unit}">
+                        <s:selectItems value="#{_item.res.unitGroup.resUnitList}"
                                        var="_unit" label="#{_unit.name}"/>
-                        <a:ajax event="valueChange" listener="#{orderChange.calcByRate}"
-                                render="orderTotalPrice,newOrderItemsTable"/>
+                        <a:ajax event="selectitem" listener="#{orderHome.calcMoneys}"
+                                render="newOrderItemsTable" execute="@this"/>
                         <f:converter converterId="erpEntityConverter"/>
-                    </h:selectOneMenu>
+                    </rich:inplaceSelect>
                 </s:decorate>
             </rich:column>
 
             <rich:column>
                 <f:facet name="header">
+                    #{messages.needConvertRate}
+                </f:facet>
+                <s:decorate
+                        rendered="#{(_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT') and (not _item.presentation)}"
+                        template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceInput value="#{_item.inputNeedConvertRate}"
+                                       label="#{messages.needConvertRate}"
+                                       style="width: 95%" required="true">
+                        <f:convertNumber pattern="#0.##########"/>
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax event="blur" execute="@this" render="newOrderItemsTable"/>
+                    </rich:inplaceInput>
+                </s:decorate>
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
                     #{messages.orderItemUnitPrice}
                 </f:facet>
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <h:inputText value="#{_item.money}" required="true" size="10"
-                                 label="#{messages.orderItemUnitPrice}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                         groupingUsed="false"/>
-                        <a:ajax event="blur" listener="#{orderChange.calcByRate}"
-                                render="orderTotalPrice,newOrderItemsTable"/>
-                    </h:inputText>
+
+                <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceInput value="#{_item.inputMoney}" required="true"
+                                       label="#{messages.orderItemUnitPrice}" style="width: 95%">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"
+                                         groupingUsed="false" currencySymbol=""/>
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
+                                render="newOrderItemsTable"/>
+                    </rich:inplaceInput>
                 </s:decorate>
+
             </rich:column>
 
             <rich:column>
                 <f:facet name="header">
                     #{messages.orderItemPriceRebate}
                 </f:facet>
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <h:inputText value="#{_item.rebate}" label="#{messages.orderItemPriceRebate}"
-                                 size="5" required="true">
-                        <f:validateLongRange minimum="0" maximum="100"/>
-                        <f:convertNumber pattern="#0.###"/>
-                        <a:ajax event="blur" listener="#{orderChange.calcByRate}"
-                                render="orderTotalPrice,newOrderItemsTable"/>
-                    </h:inputText>
+
+                <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
+                    <ui:define name="label">%</ui:define>
+                    <rich:inplaceInput value="#{_item.inputRebate}" required="true"
+                                       label="#{messages.orderItemPriceRebate}"
+                                       style="width: 95%">
+                        <f:convertNumber pattern="#0.##"/>
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
+                                render="newOrderItemsTable"/>
+                    </rich:inplaceInput>
                 </s:decorate>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.needItemTotalMoney}
+                </f:facet>
+                <h:outputText value="#{_item.needMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{orderChange.owesTotalNeedMoney}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </f:facet>
             </rich:column>
 
             <rich:column style="text-align: right">
@@ -515,68 +370,192 @@
                     #{messages.orderItemTotalPrice}
                 </f:facet>
 
-                <h:outputText value="#{_item.totalPrice}">
+                <h:outputText value="#{_item.totalMoney}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>
                 <f:facet name="footer">
-                    <h:outputText value="#{orderChange.newItemTotalMoney}">
+                    <h:outputText value="#{orderChange.owesTotalMoney}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+        </rich:dataTable>
+    </a:outputPanel>
+</a:region>
+</a:outputPanel>
+
+
+<br/>
+<a:outputPanel rendered="#{not empty orderChange.overlyItems}">
+
+    <a:region>
+        <rich:dataTable id="newOrderItemsTable" style="width:100%" value="#{orderChange.overlyItems}" var="_item">
+
+            <f:facet name="header">#{messages.new_orderItems}</f:facet>
+            <rich:column style="text-align: center">
+                <f:facet name="header">
+                    #{messages.Presentation}
+                </f:facet>
+                <h:selectBooleanCheckbox value="#{_item.free}">
+                    <a:ajax event="click" execute="@this" listener="#{orderHome.calcMoneys}"
+                            render="newOrderItemsTable"/>
+                </h:selectBooleanCheckbox>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItems}
+                </f:facet>
+
+                #{messages.StoreRes}:
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                </ui:include>
+
+
+                <f:facet name="footer">
+                    #{messages.recordTotal} #{orderChange.overlyItems.size} #{messages.item}
+                </f:facet>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.field_memo}
+                </f:facet>
+                <rich:inplaceInput value="#{_item.memo}" style="width: 95%"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemCount}
+                </f:facet>
+                <h:outputText value="#{_item.useUnitCount}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.Res_Unit}
+                </f:facet>
+                <s:decorate template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceSelect value="#{_item.useUnit}" style="width: 95%" required="true"
+                                        label="#{messages.Res_Unit}">
+                        <s:selectItems value="#{_item.res.unitGroup.resUnitList}"
+                                       var="_unit" label="#{_unit.name}"/>
+                        <a:ajax event="selectitem" listener="#{orderHome.calcMoneys}"
+                                render="newOrderItemsTable" execute="@this"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                    </rich:inplaceSelect>
+                </s:decorate>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.needConvertRate}
+                </f:facet>
+                <s:decorate
+                        rendered="#{(_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT') and (not _item.presentation)}"
+                        template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceInput value="#{_item.inputNeedConvertRate}"
+                                       label="#{messages.needConvertRate}"
+                                       style="width: 95%" required="true">
+                        <f:convertNumber pattern="#0.##########"/>
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax event="blur" execute="@this" render="newOrderItemsTable"/>
+                    </rich:inplaceInput>
+                </s:decorate>
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemUnitPrice}
+                </f:facet>
+
+                <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceInput value="#{_item.inputMoney}" required="true"
+                                       label="#{messages.orderItemUnitPrice}" style="width: 95%">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"
+                                         groupingUsed="false" currencySymbol=""/>
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
+                                render="newOrderItemsTable"/>
+                    </rich:inplaceInput>
+                </s:decorate>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemPriceRebate}
+                </f:facet>
+
+                <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
+                    <ui:define name="label">%</ui:define>
+                    <rich:inplaceInput value="#{_item.inputRebate}" required="true"
+                                       label="#{messages.orderItemPriceRebate}"
+                                       style="width: 95%">
+                        <f:convertNumber pattern="#0.##"/>
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
+                                render="newOrderItemsTable"/>
+                    </rich:inplaceInput>
+                </s:decorate>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.needItemTotalMoney}
+                </f:facet>
+                <h:outputText value="#{_item.needMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{orderChange.overlyTotalNeedMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
                 </f:facet>
             </rich:column>
 
-            <rich:column style="text-align: center;">
+            <rich:column style="text-align: right">
                 <f:facet name="header">
-
+                    #{messages.orderItemTotalPrice}
                 </f:facet>
-                <a:commandButton image="/img/match_price.png"
-                                 title="#{messages.splitOrderItem}"
-                                 oncomplete="#{rich:component('splitItemCountInput')}.show();"
-                                 render="splitItemCountInput_inputs"
-                                 action="#{orderChange.beginSplitOrderItem}">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
+
+                <h:outputText value="#{_item.totalMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{orderChange.overlysTotalMoney}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </f:facet>
             </rich:column>
-
         </rich:dataTable>
-    </h:form>
-</rich:panel>
+    </a:region>
 
-<s:decorate template="/layout/edit-modalpanel.xhtml">
-    <ui:param name="panelId" value="splitItemCountInput"/>
-    <ui:param name="panelTitle" value="#{messages.splitOrderItem}"/>
 
-    <ui:define name="controls">
-        <a:commandButton immediate="true"
-                         execute="@this" image="/img/close.png"
-                         onclick="#{rich:component(panelId)}.hide(); return false;">
-        </a:commandButton>
-    </ui:define>
+</a:outputPanel>
 
-    <div style="clear: both"/>
+</h:form>
 
-    <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+<br/>
 
-        <ui:param name="inputValue" value="#{orderItemSplit.newOrderItem}"/>
-        <ui:param name="formatTemplate" value="/layout/edit.xhtml"/>
-        <ui:param name="countLableStyleClass" value="small_name"/>
-    </ui:include>
 
-    <ui:define name="actionButtons">
-        <a:commandButton immediate="true" execute="@this" value="#{messages.cancel}"
-                         onclick="#{rich:component(panelId)}.hide(); return false;"/>
-        <a:commandButton value="#{messages.ok}" execute="@form"
-                         data="#{actionExecuteState.lastState}"
+<ui:include src="/layout/erp/OrderItemTable.xhtml">
+    <ui:param name="orderItems" value="#{orderChange.completeOrderItems}"/>
+    <ui:param name="showMiddleMoney" value="false"/>
+    <ui:param name="tableTitle" value="#{messages.completeOrderItems}"/>
+</ui:include>
 
-                         render="orderTotalPrice,newOrderItemsTable,subOverlyOrderItem"
-                         oncomplete="if (event.data == 'success')#{rich:component(panelId)}.hide();"
-                         action="#{orderItemSplit.splitOrderItem}">
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-    </ui:define>
-</s:decorate>
 
 <br/>
 <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
@@ -592,12 +571,6 @@
             <ui:param name="openLabel" value="#{messages.Customer}"/>
             <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
         </s:decorate>
-
-        <ui:include src="/layout/erp/OrderItemTable.xhtml">
-            <ui:param name="orderItems" value="#{orderHome.instance.allOrderItemList}"/>
-            <ui:param name="totalItemMoney" value="#{orderHome.resTotalMoney}"/>
-            <ui:param name="totalMiddleMoney" value="#{orderHome.totalItemMiddleMoney}"/>
-        </ui:include>
     </s:decorate>
 </rich:collapsiblePanel>
 

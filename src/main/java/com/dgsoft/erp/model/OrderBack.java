@@ -119,7 +119,7 @@ public class OrderBack implements java.io.Serializable {
         this.productBackStoreIn = productBackReses;
     }
 
-    @OneToMany(orphanRemoval = false, mappedBy ="orderBack" ,fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.MERGE})
+    @OneToMany(orphanRemoval = false, mappedBy = "orderBack", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     public Set<AccountOper> getAccountOpers() {
         return accountOpers;
     }
@@ -188,15 +188,17 @@ public class OrderBack implements java.io.Serializable {
     }
 
     @Transient
-    public List<BackItem> getBackItemList(){
+    public List<BackItem> getBackItemList() {
         List<BackItem> result = new ArrayList<BackItem>(getBackItems());
-        Collections.sort(result,new Comparator<BackItem>() {
+        Collections.sort(result, new Comparator<BackItem>() {
             @Override
             public int compare(BackItem o1, BackItem o2) {
                 int cResult = o1.getStoreRes().compareTo(o2.getStoreRes());
-                if (cResult == 0){
-                    return o1.getId().compareTo(o2.getId());
-                }else{
+                if (cResult == 0) {
+                    if ((o1.getId() != null) && (o2.getId() != null)) {
+                        return o1.getId().compareTo(o2.getId());
+                    } else return 0;
+                } else {
                     return cResult;
                 }
 

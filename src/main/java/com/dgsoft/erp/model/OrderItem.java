@@ -40,9 +40,7 @@ public class OrderItem extends StoreResPriceEntity
 
     private Dispatch dispatch;
     private OrderItemStatus status;
-    //private boolean storeOut;
-    //private StockChange stockChange;
-    private StockChangeItem stockChangeItem;
+
     private boolean overlyOut;
     private BigDecimal needConvertRate;
     private BigDecimal totalMoney;
@@ -55,7 +53,8 @@ public class OrderItem extends StoreResPriceEntity
 
     public OrderItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
-        needConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))
+            needConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
     }
 
     public OrderItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
@@ -64,9 +63,9 @@ public class OrderItem extends StoreResPriceEntity
     }
 
     //    //create by recreate order
-    public OrderItem(NeedRes needRes,StoreRes storeRes,ResUnit resUnit,BigDecimal count,
-                     BigDecimal money,BigDecimal rebate,boolean presentation,
-                     String memo,BigDecimal needConvertRate) {
+    public OrderItem(NeedRes needRes, StoreRes storeRes, ResUnit resUnit, BigDecimal count,
+                     BigDecimal money, BigDecimal rebate, boolean presentation,
+                     String memo, BigDecimal needConvertRate) {
         this.needRes = needRes;
         this.storeRes = storeRes;
         this.resUnit = resUnit;
@@ -81,10 +80,11 @@ public class OrderItem extends StoreResPriceEntity
         overlyOut = false;
         calcMoney();
     }
-//
+
+    //
 //    //create Dispatch split item
-    public OrderItem(Dispatch dispatch,StoreRes storeRes, BigDecimal count, BigDecimal money,
-                     BigDecimal rebate, ResUnit resUnit,boolean presentation,String memo,BigDecimal needConvertRate){
+    public OrderItem(Dispatch dispatch, StoreRes storeRes, BigDecimal count, BigDecimal money,
+                     BigDecimal rebate, ResUnit resUnit, boolean presentation, String memo, BigDecimal needConvertRate) {
         this.dispatch = dispatch;
         this.needRes = dispatch.getNeedRes();
         this.storeRes = storeRes;
@@ -101,18 +101,21 @@ public class OrderItem extends StoreResPriceEntity
 
     }
 
-//    //create OverlyOut Item
+    //    //create OverlyOut Item
     public OrderItem(Dispatch dispatch, StoreRes storeRes) {
         this.dispatch = dispatch;
         this.needRes = dispatch.getNeedRes();
         this.storeRes = storeRes;
+        count = BigDecimal.ZERO;
         status = OrderItemStatus.DISPATCHED;
         overlyOut = true;
         needConvertRate = storeRes.getFloatConversionRate();
         presentation = false;
         resUnit = storeRes.getRes().getResUnitByOutDefault();
+        rebate = new BigDecimal("100");
     }
-//
+
+    //
     // oweOut convert to orderItem
     public OrderItem(StoreRes storeRes, BigDecimal count, boolean presentation,
                      OrderItemStatus status, boolean overlyOut, String memo, BigDecimal needConvertRate) {
@@ -123,13 +126,14 @@ public class OrderItem extends StoreResPriceEntity
         this.status = status;
         this.overlyOut = overlyOut;
         this.needConvertRate = needConvertRate;
+        rebate = new BigDecimal("100");
     }
 
 
     @Override
-    public void setFree(boolean free){
+    public void setFree(boolean free) {
         super.setFree(free);
-        if (free){
+        if (free) {
             setNeedMoney(BigDecimal.ZERO);
         }
     }
@@ -150,9 +154,9 @@ public class OrderItem extends StoreResPriceEntity
     }
 
     @Override
-    public void calcMoney(){
+    public void calcMoney() {
         if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) &&
-                (getNeedConvertRate() == null) && !getUseUnit().isMasterUnit()){
+                (getNeedConvertRate() == null) && !getUseUnit().isMasterUnit()) {
             throw new IllegalArgumentException("param not enough can't calc");
         }
         super.calcMoney();
@@ -329,16 +333,6 @@ public class OrderItem extends StoreResPriceEntity
         this.status = status;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "STOCK_CHANGE_ITEM", nullable = true)
-    public StockChangeItem getStockChangeItem() {
-        return stockChangeItem;
-    }
-
-    public void setStockChangeItem(StockChangeItem stockChangeItem) {
-        this.stockChangeItem = stockChangeItem;
-    }
-
     @Column(name = "OVERLAY_OUT", nullable = false)
     public boolean isOverlyOut() {
         return overlyOut;
@@ -392,6 +386,7 @@ public class OrderItem extends StoreResPriceEntity
         }
         return null;
     }
+
 
     @Transient
     public BigDecimal getCalcMiddleMoney() {

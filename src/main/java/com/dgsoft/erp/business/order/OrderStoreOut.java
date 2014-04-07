@@ -54,7 +54,7 @@ public class OrderStoreOut extends OrderTaskHandle {
 
     private OrderStoreOutItem operOutItem;
 
-    //private String storeId;
+    private boolean overlyOut;
 
     private String memo;
 
@@ -81,8 +81,27 @@ public class OrderStoreOut extends OrderTaskHandle {
         return operOutItem;
     }
 
+    public boolean isOverlyOut() {
+        return overlyOut;
+    }
+
+    public void setOverlyOut(boolean overlyOut) {
+        this.overlyOut = overlyOut;
+    }
+
+    public void removeItem() {
+        if (selectOutItem.getDispatchItem() == null) {
+            orderStoreOutItems.remove(selectOutItem);
+        }
+    }
+
     public void editOverlay() {
         operOutItem = selectOutItem;
+        if (operOutItem.getDispatchItem() == null) {
+            overlyOut = true;
+        } else {
+            overlyOut = false;
+        }
         actionExecuteState.clearState();
     }
 
@@ -92,6 +111,14 @@ public class OrderStoreOut extends OrderTaskHandle {
             //operOutItem.getOverlyOut().setMasterCount(operOutItem.getDispatchItem().getMasterCount());
             return;
         }
+        if (overlyOut) {
+            if (operOutItem.getOweOut() != null) {
+                operOutItem.getOweOut().setCount(BigDecimal.ZERO);
+            }
+        } else {
+            operOutItem.getOverlayItem().setCount(BigDecimal.ZERO);
+        }
+
         actionExecuteState.actionExecute();
     }
 
@@ -132,12 +159,12 @@ public class OrderStoreOut extends OrderTaskHandle {
 
                 }
 
-                if (item.getOverlayItem().getCount().compareTo(BigDecimal.ZERO) > 0){
+                if (item.getOverlayItem().getCount().compareTo(BigDecimal.ZERO) > 0) {
                     dispatchHome.getInstance().getOrderItems().add(item.getOverlayItem());
                 }
 
 
-            }else if (item.getDispatchItem() != null){
+            } else if (item.getDispatchItem() != null) {
                 dispatchHome.getInstance().getOrderItems().remove(item.getDispatchItem());
                 item.getDispatchItem().setDispatch(null);
                 item.getDispatchItem().setStatus(OrderItem.OrderItemStatus.CREATED);
@@ -150,7 +177,7 @@ public class OrderStoreOut extends OrderTaskHandle {
             }
         }
 
-        for (OrderItem item: dispatchHome.getInstance().getOrderItems()){
+        for (OrderItem item : dispatchHome.getInstance().getOrderItems()) {
 
             Stock stock = item.getStoreRes().getStock(dispatchHome.getInstance().getStore());
 
@@ -166,18 +193,15 @@ public class OrderStoreOut extends OrderTaskHandle {
                     .add(stockChangeItem);
             stock.setCount(stock.getCount().subtract(item.getMasterCount()));
 
-            item.setStockChangeItem(stockChangeItem);
-            if (item.isOverlyOut()){
+
+            if (item.isOverlyOut()) {
                 item.setStatus(OrderItem.OrderItemStatus.WAIT_PRICE);
-            }else{
+            } else {
                 item.setStatus(OrderItem.OrderItemStatus.COMPLETED);
             }
 
 
         }
-
-
-
 
 
         dispatchHome.getInstance().setStoreOut(true);
@@ -187,8 +211,6 @@ public class OrderStoreOut extends OrderTaskHandle {
             dispatchHome.getInstance().setFare(BigDecimal.ZERO);
             dispatchHome.getInstance().getNeedRes().getCustomerOrder().setResReceived(true);
         }
-
-
 
 
         //if (allStoreOut) {
@@ -243,80 +265,15 @@ public class OrderStoreOut extends OrderTaskHandle {
 
 
     @In(create = true)
-    private ResHome resHome;
+    private OrderItemCreate orderItemCreate;
 
     @In(create = true)
     private StoreResHome storeResHome;
 
-    @In(required = false)
-    private ResCategoryHome resCategoryHome;
-
-    @In
-    private ResHelper resHelper;
-
-    private OrderItem newOverlyOut;
-
-    public OrderItem getNewOverlyOut() {
-        return newOverlyOut;
-    }
-
-    public void setNewOverlyOut(OrderItem newOverlyOut) {
-        this.newOverlyOut = newOverlyOut;
-    }
-
-    @In(create = true)
-    private ResLocate resLocate;
-
-    public void locateByCode() {
-
-        switch (resLocate.locateByCode(StockChange.StoreChangeType.SELL_OUT)) {
-
-            case NOT_FOUND:
-                break;
-            case FOUND_STORERES:
-                storeResSelected();
-                break;
-            case FOUND_RES:
-                resSelected();
-                break;
-        }
-    }
-
-    public void resCategorySelected() {
-        newOverlyOut = null;
-        resHome.clearInstance();
-        storeResHome.clearInstance();
-    }
-
-    public void resSelected() {
-        newOverlyOut = new OrderItem(resHome.getInstance(),
-                resHelper.getFormatHistory(resHome.getInstance()),
-                resHelper.getFloatConvertRateHistory(resHome.getInstance()),
-                resHome.getInstance().getResUnitByInDefault());
-
-        resCategoryHome.setId(resHome.getInstance().getResCategory().getId());
-    }
-
-    public void storeResSelected() {
-        resHome.setId(storeResHome.getInstance().getRes().getId());
-        newOverlyOut = new OrderItem(storeResHome.getInstance(),
-                resHelper.getFormatHistory(resHome.getInstance()),
-                resHelper.getFloatConvertRateHistory(resHome.getInstance()),
-                resHome.getInstance().getResUnitByInDefault());
-
-        resCategoryHome.setId(storeResHome.getInstance().getRes().getResCategory().getId());
-    }
-
-    public void resChange() {
-        newOverlyOut = new OrderItem(resHome.getInstance(),
-                resHelper.getFormatHistory(resHome.getInstance()),
-                resHelper.getFloatConvertRateHistory(resHome.getInstance()),
-                resHome.getInstance().getResUnitByInDefault());
-    }
-
 
     public void addNewOverlyOut() {
 
+        OrderItem newOverlyOut = orderItemCreate.getEditingItem();
 
         if (newOverlyOut == null) {
             throw new IllegalArgumentException("editingItem state error");
@@ -327,15 +284,15 @@ public class OrderStoreOut extends OrderTaskHandle {
 
 
         if (!storeResHome.isIdDefined()) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "storeResNotDefine");
             return;
         }
 
         for (OrderStoreOutItem item : orderStoreOutItems) {
             if (item.getStoreRes().equals(storeResHome.getInstance())) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
-                        " sale_store_out_item_exists");
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                        "sale_store_out_item_exists");
                 return;
             }
         }
@@ -347,14 +304,14 @@ public class OrderStoreOut extends OrderTaskHandle {
         newOverlyOut.setNeedRes(dispatchHome.getInstance().getNeedRes());
         newOverlyOut.setDispatch(dispatchHome.getInstance());
         newOverlyOut.setPresentation(false);
-
+        newOverlyOut.setRebate(new BigDecimal("100"));
+        if (newOverlyOut.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            newOverlyOut.setNeedConvertRate(newOverlyOut.getStoreRes().getFloatConversionRate());
+        }
 
 
         orderStoreOutItems.add(new OrderStoreOutItem(newOverlyOut));
-        newOverlyOut = null;
-        resCategoryHome.clearInstance();
-        resHome.clearInstance();
-        storeResHome.clearInstance();
+        orderItemCreate.clear();
     }
 
     public class OrderStoreOutItem extends StoreResCountEntity implements Serializable {
@@ -384,21 +341,20 @@ public class OrderStoreOut extends OrderTaskHandle {
 
         public OrderStoreOutItem(OrderItem orderItem) {
 
-            if (dispatchItem.isOverlyOut()){
+            if (orderItem.isOverlyOut()) {
                 this.overlayItem = orderItem;
-            }else{
+            } else {
                 this.dispatchItem = orderItem;
-                oweOut = new OweOut(orderItem.getDispatch(),orderItem.getStoreRes(),
-                        BigDecimal.ZERO,orderItem.getMemo(),orderItem.getNeedConvertRate());
-                overlayItem = new OrderItem(orderItem.getDispatch(),orderItem.getStoreRes());
+                oweOut = new OweOut(orderItem.getDispatch(), orderItem.getStoreRes(),
+                        BigDecimal.ZERO, orderItem.getMemo(), orderItem.getNeedConvertRate());
+                overlayItem = new OrderItem(orderItem.getDispatch(), orderItem.getStoreRes());
             }
 
         }
 
         public Stock getStock() {
-
-           return getStoreRes().getStock(dispatchItem.getDispatch().getStore());
-
+            return getStoreRes().getStock(
+                    (dispatchItem == null) ? overlayItem.getDispatch().getStore() : dispatchItem.getDispatch().getStore());
         }
 
         public boolean isEnough() {
@@ -426,11 +382,11 @@ public class OrderStoreOut extends OrderTaskHandle {
             } else {
                 masterCount = BigDecimal.ZERO;
             }
-            if (oweOut.getCount().compareTo(BigDecimal.ZERO) > 0){
+            if ((oweOut != null) && (oweOut.getCount().compareTo(BigDecimal.ZERO) > 0)) {
                 masterCount = masterCount.subtract(oweOut.getMasterCount());
             }
 
-            if (overlayItem.getCount().compareTo(BigDecimal.ZERO) > 0){
+            if (overlayItem.getCount().compareTo(BigDecimal.ZERO) > 0) {
                 masterCount = masterCount.add(overlayItem.getCount());
             }
 
@@ -453,6 +409,13 @@ public class OrderStoreOut extends OrderTaskHandle {
         @Override
         public void setStoreRes(StoreRes storeRes) {
             throw new IllegalArgumentException("this is readonly");
+        }
+
+        public void reset() {
+            if (dispatchItem != null) {
+                oweOut.setCount(BigDecimal.ZERO);
+                overlayItem.setCount(BigDecimal.ZERO);
+            }
         }
     }
 

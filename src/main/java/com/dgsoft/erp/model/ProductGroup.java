@@ -142,7 +142,9 @@ public class ProductGroup implements Comparable<ProductGroup>, java.io.Serializa
         Collections.sort(result, new Comparator<Res>() {
             @Override
             public int compare(Res o1, Res o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;
@@ -173,7 +175,9 @@ public class ProductGroup implements Comparable<ProductGroup>, java.io.Serializa
         Collections.sort(result, new Comparator<ProductGroup>() {
             @Override
             public int compare(ProductGroup o1, ProductGroup o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;

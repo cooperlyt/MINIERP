@@ -49,7 +49,11 @@ public class OrgLimitEmployee {
             Collections.sort(orgEmployees, new Comparator<Employee>() {
                 @Override
                 public int compare(Employee o1, Employee o2) {
-                    return o1.getId().compareTo(o2.getId());
+                    if ((o1.getId() != null) && (o2.getId() != null)) {
+                        return o1.getId().compareTo(o2.getId());
+                    } else {
+                        return 0;
+                    }
                 }
             });
         }

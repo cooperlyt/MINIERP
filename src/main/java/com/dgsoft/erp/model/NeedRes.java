@@ -20,7 +20,7 @@ public class NeedRes implements java.io.Serializable {
         ORDER_SEND, SUPPLEMENT_SEND;
     }
 
-    public enum NeedResStatus{
+    public enum NeedResStatus {
         CREATED, DISPATCHED, OUTED;
     }
 
@@ -199,7 +199,10 @@ public class NeedRes implements java.io.Serializable {
             public int compare(OrderItem o1, OrderItem o2) {
                 int result = o1.getStoreRes().getRes().getId().compareTo(o2.getStoreRes().getRes().getId());
                 if (result == 0) {
-                    result = o1.getId().compareTo(o2.getId());
+                    if (o1.getId() != null) {
+                        result = o1.getId().compareTo(o2.getId());
+                    } else
+                        return 0;
                 }
                 return result;
             }
@@ -209,10 +212,10 @@ public class NeedRes implements java.io.Serializable {
     }
 
     @Transient
-    public List<OrderItem> getNoZeroItemList(){
+    public List<OrderItem> getNoZeroItemList() {
         List<OrderItem> result = new ArrayList<OrderItem>();
-        for (OrderItem item: getOrderItemList()){
-            if (item.getTotalMoney().compareTo(BigDecimal.ZERO) > 0){
+        for (OrderItem item : getOrderItemList()) {
+            if (item.getTotalMoney().compareTo(BigDecimal.ZERO) > 0) {
                 result.add(item);
             }
         }
@@ -234,7 +237,9 @@ public class NeedRes implements java.io.Serializable {
         Collections.sort(result, new Comparator<Dispatch>() {
             @Override
             public int compare(Dispatch o1, Dispatch o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;
@@ -250,7 +255,7 @@ public class NeedRes implements java.io.Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name="STATUS",nullable = false,length = 32)
+    @Column(name = "STATUS", nullable = false, length = 32)
     @NotNull
     public NeedResStatus getStatus() {
         return status;
@@ -286,7 +291,7 @@ public class NeedRes implements java.io.Serializable {
         if (!isFareByCustomer())
             for (Dispatch dispatch : getDispatches()) {
                 if (dispatch.getDeliveryType().isHaveFare() &&
-                        dispatch.getFare() != null){
+                        dispatch.getFare() != null) {
                     result = result.add(dispatch.getFare());
                 }
             }

@@ -8,7 +8,7 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/erp/OrderFinanceReceive.xhtml">
 
-    <ui:param name="functionTitle" value="#{messages.orderEarnestPay}"/>
+    <ui:param name="functionTitle" value="#{orderEarnestReceive.taskName}"/>
 
     <ui:param name="orderFinanceReveiveAction" value="#{orderEarnestReceive}"/>
     <ui:define name="toolbarContext">
@@ -20,7 +20,7 @@
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
                 #{messages.order_money_real}
-                <h:outputText value="#{orderEarnestReceive.totalReveiveMoney}">
+                <h:outputText value="#{orderHome.instance.receiveMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
                 #{messages.order_money_lacking}

@@ -30,8 +30,6 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
 
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
-    private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
-
     public StockChangeItem() {
     }
 
@@ -138,12 +136,4 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.memo = memo;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "stockChangeItem")
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
 }

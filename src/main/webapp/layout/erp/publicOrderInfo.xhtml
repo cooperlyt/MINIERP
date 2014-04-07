@@ -60,11 +60,6 @@
         <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.moneyComplete}"/>
     </s:decorate>
 
-    <s:decorate template="/layout/seam-display.xhtml" rendered="#{not empty orderHome.instance.arrears}">
-        <ui:define name="label">#{messages.order_field_arrears}</ui:define>
-        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.arrears}"/>
-    </s:decorate>
-
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.order_field_allStoreOut}</ui:define>
         <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.allStoreOut}"/>

@@ -181,7 +181,9 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
         Collections.sort(result, new Comparator<Accounting>() {
             @Override
             public int compare(Accounting o1, Accounting o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;

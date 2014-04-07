@@ -59,6 +59,51 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+
+    private boolean useScaleRebate = false;
+
+    public boolean isUseScaleRebate() {
+        return useScaleRebate;
+    }
+
+    public void setUseScaleRebate(boolean useScaleRebate) {
+        this.useScaleRebate = useScaleRebate;
+    }
+
+    public void setOrderRebate(BigDecimal rebate) {
+        if (useScaleRebate) {
+            calcTotalResMoney();
+            if (DataFormat.isEmpty(rebate)) {
+                getInstance().setTotalRebateMoney(getInstance().getResMoney());
+            } else {
+                getInstance().setTotalRebateMoney(
+                        getInstance().getResMoney().subtract(getInstance().getResMoney().
+                                multiply(rebate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP))));
+            }
+        } else {
+            getInstance().setTotalRebateMoney(rebate);
+        }
+        calcMoneys();
+    }
+
+    public BigDecimal getOrderRebate() {
+        if (useScaleRebate) {
+            return getInstance().getTotalRebate();
+        } else {
+            return getInstance().getTotalRebateMoney();
+        }
+    }
+
+    public void setInputOrderMoney(BigDecimal money) {
+        getInstance().setMoney(money);
+        calcTotalResMoney();
+        getInstance().setTotalRebateMoney(getInstance().getResMoney().subtract(money));
+    }
+
+    public BigDecimal getInputOrderMoney() {
+        return getInstance().getMoney();
+    }
+
     public String getToastMessages() {
 
 
@@ -90,9 +135,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         for (TotalDataGroup<Store, OrderItem> group : getDispatchItemGroups()) {
 
-            result.append(group.getKey().getName() + "\n");
+            result.append("\n" + group.getKey().getName());
             for (StoreResCountEntity item : group.getValues()) {
-                result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
+                result.append("\n\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
                 result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
                 result.append(item.getRes().getResUnitByInDefault().getName());
             }
@@ -102,11 +147,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         List<OrderItem> createdItems = getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED));
         if (!createdItems.isEmpty()) {
-            result.append(messages.get("no_dispatch_order_items") + "\n");
+            result.append("\n" + messages.get("no_dispatch_order_items"));
         }
 
         for (OrderItem item : createdItems) {
-            result.append("\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
+            result.append("\n\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
             result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
             result.append(item.getRes().getResUnitByInDefault().getName());
         }
@@ -228,6 +273,15 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+
+    public BigDecimal getLastResTotalMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderItem item : getLastNeedRes().getOrderItems()) {
+            if (item.getTotalMoney() != null)
+                result = result.add(item.getTotalMoney());
+        }
+        return result;
+    }
 
     public NeedRes getMasterNeedRes() {
         for (NeedRes nr : getInstance().getNeedReses()) {

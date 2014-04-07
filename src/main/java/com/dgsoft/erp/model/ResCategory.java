@@ -126,7 +126,9 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
         Collections.sort(result, new Comparator<Res>() {
             @Override
             public int compare(Res o1, Res o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;
@@ -147,7 +149,9 @@ public class ResCategory implements java.io.Serializable, ResTreeNode {
         Collections.sort(result, new Comparator<ResCategory>() {
             @Override
             public int compare(ResCategory o1, ResCategory o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;

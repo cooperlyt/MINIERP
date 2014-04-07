@@ -8,7 +8,7 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-<ui:param name="functionTitle" value="#{messages.orderShip}"/>
+<ui:param name="functionTitle" value="#{orderShip.taskName}"/>
 
 <ui:define name="func-body">
 
@@ -74,7 +74,7 @@
                 <h:outputText value="#{messages.EXPRESS_PROXY}:"
                               rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}"/>
 
-                <h:outputText value="#{orderStoreOut.shortageMoney}"
+                <h:outputText value="#{orderHome.instance.shortageMoney}"
                               rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency" groupingUsed="true"/>

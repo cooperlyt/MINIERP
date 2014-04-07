@@ -131,12 +131,14 @@ public class Organization implements java.io.Serializable, TreeNode {
     }
 
     @Transient
-    public List<Employee> getEmployeeList(){
+    public List<Employee> getEmployeeList() {
         List<Employee> result = new ArrayList<Employee>(getEmployees());
-        Collections.sort(result,new Comparator<Employee>() {
+        Collections.sort(result, new Comparator<Employee>() {
             @Override
             public int compare(Employee o1, Employee o2) {
-                return o1.getId().compareTo(o2.getId());
+                if ((o1.getId() != null) && (o2.getId() != null)) {
+                    return o1.getId().compareTo(o2.getId());
+                } else return 0;
             }
         });
         return result;
@@ -148,7 +150,9 @@ public class Organization implements java.io.Serializable, TreeNode {
         Collections.sort(result, new Comparator<Organization>() {
             @Override
             public int compare(Organization o1, Organization o2) {
-                return o1.getName().compareTo(o2.getName());
+                if ((o1.getName() != null) && (o2.getName() != null)) {
+                    return o1.getName().compareTo(o2.getName());
+                } else return 0;
             }
         });
         return result;
@@ -195,7 +199,6 @@ public class Organization implements java.io.Serializable, TreeNode {
     public Enumeration children() {
         return Iterators.asEnumeration(getOrganizationList().iterator());
     }
-
 
 
 }

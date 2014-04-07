@@ -67,7 +67,7 @@ public class AccountOper implements java.io.Serializable {
                        BigDecimal operMoney, AccountOperType operType,
                        Date operDate,
                        String description, PayType payType, CustomerOrder customerOrder,
-                       String checkNumber) {
+                       String checkNumber,BigDecimal remitFee) {
         this.customer = customer;
         this.operEmp = operEmp;
         this.operMoney = operMoney;
@@ -77,6 +77,7 @@ public class AccountOper implements java.io.Serializable {
         this.payType = payType;
         this.customerOrder = customerOrder;
         this.checkNumber = checkNumber;
+        this.remitFee = remitFee;
     }
 
 

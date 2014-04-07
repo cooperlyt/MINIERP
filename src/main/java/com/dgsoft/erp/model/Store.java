@@ -242,7 +242,9 @@ public class Store implements Serializable, TreeNode, Comparable<Store> {
         Collections.sort(result, new Comparator<StoreArea>() {
             @Override
             public int compare(StoreArea o1, StoreArea o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;

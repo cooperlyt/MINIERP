@@ -8,85 +8,130 @@
                 xmlns:a="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <rich:dataTable style="width: 100%" value="#{orderItems}" var="_item"
-                    rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role) or s:hasRole('erp.finance.accountancy') }">
+<rich:dataTable style="width: 100%" value="#{orderItems}" var="_item"
+                rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role) or s:hasRole('erp.finance.accountancy') }">
 
+    <f:facet name="header">
+        #{(empty tableTitle) ? messages.orderItems : tableTitle}
+    </f:facet>
+
+    <rich:column style="text-align: center">
         <f:facet name="header">
-            #{messages.orderItems}
+            #{messages.Presentation}
         </f:facet>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.orderItem}
-            </f:facet>
-          <a:outputPanel>
-                #{messages.StoreRes}:
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
-                </ui:include>
-            </a:outputPanel>
-
-            <f:facet name="footer">
-                #{messages.recordTotal} #{orderItems.size} #{messages.item}
-            </f:facet>
-
-        </rich:column>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.orderItemCount}
-            </f:facet>
-            <h:outputText value="#{_item.useUnitCount}">
-                <f:convertNumber pattern="#0.####"/>
-            </h:outputText>
+        <h:selectBooleanCheckbox disabled="true" value="#{_item.presentation}"/>
+    </rich:column>
 
 
+    <rich:column>
+        <f:facet name="header">
+            #{messages.orderItem}
+        </f:facet>
+        <a:outputPanel>
 
-        </rich:column>
-        <rich:column style="text-align: center">
-            <f:facet name="header">
-                #{messages.Res_Unit}
-            </f:facet>
-            #{_item.resUnit.name}
-        </rich:column>
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="#{_item.storeRes}"/>
+            </ui:include>
+        </a:outputPanel>
 
-        <rich:column style="text-align: right">
-            <f:facet name="header">
-                #{messages.orderItemUnitPrice}
-            </f:facet>
-            <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
+        <f:facet name="footer">
+            #{messages.recordTotal} #{orderItems.size} #{messages.item}
+        </f:facet>
+
+    </rich:column>
+
+    <rich:column>
+        <f:facet name="header">
+            #{messages.field_memo}
+        </f:facet>
+        #{_item.memo}
+    </rich:column>
+
+    <rich:column>
+        <f:facet name="header">
+            #{messages.orderItemCount}
+        </f:facet>
+        <h:outputText value="#{_item.useUnitCount}">
+            <f:convertNumber pattern="#0.####"/>
+        </h:outputText>
+
+
+    </rich:column>
+    <rich:column style="text-align: center">
+        <f:facet name="header">
+            #{messages.Res_Unit}
+        </f:facet>
+        #{_item.resUnit.name}
+    </rich:column>
+
+    <rich:column>
+        <f:facet name="header">
+            #{messages.needConvertRate}
+        </f:facet>
+
+        <h:outputText rendered="#{(_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT') and (not _item.presentation)}"
+                      value="#{_item.needConvertRate}">
+            <f:convertNumber pattern="#0.##########"/>
+        </h:outputText>
+    </rich:column>
+
+    <rich:column style="text-align: right">
+        <f:facet name="header">
+            #{messages.orderItemUnitPrice}
+        </f:facet>
+        <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
+            <f:convertNumber locale="#{calendarBean.locale}"
+                             type="currency" groupingUsed="true"/>
+        </h:outputText>
+
+        <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
+
+    </rich:column>
+    <rich:column>
+        <f:facet name="header">
+            #{messages.orderItemPriceRebate}
+        </f:facet>
+        #{'%'}
+        <h:outputText value="#{_item.rebate}">
+            <f:convertNumber pattern="#0.##"/>
+        </h:outputText>
+
+    </rich:column>
+
+    <rich:column style="text-align: right">
+        <f:facet name="header">
+            #{messages.needItemTotalMoney}
+        </f:facet>
+        <h:outputText value="#{_item.needMoney}">
+            <f:convertNumber locale="#{calendarBean.locale}"
+                             type="currency" groupingUsed="true"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{totalNeedMoney}" rendered="#{not empty totalNeedMoney}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
+        </f:facet>
+    </rich:column>
 
-            <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
-
-        </rich:column>
-        <rich:column>
-            <f:facet name="header">
-                #{messages.orderItemPriceRebate}
-            </f:facet>
-            #{'%'}
-            <h:outputText value="#{_item.rebate}">
-                <f:convertNumber pattern="#0.####"/>
-            </h:outputText>
-
-        </rich:column>
-        <rich:column style="text-align: right">
-            <f:facet name="header">
-                #{messages.orderItemTotalPrice}
-            </f:facet>
-            <h:outputText value="#{_item.totalPrice}">
+    <rich:column style="text-align: right">
+        <f:facet name="header">
+            #{messages.orderItemTotalPrice}
+        </f:facet>
+        <h:outputText value="#{_item.totalMoney}">
+            <f:convertNumber locale="#{calendarBean.locale}"
+                             type="currency" groupingUsed="true"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{totalItemMoney}" rendered="#{not empty totalItemMoney}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
-            <f:facet name="footer">
-                <h:outputText value="#{totalItemMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
-                </h:outputText>
-            </f:facet>
-        </rich:column>
+        </f:facet>
+    </rich:column>
 
 
-    </rich:dataTable>
+
+</rich:dataTable>
 
 </ui:composition>

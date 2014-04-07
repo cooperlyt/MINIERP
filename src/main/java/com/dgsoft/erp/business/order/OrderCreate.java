@@ -93,9 +93,7 @@ public class OrderCreate extends OrderHome {
     public void calcMoneys() {
         super.calcMoneys();
         calcEarnest();
-        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0){
-            getInstance().setMoneyComplete(true);
-        }
+        getInstance().setMoneyComplete(getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0);
     }
 
     private void calcEarnest() {
@@ -103,50 +101,6 @@ public class OrderCreate extends OrderHome {
                 .multiply(earnestScale.divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
     }
 
-
-    private boolean useScaleRebate = false;
-
-    public boolean isUseScaleRebate() {
-        return useScaleRebate;
-    }
-
-    public void setUseScaleRebate(boolean useScaleRebate) {
-        this.useScaleRebate = useScaleRebate;
-    }
-
-    public void setOrderRebate(BigDecimal rebate) {
-        if (useScaleRebate) {
-            calcTotalResMoney();
-            if (DataFormat.isEmpty(rebate)) {
-                getInstance().setTotalRebateMoney(getInstance().getResMoney());
-            } else {
-                getInstance().setTotalRebateMoney(
-                        getInstance().getResMoney().subtract(getInstance().getResMoney().
-                                multiply(rebate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP))));
-            }
-        } else {
-            getInstance().setTotalRebateMoney(rebate);
-        }
-        calcMoneys();
-    }
-
-    public BigDecimal getOrderRebate() {
-        if (useScaleRebate) {
-            return getInstance().getTotalRebate();
-        } else {
-            return getInstance().getTotalRebateMoney();
-        }
-    }
-
-    public void setInputOrderMoney(BigDecimal money){
-        getInstance().setMoney(money);
-        calcTotalResMoney();
-        getInstance().setTotalRebateMoney(getInstance().getResMoney().subtract(money));
-    }
-
-    public BigDecimal getInputOrderMoney(){
-        return getInstance().getMoney();
-    }
 
     public void orderTelChanged() {
         if ((!DataFormat.isEmpty(getInstance().getTel())) && (DataFormat.isEmpty(getInstance().getContact()))) {
@@ -468,7 +422,7 @@ public class OrderCreate extends OrderHome {
     }
 
     public void setResItemFreeMoneyToOrder() {
-        useScaleRebate = false;
+        setUseScaleRebate(false);
         getInstance().setTotalRebateMoney(getTotalResFreeMoney());
         calcMoneys();
     }
@@ -485,7 +439,9 @@ public class OrderCreate extends OrderHome {
 
         private BigDecimal count;
 
-        private BigDecimal freeCountReate = BigDecimal.ZERO;
+        private BigDecimal freeCountBasicRate = BigDecimal.ZERO;
+
+        private BigDecimal freeCountRate = BigDecimal.ZERO;
 
         public TotalResItem(Res res, ResUnit resUnit, BigDecimal money, BigDecimal rebate, BigDecimal count) {
             this.res = res;
@@ -512,10 +468,10 @@ public class OrderCreate extends OrderHome {
         }
 
         public BigDecimal getFreeCount() {
-            if (DataFormat.isEmpty(freeCountReate)) {
+            if (DataFormat.isEmpty(freeCountBasicRate)) {
                 return BigDecimal.ZERO;
             }
-            return count.divide(freeCountReate, 0, BigDecimal.ROUND_DOWN);
+            return count.divide(freeCountBasicRate, 0, BigDecimal.ROUND_DOWN).multiply(freeCountRate);
         }
 
         public boolean isCanRebate() {
@@ -523,7 +479,7 @@ public class OrderCreate extends OrderHome {
         }
 
         public BigDecimal getFreeMoney() {
-            if (DataFormat.isEmpty(freeCountReate)) {
+            if (DataFormat.isEmpty(freeCountBasicRate)) {
                 return BigDecimal.ZERO;
             }
 
@@ -581,12 +537,20 @@ public class OrderCreate extends OrderHome {
         public void setStoreRes(StoreRes storeRes) {
         }
 
-        public BigDecimal getFreeCountReate() {
-            return freeCountReate;
+        public BigDecimal getFreeCountRate() {
+            return freeCountRate;
         }
 
-        public void setFreeCountReate(BigDecimal freeCountReate) {
-            this.freeCountReate = freeCountReate;
+        public void setFreeCountRate(BigDecimal freeCountRate) {
+            this.freeCountRate = freeCountRate;
+        }
+
+        public BigDecimal getFreeCountBasicRate() {
+            return freeCountBasicRate;
+        }
+
+        public void setFreeCountBasicRate(BigDecimal freeCountBasicRate) {
+            this.freeCountBasicRate = freeCountBasicRate;
         }
     }
 

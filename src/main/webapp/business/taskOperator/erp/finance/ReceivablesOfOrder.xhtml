@@ -11,7 +11,7 @@
 
 
 
-    <ui:param name="functionTitle" value="#{messages.orderMoneyPay}"/>
+    <ui:param name="functionTitle" value="#{orderMoneyReceive.taskName}"/>
 
     <ui:param name="orderFinanceReveiveAction" value="#{orderMoneyReceive}"/>
 
@@ -41,7 +41,7 @@
         <rich:toolbarGroup>
             <a:outputPanel ajaxRendered="true">
                 #{' '} #{messages.order_money_real}:
-                <h:outputText value="#{orderMoneyReceive.totalReveiveMoney}">
+                <h:outputText value="#{orderHome.instance.receiveMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </a:outputPanel>

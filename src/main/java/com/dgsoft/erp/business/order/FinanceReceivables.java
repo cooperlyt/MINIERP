@@ -3,6 +3,7 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
+import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
@@ -41,6 +42,10 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     }
 
     protected abstract AccountOper.AccountOperType getAccountOperType();
+
+    private Customer getCustomer() {
+        return orderHome.getInstance().getCustomer();
+    }
 
     public AccountOper getDebitAccountOper() {
         return debitAccountOper;
@@ -110,6 +115,10 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderFreeMoneyLessMoney");
             return;
         }
+        if (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) <= 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderMoneyIsComplete");
+            return;
+        }
 
         boolean saving = !debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
         //if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
@@ -117,13 +126,13 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         //}
 
         if (saving || isFreeForPay()) {
-            AccountOper savingAccountOper = new AccountOper(customerHome.getInstance(),
+            AccountOper savingAccountOper = new AccountOper(getCustomer(),
                     credentials.getUsername(), debitAccountOper.getOperMoney(),
                     isFreeForPay() ? AccountOper.AccountOperType.ORDER_FREE : AccountOper.AccountOperType.ORDER_SAVINGS,
                     isFreeForPay() ? new Date(debitAccountOper.getOperDate().getTime() + 1001) :
                             new Date(debitAccountOper.getOperDate().getTime()),
                     debitAccountOper.getDescription(), debitAccountOper.getPayType(), orderHome.getInstance(),
-                    debitAccountOper.getCheckNumber());
+                    debitAccountOper.getCheckNumber(), BigDecimal.ZERO);
             if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER) || orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                 savingAccountOper.setRemitFee(debitAccountOper.getRemitFee());
                 savingAccountOper.setBankAccount(debitAccountOper.getBankAccount());
@@ -133,12 +142,12 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             }
 
 
-            customerHome.getInstance().getAccountOpers().add(savingAccountOper);
+            orderHome.getInstance().getAccountOpers().add(savingAccountOper);
         }
 
 
         debitAccountOper.setOperType(getAccountOperType());
-        debitAccountOper.setCustomer(customerHome.getInstance());
+        debitAccountOper.setCustomer(getCustomer());
         debitAccountOper.setCustomerOrder(orderHome.getInstance());
 
 
@@ -147,12 +156,16 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             if (debitAccountOper.getOperMoney().compareTo(orderHome.getInstance().getShortageMoney()) > 0) {
                 BigDecimal saveMoney = debitAccountOper.getOperMoney().subtract(orderHome.getInstance().getShortageMoney());
                 debitAccountOper.setOperMoney(orderHome.getInstance().getShortageMoney());
-                customerHome.getInstance().setBalance(customerHome.getInstance().getBalance().add(saveMoney));
+                getCustomer().setBalance(getCustomer().getBalance().add(saveMoney));
+
+                orderHome.getInstance().getAccountOpers().add(new AccountOper(getCustomer(), credentials.getUsername(), saveMoney,
+                        AccountOper.AccountOperType.PRE_DEPOSIT, new Date(debitAccountOper.getOperDate().getTime() + 1002),
+                        "", debitAccountOper.getPayType(), orderHome.getInstance(), debitAccountOper.getCheckNumber(), BigDecimal.ZERO));
             }
 
         } else {
             if (!isFreeForPay())
-                customerHome.getInstance().setBalance(customerHome.getInstance().getBalance().subtract(debitAccountOper.getOperMoney()));
+                getCustomer().setBalance(getCustomer().getBalance().subtract(debitAccountOper.getOperMoney()));
         }
 
         //debitAccountOper.setPayType(PayType.FROM_PRE_DEPOSIT);
@@ -162,7 +175,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             debitAccountOper.setOperDate(new Date(debitAccountOper.getOperDate().getTime() + 1001));
 
 
-        customerHome.getInstance().getAccountOpers().add(debitAccountOper);
+        orderHome.getInstance().getAccountOpers().add(debitAccountOper);
 
         orderHome.calcMoneys();
         orderHome.update();

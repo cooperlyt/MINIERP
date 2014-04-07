@@ -86,7 +86,9 @@ public class ProductGroupSelect {
         Collections.sort(result, new Comparator<ProductGroup>() {
             @Override
             public int compare(ProductGroup o1, ProductGroup o2) {
+                if ((o1.getId() != null) && (o2.getId() != null)) {
                 return o1.getId().compareTo(o2.getId());
+                }else return 0;
             }
         });
         return result;

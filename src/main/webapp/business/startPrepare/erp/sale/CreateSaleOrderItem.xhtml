@@ -22,44 +22,9 @@
     }
 </h:outputStylesheet>
 
-<s:decorate template="/layout/erp/res/ResSelectModelPanel.xhtml">
-    <ui:param name="panelId" value="resSelectPanel"/>
-    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
-    <ui:param name="panelTitle" value="#{messages.res}"/>
-    <ui:define name="categoryNode">
-        <a:commandLink execute="@this" render="orderItemDetails" value="#{_node.data.name}"
-                       oncomplete="#{rich:component('resSelectPanel')}.hide()"
-                       style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
-                       action="#{orderItemCreate.resCategorySelected}">
-            <a:param value="#{_node.data.id}" assignTo="#{resCategoryHome.id}"/>
-            <s:conversationId/>
-        </a:commandLink>
-    </ui:define>
-
-    <ui:define name="resNode">
-
-        <a:commandLink execute="@this" render="orderItemDetails"
-                       action="#{orderItemCreate.resSelected}"
-                       value=" #{_node.data.name}(#{_node.data.code})"
-                       oncomplete="#{rich:component('resSelectPanel')}.hide()"
-                       style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}">
-            <a:param value="#{_node.data.id}" assignTo="#{resHome.id}"/>
-            <s:conversationId/>
-        </a:commandLink>
-
-    </ui:define>
-
-    <ui:define name="storeResNode">
-        <a:commandLink execute="@this" render="orderItemDetails"
-                       action="#{orderItemCreate.storeResSelected}"
-                       value="#{_node.data.code}#{' '}#{ _node.showTitle}"
-                       oncomplete="#{rich:component('resSelectPanel')}.hide()">
-            <a:param value="#{_node.data.id}" assignTo="#{storeResHome.id}"/>
-            <s:conversationId/>
-        </a:commandLink>
-
-    </ui:define>
-</s:decorate>
+<ui:include src="/layout/erp/biz/OrderItemCreateTree.xhtml">
+    <ui:param name="render" value="orderItemDetails"/>
+</ui:include>
 
 <rich:toolbar>
 
@@ -112,7 +77,7 @@
                         <h:selectOneMenu id="orderRebateCalcTypeField" value="#{orderCreate.useScaleRebate}">
                             <f:selectItem itemValue="#{false}" itemLabel="-"/>
                             <f:selectItem itemValue="#{true}" itemLabel="%"/>
-                            <a:ajax event="valueChange" />
+                            <a:ajax event="valueChange"/>
                         </h:selectOneMenu>
                         <a:outputPanel id="orderTotalRebateField">
                             <h:inputText id="scaleRebateInput" rendered="#{orderCreate.useScaleRebate}"
@@ -155,7 +120,7 @@
                                      label="#{messages.orderItemPrice}" required="true" size="9">
                             <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                              type="currency" groupingUsed="false"/>
-                            <a:ajax event="blur" execute="@this"
+                            <a:ajax event="blur" execute="@this" immediate="true"
                                     render="orderTotalPrice">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
@@ -182,7 +147,7 @@
                             <rich:message for="orderEarnestScaleField" styleClass="message-icon"
                                           showDetail="true" showSummary="true" tooltip="true"/>
                             <h:outputText value="#{orderCreate.instance.earnest}" style="font-weight: bold">
-                                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                             </h:outputText>
 
 
@@ -294,13 +259,22 @@
                     var="_item">
         <f:facet name="header">
             #{messages.orderItems}
+            <a:outputPanel style="float: right; padding-right: 20px;">
+                <h:panelGrid columns="2">
+                    <h:graphicImage value="/img/qq.png"/>
+                    <a id="clip-button-id" href="#" data-clipboard-text="#{orderCreate.toastMessages}"
+                       class="clipboard">
+                        #{messages.toastQQ}
+                    </a>
+                </h:panelGrid>
+            </a:outputPanel>
         </f:facet>
         <rich:column style="text-align: center">
             <f:facet name="header">
                 #{messages.Presentation}
             </f:facet>
             <h:selectBooleanCheckbox value="#{_item.free}">
-                <a:ajax event="click" execute="@this" render="orderItemListTable"/>
+                <a:ajax event="click" execute="@this" listener="#{orderCreate.calcMoneys}" render="orderItemListTable"/>
             </h:selectBooleanCheckbox>
         </rich:column>
 
@@ -337,20 +311,6 @@
             </s:decorate>
 
         </rich:column>
-
-        <rich:column>
-            <f:facet name="header">
-                #{messages.orderItemCount}
-            </f:facet>
-            <s:decorate template="/layout/grid-inside-edit.xhtml">
-                <rich:inplaceInput value="#{_item.useUnitCount}"
-                                   label="#{messages.orderItemCount}"
-                                   style="width: 95%" required="true">
-                    <f:convertNumber pattern="#{_item.useUnit.countFormate}"/>
-                    <a:ajax event="blur" execute="@this" render="orderItemListTable"/>
-                </rich:inplaceInput>
-            </s:decorate>
-        </rich:column>
         <rich:column>
             <f:facet name="header">
                 #{messages.Res_Unit}
@@ -362,10 +322,24 @@
                     <s:selectItems value="#{_item.res.unitGroup.resUnitList}" var="_unit"
                                    label="#{_unit.name}"/>
                     <f:converter converterId="erpEntityConverter"/>
-                    <a:ajax event="selectitem" execute="@this" render="orderItemListTable"/>
+                    <a:ajax event="selectitem" listener="#{orderCreate.calcMoneys}" execute="@this" render="orderItemListTable"/>
                 </rich:inplaceSelect>
             </s:decorate>
         </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderItemCount}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput value="#{_item.useUnitCount}"
+                                   label="#{messages.orderItemCount}"
+                                   style="width: 95%" required="true">
+                    <f:convertNumber pattern="#{_item.useUnit.countFormate}"/>
+                    <a:ajax event="blur" listener="#{orderCreate.calcMoneys}" execute="@this" render="orderItemListTable"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
+
 
         <rich:column style="text-align: right">
             <f:facet name="header">
@@ -373,12 +347,12 @@
             </f:facet>
 
             <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
-                <rich:inplaceInput value="#{_item.money}" required="true"
+                <rich:inplaceInput value="#{_item.inputMoney}" required="true"
                                    label="#{messages.orderItemUnitPrice}" style="width: 95%">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"
                                      groupingUsed="false" currencySymbol=""/>
                     <f:validateDoubleRange minimum="0"/>
-                    <a:ajax event="blur" execute="@this" render="orderItemListTable"/>
+                    <a:ajax event="blur" listener="#{orderCreate.calcMoneys}" execute="@this" render="orderItemListTable"/>
                 </rich:inplaceInput>
             </s:decorate>
 
@@ -389,12 +363,12 @@
             </f:facet>
             <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
                 <ui:define name="label">%</ui:define>
-                <rich:inplaceInput value="#{_item.rebate}" required="true"
+                <rich:inplaceInput value="#{_item.inputRebate}" required="true"
                                    label="#{messages.orderItemPriceRebate}"
                                    style="width: 95%">
                     <f:convertNumber pattern="#0.##"/>
                     <f:validateDoubleRange minimum="0"/>
-                    <a:ajax event="blur" execute="@this" render="orderItemListTable"/>
+                    <a:ajax event="blur" listener="#{orderCreate.calcMoneys}" execute="@this" render="orderItemListTable"/>
                 </rich:inplaceInput>
             </s:decorate>
 
@@ -433,18 +407,13 @@
             <f:facet name="header">
                 #{messages.field_memo}
             </f:facet>
-            #{_item.memo}
+            <rich:inplaceInput value="#{_item.memo}" style="width: 95%">
+                <a:ajax event="blur" render="@none"/>
+            </rich:inplaceInput>
         </rich:column>
 
         <rich:column style="text-align: center">
             <f:facet name="header">
-
-
-                <a id="clip-button-id" href="#" data-clipboard-text="#{orderCreate.toastMessages}" class="clipboard">
-                    #{messages.toastQQ}
-                </a>
-
-
             </f:facet>
             <a:commandButton image="/img/delete.png" render="orderItemListTable"
                              title="#{messages.remove}"
@@ -504,10 +473,23 @@
 
             <rich:column>
                 <f:facet name="header">
-                    #{messages.orderItemFreeCountRate}
+                    #{messages.orderItemFreeCountBasicRate}
                 </f:facet>
                 <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
-                    <rich:inplaceInput value="#{_resItem.freeCountReate}" style="width: 95%"
+                    <rich:inplaceInput value="#{_resItem.freeCountBasicRate}" style="width: 95%"
+                                       label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
+                        <f:validateDoubleRange minimum="0"/>
+                        <a:ajax execute="@this" event="blur"/>
+                    </rich:inplaceInput>
+                </s:decorate>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                     #{messages.orderItemFreeCountRate}
+                </f:facet>
+                <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
+                    <rich:inplaceInput value="#{_resItem.freeCountRate}" style="width: 95%"
                                        label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
                         <f:validateDoubleRange minimum="0"/>
                         <a:ajax execute="@this" event="blur"/>

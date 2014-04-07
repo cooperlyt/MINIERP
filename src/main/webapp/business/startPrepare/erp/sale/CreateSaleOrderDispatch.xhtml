@@ -42,12 +42,16 @@
                     </h:inputText>
 
 
+                    <s:button styleClass="toolBarBtn" value="#{messages.fallback}"
+                              view="/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml"/>
+
                     <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
 
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
 
-                    <h:commandButton styleClass="toolBarBtn"  value="#{messages.createOrder}" action="#{businessCreate.create}"/>
+                    <h:commandButton styleClass="toolBarBtn"  value="#{messages.complete}"
+                                     action="#{businessCreate.create}"/>
                 </rich:toolbarGroup>
             </rich:toolbar>
         </h:form>
