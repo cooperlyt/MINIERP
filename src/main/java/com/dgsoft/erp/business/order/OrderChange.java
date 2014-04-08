@@ -1,6 +1,9 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.erp.action.CustomerHome;
+import com.dgsoft.erp.action.NeedResHome;
+import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
@@ -22,8 +25,20 @@ import java.util.*;
 @Name("orderChange")
 public class OrderChange extends OrderTaskHandle {
 
+    private static final String SUPPLEMENT_REASON = "erp.needResReason.supplement";
+
     @In(create = true)
-    private OrderReSenderCreate orderReSenderCreate;
+    private CustomerHome customerHome;
+
+    @In(create = true)
+    private OrderDispatch orderDispatch;
+
+    @In(create = true)
+    private NeedResHome needResHome;
+
+
+//    @In(create = true)
+//    private OrderReSenderCreate orderReSenderCreate;
 
 //    @DataModel(value = "newOrderItems")
 //    private List<OrderItem> newOrderItems;
@@ -34,6 +49,19 @@ public class OrderChange extends OrderTaskHandle {
     private List<OrderItem> overlyItems;
 
     private List<OrderItem> oweItems;
+
+    public String beginDispatch() {
+        orderDispatch.init(needResHome.getInstance());
+        dispatched = true;
+        return "/business/taskOperator/erp/sale/OrderChangeDispatch.xhtml";
+    }
+
+    public String dispatchBack() {
+        dispatched = false;
+        return "/business/taskOperator/erp/sale/OrderChange.xhtml";
+    }
+
+    private boolean dispatched = false;
 
     private boolean reSend;
 
@@ -54,7 +82,7 @@ public class OrderChange extends OrderTaskHandle {
         return result;
     }
 
-    public BigDecimal getOverlyTotalNeedMoney(){
+    public BigDecimal getOverlyTotalNeedMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : overlyItems) {
             if (item.getNeedMoney() != null)
@@ -63,49 +91,74 @@ public class OrderChange extends OrderTaskHandle {
         return result;
     }
 
-    public BigDecimal getOwesTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem item : oweItems) {
-            if (item.getTotalMoney() != null)
-                result = result.add(item.getTotalMoney());
-        }
-        return result;
-    }
-
-    public BigDecimal getOwesTotalNeedMoney(){
-        BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem item : oweItems) {
-            if (item.getNeedMoney() != null)
-                result = result.add(item.getNeedMoney());
-        }
-        return result;
-    }
-
-    public List<OrderItem> getCompleteOrderItems(){
+    public List<OrderItem> getCompleteOrderItems() {
         return orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED));
-    }
-
-    public List<OrderItem> getOweItems() {
-        return oweItems;
     }
 
     public List<OrderItem> getOverlyItems() {
         return overlyItems;
     }
 
+    private void initReSend() {
+
+        reSend = !oweItems.isEmpty();
+
+        if (reSend) {
+            needResHome.clearInstance();
+            needResHome.getInstance().setStatus(NeedRes.NeedResStatus.CREATED);
+            needResHome.getInstance().setCustomerOrder(orderHome.getInstance());
+            needResHome.getInstance().setType(NeedRes.NeedResType.SUPPLEMENT_SEND);
+            needResHome.getInstance().setReason(SUPPLEMENT_REASON);
+            needResHome.getInstance().setFareByCustomer(orderHome.getLastNeedRes().isFareByCustomer());
+            needResHome.getInstance().setPostCode(orderHome.getLastNeedRes().getPostCode());
+            needResHome.getInstance().setAddress(orderHome.getLastNeedRes().getAddress());
+            needResHome.getInstance().setReceivePerson(orderHome.getLastNeedRes().getReceivePerson());
+            needResHome.getInstance().setReceiveTel(orderHome.getLastNeedRes().getReceiveTel());
+            needResHome.getInstance().setCreateDate(new Date());
+
+            needResHome.getOrderNeedItems().addAll(oweItems);
+
+            for (OrderItem orderItem : oweItems) {
+                orderItem.setNeedRes(needResHome.getInstance());
+            }
+            dispatched = false;
+        }
+        reSendChangeListener();
+
+    }
+
+
+    public void reSendChangeListener() {
+        if (reSend) {
+            orderHome.getInstance().getNeedReses().add(needResHome.getInstance());
+        } else {
+            orderHome.getInstance().getNeedReses().remove(needResHome.getInstance());
+        }
+        if (!orderHome.getInstance().isMoneyComplete())
+            orderHome.calcMoneys();
+    }
+
     @Override
     protected void initOrderTask() {
-        orderHome.calcMoneys();
+        customerHome.setId(orderHome.getInstance().getCustomer().getId());
 
         overlyItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.WAIT_PRICE));
 
 
+
         oweItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED));
+
+        if (!oweItems.isEmpty())
+            for (NeedRes needRes: orderHome.getInstance().getNeedReses()){
+                needRes.getOrderItems().removeAll(oweItems);
+            }
+
         for (OweOut oweOut : orderHome.getNoAddOweItems()) {
             OrderItem matchItem = null;
             for (OrderItem orderItem : orderHome.getOrderItemByStatus(
                     EnumSet.of(OrderItem.OrderItemStatus.CREATED,
-                            OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))) {
+                            OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED)
+            )) {
                 if (orderItem.getStoreRes().equals(oweOut.getStoreRes())) {
                     matchItem = orderItem;
                     break;
@@ -128,38 +181,34 @@ public class OrderChange extends OrderTaskHandle {
             oweItems.add(newItem);
         }
 
-        //------------------------
-
-        reSend = true;
-
-        orderReSenderCreate.init(oweItems);
-
-        //-----------------------
-
-        orderHome.calcMoneys();
-
+        initReSend();
     }
 
     @Override
     protected String completeOrderTask() {
 
-
-        orderHome.calcMoneys();
-
         if (!reSend || oweItems.isEmpty()) {
             orderHome.getInstance().setAllStoreOut(true);
-        } else {
-            if (!orderReSenderCreate.isReady()) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatchNotComplete");
-                return null;
+            orderHome.getInstance().getNeedReses().remove(needResHome.getInstance());
+            for (OrderItem item : oweItems) {
+                item.setStatus(OrderItem.OrderItemStatus.CREATED);
+                item.setDispatch(null);
             }
-
-
-            orderHome.getInstance().getNeedReses().add(orderReSenderCreate.getReSenderNeedRes());
+        } else {
+            if (dispatched) {
+                if (!orderDispatch.isDispatchComplete()) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatchNotComplete");
+                    return null;
+                }
+                orderDispatch.wire();
+                needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
+            }
             orderHome.getInstance().setAllStoreOut(false);
-
         }
 
+
+        if (!orderHome.getInstance().isMoneyComplete())
+            orderHome.calcMoneys();
 
         for (OrderItem item : overlyItems) {
             item.setStatus(OrderItem.OrderItemStatus.COMPLETED);

@@ -182,7 +182,7 @@ public class NeedRes implements java.io.Serializable {
         this.createDate = createDate;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", cascade = {CascadeType.ALL})
     public Set<OrderItem> getOrderItems() {
         return this.orderItems;
     }

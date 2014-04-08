@@ -8,7 +8,7 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-<ui:param name="functionTitle" value="#{messages.orderCommodityConfirm}"/>
+<ui:param name="functionTitle" value="#{orderCommodityConfirm.taskName}"/>
 
 <ui:define name="func-body">
 
@@ -219,9 +219,8 @@
 <br/>
 
 <ui:include src="/layout/erp/OrderItemTable.xhtml">
-    <ui:param name="orderItems" value="#{orderHome.instance.allOrderItemList}"/>
-    <ui:param name="totalItemMoney" value="#{orderHome.resTotalMoney}"/>
-    <ui:param name="totalMiddleMoney" value="#{orderHome.totalItemMiddleMoney}"/>
+    <ui:param name="orderItems" value="#{orderHome.allCompleteOrderItem}"/>
+    <ui:param name="totalItemMoney" value="#{orderHome.instance.resMoney}"/>
 </ui:include>
 
 <br/>

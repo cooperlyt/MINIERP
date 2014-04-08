@@ -14,6 +14,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 
+import javax.persistence.criteria.Order;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -59,6 +60,19 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
+    public List<OrderItem> getAllCompleteOrderItem(){
+        return getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED));
+    }
+
+    public BigDecimal getCompleteOrderItemMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (OrderItem item: getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED))){
+            if (item.getTotalMoney() != null)
+                result = result.add(item.getTotalMoney());
+        }
+        return result;
+    }
+
 
     private boolean useScaleRebate = false;
 
@@ -78,7 +92,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             } else {
                 getInstance().setTotalRebateMoney(
                         getInstance().getResMoney().subtract(getInstance().getResMoney().
-                                multiply(rebate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP))));
+                                multiply(rebate.divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP)))
+                );
             }
         } else {
             getInstance().setTotalRebateMoney(rebate);
@@ -182,14 +197,16 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                     public Object totalGroupData(Collection<OrderItem> datas) {
                         return null;
                     }
-                });
+                }
+        );
     }
 
     public void calcTotalResMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : getOrderItemByStatus(
-                EnumSet.of(OrderItem.OrderItemStatus.CREATED, OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))) {
-            result = result.add(item.getTotalMoney());
+                EnumSet.allOf(OrderItem.OrderItemStatus.class))) {
+            if (item.getTotalMoney() != null)
+                result = result.add(item.getTotalMoney());
         }
         getInstance().setResMoney(result);
     }
@@ -236,12 +253,13 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             for (Dispatch dispatch : needRes.getDispatches()) {
                 if (dispatch.isHaveNoOutOweItem()) {
                     getInstance().setAllStoreOut(false);
+                    return;
                 }
             }
 
         }
         getInstance().setAllStoreOut(true);
-
+        getInstance().setResReceived(!isHaveShip());
     }
 
 
@@ -401,6 +419,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public boolean isComplete() {
         return !getInstance().isCanceled() && getInstance().isAllStoreOut() && getInstance().isMoneyComplete() && getInstance().isResReceived();
+    }
+
+    public boolean isHaveShip() {
+        for (NeedRes needRes : getInstance().getNeedReses()) {
+            for (Dispatch dispatch : needRes.getDispatches()) {
+                if (dispatch.getDeliveryType().isShip()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Deprecated

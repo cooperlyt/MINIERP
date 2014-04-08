@@ -23,7 +23,8 @@ messages = Component.getInstance("org.jboss.seam.international.messages", false)
 	customerName = orderHome.getInstance().getCustomer().getName();
 	orderRebate = orderHome.getInstance().getTotalRebate();
 	orderMoney= orderHome.getInstance().getMoney();
-	orderRebateMoney = orderHome.getResTotalMoney() * (orderRebate / new BigDecimal("100")); 
+	orderRebateMoney = orderHome.getInstance().getResMoney().subtract(orderHome.getInstance().getTotalRebateMoney())
+	
 	
 	if (orderHome.getInstance().isMoneyComplete()){
 		orderState = messages.get("order_field_moneyComplete_true"); 
@@ -221,7 +222,7 @@ it=orderItems.iterator();
 
    	row['UNIT'] = item.getResUnit().getName();
     row['COUNT'] = DataFormat.format(item.getUseUnitCount(),item.getResUnit().getCountFormate());
-    row['TOTAL_PRICE'] = item.getTotalPrice();
+    row['TOTAL_PRICE'] = item.getTotalMoney();
     row['PRICE'] = item.getMoney();
     row['REBATE'] = item.getRebate();
   

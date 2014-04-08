@@ -362,10 +362,12 @@ public class OrderItem extends StoreResPriceEntity
 
     @Column(name = "REBATE", nullable = false, scale = 4)
     @NotNull
+    @Override
     public BigDecimal getRebate() {
         return this.rebate;
     }
 
+    @Override
     public void setRebate(BigDecimal rebate) {
         this.rebate = rebate;
     }

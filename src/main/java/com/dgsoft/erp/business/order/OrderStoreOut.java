@@ -16,9 +16,7 @@ import org.jboss.seam.international.StatusMessage;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -126,22 +124,6 @@ public class OrderStoreOut extends OrderTaskHandle {
     @Override
     protected String completeOrderTask() {
 
-//
-//        for (DispatchItem item : dispatchHome.getInstance().getDispatchItems()) {
-//            if (!item.isEnough()) {
-//                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-//                        "orderStockNotEnoughCantStoreOut",
-//                        resHelper.generateStoreResTitle(item.getStoreRes()),
-//                        item.getResCount().getMasterDisplayCount() + "(" +
-//                                item.getResCount().getDisplayAuxCount() + ")",
-//                        item.getStockCount().getMasterDisplayCount() + "(" +
-//                                item.getStockCount().getDisplayAuxCount() + ")",
-//                        item.getDisparity().getMasterDisplayCount() + "(" +
-//                                item.getDisparity().getDisplayAuxCount() + ")");
-//                return "storeNotEnough";
-//            }
-//        }
-
         dispatchHome.getInstance().setStockChange(
                 new StockChange(orderHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"), dispatchHome.getInstance().getStore(), storeOutDate,
                         credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo, true)
@@ -177,12 +159,18 @@ public class OrderStoreOut extends OrderTaskHandle {
             }
         }
 
+        Map<StoreRes,Stock> createStocks = new HashMap<StoreRes, Stock>();
+
         for (OrderItem item : dispatchHome.getInstance().getOrderItems()) {
 
             Stock stock = item.getStoreRes().getStock(dispatchHome.getInstance().getStore());
 
             if (stock == null) {
-                stock = new Stock(dispatchHome.getInstance().getStore(), item.getStoreRes(), BigDecimal.ZERO);
+                stock = createStocks.get(item.getStoreRes());
+                if (stock == null) {
+                    stock = new Stock(dispatchHome.getInstance().getStore(), item.getStoreRes(), BigDecimal.ZERO);
+                    createStocks.put(item.getStoreRes(), stock);
+                }
             }
 
             StockChangeItem stockChangeItem = new StockChangeItem(dispatchHome.getInstance().getStockChange(),

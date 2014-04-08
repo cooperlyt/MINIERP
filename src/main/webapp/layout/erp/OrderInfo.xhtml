@@ -106,7 +106,7 @@
         </h:outputText>
         #{' '} = #{' '}
         [#{messages.storeResMoney}]
-        <h:outputText value="#{orderHome.resTotalMoney}">
+        <h:outputText value="#{orderHome.instance.resMoney}">
             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
         </h:outputText>
         #{' '} * #{' '}[#{messages.orderRebate}]
@@ -118,17 +118,16 @@
 </a:outputPanel>
 
 <br/>
-<ui:include src="/layout/erp/OrderItemTable.xhtml">
-    <ui:param name="orderItems" value="#{orderHome.instance.allOrderItemList}"/>
-    <ui:param name="totalItemMoney" value="#{orderHome.instance.allOrderItemList.getTotalPrice()}"/>
-    <ui:param name="totalMiddleMoney" value="#{orderHome.totalItemMiddleMoney}"/>
-</ui:include>
+
 
 
 <a:outputPanel
         rendered="#{s:hasRole('erp.sale.manager') or s:hasRole('erp.storage.dispatch') or s:hasRole(orderHome.instance.customer.customerArea.role)}">
 
-
+    <ui:include src="/layout/erp/OrderItemTable.xhtml">
+        <ui:param name="orderItems" value="#{orderHome.allCompleteOrderItem}"/>
+        <ui:param name="totalItemMoney" value="#{orderHome.completeOrderItemMoney}"/>
+    </ui:include>
     <br/>
 
     <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
@@ -201,6 +200,9 @@
 
 
     <div style="clear: both"/>
+
+
+    
 </a:outputPanel>
 
 <a:outputPanel

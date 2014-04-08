@@ -18,14 +18,14 @@
 
 <rich:toolbar>
     <rich:toolbarGroup>
-        <a:region>
+        <a:region rendered="#{not empty orderNeedItems}">
 
             <rich:select id="oweOutItemIsSendSelect" value="#{orderChange.reSend}" required="true"
-                         disabled="#{orderHome.instance.payType eq 'PAY_FIRST'}"
+                         disabled="#{orderHome.instance.moneyComplete}"
                          label="#{messages.sub_overly_oper_type}">
                 <f:selectItem itemLabel="#{messages.sub_overly_oper_render_true}" itemValue="#{true}"/>
                 <f:selectItem itemLabel="#{messages.sub_overly_oper_render_false}" itemValue="#{false}"/>
-                <a:ajax event="selectitem" listener="#{orderHome.calcMoneys}" execute="@region"
+                <a:ajax event="selectitem" listener="#{orderChange.reSendChangeListener}" execute="@region"
                         render="subOverlyOrderItem,orderTotalPrice,newNeedResPanel,dispatchButton"/>
             </rich:select>
 
@@ -45,19 +45,20 @@
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
                     #{' '}
-                    <h:selectOneMenu value="#{orderHome.useScaleRebate}">
+                    <h:selectOneMenu disabled="#{orderHome.instance.moneyComplete}" value="#{orderHome.useScaleRebate}">
                         <f:selectItem itemValue="#{false}" itemLabel="-"/>
                         <f:selectItem itemValue="#{true}" itemLabel="%"/>
-                        <a:ajax event="click" listener="#{orderHome.calcMoneys}"
+                        <a:ajax event="valueChange" execute="@this"
                                 render="orderTotalRebateField,orderTotalPrice"/>
                     </h:selectOneMenu>
 
                     <a:outputPanel id="orderTotalRebateField">
                         <h:inputText id="scaleRebateInput" rendered="#{orderHome.useScaleRebate}"
+                                     disabled="#{orderHome.instance.moneyComplete}"
                                      value="#{orderHome.orderRebate}"
                                      required="true" size="5" label="#{messages.orderRebate}">
                             <f:convertNumber pattern="#0.##" groupingUsed="false"/>
-                            <a:ajax event="blur" execute="@region" listener="#{orderHome.calcMoneys}"
+                            <a:ajax event="blur" execute="@this"
                                     render="orderTotalPrice">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
@@ -66,11 +67,12 @@
                             <rich:placeholder value="#{messages.orderRebate}"/>
                         </h:inputText>
                         <h:inputText id="moneyRebateInput" rendered="#{not orderHome.useScaleRebate}"
+                                     disabled="#{orderHome.instance.moneyComplete}"
                                      value="#{orderHome.orderRebate}"
                                      required="true" size="5" label="#{messages.orderRebate}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"
                                              currencySymbol="" groupingUsed="false"/>
-                            <a:ajax event="blur" execute="@region" listener="#{orderHome.calcMoneys}"
+                            <a:ajax event="blur" execute="@this"
                                     render="orderTotalPrice">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
@@ -89,6 +91,7 @@
                                   showDetail="true" showSummary="true" tooltip="true"/>
                     =
                     <h:inputText id="orderMoneyField" value="#{orderHome.inputOrderMoney}"
+                                 disabled="#{orderHome.instance.moneyComplete}"
                                  label="#{messages.orderItemPrice}" required="true" size="9">
                         <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                          type="currency" groupingUsed="false"/>
@@ -111,7 +114,7 @@
         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                   view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
         <h:commandButton id="dispatchButton" styleClass="toolBarBtn" value="#{messages.Dispatch}"
-                         action="#{orderReSenderCreate.beginDispatch}" disabled="#{not orderChange.reSend}"/>
+                         action="#{orderChange.beginDispatch}" disabled="#{not orderChange.reSend}"/>
 
         <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
                          action="#{orderChange.complete}">
@@ -231,7 +234,8 @@
 <a:region>
 
     <a:outputPanel id="subOverlyOrderItem">
-        <rich:dataTable rendered="#{orderChange.reSend}" style="width: 100%" value="#{reSendOrder}"
+        <rich:dataTable rendered="#{orderChange.reSend and (not orderHome.instance.moneyComplete)}" style="width: 100%"
+                        value="#{orderNeedItems}"
                         var="_item">
             <f:facet name="header">
                 #{messages.oweOutRenderOrderItems}
@@ -358,7 +362,7 @@
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>
                 <f:facet name="footer">
-                    <h:outputText value="#{orderChange.owesTotalNeedMoney}">
+                    <h:outputText value="#{needResHome.resNeedTotalMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -375,7 +379,7 @@
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>
                 <f:facet name="footer">
-                    <h:outputText value="#{orderChange.owesTotalMoney}">
+                    <h:outputText value="#{needResHome.resTotalMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -547,6 +551,15 @@
 
 </h:form>
 
+<a:outputPanel rendered="#{orderChange.reSend and orderHome.instance.moneyComplete}">
+    <ui:include src="/layout/erp/OrderItemTable.xhtml">
+        <ui:param name="orderItems" value="#{orderNeedItems}"/>
+        <ui:param name="showMiddleMoney" value="false"/>
+        <ui:param name="totalNeedMoney" value="#{needResHome.resNeedTotalMoney}" />
+        <ui:param name="totalItemMoney" value="#{needResHome.resTotalMoney}" />
+        <ui:param name="tableTitle" value="#{messages.oweOutRenderOrderItems}"/>
+    </ui:include>
+</a:outputPanel>
 <br/>
 
 
