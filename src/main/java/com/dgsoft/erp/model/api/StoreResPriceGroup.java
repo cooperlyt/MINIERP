@@ -60,7 +60,7 @@ public class StoreResPriceGroup extends ArrayList<StoreResPrice> {
             }
         }
 
-        return super.add(new StoreResPrice(e.getMoney(), e.getResUnit(), e.getTotalMoney(), e.getCount(), e.getStoreRes(),e.isPresentation()));
+        return super.add(new StoreResPrice(e.getMoney(), e.getResUnit(), e.getTotalMoney(), e.getCount(), e.getStoreRes(),e.isPresentation(),e.getRebate()));
     }
 
     public BigDecimal getTotalPrice() {

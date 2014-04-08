@@ -48,18 +48,20 @@ public class OrderItem extends StoreResPriceEntity
     private BigDecimal needMoney;
 
     public OrderItem() {
-        rebate = new BigDecimal("100");
+
     }
 
     public OrderItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))
             needConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
+        rebate = new BigDecimal("100");
     }
 
     public OrderItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
         needConvertRate = storeRes.getFloatConversionRate();
+        rebate = new BigDecimal("100");
     }
 
     //    //create by recreate order

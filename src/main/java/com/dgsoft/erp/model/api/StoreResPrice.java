@@ -29,13 +29,15 @@ public class StoreResPrice extends StoreResPriceEntity implements Serializable{
     private BigDecimal rebate;
 
     public StoreResPrice(BigDecimal money, ResUnit resUnit,
-                         BigDecimal totalMoney, BigDecimal count, StoreRes storeRes, boolean presentation) {
+                         BigDecimal totalMoney, BigDecimal count, StoreRes storeRes,
+                         boolean presentation,BigDecimal rebate) {
         this.money = money;
         this.resUnit = resUnit;
         this.count = count;
         this.storeRes = storeRes;
         this.presentation = presentation;
         this.totalMoney = totalMoney;
+        this.rebate = rebate;
     }
 
     @Override

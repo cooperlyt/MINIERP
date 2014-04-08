@@ -181,7 +181,7 @@
                         <f:facet name="header">
                             #{messages.orderItemTotalPrice}
                         </f:facet>
-                        <h:outputText value="#{_item.totalPrice}">
+                        <h:outputText value="#{_item.totalMoney}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                     </rich:column>

@@ -114,8 +114,7 @@ public class OweOut extends StoreResCountEntity implements java.io.Serializable 
         this.add = add;
     }
 
-    @Column(name = "NEED_CONVERSION_RATE", nullable = false, scale = 3)
-    @NotNull
+    @Column(name = "NEED_CONVERSION_RATE", nullable = true, scale = 3)
     public BigDecimal getNeedConvertRate() {
         return needConvertRate;
     }
