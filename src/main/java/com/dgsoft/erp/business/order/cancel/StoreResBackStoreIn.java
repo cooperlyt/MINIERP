@@ -5,7 +5,7 @@ import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.business.TaskDescription;
-import com.dgsoft.erp.action.ProductBackStoreInHome;
+import com.dgsoft.erp.action.BackDispatchHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.StockChangeHome;
 import com.dgsoft.erp.action.StoreResHome;
@@ -17,13 +17,9 @@ import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
-import sun.rmi.runtime.Log;
-import sun.util.logging.resources.logging;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by cooper on 3/1/14.
@@ -38,7 +34,7 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
     private TaskDescription taskDescription;
 
     @In(create = true)
-    private ProductBackStoreInHome productBackStoreInHome;
+    private BackDispatchHome backDispatchHome;
 
     @In(create = true)
     private StockChangeHome stockChangeHome;
@@ -171,9 +167,9 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
         }
 
 
-        for (ProductBackStoreIn storeIn : orderBackHome.getInstance().getProductBackStoreIn()) {
+        for (BackDispatch storeIn : orderBackHome.getInstance().getBackDispatchs()) {
             if (storeIn.getStore().getId().equals(storeId)) {
-                productBackStoreInHome.setId(storeIn.getId());
+                backDispatchHome.setId(storeIn.getId());
 
                 stockChangeHome.clearInstance();
                 stockChangeHome.getInstance().setStore(storeIn.getStore());
@@ -190,14 +186,14 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
 
     private void initInItem() {
         inItems = new ArrayList<ResBackItem>();
-        for (BackDispatchItem item : productBackStoreInHome.getInstance().getBackDispatchItems()) {
+        for (BackItem item : backDispatchHome.getInstance().getBackItems()) {
             inItems.add(new ResBackItem(item));
         }
     }
 
     @Override
     protected String completeOrderTask() {
-//        for (BackDispatchItem item : productBackStoreInHome.getInstance().getBackDispatchItems()) {
+//        for (BackDispatchItem item : backDispatchHome.getInstance().getBackDispatchItems()) {
 //            stockChangeHome.resStockChange(item, null);
 //        }
 
@@ -206,14 +202,14 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
         }
 
         stockChangeHome.getInstance().setId(orderBackHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"));
-        stockChangeHome.getInstance().setProductBackStoreIn(productBackStoreInHome.getInstance());
+        stockChangeHome.getInstance().setBACKDISPATCH(backDispatchHome.getInstance());
 
         Logging.getLog(getClass()).debug("res back store in change stoce item count:" + stockChangeHome.getInstance().getStockChangeItems().size());
-        productBackStoreInHome.getInstance().setStockChange(stockChangeHome.getReadyInstance());
-        productBackStoreInHome.getInstance().getOrderBack().setResComplete(true);
+        backDispatchHome.getInstance().setStockChange(stockChangeHome.getReadyInstance());
+        backDispatchHome.getInstance().getOrderBack().setResComplete(true);
 
 
-        if ("updated".equals(productBackStoreInHome.update())) {
+        if ("updated".equals(backDispatchHome.update())) {
             return "taskComplete";
         } else
             return null;
@@ -221,11 +217,11 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
 
     public class ResBackItem {
 
-        private BackDispatchItem backDispatchItem;
+        private BackItem backDispatchItem;
 
         private StockChangeItem stockChangeItem;
 
-        public ResBackItem(BackDispatchItem backDispatchItem) {
+        public ResBackItem(BackItem backDispatchItem) {
             this.backDispatchItem = backDispatchItem;
             this.stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
                     backDispatchItem.getStoreRes(), backDispatchItem.getMasterCount());
@@ -235,11 +231,11 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
             this.stockChangeItem = stockChangeItem;
         }
 
-        public BackDispatchItem getBackDispatchItem() {
+        public BackItem getBackDispatchItem() {
             return backDispatchItem;
         }
 
-        public void setBackDispatchItem(BackDispatchItem backDispatchItem) {
+        public void setBackDispatchItem(BackItem backDispatchItem) {
             this.backDispatchItem = backDispatchItem;
         }
 

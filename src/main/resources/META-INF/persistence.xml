@@ -58,7 +58,7 @@
         <class>com.dgsoft.erp.model.AllocationRes</class>
         <class>com.dgsoft.erp.model.Assembly</class>
         <class>com.dgsoft.erp.model.BackPrepareMoney</class>
-        <class>com.dgsoft.erp.model.ProductBackStoreIn</class>
+        <class>com.dgsoft.erp.model.BackDispatch</class>
         <class>com.dgsoft.erp.model.Batch</class>
         <class>com.dgsoft.erp.model.Customer</class>
         <class>com.dgsoft.erp.model.CustomerOrder</class>
@@ -107,7 +107,6 @@
         <class>com.dgsoft.erp.model.AccountCheckout</class>
         <class>com.dgsoft.erp.model.CustomerDetailsCheckout</class>
         <class>com.dgsoft.erp.model.StockDetailsCheckout</class>
-        <class>com.dgsoft.erp.model.BackDispatchItem</class>
         <class>com.dgsoft.erp.model.BackItem</class>
         <class>com.dgsoft.erp.model.BankAccount</class>
         <class>com.dgsoft.erp.model.RebateProgram</class>

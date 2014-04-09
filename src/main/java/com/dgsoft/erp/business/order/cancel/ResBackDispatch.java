@@ -5,6 +5,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -29,83 +30,50 @@ public class ResBackDispatch {
     //@In
     //private OrderBackHome orderBackHome;
 
-    private StoreResCountTotalGroup waitDispatchItems;
+    @DataModel(value = "backDispatchWaitItems")
+    private List<BackItem> waitDispatchItems;
+
+    @DataModelSelection
+    private BackItem selectBackItem;
+
+    private BackItem editItem;
+
+    private StoreResCount dispatchCount;
 
     @In
     private ActionExecuteState actionExecuteState;
 
-    @DataModel
-    private List<ProductBackStoreIn> resBackDispatcheds;
-
-    @DataModelSelection
-    private ProductBackStoreIn selectDispatchItem;
-
-    @In
-    private ResHelper resHelper;
-
-    private BackDispatchItem newDispatchItem;
+    private List<BackDispatch> resBackDispatcheds;
 
     private Store selectStore;
 
-    private StoreRes selectDispatchStoreRes;
+    //private List<BackItem> backItems;
 
-    public BackDispatchItem getNewDispatchItem() {
-        return newDispatchItem;
-    }
+    private OrderBack orderBack;
 
-    public void setNewDispatchItem(BackDispatchItem newDispatchItem) {
-        this.newDispatchItem = newDispatchItem;
-    }
+    private Map<BackItem, List<BackItem>> splitItems;
 
-    private List<BackItem> backItems;
-
-    public void init(List<BackItem> backItems) {
-        this.backItems = backItems;
-        waitDispatchItems = new StoreResCountTotalGroup(backItems);
-        resBackDispatcheds = new ArrayList<ProductBackStoreIn>();
+    public void init(OrderBack orderBack) {
+        this.orderBack = orderBack;
+        splitItems = new HashMap<BackItem, List<BackItem>>();
+        waitDispatchItems = orderBack.getBackItemList();
+        for (BackItem item : waitDispatchItems) {
+            splitItems.put(item, new ArrayList<BackItem>());
+        }
+        resBackDispatcheds = new ArrayList<BackDispatch>();
         selectStore = null;
     }
 
-    public void reset(){
-        init(backItems);
-    }
-
-    public List<Map.Entry<StoreRes, StoreResCount>> getWaitDispatchItems() {
-        List<Map.Entry<StoreRes, StoreResCount>> result = new ArrayList<Map.Entry<StoreRes, StoreResCount>>();
-        for (Map.Entry<StoreRes, StoreResCount> entry : waitDispatchItems.entrySet()) {
-            if (entry.getValue().getMasterCount().compareTo(BigDecimal.ZERO) > 0) {
-                result.add(entry);
+    public void reset() {
+        for (Map.Entry<BackItem, List<BackItem>> entry : splitItems.entrySet()) {
+            for (BackItem splitItem : entry.getValue()) {
+                entry.getKey().setCount(entry.getKey().getCount().add(splitItem.getCount()));
+                entry.getKey().calcMoney();
             }
         }
-        Collections.sort(result, new Comparator<Map.Entry<StoreRes, StoreResCount>>() {
-            @Override
-            public int compare(Map.Entry<StoreRes, StoreResCount> o1, Map.Entry<StoreRes, StoreResCount> o2) {
-                return o1.getKey().compareTo(o2.getKey());
-            }
-        });
-        return result;
+        init(orderBack);
     }
 
-    public String getSelectWaitDispatchItemId() {
-        if (selectDispatchStoreRes == null) {
-            return null;
-        } else {
-            return selectDispatchStoreRes.getId();
-        }
-    }
-
-    public void setSelectWaitDispatchItemId(String id) {
-        selectDispatchStoreRes = null;
-        if (!DataFormat.isEmpty(id)) {
-            for (Map.Entry<StoreRes, StoreResCount> entry : waitDispatchItems.entrySet()) {
-                if (entry.getKey().getId().equals(id)) {
-                    selectDispatchStoreRes = entry.getKey();
-                    return;
-                }
-            }
-        }
-
-    }
 
     public Store getSelectStore() {
         return selectStore;
@@ -116,84 +84,68 @@ public class ResBackDispatch {
     }
 
     public void beginDispatchItem() {
-        newDispatchItem = new BackDispatchItem(selectDispatchStoreRes, BigDecimal.ZERO);
         selectStore = null;
+        dispatchCount = new StoreResCount(selectBackItem.getStoreRes(),selectBackItem.getCount());
+        editItem = selectBackItem;
         actionExecuteState.clearState();
     }
 
     public void addDispatchItem() {
-        if (newDispatchItem.getMasterCount().compareTo(waitDispatchItems.get(newDispatchItem.getStoreRes()).getMasterCount()) > 0) {
+        if (dispatchCount.getMasterCount().compareTo(editItem.getMasterCount()) > 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_over_error",
-                    newDispatchItem.getDisplayMasterCount(),
-                    waitDispatchItems.get(newDispatchItem.getStoreRes()).getDisplayMasterCount());
+                    dispatchCount.getDisplayMasterCount(),editItem.getDisplayMasterCount());
         } else {
-            addDispatchItem(newDispatchItem);
+            addDispatchItem(editItem,dispatchCount);
             actionExecuteState.actionExecute();
         }
-
-
     }
 
-    private void addDispatchItem(BackDispatchItem newItem) {
+    private void addDispatchItem(BackItem backItem, StoreResCountEntity count) {
         boolean added = false;
+        boolean all = backItem.getCount().compareTo(count.getCount()) == 0;
+        BackItem dispatchItem;
+        if (all){
+            dispatchItem = backItem;
+        }else{
+            dispatchItem = new BackItem(orderBack,backItem.getStoreRes(),count.getCount(),
+                    backItem.getMoney(),backItem.getResUnit(), BackItem.BackItemStatus.CREATE,backItem.getRebate(),backItem.getMemo());
+            splitItems.get(backItem).add(dispatchItem);
+        }
 
-        for (ProductBackStoreIn item : resBackDispatcheds) {
+        for (BackDispatch item : resBackDispatcheds) {
 
             if (item.getStore().getId().equals(selectStore.getId())) {
-                for (BackDispatchItem bItem : item.getBackDispatchItems()) {
-                    if (bItem.getStoreRes().equals(newItem.getStoreRes())) {
-                        bItem.add(newItem);
-                        added = true;
-                        break;
-                    }
-                }
-
-                if (!added) {
-                    item.getBackDispatchItems().add(newItem);
-                    newItem.setProductBackStoreIn(item);
-                    added = true;
-                    break;
-                }
+                item.getBackItems().add(dispatchItem);
+                dispatchItem.setDispatch(item);
+                added = true;
+                break;
             }
         }
 
         if (!added) {
-            ProductBackStoreIn newDispatch = new ProductBackStoreIn(selectStore);
+            BackDispatch newDispatch = new BackDispatch(orderBack,selectStore);
             resBackDispatcheds.add(newDispatch);
-            newDispatch.getBackDispatchItems().add(newItem);
-            newItem.setProductBackStoreIn(newDispatch);
+            newDispatch.getBackItems().add(dispatchItem);
+            dispatchItem.setDispatch(newDispatch);
         }
-        waitDispatchItems.get(newItem.getStoreRes()).subtract(newItem);
+
+        if (all){
+            waitDispatchItems.remove(backItem);
+        }
+
     }
 
     public void dispatchAll() {
-        for (Map.Entry<StoreRes, StoreResCount> entry : getWaitDispatchItems()) {
-            addDispatchItem(new BackDispatchItem(entry.getKey(), entry.getValue().getMasterCount()));
+        for (BackItem item: waitDispatchItems){
+            addDispatchItem(item,item);
         }
-
     }
 
-    public void removeDispatched() {
-        for (BackDispatchItem item : selectDispatchItem.getBackDispatchItems()) {
-            waitDispatchItems.get(item.getStoreRes()).add(item);
-        }
-        resBackDispatcheds.remove(selectDispatchItem);
+    public boolean isComplete() {
+        return waitDispatchItems.isEmpty();
     }
 
-    public List<ProductBackStoreIn> getResBackDispatcheds() {
+    public List<BackDispatch> getResBackDispatcheds() {
         return resBackDispatcheds;
     }
-
-    public  List<ProductBackStoreIn> getResBackDispatcheds(OrderBack orderBack){
-        for (ProductBackStoreIn pbsi: resBackDispatcheds){
-            pbsi.setOrderBack(orderBack);
-        }
-        return resBackDispatcheds;
-    }
-
-    public boolean isComplete(){
-        return getWaitDispatchItems().isEmpty();
-    }
-
-
 }

@@ -1,22 +1,22 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.jbpm.BussinessProcessUtils;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.model.BackDispatch;
+import com.dgsoft.erp.model.BackItem;
 import com.dgsoft.erp.model.OrderBack;
-import com.dgsoft.erp.model.ProductBackStoreIn;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
-import org.jboss.seam.bpm.ManagedJbpmContext;
+import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.security.Credentials;
-import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.graph.exe.ProcessInstance;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,31 +27,22 @@ import java.util.Date;
 @Name("orderBackHome")
 public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
-    @In(create = true)
-    private StartData startData;
+    protected List<BackItem> backItems;
 
-    @In(create = true)
-    private BusinessDefineHome businessDefineHome;
-    @In
-    private Credentials credentials;
+    @Override
+    protected void initInstance(){
+        super.initInstance();
+        backItems = new SetLinkList<BackItem>(getInstance().getBackItems());
+    }
 
-    @In(create = true)
-    private BussinessProcessUtils businessProcess;
-
-    @Factory(value = "orderBackTypes", scope = ScopeType.CONVERSATION)
     public OrderBack.OrderBackType[] getOrderBackTypes() {
         return OrderBack.OrderBackType.values();
     }
 
-    public void init() {
-        startData.generateKey();
-        businessDefineHome.setId("erp.business.orderCancel");
-    }
-
     public boolean needStoreIn(String storeId) {
         if (isIdDefined()) {
-            for (ProductBackStoreIn productBackStoreIn : getInstance().getProductBackStoreIn()) {
-                if (productBackStoreIn.getStore().getId().equals(storeId)) {
+            for (BackDispatch BACKDISPATCH : getInstance().getBackDispatchs()) {
+                if (BACKDISPATCH.getStore().getId().equals(storeId)) {
                     return true;
                 }
             }
@@ -66,34 +57,6 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
     public boolean isNeedBackRes() {
         return !getInstance().getBackItems().isEmpty();
-    }
-
-    @Override
-    protected OrderBack createInstance() {
-        return new OrderBack(BigDecimal.ZERO, false);
-    }
-
-    @Override
-    protected boolean wire() {
-        if (!isManaged()) {
-
-            getInstance().setId(startData.getBusinessKey());
-            getInstance().setApplyEmp(credentials.getUsername());
-            getInstance().setMoneyComplete(!isNeedBackMoney());
-            getInstance().setResComplete(!isNeedBackRes());
-        }
-        return true;
-    }
-
-
-    @Observer(value = "com.dgsoft.BusinessCreatePrepare.orderCancel", create = true)
-    @Transactional
-    public void createOrder(BusinessDefine businessDefine) {
-
-        if (!"persisted".equals(persist())) {
-            throw new ProcessCreatePrepareException("inventory persist fail");
-        }
-        startData.setDescription(getInstance().getCustomer().getName());
     }
 
 

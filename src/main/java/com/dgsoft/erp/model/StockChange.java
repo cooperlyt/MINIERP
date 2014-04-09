@@ -79,7 +79,7 @@ public class StockChange implements Comparable<StockChange>,java.io.Serializable
     private Allocation allocationForStoreIn;
 
     private ScrapStoreOut scrapStoreOut;
-    private ProductBackStoreIn productBackStoreIn;
+    private BackDispatch BACKDISPATCH;
     private MaterialBackStoreIn materialBackStoreIn;
     private StoreChange storeChange;
     private Dispatch orderDispatch;
@@ -345,12 +345,12 @@ public class StockChange implements Comparable<StockChange>,java.io.Serializable
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
-    public ProductBackStoreIn getProductBackStoreIn() {
-        return this.productBackStoreIn;
+    public BackDispatch getBACKDISPATCH() {
+        return this.BACKDISPATCH;
     }
 
-    public void setProductBackStoreIn(ProductBackStoreIn productBackStoreIn) {
-        this.productBackStoreIn = productBackStoreIn;
+    public void setBACKDISPATCH(BackDispatch BACKDISPATCH) {
+        this.BACKDISPATCH = BACKDISPATCH;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")

@@ -56,7 +56,6 @@ public class CustomerOrder implements java.io.Serializable {
     private boolean earnestFirst;
 
     private RebateProgram.OrderRebateMode middleMoneyCalcType;
-    private OrderBack orderBack;
     private MiddleMoneyPay middleMoneyPay;
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
@@ -307,15 +306,6 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setIncludeMiddleMan(boolean middleManPay) {
         this.includeMiddleMan = middleManPay;
-    }
-
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "customerOrder")
-    public OrderBack getOrderBack() {
-        return orderBack;
-    }
-
-    public void setOrderBack(OrderBack orderBack) {
-        this.orderBack = orderBack;
     }
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "customerOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})

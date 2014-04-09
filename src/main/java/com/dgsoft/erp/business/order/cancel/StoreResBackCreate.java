@@ -1,7 +1,14 @@
 package com.dgsoft.erp.business.order.cancel;
 
+import com.dgsoft.common.SetLinkList;
+import com.dgsoft.common.exception.ProcessCreatePrepareException;
+import com.dgsoft.common.jbpm.BussinessProcessUtils;
+import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.BusinessCreate;
+import com.dgsoft.common.system.business.StartData;
+import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.action.*;
+import com.dgsoft.erp.business.order.BackItemCreate;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -10,6 +17,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,16 +28,31 @@ import java.util.List;
  */
 @Name("storeResBackCreate")
 @Scope(ScopeType.CONVERSATION)
-public class StoreResBackCreate {
+public class StoreResBackCreate extends OrderBackHome {
+
+    @In
+    private Credentials credentials;
 
     @Logger
     private Log log;
 
+    @In(create = true)
+    private StartData startData;
+
+    @In(create = true)
+    private BusinessDefineHome businessDefineHome;
+
+
     @DataModel("orderBackItems")
-    private List<BackItem> backItems;
+    public List<BackItem> getBackItems() {
+        return backItems;
+    }
 
     @In
-    private ResHelper resHelper;
+    private OrderHome orderHome;
+
+    @In(create = true)
+    private BackItemCreate backItemCreate;
 
     @In(create = true)
     private StoreResHome storeResHome;
@@ -46,37 +69,41 @@ public class StoreResBackCreate {
     @In(create = true)
     private BusinessCreate businessCreate;
 
-    @In(required = false)
-    private ResHome resHome;
-
-    @In(create=true)
-    private OrderBackHome orderBackHome;
-
     @DataModelSelection
     private BackItem selectBackItem;
 
     @In(create = true)
     private ResBackDispatch resBackDispatch;
 
+    @Override
+    protected OrderBack createInstance() {
+        return new OrderBack(BigDecimal.ZERO, false);
+    }
+
     @Create
-    public void onCreate(){
-        backItems = new ArrayList<BackItem>();
-        orderBackHome.clearInstance();
-        orderBackHome.getInstance().setOrderBackType(OrderBack.OrderBackType.PART_ORDER_BACK);
-        orderBackHome.init();
+    public void onCreate() {
+        startData.generateKey();
+        businessDefineHome.setId("erp.business.orderCancel");
     }
 
-    private BackItem operBackItem;
-
-    public BackItem getOperBackItem() {
-        return operBackItem;
+    @Override
+    public Class<OrderBack> getEntityClass() {
+        return OrderBack.class;
     }
 
-    public void setOperBackItem(BackItem operBackItem) {
-        this.operBackItem = operBackItem;
+    @Override
+    protected boolean wire() {
+        if (!isManaged()) {
+
+            getInstance().setId(startData.getBusinessKey());
+            getInstance().setApplyEmp(credentials.getUsername());
+            getInstance().setMoneyComplete(!isNeedBackMoney());
+            getInstance().setResComplete(!isNeedBackRes());
+        }
+        return true;
     }
 
-    public void deleteItem(){
+    public void deleteItem() {
         backItems.remove(selectBackItem);
         calcBackMoney();
     }
@@ -90,110 +117,95 @@ public class StoreResBackCreate {
     }
 
     public void addNewBackItem() {
-        storeResHome.setRes(operBackItem.getRes(), operBackItem.getFormats(), operBackItem.getFloatConvertRate());
+        storeResHome.setRes(backItemCreate.getEditingItem().getRes(), backItemCreate.getEditingItem().getFormats(), backItemCreate.getEditingItem().getFloatConvertRate());
         if (storeResHome.isIdDefined()) {
-            operBackItem.setStoreRes(storeResHome.getInstance());
-            boolean find = false;
-            for (BackItem item : backItems) {
-                if (item.isSameItem(operBackItem)) {
-                    find = true;
-                    item.add(operBackItem);
-                }
-            }
+            backItemCreate.getEditingItem().setStoreRes(storeResHome.getInstance());
 
-            if (!find) {
-                backItems.add(operBackItem);
-                operBackItem.setOrderBack(orderBackHome.getInstance());
-            } else {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "storeResInOrderItemMerger");
-            }
+
+            backItems.add(backItemCreate.getEditingItem());
+            backItemCreate.getEditingItem().setOrderBack(getInstance());
 
             calcBackMoney();
-
-            operBackItem = null;
-            if (resHome != null) {
-                resHome.clearInstance();
-            }
+            backItemCreate.createNext();
         } else {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
         }
     }
 
-    @Observer(value = "erp.storeResLocateSelected", create = false)
-    public void selectedStoreRes(StoreRes storeRes) {
-        log.debug("storeResFormat selectedStoreRes Observer ");
-        operBackItem = new BackItem(storeRes, resHelper.getFormatHistory(storeRes.getRes()),
-                storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ? resHelper.getFloatConvertRateHistory(storeRes.getRes()) : null,
-                storeRes.getRes().getResUnitByOutDefault());
-    }
-
-
-    @Observer(value = "erp.resLocateSelected", create = false)
-    public void selectedRes(Res res) {
-        log.debug("selectedRes selectedStoreRes Observer ");
-        operBackItem = new BackItem(res, resHelper.getFormatHistory(res),
-                res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ? resHelper.getFloatConvertRateHistory(res) : null,
-                res.getResUnitByOutDefault());
-    }
-
-    public void calcBackMoney(){
-        orderBackHome.getInstance().setMoney(getResTotalMoney().subtract(orderBackHome.getInstance().getSaveMoney()));
+    public void calcBackMoney() {
+        getInstance().setMoney(getResTotalMoney().subtract(getInstance().getSaveMoney()));
 
     }
 
-    public String dispatchBack(){
-        if (!isCanCreate()) return null;
-        resBackDispatch.init(backItems);
+    public String dispatchBack() {
+        //if (!isCanCreate()) return null;
+        resBackDispatch.init(getInstance());
         return "/business/startPrepare/erp/sale/BackStoreResDispatch.xhtml";
     }
 
 
-
-
     @Transactional
-    public String dispatchAndCreateBack(){
-        if (!resBackDispatch.isComplete()){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"dispatchNotComplete");
+    public String dispatchAndCreateBack() {
+        if (!resBackDispatch.isComplete()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatchNotComplete");
             return null;
         }
-        orderBackHome.getInstance().setDispatched(true);
-        orderBackHome.getInstance().getProductBackStoreIn().clear();
-        orderBackHome.getInstance().getProductBackStoreIn().addAll(resBackDispatch.getResBackDispatcheds(orderBackHome.getInstance()));
+        getInstance().setDispatched(true);
+        getInstance().getBackDispatchs().clear();
+
+        getInstance().getBackDispatchs().addAll(resBackDispatch.getResBackDispatcheds());
+        for (BackItem item : getInstance().getBackItems()) {
+            item.setBackItemStatus(BackItem.BackItemStatus.DISPATCH);
+        }
+
         return createBack();
     }
 
     @Transactional
     public String createBack() {
 
-        if (!isCanCreate()) return null;
+        //if (!isCanCreate()) return null;
 
         calcBackMoney();
-        orderBackHome.getInstance().setCustomerOrder(null);
-        if (customerHome.isIdDefined()){
+        if (customerHome.isIdDefined()) {
             customerHome.refresh();
-            orderBackHome.getInstance().setCustomer(customerHome.getInstance());
-        }else{
-            orderBackHome.getInstance().setCustomer(customerHome.getReadyInstance());
-            orderBackHome.getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
+            getInstance().setCustomer(customerHome.getInstance());
+        } else {
+            getInstance().setCustomer(customerHome.getReadyInstance());
+            getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
         }
 
-        orderBackHome.getInstance().getBackItems().addAll(backItems);
+        for (BackItem item : getInstance().getBackItems()) {
+            item.setBackItemStatus(BackItem.BackItemStatus.CREATE);
+        }
+
+        getInstance().getBackItems().addAll(backItems);
 
         return businessCreate.create();
 
     }
 
-    private boolean isCanCreate() {
-        if (backItems.isEmpty()){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"noneBackItemAdd");
-            return false;
-        }
-        if (orderBackHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) < 0){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"backMoneyCantLessZero");
-            return false;
-        }
-        return true;
-    }
+//    private boolean isCanCreate() {
+//        if (backItems.isEmpty()){
+//            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"noneBackItemAdd");
+//            return false;
+//        }
+//        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) < 0){
+//            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"backMoneyCantLessZero");
+//            return false;
+//        }
+//        return true;
+//    }
 
+
+    @Observer(value = "com.dgsoft.BusinessCreatePrepare.orderCancel", create = true)
+    @Transactional
+    public void createOrder(BusinessDefine businessDefine) {
+
+        if (!"persisted".equals(persist())) {
+            throw new ProcessCreatePrepareException("inventory persist fail");
+        }
+        startData.setDescription(getInstance().getCustomer().getName());
+    }
 
 }

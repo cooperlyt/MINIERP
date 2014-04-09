@@ -1,7 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.erp.model.api.StoreResCount;
 import com.google.common.collect.Iterators;
 
 import javax.persistence.*;
@@ -37,7 +36,7 @@ public class Store implements Serializable, TreeNode, Comparable<Store> {
     private Set<Allocation> allocationsForApplyStore = new HashSet<Allocation>(0);
     private Set<Allocation> allocationsForTargetStore = new HashSet<Allocation>(0);
     private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
-    private Set<ProductBackStoreIn> productBackStoreIns = new HashSet<ProductBackStoreIn>(0);
+    private Set<BackDispatch> BACKDISPATCHes = new HashSet<BackDispatch>(0);
 
     public Store() {
     }
@@ -221,12 +220,12 @@ public class Store implements Serializable, TreeNode, Comparable<Store> {
     }
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "store")
-    public Set<ProductBackStoreIn> getProductBackStoreIns() {
-        return productBackStoreIns;
+    public Set<BackDispatch> getBACKDISPATCHes() {
+        return BACKDISPATCHes;
     }
 
-    public void setProductBackStoreIns(Set<ProductBackStoreIn> productBackStoreIns) {
-        this.productBackStoreIns = productBackStoreIns;
+    public void setBACKDISPATCHes(Set<BackDispatch> BACKDISPATCHes) {
+        this.BACKDISPATCHes = BACKDISPATCHes;
     }
 
     @Transient

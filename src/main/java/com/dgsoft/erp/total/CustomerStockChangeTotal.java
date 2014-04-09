@@ -5,9 +5,7 @@ import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
-import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 
 import java.util.*;
 
@@ -35,7 +33,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                         return ((StockChangeItem) stockChangeItem).getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
 
                     } else {
-                        return ((StockChangeItem) stockChangeItem).getStockChange().getProductBackStoreIn().getOrderBack().getCustomer();
+                        return ((StockChangeItem) stockChangeItem).getStockChange().getBACKDISPATCH().getOrderBack().getCustomer();
                     }
                 }
 
@@ -75,7 +73,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                     if (stockChangeItem.getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {
                         return stockChangeItem.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
                     } else {
-                        return stockChangeItem.getStockChange().getProductBackStoreIn().getOrderBack().getCustomer();
+                        return stockChangeItem.getStockChange().getBACKDISPATCH().getOrderBack().getCustomer();
                     }
                 }
 

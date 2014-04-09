@@ -19,16 +19,26 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BACK_ITEM", catalog = "MINI_ERP")
-public class BackItem extends StoreResPriceEntity implements java.io.Serializable{
+public class BackItem extends StoreResPriceEntity implements java.io.Serializable {
+
+    public enum BackItemStatus {
+        CREATE, DISPATCH, COMPLETE;
+    }
 
     private String id;
     private BigDecimal count;
     private BigDecimal money;
-    private String memo;
+
 
     private StoreRes storeRes;
     private ResUnit resUnit;
     private OrderBack orderBack;
+
+    private BackDispatch dispatch;
+    private BackItemStatus backItemStatus;
+    private BigDecimal totalMoney;
+    private BigDecimal rebate;
+    private String memo;
 
     public BackItem() {
     }
@@ -41,29 +51,44 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
-    public BackItem(OrderBack orderBack, StoreRes storeRes, ResUnit resUnit, BigDecimal count,
-                    BigDecimal money) {
+    //split Item
+    public BackItem(OrderBack orderBack,StoreRes storeRes,BigDecimal count,
+                    BigDecimal money,ResUnit resUnit,BackItemStatus backItemStatus,BigDecimal rebate,String memo){
         this.count = count;
         this.money = money;
         this.storeRes = storeRes;
         this.resUnit = resUnit;
         this.orderBack = orderBack;
-    }
-
-    public BackItem(BigDecimal count, BigDecimal money, String memo, StoreRes storeRes, ResUnit resUnit, OrderBack orderBack) {
-        this.count = count;
-        this.money = money;
+        this.backItemStatus = backItemStatus;
+        this.rebate = rebate;
         this.memo = memo;
-        this.storeRes = storeRes;
-        this.resUnit = resUnit;
-        this.orderBack = orderBack;
+        calcMoney();
     }
 
-    public BackItem(OrderBack orderBack,StoreRes storeRes, BigDecimal masterCount) {
-        this.orderBack = orderBack;
-        this.storeRes = storeRes;
-        this.count = masterCount;
-    }
+//
+//    public BackItem(OrderBack orderBack, StoreRes storeRes, ResUnit resUnit, BigDecimal count,
+//                    BigDecimal money) {
+//        this.count = count;
+//        this.money = money;
+//        this.storeRes = storeRes;
+//        this.resUnit = resUnit;
+//        this.orderBack = orderBack;
+//    }
+//
+//    public BackItem(BigDecimal count, BigDecimal money, String memo, StoreRes storeRes, ResUnit resUnit, OrderBack orderBack) {
+//        this.count = count;
+//        this.money = money;
+//        this.memo = memo;
+//        this.storeRes = storeRes;
+//        this.resUnit = resUnit;
+//        this.orderBack = orderBack;
+//    }
+//
+//    public BackItem(OrderBack orderBack, StoreRes storeRes, BigDecimal masterCount) {
+//        this.orderBack = orderBack;
+//        this.storeRes = storeRes;
+//        this.count = masterCount;
+//    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -135,15 +160,14 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     }
 
     @Override
-    @Transient
+    @Column(name = "TOTAL_MONEY", nullable = true, scale = 3)
     public void setTotalMoney(BigDecimal money) {
-        //TODO addDB
+        this.totalMoney = money;
     }
 
     @Override
-    @Transient
     public BigDecimal getTotalMoney() {
-        return null;
+        return this.totalMoney;
     }
 
     @Override
@@ -158,15 +182,15 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     }
 
     @Override
-    @Transient
+    @Column(name = "REBATE", nullable = false, scale = 4)
+    @NotNull
     public BigDecimal getRebate() {
-        return null;
+        return rebate;
     }
 
     @Override
-    @Transient
     public void setRebate(BigDecimal rebate) {
-
+        this.rebate = rebate;
     }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -180,4 +204,24 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
         this.orderBack = orderBack;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DISPATCH", nullable = true)
+    public BackDispatch getDispatch() {
+        return dispatch;
+    }
+
+    public void setDispatch(BackDispatch dispatch) {
+        this.dispatch = dispatch;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", nullable = false, length = 10)
+    @NotNull
+    public BackItemStatus getBackItemStatus() {
+        return backItemStatus;
+    }
+
+    public void setBackItemStatus(BackItemStatus backItemStatus) {
+        this.backItemStatus = backItemStatus;
+    }
 }

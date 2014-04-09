@@ -43,7 +43,6 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
     private Set<Batch> batches = new HashSet<Batch>(0);
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
-    private Set<BackDispatchItem> backDispatchItems = new HashSet<BackDispatchItem>(0);
     private Set<StoreResRebate> storeResRebates = new HashSet<StoreResRebate>(0);
     private Set<PriceItem> priceItems = new HashSet<PriceItem>(0);
     private boolean enable;
@@ -216,15 +215,6 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     public void setBackItems(Set<BackItem> backItems) {
         this.backItems = backItems;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<BackDispatchItem> getBackDispatchItems() {
-        return backDispatchItems;
-    }
-
-    public void setBackDispatchItems(Set<BackDispatchItem> backDispatchItems) {
-        this.backDispatchItems = backDispatchItems;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")

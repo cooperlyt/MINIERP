@@ -38,30 +38,30 @@ public class StoreResBackConfirm extends CancelOrderTaskHandle {
 
     @Override
     protected void initCancelOrderTask() {
-        confirmBackItems = new ArrayList<BackItem>();
-        for (ProductBackStoreIn backDispatch : orderBackHome.getInstance().getProductBackStoreIn()) {
-            for (StockChangeItem storeChangeItem : backDispatch.getStockChange().getStockChangeItems()) {
-                boolean matchOld = false;
-                for (BackItem oldBackItem : orderBackHome.getInstance().getBackItems()) {
-                    if (oldBackItem.getStoreRes().equals(storeChangeItem.getStoreRes())) {
-                        matchOld = true;
-                        confirmBackItems.add(new BackItem(storeChangeItem.getMasterCount(),
-                                oldBackItem.getMoney(), oldBackItem.getMemo(), oldBackItem.getStoreRes(),
-                                oldBackItem.getResUnit(), orderBackHome.getInstance()));
-                        break;
-                    }
-                }
-
-                if (!matchOld) {
-
-                    confirmBackItems.add(new BackItem(orderBackHome.getInstance(), storeChangeItem.getStoreRes(),
-                            storeChangeItem.getStoreRes().getRes().getResUnitByOutDefault(),
-                            storeChangeItem.getMasterCount(),
-                            BigDecimal.ZERO));
-                }
-
-            }
-        }
+        confirmBackItems = orderBackHome.getInstance().getBackItemList();
+//        for (BackDispatch backDispatch : orderBackHome.getInstance().getBackDispatchs()) {
+//            for (StockChangeItem storeChangeItem : backDispatch.getStockChange().getStockChangeItems()) {
+//                boolean matchOld = false;
+//                for (BackItem oldBackItem : orderBackHome.getInstance().getBackItems()) {
+//                    if (oldBackItem.getStoreRes().equals(storeChangeItem.getStoreRes())) {
+//                        matchOld = true;
+//                        confirmBackItems.add(new BackItem(storeChangeItem.getMasterCount(),
+//                                oldBackItem.getMoney(), oldBackItem.getMemo(), oldBackItem.getStoreRes(),
+//                                oldBackItem.getResUnit(), orderBackHome.getInstance()));
+//                        break;
+//                    }
+//                }
+//
+//                if (!matchOld) {
+//
+//                    confirmBackItems.add(new BackItem(orderBackHome.getInstance(), storeChangeItem.getStoreRes(),
+//                            storeChangeItem.getStoreRes().getRes().getResUnitByOutDefault(),
+//                            storeChangeItem.getMasterCount(),
+//                            BigDecimal.ZERO));
+//                }
+//
+//            }
+//        }
         calcBackMoney();
     }
 

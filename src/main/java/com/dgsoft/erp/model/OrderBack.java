@@ -14,27 +14,19 @@ import java.util.*;
 @Table(name = "ORDER_BACK", catalog = "MINI_ERP")
 public class OrderBack implements java.io.Serializable {
 
-    public enum OrderBackType {
-        ALL_ORDER_CANCEL, PART_ORDER_BACK;
-    }
-
-
     private String id;
     private Integer version;
-    private CustomerOrder customerOrder;
     private String reason;
     private Date createDate;
     private BigDecimal money;
     private String memo;
-
-    private OrderBackType orderBackType;
     private boolean moneyComplete;
     private boolean resComplete;
     private String applyEmp;
     private BigDecimal saveMoney;
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
     private Customer customer;
-    private Set<ProductBackStoreIn> productBackStoreIn = new HashSet<ProductBackStoreIn>(0);
+    private Set<BackDispatch> backDispatchs = new HashSet<BackDispatch>(0);
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private boolean dispatched;
 
@@ -66,16 +58,6 @@ public class OrderBack implements java.io.Serializable {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    @OneToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "CUSTOMER_ORDER", nullable = true)
-    public CustomerOrder getCustomerOrder() {
-        return this.customerOrder;
-    }
-
-    public void setCustomerOrder(CustomerOrder customerOrder) {
-        this.customerOrder = customerOrder;
     }
 
     @Column(name = "REASON", nullable = false, length = 32)
@@ -111,12 +93,12 @@ public class OrderBack implements java.io.Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack", cascade = {CascadeType.ALL})
-    public Set<ProductBackStoreIn> getProductBackStoreIn() {
-        return this.productBackStoreIn;
+    public Set<BackDispatch> getBackDispatchs() {
+        return this.backDispatchs;
     }
 
-    public void setProductBackStoreIn(Set<ProductBackStoreIn> productBackReses) {
-        this.productBackStoreIn = productBackReses;
+    public void setBackDispatchs(Set<BackDispatch> productBackReses) {
+        this.backDispatchs = productBackReses;
     }
 
     @OneToMany(orphanRemoval = false, mappedBy = "orderBack", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
@@ -126,17 +108,6 @@ public class OrderBack implements java.io.Serializable {
 
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "BACK_TYPE", nullable = false, length = 32)
-    @NotNull
-    public OrderBackType getOrderBackType() {
-        return orderBackType;
-    }
-
-    public void setOrderBackType(OrderBackType orderBackType) {
-        this.orderBackType = orderBackType;
     }
 
     @Column(name = "MONEY_COMPLETE", nullable = false)
