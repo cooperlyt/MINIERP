@@ -37,14 +37,8 @@
 
 
     <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.OrderBack_field_BackType}</ui:define>
-
-        <h:outputText value="#{messages[orderBackHome.instance.orderBackType.name()]}"/>
-    </s:decorate>
-
-    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define
-                name="label">#{(orderBackHome.instance.orderBackType eq 'ALL_ORDER_CANCEL') ? messages.OrderBack_field_reason : messages.OrderBack_field_BackReason}</ui:define>
+                name="label">#{messages.OrderBack_field_BackReason}</ui:define>
 
         <h:outputText value="#{dictionary.getWordValue(orderBackHome.instance.reason)}"/>
     </s:decorate>

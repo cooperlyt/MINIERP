@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="orderCancel" width="776" height="737">
-  <node name="取消订单" x="23" y="7" width="132" height="36">
+<root-container name="orderCancel" width="779" height="737">
+  <node name="退货" x="45" y="11" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
-    </edge>
-  </node>
-  <node name="定单状态判断" x="24" y="226" width="132" height="36">
-    <edge>
-      <label x="-26" y="-12"/>
-    </edge>
-    <edge>
-      <label x="-16" y="-12"/>
     </edge>
   </node>
   <node name="退货入库(1库)" x="374" y="367" width="132" height="36">
@@ -19,17 +11,17 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="退款" x="313" y="135" width="132" height="36">
+  <node name="退款" x="546" y="83" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="退货完成" x="637" y="308" width="132" height="36">
+  <node name="退货完成" x="640" y="208" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
     <edge>
-      <label x="0" y="76"/>
+      <label x="-12" y="3"/>
     </edge>
   </node>
   <node name="fork2" x="136" y="434" width="99" height="24">
@@ -41,6 +33,9 @@
     </edge>
     <edge>
       <label x="-31" y="-14"/>
+    </edge>
+    <edge>
+      <label x="-35" y="-11"/>
     </edge>
   </node>
   <node name="join2" x="649" y="371" width="114" height="24">
@@ -63,7 +58,7 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="入库确认(1库)" x="313" y="297" width="132" height="36">
+  <node name="入库判断(1库)" x="313" y="297" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -71,7 +66,7 @@
       <label x="-25" y="-18"/>
     </edge>
   </node>
-  <node name="入库确认(2库)" x="316" y="428" width="132" height="36">
+  <node name="入库判断(2库)" x="316" y="428" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -79,7 +74,7 @@
       <label x="-27" y="-10"/>
     </edge>
   </node>
-  <node name="入库确认(天津)" x="122" y="498" width="132" height="36">
+  <node name="入库判断(天津)" x="122" y="498" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -97,12 +92,12 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="调度" x="26" y="370" width="132" height="36">
+  <node name="调度" x="-5" y="239" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="调度判断" x="122" y="301" width="132" height="36">
+  <node name="调度判断" x="40" y="83" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -110,10 +105,28 @@
       <label x="-13" y="-19"/>
     </edge>
   </node>
-  <node name="退货确认" x="477" y="213" width="132" height="36">
+  <node name="退货确认" x="547" y="146" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="结束" x="635" y="12" width="132" height="36"/>
+  <node name="结束" x="639" y="12" width="132" height="36"/>
+  <node name="入库判断(公司)" x="256" y="212" width="132" height="36">
+    <edge>
+      <label x="-13" y="-7"/>
+    </edge>
+    <edge>
+      <label x="-22" y="1"/>
+    </edge>
+  </node>
+  <node name="退货入库(公司)" x="359" y="147" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="入库完成(公司)" x="484" y="213" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
 </root-container>

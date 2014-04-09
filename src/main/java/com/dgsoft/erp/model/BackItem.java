@@ -161,13 +161,13 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
 
     @Override
     @Column(name = "TOTAL_MONEY", nullable = true, scale = 3)
-    public void setTotalMoney(BigDecimal money) {
-        this.totalMoney = money;
+    public BigDecimal getTotalMoney() {
+        return this.totalMoney;
     }
 
     @Override
-    public BigDecimal getTotalMoney() {
-        return this.totalMoney;
+    public void setTotalMoney(BigDecimal money) {
+        this.totalMoney = money;
     }
 
     @Override

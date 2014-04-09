@@ -33,9 +33,6 @@ public class StoreResBackCreate extends OrderBackHome {
     @In
     private Credentials credentials;
 
-    @Logger
-    private Log log;
-
     @In(create = true)
     private StartData startData;
 
@@ -48,7 +45,7 @@ public class StoreResBackCreate extends OrderBackHome {
         return backItems;
     }
 
-    @In
+    @In(required = false)
     private OrderHome orderHome;
 
     @In(create = true)
@@ -80,8 +77,9 @@ public class StoreResBackCreate extends OrderBackHome {
         return new OrderBack(BigDecimal.ZERO, false);
     }
 
-    @Create
-    public void onCreate() {
+    @Override
+    public void create(){
+        super.create();
         startData.generateKey();
         businessDefineHome.setId("erp.business.orderCancel");
     }
@@ -108,33 +106,24 @@ public class StoreResBackCreate extends OrderBackHome {
         calcBackMoney();
     }
 
-    public BigDecimal getResTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (BackItem item : backItems) {
-            result = result.add(item.getTotalMoney());
-        }
-        return result;
-    }
-
     public void addNewBackItem() {
-        storeResHome.setRes(backItemCreate.getEditingItem().getRes(), backItemCreate.getEditingItem().getFormats(), backItemCreate.getEditingItem().getFloatConvertRate());
+        BackItem item =  backItemCreate.getEditingItem();
+
+        storeResHome.setRes(item.getRes(), item.getFormats(), item.getFloatConvertRate());
         if (storeResHome.isIdDefined()) {
-            backItemCreate.getEditingItem().setStoreRes(storeResHome.getInstance());
+            item.setStoreRes(storeResHome.getInstance());
+            item.setOrderBack(getInstance());
+            item.setBackItemStatus(BackItem.BackItemStatus.CREATE);
+            item.calcMoney();
 
+            backItems.add(item);
 
-            backItems.add(backItemCreate.getEditingItem());
-            backItemCreate.getEditingItem().setOrderBack(getInstance());
 
             calcBackMoney();
             backItemCreate.createNext();
         } else {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
         }
-    }
-
-    public void calcBackMoney() {
-        getInstance().setMoney(getResTotalMoney().subtract(getInstance().getSaveMoney()));
-
     }
 
     public String dispatchBack() {
@@ -150,6 +139,8 @@ public class StoreResBackCreate extends OrderBackHome {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatchNotComplete");
             return null;
         }
+
+
         getInstance().setDispatched(true);
         getInstance().getBackDispatchs().clear();
 
@@ -157,6 +148,7 @@ public class StoreResBackCreate extends OrderBackHome {
         for (BackItem item : getInstance().getBackItems()) {
             item.setBackItemStatus(BackItem.BackItemStatus.DISPATCH);
         }
+
 
         return createBack();
     }
@@ -173,10 +165,6 @@ public class StoreResBackCreate extends OrderBackHome {
         } else {
             getInstance().setCustomer(customerHome.getReadyInstance());
             getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
-        }
-
-        for (BackItem item : getInstance().getBackItems()) {
-            item.setBackItemStatus(BackItem.BackItemStatus.CREATE);
         }
 
         getInstance().getBackItems().addAll(backItems);

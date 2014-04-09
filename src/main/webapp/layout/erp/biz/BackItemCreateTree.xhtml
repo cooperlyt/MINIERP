@@ -1,0 +1,50 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <s:decorate template="/layout/erp/res/ResSelectModelPanel.xhtml">
+        <ui:param name="panelId" value="resSelectPanel"/>
+        <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+        <ui:param name="panelTitle" value="#{messages.res}"/>
+        <ui:define name="categoryNode">
+            <a:commandLink execute="@this" render="#{render}" value="#{_node.data.name}"
+                           oncomplete="#{rich:component('resSelectPanel')}.hide()"
+                           style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                           action="#{backItemCreate.resCategorySelected}">
+                <a:param value="#{_node.data.id}" assignTo="#{resCategoryHome.id}"/>
+                <s:conversationId/>
+            </a:commandLink>
+        </ui:define>
+
+        <ui:define name="resNode">
+
+            <a:commandLink execute="@this" render="#{render}"
+                           action="#{backItemCreate.resSelected}"
+                           value=" #{_node.data.name}(#{_node.data.code})"
+                           oncomplete="#{rich:component('resSelectPanel')}.hide()"
+                           style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}">
+                <a:param value="#{_node.data.id}" assignTo="#{resHome.id}"/>
+                <s:conversationId/>
+            </a:commandLink>
+
+        </ui:define>
+
+        <ui:define name="storeResNode">
+            <a:commandLink execute="@this" render="#{render}"
+                           action="#{backItemCreate.storeResSelected}"
+                           value="#{_node.data.code}#{' '}#{ _node.showTitle}"
+                           oncomplete="#{rich:component('resSelectPanel')}.hide()">
+                <a:param value="#{_node.data.id}" assignTo="#{storeResHome.id}"/>
+                <s:conversationId/>
+            </a:commandLink>
+
+        </ui:define>
+    </s:decorate>
+
+</ui:composition>

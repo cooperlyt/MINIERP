@@ -45,7 +45,7 @@
     <div style="clear: both;"/>
     <a:outputPanel>
         <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
-            <ui:param name="inputValue" value="#{resBackDispatch.newDispatchItem}"/>
+            <ui:param name="inputValue" value="#{resBackDispatch.dispatchCount}"/>
             <ui:param name="formatTemplate" value="/layout/edit.xhtml"/>
             <ui:param name="countLableStyleClass" value="small_name"/>
         </ui:include>
@@ -60,7 +60,7 @@
         <a:commandButton value="#{messages.ok}" execute="@form"
                          data="#{actionExecuteState.lastState}"
                          oncomplete="if (event.data == 'success')#{rich:component('singleDispatchPanel')}.hide();"
-                         render="singleDispatchPanel_inputs,dispatchedItemForm,waitDespatchForm,#{render}"
+                         render="singleDispatchPanel_inputs,dispatchedItemForm,waitDespatchForm"
                          action="#{resBackDispatch.addDispatchItem}">
             <a:attachQueue requestDelay="0"/>
 
@@ -101,7 +101,7 @@
             <h:form id="waitDespatchForm">
 
                 <rich:dataTable style="width: 100%"
-                                value="#{resBackDispatch.waitDispatchItems}" var="_waitItem">
+                                value="#{backDispatchWaitItems}" var="_waitItem">
                     <f:facet name="header">
                         <rich:columnGroup>
                             <rich:column rowspan="2">
@@ -129,16 +129,16 @@
                     <rich:column>
 
                         <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                            <ui:param name="storeRes" value="#{_waitItem.key}"/>
+                            <ui:param name="storeRes" value="#{_waitItem.storeRes}"/>
                         </ui:include>
                     </rich:column>
 
                     <rich:column>
-                        <h:outputText value="#{_waitItem.value.displayMasterCount}"/>
+                        <h:outputText value="#{_waitItem.displayMasterCount}"/>
                     </rich:column>
 
                     <rich:column>
-                        #{_waitItem.value.displayAuxCount}
+                        #{_waitItem.displayAuxCount}
                     </rich:column>
 
                     <rich:column>
@@ -146,8 +146,6 @@
                                          action="#{resBackDispatch.beginDispatchItem}"
                                          oncomplete="#{rich:component('singleDispatchPanel')}.show()"
                                          render="singleDispatchPanel_inputs">
-                            <a:param name="selectStoreResId" value="#{_waitItem.key.id}"
-                                     assignTo="#{resBackDispatch.selectWaitDispatchItemId}"/>
                             <a:attachQueue requestDelay="0"/>
                         </a:commandButton>
                     </rich:column>
@@ -168,7 +166,7 @@
                 </rich:toolbar>
             </h:form>
             <h:form id="dispatchedItemForm">
-                <rich:dataTable style="width: 100%" value="#{resBackDispatcheds}" var="_dispatchedItem">
+                <rich:dataTable style="width: 100%" value="#{resBackDispatch.resBackDispatcheds}" var="_dispatchedItem">
                     <f:facet name="header">
                         <rich:columnGroup>
                             <rich:column rowspan="2">
@@ -197,7 +195,7 @@
                     </rich:column>
 
 
-                    <rich:collapsibleSubTable value="#{_dispatchedItem.backDispatchItemList}"
+                    <rich:collapsibleSubTable value="#{_dispatchedItem.backItemList}"
                                               var="_item" id="srsbtbl" expandMode="client">
                         <rich:column>
                             <ui:include src="/layout/erp/StoreResTitle.xhtml">

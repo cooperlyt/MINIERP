@@ -33,10 +33,10 @@ public abstract class CancelOrderTaskHandle extends TaskHandle {
     @Override
     protected String completeTask() {
         String result = completeOrderTask();
-        if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL) &&
-                orderBackHome.getInstance().isResComplete() && orderBackHome.getInstance().isMoneyComplete()){
-            businessProcess.stopProcess("order",orderBackHome.getInstance().getCustomerOrder().getId());
-        }
+//        if (orderBackHome.getInstance().getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL) &&
+//                orderBackHome.getInstance().isResComplete() && orderBackHome.getInstance().isMoneyComplete()){
+//            businessProcess.stopProcess("order",orderBackHome.getInstance().getCustomerOrder().getId());
+//        }
         return result;
     }
 

@@ -80,7 +80,6 @@ public class AccountOper implements java.io.Serializable {
         this.remitFee = remitFee;
     }
 
-
     public AccountOper(PreparePay preparePay, Customer customer, String operEmp, BigDecimal remitFee) {
         this.operType = AccountOperType.PRE_DEPOSIT;
         this.preparePay = preparePay;
@@ -105,9 +104,6 @@ public class AccountOper implements java.io.Serializable {
         this.operEmp = operEmp;
         this.operType = AccountOperType.ORDER_BACK_SAVINGS;
         this.operMoney = orderBack.getMoney();
-        if (orderBack.getOrderBackType().equals(OrderBack.OrderBackType.ALL_ORDER_CANCEL)) {
-            this.customerOrder = orderBack.getCustomerOrder();
-        }
     }
 
     @Id

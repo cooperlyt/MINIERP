@@ -30,13 +30,9 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
     protected List<BackItem> backItems;
 
     @Override
-    protected void initInstance(){
+    protected void initInstance() {
         super.initInstance();
         backItems = new SetLinkList<BackItem>(getInstance().getBackItems());
-    }
-
-    public OrderBack.OrderBackType[] getOrderBackTypes() {
-        return OrderBack.OrderBackType.values();
     }
 
     public boolean needStoreIn(String storeId) {
@@ -59,5 +55,19 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         return !getInstance().getBackItems().isEmpty();
     }
 
+
+    public BigDecimal getResTotalMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (BackItem item : getInstance().getBackItems()) {
+            if (item.getTotalMoney() != null) {
+                result = result.add(item.getTotalMoney());
+            }
+        }
+        return result;
+    }
+
+    public void calcBackMoney() {
+        getInstance().setMoney(getResTotalMoney().subtract(getInstance().getSaveMoney()));
+    }
 
 }

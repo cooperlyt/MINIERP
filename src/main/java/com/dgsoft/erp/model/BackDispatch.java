@@ -28,6 +28,7 @@ public class BackDispatch implements java.io.Serializable {
     }
 
     public BackDispatch(OrderBack orderBack, Store store) {
+        this.orderBack = orderBack;
         this.store = store;
         storeOut = false;
     }
@@ -87,12 +88,24 @@ public class BackDispatch implements java.io.Serializable {
         this.storeOut = storeOut;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "backDispatch", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dispatch", cascade = {CascadeType.ALL})
     public Set<BackItem> getBackItems() {
         return backItems;
     }
 
     public void setBackItems(Set<BackItem> backItems) {
         this.backItems = backItems;
+    }
+
+    @Transient
+    public List<BackItem> getBackItemList() {
+        List<BackItem> result = new ArrayList<BackItem>(getBackItems());
+        Collections.sort(result, new Comparator<BackItem>() {
+            @Override
+            public int compare(BackItem o1, BackItem o2) {
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            }
+        });
+        return result;
     }
 }

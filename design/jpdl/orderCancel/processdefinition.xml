@@ -3,19 +3,10 @@
 <process-definition  xmlns=""  name="orderCancel">
 
 
-	<start-state name="取消订单">
-		<transition to="定单状态判断"></transition>
+	<start-state name="退货">
+		<transition to="调度判断"></transition>
 	</start-state>
 
-
-	<decision name="定单状态判断">
-		<transition to="退款" name="仅退款">
-			<condition expression="#{orderBackHome.instance.resComplete}"></condition>
-		</transition>
-		<transition to="调度判断" name="仅退货">
-			<condition expression="#{not orderBackHome.instance.resComplete}"></condition>
-		</transition>
-	</decision>
 
 	<task-node name="退货入库(1库)">
 		<task name="退货入库(1库)">
@@ -41,15 +32,16 @@
 		<transition to="退货确认">
 			<condition expression="#{orderBackHome.needBackMoney}"></condition>
 		</transition>
-		<transition to="结束" name="结束仅退货">
+		<transition to="结束" name="结束">
 			<condition expression="#{not orderBackHome.needBackMoney}"></condition>
 		</transition>
 	</decision>
 
 	<fork name="fork2">
-		<transition to="入库确认(1库)" name="入库(1库)"></transition>
-		<transition to="入库确认(2库)" name="入库(2库)"></transition>
-		<transition to="入库确认(天津)" name="入库(天津)"></transition>
+		<transition to="入库判断(1库)" name="入库(1库)"></transition>
+		<transition to="入库判断(2库)" name="入库(2库)"></transition>
+		<transition to="入库判断(天津)" name="入库(天津)"></transition>
+		<transition to="入库判断(公司)" name="入库(公司)"></transition>
 	</fork>
 
 	<join name="join2">
@@ -68,7 +60,7 @@
 		<transition to="join2"></transition>
 	</node>
 
-	<decision name="入库确认(1库)">
+	<decision name="入库判断(1库)">
 		<transition to="退货入库(1库)" name="入库">
 			<condition expression="#{orderBackHome.needStoreIn('A')}"></condition>
 		</transition>
@@ -77,7 +69,7 @@
 		</transition>
 	</decision>
 
-	<decision name="入库确认(2库)">
+	<decision name="入库判断(2库)">
 		<transition to="入库完成(2库)">
 			<condition expression="#{not orderBackHome.needStoreIn('B')}"></condition>
 		</transition>
@@ -86,7 +78,7 @@
 		</transition>
 	</decision>
 
-	<decision name="入库确认(天津)">
+	<decision name="入库判断(天津)">
 		<transition to="退货入库(天津)" name="入库">
 			<condition expression="#{orderBackHome.needStoreIn('C')}"></condition>
 		</transition>
@@ -143,6 +135,19 @@
 		</task>
 		<transition to="退款"></transition>
 	</task-node>
+
+	<decision name="入库判断(公司)">
+		<transition to="退货入库(公司)" name="入库"></transition>
+		<transition to="入库完成(公司)" name="完成"></transition>
+	</decision>
+
+	<task-node name="退货入库(公司)">
+		<transition to="入库完成(公司)"></transition>
+	</task-node>
+
+	<node name="入库完成(公司)">
+		<transition to="join2"></transition>
+	</node>
 
 
 	<end-state name="结束"></end-state>

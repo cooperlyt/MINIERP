@@ -83,6 +83,18 @@ public class ResBackDispatch {
         this.selectStore = selectStore;
     }
 
+    public StoreResCount getDispatchCount() {
+        return dispatchCount;
+    }
+
+    public void setDispatchCount(StoreResCount dispatchCount) {
+        this.dispatchCount = dispatchCount;
+    }
+
+    public FacesMessages getFacesMessages() {
+        return facesMessages;
+    }
+
     public void beginDispatchItem() {
         selectStore = null;
         dispatchCount = new StoreResCount(selectBackItem.getStoreRes(),selectBackItem.getCount());
@@ -95,12 +107,14 @@ public class ResBackDispatch {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_item_count_over_error",
                     dispatchCount.getDisplayMasterCount(),editItem.getDisplayMasterCount());
         } else {
-            addDispatchItem(editItem,dispatchCount);
+            if (addDispatchItem(editItem,dispatchCount)){
+                waitDispatchItems.remove(editItem);
+            }
             actionExecuteState.actionExecute();
         }
     }
 
-    private void addDispatchItem(BackItem backItem, StoreResCountEntity count) {
+    private boolean addDispatchItem(BackItem backItem, StoreResCountEntity count) {
         boolean added = false;
         boolean all = backItem.getCount().compareTo(count.getCount()) == 0;
         BackItem dispatchItem;
@@ -109,6 +123,7 @@ public class ResBackDispatch {
         }else{
             dispatchItem = new BackItem(orderBack,backItem.getStoreRes(),count.getCount(),
                     backItem.getMoney(),backItem.getResUnit(), BackItem.BackItemStatus.CREATE,backItem.getRebate(),backItem.getMemo());
+            backItem.setCount(backItem.getCount().subtract(dispatchItem.getCount()));
             splitItems.get(backItem).add(dispatchItem);
         }
 
@@ -129,9 +144,8 @@ public class ResBackDispatch {
             dispatchItem.setDispatch(newDispatch);
         }
 
-        if (all){
-            waitDispatchItems.remove(backItem);
-        }
+        return all;
+
 
     }
 
@@ -139,6 +153,8 @@ public class ResBackDispatch {
         for (BackItem item: waitDispatchItems){
             addDispatchItem(item,item);
         }
+        waitDispatchItems.clear();
+
     }
 
     public boolean isComplete() {
