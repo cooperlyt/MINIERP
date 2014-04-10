@@ -299,7 +299,7 @@
                 <h:outputText value="#{_changeItem.key.operDate}">
                     <s:convertDateTime pattern="#{messages.displayTimePattern}"/>
                 </h:outputText>
-                -- #{messages.Customer}: #{_changeItem.key.BACKDISPATCH.orderBack.customer.name}
+                -- #{messages.Customer}: #{_changeItem.key.backDispatch.orderBack.customer.name}
                 #{' '} #{' '} #{messages.Store}: #{_changeItem.key.store.name}
                 #{' '} #{' '} #{messages.StockChange_field_operEMP}: #{dictionary.getEmpNameById(_changeItem.key.operEmp)}
             </rich:column>

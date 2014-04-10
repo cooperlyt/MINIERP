@@ -1,12 +1,161 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+    <ui:param name="functionTitle" value="#{orderMoneyBack.taskName}"/>
+
+    <ui:define name="func-body">
+
+        <h:form>
+            <rich:toolbar>
+
+
+                <rich:toolbarGroup>
+                    <h:outputText value="#{messages.OrderBackMoney}"/>
+                    <h:outputText value="#{orderMoneyBack.accountOper.operMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+
+
+                <rich:toolbarGroup location="right">
+                    <h:panelGroup>
+                        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                                  view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+                        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                         action="#{orderMoneyBack.complete}"/>
+                    </h:panelGroup>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
+            <rich:panel>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.BackMoneyTime}
+                    </ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="20"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datetimepattern}"
+                            required="true"
+                            defaultTime="#{currentTime}"
+                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                            label="#{messages.BackMoneyTime}"
+                            value="#{orderMoneyBack.accountOper.operDate}">
+
+                    </rich:calendar>
+
+                </s:decorate>
+
+
+                <a:region>
+                    <s:decorate id="payTypeField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
+                        <h:selectOneMenu style="width: 120px" label="#{messages.accountOper_field_payType}"
+                                         required="true"
+                                         value="#{orderMoneyBack.accountOper.payType}">
+
+                            <s:selectItems value="#{accountPayTypes}" var="_payType"
+                                           label="#{messages[_payType.name()]}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                            <s:convertEnum/>
+                            <a:ajax event="valueChange" execute="@this" render="payTypeField">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:ajax>
+                        </h:selectOneMenu>
+
+                        <ui:define name="tail">
+                            <h:panelGrid columns="10"
+                                         rendered="#{(orderMoneyBack.accountOper.payType eq 'BANK_TRANSFER')}">
+
+                                <h:outputText value="#{messages.accountOper_field_fee}#{' '}"/>
+
+                                <h:inputText
+                                        label="#{messages.accountOper_field_fee}" required="true"
+                                        size="15" value="#{orderMoneyBack.accountOper.remitFee}">
+                                    <f:validateDoubleRange minimum="0"/>
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                                     groupingUsed="false"/>
+                                </h:inputText>
+
+                                <h:outputText value="#{messages.BankAccount}#{' '}"/>
+
+                                <h:selectOneMenu value="#{orderMoneyBack.accountOper.bankAccount}" label="#{messages.BankAccount}">
+                                    <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
+                                                   label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
+                                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                                    <f:converter converterId="erpEntityConverter"/>
+                                </h:selectOneMenu>
+
+                            </h:panelGrid>
+
+                            <h:outputText value="#{' '}#{messages.customer_field_balance}:"
+                                          rendered="#{orderMoneyBack.accountOper.payType eq 'FROM_PRE_DEPOSIT'}"/>
+
+                            <h:outputText value="#{orderHome.instance.customer.balance}"
+                                          rendered="#{orderMoneyBack.accountOper.payType eq 'FROM_PRE_DEPOSIT'}">
+                                <f:convertNumber locale="#{calendarBean.locale}"
+                                                 type="currency" groupingUsed="true"/>
+                            </h:outputText>
+
+                            <h:outputText value="#{messages.accountOper_field_checkNumber}#{' '}"
+                                          rendered="#{orderMoneyBack.accountOper.payType eq 'CHECK'}"/>
+                            <h:inputText rendered="#{orderMoneyBack.accountOper.payType eq 'CHECK'}"
+                                         label="#{messages.accountOper_field_checkNumber}"
+                                         value="#{orderMoneyBack.accountOper.checkNumber}">
+                            </h:inputText>
+
+
+                        </ui:define>
+                    </s:decorate>
+                </a:region>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.description}</ui:define>
+                    <h:inputTextarea value="#{orderMoneyBack.accountOper.description}" rows="2" cols="100"/>
+                </s:decorate>
+
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
+            </rich:panel>
+
+        </h:form>
+
+        <br/>
+
+        <rich:collapsiblePanel switchType="client" header="#{messages.details}">
+
+            <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+                <div style="clear: both;"/>
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:include src="/layout/erp/CustomerView.xhtml">
+
+                        <ui:param name="customer" value="#{orderHome.instance.customer}"/>
+
+                    </ui:include>
+                    <ui:param name="labelValue" value="#{orderHome.instance.customer.name}"/>
+                    <ui:param name="openLabel" value="#{messages.Customer}"/>
+                    <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+                </s:decorate>
+            </s:decorate>
+
+        </rich:collapsiblePanel>
+
+
+    </ui:define>
+</ui:composition>

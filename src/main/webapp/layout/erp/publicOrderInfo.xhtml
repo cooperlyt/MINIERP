@@ -10,18 +10,6 @@
     <a:outputPanel rendered="#{orderHome.instance.canceled}">
 
         <h:outputText value="#{messages.order_is_canceled}" style="color: red;"/>
-
-        <s:decorate template="/layout/view-details.xhtml">
-
-            <ui:include src="/layout/erp/OrderBackDetails.xhtml">
-                <ui:param name="orderBack" value="#{orderHome.instance.orderBack}"/>
-            </ui:include>
-
-            <ui:param name="labelValue" value="#{dictionary.getWordValue(orderHome.instance.orderBack.reason)}"/>
-            <ui:param name="openLabel" value="#{messages.OrderBack_field_reason}"/>
-            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.CancelOrder}"/>
-        </s:decorate>
-
     </a:outputPanel>
 
 

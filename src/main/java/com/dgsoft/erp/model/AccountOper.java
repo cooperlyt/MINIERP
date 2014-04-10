@@ -20,7 +20,8 @@ public class AccountOper implements java.io.Serializable {
     public enum AccountOperType {
         ORDER_SAVINGS(true), ORDER_PAY(false), ORDER_EARNEST(false),
         PRE_DEPOSIT(true), DEPOSIT_BACK(false), ORDER_FREE(true),
-        ORDER_BACK_SAVINGS(true), ORDER_BACK(false);
+        ORDER_BACK_SAVINGS(true), ORDER_BACK(false),
+        ORDER_CANCEL_SAVINGS(true), ORDER_CANCEL_BACK(false);
 
         private boolean add;
 
@@ -104,6 +105,15 @@ public class AccountOper implements java.io.Serializable {
         this.operEmp = operEmp;
         this.operType = AccountOperType.ORDER_BACK_SAVINGS;
         this.operMoney = orderBack.getMoney();
+    }
+
+    public AccountOper(CustomerOrder order, String operEmp, BigDecimal remitFee){
+        this.customerOrder = order;
+        this.operEmp = operEmp;
+        this.remitFee = remitFee;
+        this.customer = order.getCustomer();
+        this.operType = AccountOperType.ORDER_CANCEL_SAVINGS;
+        this.operMoney = order.getReceiveMoney();
     }
 
     @Id
@@ -229,6 +239,7 @@ public class AccountOper implements java.io.Serializable {
     @Transient
     public PayType getDisplayPayType() {
         if (AccountOperType.ORDER_BACK_SAVINGS.equals(getOperType()) ||
+                AccountOperType.ORDER_CANCEL_SAVINGS.equals(getOperType()) ||
                 AccountOperType.ORDER_PAY.equals(getOperType()) ||
                 AccountOperType.ORDER_EARNEST.equals(getOperType()) ||
                 AccountOperType.ORDER_FREE.equals(getOperType())) {
@@ -300,12 +311,15 @@ public class AccountOper implements java.io.Serializable {
     public BigDecimal getRealMoney(){
         if (getRemitFee() != null){
            switch (getOperType()){
+               //customer save money sub remiteFee
                case PRE_DEPOSIT:
                case ORDER_SAVINGS:
                    return getOperMoney().subtract(getRemitFee());
 
+               // to customer add remitFee
                case DEPOSIT_BACK:
                case ORDER_BACK:
+               case ORDER_CANCEL_BACK:
                    return getOperMoney().add(getRemitFee());
            }
         }
@@ -315,7 +329,8 @@ public class AccountOper implements java.io.Serializable {
     @Transient
     public BigDecimal getBankRemitFee(){
         if (getOperType().equals(AccountOperType.DEPOSIT_BACK) ||
-                getOperType().equals(AccountOperType.ORDER_BACK)){
+                getOperType().equals(AccountOperType.ORDER_BACK) ||
+                AccountOperType.ORDER_CANCEL_BACK.equals(getOperType())){
             return getRemitFee();
         }
         return BigDecimal.ZERO;

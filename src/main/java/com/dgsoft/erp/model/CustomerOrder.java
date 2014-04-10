@@ -65,7 +65,7 @@ public class CustomerOrder implements java.io.Serializable {
     public CustomerOrder() {
     }
 
-    public CustomerOrder(String orderEmp,Date createDate){
+    public CustomerOrder(String orderEmp, Date createDate) {
         this.orderEmp = orderEmp;
         this.createDate = createDate;
         this.resReceived = false;
@@ -75,7 +75,7 @@ public class CustomerOrder implements java.io.Serializable {
         totalRebateMoney = BigDecimal.ZERO;
         middlePayed = false;
         includeMiddleMan = false;
-        moneyComplete =false;
+        moneyComplete = false;
         earnestFirst = false;
     }
 
@@ -157,8 +157,11 @@ public class CustomerOrder implements java.io.Serializable {
     @Transient
     public BigDecimal getTotalRebate() {
         if ((getTotalRebateMoney() != null) && (getMoney() != null)) {
+            if (getMoney().compareTo(BigDecimal.ZERO) == 0) {
+                return new BigDecimal("100");
+            }
             BigDecimal resMoney = getMoney().add(getTotalRebateMoney());
-            return getMoney().divide(resMoney,4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
+            return getMoney().divide(resMoney, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
         }
         return null;
     }
@@ -229,7 +232,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.profit = profit;
     }
 
-    @Column(name="RES_MONEY",nullable = false,scale = 3)
+    @Column(name = "RES_MONEY", nullable = false, scale = 3)
     public BigDecimal getResMoney() {
         return resMoney;
     }
@@ -318,7 +321,7 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     public Set<AccountOper> getAccountOpers() {
         return accountOpers;
     }
@@ -403,7 +406,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.money = money;
     }
 
-    @Column(name="RECEIVE_MONEY", nullable = false,scale = 3)
+    @Column(name = "RECEIVE_MONEY", nullable = false, scale = 3)
     @NotNull
     public BigDecimal getReceiveMoney() {
         return receiveMoney;
@@ -414,8 +417,8 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
     @Transient
-    public BigDecimal getShortageMoney(){
-       return getMoney().subtract(getReceiveMoney());
+    public BigDecimal getShortageMoney() {
+        return getMoney().subtract(getReceiveMoney());
     }
 
     @Transient

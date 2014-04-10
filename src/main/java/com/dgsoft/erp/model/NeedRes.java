@@ -21,7 +21,7 @@ public class NeedRes implements java.io.Serializable {
     }
 
     public enum NeedResStatus {
-        CREATED, DISPATCHED, OUTED;
+        CREATED, DISPATCHED, OUTED, REMOVED;
     }
 
     private String id;
