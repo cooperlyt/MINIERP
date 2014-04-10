@@ -88,7 +88,7 @@ public class BackDispatch implements java.io.Serializable {
         this.storeOut = storeOut;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dispatch", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dispatch", cascade = {CascadeType.DETACH, CascadeType.REMOVE})
     public Set<BackItem> getBackItems() {
         return backItems;
     }

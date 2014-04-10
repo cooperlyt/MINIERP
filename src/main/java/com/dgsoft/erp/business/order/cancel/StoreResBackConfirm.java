@@ -19,58 +19,26 @@ import java.util.List;
 public class StoreResBackConfirm extends CancelOrderTaskHandle {
 
     @DataModel("confirmBackItems")
-    private List<BackItem> confirmBackItems;
-
-    @DataModelSelection
-    private BackItem backItem;
+    private List<BackItem> getConfirmBackItems(){
+        return orderBackHome.getBackItems();
+    }
 
     public BigDecimal getResTotalMoney(){
         BigDecimal result = BigDecimal.ZERO;
-        for (BackItem item: confirmBackItems){
+        for (BackItem item: getConfirmBackItems()){
             result = result.add(item.getTotalMoney());
         }
         return result;
     }
 
-    public void calcBackMoney(){
-        orderBackHome.getInstance().setMoney(getResTotalMoney().subtract(orderBackHome.getInstance().getSaveMoney()));
-    }
-
     @Override
     protected void initCancelOrderTask() {
-        confirmBackItems = orderBackHome.getInstance().getBackItemList();
-//        for (BackDispatch backDispatch : orderBackHome.getInstance().getBackDispatchs()) {
-//            for (StockChangeItem storeChangeItem : backDispatch.getStockChange().getStockChangeItems()) {
-//                boolean matchOld = false;
-//                for (BackItem oldBackItem : orderBackHome.getInstance().getBackItems()) {
-//                    if (oldBackItem.getStoreRes().equals(storeChangeItem.getStoreRes())) {
-//                        matchOld = true;
-//                        confirmBackItems.add(new BackItem(storeChangeItem.getMasterCount(),
-//                                oldBackItem.getMoney(), oldBackItem.getMemo(), oldBackItem.getStoreRes(),
-//                                oldBackItem.getResUnit(), orderBackHome.getInstance()));
-//                        break;
-//                    }
-//                }
-//
-//                if (!matchOld) {
-//
-//                    confirmBackItems.add(new BackItem(orderBackHome.getInstance(), storeChangeItem.getStoreRes(),
-//                            storeChangeItem.getStoreRes().getRes().getResUnitByOutDefault(),
-//                            storeChangeItem.getMasterCount(),
-//                            BigDecimal.ZERO));
-//                }
-//
-//            }
-//        }
-        calcBackMoney();
+        orderBackHome.calcBackMoney();
     }
 
     @Override
     protected String completeOrderTask() {
-
-        orderBackHome.getInstance().getBackItems().clear();
-        orderBackHome.getInstance().getBackItems().addAll(confirmBackItems);
-
+        orderBackHome.calcBackMoney();
         if ("updated".equals(orderBackHome.update())) {
             return "taskComplete";
         } else

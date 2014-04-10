@@ -401,6 +401,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return null;
     }
 
+    public boolean isCanBackMoney(){
+        return isAnyOneMoneyPay() && !isAnyOneStoreOut();
+    }
+
+
     public boolean isAnyOneMoneyPay() {
         return !getInstance().getAccountOpers().isEmpty();
     }

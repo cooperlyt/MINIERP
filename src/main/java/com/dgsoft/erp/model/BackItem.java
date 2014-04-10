@@ -22,7 +22,7 @@ import java.util.Set;
 public class BackItem extends StoreResPriceEntity implements java.io.Serializable {
 
     public enum BackItemStatus {
-        CREATE, DISPATCH, COMPLETE;
+        CREATE, DISPATCH, STORE_IN;
     }
 
     private String id;
@@ -62,6 +62,18 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
         this.backItemStatus = backItemStatus;
         this.rebate = rebate;
         this.memo = memo;
+        calcMoney();
+    }
+
+    public BackItem(OrderBack orderBack,OrderItem orderItem){
+        this.count = orderItem.getCount();
+        this.money = orderItem.getRebateUnitPrice();
+        this.storeRes = orderItem.getStoreRes();
+        this.resUnit = orderItem.getResUnit();
+        this.orderBack = orderBack;
+        this.backItemStatus = BackItemStatus.CREATE;
+        this.rebate = new BigDecimal("100");
+        this.memo = orderItem.getMemo();
         calcMoney();
     }
 

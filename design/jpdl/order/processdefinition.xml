@@ -70,12 +70,13 @@
 	</join>
 
 	<fork name="fork2">
-		<transition to="出库确认(1库)" name="出库(1库)"></transition>
-		<transition to="出库确认(2库)" name="出库(2库)"></transition>
-		<transition to="出库确认(天津)" name="出库(天冿)"></transition>
+		<transition to="出库判断(1库)" name="出库(1库)"></transition>
+		<transition to="出库判断(2库)" name="出库(2库)"></transition>
+		<transition to="出库判断(天津)" name="出库(天冿)"></transition>
+		<transition to="出库判断(公司)" name="出库(公司)"></transition>
 	</fork>
 
-	<decision name="出库确认(1库)">
+	<decision name="出库判断(1库)">
 		<transition to="出库完成(1库)">
 			<condition expression="#{not needResHome.needStoreOut('A')}"></condition>
 		</transition>
@@ -94,7 +95,7 @@
 		<transition to="fork2"></transition>
 	</task-node>
 
-	<decision name="出库确认(2库)">
+	<decision name="出库判断(2库)">
 		<transition to="订单出库(2库)" name="出库">
 			<condition expression="#{needResHome.needStoreOut('B')}"></condition>
 		</transition>
@@ -103,7 +104,7 @@
 		</transition>
 	</decision>
 
-	<decision name="出库确认(天津)">
+	<decision name="出库判断(天津)">
 		<transition to="订单出库(天津)" name="出库">
 			<condition expression="#{needResHome.needStoreOut('C')}"></condition>
 		</transition>
@@ -175,8 +176,8 @@
 		<transition to="调度判断"></transition>
 	</task-node>
 
-	<task-node name="发货确认(1库)">
-		<task name="发货确认(一库)">
+	<task-node name="订单发货(1库)">
+		<task name="订单发货(一库)">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
@@ -186,34 +187,34 @@
 	</task-node>
 
 	<decision name="发货方式(1库)">
-		<transition to="出库完成(1库)" name="自提无更改">
+		<transition to="出库完成(1库)">
 			<condition expression="#{(not dispatchHome.instance.deliveryType.ship) }"></condition>
 		</transition>
-		<transition to="发货确认(1库)">
+		<transition to="订单发货(1库)" name="发货">
 			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
 		</transition>
 	</decision>
 
 	<decision name="发货方式(2库)">
-		<transition to="出库完成(2库)" name="自提无更改">
+		<transition to="出库完成(2库)" name="无发货">
 			<condition expression="#{(not dispatchHome.instance.deliveryType.ship) }"></condition>
 		</transition>
-		<transition to="发货确认(2库)">
+		<transition to="订单发货(2库)">
 			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
 		</transition>
 	</decision>
 
 	<decision name="发货方式(天津)">
-		<transition to="出库完成(天津)" name="自提无更改">
+		<transition to="出库完成(天津)">
 			<condition expression="#{(not dispatchHome.instance.deliveryType.ship) }"></condition>
 		</transition>
-		<transition to="发货确认(天津)">
+		<transition to="订单发货(天津)" name="发货">
 			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
 		</transition>
 	</decision>
 
-	<task-node name="发货确认(2库)">
-		<task name="发货确认(2库)">
+	<task-node name="订单发货(2库)">
+		<task name="订单发货(2库)">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
@@ -222,8 +223,8 @@
 		<transition to="出库完成(2库)"></transition>
 	</task-node>
 
-	<task-node name="发货确认(天津)">
-		<task name="发货确认(天津)">
+	<task-node name="订单发货(天津)">
+		<task name="订单发货(天津)">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
@@ -282,6 +283,48 @@
 			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
 		</task>
 		<transition to="重新发货判断"></transition>
+	</task-node>
+
+	<decision name="出库判断(公司)">
+		<transition to="订单出库(公司)" name="出库">
+			<condition expression="#{needResHome.needStoreOut('D')}"></condition>
+		</transition>
+		<transition to="出库完成(公司)" name="无出库">
+			<condition expression="#{not needResHome.needStoreOut('D')}"></condition>
+		</transition>
+	</decision>
+
+	<task-node name="订单出库(公司)">
+		<task name="订单出库(公司)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('D')}"></assignment>
+		</task>
+		<transition to="发货方式(公司)"></transition>
+	</task-node>
+
+	<decision name="发货方式(公司)">
+		<transition to="订单发货(公司)" name="发货">
+			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
+		</transition>
+		<transition to="出库完成(公司)">
+			<condition expression="#{not (dispatchHome.instance.deliveryType.ship) }"></condition>
+		</transition>
+	</decision>
+
+	<node name="出库完成(公司)">
+		<transition to="join3"></transition>
+	</node>
+
+	<task-node name="订单发货(公司)">
+		<task name="订单发货(公司)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
+		</task>
+		<transition to="出库完成(公司)"></transition>
 	</task-node>
 
 

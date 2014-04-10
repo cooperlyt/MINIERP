@@ -16,7 +16,7 @@
         <rich:toolbar>
             <rich:toolbarGroup location="right">
 
-                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end" includePageParams="false"
                           view="#{(empty from) ? '/func/erp/sale/CancelOrderAndBackRes.xhtml' : from}"/>
                 <s:button styleClass="toolBarBtn" value="#{messages.back_step}" includePageParams="true"
                           view="#{stepFrom}"/>

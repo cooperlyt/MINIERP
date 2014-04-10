@@ -48,7 +48,7 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
 
     private String orderId;
 
-    private Boolean canceled;
+    private Boolean canceled = false;
 
     private Boolean allStoreOut;
 

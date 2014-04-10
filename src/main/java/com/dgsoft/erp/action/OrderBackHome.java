@@ -36,15 +36,19 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
     }
 
     public boolean needStoreIn(String storeId) {
-        if (isIdDefined()) {
-            for (BackDispatch BACKDISPATCH : getInstance().getBackDispatchs()) {
-                if (BACKDISPATCH.getStore().getId().equals(storeId)) {
-                    return true;
-                }
+
+        for (BackDispatch BACKDISPATCH : getInstance().getBackDispatchs()) {
+            if (BACKDISPATCH.getStore().getId().equals(storeId)) {
+                return true;
             }
-            return false;
         }
-        throw new IllegalThreadStateException("business not init;");
+        return false;
+
+    }
+
+    public List<BackItem> getBackItems() {
+        getInstance();
+        return backItems;
     }
 
     public boolean isNeedBackMoney() {

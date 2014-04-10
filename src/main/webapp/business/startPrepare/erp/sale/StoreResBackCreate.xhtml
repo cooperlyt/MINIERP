@@ -97,7 +97,7 @@
         <rich:toolbarGroup location="right">
 
 
-            <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+            <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end" includePageParams="false"
                       view="#{(empty from) ? '/func/erp/sale/CancelOrderAndBackRes.xhtml' : from}"/>
 
             <h:commandButton styleClass="toolBarBtn" value="#{messages.Dispatch}"
@@ -227,7 +227,7 @@
 
                 <a:commandButton value="#{messages.search}" execute="@region"
                                  render="createBackItem"
-                                 action="#{orderItemCreate.locateByCode}">
+                                 action="#{backItemCreate.locateByCode}">
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
 
@@ -369,6 +369,22 @@
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                      groupingUsed="false"/>
                     <f:validateDoubleRange minimum="0"/>
+                    <a:ajax event="blur" listener="#{storeResBackCreate.calcBackMoney}" render="backItemTable"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.BackItemRebate}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <ui:define name="label">%</ui:define>
+                <rich:inplaceInput converter="javax.faces.BigDecimal" required="true"
+                                   style="width: 95%" value="#{_item.inputRebate}"
+                                   label="#{messages.BackItemRebate}">
+                    <f:validateDoubleRange minimum="0" maximum="100"/>
+                    <f:convertNumber pattern="#0.##"/>
                     <a:ajax event="blur" listener="#{storeResBackCreate.calcBackMoney}" render="backItemTable"/>
                 </rich:inplaceInput>
             </s:decorate>

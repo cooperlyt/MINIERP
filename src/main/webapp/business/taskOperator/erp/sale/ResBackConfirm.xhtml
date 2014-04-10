@@ -18,12 +18,13 @@
                         #{messages.OrderBack_field_SaveMoney}
                         <a:outputPanel ajaxRendered="true">
                             <h:inputText id="saveMoneyInput" styleClass="barOrderNumber"
+                                         size="10"
                                          label="#{messages.OrderBack_field_SaveMoney}" rendered="true"
                                          value="#{orderBackHome.instance.saveMoney}">
                                 <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                                  type="currency" groupingUsed="false"/>
                                 <f:validateDoubleRange maximum="#{storeResBackConfirm.resTotalMoney}"/>
-                                <a:ajax event="blur" execute="@this" listener="#{storeResBackConfirm.calcBackMoney}"/>
+                                <a:ajax event="blur" execute="@this" listener="#{orderBackHome.calcBackMoney}"/>
                             </h:inputText>
                             <rich:message for="saveMoneyInput" styleClass="message-icon"
                                           showDetail="true" showSummary="true" tooltip="true"/>
@@ -54,10 +55,13 @@
                         <rich:column rowspan="2">
                             #{messages.StoreRes}
                         </rich:column>
+                        <rich:column rowspan="2">
+                            #{messages.field_memo}
+                        </rich:column>
                         <rich:column colspan="2">
                             #{messages.storeOutCount}
                         </rich:column>
-                        <rich:column colspan="3">
+                        <rich:column colspan="4">
                             #{messages.orderItemPrice}
                         </rich:column>
                         <rich:column breakRowBefore="true">
@@ -71,6 +75,9 @@
                         </rich:column>
                         <rich:column>
                             #{messages.orderItemUnitPrice}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.BackItemRebate}
                         </rich:column>
                         <rich:column>
                             #{messages.orderItemTotalPrice}
@@ -87,6 +94,9 @@
                     </f:facet>
                 </rich:column>
                 <rich:column>
+                    #{_item.memo}
+                </rich:column>
+                <rich:column>
                     #{_item.displayMasterCount}
                 </rich:column>
                 <rich:column>
@@ -94,21 +104,34 @@
                 </rich:column>
                 <rich:column>
                     <rich:inplaceSelect style="width: 90%"
-                                        value="#{_item.resUnit}" required="true">
-                        <s:selectItems value="#{_item.resUnit.unitGroup.resUnitList}" var="_unit"
+                                        value="#{_item.useUnit}" required="true">
+                        <s:selectItems value="#{_item.useUnit.unitGroup.resUnitList}" var="_unit"
                                        label="#{_unit.name}"/>
-                        <a:ajax event="selectitem" render="backResEditTable"/>
+                        <a:ajax event="selectitem" listener="#{orderBackHome.calcBackMoney}" render="backResEditTable"/>
                         <f:converter converterId="erpEntityConverter"/>
                     </rich:inplaceSelect>
                 </rich:column>
                 <rich:column style="text-align: right;">
                     <s:decorate template="/layout/grid-inside-edit.xhtml">
                         <rich:inplaceInput label="#{messages.orderItemUnitPrice}" style="width: 90%"
-                                           value="#{_item.money}" required="true"
+                                           value="#{_item.inputMoney}" required="true"
                                            converter="javax.faces.BigDecimal">
                             <f:convertNumber pattern="#0.####"/>
-                            <a:ajax event="blur" listener="#{storeResBackConfirm.calcBackMoney}"
+                            <a:ajax event="blur" listener="#{orderBackHome.calcBackMoney}"
                                     render="backResEditTable"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                </rich:column>
+                <rich:column>
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <ui:define name="label">%</ui:define>
+                        <rich:inplaceInput label="#{messages.BackItemRebate}" required="true"
+                                           value="#{_item.inputRebate}" converter="javax.faces.BigDecimal"
+                                           style="width: 95%">
+                            <f:validateDoubleRange minimum="0" maximum="100"/>
+                            <f:convertNumber pattern="#0.##"/>
+                            <a:ajax event="blur" listener="#{orderBackHome.calcBackMoney}" render="backItemTable"/>
+
                         </rich:inplaceInput>
                     </s:decorate>
                 </rich:column>

@@ -27,6 +27,10 @@ public class BusinessDefineHome extends SystemEntityHome<BusinessDefine> {
     @In
     private FacesMessages facesMessages;
 
+    public void setsd(){
+
+    }
+
     public void verifyIdAvailable(ValueChangeEvent e) {
         String id = (String) e.getNewValue();
         if (!isIdAvailable(id)) {

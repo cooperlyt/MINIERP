@@ -1,24 +1,28 @@
 package com.dgsoft.erp.business.order.cancel;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.NumberBuilder;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.business.TaskDescription;
 import com.dgsoft.erp.action.BackDispatchHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.StockChangeHome;
 import com.dgsoft.erp.action.StoreResHome;
+import com.dgsoft.erp.business.order.BackItemCreate;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,68 +37,44 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
     @In
     private TaskDescription taskDescription;
 
-    @In(create = true)
-    private BackDispatchHome backDispatchHome;
+//    @In(create = true)
+//    private BackDispatchHome backDispatchHome;
 
     @In(create = true)
     private StockChangeHome stockChangeHome;
 
     @In
-    protected NumberBuilder numberBuilder;
-
-    @In
     private ActionExecuteState actionExecuteState;
 
-    @In
-    private ResHelper resHelper;
+    @In(required = false)
+    private BackItemCreate backItemCreate;
 
     @In(create = true)
     private StoreResHome storeResHome;
 
+    @In(create = true)
+    private ResHelper resHelper;
+
+    @In
+    protected RunParam runParam;
+
     @DataModel("storeResBackStoreInItems")
-    private List<ResBackItem> inItems;
+    private List<BackItem> inItems;
 
     @DataModelSelection
-    private ResBackItem resBackItem;
+    private BackItem resBackItem;
 
-    private ResBackItem editingItem;
+    private BackItem editingItem;
 
-    private StockChangeItem newStockChangeItem;
+    private BackDispatch dispatch;
 
-    public StockChangeItem getNewStockChangeItem() {
-        return newStockChangeItem;
-    }
 
-    public void setNewStockChangeItem(StockChangeItem newStockChangeItem) {
-        this.newStockChangeItem = newStockChangeItem;
-    }
-
-    public ResBackItem getEditingItem() {
+    public BackItem getEditingItem() {
         return editingItem;
     }
 
-    public void setEditingItem(ResBackItem editingItem) {
+    public void setEditingItem(BackItem editingItem) {
         this.editingItem = editingItem;
-    }
-
-    @Observer(value = "erp.storeResLocateSelected", create = false)
-    public void selectedStoreRes(StoreRes storeRes) {
-        Logging.getLog(getClass()).debug("StoreResBackStoreIn selectedStoreRes Observer ");
-        newStockChangeItem = new StockChangeItem(storeRes,
-                resHelper.getFormatHistory(storeRes.getRes()),
-                resHelper.getFloatConvertRateHistory(storeRes.getRes()),
-                storeRes.getRes().getResUnitByInDefault());
-
-    }
-
-
-    @Observer(value = "erp.resLocateSelected", create = false)
-    public void selectedRes(Res res) {
-        Logging.getLog(getClass()).debug("StoreResBackStoreIn selectedRes Observer ");
-        newStockChangeItem = new StockChangeItem(res,
-                resHelper.getFormatHistory(res),
-                resHelper.getFloatConvertRateHistory(res),
-                res.getResUnitByInDefault());
     }
 
     private String addLastState = null;
@@ -103,59 +83,79 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
         return addLastState;
     }
 
-    public void setAddLastState(String addLastState) {
-        this.addLastState = addLastState;
-    }
-
-    private String addNewInItemSuccess(){
-        newStockChangeItem =  new StockChangeItem(newStockChangeItem.getStoreRes(),
-                resHelper.getFormatHistory(newStockChangeItem.getRes()),
-                resHelper.getFloatConvertRateHistory(newStockChangeItem.getRes()),
-                newStockChangeItem.getRes().getResUnitByInDefault());
-
-        addLastState = "added";
-        return  addLastState;
-    }
-
     public String addNewInItem() {
-        storeResHome.setRes(newStockChangeItem.getRes(), newStockChangeItem.getFormats(), newStockChangeItem.getFloatConvertRate());
+
+        BackItem item = backItemCreate.getEditingItem();
+
+        storeResHome.setRes(item.getRes(), item.getFormats(), item.getFloatConvertRate());
 
 
-        if (!storeResHome.isIdDefined() && DataFormat.isEmpty(newStockChangeItem.getCode())){
+        if (!storeResHome.isIdDefined() && DataFormat.isEmpty(item.getCode())) {
+            item.setCode(resHelper.genStoreResCode(item.getRes().getCode(), item.getFormats(),
+                    (item.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) ?
+                            item.getFloatConvertRate().toString() : null
+            ));
             addLastState = "newStoreRes";
-            return  addLastState;
-        }else{
-            if (!storeResHome.isIdDefined()){
-                storeResHome.getInstance().setCode(newStockChangeItem.getCode());
-            }
-            newStockChangeItem.setStoreRes(storeResHome.getInstance());
+            return addLastState;
+        } else {
 
-            for (ResBackItem item : inItems) {
-                if (item.getStockChangeItem().getStoreRes().equals(newStockChangeItem.getStoreRes())){
-                    item.getStockChangeItem().add(newStockChangeItem);
-                    facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,"StoreChangeItemIsExists",newStockChangeItem.getStoreRes().getCode());
-
-                    return  addNewInItemSuccess();
+            if (!storeResHome.isIdDefined()) {
+                if (!item.getCode().matches(runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME))) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                            "storeResCodeNotRule", item.getCode(),
+                            runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME));
+                    addLastState = "newStoreRes";
+                    return addLastState;
                 }
-            }
-            inItems.add(new ResBackItem(newStockChangeItem));
 
-            return  addNewInItemSuccess();
+
+                storeResHome.getInstance().setCode(item.getCode());
+                item.setStoreRes(storeResHome.getReadyInstance());
+            } else {
+
+                for (BackItem bItem : inItems) {
+                    if (bItem.getStoreRes().equals(storeResHome.getInstance())) {
+                        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "sameStoreInItemInfo");
+                        addLastState = "fail";
+                        return addLastState;
+                    }
+                }
+                item.setStoreRes(storeResHome.getInstance());
+            }
+
+            item.setDispatch(dispatch);
+            item.setOrderBack(orderBackHome.getInstance());
+            item.setMoney(BigDecimal.ZERO);
+            item.setResUnit(item.getRes().getResUnitByOutDefault());
+            item.setBackItemStatus(BackItem.BackItemStatus.DISPATCH);
+            item.setRebate(new BigDecimal("100"));
+            item.setTotalMoney(BigDecimal.ZERO);
+            orderBackHome.getInstance().getBackItems().add(item);
+            inItems.add(item);
+
+            backItemCreate.createNext();
+            addLastState = "added";
+            return addLastState;
 
         }
     }
 
     public void deleteInItem() {
-        if (resBackItem.getBackDispatchItem() != null){
-            Logging.getLog(getClass()).warn("can't delete dispatchItem");
-            return ;
-        }
         inItems.remove(resBackItem);
+        orderBackHome.getInstance().getBackItems().remove(resBackItem);
     }
 
-    public void editInItem(){
+    public void editInItem() {
         editingItem = resBackItem;
         actionExecuteState.clearState();
+    }
+
+    public void saveEditItem(){
+        if (editingItem.getCount().compareTo(BigDecimal.ZERO) <= 0){
+            inItems.remove(editingItem);
+            orderBackHome.getInstance().getBackItems().remove(editingItem);
+        }
+        actionExecuteState.actionExecute();
     }
 
     @Override
@@ -169,82 +169,49 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
 
         for (BackDispatch storeIn : orderBackHome.getInstance().getBackDispatchs()) {
             if (storeIn.getStore().getId().equals(storeId)) {
-                backDispatchHome.setId(storeIn.getId());
-
+                dispatch = storeIn;
                 stockChangeHome.clearInstance();
                 stockChangeHome.getInstance().setStore(storeIn.getStore());
                 stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.SELL_BACK);
                 stockChangeHome.getInstance().setVerify(true);
 
-                initInItem();
+                inItems = new SetLinkList<BackItem>(dispatch.getBackItems());
+                Collections.sort(inItems, new Comparator<BackItem>() {
+                    @Override
+                    public int compare(BackItem o1, BackItem o2) {
+                        return o1.getStoreRes().compareTo(o2.getStoreRes());
+                    }
+                });
                 return;
             }
         }
         throw new ProcessDefineException("Order Store out store ID not exists");
     }
 
-
-    private void initInItem() {
-        inItems = new ArrayList<ResBackItem>();
-        for (BackItem item : backDispatchHome.getInstance().getBackItems()) {
-            inItems.add(new ResBackItem(item));
-        }
-    }
-
     @Override
     protected String completeOrderTask() {
-//        for (BackDispatchItem item : backDispatchHome.getInstance().getBackDispatchItems()) {
-//            stockChangeHome.resStockChange(item, null);
-//        }
 
-        for(ResBackItem item: inItems){
-            stockChangeHome.resStockChange(item.getStockChangeItem());
+        stockChangeHome.getInstance().setId("RI-" + orderBackHome.getInstance().getId());
+        stockChangeHome.getInstance().setBackDispatch(dispatch);
+
+        for (BackItem item : inItems) {
+            if (item.getCount().compareTo(BigDecimal.ZERO) > 0) {
+                item.calcMoney();
+                item.setBackItemStatus(BackItem.BackItemStatus.STORE_IN);
+                stockChangeHome.resStockChange(new StockChangeItem(stockChangeHome.getInstance(), item.getStoreRes(), item.getCount()));
+            }
         }
 
-        stockChangeHome.getInstance().setId(orderBackHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"));
-        stockChangeHome.getInstance().setBACKDISPATCH(backDispatchHome.getInstance());
 
         Logging.getLog(getClass()).debug("res back store in change stoce item count:" + stockChangeHome.getInstance().getStockChangeItems().size());
-        backDispatchHome.getInstance().setStockChange(stockChangeHome.getReadyInstance());
-        backDispatchHome.getInstance().getOrderBack().setResComplete(true);
+        dispatch.setStockChange(stockChangeHome.getReadyInstance());
+        orderBackHome.getInstance().setResComplete(true);
 
 
-        if ("updated".equals(backDispatchHome.update())) {
+        if ("updated".equals(orderBackHome.update())) {
             return "taskComplete";
         } else
             return null;
     }
 
-    public class ResBackItem {
-
-        private BackItem backDispatchItem;
-
-        private StockChangeItem stockChangeItem;
-
-        public ResBackItem(BackItem backDispatchItem) {
-            this.backDispatchItem = backDispatchItem;
-            this.stockChangeItem = new StockChangeItem(stockChangeHome.getInstance(),
-                    backDispatchItem.getStoreRes(), backDispatchItem.getMasterCount());
-        }
-
-        public ResBackItem(StockChangeItem stockChangeItem) {
-            this.stockChangeItem = stockChangeItem;
-        }
-
-        public BackItem getBackDispatchItem() {
-            return backDispatchItem;
-        }
-
-        public void setBackDispatchItem(BackItem backDispatchItem) {
-            this.backDispatchItem = backDispatchItem;
-        }
-
-        public StockChangeItem getStockChangeItem() {
-            return stockChangeItem;
-        }
-
-        public void setStockChangeItem(StockChangeItem stockChangeItem) {
-            this.stockChangeItem = stockChangeItem;
-        }
-    }
 }

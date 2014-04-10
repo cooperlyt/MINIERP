@@ -222,7 +222,7 @@ public class NeedRes implements java.io.Serializable {
         return result;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "needRes",orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<Dispatch> getDispatches() {
         return this.dispatches;
     }

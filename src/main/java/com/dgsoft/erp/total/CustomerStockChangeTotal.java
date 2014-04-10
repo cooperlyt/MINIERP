@@ -33,7 +33,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                         return ((StockChangeItem) stockChangeItem).getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
 
                     } else {
-                        return ((StockChangeItem) stockChangeItem).getStockChange().getBACKDISPATCH().getOrderBack().getCustomer();
+                        return ((StockChangeItem) stockChangeItem).getStockChange().getBackDispatch().getOrderBack().getCustomer();
                     }
                 }
 
@@ -73,7 +73,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                     if (stockChangeItem.getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {
                         return stockChangeItem.getStockChange().getOrderDispatch().getNeedRes().getCustomerOrder().getCustomer();
                     } else {
-                        return stockChangeItem.getStockChange().getBACKDISPATCH().getOrderBack().getCustomer();
+                        return stockChangeItem.getStockChange().getBackDispatch().getOrderBack().getCustomer();
                     }
                 }
 

@@ -284,14 +284,17 @@
             <f:param name="orderId" value="#{_order.id}"/>
         </s:link>
 
+        #{' '}
 
 
-        <s:link view="/business/startPrepare/erp/sale/CancelOrderCreate.xhtml" propagation="begin"
-                rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
-            <s:graphicImage value="/img/res_back.png" title="#{messages.CancelOrder}"/>
-            <f:param name="orderId" value="#{_order.id}"/>
-            <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-        </s:link>
+        <a:commandButton image="/img/cancel.png" title="#{messages.CancelOrder}" immediate="true" execute="@this"
+                         render="cancelOrderIdTitle,cancelOrderOperAction"
+                         oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
+                         rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+
+            <a:param value="#{_order.id}" assignTo="#{orderHome.id}"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
 
 
         <s:link action="#{orderCreate.createCloneOrder}" propagation="begin" includePageParams="true"
@@ -301,9 +304,81 @@
             <f:param name="cloneCustomerAreaId" value="#{_order.customer.customerArea.id}"/>
         </s:link>
 
+
     </rich:column>
 
 </rich:dataTable>
+
+<rich:popupPanel id="cancelOrderOperSelectPanel" modal="true" autosized="true"
+                 moveable="true" resizeable="false">
+    <f:facet name="header">
+        <h:panelGroup> <h:outputText value="#{messages.CancelOrderType}"/>
+            #{' '}                          <h:outputText id="cancelOrderIdTitle" value="#{orderHome.id}"/>
+
+        </h:panelGroup>
+    </f:facet>
+    <f:facet name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component('cancelOrderOperSelectPanel')}.hide(); return false;">
+        </a:commandButton>
+    </f:facet>
+
+    <h:form id="cancelOrderOperAction">
+        <a:outputPanel>
+
+
+            <rich:panel
+                    rendered="#{orderHome.idDefined and (not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role))}">
+
+                <h:panelGrid columns="3">
+                    <a:commandButton image="/img/erp/order_money_back.png"
+                                     action="#{orderCancel.cancelOrderMoney}"
+                                     title="#{messages.orderMoneyBackTip}" render="dataListResult"
+                                     oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
+                                     disabled="#{not (orderHome.anyOneMoneyPay and (not orderHome.anyOneStoreOut))}">
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param assignTo="#{startData.businessKey}" value="#{orderHome.instance.id}"/>
+                        <a:param assignTo="#{businessDefineHome.id}" value="erp.business.orderMoneyBack"/>
+                    </a:commandButton>
+
+
+                    <s:link view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin"
+                            disabled="#{not orderHome.anyOneStoreOut}">
+                        <s:graphicImage value="/img/erp/res_back.png" title="#{messages.orderResBackTip}"/>
+                        <f:param name="customerOrderId" value="#{orderHome.instance.id}"/>
+                        <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+                    </s:link>
+
+
+                    <a:commandButton image="/img/erp/delete_order.png"
+                                     oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
+                                     title="#{messages.orderRemoveTip}"
+                                     render="dataListResult"
+                                     action="#{orderCancel.removeOrder}"
+                                     disabled="#{not (s:hasRole('erp.sale.manager') or (s:hasRole(orderHome.instance.customer.customerArea.role) and not orderHome.anyOneStoreOut and not orderHome.anyOneMoneyPay))}">
+                            <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
+                    </a:commandButton>
+
+
+                    <h:outputText value="#{messages.orderMoneyBack}"
+                                  rendered="#{(orderHome.anyOneMoneyPay and (not orderHome.anyOneStoreOut))}"/>
+                    <h:outputText value="#{messages.CantOrderMoneyBack}"
+                                  rendered="#{not (orderHome.anyOneMoneyPay and (not orderHome.anyOneStoreOut))}"/>
+
+                    <h:outputText value="#{messages.orderResBack}" rendered="#{orderHome.anyOneStoreOut}"/>
+                    <h:outputText value="#{messages.cantOrderResBack}" rendered="#{not orderHome.anyOneStoreOut}"/>
+
+                    <h:outputText value="#{messages.RoleIsNotEnough}"
+                                  rendered="#{not (s:hasRole('erp.sale.manager') or (s:hasRole(orderHome.instance.customer.customerArea.role) and not orderHome.anyOneStoreOut and not orderHome.anyOneMoneyPay))}"/>
+                    <h:outputText value="#{messages.orderRemove}"
+                                  rendered="#{(s:hasRole('erp.sale.manager') or (s:hasRole(orderHome.instance.customer.customerArea.role) and not orderHome.anyOneStoreOut and not orderHome.anyOneMoneyPay))}"/>
+                </h:panelGrid>
+            </rich:panel>
+        </a:outputPanel>
+    </h:form>
+</rich:popupPanel>
+
 
 </ui:define>
 </ui:composition>

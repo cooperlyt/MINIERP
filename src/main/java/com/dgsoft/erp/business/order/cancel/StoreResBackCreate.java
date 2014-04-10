@@ -21,6 +21,7 @@ import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -39,7 +40,10 @@ public class StoreResBackCreate extends OrderBackHome {
     @In(create = true)
     private BusinessDefineHome businessDefineHome;
 
+    @In(create = true)
+    private OrderBackHome orderBackHome;
 
+    @Override
     @DataModel("orderBackItems")
     public List<BackItem> getBackItems() {
         return backItems;
@@ -82,6 +86,14 @@ public class StoreResBackCreate extends OrderBackHome {
         super.create();
         startData.generateKey();
         businessDefineHome.setId("erp.business.orderCancel");
+
+        if ((orderHome != null) && orderHome.isIdDefined()){
+            getInstance();
+            for (OrderItem orderItem: orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.WAIT_PRICE))){
+                getBackItems().add(new BackItem(getInstance(),orderItem));
+            }
+            calcBackMoney();
+        }
     }
 
     @Override
@@ -102,7 +114,7 @@ public class StoreResBackCreate extends OrderBackHome {
     }
 
     public void deleteItem() {
-        backItems.remove(selectBackItem);
+        getBackItems().remove(selectBackItem);
         calcBackMoney();
     }
 
@@ -168,7 +180,10 @@ public class StoreResBackCreate extends OrderBackHome {
         }
 
         getInstance().getBackItems().addAll(backItems);
-
+        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0){
+            getInstance().setMoneyComplete(true);
+        }
+        orderBackHome.setInstance(getInstance());
         return businessCreate.create();
 
     }

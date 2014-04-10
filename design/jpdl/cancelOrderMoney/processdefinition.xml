@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns=""  name="cancelOrderMoney">
+
+
+	<start-state name="开始">
+		<transition to="撤单退款"></transition>
+	</start-state>
+
+
+	<task-node name="撤单退款">
+		<task name="撤单退款">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/OrderMoneyBack.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.finance.cashier"></assignment>
+		</task>
+		<transition to="结束"></transition>
+	</task-node>
+
+
+	<end-state name="结束"></end-state>
+
+
+</process-definition>

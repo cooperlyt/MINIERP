@@ -107,8 +107,8 @@
 		<transition to="入库完成(天津)"></transition>
 	</task-node>
 
-	<task-node name="调度">
-		<task name="调度">
+	<task-node name="退货调度">
+		<task name="退货调度">
 			<description>
 				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackDispatch.xhtml&quot;}
 			</description>
@@ -118,11 +118,11 @@
 	</task-node>
 
 	<decision name="调度判断">
-		<transition to="调度">
-			<condition expression="#{not orderBackHome.instance.dispatched}"></condition>
+		<transition to="退货调度">
+			<condition expression="#{not storeResBackCreate.instance.dispatched}"></condition>
 		</transition>
 		<transition to="fork2" name="已调度">
-			<condition expression="#{orderBackHome.instance.dispatched}"></condition>
+			<condition expression="#{storeResBackCreate.instance.dispatched}"></condition>
 		</transition>
 	</decision>
 
@@ -137,11 +137,21 @@
 	</task-node>
 
 	<decision name="入库判断(公司)">
-		<transition to="退货入库(公司)" name="入库"></transition>
-		<transition to="入库完成(公司)" name="完成"></transition>
+		<transition to="退货入库(公司)" name="入库">
+			<condition expression="#{orderBackHome.needStoreIn('D')}"></condition>
+		</transition>
+		<transition to="入库完成(公司)" name="完成">
+			<condition expression="#{not orderBackHome.needStoreIn('D')}"></condition>
+		</transition>
 	</decision>
 
 	<task-node name="退货入库(公司)">
+		<task name="退货入库(公司)">
+			<description>
+				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
+		</task>
 		<transition to="入库完成(公司)"></transition>
 	</task-node>
 
