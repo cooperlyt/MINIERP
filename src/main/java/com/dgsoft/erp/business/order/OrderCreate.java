@@ -254,13 +254,14 @@ public class OrderCreate extends OrderHome {
             needResHome.getInstance().setCustomerOrder(getInstance());
             needResHome.getInstance().setType(NeedRes.NeedResType.ORDER_SEND);
             needResHome.getInstance().setReason(ORDER_SEND_REASON_WORD_KEY);
-
+            getInstance().getNeedReses().add(needResHome.getInstance());
 
             for (OrderItem orderItem : orderHome.getMasterNeedRes().getOrderItems()) {
 
                 needResHome.getOrderNeedItems().add(new OrderItem(needResHome.getInstance(),
                         orderItem.getStoreRes(), orderItem.getResUnit(), orderItem.getCount(),
-                        orderItem.getMoney(), orderItem.getRebate(), orderItem.isPresentation(), orderItem.getMemo(), orderItem.getNeedConvertRate()));
+                        orderItem.getMoney(), orderItem.getRebate(), orderItem.isPresentation(),
+                        orderItem.getMemo(), orderItem.getNeedConvertRate()));
             }
 
             getInstance().setPayType(orderHome.getInstance().getPayType());
@@ -268,9 +269,14 @@ public class OrderCreate extends OrderHome {
             customerHome.setId(orderHome.getInstance().getCustomer().getId());
             getInstance().setContact(orderHome.getInstance().getContact());
             getInstance().setTel(orderHome.getInstance().getTel());
+
             needResHome.getInstance().setFareByCustomer(orderHome.getMasterNeedRes().isFareByCustomer());
             needResHome.getInstance().setPostCode(orderHome.getMasterNeedRes().getPostCode());
             needResHome.getInstance().setAddress(orderHome.getMasterNeedRes().getAddress());
+            needResHome.getInstance().setReceivePerson(orderHome.getMasterNeedRes().getReceivePerson());
+            needResHome.getInstance().setReceiveTel(orderHome.getMasterNeedRes().getReceiveTel());
+            needResHome.getInstance().setLimitTime(orderHome.getMasterNeedRes().getLimitTime());
+
             getInstance().setIncludeMiddleMan(orderHome.getInstance().isIncludeMiddleMan());
             if (getInstance().isIncludeMiddleMan()) {
                 middleManHome.setId(orderHome.getInstance().getCustomer().getMiddleMan().getId());

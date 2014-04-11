@@ -130,6 +130,13 @@
         </f:facet>
     </rich:column>
 
+    <rich:column rendered="#{(empty showState) ? false : showState}">
+        <f:facet name="header">
+            #{messages.orderItem_field_status}
+        </f:facet>
+        #{messages[_item.status.name()]}
+    </rich:column>
+
 
 
 </rich:dataTable>

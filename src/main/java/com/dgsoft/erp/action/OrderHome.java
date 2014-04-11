@@ -64,6 +64,21 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED));
     }
 
+    public List<OrderItem> getAllOrderItem(){
+        List<OrderItem> result = getOrderItemByStatus(EnumSet.allOf(OrderItem.OrderItemStatus.class));
+        Collections.sort(result,new Comparator<OrderItem>() {
+            @Override
+            public int compare(OrderItem o1, OrderItem o2) {
+                int result = Integer.valueOf(o1.getStatus().ordinal()).compareTo(o2.getStatus().ordinal());
+                if(result ==0){
+                    result = o1.getStoreRes().compareTo(o2.getStoreRes());
+                }
+                return result;
+            }
+        });
+        return result;
+    }
+
     public BigDecimal getCompleteOrderItemMoney(){
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item: getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED))){
@@ -231,6 +246,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     public BigDecimal getEarnestScale() {
+        if (getInstance().getEarnest() == null){
+            return BigDecimal.ZERO;
+        }
         return getInstance().getEarnest().divide(getInstance().getMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
     }
 

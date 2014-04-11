@@ -326,12 +326,16 @@
 
     <h:form id="cancelOrderOperAction">
         <a:outputPanel>
-
+             <h:outputStylesheet>
+                 .cancelButton{
+                     text-align: center;
+                 }
+             </h:outputStylesheet>
 
             <rich:panel
                     rendered="#{orderHome.idDefined and (not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role))}">
 
-                <h:panelGrid columns="3">
+                <h:panelGrid columns="3" columnClasses="cancelButton,cancelButton,cancelButton">
                     <a:commandButton image="/img/erp/order_money_back.png"
                                      action="#{orderCancel.cancelOrderMoney}"
                                      title="#{messages.orderMoneyBackTip}" render="dataListResult"

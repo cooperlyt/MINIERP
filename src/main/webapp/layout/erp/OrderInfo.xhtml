@@ -125,7 +125,8 @@
         rendered="#{s:hasRole('erp.sale.manager') or s:hasRole('erp.storage.dispatch') or s:hasRole(orderHome.instance.customer.customerArea.role)}">
 
     <ui:include src="/layout/erp/OrderItemTable.xhtml">
-        <ui:param name="orderItems" value="#{orderHome.allCompleteOrderItem}"/>
+        <ui:param name="orderItems" value="#{orderHome.allOrderItem}"/>
+        <ui:param name="showState" value="true"/>
         <ui:param name="totalItemMoney" value="#{orderHome.completeOrderItemMoney}"/>
     </ui:include>
     <br/>

@@ -81,6 +81,7 @@ public class OrderCancel {
                     }
                     orderHome.getEntityManager().remove(dispatch.getStockChange());
                 }
+                dispatch.getOrderItems().clear();
             }
             needRes.getDispatches().clear();
             needRes.setStatus(NeedRes.NeedResStatus.REMOVED);
