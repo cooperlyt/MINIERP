@@ -16,7 +16,7 @@ import java.util.Set;
  * Date: 2/24/14
  * Time: 3:24 PM
  */
-public class StoreResEntity {
+public class StoreResEntity{
 
     public StoreResEntity() {
     }

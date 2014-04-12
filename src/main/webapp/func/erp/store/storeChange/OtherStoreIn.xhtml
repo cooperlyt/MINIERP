@@ -8,15 +8,11 @@
                 template="/layout/erp/storeIn.xhtml">
 
 
-    <ui:param name="resTreeValue" value="#{allResTree}"/>
-
     <ui:param name="storeResTreeValue" value="#{allStoreResTree}"/>
 
     <ui:param name="functionTitle" value="#{messages.StockInOrOutChange}-#{messages[otherStoreChangeHome.instance.reason.name()]}"/>
 
     <ui:param name="sotreInAction" value="#{otherStockIn}"/>
-
-    <ui:param name="storeInItemsDataModal" value="#{otherStoreInItems}"/>
 
     <ui:define name="commanButton">
         <s:button value="#{messages.cancel}" action="#{otherStockIn.cancel}"/>

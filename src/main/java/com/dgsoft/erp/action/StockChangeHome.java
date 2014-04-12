@@ -10,6 +10,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
         return true;
     }
 
-    public void resStockChange(List<StockChangeItem> items) {
+    public void resStockChange(Collection<StockChangeItem> items) {
         for (StockChangeItem item : items) {
             resStockChange(item);
         }

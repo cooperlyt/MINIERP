@@ -55,6 +55,21 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
     }
 
     @Override
+    public void clear(){
+        super.clear();
+        resGroupList = new ArrayList<ResCountTotal<StoreResCount>>(0);
+    }
+
+    @Override
+    public E remove(Object key){
+        E result = super.remove(key);
+        if (result != null){
+            resGroupList = null;
+        }
+        return result;
+    }
+
+    @Override
     public E put(StoreRes k, E v) {
         throw new IllegalArgumentException("cant't this function");
     }
@@ -96,7 +111,6 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
         }
     }
 
-
     public static class ResCountTotal<E extends StoreResCountEntity> {
 
         private Res res;
@@ -106,6 +120,15 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
         public ResCountTotal(Res res, List<E> values) {
             this.res = res;
             this.values = values;
+            Collections.sort(this.values, new Comparator<E>() {
+                @Override
+                public int compare(E o1, E o2) {
+                    if (o1.getStoreRes() == null){
+                        return 0;
+                    }
+                    return o1.getStoreRes().compareTo(o2.getStoreRes());
+                }
+            });
         }
 
         public Res getRes() {

@@ -1,14 +1,15 @@
-package com.dgsoft.erp.business.order;
+package com.dgsoft.erp;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.action.*;
-import com.dgsoft.erp.model.OrderItem;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.StockChange;
-import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.international.StatusMessage;
+
+import java.util.Collection;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +18,7 @@ import org.jboss.seam.annotations.Scope;
  * Time: 16:52
  */
 @Scope(ScopeType.CONVERSATION)
-public abstract class StoreResEntityItemCreate<E extends StoreResEntity> {
+public abstract class ResEntityItemCreate<E extends StoreResEntity> {
 
 
     private E editingItem;
@@ -29,7 +30,7 @@ public abstract class StoreResEntityItemCreate<E extends StoreResEntity> {
     @In(create = true)
     private ResHome resHome;
     @In(create = true)
-    private StoreResHome storeResHome;
+    protected StoreResHome storeResHome;
     @In(required = false)
     private ResCategoryHome resCategoryHome;
 
@@ -107,6 +108,7 @@ public abstract class StoreResEntityItemCreate<E extends StoreResEntity> {
         }
 
     }
+
 
     public enum CreateBy{
        RES_CATEGORY,RES,STORE_RES;

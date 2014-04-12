@@ -1,11 +1,11 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.erp.ResCountEntityItemCreate;
+import com.dgsoft.erp.ResEntityItemCreate;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.OrderItem;
 import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -16,10 +16,7 @@ import org.jboss.seam.annotations.Scope;
  */
 @Name("orderItemCreate")
 @Scope(ScopeType.CONVERSATION)
-public class OrderItemCreate extends StoreResEntityItemCreate<OrderItem> {
-
-    @In
-    private ResHelper resHelper;
+public class OrderItemCreate extends ResCountEntityItemCreate<OrderItem> {
 
     @Override
     protected OrderItem createInstance(Res res) {

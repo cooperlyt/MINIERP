@@ -16,7 +16,8 @@ import java.util.Set;
  * Date: 2/24/14
  * Time: 3:20 PM
  */
-public abstract class StoreResCountEntity extends StoreResEntity {
+public abstract class StoreResCountEntity extends StoreResEntity{
+
 
     protected static final int FLOAT_CONVERT_SCALE = 10;
 

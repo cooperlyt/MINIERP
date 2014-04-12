@@ -32,6 +32,9 @@ public class OtherStockIn extends StoreInAction {
     @In
     protected NumberBuilder numberBuilder;
 
+    @In
+    private RunParam runParam;
+
 
     @In
     private OtherStoreChangeHome otherStoreChangeHome;
@@ -48,7 +51,7 @@ public class OtherStockIn extends StoreInAction {
 
     @Transactional
     public String complete() {
-        if (storeChangeItems.isEmpty()) {
+        if (storeInItems.isEmpty()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeInNotItem");
             return null;
         }
@@ -64,21 +67,8 @@ public class OtherStockIn extends StoreInAction {
         }
     }
 
-    @DataModel(value = "otherStoreInItems")
-    public List<StockChangeItem> getStoreOutItems() {
-        return storeChangeItems;
-    }
-
-    @DataModelSelection
-    private StockChangeItem stockChangeItem;
-
-    @Override
-    protected StockChangeItem getSelectInItem() {
-        return stockChangeItem;
-    }
 
     public String cancel() {
-        storeChangeItems.clear();
         stockChangeHome.clearInstance();
         return "OtherStockChangeCancel";
     }

@@ -25,8 +25,10 @@
 </h:outputStylesheet>
 
 
-<ui:include src="/layout/erp/biz/BackItemCreateTree.xhtml">
+<ui:include src="/layout/erp/biz/ResEntityItemCreateTree.xhtml">
     <ui:param name="render" value="createBackItem"/>
+    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+    <ui:param name="createAction" value="#{backItemCreate}"/>
 </ui:include>
 
 

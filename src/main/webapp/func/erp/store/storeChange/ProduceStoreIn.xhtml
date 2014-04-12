@@ -8,15 +8,13 @@
                 template="/layout/erp/storeIn.xhtml">
 
 
-    <ui:param name="resTreeValue" value="#{produceInResTree}"/>
     <ui:param name="storeResTreeValue" value="#{produceInStoreResTree}"/>
 
 
     <ui:param name="functionTitle" value="#{messages.PRODUCE_IN}"/>
 
-    <ui:param name="sotreInAction" value="#{produceStoreInAction}"/>
-    
-    <ui:param name="storeInItemsDataModal" value="#{porduceStoreInItems}"/>
+    <ui:param name="sotreInAction" value="#{storeInAction}"/>
+
 
      <ui:define name="commanButton">
          <s:button value="#{messages.cancel}" action="#{produceStoreInHome.cancel}"/>

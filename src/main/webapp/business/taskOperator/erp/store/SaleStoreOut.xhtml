@@ -133,8 +133,10 @@
 </h:form>
 <br/>
 
-<ui:include src="/layout/erp/biz/OrderItemCreateTree.xhtml">
+<ui:include src="/layout/erp/biz/ResEntityItemCreateTree.xhtml">
     <ui:param name="render" value="storeInItem"/>
+    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+    <ui:param name="createAction" value="#{orderItemCreate}"/>
 </ui:include>
 
 <h:form>

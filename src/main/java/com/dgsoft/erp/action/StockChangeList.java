@@ -19,7 +19,8 @@ import java.util.*;
 @Name("stockChangeList")
 public class StockChangeList extends ErpEntityQuery<StockChange> {
 
-    private static final String EJBQL = "select stockChange from StockChange stockChange where stockChange.verify = true";
+    private static final String EJBQL = "select stockChange from StockChange stockChange left join fetch stockChange.orderDispatch dispatch left join fetch dispatch.needRes needRes left join fetch needRes.customerOrder  where stockChange.verify = true";
+
 
     private static final String[] RESTRICTIONS = {
             "stockChange.operDate >=  #{stockChangeList.searchDateArea.dateFrom}",

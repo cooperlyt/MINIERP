@@ -1,11 +1,12 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.erp.ResCountEntityItemCreate;
+import com.dgsoft.erp.ResEntityItemCreate;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.BackItem;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
-import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -19,10 +20,8 @@ import org.jboss.seam.annotations.Scope;
  */
 @Name("backItemCreate")
 @Scope(ScopeType.CONVERSATION)
-public class BackItemCreate extends StoreResEntityItemCreate<BackItem>{
+public class BackItemCreate extends ResCountEntityItemCreate<BackItem> {
 
-    @In
-    private ResHelper resHelper;
 
     @Override
     protected BackItem createInstance(Res res) {

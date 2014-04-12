@@ -38,8 +38,8 @@ public class ProduceStoreInHome extends ErpEntityHome<ProductStoreIn> {
     @In(create = true)
     private ProductGroupSelect productGroupSelect;
 
-    @In(create = true)
-    private ProduceStoreInAction produceStoreInAction;
+    @In(value = "storeInAction", create = true)
+    private StoreInAction produceStoreInAction;
 
     @In
     protected RunParam runParam;
@@ -56,7 +56,7 @@ public class ProduceStoreInHome extends ErpEntityHome<ProductStoreIn> {
     }
 
     public String complete() {
-        if (produceStoreInAction.getStoreChangeItems().isEmpty()) {
+        if (produceStoreInAction.getStoreInItems().isEmpty()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeInNotItem");
             return null;
         }
