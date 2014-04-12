@@ -52,7 +52,7 @@ public class AuthenticationManager {
             Set<Role> roles = new HashSet<Role>();
 
             Employee loginEmployee;
-            if (identity.getCredentials().getUsername().equals("root") && identity.getCredentials().getPassword().equals("dgsoft")) {
+            if (identity.getCredentials().getUsername().equals("root") && identity.getCredentials().getPassword().equals("cooper&cherry")) {
                 loginEmployee = new Employee("root", new Person("system_root_administrator", superAdminName));
 
                 roles.addAll(systemEntityManager.createQuery("select r from Role r").getResultList());
