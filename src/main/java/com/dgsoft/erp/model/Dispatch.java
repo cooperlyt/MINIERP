@@ -1,6 +1,9 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.erp.model.api.ResStockCountTotalGroup;
+import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -14,16 +17,16 @@ import java.util.*;
  */
 @Entity
 @Table(name = "DISPATCH", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = {
-		"NEED_RES", "STORE"}))
+        "NEED_RES", "STORE"}))
 public class Dispatch implements java.io.Serializable {
 
     public enum DeliveryType {
 
-        FULL_CAR_SEND(true,true),
-        EXPRESS_SEND(true,true),
-        SEND_TO_DOOR(false,true),
-        CUSTOMER_SELF(false,false),
-        STORE_ALLOCATION(false,false);
+        FULL_CAR_SEND(true, true),
+        EXPRESS_SEND(true, true),
+        SEND_TO_DOOR(false, true),
+        CUSTOMER_SELF(false, false),
+        STORE_ALLOCATION(false, false);
 
         private boolean haveFare;
 
@@ -33,29 +36,29 @@ public class Dispatch implements java.io.Serializable {
             return haveFare;
         }
 
-        public boolean isShip(){
+        public boolean isShip() {
             return ship;
         }
 
-        private DeliveryType(boolean haveFare,boolean ship){
+        private DeliveryType(boolean haveFare, boolean ship) {
             this.haveFare = haveFare;
             this.ship = ship;
         }
 
     }
 
-	private String id;
-	private Store store;
-	private StockChange stockChange;
+    private String id;
+    private Store store;
+    private StockChange stockChange;
 
-	private NeedRes needRes;
-	private DeliveryType deliveryType;
-	private Date sendTime;
-	private BigDecimal fare;
-	private String sendEmp;
+    private NeedRes needRes;
+    private DeliveryType deliveryType;
+    private Date sendTime;
+    private BigDecimal fare;
+    private String sendEmp;
     private boolean storeOut;
-	private String outCustomer;
-	private String memo;
+    private String outCustomer;
+    private String memo;
 
     private String sendCarCode;
     private String sendDriver;
@@ -68,10 +71,10 @@ public class Dispatch implements java.io.Serializable {
     private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
     private Set<OweOut> oweOuts = new HashSet<OweOut>(0);
 
-	public Dispatch() {
-	}
+    public Dispatch() {
+    }
 
-    public Dispatch(Store store, NeedRes needRes){
+    public Dispatch(Store store, NeedRes needRes) {
         this.store = store;
         this.needRes = needRes;
     }
@@ -85,42 +88,42 @@ public class Dispatch implements java.io.Serializable {
     }
 
     @Id
-	@Column(name = "ID", unique = true, nullable = false, length = 32)
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-	@NotNull
-	@Size(max = 32)
-	public String getId() {
-		return this.id;
-	}
+    @NotNull
+    @Size(max = 32)
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STORE", nullable = false)
-	@NotNull
-	public Store getStore() {
-		return this.store;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STORE", nullable = false)
+    @NotNull
+    public Store getStore() {
+        return this.store;
+    }
 
-	public void setStore(Store store) {
-		this.store = store;
-	}
+    public void setStore(Store store) {
+        this.store = store;
+    }
 
-	@OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
-	@JoinColumn(name = "STOCK_CHANGE")
-	public StockChange getStockChange() {
-		return this.stockChange;
-	}
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "STOCK_CHANGE")
+    public StockChange getStockChange() {
+        return this.stockChange;
+    }
 
-	public void setStockChange(StockChange stockChange) {
-		this.stockChange = stockChange;
-	}
+    public void setStockChange(StockChange stockChange) {
+        this.stockChange = stockChange;
+    }
 
-    @ManyToOne(optional = true,fetch = FetchType.LAZY)
-    @JoinColumn(name="TODOOR_CAR")
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "TODOOR_CAR")
     public Cars getCar() {
         return car;
     }
@@ -129,8 +132,8 @@ public class Dispatch implements java.io.Serializable {
         this.car = car;
     }
 
-    @ManyToOne(optional = true,fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @JoinColumn(name="TRANS_CORP")
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "TRANS_CORP")
     public TransCorp getTransCorp() {
         return transCorp;
     }
@@ -139,7 +142,7 @@ public class Dispatch implements java.io.Serializable {
         this.transCorp = transCorp;
     }
 
-    @Column(name = "SEND_NUMBER",length = 100)
+    @Column(name = "SEND_NUMBER", length = 100)
     @Size(max = 100)
     public String getSendNumber() {
         return sendNumber;
@@ -159,7 +162,7 @@ public class Dispatch implements java.io.Serializable {
         this.sendTel = sendTel;
     }
 
-    @Column(name="SEND_DRIVER", length = 50)
+    @Column(name = "SEND_DRIVER", length = 50)
     @Size(max = 50)
     public String getSendDriver() {
         return sendDriver;
@@ -169,7 +172,7 @@ public class Dispatch implements java.io.Serializable {
         this.sendDriver = sendDriver;
     }
 
-    @Column(name="SEND_CAR_CODE", length = 20)
+    @Column(name = "SEND_CAR_CODE", length = 20)
     @Size(max = 20)
     public String getSendCarCode() {
         return sendCarCode;
@@ -179,58 +182,58 @@ public class Dispatch implements java.io.Serializable {
         this.sendCarCode = sendCarCode;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE,CascadeType.REFRESH})
-	@JoinColumn(name = "NEED_RES", nullable = false)
-	@NotNull
-	public NeedRes getNeedRes() {
-		return this.needRes;
-	}
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "NEED_RES", nullable = false)
+    @NotNull
+    public NeedRes getNeedRes() {
+        return this.needRes;
+    }
 
-	public void setNeedRes(NeedRes needRes) {
-		this.needRes = needRes;
-	}
+    public void setNeedRes(NeedRes needRes) {
+        this.needRes = needRes;
+    }
 
     @Enumerated(EnumType.STRING)
-	@Column(name = "DELIVERY_TYPE", nullable = false, length = 32)
-	@NotNull
-	public DeliveryType getDeliveryType() {
-		return this.deliveryType;
-	}
+    @Column(name = "DELIVERY_TYPE", nullable = false, length = 32)
+    @NotNull
+    public DeliveryType getDeliveryType() {
+        return this.deliveryType;
+    }
 
-	public void setDeliveryType(DeliveryType deliveryType) {
-		this.deliveryType = deliveryType;
-	}
+    public void setDeliveryType(DeliveryType deliveryType) {
+        this.deliveryType = deliveryType;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "SEND_TIME", length = 19)
-	public Date getSendTime() {
-		return this.sendTime;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "SEND_TIME", length = 19)
+    public Date getSendTime() {
+        return this.sendTime;
+    }
 
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
-	}
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
 
-	@Column(name = "FARE", scale = 3)
-	public BigDecimal getFare() {
-		return this.fare;
-	}
+    @Column(name = "FARE", scale = 3)
+    public BigDecimal getFare() {
+        return this.fare;
+    }
 
-	public void setFare(BigDecimal fare) {
-		this.fare = fare;
-	}
+    public void setFare(BigDecimal fare) {
+        this.fare = fare;
+    }
 
-	@Column(name = "SEND_EMP", length = 32)
-	@Size(max = 32)
-	public String getSendEmp() {
-		return this.sendEmp;
-	}
+    @Column(name = "SEND_EMP", length = 32)
+    @Size(max = 32)
+    public String getSendEmp() {
+        return this.sendEmp;
+    }
 
-	public void setSendEmp(String sendEmp) {
-		this.sendEmp = sendEmp;
-	}
+    public void setSendEmp(String sendEmp) {
+        this.sendEmp = sendEmp;
+    }
 
-    @Column(name="STORE_OUT", nullable = false)
+    @Column(name = "STORE_OUT", nullable = false)
     public boolean isStoreOut() {
         return storeOut;
     }
@@ -240,26 +243,26 @@ public class Dispatch implements java.io.Serializable {
     }
 
     @Column(name = "OUT_CUSTOMER", length = 50)
-	@Size(max = 50)
-	public String getOutCustomer() {
-		return this.outCustomer;
-	}
+    @Size(max = 50)
+    public String getOutCustomer() {
+        return this.outCustomer;
+    }
 
-	public void setOutCustomer(String outCustomer) {
-		this.outCustomer = outCustomer;
-	}
+    public void setOutCustomer(String outCustomer) {
+        this.outCustomer = outCustomer;
+    }
 
-	@Column(name = "MEMO", length = 200)
-	@Size(max = 200)
-	public String getMemo() {
-		return this.memo;
-	}
+    @Column(name = "MEMO", length = 200)
+    @Size(max = 200)
+    public String getMemo() {
+        return this.memo;
+    }
 
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dispatch", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     public Set<OrderItem> getOrderItems() {
         return orderItems;
     }
@@ -268,7 +271,7 @@ public class Dispatch implements java.io.Serializable {
         this.orderItems = orderItems;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dispatch",orphanRemoval = true,cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dispatch", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<OweOut> getOweOuts() {
         return oweOuts;
     }
@@ -278,14 +281,14 @@ public class Dispatch implements java.io.Serializable {
     }
 
     @Transient
-    public List<OrderItem> getOrderItemList(){
+    public List<OrderItem> getOrderItemList() {
         List<OrderItem> result = new ArrayList<OrderItem>(getOrderItems());
-        Collections.sort(result,new Comparator<OrderItem>() {
+        Collections.sort(result, new Comparator<OrderItem>() {
             @Override
             public int compare(OrderItem o1, OrderItem o2) {
                 int result = o1.getStoreRes().compareTo(o2.getStoreRes());
-                if (result == 0){
-                    if ((o1.getId()!= null) && (o2.getId() != null)){
+                if (result == 0) {
+                    if ((o1.getId() != null) && (o2.getId() != null)) {
                         return o1.getId().compareTo(o2.getId());
                     }
                 }
@@ -296,13 +299,18 @@ public class Dispatch implements java.io.Serializable {
     }
 
     @Transient
-    public boolean isHaveNoOutOweItem(){
-        for (OweOut oweOut: getOweOuts()){
-            if (!oweOut.isAdd()){
+    public boolean isHaveNoOutOweItem() {
+        for (OweOut oweOut : getOweOuts()) {
+            if (!oweOut.isAdd()) {
                 return true;
             }
         }
         return false;
     }
 
+
+    @Transient
+    public ResStockCountTotalGroup getTotalGroup() {
+        return new ResStockCountTotalGroup(getOrderItems(),getStore());
+    }
 }

@@ -57,7 +57,7 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
     @Override
     public void clear(){
         super.clear();
-        resGroupList = new ArrayList<ResCountTotal<StoreResCount>>(0);
+        resGroupList = null;
     }
 
     @Override

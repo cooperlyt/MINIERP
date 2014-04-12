@@ -85,7 +85,8 @@
 
                         <s:decorate template="/layout/edit.xhtml">
                             <ui:define name="label">#{messages.ExpressDriver}</ui:define>
-                            <h:inputText value="#{orderDispatch.selectDispatch.sendDriver}" label="#{messages.ExpressDriver}"
+                            <h:inputText value="#{orderDispatch.selectDispatch.sendDriver}"
+                                         label="#{messages.ExpressDriver}"
                                          maxlength="50" size="20"/>
                         </s:decorate>
 
@@ -131,7 +132,6 @@
                                 </a:ajax>
                             </rich:autocomplete>
                         </s:decorate>
-
 
 
                     </a:outputPanel>
@@ -314,4 +314,130 @@
         </rich:dataTable>
     </h:form>
 </h:panelGrid>
+
+<br/>
+<a:outputPanel ajaxRendered="true">
+    <rich:dataTable style="width: 100%" value="#{orderDispatch.dispatchList}" var="_dispatch">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="3" rowspan="2">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.Stock}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.Dispatch}
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+        <rich:column colspan="7">
+            <rich:collapsibleSubTableToggler for="sbtbl"/>
+            #{_dispatch.store.name}(#{_dispatch.store.id})
+
+            [
+            #{messages.order_field_deliveryType}:#{messages[_dispatch.deliveryType.name()]}(
+            <h:outputText value="#{_dispatch.transCorp.name}"
+                          rendered="#{((_dispatch.deliveryType eq 'FULL_CAR_SEND') or (_dispatch.deliveryType eq 'EXPRESS_SEND') ) and (not empty _dispatch.transCorp)}"/>
+
+            <h:outputText value=" - #{_dispatch.sendDriver}"
+                          rendered="#{(_dispatch.deliveryType eq 'FULL_CAR_SEND')}"/>
+
+
+            <h:outputText value="#{_dispatch.car.id}"
+                          rendered="#{(_dispatch.deliveryType eq 'SEND_TO_DOOR') and (not empty _dispatch.car)}"/> )
+
+            ]
+        </rich:column>
+        <rich:collapsibleSubTable value="#{_dispatch.totalGroup.getResGroupList()}" var="_resTotal" id="sbtbl"
+                                  expandMode="client">
+            <rich:column/>
+            <rich:column colspan="6">
+                <rich:collapsibleSubTableToggler for="sbtbl2"/>
+                #{_resTotal.res.name}
+            </rich:column>
+
+            <rich:collapsibleSubTable value="#{_resTotal.values}" var="_item" id="sbtbl2" expandMode="client">
+                <rich:column/><rich:column/>
+
+                <rich:column>
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                        <ui:param name="showResName" value="false"/>
+                    </ui:include>
+
+                    <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
+                                    title="#{messages.order_item_full}:#{_item.stock.displayMasterCount}(#{_item.stock.displayAuxCount}) "
+                                    value="/img/full_tip.png"
+                                    rendered="#{_item.enough}"/>
+
+                    <a:outputPanel style="float:right" rendered="#{not _item.enough}">
+                        <h:outputText style="color: #FF0000;" value="(#{_item.disparity.displayMasterCount})"/>
+                        <h:graphicImage alt="#{messages.order_item_not_full}"
+                                        value="/img/not_full_tip.png"/>
+                        <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                                      layout="block">
+
+                                  <span style="white-space: nowrap;color: #FF0000;">
+                                    #{messages.order_item_not_full}
+                                </span> <br/>
+
+                            <span style="white-space: nowrap;">
+                           #{messages.InventoryCount}:
+                                #{_item.stock.displayMasterCount}
+                                (#{_item.stock.displayAuxCount})  </span> <br/>
+                        <span style="white-space: nowrap;color: #FF0000;">
+                                #{messages.stockDisparity}:
+                            #{_item.disparity.displayMasterCount}
+                            (#{_item.disparity.displayAuxCount})
+                               </span>
+                        </rich:tooltip>
+                    </a:outputPanel>
+                    <f:facet name="footer">
+                        #{_resTotal.values.size}
+                    </f:facet>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_item.stock.displayMasterCount}" rendered="#{not empty _item.stock}"/>
+
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_item.stock.displayAuxCount}" rendered="#{not empty _item.stock}"/>
+
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_item.displayMasterCount}" style="#{_item.enough ? '' : 'color: red'}"/>
+                    <f:facet name="footer">
+                        #{_resTotal.totalMasterCount}
+
+                        #{_resTotal.res.unitGroup.masterUnit.name}
+                    </f:facet>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_item.displayAuxCount}" style="#{_item.enough ? '' : 'color: red'}"/>
+                    <f:facet name="footer">
+                        #{_resTotal.totalAuxCount}
+                        <h:outputText value="#{_resTotal.res.unitGroup.floatAuxiliaryUnit.name}"
+                                      rendered="#{_resTotal.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                    </f:facet>
+                </rich:column>
+            </rich:collapsibleSubTable>
+
+        </rich:collapsibleSubTable>
+
+    </rich:dataTable>
+
+</a:outputPanel>
 </ui:composition>
