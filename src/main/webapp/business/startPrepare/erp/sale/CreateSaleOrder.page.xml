@@ -6,5 +6,9 @@
     <param name="newOrder"/>
     <param name="from"/>
 
+    <param name="customerId" value="#{customerHome.id}"/>
+
+    <param name="customerAreaId" value="#{customerAreaHome.id}"/>
+
     <action execute="#{orderCreate.beginCreateOrder}" if="#{empty newOrder ? true : newOrder}" on-postback="false"/>
 </page>

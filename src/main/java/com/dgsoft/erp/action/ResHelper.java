@@ -34,7 +34,7 @@ public class ResHelper {
 
     public String generateStoreResTitle(StoreRes storeRes) {
 
-        String result = storeRes.getRes().getName() + "(" + storeRes.getRes().getCode() + ")  ";
+        String result = storeRes.getRes().getName() + "(" + storeRes.getRes().getCode() + ")";
 
         for (Format format : storeRes.getFormatList()) {
             result += " " + format.getFormatDefine().getName() + ":";

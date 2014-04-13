@@ -159,7 +159,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
                 getCustomer().setBalance(getCustomer().getBalance().add(saveMoney));
 
                 orderHome.getInstance().getAccountOpers().add(new AccountOper(getCustomer(), credentials.getUsername(), saveMoney,
-                        AccountOper.AccountOperType.PRE_DEPOSIT, new Date(debitAccountOper.getOperDate().getTime() + 1002),
+                        AccountOper.AccountOperType.PRE_DEPOSIT_BY_ORDER, new Date(debitAccountOper.getOperDate().getTime() + 1002),
                         "", debitAccountOper.getPayType(), orderHome.getInstance(), debitAccountOper.getCheckNumber(), BigDecimal.ZERO));
             }
 

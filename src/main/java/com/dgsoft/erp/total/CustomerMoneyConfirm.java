@@ -7,8 +7,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by cooper on 3/2/14.
@@ -19,6 +18,7 @@ public class CustomerMoneyConfirm extends CustomerMoneyTotalBase {
     private static final String[] RESTRICTIONS = {
             "accountOper.operDate >= #{customerMoneyConfirm.searchDateArea.dateFrom}",
             "accountOper.operDate <= #{customerMoneyConfirm.searchDateArea.searchDateTo}",
+            "accountOper.operType in (#{customerMoneyConfirm.showAccountTypes})",
             "accountOper.customer.id = #{customerMoneyConfirm.coustomerId}"};
 
 
@@ -39,5 +39,10 @@ public class CustomerMoneyConfirm extends CustomerMoneyTotalBase {
         this.coustomerId = coustomerId;
     }
 
+    public List<AccountOper.AccountOperType> getShowAccountTypes(){
+        return new ArrayList<AccountOper.AccountOperType>(EnumSet.of(AccountOper.AccountOperType.ORDER_SAVINGS,
+                AccountOper.AccountOperType.PRE_DEPOSIT,AccountOper.AccountOperType.DEPOSIT_BACK,
+                AccountOper.AccountOperType.ORDER_BACK,AccountOper.AccountOperType.ORDER_CANCEL_BACK));
+    }
 
 }

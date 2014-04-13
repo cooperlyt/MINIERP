@@ -26,7 +26,7 @@
     <ui:insert name="head"/>
 </h:head>
 <h:body>
-
+<a:queue requestDelay="100" ignoreDupResponses="true"/>
 <h:form>
     <ui:insert name="taskChangePush">
 
@@ -51,7 +51,7 @@
 </rich:popupPanel>
 
 
-<a:queue requestDelay="100" ignoreDupResponses="true"/>
+
 <rich:popupPanel id="changePass" resizeable="false" autosized="true">
     <script type="text/javascript"
             src="${facesContext.externalContext.requestContextPath}/js/usbKey.js"/>

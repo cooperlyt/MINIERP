@@ -19,7 +19,7 @@
     <core:init debug="true" jndi-pattern="@jndiPattern@"/>
 
 
-    <core:manager concurrent-request-timeout="5000"
+    <core:manager concurrent-request-timeout="60000"
                   conversation-timeout="120000"
                   conversation-id-parameter="cid"
                   parent-conversation-id-parameter="pid"

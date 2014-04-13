@@ -10,15 +10,228 @@
                 template="/layout/full-template.xhtml">
 
 
-    <ui:param name="functionTitle" value="#{messages.customerDetails}"/>
+<ui:param name="functionTitle" value="#{messages.customerDetails}"/>
 
-    <ui:define name="func-body">
+<ui:define name="toolbar">
 
-        <rich:toolbar rendered="#{not empty from}">
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="customerEditPanel"/>
+    <ui:param name="width" value="800"/>
+    <ui:param name="panelTitle" value="#{customerHome.managed ? messages.edit : messages.add}#{messages.Customer}"/>
+
+    <h:panelGrid columns="2">
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.CustomerArea}</ui:define>
+            <h:selectOneMenu value="#{customerHome.instance.customerArea}" required="true"
+                             label="#{messages.CustomerArea}">
+                <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{_customerArea.name}"/>
+
+                <f:converter converterId="erpEntityConverter"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <s:decorate rendered="#{runParam.getBooleanParamValue('erp.customer.balanceInput')}"
+                    template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_balance}</ui:define>
+            <h:inputText required="true" value="#{customerHome.instance.balance}"
+                         converter="javax.faces.BigDecimal">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
+        </s:decorate>
+
+    </h:panelGrid>
+
+    <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
+
+    <ui:define name="actionButtons">
+        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                         oncomplete="#{rich:component('customerEditPanel')}.hide();">
+            <s:conversationPropagation type="end"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.updateEnd}"
+                         rendered="#{customerHome.managed}"
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'updated'){#{rich:component('customerEditPanel')}.hide(); return true;} else return false;"
+                         render="customerEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.persistEnd}"
+                         rendered="#{not customerHome.managed}"
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'persisted'){#{rich:component('customerEditPanel')}.hide(); return true;} else return false;"
+                         render="customerEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+    </ui:define>
+
+</s:decorate>
+
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="middleManEditPanel"/>
+    <ui:param name="panelTitle" value="#{messages.MiddleMan}"/>
+
+    <s:span styleClass="name">
+        <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
+            <a:ajax event="click" render="middleManEditPanel_inputs"
+                    listener="#{customerHome.middleManPayChangeListener}"/>
+        </h:selectBooleanCheckbox>
+        #{messages.MiddleMan}
+    </s:span>
+
+    <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
+        <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+    </a:outputPanel>
+
+    <ui:define name="actionButtons">
+        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                         oncomplete="#{rich:component('middleManEditPanel')}.hide();">
+            <s:conversationPropagation type="end"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.updateEnd}"
+
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'updated'){#{rich:component('middleManEditPanel')}.hide(); return true;} else return false;"
+                         render="middleManEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+    </ui:define>
+</s:decorate>
+
+<!--
+<rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="false" width="600" height="600"
+                 moveable="true" resizeable="false">
+    <f:facet name="header">
+        #{messages.QuotedPrice}
+    </f:facet>
+    <f:facet name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component('quotedDetailsPanel')}.hide(); return false;">
+        </a:commandButton>
+    </f:facet>
+    <a:outputPanel id="quotedDetails">
+        <a:outputPanel rendered="#{quotedPriceHome.idDefined}">
+            <ui:include src="QuotedDetails.xhtml"/>
+
+        </a:outputPanel>
+
+        <a:outputPanel rendered="#{not quotedPriceHome.idDefined}">
+            #{messages.customerNotHaveQuote}
+        </a:outputPanel>
+        <br/>
+    </a:outputPanel>
+</rich:popupPanel>
+   -->
+
+
+<!--
+<rich:toolbarGroup>
+<h:graphicImage value="/img/price.png"/>
+<a:commandLink render="quotedDetails" execute="@this" immediate="true"
+               value="#{messages.QuotedPrice}"
+               disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.saler'))}"
+               oncomplete="#{rich:component('quotedDetailsPanel')}.show()">
+    <a:attachQueue requestDelay="0"/>
+    <a:param value="#{customerHome.instance.id}" assignTo="#{quotedPriceHome.customerId}"/>
+</a:commandLink>
+</rich:toolbarGroup>
+-->
+
+<h:form>
+    <a:outputPanel ajaxRendered="true">
+        <rich:toolbar height="34" itemSeparator="line">
             <rich:toolbarGroup>
-                <s:link target="_blank" view="/report/customerConfirm.xhtml">
-                    <s:graphicImage value="/img/match_price.png" title="#{messages.customerConfirmPager}"/>
-                    <f:param name="customerId" value="#{_customer.id}"/>
+                <h:graphicImage value="/img/edit.png"/>
+                <a:commandLink value="#{messages.edit}" immediate="true"
+                               disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                               render="customerEditPanel_form,customerEditPanel_title"
+                               oncomplete="#{rich:component('customerEditPanel')}.show()">
+                    <s:conversationPropagation type="begin"/>
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{customerHome.instance.id}" assignTo="#{customerHome.id}"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/person_edit.png"/>
+
+                <a:commandLink value="#{messages.MiddleMan}"
+                               execute="@this,customerEditPanel_form"
+                               disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                               render="middleManEditPanel_form" immediate="true"
+                               oncomplete="#{rich:component('middleManEditPanel')}.show()">
+                    <s:conversationPropagation type="begin"/>
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{customerHome.instance.id}" assignTo="#{customerHome.id}"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/savingsMoney.png"/>
+                <s:link view="/func/erp/finance/cashier/CustomerMoneySavings.xhtml"
+                        value="#{messages.CustomerMoneySavings}"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.finance.cashier'))}"
+                        propagation="begin">
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                </s:link>
+                #{' '}
+
+            </rich:toolbarGroup>
+
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/refundMoney.png"/>
+                <s:link view="/func/erp/finance/cashier/CustomerMoneyRefund.xhtml"
+                        value="#{messages.CustomerMoneyRefund}"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.finance.cashier'))}"
+                        propagation="begin" rendered="#{s:hasRole('erp.finance.cashier')}">
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/order.png"/>
+                <s:link value="#{messages.newOrder}"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                        view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml" propagation="begin">
+                    <f:param name="from" value="/func/erp/sale/CustomerView.xhtml"/>
+                    <f:param name="orderId" value=""/>
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                    <f:param name="customerAreaId" value="#{customerHome.instance.customerArea.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/res_back.png"/>
+                <s:link value="#{messages.OrderBackRes}"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                          view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
+                    <f:param name="from" value="/func/erp/sale/CustomerView.xhtml"/>
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                    <f:param name="customerAreaId" value="#{customerHome.instance.customerArea.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/match_price.png"/>
+                <s:link target="_blank" view="/report/customerConfirm.xhtml"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole('erp.finance.cashier') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                        value="#{messages.customerConfirmPager}">
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
                 </s:link>
             </rich:toolbarGroup>
 
@@ -27,15 +240,79 @@
                           view="#{empty from ? '/home.xhtml' : from}"/>
             </rich:toolbarGroup>
         </rich:toolbar>
+    </a:outputPanel>
+</h:form>
+</ui:define>
 
-        <ui:include src="/layout/erp/CustomerView.xhtml">
-            <ui:param name="customer" value="#{customerHome.instance}"/>
-        </ui:include>
+<ui:define name="body">
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+    <h:outputStylesheet>
+
+        .saleAreaSelect input[type="text"] {
+            width: 115px;
+        }
+    </h:outputStylesheet>
+
+    <rich:panel>
+        <h:form>
+            <h:panelGrid columns="2">
+                <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.CustomerArea}</ui:define>
+                    <rich:select value="#{customerAreaHome.id}" required="true"
+                                 label="#{messages.CustomerArea}"
+                                 styleClass="saleAreaSelect" listWidth="132px">
+                        <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                                       noSelectionLabel="#{messages.searchNoSelectLabel}"
+                                       label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                        <a:ajax event="selectitem" execute="@this"
+                                listener="#{orderCreate.clearCustomer}"
+                                render="customerSelectNameField,customerAreaField">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:select>
+                </s:decorate>
 
 
-        <div style="clear: both"/>
+                <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.Customer}</ui:define>
+                    <rich:autocomplete id="pinyinSearchCustomer"
+                                       mode="client" minChars="1" autofill="false"
+                                       showButton="true"
+                                       selectFirst="true"
+                                       label="#{messages.Customer}"
+                                       clientFilterFunction="pinyinFilter"
+                                       autocompleteList="#{customerSelectList.resultList}"
+                                       value="#{customerHome.pinyinSearchName}"
+                                       fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
+
+                        <h:outputText value="#{_customer.name}"/>
+                        <a:ajax event="selectitem" render="customerSelectNameField"
+                                listener="#{needResHome.customerChangeListener}" execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                        <a:ajax event="blur" execute="@this" render="customerSelectNameField">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:autocomplete>
+                </s:decorate>
+            </h:panelGrid>
+        </h:form>
+    </rich:panel>
+
+    <br/>
+
+    <a:outputPanel ajaxRendered="true">
+        <a:outputPanel rendered="#{customerHome.idDefined}">
+            <ui:include src="/layout/erp/CustomerView.xhtml">
+                <ui:param name="customer" value="#{customerHome.instance}"/>
+            </ui:include>
+        </a:outputPanel>
+
+    </a:outputPanel>
+
+    <div style="clear: both"/>
 
 
-
-    </ui:define>
+</ui:define>
 </ui:composition>

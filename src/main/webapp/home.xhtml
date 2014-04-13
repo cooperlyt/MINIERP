@@ -17,28 +17,64 @@
             <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png" alt="Seam logo"/>
             <s:div styleClass="info">
                 <p>
-                    <strong>#{messages.release_version}</strong> #{' '} #{messages.updateLog}
+                    <strong>MINIERP 2.1.2 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
 
 
-                    <li>#{messages.version1}</li>
-                    <li>#{messages.version2}</li>
-                    <li>#{messages.version3}</li>
-                    <li>#{messages.version4}</li>
-                    <li>#{messages.version5}</li>
-                    <li>#{messages.version6}</li>
-                    <li>#{messages.version7}</li>
-                    <li>#{messages.version8}</li>
-                    <li>#{messages.version9}</li>
-                    <li>#{messages.version10}</li>
-                    <li>#{messages.version11}</li>
-                    <li>#{messages.version12}</li>
-                    <li>#{messages.version13}</li>
-                    <li>#{messages.version14}</li>
-                    <li>#{messages.version15}</li>
-                    <li>#{messages.version16}</li>
+                    <li>[销售] 增加客户操作功能，可直接使用客户名称的拼音首字母定位客户，并对客户进行操作</li>
+                    <li>[销售] 修改客户对帐单，可按三种方式显示款向往来</li>
+
+
                 </ul>
+
+                <div style="clear: both;"/>
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.1.1 更新日志" name="openLabel"/>
+                    <ul class="bullets">
+
+
+                        <li>[销售] 建立订单过程中加入“上一步”，“下一步"</li>
+                        <li>[销售] 订单项和退货项不再自动合并</li>
+                        <li>[销售] 调度增加分组分类合计显示，并显示库存情况</li>
+                        <li>[销售] 更改添加订单项时选择物资或货品的方式，可在一个货品树中选择</li>
+                        <li>[销售] 可连续添加订单项，添加完成后自动还原上次选择物资或货品</li>
+                        <li>[销售] 修正物资货品选择树的查示问题</li>
+                        <li>[销售] 订单项增加订购尺寸，并自动计算订购价格</li>
+                        <li>[销售] 修正返点计算器，可根据返点基数，和返点数计算</li>
+                        <li>[销售] 退货和订单分离，退货不再关联到订单，不对原订单做任何更改，但可根据订单项建立退货业务</li>
+                        <li>[销售] 增加退款撤单,#{messages.orderMoneyBackTip}</li>
+                        <li>[销售] 增加撤单.若订单已发货或已收款则仅销售主管有撤单权限.#{messages.orderRemoveTip}</li>
+                        <li>[仓库] 入库项列表更改为分组分类合计表显示</li>
+                        <li>[查询] 出入库查询列表增加字段:"收货人","订单号"</li>
+                    </ul>
+                </s:decorate>
+
+                <div style="clear: both;"/>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.0.4 更新日志" name="openLabel"/>
+                    <ul class="bullets">
+
+
+                        <li>#{messages.version1}</li>
+                        <li>#{messages.version2}</li>
+                        <li>#{messages.version3}</li>
+                        <li>#{messages.version4}</li>
+                        <li>#{messages.version5}</li>
+                        <li>#{messages.version6}</li>
+                        <li>#{messages.version7}</li>
+                        <li>#{messages.version8}</li>
+                        <li>#{messages.version9}</li>
+                        <li>#{messages.version10}</li>
+                        <li>#{messages.version11}</li>
+                        <li>#{messages.version12}</li>
+                        <li>#{messages.version13}</li>
+                        <li>#{messages.version14}</li>
+                        <li>#{messages.version15}</li>
+                        <li>#{messages.version16}</li>
+                    </ul>
+                </s:decorate>
             </s:div>
         </h:panelGrid>
 

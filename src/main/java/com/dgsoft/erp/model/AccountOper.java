@@ -19,7 +19,7 @@ public class AccountOper implements java.io.Serializable {
 
     public enum AccountOperType {
         ORDER_SAVINGS(true), ORDER_PAY(false), ORDER_EARNEST(false),
-        PRE_DEPOSIT(true), DEPOSIT_BACK(false), ORDER_FREE(true),
+        PRE_DEPOSIT(true),PRE_DEPOSIT_BY_ORDER(true), DEPOSIT_BACK(false), ORDER_FREE(true),
         ORDER_BACK_SAVINGS(true), ORDER_BACK(false),
         ORDER_CANCEL_SAVINGS(true), ORDER_CANCEL_BACK(false);
 
@@ -310,6 +310,7 @@ public class AccountOper implements java.io.Serializable {
     @Transient
     public BigDecimal getRealMoney(){
         if (getRemitFee() != null){
+
            switch (getOperType()){
                //customer save money sub remiteFee
                case PRE_DEPOSIT:

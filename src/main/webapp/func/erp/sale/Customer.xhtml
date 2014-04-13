@@ -256,14 +256,6 @@
                 <f:param name="customerId" value="#{_customer.id}"/>
             </s:link>
 
-            #{' '}
-
-            <a:commandButton rendered="#{s:hasRole('erp.sale.saler')}" image="/img/price.png" render="quotedDetails" execute="@this" immediate="true"
-                             oncomplete="#{rich:component('quotedDetailsPanel')}.show()">
-                <a:attachQueue requestDelay="0"/>
-                <a:param value="#{_customer.id}" assignTo="#{quotedPriceHome.customerId}"/>
-            </a:commandButton>
-
         </rich:column>
 
     </rich:dataTable>
@@ -367,29 +359,6 @@
     </ui:define>
 </s:decorate>
 
-<rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="false" width="600" height="600"
-                 moveable="true" resizeable="false">
-    <f:facet name="header">
-        #{messages.QuotedPrice}
-    </f:facet>
-    <f:facet name="controls">
-        <a:commandButton immediate="true"
-                         execute="@this" image="/img/close.png"
-                         onclick="#{rich:component('quotedDetailsPanel')}.hide(); return false;">
-        </a:commandButton>
-    </f:facet>
-    <a:outputPanel id="quotedDetails">
-        <a:outputPanel rendered="#{quotedPriceHome.idDefined}">
-            <ui:include src="QuotedDetails.xhtml"/>
-
-        </a:outputPanel>
-
-        <a:outputPanel rendered="#{not quotedPriceHome.idDefined}">
-            #{messages.customerNotHaveQuote}
-        </a:outputPanel>
-        <br/>
-    </a:outputPanel>
-</rich:popupPanel>
 
 
 </ui:define>

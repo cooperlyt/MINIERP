@@ -8,6 +8,8 @@
     <param name="stepFrom"/>
 
     <param name="customerOrderId" value="#{orderHome.id}"/>
+    <param name="customerId" value="#{customerHome.id}"/>
+    <param name="customerAreaId" value="#{customerAreaHome.id}"/>
 
     <navigation from-action="#{storeResBackCreate.createBack}">
         <rule if-outcome="businessCreated" if="#{empty from}">
