@@ -54,6 +54,9 @@ public class ResHelper {
             if (showKey)
                 result += " " + format.getFormatDefine().getName() + ":";
             if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
+                if (!showKey)  {
+                    result += " ";
+                }
                 result += dictionary.getWordValue(format.getFormatValue());
             } else {
                 result += format.getFormatValue();

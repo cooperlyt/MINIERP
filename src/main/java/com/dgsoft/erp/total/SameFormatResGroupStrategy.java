@@ -60,9 +60,9 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
 
         @Override
         public int hashCode() {
-            String formatId = "";
-            for (Format format: storeRes.getFormats())
-                formatId = formatId + "-" + format.getId();
+            String formatId = storeRes.getRes().getId();
+            for (Format format: storeRes.getFormatList())
+                formatId = formatId + "-" + format.getFormatDefine().getId() + ":" + format.getFormatValue();
             return formatId.hashCode();
         }
 

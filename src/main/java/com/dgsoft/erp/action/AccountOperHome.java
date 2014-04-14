@@ -26,6 +26,11 @@ public class AccountOperHome extends ErpEntityHome<AccountOper> {
         return PayType.values();
     }
 
+    @Factory(value = "accountBackType", scope = ScopeType.CONVERSATION)
+    public PayType[] getAccountBackTypes(){
+        return EnumSet.of(PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK,PayType.FROM_PRE_DEPOSIT).toArray(new PayType[0]);
+    }
+
     @Factory(value ="moneyPayTypes", scope = ScopeType.CONVERSATION)
     public PayType[] getMoneyPayTypes(){
         return EnumSet.of(PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK).toArray(new PayType[0]);

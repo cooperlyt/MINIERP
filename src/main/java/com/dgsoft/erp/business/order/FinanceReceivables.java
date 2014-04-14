@@ -75,7 +75,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     }
 
     private boolean isFreeForPay() {
-        return freeMoney && debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
+        return freeMoney && debitAccountOper.getPayType().equals(PayType.ARREARS);
     }
 
     public void checkCustomerAccountBlance() {
@@ -111,16 +111,30 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     @Transactional
     public void receiveMoney() {
 
-        if (debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) && (debitAccountOper.getOperMoney().compareTo(getShortageMoney()) > 0)) {
+
+        if (debitAccountOper.getPayType().equals(PayType.ARREARS)){
+            debitAccountOper.setOperMoney(getShortageMoney());
+        }
+
+        if ((debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) ||  debitAccountOper.getPayType().equals(PayType.ARREARS)) &&
+                (debitAccountOper.getOperMoney().compareTo(getShortageMoney()) > 0)) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderFreeMoneyLessMoney");
             return;
         }
+
+        if (debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) && orderHome.getInstance().getCustomer().getBalance().compareTo(debitAccountOper.getOperMoney()) < 0){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "customerBalanceNotEn");
+            return;
+        }
+
+
         if (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) <= 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderMoneyIsComplete");
             return;
         }
 
-        boolean saving = !debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT);
+
+        boolean saving = !debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) && !debitAccountOper.getPayType().equals(PayType.ARREARS);
         //if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
         //    debitAccountOper.setOperMoney(debitAccountOper.getOperMoney().add(debitAccountOper.getRemitFee()));
         //}

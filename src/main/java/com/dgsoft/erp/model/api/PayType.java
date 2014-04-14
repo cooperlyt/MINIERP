@@ -8,5 +8,5 @@ package com.dgsoft.erp.model.api;
  */
 public enum PayType {
 
-      BANK_TRANSFER,CASH,CHECK,FROM_PRE_DEPOSIT;
+      BANK_TRANSFER,CASH,CHECK,FROM_PRE_DEPOSIT,ARREARS;
 }

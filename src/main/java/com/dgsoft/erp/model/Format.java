@@ -141,7 +141,7 @@ public class Format implements java.io.Serializable {
             return true;
         }
 
-        if ((otherRes.getFormatDefine() == null) || (getFormatDefine() == null)){
+        if ((otherRes.getFormatDefine() == null) || (getFormatDefine() == null)) {
             return false;
         }
 
@@ -149,16 +149,14 @@ public class Format implements java.io.Serializable {
             return false;
         }
 
-        if ((getFormatDefine().getDataType() != null) &&
-                (otherRes.getFormatDefine().getDataType() != null)) {
-            switch (getFormatDefine().getDataType()) {
-                case WORD:
-                    return getFormatValue().equals(otherRes.getFormatValue());
-                case INTEGER:
-                    return getIntValue().equals(otherRes.getIntValue());
-                case FLOAT:
-                    return getFloatValue().equals(otherRes.getFloatValue());
-            }
+
+        switch (getFormatDefine().getDataType()) {
+            case WORD:
+                return getFormatValue().equals(otherRes.getFormatValue());
+            case INTEGER:
+                return getIntValue().equals(otherRes.getIntValue());
+            case FLOAT:
+                return getFloatValue().equals(otherRes.getFloatValue());
         }
 
 

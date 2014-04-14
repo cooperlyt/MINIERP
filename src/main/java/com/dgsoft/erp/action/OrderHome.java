@@ -166,17 +166,31 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         for (TotalDataGroup<Store, OrderItem> group : getDispatchItemGroups()) {
 
+            TotalDataGroup.sort(group,new Comparator<OrderItem>() {
+                @Override
+                public int compare(OrderItem o1, OrderItem o2) {
+                    if (ResHelper.instance().sameFormat(o1.getStoreRes().getFormats(), o2.getFormats())){
+                        if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                            return o1.getStoreRes().getFloatConversionRate().compareTo(o2.getFloatConvertRate());
+                        }
+                    }
+                    return o1.getStoreRes().compareTo(o2.getStoreRes());
+                }
+            });
+
             result.append("\n" + group.getKey().getName());
             for (TotalDataGroup<?,OrderItem> sg: group.getChildGroup()) {
                 result.append("\n\t" + sg.getKey().toString());
-                for (StoreResCountEntity item : sg.getValues()) {
+                for (OrderItem item : sg.getValues()) {
 
                     result.append("\n\t\t");
                     if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-                        result.append(item.getStoreRes().getFloatConversionRate() + item.getStoreRes().getRes().getUnitGroup().getName());
+                        result.append(DataFormat.format(item.getStoreRes().getFloatConversionRate(),
+                                item.getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat()) + item.getStoreRes().getRes().getUnitGroup().getName());
                     }
-                    result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
+                    result.append(" " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
                     result.append(item.getRes().getResUnitByInDefault().getName());
+                    result.append(" " + item.getMemo());
                 }
             }
             result.append("\n");
@@ -194,15 +208,29 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
         for (TotalDataGroup<?,OrderItem> sg: createdItems) {
+            TotalDataGroup.sort(sg,new Comparator<OrderItem>() {
+                @Override
+                public int compare(OrderItem o1, OrderItem o2) {
+                    if (ResHelper.instance().sameFormat(o1.getStoreRes().getFormats(), o2.getFormats())){
+                        if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                            return o1.getStoreRes().getFloatConversionRate().compareTo(o2.getFloatConvertRate());
+                        }
+                    }
+                    return o1.getStoreRes().compareTo(o2.getStoreRes());
+                }
+            });
+
             result.append("\n\t" + sg.getKey().toString());
-            for (StoreResCountEntity item : sg.getValues()) {
+            for (OrderItem item : sg.getValues()) {
 
                 result.append("\n\t\t");
                 if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-                    result.append(item.getStoreRes().getFloatConversionRate() + item.getStoreRes().getRes().getUnitGroup().getName());
+                    result.append(DataFormat.format(item.getStoreRes().getFloatConversionRate(),
+                            item.getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat()) + item.getStoreRes().getRes().getUnitGroup().getName());
                 }
                 result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
                 result.append(item.getRes().getResUnitByInDefault().getName());
+                result.append(" " + item.getMemo());
             }
         }
 
