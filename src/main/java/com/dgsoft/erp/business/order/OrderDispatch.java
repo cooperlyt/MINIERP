@@ -13,6 +13,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
@@ -100,7 +101,7 @@ public class OrderDispatch {
         selectDispatch = null;
     }
 
-
+    @BypassInterceptors
     public String getStoreId() {
         return storeId;
     }
@@ -109,6 +110,7 @@ public class OrderDispatch {
         this.storeId = storeId;
     }
 
+    @BypassInterceptors
     public Dispatch getSelectDispatch() {
         return selectDispatch;
     }
@@ -117,6 +119,7 @@ public class OrderDispatch {
         this.selectDispatch = selectDispatch;
     }
 
+    @BypassInterceptors
     public OrderItem getOperOrderItem() {
         return operOrderItem;
     }
@@ -125,6 +128,7 @@ public class OrderDispatch {
         this.operOrderItem = operOrderItem;
     }
 
+    @BypassInterceptors
     public StoreResCount getOperCount() {
         return operCount;
     }
@@ -141,6 +145,7 @@ public class OrderDispatch {
 //        this.unit = unit;
 //    }
 
+    @BypassInterceptors
     public boolean isShipDetails() {
         return shipDetails;
     }
@@ -157,8 +162,13 @@ public class OrderDispatch {
 //        this.storeResOrderItems = storeResOrderItems;
 //    }
 
+    @BypassInterceptors
     public List<Dispatch> getDispatchList(){
         return dispatchList;
+    }
+
+    public void setDispatchList(List<Dispatch> dispatchList) {
+        this.dispatchList = dispatchList;
     }
 
     public void wire() {
@@ -173,10 +183,8 @@ public class OrderDispatch {
         needRes.getDispatches().addAll(dispatchList);
     }
 
-    public void setDispatchList(List<Dispatch> dispatchList) {
-        this.dispatchList = dispatchList;
-    }
 
+    @BypassInterceptors
     public Store getStore() {
         return store;
     }
@@ -185,6 +193,7 @@ public class OrderDispatch {
         this.store = store;
     }
 
+    @BypassInterceptors
     public boolean isEditInfo() {
         return editInfo;
     }
@@ -420,6 +429,7 @@ public class OrderDispatch {
         init(needRes);
     }
 
+    @BypassInterceptors
     public boolean isDispatchComplete() {
         return noDispatchItems.isEmpty();
     }

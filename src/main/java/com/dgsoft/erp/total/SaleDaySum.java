@@ -9,7 +9,8 @@ import org.jboss.seam.annotations.Name;
  * Time: 09:17
  */
 @Name("saleDaySum")
-public class SaleDaySum extends SaleDayBaseSum{
+public class SaleDaySum extends OrderStateSearch {
+
 
 
     public void totalData() {

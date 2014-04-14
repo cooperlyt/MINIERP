@@ -5,6 +5,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,7 +26,7 @@ public class StartData {
 
     private String description;
 
-
+    @BypassInterceptors
     public int getLevel() {
         return level;
     }
@@ -34,6 +35,7 @@ public class StartData {
         this.level = level;
     }
 
+    @BypassInterceptors
     public String getDescription() {
         return description;
     }
@@ -42,6 +44,7 @@ public class StartData {
         this.description = description;
     }
 
+    @BypassInterceptors
     public String getBusinessKey() {
         return businessKey;
     }

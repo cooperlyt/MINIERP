@@ -19,8 +19,8 @@ import java.util.Map;
  * Date: 18/03/14
  * Time: 11:22
  */
-@Name("customerMoneySum")
-public class CustomerMoneySum {
+@Name("customerAccountChartData")
+public class CustomerAccountChartData {
 
 
     @In(create = true)

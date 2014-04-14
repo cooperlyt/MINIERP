@@ -14,7 +14,7 @@
             <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
 
                 <ui:include src="/layout/erp/biz/OrderStateCondition.xhtml">
-                    <ui:param name="condition" value="#{saleMoneySum.orderState}"/>
+                    <ui:param name="condition" value="#{saleMoneyChartData.orderState}"/>
                 </ui:include>
 
                 <s:decorate template="/layout/seam-display.xhtml">
@@ -26,7 +26,7 @@
                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                             datePattern="#{messages.datePattern}"
                             label="#{messages.order_search_BETWEEN_createDate}"
-                            value="#{saleMoneySum.dateArea.dateFrom}">
+                            value="#{saleMoneyChartData.dateArea.dateFrom}">
                     </rich:calendar>
 
                     --
@@ -38,7 +38,7 @@
                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                             datePattern="#{messages.datePattern}"
                             label="#{messages.order_search_BETWEEN_createDate}"
-                            value="#{saleMoneySum.dateArea.dateTo}">
+                            value="#{saleMoneyChartData.dateArea.dateTo}">
                     </rich:calendar>
                 </s:decorate>
 
@@ -51,7 +51,7 @@
 
                         <a:outputPanel id="searchButton">
                             <a:commandButton value="#{messages.search}"
-                                             execute="@form" action="#{saleMoneySum.totalData}">
+                                             execute="@form" action="#{saleMoneyChartData.totalData}">
                                 <a:attachQueue requestDelay="0"/>
                             </a:commandButton>
                         </a:outputPanel>
@@ -67,8 +67,8 @@
         <a:outputPanel ajaxRendered="true">
 
             <h:panelGrid style="width: 100%; text-align: center;" columns="1">
-                <a:outputPanel rendered="#{not empty saleMoneySum.orderMoneySum}">
-                <p:barchart
+                <a:outputPanel rendered="#{not empty saleMoneyChartData.saleMoneyData}">
+                    <p:barchart
                             title="#{messages.SaleMoney_OrderTotalMoney}"
                             legend="true" borderVisible="false"
                             borderBackgroundPaint="white"
@@ -77,66 +77,32 @@
                             baseSectionPaint="white"
                             circular="true" is3D="true" plotForegroundAlpha="0.9">
 
-                    <p:series key="#{messages.SaleMoneySum_totalMoney} #{saleMoneySum.orderMoneySum.displayMoney}">
-                        <p:data key="#{messages.Sum_Money}" value="#{saleMoneySum.orderMoneySum.money}"/>
-
-
-                    </p:series>
-
-                    <p:series
-                            key="#{messages.SaleMoneySum_customerOrderPay} #{saleMoneySum.orderPayMoneySum.displayMoney}">
-                        <p:data key="#{messages.Sum_Money}"
-                                value="#{saleMoneySum.orderPayMoneySum.money}"/>
-                    </p:series>
-
-                    <p:series key="#{messages.SaleMoneySum_customerPrePay} #{saleMoneySum.prepareMoney.displayMoney}">
-                        <p:data key="#{messages.Sum_Money}"
-                                value="#{saleMoneySum.prepareMoney.money}"/>
-                    </p:series>
-
-                </p:barchart>
-                </a:outputPanel>
-
-
-
-                 <br/>
-
-                <a:outputPanel rendered="#{not empty saleMoneySum.areaOrderMoneySum}">
-                    <p:barchart title="#{messages.SaleMoney_OrderTotalMoney}"
-                                legend="true" borderVisible="false"
-                                borderBackgroundPaint="white"
-                                width="600"
-                                plotOutlinePaint="white" plotBackgroundAlpha="0.1"
-                                baseSectionPaint="white"
-                                circular="true" is3D="true" plotForegroundAlpha="0.9">
-
-
                         <p:series key="#{messages.SaleMoneySum_totalMoney}">
 
-                            <ui:repeat value="#{collectionTools.mapToList(saleMoneySum.areaOrderMoneySum)}"
+                            <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.saleMoneyData)}"
                                        var="_totalMoney">
-                                <p:data key="#{_totalMoney.key}" value="#{_totalMoney.value.money}"/>
+                                <p:data key="#{_totalMoney.value.key}" value="#{_totalMoney.value.money}"/>
                             </ui:repeat>
 
 
                         </p:series>
 
-                        <p:series key="#{messages.SaleMoneySum_customerOrderPay}">
-                            <ui:repeat value="#{collectionTools.mapToList(saleMoneySum.areaOrderPayMoney)}"
+                        <p:series key="#{messages.SaleMoneySum_Receive}">
+                            <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.receiveMoneyData)}"
                                        var="_totalMoney">
-                                <p:data key="#{_totalMoney.key}" value="#{_totalMoney.value.money}"/>
+                                <p:data key="#{_totalMoney.value.key}" value="#{_totalMoney.value.money}"/>
                             </ui:repeat>
                         </p:series>
 
-                        <p:series key="#{messages.SaleMoneySum_customerPrePay}">
-                            <ui:repeat value="#{collectionTools.mapToList(saleMoneySum.areaPrepareMoney)}"
+                        <p:series key="#{messages.SaleMoneySum_overlay}">
+                            <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.overlayMoneyData)}"
                                        var="_totalMoney">
-                                <p:data key="#{_totalMoney.key}" value="#{_totalMoney.value.money}"/>
+                                <p:data key="#{_totalMoney.value.key}" value="#{_totalMoney.value.money}"/>
                             </ui:repeat>
                         </p:series>
-
                     </p:barchart>
                 </a:outputPanel>
+
 
             </h:panelGrid>
         </a:outputPanel>

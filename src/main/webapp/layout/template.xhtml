@@ -51,37 +51,6 @@
 </rich:popupPanel>
 
 
-
-<rich:popupPanel id="changePass" resizeable="false" autosized="true">
-    <script type="text/javascript"
-            src="${facesContext.externalContext.requestContextPath}/js/usbKey.js"/>
-    <f:facet name="header">
-        <h:panelGroup>
-            <h:outputText value="#{messages.changePassowrd}"/>
-        </h:panelGroup>
-    </f:facet>
-    <f:facet name="controls">
-        <h:panelGroup>
-            <a:commandButton title="#{messages.close}" image="/img/close.png" execute="@this"
-                             bypassUpdates="true" immediate="true"
-                             onclick="#{rich:component('changePass')}.hide(); return false;"/>
-        </h:panelGroup>
-    </f:facet>
-    <h:panelGrid columns="2">
-        <h:outputText value="#{messages.old_password}"></h:outputText>
-        <input name="old_password" type="password" id="old_password"
-               size="20" maxlength="18"/>
-        <h:outputText value="#{messages.new_password}"></h:outputText>
-        <input name="new_password" type="password" id="new_password"
-               size="20" maxlength="18"/>
-        <h:outputText value="#{messages.confim_password}"></h:outputText>
-        <input name="confim_password" type="password" id="confim_password"
-               size="20" maxlength="18"/>
-    </h:panelGrid>
-
-
-</rich:popupPanel>
-
 <rich:notifyStack id="pooledTaskStack" position="topRight" direction="vertical" method="first"/>
 <rich:notifyStack id="ownerTaskStack" position="bottomRight" direction="horizontal" method="last"/>
 

@@ -4,6 +4,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Logging;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
@@ -15,6 +16,7 @@ import java.util.*;
  * Date: 2/11/14
  * Time: 10:12 PM
  */
+@BypassInterceptors
 public abstract class TaskInstanceListCache {
 
     protected abstract Set<TaskInstance> searchTaskInstances();

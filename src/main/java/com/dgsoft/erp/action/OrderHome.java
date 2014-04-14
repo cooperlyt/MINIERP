@@ -8,6 +8,7 @@ import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.total.SameFormatResGroupStrategy;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
@@ -166,24 +167,43 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         for (TotalDataGroup<Store, OrderItem> group : getDispatchItemGroups()) {
 
             result.append("\n" + group.getKey().getName());
-            for (StoreResCountEntity item : group.getValues()) {
-                result.append("\n\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
-                result.append(item.getRes().getResUnitByInDefault().getName());
+            for (TotalDataGroup<?,OrderItem> sg: group.getChildGroup()) {
+                result.append("\n\t" + sg.getKey().toString());
+                for (StoreResCountEntity item : sg.getValues()) {
+
+                    result.append("\n\t\t");
+                    if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                        result.append(item.getStoreRes().getFloatConversionRate() + item.getStoreRes().getRes().getUnitGroup().getName());
+                    }
+                    result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
+                    result.append(item.getRes().getResUnitByInDefault().getName());
+                }
             }
             result.append("\n");
         }
 
 
-        List<OrderItem> createdItems = getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED));
+        //List<OrderItem> createdItems = ;
+
+
+        List<TotalDataGroup<SameFormatResGroupStrategy.StoreResFormatKey,OrderItem>>  createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
+                new SameFormatResGroupStrategy<OrderItem>());
         if (!createdItems.isEmpty()) {
             result.append("\n" + messages.get("no_dispatch_order_items"));
         }
 
-        for (OrderItem item : createdItems) {
-            result.append("\n\t" + resHelper.generateStoreResTitle(item.getStoreRes()) + " ");
-            result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
-            result.append(item.getRes().getResUnitByInDefault().getName());
+
+        for (TotalDataGroup<?,OrderItem> sg: createdItems) {
+            result.append("\n\t" + sg.getKey().toString());
+            for (StoreResCountEntity item : sg.getValues()) {
+
+                result.append("\n\t\t");
+                if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                    result.append(item.getStoreRes().getFloatConversionRate() + item.getStoreRes().getRes().getUnitGroup().getName());
+                }
+                result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
+                result.append(item.getRes().getResUnitByInDefault().getName());
+            }
         }
 
 //        List<OweOut> oweOutItems = getNoAddOweItems();
@@ -201,6 +221,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     public List<TotalDataGroup<Store, OrderItem>> getDispatchItemGroups() {
+
+
         return TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.DISPATCHED)),
                 new TotalGroupStrategy<Store, OrderItem>() {
                     @Override
@@ -212,7 +234,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                     public Object totalGroupData(Collection<OrderItem> datas) {
                         return null;
                     }
-                }
+                }, new SameFormatResGroupStrategy<OrderItem>()
         );
     }
 

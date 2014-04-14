@@ -11,6 +11,7 @@ import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;

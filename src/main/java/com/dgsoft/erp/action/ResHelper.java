@@ -36,15 +36,7 @@ public class ResHelper {
 
         String result = storeRes.getRes().getName() + "(" + storeRes.getRes().getCode() + ")";
 
-        for (Format format : storeRes.getFormatList()) {
-            result += " " + format.getFormatDefine().getName() + ":";
-            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
-                result += dictionary.getWordValue(format.getFormatValue());
-            } else {
-                result += format.getFormatValue();
-            }
-        }
-
+        result += getFormatsTitle(storeRes.getFormatList(), true);
 
         if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             result += " " + DataFormat.format(storeRes.getFloatConversionRate(),
@@ -53,6 +45,20 @@ public class ResHelper {
         }
 
 
+        return result;
+    }
+
+    public String getFormatsTitle(List<Format> formats, boolean showKey) {
+        String result = "";
+        for (Format format : formats) {
+            if (showKey)
+                result += " " + format.getFormatDefine().getName() + ":";
+            if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
+                result += dictionary.getWordValue(format.getFormatValue());
+            } else {
+                result += format.getFormatValue();
+            }
+        }
         return result;
     }
 
@@ -79,7 +85,6 @@ public class ResHelper {
 //    }
 
 
-
     public boolean matchFormat(Collection<Format> formats, StoreRes storeRes) {
         for (Format cFormat : formats) {
             boolean find = false;
@@ -101,7 +106,7 @@ public class ResHelper {
             return false;
         }
 
-        if (formatList1.isEmpty() && formatList2.isEmpty()){
+        if (formatList1.isEmpty() && formatList2.isEmpty()) {
             return true;
         }
 
@@ -157,7 +162,8 @@ public class ResHelper {
     public String genStoreResCode(StoreRes storeRes) {
         return genStoreResCode(storeRes.getRes().getCode(), storeRes.getFormatList(),
                 (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) ?
-                        DataFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null);
+                        DataFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null
+        );
     }
 
     @In

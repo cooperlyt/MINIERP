@@ -13,7 +13,7 @@
 
         <h:panelGrid style="width: 100%; text-align: center;" columns="1">
 
-            <p:piechart title="#{messages.customerBalanceChart} #{customerMoneySum.customerCount}"
+            <p:piechart title="#{messages.customerBalanceChart} #{customerAccountChartData.customerCount}"
                         legend="false" borderVisible="false"
                         borderBackgroundPaint="white"
                             width="600"
@@ -21,30 +21,30 @@
                         baseSectionPaint="white"
                         circular="true" is3D="true" plotForegroundAlpha="0.9">
 
-                <ui:repeat value="#{collectionTools.mapToList(customerMoneySum.customerMoneyCountSum)}" var="_count">
+                <ui:repeat value="#{collectionTools.mapToList(customerAccountChartData.customerMoneyCountSum)}" var="_count">
                     <p:data key="#{_count.value} #{messages[_count.key]}"  value="#{_count.value}"/>
                 </ui:repeat>
             </p:piechart>
 
-            <p:piechart title="#{messages.customerOverdraftChart} #{customerMoneySum.customerOverdraftMoneyTotal}"
+            <p:piechart title="#{messages.customerOverdraftChart} #{customerAccountChartData.customerOverdraftMoneyTotal}"
                         legend="false" borderVisible="false"
                         borderBackgroundPaint="white"  width="600"
                         plotOutlinePaint="white" plotBackgroundAlpha="0.1"
                         baseSectionPaint="white"
                         circular="true" is3D="true" plotForegroundAlpha="0.9">
-                <ui:repeat value="#{collectionTools.mapToList(customerMoneySum.customerOverdraftMoneySum)}" var="_count">
+                <ui:repeat value="#{collectionTools.mapToList(customerAccountChartData.customerOverdraftMoneySum)}" var="_count">
                     <p:data key="#{_count.key}"  value="#{_count.value}"/>
                 </ui:repeat>
             </p:piechart>
 
 
-            <p:piechart title="#{messages.customerDepositChart} #{customerMoneySum.customerDepositMoneyTotal}"
+            <p:piechart title="#{messages.customerDepositChart} #{customerAccountChartData.customerDepositMoneyTotal}"
                         legend="false" borderVisible="false"
                         borderBackgroundPaint="white"   width="600"
                         plotOutlinePaint="white" plotBackgroundAlpha="0.1"
                         baseSectionPaint="white"
                         circular="true" is3D="true" plotForegroundAlpha="0.9">
-                <ui:repeat value="#{collectionTools.mapToList(customerMoneySum.customerDepositMoneySum)}" var="_count">
+                <ui:repeat value="#{collectionTools.mapToList(customerAccountChartData.customerDepositMoneySum)}" var="_count">
                     <p:data key="#{_count.key}"  value="#{_count.value}"/>
                 </ui:repeat>
             </p:piechart>

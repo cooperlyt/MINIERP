@@ -106,8 +106,7 @@
 
 
                     <a:outputPanel id="toDoorInfo"
-                                   rendered="#{ orderDispatch.shipDetails and (not empty orderDispatch.selectDispatch.deliveryType) and (orderDispatch.selectDispatch.deliveryType eq 'SEND_TO_DOOR')}"
-                            >
+                                   rendered="#{ orderDispatch.shipDetails and (not empty orderDispatch.selectDispatch.deliveryType) and (orderDispatch.selectDispatch.deliveryType eq 'SEND_TO_DOOR')}">
 
                         <s:decorate
                                 template="/layout/edit.xhtml">
@@ -155,7 +154,7 @@
         <a:commandButton value="#{messages.ok}" execute="@form"
                          data="#{actionExecuteState.lastState}"
                          oncomplete="if (event.data == 'success')#{rich:component('singleDispatchPanel')}.hide();"
-                         render="singleDispatchPanel_inputs,orderStoreResOrderItems,dispatchItems,#{render}"
+                         render="singleDispatchPanel_inputs,orderStoreResOrderItems,dispatchItems,totalTable,#{render}"
                          action="#{orderDispatch.dispatchAction}">
             <a:attachQueue requestDelay="0"/>
 
@@ -271,19 +270,6 @@
                 <rich:collapsibleSubTableToggler for="sbtblDispatchItem"/>
                 #{_dispatch.store.name}(#{_dispatch.store.id})
 
-                [
-                #{messages.order_field_deliveryType}:#{messages[_dispatch.deliveryType.name()]}(
-                <h:outputText value="#{_dispatch.transCorp.name}"
-                              rendered="#{((_dispatch.deliveryType eq 'FULL_CAR_SEND') or (_dispatch.deliveryType eq 'EXPRESS_SEND') ) and (not empty _dispatch.transCorp)}"/>
-
-                <h:outputText value=" - #{_dispatch.sendDriver}"
-                              rendered="#{(_dispatch.deliveryType eq 'FULL_CAR_SEND')}"/>
-
-
-                <h:outputText value="#{_dispatch.car.id}"
-                              rendered="#{(_dispatch.deliveryType eq 'SEND_TO_DOOR') and (not empty _dispatch.car)}"/> )
-
-                ]
                 <a:commandButton image="/img/edit.png" immediate="true" render="singleDispatchPanel_inputs"
                                  action="#{orderDispatch.beginEditDispatchInfo}"
                                  oncomplete="#{rich:component('singleDispatchPanel')}.show();return false;">
@@ -316,7 +302,7 @@
 </h:panelGrid>
 
 <br/>
-<a:outputPanel ajaxRendered="true">
+<a:outputPanel id="totalTable">
     <rich:dataTable style="width: 100%" value="#{orderDispatch.dispatchList}" var="_dispatch">
         <f:facet name="header">
             <rich:columnGroup>
@@ -365,7 +351,7 @@
                                   expandMode="client">
             <rich:column/>
             <rich:column colspan="6">
-                <rich:collapsibleSubTableToggler for="sbtbl2"/>
+                <rich:collapsibleSubTableToggler event="none" for="sbtbl2"/>
                 #{_resTotal.res.name}
             </rich:column>
 

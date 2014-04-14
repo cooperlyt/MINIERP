@@ -15,6 +15,10 @@ public class OrderMoneySeries {
     public OrderMoneySeries() {
     }
 
+    public OrderMoneySeries(String key) {
+        this.key = key;
+    }
+
     public OrderMoneySeries(String key, BigDecimal money, Long count) {
         this.key = key;
         this.money = money;
@@ -37,6 +41,10 @@ public class OrderMoneySeries {
             return "";
         }
         return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public BigDecimal getMoney() {

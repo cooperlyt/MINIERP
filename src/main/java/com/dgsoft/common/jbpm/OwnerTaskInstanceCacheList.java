@@ -6,6 +6,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Name("ownerTaskInstanceCacheList")
 @Scope(ScopeType.SESSION)
 @AutoCreate
+@BypassInterceptors
 public class OwnerTaskInstanceCacheList extends TaskInstanceListCache{
 
     @Override
