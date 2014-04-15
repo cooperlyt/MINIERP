@@ -27,14 +27,11 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
 
     @Override
     public Object totalGroupData(Collection<E> datas) {
-        if (datas.isEmpty()){
-            return null;
+        StoreResGroupStrategy.ResTotalData result = new StoreResGroupStrategy.ResTotalData();
+        for (StoreResCountEntity data : datas) {
+            result.add(data);
         }
-        BigDecimal masterCount = BigDecimal.ZERO;
-        for(E item: datas){
-            masterCount = masterCount.add(item.getMasterCount());
-        }
-        return new StoreResCount(datas.iterator().next().getStoreRes(),masterCount);
+        return result;
     }
 
 
@@ -66,6 +63,14 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
             }
 
             return false;
+        }
+
+        public Res getRes(){
+            return storeRes.getRes();
+        }
+
+        public String getFormatTitle(){
+           return ResHelper.instance().getFormatsTitle(storeRes.getFormatList(),false);
         }
 
         @Override

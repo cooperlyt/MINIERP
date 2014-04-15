@@ -142,7 +142,7 @@ public class OrderItem extends StoreResPriceEntity
 
     @Transient
     public BigDecimal getNeedAddCount(){
-        if ((getAuxCount() == null) || (getNeedCount() == null)){
+        if ((getCount() == null) || (getNeedCount() == null)){
             return BigDecimal.ZERO;
         }
         if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){

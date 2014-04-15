@@ -41,6 +41,10 @@ public class CustomerContactsSearchCondition {
 
     private boolean containResBack = true;
 
+    private boolean containFreeRes = false;
+
+    private boolean groupByDay = true;
+
     @BypassInterceptors
     public List<AccountOper.AccountOperType> getSearchAccountOperTypes(){
         List<AccountOper.AccountOperType> result = new ArrayList<AccountOper.AccountOperType>();
@@ -153,4 +157,27 @@ public class CustomerContactsSearchCondition {
         return searchDateArea;
     }
 
+    public boolean isContainFreeRes() {
+        return containFreeRes;
+    }
+
+    public void setContainFreeRes(boolean containFreeRes) {
+        this.containFreeRes = containFreeRes;
+    }
+
+    public Boolean getFreeCondition(){
+        if (containFreeRes){
+            return null;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean isGroupByDay() {
+        return groupByDay;
+    }
+
+    public void setGroupByDay(boolean groupByDay) {
+        this.groupByDay = groupByDay;
+    }
 }

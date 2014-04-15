@@ -17,14 +17,22 @@
             <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png" alt="Seam logo"/>
             <s:div styleClass="info">
                 <p>
-                    <strong>MINIERP 2.1.3 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.1.4 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-
-                    <li>[销售] 合并和排序QQ消息通知</li>
-                    <li>[销售] 修改收款缴费方式，增加 预存 和 欠款</li>
-                    <li>[销售] 优化订单建立</li>
+                    <li>[报表] 修改客户往来报表</li>
                 </ul>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.1.3 更新日志" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[销售] 合并和排序QQ消息通知</li>
+                        <li>[销售] 修改收款缴费方式，增加 预存 和 欠款</li>
+                        <li>[销售] 优化订单建立</li>
+                    </ul>
+                </s:decorate>
+
+                <div style="clear: both;"/>
 
                 <s:decorate template="/layout/view-details.xhtml">
                 <ui:param value="2.1.2 更新日志" name="openLabel"/>

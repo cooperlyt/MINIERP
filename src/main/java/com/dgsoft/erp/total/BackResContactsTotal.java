@@ -21,7 +21,10 @@ import java.util.List;
 @Name("backResContactsTotal")
 public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
 
-    protected static final String EJBQL = "select backItem from BackItem backItem where backItem.backItemStatus = 'STORE_IN'";
+    protected static final String EJBQL = "select backItem from BackItem backItem " +
+            "left join fetch backItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
+            "left join fetch backItem.orderBack orderBack left join fetch orderBack.customer customer " +
+            "left join fetch customer.customerArea left join fetch customer.customerLevel  where backItem.backItemStatus = 'STORE_IN'";
 
     protected static final String[] RESTRICTIONS = {
             "backItem.dispatch.stockChange.operDate >= #{customerContactsSearchCondition.searchDateArea.dateFrom}",

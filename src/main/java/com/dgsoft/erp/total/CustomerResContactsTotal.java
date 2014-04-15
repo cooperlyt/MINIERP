@@ -10,6 +10,7 @@ import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -29,6 +30,14 @@ public class CustomerResContactsTotal {
 
     @In(create = true)
     private CustomerContactsSearchCondition customerContactsSearchCondition;
+
+    public BigDecimal getTotalPrice(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (StoreResPriceEntity item: getResultList()){
+            result = result.add(item.getTotalMoney());
+        }
+        return result;
+    }
 
     public List<StoreResPriceEntity> getResultList() {
         final List<StoreResPriceEntity> result = new ArrayList<StoreResPriceEntity>();
@@ -92,6 +101,12 @@ public class CustomerResContactsTotal {
         return result;
     }
 
+    public TotalDataGroup<?, StoreResPriceEntity> getCustomerResultGroup() {
+        return TotalDataGroup.allGroupBy(getResultList(), new CustomerGroupStrategy(),
+                new StoreResGroupStrategy<StoreResPriceEntity>(),
+                new SameFormatResGroupStrategy<StoreResPriceEntity>());
+    }
+
     public TotalDataGroup<?, StoreResPriceEntity> getDayResultGroup() {
         return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Date, StoreResPriceEntity>() {
             @Override
@@ -106,24 +121,35 @@ public class CustomerResContactsTotal {
 
             @Override
             public Object totalGroupData(Collection<StoreResPriceEntity> datas) {
-                return null;
+                BigDecimal result = BigDecimal.ZERO;
+                for(StoreResPriceEntity item: datas){
+                    result = result.add(item.getTotalMoney());
+                }
+                return result;
             }
-        }, new TotalGroupStrategy<Customer, StoreResPriceEntity>() {
-            @Override
-            public Customer getKey(StoreResPriceEntity storeResPriceEntity) {
-                if (storeResPriceEntity instanceof OrderItem) {
-                    return ((OrderItem) storeResPriceEntity).getNeedRes().getCustomerOrder().getCustomer();
-                } else if (storeResPriceEntity instanceof BackItem) {
-                    return ((BackItem) storeResPriceEntity).getOrderBack().getCustomer();
-                } else
-                    return null;
-            }
+        }, new CustomerGroupStrategy(), new StoreResGroupStrategy<StoreResPriceEntity>(), new SameFormatResGroupStrategy<StoreResPriceEntity>());
+    }
 
-            @Override
-            public Object totalGroupData(Collection<StoreResPriceEntity> datas) {
+
+    private static class CustomerGroupStrategy implements TotalGroupStrategy<Customer, StoreResPriceEntity> {
+        @Override
+        public Customer getKey(StoreResPriceEntity storeResPriceEntity) {
+            if (storeResPriceEntity instanceof OrderItem) {
+                return ((OrderItem) storeResPriceEntity).getNeedRes().getCustomerOrder().getCustomer();
+            } else if (storeResPriceEntity instanceof BackItem) {
+                return ((BackItem) storeResPriceEntity).getOrderBack().getCustomer();
+            } else
                 return null;
+        }
+
+        @Override
+        public Object totalGroupData(Collection<StoreResPriceEntity> datas) {
+            BigDecimal result = BigDecimal.ZERO;
+            for(StoreResPriceEntity item: datas){
+                result = result.add(item.getTotalMoney());
             }
-        }, new StoreResGroupStrategy<StoreResPriceEntity>(), new SameFormatResGroupStrategy<StoreResPriceEntity>());
+            return result;
+        }
     }
 
 }
