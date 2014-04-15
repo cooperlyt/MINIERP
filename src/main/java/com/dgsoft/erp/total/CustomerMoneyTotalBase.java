@@ -111,6 +111,8 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
     public class CustomerMoneyTotalData {
 
+        Map<AccountOper.AccountOperType,BigDecimal> typeTotalData;
+
         BigDecimal outMoney;
 
         BigDecimal inMoney;
@@ -127,9 +129,31 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
             outRealMoney = BigDecimal.ZERO;
             inRealMoney = BigDecimal.ZERO;
             remitFee = BigDecimal.ZERO;
+            typeTotalData = new HashMap<AccountOper.AccountOperType, BigDecimal>();
+            for (AccountOper.AccountOperType type: AccountOper.AccountOperType.allCustomerOper()){
+                typeTotalData.put(type,BigDecimal.ZERO);
+            }
+        }
+
+        public BigDecimal getTypeTotalByName(String name){
+          return  typeTotalData.get(Enum.valueOf(AccountOper.AccountOperType.class,name));
+        }
+
+        public List<Map.Entry<AccountOper.AccountOperType,BigDecimal>> getTypeOperMoney(){
+            List<Map.Entry<AccountOper.AccountOperType,BigDecimal>> result =
+                    new ArrayList<Map.Entry<AccountOper.AccountOperType, BigDecimal>>(typeTotalData.entrySet());
+            Collections.sort(result,new Comparator<Map.Entry<AccountOper.AccountOperType, BigDecimal>>() {
+                @Override
+                public int compare(Map.Entry<AccountOper.AccountOperType, BigDecimal> o1, Map.Entry<AccountOper.AccountOperType, BigDecimal> o2) {
+                    return Integer.valueOf(o1.getKey().ordinal()).compareTo(o2.getKey().ordinal()) ;
+                }
+            });
+            return result;
         }
 
         public void add(AccountOper oper){
+            typeTotalData.put(oper.getOperType(),typeTotalData.get(oper.getOperType()).add(oper.getOperMoney()));
+
             if (oper.getOperType().isAdd()){
                 inMoney = inMoney.add(oper.getOperMoney());
                 inRealMoney = inRealMoney.add(oper.getRealMoney());

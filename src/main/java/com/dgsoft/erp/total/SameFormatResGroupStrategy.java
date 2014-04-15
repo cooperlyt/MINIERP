@@ -5,8 +5,11 @@ import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.model.api.StoreResPriceEntity;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 /**
@@ -24,7 +27,14 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
 
     @Override
     public Object totalGroupData(Collection<E> datas) {
-        return null;
+        if (datas.isEmpty()){
+            return null;
+        }
+        BigDecimal masterCount = BigDecimal.ZERO;
+        for(E item: datas){
+            masterCount = masterCount.add(item.getMasterCount());
+        }
+        return new StoreResCount(datas.iterator().next().getStoreRes(),masterCount);
     }
 
 

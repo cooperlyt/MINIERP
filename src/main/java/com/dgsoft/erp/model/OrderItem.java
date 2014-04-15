@@ -46,6 +46,7 @@ public class OrderItem extends StoreResPriceEntity
     private BigDecimal totalMoney;
     private BigDecimal rebate;
     private BigDecimal needMoney;
+    private BigDecimal needCount;
 
     public OrderItem() {
 
@@ -62,6 +63,12 @@ public class OrderItem extends StoreResPriceEntity
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
         needConvertRate = storeRes.getFloatConversionRate();
         rebate = new BigDecimal("100");
+    }
+
+    @Override
+    @Transient
+    public String getType() {
+        return "sale";
     }
 
     //    //create by recreate order
@@ -132,6 +139,18 @@ public class OrderItem extends StoreResPriceEntity
     }
 
 
+
+    @Transient
+    public BigDecimal getNeedAddCount(){
+        if ((getAuxCount() == null) || (getNeedCount() == null)){
+            return BigDecimal.ZERO;
+        }
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            return getAuxCount().subtract(getNeedCount());
+        }
+        return null;
+    }
+
     @Override
     public void setFree(boolean free) {
         super.setFree(free);
@@ -173,9 +192,11 @@ public class OrderItem extends StoreResPriceEntity
             setNeedMoney(calcAuxCount(getCount(), getNeedConvertRate(),
                     getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()).multiply(getRebateUnitPrice()));
 
-
+            setNeedCount(calcAuxCount(getCount(), getNeedConvertRate(),
+                    getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()));
         } else {
             setNeedMoney(getTotalMoney());
+            setNeedCount(getUseUnitCount());
         }
 
     }
@@ -381,6 +402,15 @@ public class OrderItem extends StoreResPriceEntity
 
     public void setNeedMoney(BigDecimal needMoney) {
         this.needMoney = needMoney;
+    }
+
+    @Column(name = "NEED_COUNT", nullable = true, scale = 4)
+    public BigDecimal getNeedCount() {
+        return needCount;
+    }
+
+    public void setNeedCount(BigDecimal needCount) {
+        this.needCount = needCount;
     }
 
     @Transient

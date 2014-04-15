@@ -10,28 +10,39 @@
 
     <!-- param totalData  itemCount-->
 
-    #{messages.recordTotal} #{itemCount} #{messages.item}
-    #{' '} #{' '} #{messages.accountOperMoneyIn}:
-    <h:outputText value="#{totalData.inMoney}">
-        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-    </h:outputText>
+        <h:panelGroup>
+            #{messages.recordTotal} #{itemCount} #{messages.item}
+        </h:panelGroup>
+        <h:panelGroup>
+            #{' '} #{' '} #{messages.accountOperMoneyIn}:
+            <h:outputText value="#{totalData.inMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </h:panelGroup>
+        <h:panelGroup>
+            #{' '} #{' '}  #{messages.accountOperMoneyOut}:
+            <h:outputText value="#{totalData.outMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </h:panelGroup>
+        <h:panelGroup>
+            #{' '} #{' '}  #{messages.accountOperRealIn}:
+            <h:outputText value="#{totalData.inRealMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </h:panelGroup>
+        <h:panelGroup>
+            #{' '} #{' '}  #{messages.accountOperRealOut}:
+            <h:outputText value="#{totalData.outRealMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </h:panelGroup>
+        <h:panelGroup>
+            #{' '} #{' '} #{messages.accountOper_field_fee}:
 
-    #{' '} #{' '}  #{messages.accountOperMoneyOut}:
-    <h:outputText value="#{totalData.outMoney}">
-        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-    </h:outputText>
-    #{' '} #{' '}  #{messages.accountOperRealIn}:
-    <h:outputText value="#{totalData.inRealMoney}">
-        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-    </h:outputText>
-    #{' '} #{' '}  #{messages.accountOperRealOut}:
-    <h:outputText value="#{totalData.outRealMoney}">
-        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-    </h:outputText>
+            <h:outputText value="#{totalData.remitFee}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </h:panelGroup>
 
-    #{' '} #{' '} #{messages.accountOper_field_fee}:
-
-    <h:outputText value="#{totalData.remitFee}">
-        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-    </h:outputText>
 </ui:composition>

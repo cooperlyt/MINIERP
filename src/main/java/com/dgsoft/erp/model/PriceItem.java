@@ -33,6 +33,12 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
     public PriceItem() {
     }
 
+    @Override
+    @Transient
+    public String getType() {
+        return "quote";
+    }
+
     public PriceItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, QuotedPrice quotedPrice) {
         super(res, formatHistory, floatConvertRateHistory, defaultUnit);
         this.quotedPrice = quotedPrice;
@@ -66,6 +72,7 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
         this.id = id;
     }
 
+    @Override
     @Column(name = "MEMO", length = 200)
     public String getMemo() {
         return memo;

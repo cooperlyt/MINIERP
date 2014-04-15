@@ -28,6 +28,10 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
         setRebate(new BigDecimal("100"));
     }
 
+    public abstract String getType();
+
+    public abstract String getMemo();
+
     public abstract BigDecimal getMoney();
 
     public abstract void setMoney(BigDecimal money);

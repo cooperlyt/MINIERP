@@ -51,6 +51,12 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
         super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
     }
 
+    @Override
+    @Transient
+    public String getType() {
+        return "back";
+    }
+
     //split Item
     public BackItem(OrderBack orderBack,StoreRes storeRes,BigDecimal count,
                     BigDecimal money,ResUnit resUnit,BackItemStatus backItemStatus,BigDecimal rebate,String memo){
