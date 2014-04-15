@@ -3,6 +3,6 @@ ALTER TABLE MINI_ERP.ORDER_ITEM ADD NEED_COUNT DECIMAL(19,4) NULL;
 
 UPDATE  MINI_ERP.ORDER_ITEM SET NEED_COUNT =ORDER_ITEM.COUNT * ORDER_ITEM.NEED_COUNT;
 
-UPDATE DG_SYSTEM.FUNCTION SET LOCATION  = '/func/erp/sale/CustomerContactsReport.seam' , name = '客户往来报表' WHERE ID ='erp.search.sallInOutDayReoper'
+UPDATE DG_SYSTEM.FUNCTION SET LOCATION  = '/func/erp/sale/CustomerContactsReport.seam' , name = '客户往来报表' WHERE ID ='erp.search.sallInOutDayReoper';
 
 
