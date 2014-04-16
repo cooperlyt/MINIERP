@@ -55,7 +55,8 @@ public class StoreResGroupStrategy<E extends StoreResCountEntity> implements Tot
             if (data.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                 auxUnitCount = auxUnitCount.add(data.getAuxCount());
             }
-            if (data instanceof OrderItem) {
+            if ((data instanceof OrderItem) && data.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+
                 needAddCount = needAddCount.add(((OrderItem) data).getNeedAddCount());
                 needMoney = needMoney.add(((OrderItem) data).getNeedMoney());
             }
