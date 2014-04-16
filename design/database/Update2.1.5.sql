@@ -6,3 +6,7 @@ SET CUSTOMER.CITY = p.NAME ;
 
 UPDATE MINI_ERP.CUSTOMER  LEFT JOIN DG_SYSTEM.CITY p on p.PID  = CUSTOMER.PROVINCE_CODE
 SET CUSTOMER.PROVINCE_CODE = p.FID;
+
+UPDATE DG_SYSTEM.FUNCTION SET NAME = '客户货款往来' WHERE ID = 'erp.search.customerMoneyReport';
+
+UPDATE DG_SYSTEM.FUNCTION SET NAME = '客户货品往来明细', LOCATION='/func/erp/sale/CustomerResDetails.seam' WHERE ID = 'erp.search.customerShip';

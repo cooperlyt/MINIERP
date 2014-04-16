@@ -17,6 +17,7 @@ import java.util.*;
  */
 
 @Entity
+@Cacheable
 @Table(name = "FACTORY", catalog = "MINI_ERP")
 public class Factory implements java.io.Serializable, TreeNode, NamedEntity {
 

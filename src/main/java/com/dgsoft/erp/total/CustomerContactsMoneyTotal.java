@@ -18,23 +18,33 @@ import java.util.*;
 public class CustomerContactsMoneyTotal extends CustomerMoneyTotalBase {
 
     protected static final String[] RESTRICTIONS = {
-            "accountOper.operDate >= #{customerContactsSearchCondition.searchDateArea.dateFrom}",
-            "accountOper.operDate <= #{customerContactsSearchCondition.searchDateArea.searchDateTo}",
-            "accountOper.operType in (#{customerContactsSearchCondition.searchAccountOperTypes})",
+            "accountOper.operDate >= #{searchDateArea.dateFrom}",
+            "accountOper.operDate <= #{searchDateArea.searchDateTo}",
+            "accountOper.operType in (#{customerMoneyCondition.searchAccountOperTypes})",
             "accountOper.customer.customerArea.id = #{customerSearchCondition.customerAreaId}",
             "accountOper.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "accountOper.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
             "accountOper.customer.type = #{customerSearchCondition.type}",
             "accountOper.customer.provinceCode <= #{customerSearchCondition.provinceCode}",
-
-
+            "lower(accountOper.customer.name)  like lower(concat('%',#{customerSearchCondition.name},'%'))"
     };
 
+
+    private boolean groupByDay = false;
+
+    public boolean isGroupByDay() {
+        return groupByDay;
+    }
+
+    public void setGroupByDay(boolean groupByDay) {
+        this.groupByDay = groupByDay;
+    }
 
     public CustomerContactsMoneyTotal() {
         super();
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
     }
+
 
 
 }

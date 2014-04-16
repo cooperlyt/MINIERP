@@ -24,11 +24,19 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
     protected static final String EJBQL = "select backItem from BackItem backItem " +
             "left join fetch backItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
             "left join fetch backItem.orderBack orderBack left join fetch orderBack.customer customer " +
-            "left join fetch customer.customerArea left join fetch customer.customerLevel  where backItem.backItemStatus = 'STORE_IN'";
+            "left join fetch customer.customerArea left join fetch customer.customerLevel  " +
+            "left join stockChange.assemblyForStoreOut left join fetch stockChange.assemblyForStoreIn " +
+            "left join stockChange.assemblyForLoseOut left join fetch productStoreIn " +
+            "left join stockChange.materialStoreOut left join stockChange.allocationForStoreOut " +
+            "left join stockChange.materialStoreIn left join stockChange.allocationForStoreIn " +
+            "left join stockChange.inventoryAdd left join stockChange.inventoryLoss " +
+            "left join stockChange.scrapStoreOut left join stockChange.backDispatch " +
+            "left join stockChange.materialBackStoreIn left join stockChange.storeChange " +
+            "where backItem.backItemStatus = 'STORE_IN'";
 
     protected static final String[] RESTRICTIONS = {
-            "backItem.dispatch.stockChange.operDate >= #{customerContactsSearchCondition.searchDateArea.dateFrom}",
-            "backItem.dispatch.stockChange.operDate <= #{customerContactsSearchCondition.searchDateArea.searchDateTo}",
+            "backItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",
+            "backItem.dispatch.stockChange.operDate <= #{searchDateArea.searchDateTo}",
             "backItem.orderBack.customer.customerArea.id = #{customerSearchCondition.customerAreaId}",
             "backItem.orderBack.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "backItem.orderBack.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",

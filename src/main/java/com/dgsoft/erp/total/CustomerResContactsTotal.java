@@ -29,7 +29,18 @@ public class CustomerResContactsTotal {
     private OrderResContactsTotal orderResContactsTotal;
 
     @In(create = true)
-    private CustomerContactsSearchCondition customerContactsSearchCondition;
+    private CustomerResCondition customerResCondition;
+
+
+    private boolean groupByDay = true;
+
+    public boolean isGroupByDay() {
+        return groupByDay;
+    }
+
+    public void setGroupByDay(boolean groupByDay) {
+        this.groupByDay = groupByDay;
+    }
 
     public BigDecimal getTotalPrice(){
         BigDecimal result = BigDecimal.ZERO;
@@ -41,10 +52,10 @@ public class CustomerResContactsTotal {
 
     public List<StoreResPriceEntity> getResultList() {
         final List<StoreResPriceEntity> result = new ArrayList<StoreResPriceEntity>();
-        if (customerContactsSearchCondition.isContainStoreOut()) {
+        if (customerResCondition.isContainStoreOut()) {
             result.addAll(orderResContactsTotal.getResultList());
         }
-        if (customerContactsSearchCondition.isContainResBack()) {
+        if (customerResCondition.isContainResBack()) {
             result.addAll(backResContactsTotal.getResultList());
         }
         Collections.sort(result, new Comparator<StoreResPriceEntity>() {

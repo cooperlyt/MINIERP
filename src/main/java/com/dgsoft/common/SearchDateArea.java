@@ -1,5 +1,7 @@
 package com.dgsoft.common;
 
+import org.jboss.seam.annotations.Name;
+
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Date;
@@ -7,9 +9,12 @@ import java.util.Date;
 /**
  * Created by cooper on 3/4/14.
  */
+@Name("searchDateArea")
 public class SearchDateArea {
 
     public SearchDateArea() {
+        this.dateFrom = new Date();
+        this.dateTo = new Date();
     }
 
 

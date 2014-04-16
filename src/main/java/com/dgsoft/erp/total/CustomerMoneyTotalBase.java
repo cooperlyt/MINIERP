@@ -19,7 +19,9 @@ import java.util.*;
  */
 public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper> {
 
-    protected static final String EJBQL = "select accountOper from AccountOper accountOper left join fetch accountOper.customer customer ";
+    protected static final String EJBQL = "select accountOper from AccountOper accountOper " +
+            "left join fetch accountOper.customer customer left join fetch accountOper.bankAccount " +
+            "left join fetch accountOper.preparePay left join fetch accountOper.backPrepareMoney ";
 
     public CustomerMoneyTotalBase() {
         setEjbql(EJBQL);

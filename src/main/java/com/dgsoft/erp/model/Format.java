@@ -13,6 +13,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "FORMAT", catalog = "MINI_ERP")
+@Cacheable
 public class Format implements java.io.Serializable {
 
     private String id;

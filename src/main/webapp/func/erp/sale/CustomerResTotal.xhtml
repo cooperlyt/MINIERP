@@ -621,183 +621,183 @@
 </f:facet>
 
 
-    <rich:column/>
-    <rich:column colspan="17">
-        <rich:collapsibleSubTableToggler event="none" for="sbRes2"/>
-        #{_customer.key.name}
-    </rich:column>
+<rich:column/>
+<rich:column colspan="17">
+    <rich:collapsibleSubTableToggler event="none" for="sbRes2"/>
+    #{_customer.key.name}
+</rich:column>
 
-    <rich:column colspan="4" style="text-align: right">
-        <h:outputText value="#{_customer.totalData}">
+<rich:column colspan="4" style="text-align: right">
+    <h:outputText value="#{_customer.totalData}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+
+    <f:facet name="footer">
+        <h:outputText value="#{customerResContactsTotal.totalPrice}">
             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
         </h:outputText>
+    </f:facet>
+</rich:column>
 
-        <f:facet name="footer">
-            <h:outputText value="#{customerResContactsTotal.totalPrice}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+<rich:column/>
+
+<rich:collapsibleSubTable value="#{_customer.childGroup}" var="_res"
+                          id="sbRes2" expandMode="client">
+
+    <rich:column/> <rich:column/>
+    <rich:column colspan="4">
+        <rich:collapsibleSubTableToggler event="none" for="sbFormat2"/>
+
+        #{_res.key.name}
+
+    </rich:column>
+    <rich:column colspan="3">
+        <h:outputText value="#{_res.totalData.needAddCount}">
+            <f:convertNumber pattern="#0.######"/>
+        </h:outputText>
+    </rich:column>
+    <rich:column colspan="3">
+        <h:outputText value="#{_res.totalData.masterUnitCount}">
+            <f:convertNumber pattern="#0.######"/>
+        </h:outputText>
+        #{_res.key.unitGroup.masterUnit.name}
+    </rich:column>
+    <rich:column colspan="3">
+        <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+
+            <h:outputText value="#{_res.totalData.auxUnitCount}">
+                <f:convertNumber pattern="#0.######"/>
             </h:outputText>
-        </f:facet>
+            #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+        </a:outputPanel>
+    </rich:column>
+
+    <rich:column colspan="3"/>
+
+    <rich:column style="text-align: right" colspan="3">
+        <h:outputText value="#{_res.totalData.money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
     </rich:column>
 
     <rich:column/>
+    <rich:column/>
 
-    <rich:collapsibleSubTable value="#{_customer.childGroup}" var="_res"
-                              id="sbRes2" expandMode="client">
+    <rich:collapsibleSubTable value="#{_res.childGroup}" var="_format"
+                              id="sbFormat2" expandMode="client">
 
-        <rich:column/> <rich:column/>
-        <rich:column colspan="4">
-            <rich:collapsibleSubTableToggler event="none" for="sbFormat2"/>
-
-            #{_res.key.name}
-
-        </rich:column>
+        <rich:column/> <rich:column/> <rich:column/>
         <rich:column colspan="3">
-            <h:outputText value="#{_res.totalData.needAddCount}">
+            <rich:collapsibleSubTableToggler event="none" for="sbItem2"/>
+            #{_format.key.formatTitle}
+        </rich:column>
+        <rich:column/>
+        <rich:column colspan="2">
+            <h:outputText value="#{_format.totalData.needAddCount}">
                 <f:convertNumber pattern="#0.######"/>
             </h:outputText>
-        </rich:column>
-        <rich:column colspan="3">
-            <h:outputText value="#{_res.totalData.masterUnitCount}">
+        </rich:column> <rich:column/>
+        <rich:column colspan="2">
+            <h:outputText value="#{_format.totalData.masterUnitCount}">
                 <f:convertNumber pattern="#0.######"/>
             </h:outputText>
-            #{_res.key.unitGroup.masterUnit.name}
+            #{_format.key.res.unitGroup.masterUnit.name}
         </rich:column>
-        <rich:column colspan="3">
-            <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+        <rich:column/>
+        <rich:column colspan="2">
+            <a:outputPanel rendered="#{_format.key.res.unitGroup.type eq 'FLOAT_CONVERT'}">
 
-                <h:outputText value="#{_res.totalData.auxUnitCount}">
+                <h:outputText value="#{_format.totalData.auxUnitCount}">
                     <f:convertNumber pattern="#0.######"/>
                 </h:outputText>
-                #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                #{_format.key.res.unitGroup.floatAuxiliaryUnit.name}
             </a:outputPanel>
         </rich:column>
 
+
         <rich:column colspan="3"/>
 
-        <rich:column style="text-align: right" colspan="3">
-            <h:outputText value="#{_res.totalData.money}">
+        <rich:column style="text-align: right" colspan="2">
+            <h:outputText value="#{_format.totalData.money}">
                 <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
             </h:outputText>
         </rich:column>
+        <rich:column/><rich:column/>
 
         <rich:column/>
-        <rich:column/>
 
-        <rich:collapsibleSubTable value="#{_res.childGroup}" var="_format"
-                                  id="sbFormat2" expandMode="client">
 
-            <rich:column/> <rich:column/> <rich:column/>
-            <rich:column colspan="3">
-                <rich:collapsibleSubTableToggler event="none" for="sbItem2"/>
-                #{_format.key.formatTitle}
-            </rich:column>
-            <rich:column/>
-            <rich:column colspan="2">
-                <h:outputText value="#{_format.totalData.needAddCount}">
-                    <f:convertNumber pattern="#0.######"/>
+        <rich:collapsibleSubTable value="#{_format.values}" var="_item"
+                                  id="sbItem2" expandMode="client">
+
+            <rich:column/> <rich:column/> <rich:column/> <rich:column/>
+
+            <rich:column>
+                <h:outputText value="#{_item.storeRes.floatConversionRate}">
+                    <f:convertNumber pattern="#{_item.res.unitGroup.floatConvertRateFormat}"/>
                 </h:outputText>
-            </rich:column> <rich:column/>
-            <rich:column colspan="2">
-                <h:outputText value="#{_format.totalData.masterUnitCount}">
+                #{_item.res.unitGroup.name}
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.needConvertRate}"
+                              rendered="#{_item.type eq 'sale'}">
                     <f:convertNumber pattern="#0.######"/>
-                </h:outputText>
-                #{_format.key.res.unitGroup.masterUnit.name}
-            </rich:column>
-            <rich:column/>
-            <rich:column colspan="2">
-                <a:outputPanel rendered="#{_format.key.res.unitGroup.type eq 'FLOAT_CONVERT'}">
-
-                    <h:outputText value="#{_format.totalData.auxUnitCount}">
-                        <f:convertNumber pattern="#0.######"/>
-                    </h:outputText>
-                    #{_format.key.res.unitGroup.floatAuxiliaryUnit.name}
-                </a:outputPanel>
-            </rich:column>
-
-
-            <rich:column colspan="3"/>
-
-            <rich:column style="text-align: right" colspan="2">
-                <h:outputText value="#{_format.totalData.money}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </rich:column>
             <rich:column/><rich:column/>
+            <rich:column>
+                <h:outputText value="#{_item.needAddCount}"
+                              rendered="#{_item.type eq 'sale'}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
 
-            <rich:column/>
+            </rich:column>
+            <rich:column/><rich:column/>
+            <rich:column>
+                <h:outputText value="#{_item.displayMasterCount}"/>
+            </rich:column>
+            <rich:column/><rich:column/>
+            <rich:column>
+                <h:outputText value="#{_item.displayAuxCount}"/>
+            </rich:column>
 
+            <rich:column style="text-align: right">
+                <h:outputText value="#{_item.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column>
+                #{_item.resUnit.name}
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.rebate}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+            </rich:column>
 
-            <rich:collapsibleSubTable value="#{_format.values}" var="_item"
-                                      id="sbItem2" expandMode="client">
+            <rich:column style="text-align: right">
+                <h:outputText value="#{_item.totalMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
 
-                <rich:column/> <rich:column/> <rich:column/> <rich:column/>
+            <rich:column/><rich:column/><rich:column/>
+            <rich:column>
 
-                <rich:column>
-                    <h:outputText value="#{_item.storeRes.floatConversionRate}">
-                        <f:convertNumber pattern="#{_item.res.unitGroup.floatConvertRateFormat}"/>
-                    </h:outputText>
-                    #{_item.res.unitGroup.name}
-                </rich:column>
-                <rich:column>
-                    <h:outputText value="#{_item.needConvertRate}"
-                                  rendered="#{_item.type eq 'sale'}">
-                        <f:convertNumber pattern="#0.######"/>
-                    </h:outputText>
-                </rich:column>
-                <rich:column/><rich:column/>
-                <rich:column>
-                    <h:outputText value="#{_item.needAddCount}"
-                                  rendered="#{_item.type eq 'sale'}">
-                        <f:convertNumber pattern="#0.####"/>
-                    </h:outputText>
+                <ui:include src="/layout/long-text-display.xhtml">
+                    <ui:param name="value"
+                              value="#{_item.memo}"/>
+                    <ui:param name="size" value="4"/>
+                </ui:include>
 
-                </rich:column>
-                <rich:column/><rich:column/>
-                <rich:column>
-                    <h:outputText value="#{_item.displayMasterCount}"/>
-                </rich:column>
-                <rich:column/><rich:column/>
-                <rich:column>
-                    <h:outputText value="#{_item.displayAuxCount}"/>
-                </rich:column>
-
-                <rich:column style="text-align: right">
-                    <h:outputText value="#{_item.money}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </rich:column>
-                <rich:column>
-                    #{_item.resUnit.name}
-                </rich:column>
-                <rich:column>
-                    <h:outputText value="#{_item.rebate}">
-                        <f:convertNumber pattern="#0.####"/>
-                    </h:outputText>
-                </rich:column>
-
-                <rich:column style="text-align: right">
-                    <h:outputText value="#{_item.totalMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </rich:column>
-
-                <rich:column/><rich:column/><rich:column/>
-                <rich:column>
-
-                    <ui:include src="/layout/long-text-display.xhtml">
-                        <ui:param name="value"
-                                  value="#{_item.memo}"/>
-                        <ui:param name="size" value="4"/>
-                    </ui:include>
-
-                </rich:column>
-
-            </rich:collapsibleSubTable>
+            </rich:column>
 
         </rich:collapsibleSubTable>
 
-
     </rich:collapsibleSubTable>
+
+
+</rich:collapsibleSubTable>
 
 
 </rich:dataTable>
@@ -805,198 +805,7 @@
 </a:outputPanel>
 </a:outputPanel>
 
-<br/>
 
-<rich:dataTable
-        rendered="#{(empty customerContactsSearchCondition.showMoney) or customerContactsSearchCondition.showMoney }"
-        style="width: 100%" var="_moneyOper" value="#{customerContactsMoneyTotal.dayGroupResultList}">
-    <f:facet name="header">
-        <rich:columnGroup>
-
-            <rich:column colspan="10">
-                #{messages.customerMoneyInOutDetails}
-                <a:outputPanel style="float: left">
-                    <h:outputLink value="#"
-                                  onclick="$('[id$=sbtbl]').each(function(n){this.rf.component.collapse();}); return false;">
-                        <h:graphicImage value="#{resource['org.richfaces:up_icon.gif']}"/>
-
-                    </h:outputLink>
-                    <h:outputLink value="#"
-                                  onclick="$('[id$=sbtbl]').each(function(n){this.rf.component.expand();}); return false;">
-                        <h:graphicImage value="#{resource['org.richfaces:down_icon.gif']}"/>
-
-                    </h:outputLink>
-
-                </a:outputPanel>
-            </rich:column>
-
-            <rich:column colspan="4" breakRowBefore="true">
-                #{messages.accountOper_field_operDate}
-            </rich:column>
-
-            <rich:column>
-                #{messages.ORDER_SAVINGS}
-            </rich:column>
-            <rich:column>
-                #{messages.PRE_DEPOSIT}
-            </rich:column>
-            <rich:column>
-                #{messages.DEPOSIT_BACK}
-            </rich:column>
-            <rich:column>
-                #{messages.ORDER_FREE}
-            </rich:column>
-            <rich:column>
-                #{messages.ORDER_BACK}
-            </rich:column>
-            <rich:column>
-                #{messages.ORDER_CANCEL_BACK}
-            </rich:column>
-
-            <rich:column breakRowBefore="true"/>
-            <rich:column>
-                #{messages.Customer}
-            </rich:column>
-            <rich:column>
-                #{messages.accountOper_field_operType}
-            </rich:column>
-            <rich:column>
-                #{messages.accountOper_field_operMoney}
-            </rich:column>
-            <rich:column>
-                #{messages.accountOper_field_fee}
-            </rich:column>
-            <rich:column>
-                #{messages.accountOper_field_realMoney}
-            </rich:column>
-            <rich:column>
-                #{messages.accountOper_field_payType}
-            </rich:column>
-            <rich:column>
-                #{messages.BankAccount}
-            </rich:column>
-
-            <rich:column>
-                #{messages.accountOper_field_checkNumber}
-            </rich:column>
-            <rich:column>
-                #{messages.accountOper_field_operEmp}
-            </rich:column>
-        </rich:columnGroup>
-    </f:facet>
-
-    <f:facet name="footer">
-        <ui:include src="AccountOperMoneyTotalData.xhtml">
-            <ui:param name="itemCount" value="#{customerContactsMoneyTotal.resultCount}"/>
-            <ui:param name="totalData" value="#{customerContactsMoneyTotal.resultTotalData}"/>
-        </ui:include>
-
-    </f:facet>
-
-    <rich:column colspan="4">
-        <rich:collapsibleSubTableToggler for="sbtbl"/>
-        <h:outputText value="#{_moneyOper.key}">
-            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-        </h:outputText>
-    </rich:column>
-
-
-    <rich:column style="text-align: right">
-        <h:outputText value="#{_moneyOper.totalData.getTypeTotalByName('ORDER_SAVINGS')}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-
-    </rich:column>
-    <rich:column style="text-align: right">
-        <h:outputText value="#{_moneyOper.totalData.getTypeTotalByName('PRE_DEPOSIT')}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </rich:column>
-    <rich:column style="text-align: right">
-        <h:outputText value="#{_moneyOper.totalData.getTypeTotalByName('DEPOSIT_BACK')}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </rich:column>
-    <rich:column style="text-align: right">
-        <h:outputText value="#{_moneyOper.totalData.getTypeTotalByName('ORDER_FREE')}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </rich:column>
-    <rich:column style="text-align: right">
-        <h:outputText value="#{_moneyOper.totalData.getTypeTotalByName('ORDER_BACK')}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </rich:column>
-    <rich:column style="text-align: right">
-        <h:outputText value="#{_moneyOper.totalData.getTypeTotalByName('ORDER_CANCEL_BACK')}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </rich:column>
-
-    <rich:collapsibleSubTable value="#{_moneyOper.values}" var="_operItem" id="sbtbl">
-
-        <rich:column/>
-        <rich:column>
-            #{_operItem.customer.name}
-        </rich:column>
-
-        <rich:column>
-            #{messages[_operItem.operType.name()]}
-        </rich:column>
-
-        <rich:column style="text-align: right;">
-            <h:outputText value="#{_operItem.operMoney}"
-                          style="#{(not _operItem.operType.add) ? 'color: red;' : ''}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </rich:column>
-
-        <rich:column style="text-align: right;">
-            <h:outputText value="#{_operItem.remitFee}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </rich:column>
-
-        <rich:column style="text-align: right;">
-            <h:outputText value="#{_operItem.realMoney}"
-                          style="#{(not _operItem.operType.add) ? 'color: red;' : ''}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </rich:column>
-
-        <rich:column>
-
-
-            #{messages[_operItem.payType.name()]}
-        </rich:column>
-        <rich:column>
-            <ui:include src="/layout/long-text-display.xhtml">
-                <ui:param name="value"
-                          value="#{dictionary.getWordValue(_operItem.bankAccount.bank)} - #{_operItem.bankAccount.number}"/>
-                <ui:param name="size" value="4"/>
-            </ui:include>
-        </rich:column>
-        <rich:column>
-            <h:outputText value="#{_operItem.checkNumber}"
-                          rendered="#{(not empty _operItem.checkNumber) and (_operItem.payType eq 'CHECK')}"/>
-        </rich:column>
-        <rich:column>
-            #{dictionary.getEmpNameById(_operItem.operEmp)}
-        </rich:column>
-
-        <f:facet name="footer">
-
-            <ui:include src="AccountOperMoneyTotalData.xhtml">
-                <ui:param name="itemCount" value="#{_moneyOper.values.size}"/>
-                <ui:param name="totalData" value="#{_moneyOper.totalData}"/>
-            </ui:include>
-        </f:facet>
-
-    </rich:collapsibleSubTable>
-</rich:dataTable>
-
-
-<br/>
 </a:outputPanel>
 </ui:define>
 </ui:composition>

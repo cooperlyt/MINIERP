@@ -9,7 +9,7 @@ import org.jboss.seam.annotations.Name;
  * Time: 09:38
  */
 @Name("customerSearchCondition")
-public class CustomerSearchCondition {
+public class CustomerCondition {
 
     private String customerAreaId;
 
@@ -20,6 +20,8 @@ public class CustomerSearchCondition {
     private String type;
 
     private Integer provinceCode;
+
+    private Integer name;
 
     public String getCustomerAreaId() {
         return customerAreaId;
@@ -60,5 +62,13 @@ public class CustomerSearchCondition {
 
     public void setProvinceCode(Integer provinceCode) {
         this.provinceCode = provinceCode;
+    }
+
+    public Integer getName() {
+        return name;
+    }
+
+    public void setName(Integer name) {
+        this.name = name;
     }
 }

@@ -123,10 +123,10 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.saler.middleManMgr','客户关系人','erp.sale.mgr','','/func/erp/sale/mgr/MiddleManMgr.seam','','100','');
 
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.customerShip','客户发货汇总','erp.search','','/func/erp/sale/SaleCustomerShipReport.seam','','400','');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.customerShip','客户货品往来明细','erp.search','','/func/erp/sale/SaleCustomerShipReport.seam','','400','');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.groupStoreInTotal','生产小组入库汇总','erp.search','','/func/erp/store/ProcductGroupStoreInTotal.seam','','500','');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.sallInOutDayReoper','客户往来明细汇总日报','erp.search','','/func/erp/sale/InOutDayReport.seam','','500','');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.customerMoneyReport','客户货款汇总','erp.search','','/func/erp/sale/CustomerMoneyReport.seam','','500','');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.search.customerMoneyReport','客户货款往来','erp.search','','/func/erp/sale/CustomerMoneyReport.seam','','500','');
 
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.total.customerBalance','客户帐户分析','erp.total','','/func/erp/total/customerMoney.seam','','100','');
 

@@ -1,29 +1,18 @@
 package com.dgsoft.erp.total;
 
-import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.model.AccountOper;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: cooperlee
- * Date: 15/04/14
- * Time: 09:08
+ * Created by cooper on 4/16/14.
  */
-@Name("customerContactsSearchCondition")
-@BypassInterceptors
-public class CustomerContactsSearchCondition {
+@Name("customerMoneyCondition")
+public class CustomerMoneyCondition {
 
-    private SearchDateArea searchDateArea = new SearchDateArea(new Date(), new Date());
-
-    private Boolean showMoney = null;
-
-    //  money type
     private boolean containOrderSavings = true;
 
     private boolean containPreDeposit = true;
@@ -36,14 +25,6 @@ public class CustomerContactsSearchCondition {
 
     private boolean containOrderFee = false;
 
-    // res type
-    private boolean containStoreOut = true;
-
-    private boolean containResBack = true;
-
-    private boolean containFreeRes = false;
-
-    private boolean groupByDay = true;
 
     @BypassInterceptors
     public List<AccountOper.AccountOperType> getSearchAccountOperTypes(){
@@ -69,33 +50,6 @@ public class CustomerContactsSearchCondition {
         if (result.isEmpty())
             result.addAll(AccountOper.AccountOperType.allCustomerOper());
         return result;
-    }
-
-    @BypassInterceptors
-    public Boolean getShowMoney() {
-        return showMoney;
-    }
-
-    public void setShowMoney(Boolean showMoney) {
-        this.showMoney = showMoney;
-    }
-
-    @BypassInterceptors
-    public boolean isContainStoreOut() {
-        return containStoreOut;
-    }
-
-    public void setContainStoreOut(boolean containStoreOut) {
-        this.containStoreOut = containStoreOut;
-    }
-
-    @BypassInterceptors
-    public boolean isContainResBack() {
-        return containResBack;
-    }
-
-    public void setContainResBack(boolean containResBack) {
-        this.containResBack = containResBack;
     }
 
     @BypassInterceptors
@@ -152,32 +106,5 @@ public class CustomerContactsSearchCondition {
         this.containOrderFee = containOrderFee;
     }
 
-    @BypassInterceptors
-    public SearchDateArea getSearchDateArea() {
-        return searchDateArea;
-    }
 
-    public boolean isContainFreeRes() {
-        return containFreeRes;
-    }
-
-    public void setContainFreeRes(boolean containFreeRes) {
-        this.containFreeRes = containFreeRes;
-    }
-
-    public Boolean getFreeCondition(){
-        if (containFreeRes){
-            return null;
-        }else {
-            return false;
-        }
-    }
-
-    public boolean isGroupByDay() {
-        return groupByDay;
-    }
-
-    public void setGroupByDay(boolean groupByDay) {
-        this.groupByDay = groupByDay;
-    }
 }
