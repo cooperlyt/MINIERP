@@ -24,6 +24,8 @@
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_province}</ui:define>
         <h:outputText value="#{cityList.getCityById(customer.provinceCode)}"/>
+        #{' '}
+        #{customer.city}
     </s:decorate>
 
     <s:decorate  template="/layout/seam-display.xhtml">

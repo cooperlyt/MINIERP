@@ -33,6 +33,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     private boolean enable;
     private String postCode;
     private int provinceCode;
+    private String city;
     private Date createDate;
     private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
@@ -160,6 +161,17 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
+    }
+
+    @Column(name="CITY",length = 100,nullable = false)
+    @NotNull
+    @Size(max = 100)
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @Column(name = "MEMO", length = 200)
@@ -352,4 +364,5 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         }
 
     }
+
 }

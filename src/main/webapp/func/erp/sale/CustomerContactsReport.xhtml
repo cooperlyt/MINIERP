@@ -90,12 +90,15 @@
 
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.customer_field_province}</ui:define>
-            <ui:include src="/layout/system/CitySelect.xhtml">
-                <ui:param name="value" value="#{customerSearchCondition.provinceCode}"/>
-                <ui:param name="required" value="false"/>
-                <ui:param name="cityListWidth" value="112"/>
-                <ui:param name="provinceListWidth" value="102"/>"
-            </ui:include>
+
+            <rich:select value="#{customerSearchCondition.provinceCode}" required="true"
+                         styleClass="provinceSelectWidth" listWidth="102">
+                <s:selectItems value="#{provinceList.resultList}" var="_province"
+                               noSelectionLabel="#{messages.allCity}"
+                               label="#{_province.name}" itemValue="#{_province.id}">
+                </s:selectItems>
+            </rich:select>
+
 
         </s:decorate>
 

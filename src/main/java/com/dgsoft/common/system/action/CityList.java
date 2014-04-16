@@ -2,6 +2,7 @@ package com.dgsoft.common.system.action;
 
 import com.dgsoft.common.system.SystemEntityQuery;
 import com.dgsoft.common.system.model.City;
+import com.dgsoft.common.system.model.Province;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -40,9 +41,9 @@ public class CityList extends SystemEntityQuery<City>{
     }
 
     public String getCityById(int cityId){
-        City city = getEntityManager().find(City.class,cityId);
+        Province city = getEntityManager().find(Province.class,cityId);
         if (city != null){
-            return city.getProvince().getName() + " " + city.getName();
+            return city.getName();
         }
         return "";
     }

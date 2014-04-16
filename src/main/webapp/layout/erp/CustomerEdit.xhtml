@@ -7,175 +7,202 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
+<h:outputScript>
+    function customFilter(subString, value) {
+        if (subString.length >= 1) {
+            if (value.indexOf(subString) != -1)
+                return true;
+        } else
+            return false;
+    };
+</h:outputScript>
+
+<h:outputStylesheet>
+    .customerTypeSelectWidth input[type="text"] {
+        width: 100px;
+    }
+
+    .customerLevelSelectWidth input[type="text"] {
+        width: 100px;
+    }
+
+    .provinceSelectWidth input[type="text"] {
+        width: 85px;
+    }
+
+    .citySelectWidth {
+        width: 81px !important;
+    }
+
+</h:outputStylesheet>
+
+<h:panelGrid columns="2">
+    <s:decorate id="customerNameField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_name}</ui:define>
+        <h:inputText label="#{messages.customer_field_name}"
+                     required="true"
+                     size="35"
+                     maxlength="50"
+                     value="#{customerHome.instance.name}">
+            <a:ajax event="blur" render="customerNameField"/>
+        </h:inputText>
+    </s:decorate>
+
+    <s:decorate id="levelField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_level}</ui:define>
+        <rich:select styleClass="customerLevelSelectWidth" listWidth="117px"
+                     label="#{messages.customer_field_level}" required="true"
+                     value="#{customerHome.instance.customerLevel}">
+            <s:selectItems value="#{customerLevelList.resultList}" var="_level"
+                           label="#{_level.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
+            <f:converter converterId="erpEntityConverter"/>
+        </rich:select>
+    </s:decorate>
 
 
-    <h:outputStylesheet>
-        .customerTypeSelectWidth input[type="text"] {
-            width: 100px;
-        }
+    <s:decorate id="provinceField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_province}</ui:define>
 
-        .customerLevelSelectWidth input[type="text"] {
-            width: 100px;
-        }
-
-        .provinceSelectWidth input[type="text"] {
-            width: 85px;
-        }
-
-        .citySelectWidth input[type="text"] {
-            width: 95px;
-        }
-    </h:outputStylesheet>
-
-    <h:panelGrid columns="2">
-        <s:decorate id="customerNameField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_name}</ui:define>
-            <h:inputText label="#{messages.customer_field_name}"
-                         required="true"
-                         size="35"
-                         maxlength="50"
-                         value="#{customerHome.instance.name}">
-                <a:ajax event="blur" render="customerNameField"/>
-            </h:inputText>
-        </s:decorate>
-
-        <s:decorate id="levelField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_level}</ui:define>
-            <rich:select styleClass="customerLevelSelectWidth" listWidth="117px"
-                         label="#{messages.customer_field_level}" required="true"
-                         value="#{customerHome.instance.customerLevel}">
-                <s:selectItems value="#{customerLevelList.resultList}" var="_level"
-                               label="#{_level.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
-                <f:converter converterId="erpEntityConverter"/>
-            </rich:select>
-        </s:decorate>
-
-
-        <s:decorate id="provinceField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_province}</ui:define>
-            <ui:include src="/layout/system/CitySelect.xhtml">
-                <ui:param name="value" value="#{customerHome.instance.provinceCode}"/>
-                <ui:param name="required" value="true"/>
-                <ui:param name="cityListWidth" value="112"/>
-                <ui:param name="provinceListWidth" value="102"/>
-            </ui:include>
-        </s:decorate>
-
-        <s:decorate id="typeField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_type}</ui:define>
-            <rich:select label="#{messages.customer_field_type}" styleClass="customerTypeSelectWidth"
-                         required="true" listWidth="117px"
-                         value="#{customerHome.instance.type}">
-                <s:selectItems var="_word" label="#{_word.value}"
-                               itemValue="#{_word.id}"
-                               value="#{dictionary.getWordList('erp.customerType')}"
-                               noSelectionLabel="#{messages.noSelectLabel}"/>
-            </rich:select>
-
-        </s:decorate>
-
-
-    </h:panelGrid>
-    <h:panelGrid columns="3">
-
-        <s:decorate id="faxField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_fax}</ui:define>
-            <h:inputText label="#{messages.customer_field_fax}"
-                         size="15"
-                         maxlength="50"
-                         value="#{customerHome.instance.fax}">
-            </h:inputText>
-        </s:decorate>
-
-
-        <s:decorate id="mailField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_mail}</ui:define>
-            <h:inputText label="#{messages.customer_field_mail}"
-                         size="17"
-                         maxlength="50"
-                         value="#{customerHome.instance.mail}">
-            </h:inputText>
-        </s:decorate>
-
-
-        <s:decorate template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.postCode}</ui:define>
-            <h:inputText label="#{messages.postCode}" size="8" maxlength="10"
-                         value="#{customerHome.instance.postCode}"/>
-        </s:decorate>
-
-
-    </h:panelGrid>
-    <h:panelGrid columns="1">
-        <s:decorate id="addressField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_address}</ui:define>
-            <h:inputTextarea label="#{messages.customer_field_address}"
-                             cols="78"
-                             rows="2"
-                             value="#{customerHome.instance.address}"/>
-        </s:decorate>
-        <s:decorate id="memoField" template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.field_memo}</ui:define>
-            <h:inputTextarea label="#{messages.field_memo}"
-                             cols="78"
-                             rows="2"
-                             value="#{customerHome.instance.memo}"/>
-        </s:decorate>
-    </h:panelGrid>
-
-    <div style="clear:both"/>
-
-    <a:outputPanel id="customerContacts">
-
-
-        <a:repeat value="#{editingCustomerContacts}" var="_contact">
-
-            <h:panelGrid columns="5" style=" float: left;">
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <ui:define name="label">#{messages.customer_contact_type}</ui:define>
-                    <h:selectOneMenu value="#{_contact.type}" required="true">
-                        <s:selectItems value="#{dictionary.getWordList('erp.customerContactType')}"
-                                       var="_word" label="#{_word.value}" itemValue="#{_word.id}"
-                                       noSelectionLabel="#{messages.noSelectLabel}"/>
-                        <a:ajax render="@this" event="valueChange"/>
-                    </h:selectOneMenu>
-                </s:decorate>
-
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <ui:define name="label">#{messages.customer_contact_name}</ui:define>
-                    <h:inputText value="#{_contact.name}" required="true" size="15"
-                                 maxlength="50" label="#{messages.customer_contact_name}">
-                        <a:ajax event="blur" render="@this"/>
-                    </h:inputText>
-                </s:decorate>
-
-                <s:decorate template="/layout/single-edit.xhtml">
-                    <ui:define name="label">#{messages.customer_contact_tel}</ui:define>
-                    <h:inputText required="true" label="#{messages.customer_contact_tel}"
-                                 maxlength="50" size="15" value="#{_contact.tel}">
-                        <a:ajax event="blur" render="@this"/>
-                    </h:inputText>
-                </s:decorate>
-
-
-                <a:commandButton image="/img/delete.png" action="#{customerHome.removeContact}"
-                                 render="customerContacts"
-                                 immediate="true" title="#{messages.remove}">
+        <h:panelGrid columns="4">
+            <rich:select value="#{customerHome.provinceCode}" required="true"
+                         styleClass="provinceSelectWidth" listWidth="102">
+                <s:selectItems value="#{provinceList.resultList}" var="_province"
+                               noSelectionLabel="#{messages.allCity}"
+                               label="#{_province.name}" itemValue="#{_province.id}">
+                </s:selectItems>
+                <a:ajax event="selectitem" render="citySelect">
                     <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-            </h:panelGrid>
-        </a:repeat>
+                </a:ajax>
+            </rich:select>
 
-        <a:outputPanel id="addNewContactBtn" style="float: left;margin: 12px">
-            <a:commandButton image="/img/item_add.png" title="#{messages.addItem}"
-                             render="customerContacts" immediate="true"
-                             action="#{customerHome.addContact}">
+            <h:outputText value="#{messages.Province}"/>
+
+            <rich:autocomplete id="citySelect" required="true"   inputClass="citySelectWidth" mode="client"
+                               value="#{customerHome.instance.city}"
+                               label="#{messages.City}" minChars="0" autofill="false" clientFilterFunction="customFilter"
+                               autocompleteMethod="#{customerHome.getCityList()}" showButton="true"/>
+
+            <h:outputText value="#{messages.City}"/>
+
+        </h:panelGrid>
+
+    </s:decorate>
+
+    <s:decorate id="typeField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_type}</ui:define>
+        <rich:select label="#{messages.customer_field_type}" styleClass="customerTypeSelectWidth"
+                     required="true" listWidth="117px"
+                     value="#{customerHome.instance.type}">
+            <s:selectItems var="_word" label="#{_word.value}"
+                           itemValue="#{_word.id}"
+                           value="#{dictionary.getWordList('erp.customerType')}"
+                           noSelectionLabel="#{messages.noSelectLabel}"/>
+        </rich:select>
+
+    </s:decorate>
+
+
+</h:panelGrid>
+<h:panelGrid columns="3">
+
+    <s:decorate id="faxField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_fax}</ui:define>
+        <h:inputText label="#{messages.customer_field_fax}"
+                     size="15"
+                     maxlength="50"
+                     value="#{customerHome.instance.fax}">
+        </h:inputText>
+    </s:decorate>
+
+
+    <s:decorate id="mailField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_mail}</ui:define>
+        <h:inputText label="#{messages.customer_field_mail}"
+                     size="17"
+                     maxlength="50"
+                     value="#{customerHome.instance.mail}">
+        </h:inputText>
+    </s:decorate>
+
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.postCode}</ui:define>
+        <h:inputText label="#{messages.postCode}" size="8" maxlength="10"
+                     value="#{customerHome.instance.postCode}"/>
+    </s:decorate>
+
+
+</h:panelGrid>
+<h:panelGrid columns="1">
+    <s:decorate id="addressField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_address}</ui:define>
+        <h:inputTextarea label="#{messages.customer_field_address}"
+                         cols="78"
+                         rows="2"
+                         value="#{customerHome.instance.address}"/>
+    </s:decorate>
+    <s:decorate id="memoField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.field_memo}</ui:define>
+        <h:inputTextarea label="#{messages.field_memo}"
+                         cols="78"
+                         rows="2"
+                         value="#{customerHome.instance.memo}"/>
+    </s:decorate>
+</h:panelGrid>
+
+<div style="clear:both"/>
+
+<a:outputPanel id="customerContacts">
+
+
+    <a:repeat value="#{editingCustomerContacts}" var="_contact">
+
+        <h:panelGrid columns="5" style=" float: left;">
+            <s:decorate template="/layout/single-edit.xhtml">
+                <ui:define name="label">#{messages.customer_contact_type}</ui:define>
+                <h:selectOneMenu value="#{_contact.type}" required="true">
+                    <s:selectItems value="#{dictionary.getWordList('erp.customerContactType')}"
+                                   var="_word" label="#{_word.value}" itemValue="#{_word.id}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <a:ajax render="@this" event="valueChange"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate template="/layout/single-edit.xhtml">
+                <ui:define name="label">#{messages.customer_contact_name}</ui:define>
+                <h:inputText value="#{_contact.name}" required="true" size="15"
+                             maxlength="50" label="#{messages.customer_contact_name}">
+                    <a:ajax event="blur" render="@this"/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate template="/layout/single-edit.xhtml">
+                <ui:define name="label">#{messages.customer_contact_tel}</ui:define>
+                <h:inputText required="true" label="#{messages.customer_contact_tel}"
+                             maxlength="50" size="15" value="#{_contact.tel}">
+                    <a:ajax event="blur" render="@this"/>
+                </h:inputText>
+            </s:decorate>
+
+
+            <a:commandButton image="/img/delete.png" action="#{customerHome.removeContact}"
+                             render="customerContacts"
+                             immediate="true" title="#{messages.remove}">
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
+        </h:panelGrid>
+    </a:repeat>
 
-        </a:outputPanel>
-
+    <a:outputPanel id="addNewContactBtn" style="float: left;margin: 12px">
+        <a:commandButton image="/img/item_add.png" title="#{messages.addItem}"
+                         render="customerContacts" immediate="true"
+                         action="#{customerHome.addContact}">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
 
     </a:outputPanel>
+
+
+</a:outputPanel>
 </ui:composition>
 

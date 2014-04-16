@@ -10,6 +10,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
+import javax.persistence.EntityManager;
 import java.util.*;
 
 /**
@@ -28,6 +29,9 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     @In
     private FacesMessages facesMessages;
 
+    @In
+    private EntityManager systemEntityManager;
+
     private boolean haveMiddleMan;
 
     @DataModel("editingCustomerContacts")
@@ -44,9 +48,25 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
         this.haveMiddleMan = haveMiddleMan;
     }
 
+    private List<String> cityList;
+
+    public int getProvinceCode(){
+        return getInstance().getProvinceCode();
+    }
+
+    public void setProvinceCode(int provinceCode){
+        getInstance().setProvinceCode(provinceCode);
+        cityList = null;
+    }
+
+    public List<String> getCityList(){
+        if (cityList == null){
+            cityList = systemEntityManager.createQuery("select city.name from City city where city.province.id = :pid order by city.id").setParameter("pid",getInstance().getProvinceCode()).getResultList();
+        }
+        return cityList;
+    }
 
     public void addContact() {
-
         CustomerContact newContact = new CustomerContact(getInstance());
         customerContactList.add(newContact);
         getInstance().getCustomerContacts().add(newContact);
