@@ -140,6 +140,7 @@
                         <a:commandButton value="#{messages.search}"
                                          execute="@form" render="dataResult">
                             <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{false}" assignTo="#{customerResContactsTotal.onlyModel}"/>
                         </a:commandButton>
                     </a:outputPanel>
                 </div>
@@ -152,6 +153,7 @@
 </rich:collapsiblePanel>
 <br/>
 
+<h:form>
 <a:outputPanel id="dataResult" ajaxRendered="true">
 
 
@@ -292,5 +294,6 @@
 
 
 </a:outputPanel>
+</h:form>
 </ui:define>
 </ui:composition>

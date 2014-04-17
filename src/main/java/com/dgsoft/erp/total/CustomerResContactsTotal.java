@@ -31,6 +31,9 @@ public class CustomerResContactsTotal {
     @In(create = true)
     private CustomerResCondition customerResCondition;
 
+    private boolean onlyModel = false;
+
+    private boolean onlyStoreOut = true;
 
     private boolean groupByDay = true;
 
@@ -42,6 +45,22 @@ public class CustomerResContactsTotal {
         this.groupByDay = groupByDay;
     }
 
+    public boolean isOnlyStoreOut() {
+        return onlyStoreOut;
+    }
+
+    public void setOnlyStoreOut(boolean onlyStoreOut) {
+        this.onlyStoreOut = onlyStoreOut;
+    }
+
+    public boolean isOnlyModel() {
+        return onlyModel;
+    }
+
+    public void setOnlyModel(boolean onlyModel) {
+        this.onlyModel = onlyModel;
+    }
+
     public BigDecimal getTotalPrice(){
         BigDecimal result = BigDecimal.ZERO;
         for (StoreResPriceEntity item: getResultList()){
@@ -50,13 +69,27 @@ public class CustomerResContactsTotal {
         return result;
     }
 
+
     public List<StoreResPriceEntity> getResultList() {
         final List<StoreResPriceEntity> result = new ArrayList<StoreResPriceEntity>();
-        if (customerResCondition.isContainStoreOut()) {
-            result.addAll(orderResContactsTotal.getResultList());
-        }
-        if (customerResCondition.isContainResBack()) {
-            result.addAll(backResContactsTotal.getResultList());
+        if (!onlyModel) {
+
+            if (customerResCondition.isContainStoreOut()) {
+                result.addAll(orderResContactsTotal.getResultList());
+            }
+            if (customerResCondition.isContainResBack()) {
+                result.addAll(backResContactsTotal.getResultList());
+            }
+        }else{
+            if (onlyStoreOut){
+                customerResCondition.setContainStoreOut(true);
+                customerResCondition.setContainResBack(false);
+                result.addAll(orderResContactsTotal.getResultList());
+            }else{
+                customerResCondition.setContainStoreOut(false);
+                customerResCondition.setContainResBack(true);
+                result.addAll(backResContactsTotal.getResultList());
+            }
         }
         Collections.sort(result, new Comparator<StoreResPriceEntity>() {
             @Override

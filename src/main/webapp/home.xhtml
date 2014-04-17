@@ -17,11 +17,24 @@
             <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png" alt="Seam logo"/>
             <s:div styleClass="info">
                 <p>
-                    <strong>MINIERP 2.1.4 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.1.5 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                    <li>[报表] 修改客户往来报表</li>
+                    <li>[报表] 将客户往来报表分解为三个报表，分别为:客户货品往来明细,货品往来分组汇总,客户货款往来</li>
+                    <li>[客户] 修改客户省为选择，市根据省列出可选项，或不在列表中可手动添写</li>
+                    <li>[错误] 修正旧订单不能撤消问题</li>
+                    <li>[维护] PPR分水器增加阀门属性</li>
+                    <li>[优化] 加入二级高速缓存(待测试)</li>
                 </ul>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.1.4 更新日志" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[报表] 修改客户往来报表</li>
+                    </ul>
+                </s:decorate>
+
+                <div style="clear: both;"/>
 
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.1.3 更新日志" name="openLabel"/>

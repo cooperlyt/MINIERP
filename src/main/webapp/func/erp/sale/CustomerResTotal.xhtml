@@ -108,17 +108,16 @@
 
         </s:decorate>
 
-
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.customerResContactsTypes}</ui:define>
-            <h:selectBooleanCheckbox value="#{customerResCondition.containStoreOut}">
-                #{messages.SELL_OUT}
-            </h:selectBooleanCheckbox>
+            <h:selectOneMenu value="#{customerResContactsTotal.onlyStoreOut}">
+                <f:selectItem itemValue="#{true}" itemLabel="#{messages.SELL_OUT}"/>
+                <f:selectItem itemValue="#{false}" itemLabel="#{messages.SELL_BACK}"/>
+            </h:selectOneMenu>
 
-            <h:selectBooleanCheckbox value="#{customerResCondition.containResBack}">
-                #{messages.SELL_BACK}
-            </h:selectBooleanCheckbox>
-
+        </s:decorate>
+        <div style="clear:both"/>
+        <h:panelGrid columns="2">
             <h:selectBooleanCheckbox value="#{customerResCondition.containFreeRes}">
                 #{messages.containFreeRes}
             </h:selectBooleanCheckbox>
@@ -126,7 +125,8 @@
             <h:selectBooleanCheckbox value="#{customerResContactsTotal.groupByDay}">
                 #{messages.groupByDay}
             </h:selectBooleanCheckbox>
-        </s:decorate>
+        </h:panelGrid>
+
 
         <div style="clear:both"/>
         <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
@@ -140,6 +140,7 @@
                         <a:commandButton value="#{messages.search}"
                                          execute="@form" render="dataResult">
                             <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{true}" assignTo="#{customerResContactsTotal.onlyModel}"/>
                         </a:commandButton>
                     </a:outputPanel>
                 </div>
@@ -397,7 +398,9 @@
 </rich:dataTable>
 
 
-<rich:dataTable rendered="#{not customerResContactsTotal.groupByDay}">
+<rich:dataTable rendered="#{not customerResContactsTotal.groupByDay}"
+                value="#{customerResContactsTotal.customerResultGroup.childGroup}"
+                var="_customer" style="width: 100%">
 <f:facet name="header">
     <rich:columnGroup>
 
