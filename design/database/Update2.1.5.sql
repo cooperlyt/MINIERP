@@ -16,3 +16,49 @@ UPDATE DG_SYSTEM.FUNCTION SET NAME = '货品往来分组汇总', LOCATION='/func
 ALTER TABLE MINI_ERP.DISPATCH_ITEM DROP FOREIGN KEY DISPATCH_ITEM_ibfk_1;
 ALTER TABLE MINI_ERP.DISPATCH_ITEM DROP FOREIGN KEY DISPATCH_ITEM_ibfk_2;
 DROP TABLE MINI_ERP.DISPATCH_ITEM;
+
+
+---           add format
+USE MINI_ERP;
+
+DELIMITER //
+
+CREATE PROCEDURE ADDFFPP()
+  BEGIN
+    DECLARE Done INT DEFAULT 0;
+
+    DECLARE STORE_RES_ID VARCHAR(32);
+
+    DECLARE NEW_ID INT DEFAULT 1;
+
+-- 声明两个游标，第二个游标使用到第一个的查询结果
+    DECLARE nr_csr CURSOR FOR SELECT
+                                ID
+                              FROM MINI_ERP.STORE_RES where STORE_RES.RES = 'ff8080814389c45401438a1eebed001d';
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET Done = 1;
+
+    OPEN nr_csr;
+-- 第一个循环
+    order_loop: LOOP -- Loop through org_grade
+      FETCH nr_csr
+      INTO STORE_RES_ID;
+      IF Done = 1
+      THEN
+        LEAVE order_loop;
+      END IF;
+
+      INSERT MINI_ERP.FORMAT(ID, DEFINE, FORMAT_VALUE, STORE_RES)
+      VALUES(concat('ADD',  NEW_ID),'ff808081456934e201456ffcbfe00212','ff808081456934e201456ff908440211',STORE_RES_ID );
+
+
+      SET NEW_ID = NEW_ID + 1;
+
+-- 结束第二个循环
+    END LOOP order_loop;
+    CLOSE nr_csr;
+  END; //
+DELIMITER ;
+
+CALL ADDFFPP();
+DROP PROCEDURE ADDFFPP;
