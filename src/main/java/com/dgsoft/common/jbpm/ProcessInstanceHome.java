@@ -64,14 +64,22 @@ public class ProcessInstanceHome {
         this.processKey = processKey;
     }
 
+    @Deprecated
     public void initInstance() {
+        //TODO save processId and ver to db;
         if (instance == null) {
             if ((processDefineName != null) && (processKey != null)) {
                 Logging.getLog(this.getClass()).debug("Locate processInstance - processDefineName:" + processDefineName + ";processKey:" + processKey);
 
-                ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition(processDefineName);
-                instance = definition == null ?
-                        null : ManagedJbpmContext.instance().getProcessInstanceForUpdate(definition, processKey);
+                List<ProcessDefinition> definitions = ManagedJbpmContext.instance().getGraphSession().findAllProcessDefinitionVersions(processDefineName);
+
+                for (ProcessDefinition definition: definitions){
+                    instance = ManagedJbpmContext.instance().getProcessInstanceForUpdate(definition, processKey);
+                    if (instance != null){
+                        break;
+                    }
+                }
+
             }
         }
     }

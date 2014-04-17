@@ -25,14 +25,14 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
             "left join fetch backItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
             "left join fetch backItem.orderBack orderBack left join fetch orderBack.customer customer " +
             "left join fetch customer.customerArea left join fetch customer.customerLevel  " +
-            "left join stockChange.assemblyForStoreOut left join fetch stockChange.assemblyForStoreIn " +
-            "left join stockChange.assemblyForLoseOut left join fetch productStoreIn " +
-            "left join stockChange.materialStoreOut left join stockChange.allocationForStoreOut " +
-            "left join stockChange.materialStoreIn left join stockChange.allocationForStoreIn " +
-            "left join stockChange.inventoryAdd left join stockChange.inventoryLoss " +
-            "left join stockChange.scrapStoreOut left join stockChange.backDispatch " +
-            "left join stockChange.materialBackStoreIn left join stockChange.storeChange " +
-            "where backItem.backItemStatus = 'STORE_IN'";
+            "left join fetch stockChange.assemblyForStoreOut left join fetch stockChange.assemblyForStoreIn " +
+            "left join fetch stockChange.assemblyForLoseOut left join fetch stockChange.productStoreIn " +
+            "left join fetch stockChange.materialStoreOut left join fetch stockChange.allocationForStoreOut " +
+            "left join fetch stockChange.materialStoreIn left join fetch stockChange.allocationForStoreIn " +
+            "left join fetch stockChange.inventoryAdd left join fetch stockChange.inventoryLoss " +
+            "left join fetch stockChange.scrapStoreOut left join fetch stockChange.orderDispatch " +
+            "left join fetch stockChange.materialBackStoreIn left join fetch stockChange.storeChange " +
+            "left join fetch stockChange.backDispatch where backItem.backItemStatus = 'STORE_IN'";
 
     protected static final String[] RESTRICTIONS = {
             "backItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",
@@ -41,7 +41,7 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
             "backItem.orderBack.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "backItem.orderBack.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
             "backItem.orderBack.customer.type = #{customerSearchCondition.type}",
-            "backItem.orderBack.customer.provinceCode <= #{customerSearchCondition.provinceCode}",
+            "backItem.orderBack.customer.provinceCode = #{customerSearchCondition.provinceCode}",
 
 
     };
