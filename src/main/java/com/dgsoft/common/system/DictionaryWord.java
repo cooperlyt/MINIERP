@@ -1,9 +1,6 @@
 package com.dgsoft.common.system;
 
-import com.dgsoft.common.system.model.City;
-import com.dgsoft.common.system.model.Employee;
-import com.dgsoft.common.system.model.Word;
-import com.dgsoft.common.system.model.WordCategory;
+import com.dgsoft.common.system.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 
@@ -33,7 +30,7 @@ public class DictionaryWord {
 
     private Map<String, Employee> employeeMap;
 
-    private Map<Integer, City> cityMap;
+    private Map<Integer, Province> cityMap;
 
     @Create
     @Transactional
@@ -45,9 +42,9 @@ public class DictionaryWord {
 
 
     public void loadCity() {
-        cityMap = new HashMap<Integer, City>();
-        List<City> citys = systemEntityLoader.getPersistenceContext().createQuery("select city from City city left join fetch city.province", City.class).getResultList();
-        for (City city : citys) {
+        cityMap = new HashMap<Integer, Province>();
+        List<Province> citys = systemEntityLoader.getPersistenceContext().createQuery("select city from Province city", Province.class).getResultList();
+        for (Province city : citys) {
             cityMap.put(city.getId(), city);
         }
     }
@@ -131,16 +128,16 @@ public class DictionaryWord {
 
     }
 
-    public City getCity(Integer code) {
+    public Province getCity(Integer code) {
         return cityMap.get(code);
     }
 
     public String getCityName(Integer code) {
-        City city = getCity(code);
+        Province city = getCity(code);
         if (city == null) {
             return "";
         } else {
-            return city.getProvince().getName() + city.getName();
+            return city.getName();
         }
     }
 

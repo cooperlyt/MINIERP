@@ -117,7 +117,7 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
     public void customerChangeListener() {
         if (customerHome.isIdDefined()) {
             if (runParam.getStringParamValue("erp.sale.receiveAddress").trim().equals("CITY")) {
-                getInstance().setAddress(dictionary.getCityName(customerHome.getInstance().getProvinceCode()));
+                getInstance().setAddress(dictionary.getCityName(customerHome.getInstance().getProvinceCode()) + customerHome.getInstance().getCity());
             } else
                 getInstance().setAddress(customerHome.getInstance().getAddress());
             getInstance().setPostCode(customerHome.getInstance().getPostCode());

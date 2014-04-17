@@ -31,16 +31,6 @@
 <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
     <h:form>
         <s:decorate template="/layout/seam-display.xhtml">
-            <ui:define name="label">#{messages.report}</ui:define>
-            <h:selectOneMenu value="#{customerContactsSearchCondition.showMoney}">
-                <f:selectItem itemValue="#{false}" itemLabel="#{messages.customerResContacts}"/>
-                <f:selectItem itemValue="#{true}" itemLabel="#{messages.customerMoneyContacts}"/>
-                <f:selectItem noSelectionOption="true" itemLabel="#{messages.all}"/>
-                <a:ajax event="valueChange" render="containTypesCondition"/>
-            </h:selectOneMenu>
-        </s:decorate>
-
-        <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.dateTime}</ui:define>
             <rich:calendar
                     enableManualInput="true"
@@ -49,7 +39,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.dateTime}"
-                    value="#{customerContactsSearchCondition.searchDateArea.dateFrom}">
+                    value="#{searchDateArea.dateFrom}">
             </rich:calendar>
 
             --
@@ -61,7 +51,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.dateTime}"
-                    value="#{customerContactsSearchCondition.searchDateArea.dateTo}">
+                    value="#{searchDateArea.dateTo}">
             </rich:calendar>
         </s:decorate>
 
@@ -89,17 +79,21 @@
         </s:decorate>
 
         <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.customer_field_name}</ui:define>
+
+            <h:inputText value="#{customerSearchCondition.name}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.customer_field_province}</ui:define>
 
-            <rich:select value="#{customerSearchCondition.provinceCode}" required="true"
+            <rich:select value="#{customerSearchCondition.provinceCode}"
                          styleClass="provinceSelectWidth" listWidth="102">
                 <s:selectItems value="#{provinceList.resultList}" var="_province"
                                noSelectionLabel="#{messages.allCity}"
                                label="#{_province.name}" itemValue="#{_province.id}">
                 </s:selectItems>
             </rich:select>
-
-
         </s:decorate>
 
         <s:decorate template="/layout/seam-display.xhtml">
@@ -115,57 +109,24 @@
         </s:decorate>
 
 
-        <a:outputPanel id="containTypesCondition">
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.customerResContactsTypes}</ui:define>
+            <h:selectBooleanCheckbox value="#{customerResCondition.containStoreOut}">
+                #{messages.SELL_OUT}
+            </h:selectBooleanCheckbox>
 
-            <s:decorate
-                    rendered="#{(empty customerContactsSearchCondition.showMoney) or customerContactsSearchCondition.showMoney }"
-                    template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.customerMoneyContactsTypes}</ui:define>
-                <h:panelGrid style="text-align: right" columns="3">
+            <h:selectBooleanCheckbox value="#{customerResCondition.containResBack}">
+                #{messages.SELL_BACK}
+            </h:selectBooleanCheckbox>
 
-                    <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containOrderSavings}">
-                        #{messages.ORDER_SAVINGS}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containPreDeposit}">
-                        #{messages.PRE_DEPOSIT}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containBackPre}">
-                        #{messages.DEPOSIT_BACK}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containBack}">
-                        #{messages.ORDER_BACK}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containCancelBack}">
-                        #{messages.ORDER_CANCEL_BACK}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containOrderFee}">
-                        #{messages.ORDER_FREE}
-                    </h:selectBooleanCheckbox>
-                </h:panelGrid>
+            <h:selectBooleanCheckbox value="#{customerResCondition.containFreeRes}">
+                #{messages.containFreeRes}
+            </h:selectBooleanCheckbox>
 
-            </s:decorate>
-
-            <s:decorate
-                    rendered="#{(empty customerContactsSearchCondition.showMoney) or not customerContactsSearchCondition.showMoney }"
-                    template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.customerResContactsTypes}</ui:define>
-                <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containStoreOut}">
-                    #{messages.SELL_OUT}
-                </h:selectBooleanCheckbox>
-
-                <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containResBack}">
-                    #{messages.SELL_BACK}
-                </h:selectBooleanCheckbox>
-
-                <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.containFreeRes}">
-                    #{messages.containFreeRes}
-                </h:selectBooleanCheckbox>
-
-                <h:selectBooleanCheckbox value="#{customerContactsSearchCondition.groupByDay}">
-                    #{messages.groupByDay}
-                </h:selectBooleanCheckbox>
-            </s:decorate>
-        </a:outputPanel>
+            <h:selectBooleanCheckbox value="#{customerResContactsTotal.groupByDay}">
+                #{messages.groupByDay}
+            </h:selectBooleanCheckbox>
+        </s:decorate>
 
         <div style="clear:both"/>
         <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
@@ -194,152 +155,8 @@
 <a:outputPanel id="dataResult">
 
 
-<a:outputPanel
-        rendered="#{(empty customerContactsSearchCondition.showMoney) or not customerContactsSearchCondition.showMoney}">
-
-<rich:extendedDataTable frozenColumns="3" value="#{customerResContactsTotal.resultList}" var="_item"
-                        style="width: 100%; height: 450px"
-                        rendered="#{customerContactsSearchCondition.containResBack and customerContactsSearchCondition.containStoreOut}">
-    <f:facet name="header">
-        #{messages.customerStoreResSellDetails}
-    </f:facet>
-    <rich:column width="110px">
-        <f:facet name="header">
-            #{messages.StoreChangeDate}
-        </f:facet>
-        <h:outputText value="#{_item.dispatch.stockChange.operDate}">
-            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-        </h:outputText>
-    </rich:column>
-    <rich:column width="90px">
-        <f:facet name="header">
-            #{messages.Customer}
-        </f:facet>
-
-
-        <h:outputText value="#{_item.needRes.customerOrder.customer.name}"
-                      rendered="#{_item.type eq 'sale'}"/>
-        <h:outputText value="#{_item.orderBack.customer.name}"
-                      rendered="#{_item.type eq 'back'}"/>
-    </rich:column>
-    <rich:column width="230px">
-        <f:facet name="header">
-            #{messages.StoreRes}
-        </f:facet>
-        <a:outputPanel>
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="showPropertyLabel" value="false"/>
-                <ui:param name="storeRes" value="#{_item.storeRes}"/>
-                <ui:param name="showCode" value="false"/>
-            </ui:include>
-
-            <rich:tooltip styleClass="tooltip-custom-body"
-                          layout="block" mode="client">
-                <span style="white-space: nowrap"> #{_item.storeRes.code}</span>
-
-            </rich:tooltip>
-        </a:outputPanel>
-
-
-    </rich:column>
-    <rich:column width="60px">
-        <f:facet name="header">
-            #{messages.count}
-        </f:facet>
-        <a:outputPanel>
-            <h:outputText value="#{_item.useUnitCount}" style="#{(_item.type eq 'back') ? 'color: red;' : ''}"/>
-            <rich:tooltip styleClass="tooltip-custom-body"
-                          layout="block" mode="client">
-                <h:panelGrid columns="1">
-                    <span style="white-space: nowrap"> #{messages.MasterUnitCount}: #{_item.displayMasterCount}</span>
-                    <span style="white-space: nowrap"> #{messages.AuxUnitCount}: #{_item.displayAuxCount}</span>
-                </h:panelGrid>
-            </rich:tooltip>
-        </a:outputPanel>
-    </rich:column>
-
-    <rich:column width="30px">
-        <f:facet name="header">
-
-        </f:facet>
-        #{_item.resUnit.name}
-
-    </rich:column>
-
-    <rich:column style="text-align: right" width="70px">
-        <f:facet name="header">
-            #{messages.orderItemUnitPrice}
-        </f:facet>
-        <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
-        <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </rich:column>
-
-    <rich:column width="50px">
-        <f:facet name="header" width="35px">
-            #{messages.rebate}
-        </f:facet>
-        <h:outputText value="#{_item.rebate}" rendered="#{not _item.presentation}">
-            <f:convertNumber pattern="#0.####"/>
-        </h:outputText>
-    </rich:column>
-
-    <rich:column width="90px" style="text-align: right">
-        <f:facet name="header">
-            #{messages.orderItemPrice}
-        </f:facet>
-        <h:outputText value="#{_item.totalMoney}" rendered="#{not _item.presentation}"
-                      style="#{(_item.type eq 'back') ? 'color: red;' : ''}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </rich:column>
-
-
-    <rich:column>
-        <f:facet name="header">
-            #{messages.needConvertRate}
-        </f:facet>
-        <h:outputText value="#{_item.needConvertRate}"
-                      rendered="#{(_item.type eq 'sale') and not _item.presentation}">
-            <f:convertNumber pattern="#0.#######"/>
-        </h:outputText>
-    </rich:column>
-
-
-    <rich:column>
-        <f:facet name="header">
-            #{messages.needItemAdd}
-        </f:facet>
-        <h:outputText value="#{_item.needAddCount}"
-                      rendered="#{(_item.type eq 'sale') and not _item.presentation}">
-            <f:convertNumber pattern="#0.####"/>
-        </h:outputText>
-
-    </rich:column>
-
-    <rich:column>
-        <f:facet name="header">
-            #{messages.field_memo}
-        </f:facet>
-        <a:outputPanel>
-            #{_item.memo}
-            <rich:tooltip styleClass="tooltip-custom-body"
-                          layout="block" mode="client">
-                <span style="white-space: nowrap"> #{_item.memo}</span>
-
-            </rich:tooltip>
-        </a:outputPanel>
-
-    </rich:column>
-
-</rich:extendedDataTable>
-
-<a:outputPanel
-        rendered="#{not (customerContactsSearchCondition.containResBack and customerContactsSearchCondition.containStoreOut)}">
-
 <rich:dataTable value="#{customerResContactsTotal.dayResultGroup.childGroup}" var="_day" style="width: 100%"
-                rendered="#{customerContactsSearchCondition.groupByDay}">
+                rendered="#{customerResContactsTotal.groupByDay}">
 <f:facet name="header">
     <rich:columnGroup>
 
@@ -580,8 +397,7 @@
 </rich:dataTable>
 
 
-<rich:dataTable value="#{customerResContactsTotal.customerResultGroup.childGroup}" var="_customer" style="width: 100%"
-                rendered="#{not customerContactsSearchCondition.groupByDay}">
+<rich:dataTable rendered="#{not customerResContactsTotal.groupByDay}">
 <f:facet name="header">
     <rich:columnGroup>
 
@@ -803,9 +619,7 @@
 </rich:dataTable>
 
 </a:outputPanel>
-</a:outputPanel>
 
 
-</a:outputPanel>
 </ui:define>
 </ui:composition>
