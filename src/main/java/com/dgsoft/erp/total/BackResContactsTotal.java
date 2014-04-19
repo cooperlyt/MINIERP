@@ -22,6 +22,7 @@ import java.util.List;
 public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
 
     protected static final String EJBQL = "select backItem from BackItem backItem " +
+            "left join fetch backItem.storeRes " +
             "left join fetch backItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
             "left join fetch backItem.orderBack orderBack left join fetch orderBack.customer customer " +
             "left join fetch customer.customerArea left join fetch customer.customerLevel  " +

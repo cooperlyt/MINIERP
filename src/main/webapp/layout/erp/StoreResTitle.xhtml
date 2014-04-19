@@ -14,7 +14,7 @@
                   rendered="#{empty showResName ? true : showResName}"/>
 
     <h:outputText value="#{' '}(#{storeRes.code})" rendered="#{empty showCode ? true : showCode}" />
-    <a:repeat value="#{storeRes.formatList}" var="_format">
+    <a:repeat value="#{resFormatCache.getFormats(storeRes.id)}" var="_format">
         #{' '}
         <h:outputText rendered="#{(empty showPropertyLabel) ? false :  showPropertyLabel}" value="#{_format.formatDefine.name}:" />
         <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"

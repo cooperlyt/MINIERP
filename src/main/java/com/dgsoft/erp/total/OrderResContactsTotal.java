@@ -18,6 +18,7 @@ public class OrderResContactsTotal extends ErpEntityQuery<OrderItem>{
 
     protected static final String EJBQL = "select orderItem from OrderItem orderItem " +
             "left join fetch orderItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
+            "left join fetch orderitem.storeRes " +
             "left join fetch orderItem.needRes needRes left join fetch needRes.customerOrder customerOrder " +
             "left join fetch customerOrder.customer customer left join fetch customer.customerArea " +
             "left join fetch stockChange.assemblyForStoreOut left join fetch stockChange.assemblyForStoreIn " +

@@ -6,6 +6,7 @@
           <module name="com.sun.jsf-impl" export="true"/>
           <module name="org.dom4j" export="true"/>
           <module name="org.hibernate.validator" export="true"/>
+          <module name="org.infinispan" />
 	    </dependencies>
   </deployment>  
 </jboss-deployment-structure> 
