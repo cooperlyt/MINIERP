@@ -214,6 +214,8 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
         tree.setRowKey(storedKey);
     }
 
+
+
     @Observer(value = "org.jboss.seam.afterTransactionSuccess.StoreRes", create = false)
     public void saveAfter() {
         log.debug("call StoreRes Home saveAfter");

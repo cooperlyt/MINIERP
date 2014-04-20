@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model.api;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 
 import javax.persistence.Transient;
@@ -18,13 +20,13 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
     protected StoreResPriceEntity() {
     }
 
-    protected StoreResPriceEntity(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    protected StoreResPriceEntity(Res res, ResUnit defaultUnit) {
+        super(res, defaultUnit);
         setRebate(new BigDecimal("100"));
     }
 
-    protected StoreResPriceEntity(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+    protected StoreResPriceEntity(StoreRes storeRes, ResUnit defaultUnit) {
+        super(storeRes, defaultUnit);
         setRebate(new BigDecimal("100"));
     }
 

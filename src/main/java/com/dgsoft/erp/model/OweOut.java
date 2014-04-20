@@ -1,5 +1,7 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -29,14 +31,14 @@ public class OweOut extends StoreResCountEntity implements java.io.Serializable 
     public OweOut() {
     }
 
-    public OweOut(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
-        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    public OweOut(Res res, ResUnit defaultUnit, Dispatch dispatch) {
+        super(res, defaultUnit);
         this.dispatch = dispatch;
         this.add = true;
     }
 
-    public OweOut(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, Dispatch dispatch) {
-        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+    public OweOut(StoreRes storeRes, ResUnit defaultUnit, Dispatch dispatch) {
+        super(storeRes, defaultUnit);
         this.dispatch = dispatch;
         this.add = true;
     }

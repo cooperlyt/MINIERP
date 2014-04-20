@@ -45,7 +45,7 @@ public class MaterialBackStoreIn implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@OneToOne(optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORE_CHANGE", nullable = false)
 	@NotNull
 	public StockChange getStockChange() {

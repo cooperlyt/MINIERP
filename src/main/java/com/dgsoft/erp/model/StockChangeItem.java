@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -33,14 +35,13 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
     public StockChangeItem() {
     }
 
-    public StockChangeItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    public StockChangeItem(StoreRes storeRes, ResUnit defaultUnit) {
+        super(storeRes, defaultUnit);
     }
 
-    public StockChangeItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+    public StockChangeItem(Res res, ResUnit defaultUnit) {
+        super(res, defaultUnit);
     }
-
 
     public StockChangeItem(StockChange stockChange, StoreRes storeRes, BigDecimal count) {
         this.stockChange = stockChange;

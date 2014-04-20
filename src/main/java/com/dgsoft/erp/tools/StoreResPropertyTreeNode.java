@@ -1,6 +1,7 @@
 package com.dgsoft.erp.tools;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.ResTreeNode;
@@ -57,7 +58,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
             Map<FormatDefine, Set<Format>> defines = new HashMap<FormatDefine, Set<Format>>();
 
             for (StoreRes storeRes : res.getStoreReses()) {
-                for (Format format : storeRes.getFormats()) {
+                for (Format format : ResFormatCache.instance().getFormats(storeRes)) {
                     Set<Format> containsFormat = defines.get(format.getFormatDefine());
                     if (containsFormat == null) {
                         containsFormat = new HashSet<Format>();
@@ -131,7 +132,7 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                 boolean find = false;
                 for (StoreResPropertyTreeNode node : treeNodes) {
 
-                    List<Format> srcParentFormats = new ArrayList<Format>(sr.getFormatList());
+                    List<Format> srcParentFormats = new ArrayList<Format>(ResFormatCache.instance().getFormats(sr));
 
                     if (!sr.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
                         if (!srcParentFormats.isEmpty())
@@ -140,15 +141,15 @@ public class StoreResPropertyTreeNode implements ResTreeNode {
                     }
 
                     if (ResHelper.instance().sameFormat(node.getFormats().values(), srcParentFormats)) {
-                        node.addChild(new StoreResTreeNode(sr, node, (define == null) ? sr.getDisplayFloatRate() : ResHelper.instance().formatDisplayValue(sr.getFormatMap().get(define))));
+                        node.addChild(new StoreResTreeNode(sr, node, (define == null) ? sr.getDisplayFloatRate() : ResHelper.instance().formatDisplayValue(ResFormatCache.instance().getFormatMap(sr).get(define))));
                         find = true;
                         break;
                     }
                 }
                 if (!find) {
-                    //Logging.getLog(StoreResPropertyTreeNode.class).warn("storeRes not in Tree:" + sr.getCode());
+                    Logging.getLog(StoreResPropertyTreeNode.class).warn("storeRes not in Tree:" + sr.getCode());
 
-                    throw new IllegalArgumentException("storeRes not in tree:" + sr);
+                   // throw new IllegalArgumentException("storeRes not in tree:" + sr);
                 }
             }
 

@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,12 +29,12 @@ public class AllocationRes extends StoreResCountEntity implements java.io.Serial
     public AllocationRes() {
     }
 
-    public AllocationRes(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    public AllocationRes(Res res) {
+        super(res, res.getResUnitByInDefault());
     }
 
-    public AllocationRes(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+    public AllocationRes(StoreRes storeRes) {
+        super(storeRes, storeRes.getRes().getResUnitByInDefault());
     }
 
     public AllocationRes(StoreRes storeRes, Allocation allocation,

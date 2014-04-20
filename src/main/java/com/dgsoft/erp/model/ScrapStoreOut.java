@@ -45,7 +45,7 @@ public class ScrapStoreOut implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@OneToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORE_CHANGE", nullable = false)
 	@NotNull
 	public StockChange getStockChange() {

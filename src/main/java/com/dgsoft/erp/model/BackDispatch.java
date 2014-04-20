@@ -58,7 +58,7 @@ public class BackDispatch implements java.io.Serializable {
         this.orderBack = orderBack;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "STOCK_CNAHGE", nullable = true)
     public StockChange getStockChange() {
         return this.stockChange;

@@ -1,5 +1,7 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -43,12 +45,13 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     public BackItem() {
     }
 
-    public BackItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+
+    public BackItem(Res res, ResUnit defaultUnit) {
+        super(res, defaultUnit);
     }
 
-    public BackItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+    public BackItem(StoreRes storeRes, ResUnit defaultUnit) {
+        super(storeRes, defaultUnit);
     }
 
     @Override

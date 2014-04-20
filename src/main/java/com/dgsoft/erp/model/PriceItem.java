@@ -1,5 +1,7 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -39,13 +41,13 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
         return "quote";
     }
 
-    public PriceItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, QuotedPrice quotedPrice) {
-        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+    public PriceItem(Res res, QuotedPrice quotedPrice) {
+        super(res, res.getResUnitByOutDefault());
         this.quotedPrice = quotedPrice;
     }
 
-    public PriceItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit, QuotedPrice quotedPrice) {
-        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+    public PriceItem(StoreRes storeRes,QuotedPrice quotedPrice) {
+        super(storeRes, storeRes.getRes().getResUnitByOutDefault());
         this.quotedPrice = quotedPrice;
     }
 

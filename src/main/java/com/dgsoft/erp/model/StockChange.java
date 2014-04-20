@@ -13,7 +13,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "STOCK_CHANGE", catalog = "MINI_ERP")
-public class StockChange implements Comparable<StockChange>,java.io.Serializable {
+public class StockChange implements Comparable<StockChange>, java.io.Serializable {
 
     @Override
     @Transient
@@ -64,25 +64,6 @@ public class StockChange implements Comparable<StockChange>,java.io.Serializable
     private StoreChangeType operType;
     private String memo;
     private boolean verify;
-
-    private Inventory inventoryAdd;
-    private Inventory inventoryLoss;
-
-
-    private Assembly assemblyForStoreOut;
-    private Assembly assemblyForStoreIn;
-    private Assembly assemblyForLoseOut;
-    private ProductStoreIn productStoreIn;
-    private MaterialStoreOut materialStoreOut;
-    private Allocation allocationForStoreOut;
-    private MaterialStoreIn materialStoreIn;
-    private Allocation allocationForStoreIn;
-
-    private ScrapStoreOut scrapStoreOut;
-    private BackDispatch backDispatch;
-    private MaterialBackStoreIn materialBackStoreIn;
-    private StoreChange storeChange;
-    private Dispatch orderDispatch;
 
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
@@ -195,16 +176,6 @@ public class StockChange implements Comparable<StockChange>,java.io.Serializable
         this.memo = memo;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
-    public Assembly getAssemblyForStoreOut() {
-        return this.assemblyForStoreOut;
-    }
-
-    public void setAssemblyForStoreOut(Assembly assemblyForStoreOut) {
-        this.assemblyForStoreOut = assemblyForStoreOut;
-    }
-
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<StockChangeItem> getStockChangeItems() {
         return this.stockChangeItems;
@@ -224,7 +195,7 @@ public class StockChange implements Comparable<StockChange>,java.io.Serializable
     }
 
     @Transient
-    public StoreResCountTotalGroup getChangeDetails(){
+    public StoreResCountTotalGroup getChangeDetails() {
         return new StoreResCountTotalGroup(getStockChangeItems());
     }
 
@@ -232,11 +203,11 @@ public class StockChange implements Comparable<StockChange>,java.io.Serializable
     public List<PrepareStockChange> getPrepareStockChangeList() {
         List<PrepareStockChange> result = new ArrayList<PrepareStockChange>(getPrepareStockChanges());
         Collections.sort(result, new Comparator<PrepareStockChange>() {
-            @Override
-            public int compare(PrepareStockChange o1, PrepareStockChange o2) {
-                return o1.getStoreRes().compareTo(o2.getStoreRes());
-            }
-        }
+                    @Override
+                    public int compare(PrepareStockChange o1, PrepareStockChange o2) {
+                        return o1.getStoreRes().compareTo(o2.getStoreRes());
+                    }
+                }
         );
         return result;
     }
@@ -253,131 +224,186 @@ public class StockChange implements Comparable<StockChange>,java.io.Serializable
         return result;
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeAdd")
+    private Set<Inventory> inventoryAdds = new HashSet<Inventory>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeLoss")
+    private Set<Inventory> inventoryLosses = new HashSet<Inventory>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
+    private Set<Assembly> assemblyForStoreOuts = new HashSet<Assembly>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
+    private Set<Assembly> assemblyForStoreIns = new HashSet<Assembly>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByLoseOut")
+    private Set<Assembly> assemblyForLoseOuts = new HashSet<Assembly>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<MaterialStoreOut> materialStoreOuts = new HashSet<MaterialStoreOut>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
+    private Set<Allocation> allocationForStoreOuts = new HashSet<Allocation>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<MaterialStoreIn> materialStoreIns = new HashSet<MaterialStoreIn>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
+    private Set<Allocation> allocationForStoreIns = new HashSet<Allocation>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<ScrapStoreOut> scrapStoreOuts = new HashSet<ScrapStoreOut>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<BackDispatch> backDispatchs = new HashSet<BackDispatch>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<MaterialBackStoreIn> materialBackStoreIns = new HashSet<MaterialBackStoreIn>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<StoreChange> storeChanges = new HashSet<StoreChange>(0);
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    private Set<Dispatch> orderDispatchs = new HashSet<Dispatch>(0);
+
+
+    @Transient
+    public Assembly getAssemblyForStoreOut() {
+        return this.assemblyForStoreOuts.isEmpty() ? null : assemblyForStoreOuts.iterator().next();
+    }
+
+    public void setAssemblyForStoreOut(Assembly assemblyForStoreOut) {
+        assemblyForStoreOuts.clear();
+        assemblyForStoreOuts.add(assemblyForStoreOut);
+    }
+
+
+    @Transient
     public Assembly getAssemblyForStoreIn() {
-        return this.assemblyForStoreIn;
+        return (assemblyForStoreIns.isEmpty() ? null : assemblyForStoreIns.iterator().next());
     }
 
     public void setAssemblyForStoreIn(Assembly assemblyForStoreIn) {
-        this.assemblyForStoreIn = assemblyForStoreIn;
+        assemblyForStoreIns.clear();
+        assemblyForStoreIns.add(assemblyForStoreIn);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByLoseOut")
+    @Transient
     public Assembly getAssemblyForLoseOut() {
-        return assemblyForLoseOut;
+        return assemblyForLoseOuts.isEmpty() ? null : assemblyForLoseOuts.iterator().next();
     }
 
     public void setAssemblyForLoseOut(Assembly assemblyForLoseOut) {
-        this.assemblyForLoseOut = assemblyForLoseOut;
+        assemblyForLoseOuts.clear();
+        assemblyForLoseOuts.add(assemblyForLoseOut);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @Transient
     public ProductStoreIn getProductStoreIn() {
-        return this.productStoreIn;
+        return productStoreIns.isEmpty() ? null : productStoreIns.iterator().next();
     }
 
     public void setProductStoreIn(ProductStoreIn productStoreIn) {
-        this.productStoreIn = productStoreIn;
+        productStoreIns.clear();
+        productStoreIns.add(productStoreIn);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @Transient
     public MaterialStoreOut getMaterialStoreOut() {
-        return materialStoreOut;
+        return materialStoreOuts.isEmpty() ? null : materialStoreOuts.iterator().next();
     }
 
     public void setMaterialStoreOut(MaterialStoreOut materialStoreOut) {
-        this.materialStoreOut = materialStoreOut;
+        materialStoreOuts.clear();
+        materialStoreOuts.add(materialStoreOut);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
+    @Transient
     public Allocation getAllocationForStoreOut() {
-        return this.allocationForStoreOut;
+        return allocationForStoreOuts.isEmpty() ? null : allocationForStoreOuts.iterator().next();
     }
 
     public void setAllocationForStoreOut(Allocation allocationForStoreOut) {
-        this.allocationForStoreOut = allocationForStoreOut;
+        allocationForStoreOuts.clear();
+        allocationForStoreOuts.add(allocationForStoreOut);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @Transient
     public MaterialStoreIn getMaterialStoreIn() {
-        return this.materialStoreIn;
+        return materialStoreIns.isEmpty() ? null : materialStoreIns.iterator().next();
     }
 
     public void setMaterialStoreIn(MaterialStoreIn materialStoreIn) {
-        this.materialStoreIn = materialStoreIn;
+        materialStoreIns.clear();
+        materialStoreIns.add(materialStoreIn);
     }
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
+    @Transient
     public Allocation getAllocationForStoreIn() {
-        return this.allocationForStoreIn;
+        return allocationForStoreIns.isEmpty() ? null : allocationForStoreIns.iterator().next();
     }
 
     public void setAllocationForStoreIn(Allocation allocationsForStoreIn) {
-        this.allocationForStoreIn = allocationsForStoreIn;
+        allocationForStoreIns.clear();
+        allocationForStoreIns.add(allocationsForStoreIn);
     }
 
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeAdd")
+    @Transient
     public Inventory getInventoryAdd() {
-        return this.inventoryAdd;
+        return inventoryAdds.isEmpty() ? null : inventoryAdds.iterator().next();
     }
 
     public void setInventoryAdd(Inventory inventoryAdd) {
-        this.inventoryAdd = inventoryAdd;
+        inventoryAdds.clear();
+        inventoryAdds.add(inventoryAdd);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChangeLoss")
+    @Transient
     public Inventory getInventoryLoss() {
-        return this.inventoryLoss;
+        return inventoryLosses.isEmpty() ? null : inventoryLosses.iterator().next();
     }
 
     public void setInventoryLoss(Inventory inventoryLoss) {
-        this.inventoryLoss = inventoryLoss;
+        inventoryLosses.clear();
+        inventoryLosses.add(inventoryLoss);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @Transient
     public ScrapStoreOut getScrapStoreOut() {
-        return this.scrapStoreOut;
+        return scrapStoreOuts.isEmpty() ? null : scrapStoreOuts.iterator().next();
     }
 
-    public void setScrapStoreOut(ScrapStoreOut scrapStoreOuts) {
-        this.scrapStoreOut = scrapStoreOuts;
+    public void setScrapStoreOut(ScrapStoreOut scrapStoreOut) {
+        scrapStoreOuts.clear();
+        scrapStoreOuts.add(scrapStoreOut);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+
+    @Transient
     public BackDispatch getBackDispatch() {
-        return this.backDispatch;
+        return backDispatchs.isEmpty() ? null : backDispatchs.iterator().next();
     }
 
-    public void setBackDispatch(BackDispatch BACKDISPATCH) {
-        this.backDispatch = BACKDISPATCH;
+    public void setBackDispatch(BackDispatch backDispatch) {
+        backDispatchs.clear();
+        backDispatchs.add(backDispatch);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @Transient
     public MaterialBackStoreIn getMaterialBackStoreIn() {
-        return this.materialBackStoreIn;
+        return materialBackStoreIns.isEmpty() ? null : materialBackStoreIns.iterator().next();
     }
 
-    public void setMaterialBackStoreIn(
-            MaterialBackStoreIn materialBackStoreIn) {
-        this.materialBackStoreIn = materialBackStoreIn;
+    public void setMaterialBackStoreIn(MaterialBackStoreIn materialBackStoreIn) {
+        materialBackStoreIns.clear();
+        materialBackStoreIns.add(materialBackStoreIn);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @Transient
     public Dispatch getOrderDispatch() {
-        return this.orderDispatch;
+        return orderDispatchs.isEmpty() ? null : orderDispatchs.iterator().next();
     }
 
     public void setOrderDispatch(Dispatch orderStoreOuts) {
-        this.orderDispatch = orderStoreOuts;
+        orderDispatchs.clear();orderDispatchs.add(orderStoreOuts);
     }
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY, mappedBy = "stockChange")
+    @Transient
     public StoreChange getStoreChange() {
-        return storeChange;
+        return storeChanges.isEmpty() ? null : storeChanges.iterator().next();
     }
 
     public void setStoreChange(StoreChange storeChange) {
-        this.storeChange = storeChange;
+        storeChanges.clear();storeChanges.add(storeChange);
     }
 }

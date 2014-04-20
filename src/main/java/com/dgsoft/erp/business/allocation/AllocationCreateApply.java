@@ -62,14 +62,12 @@ public class AllocationCreateApply {
 
     @org.jboss.seam.annotations.Observer(value = "erp.resLocateSelected", create = false)
     public void codeTypeByRes(Res res) {
-        editingApplyItems = new AllocationRes(res, resHelper.getFormatHistory(res),
-                resHelper.getFloatConvertRateHistory(res), res.getResUnitByInDefault());
+        editingApplyItems = new AllocationRes(res);
     }
 
     @org.jboss.seam.annotations.Observer(value = "erp.storeResLocateSelected", create = false)
     public void generateStoreInItemByStoreRes(StoreRes storeRes) {
-        editingApplyItems = new AllocationRes(storeRes, resHelper.getFormatHistory(storeRes.getRes()),
-                resHelper.getFloatConvertRateHistory(storeRes.getRes()), storeRes.getRes().getResUnitByInDefault());
+        editingApplyItems = new AllocationRes(storeRes);
     }
 
     public String complete() {
@@ -111,10 +109,7 @@ public class AllocationCreateApply {
                 applyItems.add(editingApplyItems);
             }
 
-            editingApplyItems = new AllocationRes(storeResHome.getInstance(),
-                    resHelper.getFormatHistory(storeResHome.getInstance().getRes()),
-                    resHelper.getFloatConvertRateHistory(storeResHome.getInstance().getRes()),
-                    storeResHome.getInstance().getRes().getResUnitByInDefault());
+            editingApplyItems = new AllocationRes(storeResHome.getInstance());
 
 
         } else {

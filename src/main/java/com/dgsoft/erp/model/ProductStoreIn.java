@@ -38,7 +38,7 @@ public class ProductStoreIn implements java.io.Serializable, StockChangeModel {
         this.id = id;
     }
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "STORE_CHANGE", nullable = false)
     @NotNull
     public StockChange getStockChange() {

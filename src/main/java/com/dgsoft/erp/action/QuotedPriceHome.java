@@ -81,13 +81,13 @@ public class QuotedPriceHome extends ErpEntityHome<QuotedPrice> {
 
     @Observer(value = "erp.resLocateSelected", create = false)
     public void generatePriceItemByRes(Res res) {
-        editingItem = new PriceItem(res, resHelper.getFormatHistory(res), resHelper.getFloatConvertRateHistory(res), res.getResUnitByOutDefault(), getInstance());
+        editingItem = new PriceItem(res, getInstance());
         log.debug("generateStoreInItemByStoreRes complete");
     }
 
     @Observer(value = "erp.storeResLocateSelected", create = false)
     public void generatePriceItemByStoreRes(StoreRes storeRes) {
-        editingItem = new PriceItem(storeRes, resHelper.getFormatHistory(storeRes.getRes()), resHelper.getFloatConvertRateHistory(storeRes.getRes()), storeRes.getRes().getResUnitByOutDefault(), getInstance());
+        editingItem = new PriceItem(storeRes,getInstance());
 
         log.debug("generateStoreInItemByStoreRes complete");
     }

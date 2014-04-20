@@ -55,7 +55,7 @@ public class Assembly implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@OneToOne(optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORE_IN", nullable = true)
 	public StockChange getStockChangeByStoreIn() {
 		return this.stockChangeByStoreIn;
@@ -65,7 +65,7 @@ public class Assembly implements java.io.Serializable {
 		this.stockChangeByStoreIn = stockChangeByStoreIn;
 	}
 
-	@OneToOne(optional = false,fetch = FetchType.LAZY)
+	@ManyToOne(optional = false,fetch = FetchType.LAZY)
 	@JoinColumn(name = "STORE_OUT", nullable = false)
 	@NotNull
 	public StockChange getStockChangeByStoreOut() {
@@ -76,7 +76,7 @@ public class Assembly implements java.io.Serializable {
 		this.stockChangeByStoreOut = stockChangeByStoreOut;
 	}
 
-    @OneToOne(optional = false,fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "LOSE_OUT",nullable = true)
     public StockChange getStockChangeByLoseOut() {
         return stockChangeByLoseOut;

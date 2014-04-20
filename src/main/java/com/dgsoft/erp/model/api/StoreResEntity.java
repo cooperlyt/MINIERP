@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model.api;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 
@@ -22,37 +23,31 @@ public class StoreResEntity{
     }
 
 
-    public StoreResEntity(Res res, Map<String, Set<Object>> formatHistory,
-                          List<BigDecimal> floatConvertRateHistory) {
+    public StoreResEntity(Res res) {
         this.res = res;
-        this.formatHistory = formatHistory;
+        this.formatHistory = ResHelper.instance().getFormatHistory(res);
         formats = new ArrayList<Format>(res.getFormatDefines().size());
         for (FormatDefine formatDefine : res.getFormatDefineList()) {
             formats.add(new Format(formatDefine));
         }
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            if (floatConvertRateHistory == null) {
-                throw new IllegalArgumentException("float convert res must set floatConvertRateHistory");
-            }
-            this.floatConvertRateHistory = floatConvertRateHistory;
+
+            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
             floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
         }
     }
 
-
-    public StoreResEntity(StoreRes storeRes, Map<String, Set<Object>> formatHistory,
-                          List<BigDecimal> floatConvertRateHistory) {
+    public StoreResEntity(StoreRes storeRes) {
         this.res = storeRes.getRes();
-        this.formatHistory = formatHistory;
+
+        this.formatHistory = ResHelper.instance().getFormatHistory(res);
         formats = new ArrayList<Format>(res.getFormatDefines().size());
-        for (Format format : storeRes.getFormatList()) {
+        for (Format format : ResFormatCache.instance().getFormats(storeRes)) {
             formats.add(new Format(format.getFormatDefine(), format.getFormatValue()));
         }
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            if (floatConvertRateHistory == null) {
-                throw new IllegalArgumentException("float convert res must set floatConvertRateHistory");
-            }
-            this.floatConvertRateHistory = floatConvertRateHistory;
+
+            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
             floatConvertRate = storeRes.getFloatConversionRate();
         }
     }

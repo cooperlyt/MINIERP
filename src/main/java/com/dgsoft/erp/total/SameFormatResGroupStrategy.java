@@ -1,6 +1,7 @@
 package com.dgsoft.erp.total;
 
 import com.dgsoft.common.TotalGroupStrategy;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.Res;
@@ -58,7 +59,7 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
                 return true;
             }
 
-            if (ResHelper.instance().sameFormat(storeRes.getFormats(),that.getStoreRes().getFormats())){
+            if (ResHelper.instance().sameFormat(ResFormatCache.instance().getFormats(storeRes),ResFormatCache.instance().getFormats(that.getStoreRes()))){
                 return true;
             }
 
@@ -70,13 +71,13 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
         }
 
         public String getFormatTitle(){
-           return ResHelper.instance().getFormatsTitle(storeRes.getFormatList(),false);
+           return ResHelper.instance().getFormatsTitle(ResFormatCache.instance().getFormats(storeRes),false);
         }
 
         @Override
         public int hashCode() {
             String formatId = storeRes.getRes().getId();
-            for (Format format: storeRes.getFormatList())
+            for (Format format: ResFormatCache.instance().getFormats(storeRes))
                 formatId = formatId + "-" + format.getFormatDefine().getId() + ":" + format.getFormatValue();
             return formatId.hashCode();
         }
@@ -88,7 +89,7 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
 
         @Override
         public String toString(){
-            return storeRes.getRes().getName() + ResHelper.instance().getFormatsTitle(storeRes.getFormatList(),false);
+            return storeRes.getRes().getName() + ResHelper.instance().getFormatsTitle(ResFormatCache.instance().getFormats(storeRes),false);
         }
     }
 }

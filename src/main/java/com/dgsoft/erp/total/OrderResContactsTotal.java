@@ -18,16 +18,10 @@ public class OrderResContactsTotal extends ErpEntityQuery<OrderItem>{
 
     protected static final String EJBQL = "select orderItem from OrderItem orderItem " +
             "left join fetch orderItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
-            "left join fetch orderitem.storeRes " +
+            "left join fetch orderItem.storeRes storeRes left join fetch storeRes.res res " +
+            "left join fetch res.unitGroup unitGroup left join fetch dispatch.stockChange " +
             "left join fetch orderItem.needRes needRes left join fetch needRes.customerOrder customerOrder " +
             "left join fetch customerOrder.customer customer left join fetch customer.customerArea " +
-            "left join fetch stockChange.assemblyForStoreOut left join fetch stockChange.assemblyForStoreIn " +
-            "left join fetch stockChange.assemblyForLoseOut left join fetch stockChange.productStoreIn " +
-            "left join fetch stockChange.materialStoreOut left join fetch stockChange.allocationForStoreOut " +
-            "left join fetch stockChange.materialStoreIn left join fetch stockChange.allocationForStoreIn " +
-            "left join fetch stockChange.inventoryAdd left join fetch stockChange.inventoryLoss " +
-            "left join fetch stockChange.scrapStoreOut left join fetch stockChange.backDispatch left join fetch stockChange.orderDispatch " +
-            "left join fetch stockChange.materialBackStoreIn left join fetch stockChange.storeChange " +
 
             "left join fetch customer.customerLevel where orderItem.status in ('WAIT_PRICE', 'COMPLETED')";
 

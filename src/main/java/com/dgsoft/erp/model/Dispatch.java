@@ -112,7 +112,7 @@ public class Dispatch implements java.io.Serializable {
         this.store = store;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "STOCK_CHANGE")
     public StockChange getStockChange() {
         return this.stockChange;

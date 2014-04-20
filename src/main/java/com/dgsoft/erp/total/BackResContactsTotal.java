@@ -22,18 +22,12 @@ import java.util.List;
 public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
 
     protected static final String EJBQL = "select backItem from BackItem backItem " +
-            "left join fetch backItem.storeRes " +
+            "left join fetch backItem.storeRes storeRes left join fetch storeRes.res res " +
+            "left join fetch res.unitGroup unitGroup " +
             "left join fetch backItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
             "left join fetch backItem.orderBack orderBack left join fetch orderBack.customer customer " +
             "left join fetch customer.customerArea left join fetch customer.customerLevel  " +
-            "left join fetch stockChange.assemblyForStoreOut left join fetch stockChange.assemblyForStoreIn " +
-            "left join fetch stockChange.assemblyForLoseOut left join fetch stockChange.productStoreIn " +
-            "left join fetch stockChange.materialStoreOut left join fetch stockChange.allocationForStoreOut " +
-            "left join fetch stockChange.materialStoreIn left join fetch stockChange.allocationForStoreIn " +
-            "left join fetch stockChange.inventoryAdd left join fetch stockChange.inventoryLoss " +
-            "left join fetch stockChange.scrapStoreOut left join fetch stockChange.orderDispatch " +
-            "left join fetch stockChange.materialBackStoreIn left join fetch stockChange.storeChange " +
-            "left join fetch stockChange.backDispatch where backItem.backItemStatus = 'STORE_IN'";
+            "where backItem.backItemStatus = 'STORE_IN'";
 
     protected static final String[] RESTRICTIONS = {
             "backItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",

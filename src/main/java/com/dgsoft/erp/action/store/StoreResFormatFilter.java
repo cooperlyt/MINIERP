@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -85,7 +86,7 @@ public class StoreResFormatFilter {
         this.res = storeRes.getRes();
         generateFloatConvertRateHistory();
         resFormatList = new ArrayList<Format>();
-        for (Format format : storeRes.getFormatList()) {
+        for (Format format : ResFormatCache.instance().getFormats(storeRes)) {
             if (var) {
                 resFormatList.add(format);
             } else
@@ -159,7 +160,7 @@ public class StoreResFormatFilter {
                         log.debug("getAgreeStoreResIds test: " + format.getFormatValue());
                     }
                     if ((format.getFormatValue() != null) && (!format.getFormatValue().trim().equals("")) &&
-                            (!format.getFormatValue().equals(storeRes.getFormat(format.getFormatDefine().getId()).getFormatValue()))) {
+                            (!format.getFormatValue().equals(ResFormatCache.instance().getFormatMap(storeRes).get(format.getFormatDefine())))) {
                         agree = false;
                         break;
                     }

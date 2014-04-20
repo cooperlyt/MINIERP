@@ -94,17 +94,17 @@ public class OrderFeePay extends OrderTaskHandle {
             return "fail";
         }
 
-
-        for (OrderFee orderFee: orderHome.getInstance().getOrderFees()){
-            if (orderFee.isMiddleMoney()){
-                orderHome.getInstance().setMiddleMoneyPay(new MiddleMoneyPay(orderHome.getInstance(),
-                        orderHome.getInstance().getCustomer().getMiddleMan(),
-                        orderFee.getMoney(),orderFee.getPayDate(),orderFee.getPayEmp(),
-                        orderFee.getDescription(),orderFee.getPayType(),orderFee.getCheckNumber()));
-
-                break;
-            }
-        }
+//
+//        for (OrderFee orderFee: orderHome.getInstance().getOrderFees()){
+//            if (orderFee.isMiddleMoney()){
+//                orderHome.getInstance().setMiddleMoneyPay(new MiddleMoneyPay(orderHome.getInstance(),
+//                        orderHome.getInstance().getCustomer().getMiddleMan(),
+//                        orderFee.getMoney(),orderFee.getPayDate(),orderFee.getPayEmp(),
+//                        orderFee.getDescription(),orderFee.getPayType(),orderFee.getCheckNumber()));
+//
+//                break;
+//            }
+//        }
 
 
         orderHome.update();

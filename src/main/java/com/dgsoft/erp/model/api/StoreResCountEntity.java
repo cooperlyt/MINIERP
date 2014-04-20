@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model.api;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 
 import java.math.BigDecimal;
@@ -24,15 +26,13 @@ public abstract class StoreResCountEntity extends StoreResEntity{
     public StoreResCountEntity() {
     }
 
-    protected StoreResCountEntity(Res res, Map<String, Set<Object>> formatHistory,
-                                  List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory);
+    protected StoreResCountEntity(Res res, ResUnit defaultUnit) {
+        super(res);
         setUseUnit(defaultUnit);
     }
 
-    protected StoreResCountEntity(StoreRes storeRes, Map<String, Set<Object>> formatHistory,
-                                  List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(storeRes, formatHistory, floatConvertRateHistory);
+    protected StoreResCountEntity(StoreRes storeRes, ResUnit defaultUnit) {
+        super(storeRes);
         setUseUnit(defaultUnit);
     }
 
@@ -97,7 +97,7 @@ public abstract class StoreResCountEntity extends StoreResEntity{
         if (getStoreRes() == null) {
             return super.getFormats();
         } else {
-            return getStoreRes().getFormatList();
+            return ResFormatCache.instance().getFormats(getStoreRes());
         }
     }
 

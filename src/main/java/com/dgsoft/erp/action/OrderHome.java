@@ -4,6 +4,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.StoreResCount;
@@ -169,7 +170,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             TotalDataGroup.sort(group,new Comparator<OrderItem>() {
                 @Override
                 public int compare(OrderItem o1, OrderItem o2) {
-                    if (ResHelper.instance().sameFormat(o1.getStoreRes().getFormats(), o2.getFormats())){
+                    if (ResHelper.instance().sameFormat(o1.getFormats(), o2.getFormats())){
                         if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
                             return o1.getStoreRes().getFloatConversionRate().compareTo(o2.getFloatConvertRate());
                         }
@@ -211,7 +212,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             TotalDataGroup.sort(sg,new Comparator<OrderItem>() {
                 @Override
                 public int compare(OrderItem o1, OrderItem o2) {
-                    if (ResHelper.instance().sameFormat(o1.getStoreRes().getFormats(), o2.getFormats())){
+                    if (ResHelper.instance().sameFormat(o1.getFormats(), o2.getFormats())){
                         if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
                             return o1.getStoreRes().getFloatConversionRate().compareTo(o2.getFloatConvertRate());
                         }

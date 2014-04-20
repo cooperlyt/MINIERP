@@ -58,7 +58,7 @@ public class MiddleMoneyPay implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@OneToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOMER_ORDER", nullable = false)
 	@NotNull
 	public CustomerOrder getCustomerOrder() {

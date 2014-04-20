@@ -15,14 +15,12 @@ public class StockChangeItemCreate extends ResCountEntityItemCreate<StockChangeI
 
     @Override
     protected StockChangeItem createInstance(Res res) {
-        return new StockChangeItem(res, resHelper.getFormatHistory(res),
-                resHelper.getFloatConvertRateHistory(res), res.getResUnitByInDefault());
+        return new StockChangeItem(res, res.getResUnitByInDefault());
     }
 
     @Override
     protected StockChangeItem createInstance(StoreRes storeRes) {
-        return new StockChangeItem(storeRes, resHelper.getFormatHistory(storeRes.getRes()),
-                resHelper.getFloatConvertRateHistory(storeRes.getRes()), storeRes.getRes().getResUnitByInDefault());
+        return new StockChangeItem(storeRes,storeRes.getRes().getResUnitByInDefault());
 
     }
 }

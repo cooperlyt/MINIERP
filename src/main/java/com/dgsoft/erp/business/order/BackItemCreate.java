@@ -25,15 +25,11 @@ public class BackItemCreate extends ResCountEntityItemCreate<BackItem> {
 
     @Override
     protected BackItem createInstance(Res res) {
-        return new BackItem(res, resHelper.getFormatHistory(res),
-                res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ? resHelper.getFloatConvertRateHistory(res) : null,
-                res.getResUnitByOutDefault());
+        return new BackItem(res,res.getResUnitByOutDefault());
     }
 
     @Override
     protected BackItem createInstance(StoreRes storeRes) {
-        return new BackItem(storeRes, resHelper.getFormatHistory(storeRes.getRes()),
-                storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ? resHelper.getFloatConvertRateHistory(storeRes.getRes()) : null,
-                storeRes.getRes().getResUnitByOutDefault());
+        return new BackItem(storeRes, storeRes.getRes().getResUnitByOutDefault());
     }
 }

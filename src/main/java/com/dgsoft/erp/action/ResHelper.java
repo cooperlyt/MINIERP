@@ -3,6 +3,7 @@ package com.dgsoft.erp.action;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.system.model.Word;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
@@ -36,7 +37,7 @@ public class ResHelper {
 
         String result = storeRes.getRes().getName() + "(" + storeRes.getRes().getCode() + ")";
 
-        result += getFormatsTitle(storeRes.getFormatList(), true);
+        result += getFormatsTitle(ResFormatCache.instance().getFormats(storeRes), true);
 
         if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             result += " " + DataFormat.format(storeRes.getFloatConversionRate(),
@@ -91,7 +92,7 @@ public class ResHelper {
     public boolean matchFormat(Collection<Format> formats, StoreRes storeRes) {
         for (Format cFormat : formats) {
             boolean find = false;
-            for (Format f : storeRes.getFormats()) {
+            for (Format f : ResFormatCache.instance().getFormats(storeRes)) {
                 if (cFormat.equals(f)) {
                     find = true;
                     break;
@@ -163,7 +164,7 @@ public class ResHelper {
     }
 
     public String genStoreResCode(StoreRes storeRes) {
-        return genStoreResCode(storeRes.getRes().getCode(), storeRes.getFormatList(),
+        return genStoreResCode(storeRes.getRes().getCode(),ResFormatCache.instance().getFormats(storeRes),
                 (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) ?
                         DataFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null
         );

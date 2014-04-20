@@ -2,6 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.ErpEntityQuery;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.ScopeType;
@@ -58,17 +59,13 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
     @Observer(value = "erp.storeResLocateSelected", create = false)
     public void selectedStoreRes(StoreRes storeRes) {
         log.debug("storeResFormat selectedStoreRes Observer ");
-        resCondition = new StoreResEntity(storeRes, resHelper.
-                getFormatHistory(storeRes.getRes()),
-                resHelper.getFloatConvertRateHistory(storeRes.getRes()));
+        resCondition = new StoreResEntity(storeRes);
     }
 
 
     @Observer(value = "erp.resLocateSelected", create = false)
     public void selectedRes(Res res) {
-        resCondition = new StoreResEntity(res, resHelper.
-                getFormatHistory(res),
-                resHelper.getFloatConvertRateHistory(res));
+        resCondition = new StoreResEntity(res);
     }
 
 
@@ -104,7 +101,7 @@ public class StoreResList extends ErpEntityQuery<StoreRes> {
 
             for (StoreRes storeRes : result) {
                 boolean add = true;
-                Map<FormatDefine, Format> storeResFormatMap = storeRes.getFormatMap();
+                Map<FormatDefine, Format> storeResFormatMap = ResFormatCache.instance().getFormatMap(storeRes);
                 for (Format format : resCondition.getFormats()) {
                     if (!DataFormat.isEmpty(format.getFormatValue()) &&
                             !storeResFormatMap.get(format.getFormatDefine()).equals(format)) {

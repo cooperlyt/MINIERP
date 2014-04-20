@@ -175,7 +175,7 @@
                     </f:facet>
 
                     #{_stock.storeRes.res.name}(#{_stock.storeRes.res.code}) #{' '}
-                    <a:repeat value="#{_stock.storeRes.formatList}" var="_format">
+                    <a:repeat value="#{_stock.formats}" var="_format">
                         #{' '}
                         #{_format.formatDefine.name} :
                         <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
@@ -245,7 +245,7 @@
 
             <h:panelGroup>
                 #{stockHome.instance.storeRes.res.name}(#{stockHome.instance.storeRes.res.code}) #{' '}
-                <a:repeat value="#{stockHome.instance.storeRes.formatList}" var="_format">
+                <a:repeat value="#{stockHome.instance.formats}" var="_format">
                     #{' '}
                     #{_format.formatDefine.name} :
                     <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"

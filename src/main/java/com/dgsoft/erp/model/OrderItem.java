@@ -1,6 +1,8 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.ResFormatCache;
+import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -52,15 +54,17 @@ public class OrderItem extends StoreResPriceEntity
 
     }
 
-    public OrderItem(Res res, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(res, formatHistory, floatConvertRateHistory, defaultUnit);
+
+
+    public OrderItem(Res res) {
+        super(res, res.getResUnitByOutDefault());
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))
             needConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
         rebate = new BigDecimal("100");
     }
 
-    public OrderItem(StoreRes storeRes, Map<String, Set<Object>> formatHistory, List<BigDecimal> floatConvertRateHistory, ResUnit defaultUnit) {
-        super(storeRes, formatHistory, floatConvertRateHistory, defaultUnit);
+    public OrderItem(StoreRes storeRes) {
+        super(storeRes, storeRes.getRes().getResUnitByOutDefault());
         needConvertRate = storeRes.getFloatConversionRate();
         rebate = new BigDecimal("100");
     }

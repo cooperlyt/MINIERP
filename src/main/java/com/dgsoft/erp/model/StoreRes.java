@@ -4,6 +4,7 @@ package com.dgsoft.erp.model;
 import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResCount;
 import org.hibernate.annotations.GenericGenerator;
@@ -274,15 +275,15 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         return resCount;
     }
 
-    @Transient
-    public Format getFormat(String formatDefineId) {
-        for (Format format : getFormats()) {
-            if (format.getFormatDefine().getId().equals(formatDefineId)) {
-                return format;
-            }
-        }
-        return null;
-    }
+//    @Transient
+//    public Format getFormat(String formatDefineId) {
+//        for (Format format : getFormats()) {
+//            if (format.getFormatDefine().getId().equals(formatDefineId)) {
+//                return format;
+//            }
+//        }
+//        return null;
+//    }
 
     @Transient
     public List<Format> getFormatList() {
@@ -294,15 +295,6 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
             }
         });
 
-        return result;
-    }
-
-    @Transient
-    public Map<FormatDefine, Format> getFormatMap() {
-        Map<FormatDefine, Format> result = new HashMap<FormatDefine, Format>();
-        for (Format format : getFormats()) {
-            result.put(format.getFormatDefine(), format);
-        }
         return result;
     }
 
@@ -325,7 +317,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         }
         StoreRes other = (StoreRes) obj;
 
-        if ((getId() != null) && (!"".equals(getId().trim()))) {
+        if ((getId() != null) && (!"".equals(getId().trim())) && (other.getId() != null) && (!"".equals(other.getId().trim()))) {
             return getId().equals(other.getId());
         }
 
@@ -333,7 +325,8 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
             return false;
         }
 
-        return ResHelper.instance().sameFormat(other.getFormats(), getFormats())
+
+        return ResHelper.instance().sameFormat(ResFormatCache.instance().getFormats(other), ResFormatCache.instance().getFormats(this))
                 && (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                 || getFloatConversionRate().equals(other.getFloatConversionRate()));
     }
@@ -346,7 +339,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         }
 
         String result = getRes().getId();
-        for (Format format : getFormatList()) {
+        for (Format format : ResFormatCache.instance().getFormats(this)) {
             result += "_" + format.getFormatDefine().getId() + ":" + format.getFormatValue();
         }
         return result.hashCode();

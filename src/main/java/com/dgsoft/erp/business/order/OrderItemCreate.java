@@ -20,17 +20,11 @@ public class OrderItemCreate extends ResCountEntityItemCreate<OrderItem> {
 
     @Override
     protected OrderItem createInstance(Res res) {
-        return new OrderItem(res,
-                resHelper.getFormatHistory(res),
-                resHelper.getFloatConvertRateHistory(res),
-                res.getResUnitByOutDefault());
+        return new OrderItem(res);
     }
 
     @Override
     protected OrderItem createInstance(StoreRes storeRes) {
-        return new OrderItem(storeRes,
-                resHelper.getFormatHistory(storeRes.getRes()),
-                resHelper.getFloatConvertRateHistory(storeRes.getRes()),
-                storeRes.getRes().getResUnitByOutDefault());
+        return new OrderItem(storeRes);
     }
 }
