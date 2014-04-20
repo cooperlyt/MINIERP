@@ -11,31 +11,47 @@
     <!--required param: order -->
 
     <h:outputText rendered="#{order.moneyComplete}" style="color: green"
-                  value="#{messages.order_field_moneyComplete_true}"  />
+                  value="#{messages.order_status_money}"/>
+
     <h:outputText rendered="#{not order.moneyComplete}"
-                  value="#{messages.order_field_moneyComplete_false}" style="color: darkred;"/>
+                  value="#{messages.order_status_money}" style="color: darkred;"/>
+
+    <h:graphicImage value="/img/true.png" rendered="#{order.moneyComplete}"/>
+
+    <h:graphicImage value="/img/false.png" rendered="#{not order.moneyComplete}"/>
 
     #{' '}/#{' '}
 
     <h:outputText rendered="#{order.allStoreOut}" style="color: green"
-                  value="#{messages.order_field_allStoreOut_true}"  />
+                  value="#{messages.order_status_res}"/>
     <h:outputText rendered="#{not order.allStoreOut}"
-                  value="#{messages.order_field_allStoreOut_false}" style="color: darkred;"/>
+                  value="#{messages.order_status_res}" style="color: darkred;"/>
 
+    <h:graphicImage value="/img/true.png" rendered="#{order.allStoreOut}"/>
+
+    <h:graphicImage value="/img/false.png" rendered="#{not order.allStoreOut}"/>
     #{' '}/#{' '}
 
     <h:outputText rendered="#{order.resReceived}" style="color: green"
-                  value="#{messages.order_field_resReceived_true}"  />
+                  value="#{messages.order_status_receive}"/>
     <h:outputText rendered="#{not order.resReceived}"
-                  value="#{messages.order_field_resReceived_false}" style="color: darkred;"/>
+                  value="#{messages.order_status_receive}" style="color: darkred;"/>
+
+    <h:graphicImage value="/img/true.png" rendered="#{order.resReceived}"/>
+
+    <h:graphicImage value="/img/false.png" rendered="#{not order.resReceived}"/>
 
     <a:outputPanel rendered="#{s:hasRole('erp.sale.manager')}">
         #{' '}/#{' '}
 
         <h:outputText rendered="#{order.middlePayed}" style="color: green"
-                      value="#{messages.order_field_middlePayed_true}"  />
+                      value="#{messages.order_status_middleMoney}"/>
         <h:outputText rendered="#{not order.middlePayed}"
-                      value="#{messages.order_field_middlePayed_false}" style="color: darkred;"/>
+                      value="#{messages.order_status_middleMoney}" style="color: darkred;"/>
+
+        <h:graphicImage value="/img/true.png" rendered="#{order.middlePayed}"/>
+
+        <h:graphicImage value="/img/false.png" rendered="#{not order.middlePayed}"/>
 
     </a:outputPanel>
 

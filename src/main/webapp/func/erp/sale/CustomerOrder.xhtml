@@ -148,167 +148,239 @@
 
 
 <br/>
-<rich:dataTable id="dataListResult" style="width: 100%" value="#{orderList.resultList}" var="_order"
-                noDataLabel="#{messages.emptyResult}">
-    <f:facet name="footer">
-        <a:outputPanel rendered="#{not empty orderList.resultList}">
-            <ui:include src="/layout/pageA4jNavigation.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-            </ui:include>
-        </a:outputPanel>
-    </f:facet>
 
-    <rich:column>
-        <f:facet name="header">
-
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.order_field_id}"/>
-                <ui:param name="propertyPath" value="customerOrder.id"/>
-            </ui:include>
-        </f:facet>
-
-
-        <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.id}" target="_blank"
-                style="#{_order.canceled ? 'text-decoration:line-through; color: red;' : ''}">
-            <f:param name="orderId" value="#{_order.id}"/>
-        </s:link>
-
+<h:form>
+    <rich:extendedDataTable id="dataListResult" style="width: 100%" value="#{orderList.resultList}" var="_order"
+                    noDataLabel="#{messages.emptyResult}" frozenColumns="5">
         <f:facet name="footer">
-            #{messages.recordTotal} #{orderList.resultCount} #{messages.item}
+            <a:outputPanel rendered="#{not empty orderList.resultList}">
+                <ui:include src="/layout/pageA4jNavigation.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                </ui:include>
+            </a:outputPanel>
         </f:facet>
-    </rich:column>
 
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
-                <ui:param name="propertyPath" value="customerOrder.customer.customerArea.name"/>
+
+        <rich:column style="text-align: center;" width="30px">
+
+
+            <a:commandButton image="/img/cancel.png" title="#{messages.CancelOrder}" immediate="true" execute="@this"
+                             render="cancelOrderIdTitle,cancelOrderOperAction"
+                             oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
+                             rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+
+                <a:param value="#{_order.id}" assignTo="#{orderHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+
+            <s:link action="#{orderCreate.createCloneOrder}" propagation="begin" includePageParams="true"
+                    rendered="#{_order.canceled and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+                <s:graphicImage value="/img/undo.png" title="#{messages.reCreateOrder}"/>
+                <f:param name="cloneOrderId" value="#{_order.id}"/>
+                <f:param name="cloneCustomerAreaId" value="#{_order.customer.customerArea.id}"/>
+            </s:link>
+
+
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_field_id}"/>
+                    <ui:param name="propertyPath" value="customerOrder.id"/>
+                </ui:include>
+            </f:facet>
+
+
+            <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.id}" target="_blank"
+                    style="#{_order.canceled ? 'text-decoration:line-through; color: red;' : ''}">
+                <f:param name="orderId" value="#{_order.id}"/>
+            </s:link>
+
+            <f:facet name="footer">
+                #{messages.recordTotal} #{orderList.resultCount} #{messages.item}
+            </f:facet>
+        </rich:column>
+
+        <rich:column width="60px">
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
+                    <ui:param name="propertyPath" value="customerOrder.customer.customerArea.name"/>
+                </ui:include>
+            </f:facet>
+            #{_order.customer.customerArea.name}
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.orderCustomer}"/>
+                    <ui:param name="propertyPath" value="customerOrder.customer.name"/>
+                </ui:include>
+
+            </f:facet>
+            #{_order.customer.name}
+        </rich:column>
+        <rich:column rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}" width="70px">
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_field_payType}"/>
+                    <ui:param name="propertyPath" value="customerOrder.payType"/>
+                </ui:include>
+            </f:facet>
+            #{messages[_order.payType.name()]}
+
+        </rich:column>
+        <rich:column style="text-align: center; font-size: 8pt;" width="170px">
+            <f:facet name="header">
+                #{messages.order_status}
+            </f:facet>
+            <ui:include src="/layout/erp/OrderStatus.xhtml">
+                <ui:param name="order" value="#{_order}"/>
             </ui:include>
-        </f:facet>
-        #{_order.customer.customerArea.name}
-
-    </rich:column>
+        </rich:column>
 
 
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.orderCustomer}"/>
-                <ui:param name="propertyPath" value="customerOrder.customer.name"/>
-            </ui:include>
-
-        </f:facet>
-        #{_order.customer.name}
-    </rich:column>
-
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.order_field_createDate}"/>
-                <ui:param name="propertyPath" value="customerOrder.createDate"/>
-            </ui:include>
-        </f:facet>
-        <h:outputText value="#{_order.createDate}">
-            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-        </h:outputText>
-    </rich:column>
-    <!--
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.order_field_emp}"/>
-                <ui:param name="propertyPath" value="customerOrder.orderEmp"/>
-            </ui:include>
-        </f:facet>
-        #{dictionary.getEmpNameById(_order.orderEmp)}
-    </rich:column>
-     -->
-    <rich:column style="text-align: center; font-size: 8pt;">
-        <f:facet name="header">
-            #{messages.order_status}
-        </f:facet>
-        <ui:include src="/layout/erp/OrderStatus.xhtml">
-            <ui:param name="order" value="#{_order}"/>
-        </ui:include>
-    </rich:column>
 
 
-    <rich:column rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.order_field_payType}"/>
-                <ui:param name="propertyPath" value="customerOrder.payType"/>
-            </ui:include>
-        </f:facet>
-        #{messages[_order.payType.name()]}
+        <rich:column style="text-align: right" footerClass="moneyTableFooter"
+                     rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
 
-    </rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.orderMoney}"/>
+                    <ui:param name="propertyPath" value="customerOrder.money"/>
+                </ui:include>
+            </f:facet>
 
-    <rich:column style="text-align: right" footerClass="moneyTableFooter"
-                 rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
-
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{orderList}"/>
-                <ui:param name="propertyLabel" value="#{messages.orderMoney}"/>
-                <ui:param name="propertyPath" value="customerOrder.money"/>
-            </ui:include>
-        </f:facet>
-
-        <h:outputText value="#{_order.money}">
-            <f:convertNumber locale="#{calendarBean.locale}"
-                             type="currency" groupingUsed="true"/>
-        </h:outputText>
-
-        <f:facet name="footer">
-            <h:outputText value="#{orderList.totalMoney}">
+            <h:outputText value="#{_order.money}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
 
-        </f:facet>
-    </rich:column>
+            <f:facet name="footer">
+                <h:outputText value="#{orderList.totalMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
 
-    <rich:column style="text-align: center;">
+            </f:facet>
+        </rich:column>
 
-        <s:link target="_blank" view="/report/salePaper.xhtml"
-                rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role)}">
-            <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
-            <f:param name="first" value="#{false}"/>
-            <f:param name="orderId" value="#{_order.id}"/>
-        </s:link>
+        <rich:column style="text-align: right" footerClass="moneyTableFooter"
+                     rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
 
-        #{' '}
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.orderReceiveMoney}"/>
+                    <ui:param name="propertyPath" value="customerOrder.receiveMoney"/>
+                </ui:include>
+            </f:facet>
 
-
-        <a:commandButton image="/img/cancel.png" title="#{messages.CancelOrder}" immediate="true" execute="@this"
-                         render="cancelOrderIdTitle,cancelOrderOperAction"
-                         oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
-                         rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
-
-            <a:param value="#{_order.id}" assignTo="#{orderHome.id}"/>
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-
-
-        <s:link action="#{orderCreate.createCloneOrder}" propagation="begin" includePageParams="true"
-                rendered="#{_order.canceled and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
-            <s:graphicImage value="/img/undo.png" title="#{messages.reCreateOrder}"/>
-            <f:param name="cloneOrderId" value="#{_order.id}"/>
-            <f:param name="cloneCustomerAreaId" value="#{_order.customer.customerArea.id}"/>
-        </s:link>
+            <h:outputText value="#{_order.receiveMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
 
 
-    </rich:column>
 
-</rich:dataTable>
+            <f:facet name="footer">
+                <h:outputText value="#{orderList.totalReceiveMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
 
+            </f:facet>
+        </rich:column>
+
+        <rich:column style="text-align: right" footerClass="moneyTableFooter"
+                     rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
+
+            <f:facet name="header">
+                #{messages.orderShortageMoney}
+            </f:facet>
+
+            <h:outputText value="#{_order.shortageMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+
+
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderList.totalShortageMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+
+            </f:facet>
+        </rich:column>
+
+
+        <rich:column style="text-align: right" footerClass="moneyTableFooter"
+                     rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
+
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.orderResMoney}"/>
+                    <ui:param name="propertyPath" value=" (customerOrder.resMoney) "/>
+                </ui:include>
+            </f:facet>
+
+            <h:outputText value="#{_order.resMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+
+
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderList.totalResMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+
+            </f:facet>
+
+        </rich:column>
+        <rich:column width="110px">
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_field_createDate}"/>
+                    <ui:param name="propertyPath" value="customerOrder.createDate"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_order.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_field_emp}"/>
+                    <ui:param name="propertyPath" value="customerOrder.orderEmp"/>
+                </ui:include>
+            </f:facet>
+            #{dictionary.getEmpNameById(_order.orderEmp)}
+        </rich:column>
+
+    </rich:extendedDataTable>
+</h:form>
 <rich:popupPanel id="cancelOrderOperSelectPanel" modal="true" autosized="true"
                  moveable="true" resizeable="false">
     <f:facet name="header">
@@ -326,11 +398,11 @@
 
     <h:form id="cancelOrderOperAction">
         <a:outputPanel>
-             <h:outputStylesheet>
-                 .cancelButton{
-                     text-align: center;
-                 }
-             </h:outputStylesheet>
+            <h:outputStylesheet>
+                .cancelButton {
+                    text-align: center;
+                }
+            </h:outputStylesheet>
 
             <rich:panel
                     rendered="#{orderHome.idDefined and (not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role))}">
@@ -343,7 +415,8 @@
                                      disabled="#{not (orderHome.anyOneMoneyPay and (not orderHome.anyOneStoreOut))}">
                         <a:attachQueue requestDelay="0"/>
                         <a:param assignTo="#{startData.businessKey}" value="#{orderHome.instance.id}"/>
-                        <a:param assignTo="#{startData.description}" value="#{orderHome.instance.customer.name}[#{orderHome.instance.id}]"/>
+                        <a:param assignTo="#{startData.description}"
+                                 value="#{orderHome.instance.customer.name}[#{orderHome.instance.id}]"/>
                         <a:param assignTo="#{businessDefineHome.id}" value="erp.business.orderMoneyBack"/>
                     </a:commandButton>
 
@@ -362,7 +435,7 @@
                                      render="dataListResult"
                                      action="#{orderCancel.removeOrder}"
                                      disabled="#{not (s:hasRole('erp.sale.manager') or (s:hasRole(orderHome.instance.customer.customerArea.role) and not orderHome.anyOneStoreOut and not orderHome.anyOneMoneyPay))}">
-                            <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
+                        <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
                     </a:commandButton>
 
 

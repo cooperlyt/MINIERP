@@ -1,0 +1,68 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.CustomerArea}</ui:define>
+
+        <h:selectOneMenu value="#{customerSearchCondition.customerAreaId}">
+            <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                           noSelectionLabel="#{messages.searchNoSelectLabel}"
+                           label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+        </h:selectOneMenu>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.customer_field_type}</ui:define>
+
+        <h:selectOneMenu value="#{customerSearchCondition.type}">
+
+            <s:selectItems var="_word" label="#{_word.value}"
+                           itemValue="#{_word.id}"
+                           value="#{dictionary.getWordList('erp.customerType')}"
+                           noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+        </h:selectOneMenu>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.customer_field_name}</ui:define>
+
+        <h:inputText value="#{customerSearchCondition.name}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.customer_field_province}</ui:define>
+
+        <rich:select value="#{customerSearchCondition.provinceCode}"
+                     styleClass="provinceSelectWidth" listWidth="102">
+            <s:selectItems value="#{provinceList.resultList}" var="_province"
+                           noSelectionLabel="#{messages.allCity}"
+                           label="#{_province.name}" itemValue="#{_province.id}">
+            </s:selectItems>
+        </rich:select>
+
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.customer_field_level}</ui:define>
+        <h:panelGroup>
+            <h:inputText value="#{customerSearchCondition.levelFrom}" size="5"
+                         converter="javax.faces.Integer"/>
+            --
+            <h:inputText value="#{customerSearchCondition.levelTo}" size="5"
+                         converter="javax.faces.Integer"/>
+        </h:panelGroup>
+
+    </s:decorate>
+
+
+
+
+</ui:composition>

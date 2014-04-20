@@ -419,13 +419,23 @@ public class CustomerOrder implements java.io.Serializable {
 
     @Transient
     public BigDecimal getShortageMoney() {
-        if (getMoney() == null){
+        if (getMoney() == null) {
             return BigDecimal.ZERO;
         }
-        if (getResMoney() == null){
+        if (getResMoney() == null) {
             return getMoney();
         }
         return getMoney().subtract(getReceiveMoney());
+    }
+
+
+    @Transient
+    public BigDecimal getArrears() {
+        if (isAllStoreOut()) {
+            return getShortageMoney();
+        } else {
+            return BigDecimal.ZERO;
+        }
     }
 
     @Transient

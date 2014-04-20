@@ -1,6 +1,11 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.erp.model.CustomerArea;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,6 +15,9 @@ import org.jboss.seam.annotations.Name;
  */
 @Name("customerSearchCondition")
 public class CustomerCondition {
+
+    @In(create = true)
+    private List<CustomerArea> mySaleArea;
 
     private String customerAreaId;
 
@@ -70,5 +78,19 @@ public class CustomerCondition {
 
     public void setName(Integer name) {
         this.name = name;
+    }
+
+    public List<String> getResultAcceptAreaIds(){
+        if ((customerAreaId == null) || ("".equals(customerAreaId.trim()))){
+            List<String> result = new ArrayList<String>(mySaleArea.size());
+            for (CustomerArea customerArea: mySaleArea){
+                result.add(customerArea.getId());
+            }
+            return result;
+        }else{
+            List<String> result = new ArrayList<String>(1);
+            result.add(customerAreaId);
+            return result;
+        }
     }
 }

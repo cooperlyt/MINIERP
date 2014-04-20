@@ -3,12 +3,17 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerArea;
+import com.dgsoft.erp.model.api.CustomerData;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.log.Logging;
+import org.jboss.seam.persistence.QueryParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,16 +22,34 @@ import java.util.List;
  * Time: 12:50 PM
  */
 @Name("customerList")
-public class CustomerList extends ErpEntityQuery<Customer> {
+public class CustomerList extends ErpEntityQuery<CustomerData> {
 
-    private static final String EJBQL = "select customer from Customer customer left join fetch customer.customerLevel left join fetch customer.customerArea";
+
+
+    private static final String EJBQL = "select new com.dgsoft.erp.model.api.CustomerData(" +
+            "customer.id,customer.name,customer.type,customer.customerArea.name,customer.customerLevel.name,customer.customerLevel.priority,customer.provinceCode," +
+            "customer.createDate,customer.balance,customer.enable," +
+            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false) as orderCount," +
+            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = true) as completeOrderCount," +
+            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and (o.resReceived = false or o.moneyComplete = false or o.allStoreOut = false)) as runningOrderCount," +
+            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.moneyComplete = false and (o.allStoreOut = true or o.payType = 'PAY_FIRST')) as waitPayOrderCount," +
+            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.resReceived = false) as waitReceiveOrderCount," +
+            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = false and (o.payType <> 'PAY_FIRST' or o.moneyComplete = true)) as waitShipOrderCount," +
+            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false) as arrearsOrderCount," +
+            "COALESCE((select sum(o.money - o.receiveMoney) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false),0) as orderArrears," +
+            "COALESCE((select sum(o.money) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false),0) as orderTotalMoney," +
+            "COALESCE((select sum(o.money) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = true),0) as completeOrderMoney," +
+            "COALESCE((customer.balance - (select sum(o.money - o.receiveMoney) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false)),0) as lastMoney ) " +
+            "from Customer customer";
+
 
     private static final String[] RESTRICTIONS = {
-            "customer.customerArea.id in (#{customerList.resultAcceptAreaIds})",
-            "customer.customerLevel.priority >= #{customerList.levelFrom}",
-            "customer.customerLevel.priority <= #{customerList.levelTo}",
-            "lower(customer.name) like lower(concat(#{customerList.customer.name},'%'))",
-            "customer.type = #{customerList.type}"};
+            "customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",
+            "customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
+            "customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
+            "lower(customer.name) like lower(concat(#{customerSearchCondition.name},'%'))",
+            "customer.type = #{customerSearchCondition.type}",
+            "customer.provinceCode = #{customerSearchCondition.provinceCode}"};
 
 
     public CustomerList() {
@@ -36,68 +59,71 @@ public class CustomerList extends ErpEntityQuery<Customer> {
         setMaxResults(25);
     }
 
-    @In(create = true)
-    private List<CustomerArea> mySaleArea;
 
-    private String customerAreaId;
-
-    private Integer levelFrom;
-
-    private Integer levelTo;
-
-    private String type;
-
-    public String getType() {
-        return type;
+    //seam entity Query bug  "select have where"  this is dirty
+    @Override
+    protected String getRenderedEjbql()
+    {
+        return super.getRenderedEjbql().replace("from Customer customer and", "from Customer customer where");
     }
 
-    public void setType(String type) {
-        this.type = type;
+    private Long resultCount;
+
+
+    @Transactional
+    @Override
+    public Long getResultCount()
+    {
+        if (isAnyParameterDirty())
+        {
+            refresh();
+        }
+        initResultCount();
+        return resultCount;
     }
 
-    private Customer customer = new Customer();
+    private void initResultCount()
+    {
+        if ( resultCount==null )
+        {
 
-    public Integer getLevelTo() {
-        return levelTo;
-    }
+            parseEjbql();
 
-    public void setLevelTo(Integer levelTo) {
-        this.levelTo = levelTo;
-    }
+            evaluateAllParameters();
 
-    public Integer getLevelFrom() {
-        return levelFrom;
-    }
+            joinTransaction();
 
-    public void setLevelFrom(Integer levelFrom) {
-        this.levelFrom = levelFrom;
-    }
 
-    public String getCustomerAreaId() {
-        return customerAreaId;
-    }
-
-    public void setCustomerAreaId(String customerAreaId) {
-        this.customerAreaId = customerAreaId;
-    }
-
-    public List<String> getResultAcceptAreaIds(){
-
-        if ((customerAreaId == null) || ("".equals(customerAreaId.trim()))){
-            List<String> result = new ArrayList<String>(mySaleArea.size());
-            for (CustomerArea customerArea: mySaleArea){
-                result.add(customerArea.getId());
-            }
-            return result;
-        }else{
-            List<String> result = new ArrayList<String>(1);
-            result.add(customerAreaId);
-            return result;
+            javax.persistence.Query query = getEntityManager().createQuery(getRenderedEjbql().replace(EJBQL,"select count(customer.id) from Customer customer").replaceAll("order by[\\s\\S]*",""));
+            setParameters( query, getQueryParameterValues(), 0 );
+            setParameters( query, getRestrictionParameterValues(), getQueryParameterValues().size() );
+            resultCount = query==null ?
+                    null : (Long) query.getSingleResult();
         }
     }
 
-    public Customer getCustomer() {
-        return customer;
+
+    private void setParameters(javax.persistence.Query query, List<Object> parameters, int start)
+    {
+        for (int i=0; i<parameters.size(); i++)
+        {
+            Object parameterValue = parameters.get(i);
+            if ( isRestrictionParameterSet(parameterValue) )
+            {
+                query.setParameter( QueryParser.getParameterName(start + i), parameterValue );
+            }
+        }
     }
+
+
+
+
+    @Override
+    public void refresh()
+    {
+        super.refresh();
+        resultCount = null;
+    }
+
 
 }

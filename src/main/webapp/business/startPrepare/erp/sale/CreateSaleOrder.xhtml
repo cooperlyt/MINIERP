@@ -39,9 +39,10 @@
                            inputSize="10"
                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                           datePattern="#{messages.datePattern}"
+                           datePattern="#{messages.datetimepattern}"
                            required="true"
-                           defaultLabel="#{currentDate}"
+                           defaultTime="#{currentTime}"
+                           defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
                            label="#{messages.order_field_createDate}"
                            value="#{orderCreate.instance.createDate}">
                 <rich:validator event="change"/>

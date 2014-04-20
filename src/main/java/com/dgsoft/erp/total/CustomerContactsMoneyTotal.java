@@ -21,7 +21,7 @@ public class CustomerContactsMoneyTotal extends CustomerMoneyTotalBase {
             "accountOper.operDate >= #{searchDateArea.dateFrom}",
             "accountOper.operDate <= #{searchDateArea.searchDateTo}",
             "accountOper.operType in (#{customerMoneyCondition.searchAccountOperTypes})",
-            "accountOper.customer.customerArea.id = #{customerSearchCondition.customerAreaId}",
+            "accountOper.customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",
             "accountOper.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "accountOper.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
             "accountOper.customer.type = #{customerSearchCondition.type}",

@@ -127,6 +127,18 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
         return getResultTotalSum("customerOrder.money");
     }
 
+    public Number getTotalReceiveMoney(){
+        return getResultTotalSum("customerOrder.receiveMoney");
+    }
+
+    public Number getTotalShortageMoney(){
+        return getResultTotalSum("customerOrder.money - customerOrder.receiveMoney");
+    }
+
+    public Number getTotalResMoney(){
+        return getResultTotalSum("customerOrder.resMoney");
+    }
+
     public Boolean getMoneyComplete() {
         return moneyComplete;
     }

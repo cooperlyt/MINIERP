@@ -8,14 +8,16 @@
     <param name="dir" value="#{customerList.orderDirection}"/>
 
 
-    <param name="customerAreaId" value="#{customerList.customerAreaId}"/>
+    <param name="customerAreaId" value="#{customerSearchCondition.customerAreaId}"/>
 
-    <param name="customerName" value="#{customerList.customer.name}"/>
+    <param name="customerName" value="#{customerSearchCondition.name}"/>
 
-    <param name="customerType" value="#{customerList.type}"/>
+    <param name="customerType" value="#{customerSearchCondition.type}"/>
 
-    <param name="customerLevelFrom" value="#{customerList.levelFrom}" />
-    <param name="customerLevelTo" value="#{customerList.levelTo}" />
+    <param name="customerLevelFrom" value="#{customerSearchCondition.levelFrom}" />
+    <param name="customerLevelTo" value="#{customerSearchCondition.levelTo}" />
+
+    <param name="provinceCode" value="#{customerSearchCondition.provinceCode}"/>
 
 
 

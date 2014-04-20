@@ -32,13 +32,12 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
     protected static final String[] RESTRICTIONS = {
             "backItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",
             "backItem.dispatch.stockChange.operDate <= #{searchDateArea.searchDateTo}",
-            "backItem.orderBack.customer.customerArea.id = #{customerSearchCondition.customerAreaId}",
+            "backItem.orderBack.customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",
             "backItem.orderBack.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "backItem.orderBack.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
             "backItem.orderBack.customer.type = #{customerSearchCondition.type}",
+            "lower(backItem.orderBack.customer.name) like lower(concat(#{customerSearchCondition.name},'%'))",
             "backItem.orderBack.customer.provinceCode = #{customerSearchCondition.provinceCode}",
-
-
     };
 
     public BackResContactsTotal() {

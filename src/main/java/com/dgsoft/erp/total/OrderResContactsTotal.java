@@ -28,11 +28,12 @@ public class OrderResContactsTotal extends ErpEntityQuery<OrderItem>{
     protected static final String[] RESTRICTIONS = {
             "orderItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",
             "orderItem.dispatch.stockChange.operDate <= #{searchDateArea.searchDateTo}",
-            "orderItem.needRes.customerOrder.customer.customerArea.id = #{customerSearchCondition.customerAreaId}",
+            "orderItem.needRes.customerOrder.customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",
             "orderItem.needRes.customerOrder.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "orderItem.needRes.customerOrder.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
             "orderItem.needRes.customerOrder.customer.type = #{customerSearchCondition.type}",
             "orderItem.needRes.customerOrder.customer.provinceCode <= #{customerSearchCondition.provinceCode}",
+            "lower(orderItem.needRes.customerOrder.customer.name) like lower(concat(#{customerSearchCondition.name},'%'))",
             "orderItem.presentation = #{customerResCondition.freeCondition}"
     };
 
