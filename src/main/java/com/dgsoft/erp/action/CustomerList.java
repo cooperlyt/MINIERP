@@ -116,6 +116,9 @@ public class CustomerList extends ErpEntityQuery<CustomerData> {
     }
 
 
+    public String customerTopReport(){
+        return "/report/customerTop.xhtml";
+    }
 
 
     @Override

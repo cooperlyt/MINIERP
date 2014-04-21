@@ -1,0 +1,14 @@
+<p:birt
+        xmlns:p="http://jboss.com/products/seam/birt"
+        designType="frameset"
+        locale="zh-CN"
+        designName="report/customerTop.rptdesign"
+        showtitle="false">
+
+    <p:param name="customerName" value="#{customerSearchCondition.name}"/>
+    <p:param name="customerType" value="#{customerSearchCondition.type}"/>
+    <p:param name="customerLevelFrom" value="#{customerSearchCondition.levelTo}"/>
+    <p:param name="customerLevelTo" value="#{customerSearchCondition.provinceCode}"/>
+    <p:param name="provinceCode" value="#{customerSearchCondition.customerAreaId}"/>
+
+</p:birt>

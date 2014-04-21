@@ -54,6 +54,12 @@
 
                     <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
 
+                    <h:commandLink styleClass="button-link"
+                                   target="_blank" action="#{customerList.customerTopReport}">
+                        #{messages.customerTopReport}
+                    </h:commandLink>
+
+
                     <a:outputPanel id="searchButton">
                         <a:commandButton value="#{messages.search}"
                                          execute="@form" render="dataListResult"
@@ -72,260 +78,260 @@
 
 <br/>
 <h:form>
-    <rich:extendedDataTable style="width: 100%; height: 500px" id="dataListResult" value="#{customerList.resultList}"
-                    var="_customer" noDataLabel="#{messages.emptyResult}" frozenColumns="5">
-        <f:facet name="footer">
-            <a:outputPanel rendered="#{not empty customerList.resultList}">
-                <ui:include src="/layout/pageA4jNavigation.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                </ui:include>
-            </a:outputPanel>
-        </f:facet>
-        <rich:column width="120px">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_name}"/>
-                    <ui:param name="propertyPath" value="customer.name"/>
-                </ui:include>
+<rich:extendedDataTable style="width: 100%; height: 500px" id="dataListResult" value="#{customerList.resultList}"
+                        var="_customer" noDataLabel="#{messages.emptyResult}" frozenColumns="5">
+<f:facet name="footer">
+    <a:outputPanel rendered="#{not empty customerList.resultList}">
+        <ui:include src="/layout/pageA4jNavigation.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+        </ui:include>
+    </a:outputPanel>
+</f:facet>
+<rich:column width="120px">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_name}"/>
+            <ui:param name="propertyPath" value="customer.name"/>
+        </ui:include>
 
-            </f:facet>
-
-
-            <s:link target="_blank" view="/func/erp/sale/CustomerView.xhtml" value="#{_customer.name}"
-                    style="#{_customer.enable ? '' : 'text-decoration:line-through; color: red;'}">
-                <f:param name="customerId" value="#{_customer.id}"/>
-            </s:link>
-        </rich:column>
-
-        <rich:column  width="60px">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_type}"/>
-                    <ui:param name="propertyPath" value="customer.type"/>
-                </ui:include>
-
-            </f:facet>
-            #{dictionary.getWordValue(_customer.type)}
-        </rich:column>
-
-        <rich:column width="60px">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
-                    <ui:param name="propertyPath" value="customer.customerArea.name"/>
-                </ui:include>
-
-            </f:facet>
-
-            #{_customer.area}
-        </rich:column>
-
-        <rich:column width="60px">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_level}"/>
-                    <ui:param name="propertyPath" value="customer.customerLevel.priority"/>
-                </ui:include>
-
-            </f:facet>
-            #{_customer.levelName}(#{_customer.level})
-        </rich:column>
-
-        <rich:column width="70px">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_province}"/>
-                    <ui:param name="propertyPath" value="customer.provinceCode"/>
-                </ui:include>
-
-            </f:facet>
-            #{dictionary.getCityName(_customer.cityCode)}
-        </rich:column>
+    </f:facet>
 
 
-        <rich:column style="text-align: right;">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_balance}"/>
-                    <ui:param name="propertyPath" value="customer.balance"/>
-                </ui:include>
+    <s:link target="_blank" view="/func/erp/sale/CustomerView.xhtml" value="#{_customer.name}"
+            style="#{_customer.enable ? '' : 'text-decoration:line-through; color: red;'}">
+        <f:param name="customerId" value="#{_customer.id}"/>
+    </s:link>
+</rich:column>
 
-            </f:facet>
-            <h:outputText value="#{_customer.balance}" style="#{(_customer.balance lt 0) ? 'color: red;' : ''}">
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency" groupingUsed="true"/>
-            </h:outputText>
-        </rich:column>
+<rich:column width="60px">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_type}"/>
+            <ui:param name="propertyPath" value="customer.type"/>
+        </ui:include>
 
-        <rich:column style="text-align: right;">
-             <f:facet name="header">
+    </f:facet>
+    #{dictionary.getWordValue(_customer.type)}
+</rich:column>
 
-                 <ui:include src="/layout/a4jSort.xhtml">
-                     <ui:param name="entityList" value="#{customerList}"/>
-                     <ui:param name="propertyLabel" value="#{messages.customer_orderArrears}"/>
-                     <ui:param name="propertyPath" value="orderArrears"/>
-                 </ui:include>
+<rich:column width="60px">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
+            <ui:param name="propertyPath" value="customer.customerArea.name"/>
+        </ui:include>
 
-             </f:facet>
+    </f:facet>
 
-            <h:outputText value="#{_customer.orderArrears}" style="#{(_customer.orderArrears gt 0) ? 'color: red;' : ''}">
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency" groupingUsed="true"/>
-            </h:outputText>
-        </rich:column>
+    #{_customer.area}
+</rich:column>
 
-        <rich:column style="text-align: right;">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_lastMoney}"/>
-                    <ui:param name="propertyPath" value="lastMoney"/>
-                </ui:include>
+<rich:column width="60px">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_level}"/>
+            <ui:param name="propertyPath" value="customer.customerLevel.priority"/>
+        </ui:include>
 
+    </f:facet>
+    #{_customer.levelName}(#{_customer.level})
+</rich:column>
 
-            </f:facet>
+<rich:column width="70px">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_province}"/>
+            <ui:param name="propertyPath" value="customer.provinceCode"/>
+        </ui:include>
 
-            <h:outputText value="#{_customer.lastMoney}" style="#{(_customer.lastMoney lt 0) ? 'color: red;' : ''}">
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency" groupingUsed="true"/>
-            </h:outputText>
-        </rich:column>
-
-
-        <rich:column style="text-align: right;">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_orderTotalMoney}"/>
-                    <ui:param name="propertyPath" value="orderTotalMoney"/>
-                </ui:include>
-            </f:facet>
-
-            <h:outputText value="#{_customer.orderTotalMoney}" >
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency" groupingUsed="true"/>
-            </h:outputText>
-        </rich:column>
-
-        <rich:column style="text-align: right;">
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_completeOrderMoney}"/>
-                    <ui:param name="propertyPath" value="completeOrderMoney"/>
-                </ui:include>
-            </f:facet>
-
-            <h:outputText value="#{_customer.completeOrderMoney}" >
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency" groupingUsed="true"/>
-            </h:outputText>
-        </rich:column>
+    </f:facet>
+    #{dictionary.getCityName(_customer.cityCode)}
+</rich:column>
 
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_orderCount}"/>
-                    <ui:param name="propertyPath" value="orderCount"/>
-                </ui:include>
-            </f:facet>
-            #{_customer.orderCount}
-        </rich:column>
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_balance}"/>
+            <ui:param name="propertyPath" value="customer.balance"/>
+        </ui:include>
+
+    </f:facet>
+    <h:outputText value="#{_customer.balance}" style="#{(_customer.balance lt 0) ? 'color: red;' : ''}">
+        <f:convertNumber locale="#{calendarBean.locale}"
+                         type="currency" groupingUsed="true"/>
+    </h:outputText>
+</rich:column>
+
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_orderArrears}"/>
+            <ui:param name="propertyPath" value="orderArrears"/>
+        </ui:include>
+
+    </f:facet>
+
+    <h:outputText value="#{_customer.orderArrears}" style="#{(_customer.orderArrears gt 0) ? 'color: red;' : ''}">
+        <f:convertNumber locale="#{calendarBean.locale}"
+                         type="currency" groupingUsed="true"/>
+    </h:outputText>
+</rich:column>
+
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_lastMoney}"/>
+            <ui:param name="propertyPath" value="lastMoney"/>
+        </ui:include>
 
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_completeOrderCount}"/>
-                    <ui:param name="propertyPath" value="completeOrderCount"/>
-                </ui:include>
-            </f:facet>
-            #{_customer.completeOrderCount}
-        </rich:column>
+    </f:facet>
+
+    <h:outputText value="#{_customer.lastMoney}" style="#{(_customer.lastMoney lt 0) ? 'color: red;' : ''}">
+        <f:convertNumber locale="#{calendarBean.locale}"
+                         type="currency" groupingUsed="true"/>
+    </h:outputText>
+</rich:column>
 
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_runningOrderCount}"/>
-                    <ui:param name="propertyPath" value="runningOrderCount"/>
-                </ui:include>
-            </f:facet>
-            #{_customer.runningOrderCount}
-        </rich:column>
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_orderTotalMoney}"/>
+            <ui:param name="propertyPath" value="orderTotalMoney"/>
+        </ui:include>
+    </f:facet>
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_arrearsOrderCount}"/>
-                    <ui:param name="propertyPath" value="arrearsOrderCount"/>
-                </ui:include>
-            </f:facet>
-            #{_customer.arrearsOrderCount}
-        </rich:column>
+    <h:outputText value="#{_customer.orderTotalMoney}">
+        <f:convertNumber locale="#{calendarBean.locale}"
+                         type="currency" groupingUsed="true"/>
+    </h:outputText>
+</rich:column>
 
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_completeOrderMoney}"/>
+            <ui:param name="propertyPath" value="completeOrderMoney"/>
+        </ui:include>
+    </f:facet>
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_waitPayOrderCount}"/>
-                    <ui:param name="propertyPath" value="waitPayOrderCount"/>
-                </ui:include>
-            </f:facet>
-            #{_customer.waitPayOrderCount}
-        </rich:column>
+    <h:outputText value="#{_customer.completeOrderMoney}">
+        <f:convertNumber locale="#{calendarBean.locale}"
+                         type="currency" groupingUsed="true"/>
+    </h:outputText>
+</rich:column>
 
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_waitReceiveOrderCount}"/>
-                    <ui:param name="propertyPath" value="waitReceiveOrderCount"/>
-                </ui:include>
-            </f:facet>
-            #{_customer.waitReceiveOrderCount}
-        </rich:column>
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_orderCount}"/>
+            <ui:param name="propertyPath" value="orderCount"/>
+        </ui:include>
+    </f:facet>
+    #{_customer.orderCount}
+</rich:column>
 
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_waitShipOrderCount}"/>
-                    <ui:param name="propertyPath" value="waitShipOrderCount"/>
-                </ui:include>
-            </f:facet>
-            #{_customer.waitShipOrderCount}
-        </rich:column>
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_completeOrderCount}"/>
+            <ui:param name="propertyPath" value="completeOrderCount"/>
+        </ui:include>
+    </f:facet>
+    #{_customer.completeOrderCount}
+</rich:column>
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{customerList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.customer_field_createDate}"/>
-                    <ui:param name="propertyPath" value="customer.createDate"/>
-                </ui:include>
 
-            </f:facet>
-            <h:outputText value="#{_customer.createDate}">
-                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-            </h:outputText>
-        </rich:column>
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_runningOrderCount}"/>
+            <ui:param name="propertyPath" value="runningOrderCount"/>
+        </ui:include>
+    </f:facet>
+    #{_customer.runningOrderCount}
+</rich:column>
 
-    </rich:extendedDataTable>
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_arrearsOrderCount}"/>
+            <ui:param name="propertyPath" value="arrearsOrderCount"/>
+        </ui:include>
+    </f:facet>
+    #{_customer.arrearsOrderCount}
+</rich:column>
+
+
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_waitPayOrderCount}"/>
+            <ui:param name="propertyPath" value="waitPayOrderCount"/>
+        </ui:include>
+    </f:facet>
+    #{_customer.waitPayOrderCount}
+</rich:column>
+
+
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_waitReceiveOrderCount}"/>
+            <ui:param name="propertyPath" value="waitReceiveOrderCount"/>
+        </ui:include>
+    </f:facet>
+    #{_customer.waitReceiveOrderCount}
+</rich:column>
+
+
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_waitShipOrderCount}"/>
+            <ui:param name="propertyPath" value="waitShipOrderCount"/>
+        </ui:include>
+    </f:facet>
+    #{_customer.waitShipOrderCount}
+</rich:column>
+
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_createDate}"/>
+            <ui:param name="propertyPath" value="customer.createDate"/>
+        </ui:include>
+
+    </f:facet>
+    <h:outputText value="#{_customer.createDate}">
+        <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+    </h:outputText>
+</rich:column>
+
+</rich:extendedDataTable>
 
 
 </h:form>
@@ -425,7 +431,6 @@
 
     </ui:define>
 </s:decorate>
-
 
 
 </ui:define>
