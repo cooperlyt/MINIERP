@@ -57,6 +57,7 @@ public class CustomerList extends ErpEntityQuery<CustomerData> {
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
         setMaxResults(25);
+
     }
 
 

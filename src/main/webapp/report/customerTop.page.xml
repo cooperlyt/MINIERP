@@ -8,4 +8,14 @@
 
 
 
+    <param name="customerName" value="#{customerSearchCondition.name}"/>
+    <param name="customerType" value="#{customerSearchCondition.type}"/>
+    <param name="customerLevelFrom" value="#{customerSearchCondition.levelTo}"/>
+    <param name="customerLevelTo" value="#{customerSearchCondition.levelFrom}"/>
+    <param name="provinceCode" value="#{customerSearchCondition.provinceCode}"/>
+    <param name="customerAreaId" value="#{customerSearchCondition.customerAreaId}"/>
+
+
+
+
 </page>

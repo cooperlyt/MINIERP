@@ -21,9 +21,9 @@ public class CustomerCondition {
 
     private String customerAreaId;
 
-    private String levelFrom;
+    private Integer levelFrom;
 
-    private String levelTo;
+    private Integer levelTo;
 
     private String type;
 
@@ -39,19 +39,19 @@ public class CustomerCondition {
         this.customerAreaId = customerAreaId;
     }
 
-    public String getLevelFrom() {
+    public Integer getLevelFrom() {
         return levelFrom;
     }
 
-    public void setLevelFrom(String levelFrom) {
+    public void setLevelFrom(Integer levelFrom) {
         this.levelFrom = levelFrom;
     }
 
-    public String getLevelTo() {
+    public Integer getLevelTo() {
         return levelTo;
     }
 
-    public void setLevelTo(String levelTo) {
+    public void setLevelTo(Integer levelTo) {
         this.levelTo = levelTo;
     }
 
