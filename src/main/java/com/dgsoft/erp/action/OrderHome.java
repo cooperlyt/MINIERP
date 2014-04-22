@@ -62,17 +62,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public List<OrderItem> getAllCompleteOrderItem(){
+    public List<OrderItem> getAllCompleteOrderItem() {
         return getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED));
     }
 
-    public List<OrderItem> getAllOrderItem(){
+    public List<OrderItem> getAllOrderItem() {
         List<OrderItem> result = getOrderItemByStatus(EnumSet.allOf(OrderItem.OrderItemStatus.class));
-        Collections.sort(result,new Comparator<OrderItem>() {
+        Collections.sort(result, new Comparator<OrderItem>() {
             @Override
             public int compare(OrderItem o1, OrderItem o2) {
                 int result = Integer.valueOf(o1.getStatus().ordinal()).compareTo(o2.getStatus().ordinal());
-                if(result ==0){
+                if (result == 0) {
                     result = o1.getStoreRes().compareTo(o2.getStoreRes());
                 }
                 return result;
@@ -81,9 +81,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public BigDecimal getCompleteOrderItemMoney(){
+    public BigDecimal getCompleteOrderItemMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (OrderItem item: getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED))){
+        for (OrderItem item : getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED))) {
             if (item.getTotalMoney() != null)
                 result = result.add(item.getTotalMoney());
         }
@@ -167,11 +167,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         for (TotalDataGroup<Store, OrderItem> group : getDispatchItemGroups()) {
 
-            TotalDataGroup.sort(group,new Comparator<OrderItem>() {
+            TotalDataGroup.sort(group, new Comparator<OrderItem>() {
                 @Override
                 public int compare(OrderItem o1, OrderItem o2) {
-                    if (ResHelper.instance().sameFormat(o1.getFormats(), o2.getFormats())){
-                        if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                    if (ResHelper.instance().sameFormat(o1.getFormats(), o2.getFormats())) {
+                        if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                             return o1.getStoreRes().getFloatConversionRate().compareTo(o2.getFloatConvertRate());
                         }
                     }
@@ -180,18 +180,19 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             });
 
             result.append("\n" + group.getKey().getName());
-            for (TotalDataGroup<?,OrderItem> sg: group.getChildGroup()) {
+            for (TotalDataGroup<?, OrderItem> sg : group.getChildGroup()) {
                 result.append("\n\t" + sg.getKey().toString());
                 for (OrderItem item : sg.getValues()) {
 
                     result.append("\n\t\t");
-                    if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                    if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                         result.append(DataFormat.format(item.getStoreRes().getFloatConversionRate(),
                                 item.getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat()) + item.getStoreRes().getRes().getUnitGroup().getName());
                     }
                     result.append(" " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
                     result.append(item.getRes().getResUnitByInDefault().getName());
-                    result.append(" " + item.getMemo());
+                    if (item.getMemo() != null)
+                        result.append(" " + item.getMemo());
                 }
             }
             result.append("\n");
@@ -201,19 +202,19 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         //List<OrderItem> createdItems = ;
 
 
-        List<TotalDataGroup<SameFormatResGroupStrategy.StoreResFormatKey,OrderItem>>  createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
+        List<TotalDataGroup<SameFormatResGroupStrategy.StoreResFormatKey, OrderItem>> createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
                 new SameFormatResGroupStrategy<OrderItem>());
         if (!createdItems.isEmpty()) {
             result.append("\n" + messages.get("no_dispatch_order_items"));
         }
 
 
-        for (TotalDataGroup<?,OrderItem> sg: createdItems) {
-            TotalDataGroup.sort(sg,new Comparator<OrderItem>() {
+        for (TotalDataGroup<?, OrderItem> sg : createdItems) {
+            TotalDataGroup.sort(sg, new Comparator<OrderItem>() {
                 @Override
                 public int compare(OrderItem o1, OrderItem o2) {
-                    if (ResHelper.instance().sameFormat(o1.getFormats(), o2.getFormats())){
-                        if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                    if (ResHelper.instance().sameFormat(o1.getFormats(), o2.getFormats())) {
+                        if (o1.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                             return o1.getStoreRes().getFloatConversionRate().compareTo(o2.getFloatConvertRate());
                         }
                     }
@@ -225,13 +226,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             for (OrderItem item : sg.getValues()) {
 
                 result.append("\n\t\t");
-                if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                     result.append(DataFormat.format(item.getStoreRes().getFloatConversionRate(),
                             item.getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat()) + item.getStoreRes().getRes().getUnitGroup().getName());
                 }
                 result.append("  " + DataFormat.format(item.getCountByResUnit(item.getRes().getResUnitByInDefault()), item.getRes().getResUnitByInDefault().getCountFormate()));
                 result.append(item.getRes().getResUnitByInDefault().getName());
-                result.append(" " + item.getMemo());
+                if (item.getMemo() != null)
+                    result.append(" " + item.getMemo());
             }
         }
 
@@ -297,7 +299,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     public BigDecimal getEarnestScale() {
-        if (getInstance().getEarnest() == null){
+        if (getInstance().getEarnest() == null) {
             return BigDecimal.ZERO;
         }
         return getInstance().getEarnest().divide(getInstance().getMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
@@ -470,7 +472,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return null;
     }
 
-    public boolean isCanBackMoney(){
+    public boolean isCanBackMoney() {
         return isAnyOneMoneyPay() && !isAnyOneStoreOut();
     }
 

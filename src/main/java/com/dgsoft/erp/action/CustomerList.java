@@ -39,7 +39,7 @@ public class CustomerList extends ErpEntityQuery<CustomerData> {
             "COALESCE((select sum(o.money - o.receiveMoney) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false),0) as orderArrears," +
             "COALESCE((select sum(o.money) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false),0) as orderTotalMoney," +
             "COALESCE((select sum(o.money) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = true),0) as completeOrderMoney," +
-            "COALESCE((customer.balance - (select sum(o.money - o.receiveMoney) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false)),0) as lastMoney ) " +
+            "COALESCE((customer.balance - COALESCE((select sum(o.money - o.receiveMoney) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false),0)),0) as lastMoney ) " +
             "from Customer customer";
 
 
@@ -69,7 +69,6 @@ public class CustomerList extends ErpEntityQuery<CustomerData> {
     }
 
     private Long resultCount;
-
 
     @Transactional
     @Override
@@ -120,6 +119,7 @@ public class CustomerList extends ErpEntityQuery<CustomerData> {
     public String customerTopReport(){
         return "/report/customerTop.xhtml";
     }
+
 
 
     @Override
