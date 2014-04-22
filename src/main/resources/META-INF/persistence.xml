@@ -118,21 +118,12 @@
 
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="27"/>
-
-
-
-            <property name="hibernate.cache.infinispan.statistics" value="true"/>
-            <property name="hibernate.cache.infinispan.use_synchronization"  value="false"/>
-
-            <property name="hibernate.cache.use_second_level_cache" value="true" />
-
             <property name="jboss.entity.manager.factory.jndi.name" value="java:/erpEntityManagerFactory"/>
         </properties>
     </persistence-unit>
