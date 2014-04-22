@@ -29,7 +29,7 @@ public class CustomerCondition {
 
     private Integer provinceCode;
 
-    private Integer name;
+    private String name;
 
     public String getCustomerAreaId() {
         return customerAreaId;
@@ -72,11 +72,12 @@ public class CustomerCondition {
         this.provinceCode = provinceCode;
     }
 
-    public Integer getName() {
+
+    public String getName() {
         return name;
     }
 
-    public void setName(Integer name) {
+    public void setName(String name) {
         this.name = name;
     }
 

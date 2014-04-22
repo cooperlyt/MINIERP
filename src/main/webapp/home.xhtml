@@ -17,14 +17,26 @@
             <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png" alt="Seam logo"/>
             <s:div styleClass="info">
                 <p>
-                    <strong>MINIERP 2.1.6 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.1.7 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                   <li>[优化] 填加货品规格缓存</li>
-                   <li>[客戶] 增加客戶欠款和订单情況并可排序</li>
-                   <li>[订单] 修改下单时间，使最近的订单排在前面</li>
-                   <li>[订单] 增加收款及欠款情况和合计并可排序</li>
+                    <li>[错误] 修正产生小组入库汇总错误</li>
+                    <li>[错误] 修正客户结算金额计算错误</li>
+                    <li>[错误] 修正按客户名称查询错误</li>
+                    <li>[客户] 增加客户排行</li>
                 </ul>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.1.6 更新日志" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[优化] 填加货品规格缓存</li>
+                        <li>[客戶] 增加客戶欠款和订单情況并可排序</li>
+                        <li>[订单] 修改下单时间，使最近的订单排在前面</li>
+                        <li>[订单] 增加收款及欠款情况和合计并可排序</li>
+                    </ul>
+                </s:decorate>
+
+                <div style="clear: both;"/>
 
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.1.5 更新日志" name="openLabel"/>

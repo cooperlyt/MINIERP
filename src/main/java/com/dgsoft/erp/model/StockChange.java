@@ -224,186 +224,331 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
         return result;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeAdd")
+
     private Set<Inventory> inventoryAdds = new HashSet<Inventory>(0);
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeLoss")
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeAdd")
+    public Set<Inventory> getInventoryAdds() {
+        return inventoryAdds;
+    }
+
+    public void setInventoryAdds(Set<Inventory> inventoryAdds) {
+        this.inventoryAdds = inventoryAdds;
+    }
+
+
     private Set<Inventory> inventoryLosses = new HashSet<Inventory>(0);
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeLoss")
+    public Set<Inventory> getInventoryLosses() {
+        return inventoryLosses;
+    }
+
+    public void setInventoryLosses(Set<Inventory> inventoryLosses) {
+        this.inventoryLosses = inventoryLosses;
+    }
+
+
     private Set<Assembly> assemblyForStoreOuts = new HashSet<Assembly>(0);
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
-    private Set<Assembly> assemblyForStoreIns = new HashSet<Assembly>(0);
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByLoseOut")
-    private Set<Assembly> assemblyForLoseOuts = new HashSet<Assembly>(0);
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    private Set<MaterialStoreOut> materialStoreOuts = new HashSet<MaterialStoreOut>(0);
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
-    private Set<Allocation> allocationForStoreOuts = new HashSet<Allocation>(0);
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
-    private Set<MaterialStoreIn> materialStoreIns = new HashSet<MaterialStoreIn>(0);
+    public Set<Assembly> getAssemblyForStoreOuts() {
+        return assemblyForStoreOuts;
+    }
+
+    public void setAssemblyForStoreOuts(Set<Assembly> assemblyForStoreOuts) {
+        this.assemblyForStoreOuts = assemblyForStoreOuts;
+    }
+
+
+    private Set<Assembly> assemblyForStoreIns = new HashSet<Assembly>(0);
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
-    private Set<Allocation> allocationForStoreIns = new HashSet<Allocation>(0);
+    public Set<Assembly> getAssemblyForStoreIns() {
+        return assemblyForStoreIns;
+    }
+
+    public void setAssemblyForStoreIns(Set<Assembly> assemblyForStoreIns) {
+        this.assemblyForStoreIns = assemblyForStoreIns;
+    }
+
+    private Set<Assembly> assemblyForLoseOuts = new HashSet<Assembly>(0);
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByLoseOut")
+    public Set<Assembly> getAssemblyForLoseOuts() {
+        return assemblyForLoseOuts;
+    }
+
+    public void setAssemblyForLoseOuts(Set<Assembly> assemblyForLoseOuts) {
+        this.assemblyForLoseOuts = assemblyForLoseOuts;
+    }
+
+    private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<ProductStoreIn> getProductStoreIns() {
+        return productStoreIns;
+    }
+
+    public void setProductStoreIns(Set<ProductStoreIn> productStoreIns) {
+        this.productStoreIns = productStoreIns;
+    }
+
+
+    private Set<MaterialStoreOut> materialStoreOuts = new HashSet<MaterialStoreOut>(0);
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<MaterialStoreOut> getMaterialStoreOuts() {
+        return materialStoreOuts;
+    }
+
+    public void setMaterialStoreOuts(Set<MaterialStoreOut> materialStoreOuts) {
+        this.materialStoreOuts = materialStoreOuts;
+    }
+
+
+    private Set<Allocation> allocationForStoreOuts = new HashSet<Allocation>(0);
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
+    public Set<Allocation> getAllocationForStoreOuts() {
+        return allocationForStoreOuts;
+    }
+
+    public void setAllocationForStoreOuts(Set<Allocation> allocationForStoreOuts) {
+        this.allocationForStoreOuts = allocationForStoreOuts;
+    }
+
+
+    private Set<MaterialStoreIn> materialStoreIns = new HashSet<MaterialStoreIn>(0);
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<MaterialStoreIn> getMaterialStoreIns() {
+        return materialStoreIns;
+    }
+
+    public void setMaterialStoreIns(Set<MaterialStoreIn> materialStoreIns) {
+        this.materialStoreIns = materialStoreIns;
+    }
+
+
+    private Set<Allocation> allocationForStoreIns = new HashSet<Allocation>(0);
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
+    public Set<Allocation> getAllocationForStoreIns() {
+        return allocationForStoreIns;
+    }
+
+    public void setAllocationForStoreIns(Set<Allocation> allocationForStoreIns) {
+        this.allocationForStoreIns = allocationForStoreIns;
+    }
+
+
     private Set<ScrapStoreOut> scrapStoreOuts = new HashSet<ScrapStoreOut>(0);
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<ScrapStoreOut> getScrapStoreOuts() {
+        return scrapStoreOuts;
+    }
+
+    public void setScrapStoreOuts(Set<ScrapStoreOut> scrapStoreOuts) {
+        this.scrapStoreOuts = scrapStoreOuts;
+    }
+
+
     private Set<BackDispatch> backDispatchs = new HashSet<BackDispatch>(0);
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<BackDispatch> getBackDispatchs() {
+        return backDispatchs;
+    }
+
+    public void setBackDispatchs(Set<BackDispatch> backDispatchs) {
+        this.backDispatchs = backDispatchs;
+    }
+
+
     private Set<MaterialBackStoreIn> materialBackStoreIns = new HashSet<MaterialBackStoreIn>(0);
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<MaterialBackStoreIn> getMaterialBackStoreIns() {
+        return materialBackStoreIns;
+    }
+
+    public void setMaterialBackStoreIns(Set<MaterialBackStoreIn> materialBackStoreIns) {
+        this.materialBackStoreIns = materialBackStoreIns;
+    }
+
+
     private Set<StoreChange> storeChanges = new HashSet<StoreChange>(0);
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<StoreChange> getStoreChanges() {
+        return storeChanges;
+    }
+
+    public void setStoreChanges(Set<StoreChange> storeChanges) {
+        this.storeChanges = storeChanges;
+    }
+
+
     private Set<Dispatch> orderDispatchs = new HashSet<Dispatch>(0);
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChange")
+    public Set<Dispatch> getOrderDispatchs() {
+        return orderDispatchs;
+    }
+
+    public void setOrderDispatchs(Set<Dispatch> orderDispatchs) {
+        this.orderDispatchs = orderDispatchs;
+    }
 
     @Transient
     public Assembly getAssemblyForStoreOut() {
-        return this.assemblyForStoreOuts.isEmpty() ? null : assemblyForStoreOuts.iterator().next();
+        return getAssemblyForStoreOuts().isEmpty() ? null : getAssemblyForStoreOuts().iterator().next();
     }
 
     public void setAssemblyForStoreOut(Assembly assemblyForStoreOut) {
-        assemblyForStoreOuts.clear();
-        assemblyForStoreOuts.add(assemblyForStoreOut);
+        getAssemblyForStoreOuts().clear();
+        getAssemblyForStoreOuts().add(assemblyForStoreOut);
     }
 
 
     @Transient
     public Assembly getAssemblyForStoreIn() {
-        return (assemblyForStoreIns.isEmpty() ? null : assemblyForStoreIns.iterator().next());
+        return (getAssemblyForStoreIns().isEmpty() ? null : getAssemblyForStoreIns().iterator().next());
     }
 
     public void setAssemblyForStoreIn(Assembly assemblyForStoreIn) {
-        assemblyForStoreIns.clear();
-        assemblyForStoreIns.add(assemblyForStoreIn);
+        getAssemblyForStoreIns().clear();
+        getAssemblyForStoreIns().add(assemblyForStoreIn);
     }
 
     @Transient
     public Assembly getAssemblyForLoseOut() {
-        return assemblyForLoseOuts.isEmpty() ? null : assemblyForLoseOuts.iterator().next();
+        return getAssemblyForLoseOuts().isEmpty() ? null : getAssemblyForLoseOuts().iterator().next();
     }
 
     public void setAssemblyForLoseOut(Assembly assemblyForLoseOut) {
-        assemblyForLoseOuts.clear();
-        assemblyForLoseOuts.add(assemblyForLoseOut);
+        getAssemblyForLoseOuts().clear();
+        getAssemblyForLoseOuts().add(assemblyForLoseOut);
     }
 
     @Transient
     public ProductStoreIn getProductStoreIn() {
-        return productStoreIns.isEmpty() ? null : productStoreIns.iterator().next();
+        return getProductStoreIns().isEmpty() ? null : getProductStoreIns().iterator().next();
     }
 
     public void setProductStoreIn(ProductStoreIn productStoreIn) {
-        productStoreIns.clear();
-        productStoreIns.add(productStoreIn);
+        getProductStoreIns().clear();
+        getProductStoreIns().add(productStoreIn);
     }
 
     @Transient
     public MaterialStoreOut getMaterialStoreOut() {
-        return materialStoreOuts.isEmpty() ? null : materialStoreOuts.iterator().next();
+        return getMaterialStoreOuts().isEmpty() ? null : getMaterialStoreOuts().iterator().next();
     }
 
     public void setMaterialStoreOut(MaterialStoreOut materialStoreOut) {
-        materialStoreOuts.clear();
-        materialStoreOuts.add(materialStoreOut);
+        getMaterialStoreOuts().clear();
+        getMaterialStoreOuts().add(materialStoreOut);
     }
 
     @Transient
     public Allocation getAllocationForStoreOut() {
-        return allocationForStoreOuts.isEmpty() ? null : allocationForStoreOuts.iterator().next();
+        return getAllocationForStoreOuts().isEmpty() ? null : getAllocationForStoreOuts().iterator().next();
     }
 
     public void setAllocationForStoreOut(Allocation allocationForStoreOut) {
-        allocationForStoreOuts.clear();
-        allocationForStoreOuts.add(allocationForStoreOut);
+        getAllocationForStoreOuts().clear();
+        getAllocationForStoreOuts().add(allocationForStoreOut);
     }
 
     @Transient
     public MaterialStoreIn getMaterialStoreIn() {
-        return materialStoreIns.isEmpty() ? null : materialStoreIns.iterator().next();
+        return getMaterialStoreIns().isEmpty() ? null : getMaterialStoreIns().iterator().next();
     }
 
     public void setMaterialStoreIn(MaterialStoreIn materialStoreIn) {
-        materialStoreIns.clear();
-        materialStoreIns.add(materialStoreIn);
+        getMaterialStoreIns().clear();
+        getMaterialStoreIns().add(materialStoreIn);
     }
 
     @Transient
     public Allocation getAllocationForStoreIn() {
-        return allocationForStoreIns.isEmpty() ? null : allocationForStoreIns.iterator().next();
+        return getAllocationForStoreIns().isEmpty() ? null : getAllocationForStoreIns().iterator().next();
     }
 
     public void setAllocationForStoreIn(Allocation allocationsForStoreIn) {
-        allocationForStoreIns.clear();
-        allocationForStoreIns.add(allocationsForStoreIn);
+        getAllocationForStoreIns().clear();
+        getAllocationForStoreIns().add(allocationsForStoreIn);
     }
 
 
     @Transient
     public Inventory getInventoryAdd() {
-        return inventoryAdds.isEmpty() ? null : inventoryAdds.iterator().next();
+        return getInventoryAdds().isEmpty() ? null : getInventoryAdds().iterator().next();
     }
 
     public void setInventoryAdd(Inventory inventoryAdd) {
-        inventoryAdds.clear();
-        inventoryAdds.add(inventoryAdd);
+        getInventoryAdds().clear();
+        getInventoryAdds().add(inventoryAdd);
     }
 
     @Transient
     public Inventory getInventoryLoss() {
-        return inventoryLosses.isEmpty() ? null : inventoryLosses.iterator().next();
+        return getInventoryLosses().isEmpty() ? null : getInventoryLosses().iterator().next();
     }
 
     public void setInventoryLoss(Inventory inventoryLoss) {
-        inventoryLosses.clear();
-        inventoryLosses.add(inventoryLoss);
+        getInventoryLosses().clear();
+        getInventoryLosses().add(inventoryLoss);
     }
 
     @Transient
     public ScrapStoreOut getScrapStoreOut() {
-        return scrapStoreOuts.isEmpty() ? null : scrapStoreOuts.iterator().next();
+        return getScrapStoreOuts().isEmpty() ? null : getScrapStoreOuts().iterator().next();
     }
 
     public void setScrapStoreOut(ScrapStoreOut scrapStoreOut) {
-        scrapStoreOuts.clear();
-        scrapStoreOuts.add(scrapStoreOut);
+        getScrapStoreOuts().clear();
+        getScrapStoreOuts().add(scrapStoreOut);
     }
 
 
     @Transient
     public BackDispatch getBackDispatch() {
-        return backDispatchs.isEmpty() ? null : backDispatchs.iterator().next();
+        return getBackDispatchs().isEmpty() ? null : getBackDispatchs().iterator().next();
     }
 
     public void setBackDispatch(BackDispatch backDispatch) {
-        backDispatchs.clear();
-        backDispatchs.add(backDispatch);
+        getBackDispatchs().clear();
+        getBackDispatchs().add(backDispatch);
     }
 
     @Transient
     public MaterialBackStoreIn getMaterialBackStoreIn() {
-        return materialBackStoreIns.isEmpty() ? null : materialBackStoreIns.iterator().next();
+        return getMaterialBackStoreIns().isEmpty() ? null : getMaterialBackStoreIns().iterator().next();
     }
 
     public void setMaterialBackStoreIn(MaterialBackStoreIn materialBackStoreIn) {
-        materialBackStoreIns.clear();
-        materialBackStoreIns.add(materialBackStoreIn);
+        getMaterialBackStoreIns().clear();
+        getMaterialBackStoreIns().add(materialBackStoreIn);
     }
 
     @Transient
     public Dispatch getOrderDispatch() {
-        return orderDispatchs.isEmpty() ? null : orderDispatchs.iterator().next();
+        return getOrderDispatchs().isEmpty() ? null : getOrderDispatchs().iterator().next();
     }
 
     public void setOrderDispatch(Dispatch orderStoreOuts) {
-        orderDispatchs.clear();orderDispatchs.add(orderStoreOuts);
+        getOrderDispatchs().clear();
+        getOrderDispatchs().add(orderStoreOuts);
     }
 
     @Transient
     public StoreChange getStoreChange() {
-        return storeChanges.isEmpty() ? null : storeChanges.iterator().next();
+        return getStoreChanges().isEmpty() ? null : getStoreChanges().iterator().next();
     }
 
     public void setStoreChange(StoreChange storeChange) {
-        storeChanges.clear();storeChanges.add(storeChange);
+        getStoreChanges().clear();
+        getStoreChanges().add(storeChange);
     }
 }

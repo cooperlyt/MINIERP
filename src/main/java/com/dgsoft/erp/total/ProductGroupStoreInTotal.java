@@ -21,9 +21,13 @@ import java.util.*;
 @Scope(ScopeType.CONVERSATION)
 public class ProductGroupStoreInTotal extends StoreChangeResTotal {
 
+    protected static final String EJBQL = "select stockChangeItem from StockChangeItem stockChangeItem  " +
+            "left join fetch stockChangeItem.stockChange stockChange " +
+            "left join fetch stockChange.productStoreIns productStoreIns" +
+            "left join fetch stockChangeItem.storeRes " +
+            "where stockChangeItem.stockChange.verify = true and stockChangeItem.stockChange.operType = 'PRODUCE_IN'";
 
     private static final String[] RESTRICTIONS = {
-            "stockChangeItem.stockChange.operType = #{productGroupStoreInTotal.changeType}",
             "stockChangeItem.stockChange.operDate >= #{productGroupStoreInTotal.searchDateArea.dateFrom}",
             "stockChangeItem.stockChange.operDate <= #{productGroupStoreInTotal.searchDateArea.searchDateTo}",
             "stockChangeItem.storeRes.res.id = #{storeResList.resultSearchResId}",
@@ -33,12 +37,9 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
 
     public ProductGroupStoreInTotal() {
         super();
+        setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
 
-    }
-
-    public StockChange.StoreChangeType getChangeType() {
-        return StockChange.StoreChangeType.PRODUCE_IN;
     }
 
     public Map<Date,Map<ProductGroup,StoreResCountTotalGroup>> getDayTotalMap(){
