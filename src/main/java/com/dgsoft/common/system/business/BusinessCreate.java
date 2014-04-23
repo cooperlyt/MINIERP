@@ -1,22 +1,17 @@
 package com.dgsoft.common.system.business;
 
+import com.dgsoft.common.EntityHomeAdapter;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
-import com.dgsoft.common.jbpm.OwnerTaskInstanceCacheList;
-import com.dgsoft.common.system.RunParam;
-import com.dgsoft.common.system.action.BusinessDefineHome;
-import com.dgsoft.common.system.model.BusinessInstance;
-import org.jboss.seam.Component;
+import com.dgsoft.common.system.model.BusinessDefine;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.bpm.BusinessProcess;
 import org.jboss.seam.bpm.ManagedJbpmContext;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 import org.jbpm.graph.def.ProcessDefinition;
-import org.jbpm.taskmgmt.exe.TaskInstance;
 
 import javax.faces.event.ValueChangeEvent;
 
@@ -26,18 +21,18 @@ import javax.faces.event.ValueChangeEvent;
  * Date: 5/23/13
  * Time: 2:32 PM
  */
-@Name("businessCreate")
+
 @Scope(ScopeType.CONVERSATION)
-public class BusinessCreate {
+public abstract class BusinessCreate<E extends BussinessInstance> extends EntityHomeAdapter<E>{
 
-    @Out(scope = ScopeType.BUSINESS_PROCESS)
-    private String businessDefineId;
-
-    @Out(scope = ScopeType.BUSINESS_PROCESS)
-    private String businessDescription;
-
-    @Out(scope = ScopeType.BUSINESS_PROCESS)
-    private String businessName;
+//    @Out(scope = ScopeType.BUSINESS_PROCESS)
+//    private String businessDefineId;
+//
+//    @Out(scope = ScopeType.BUSINESS_PROCESS)
+//    private String businessDescription;
+//
+//    @Out(scope = ScopeType.BUSINESS_PROCESS)
+//    private String businessName;
 
     @In
     private FacesMessages facesMessages;
@@ -46,143 +41,85 @@ public class BusinessCreate {
     private Log log;
 
     @In
-    private BusinessDefineHome businessDefineHome;
-
-    @In(create = true)
-    private EntityHome<BusinessInstance> businessInstanceHome;
-
-    @In(create = true)
-    private OwnerTaskInstanceCacheList ownerTaskInstanceCacheList;
-
-    @In
     private Events events;
 
-    @In
-    private StartData startData;
+    //protected abstract String getBusinessKey();
 
-    @In
-    private RunParam runParam;
+    protected abstract String getWfName();
 
-    @In(create = true)
-    private TaskPrepare taskPrepare;
+//    @In(create = true)
+//    private TaskPrepare taskPrepare;
 
 
     public void verifyBusinessKeyAvailable(ValueChangeEvent event) {
         String key = (String) event.getNewValue();
-        if (!verifyBusinessKey(key)){
+        if (!verifyBusinessKey(key)) {
             facesMessages.addToControlFromResourceBundle(event.getComponent().getId(),
-                    StatusMessage.Severity.ERROR,"businessKeyConflict");
+                    StatusMessage.Severity.ERROR, "businessKeyConflict");
         }
     }
-
 
 
     public boolean verifyBusinessKey(String key) {
 
-        ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition(businessDefineHome.getInstance().getWfName());
+        ProcessDefinition definition = ManagedJbpmContext.instance().getGraphSession().findLatestProcessDefinition(getWfName());
         return ManagedJbpmContext.instance().getProcessInstance(definition,
-                startData.getBusinessKey()) == null;
+                key) == null;
+    }
+
+
+    @Override
+    protected boolean wire() {
+        if (!isManaged()) {
+            return createWorkFlow();
+        }else return true;
     }
 
     @Transactional
-    public String create() {
-
-        StartDataValidator dataValidator = getDataValidator();
-//        log.debug("create dataValidator:" + dataValidator == null ? "null" :dataValidator.verifyData());
-        String verifyMsg;
-        if (dataValidator == null) {
-            verifyMsg = "";
-        } else {
-            verifyMsg = dataValidator.verifyData();
-            if (verifyMsg == null) verifyMsg = "";
-        }
-        if (verifyMsg.equals("fail")) {
-            businessDefineId = "";
-            businessDescription = "";
-            businessName = "";
-            return "verify_fail";
-        } else {
-
-            log.debug("define Id:" + businessDefineHome.getInstance().getId());
-
-            try {
-                events.raiseEvent("com.dgsoft.BusinessCreatePrepare." + businessDefineHome.getInstance().getWfName(),
-                        businessDefineHome.getInstance());
-            } catch (ProcessCreatePrepareException e) {
-                log.debug("prepare other business data exception", e);
-                businessDefineId = "";
-                businessDescription = "";
-                businessName = "";
-                return "prepare_fail";
-            }
-
-            businessInstanceHome.clearInstance();
-            businessInstanceHome.getInstance().setId(startData.getBusinessKey());
-            businessInstanceHome.getInstance().setBusinessDefine(businessDefineHome.getInstance());
-            businessInstanceHome.getInstance().setMark(startData.getDescription());
-            businessInstanceHome.getInstance().setProcessMessages(verifyMsg);
-
-            BusinessProcess.instance().createProcess(businessDefineHome.getInstance().getWfName(),
-                    startData.getBusinessKey());
-
-            businessDefineId = businessDefineHome.getInstance().getId();
-            businessDescription = startData.getDescription();
-            businessName = businessDefineHome.getInstance().getName();
-
-            //startService.createBusiness(businessInstanceHome.getInstance());
+    protected boolean createWorkFlow() {
 
 
-            businessInstanceHome.persist();
+        BusinessProcess.instance().createProcess(getWfName(),getInstance().getId());
+
+        getInstance().setWfProcessId(BusinessProcess.instance().getProcessId());
+        getInstance().setWfVer(ManagedJbpmContext.instance().getProcessInstance(BusinessProcess.instance().getProcessId()).getVersion());
 
 
-            events.raiseEvent("com.dgsoft.BusinessCreating." + businessDefineHome.getInstance().getWfName(),
-                    businessInstanceHome.getInstance());
+       // ManagedJbpmContext.instance().getSession().flush();
+        return true;
+        // return navigation(startData.getBusinessKey());
 
-            events.raiseTransactionSuccessEvent("com.dgsoft.BusinessCreated." + businessDefineHome.getInstance().getWfName(),
-                    businessInstanceHome.getInstance());
-
-            log.debug(startData.getBusinessKey() + "verfy ok is start!");
-            return navigation(startData.getBusinessKey());
-        }
     }
-
-    private String navigation(String businessKey) {
-
-
-        ManagedJbpmContext.instance().getSession().flush();
-
-        if (runParam.getBooleanParamValue("system.business.forwordToTask")) {
-            //ownerTaskInstanceListener.refresh();
-            int findTask = 0;
-            TaskInstance findTaskInstance = null;
-            ownerTaskInstanceCacheList.refresh();
-            for (TaskInstance taskInstance : ownerTaskInstanceCacheList.getTaskInstanceCreateList()) {
-                if (taskInstance.getProcessInstance().getKey().equals(businessKey)) {
-                    findTask++;
-                    if (findTask > 1) {
-                        return "businessCreated";
-                    } else {
-                        findTaskInstance = taskInstance;
-                    }
-                }
-            }
-
-            if (findTaskInstance != null) {
-                BusinessProcess.instance().resumeTask(findTaskInstance.getId());
-                return taskPrepare.getTaskDescription(findTaskInstance.getId()).getTaskOperationPage();
-            }
-
-        }
-        return "businessCreated";
-    }
-
-    private StartDataValidator getDataValidator() {
-        String startServiceName = businessDefineHome.getInstance().getStartDataValidator();
-        if (startServiceName == null || startServiceName.trim().equals("")) {
-            return null;
-        } else
-            return (StartDataValidator) Component.getInstance(startServiceName, true, true);
-    }
+//
+//    private String navigation(String businessKey) {
+//
+//
+//        ManagedJbpmContext.instance().getSession().flush();
+//
+//        if (runParam.getBooleanParamValue("system.business.forwordToTask")) {
+//            //ownerTaskInstanceListener.refresh();
+//            int findTask = 0;
+//            TaskInstance findTaskInstance = null;
+//            ownerTaskInstanceCacheList.refresh();
+//            for (TaskInstance taskInstance : ownerTaskInstanceCacheList.getTaskInstanceCreateList()) {
+//                if (taskInstance.getProcessInstance().getKey().equals(businessKey)) {
+//                    findTask++;
+//                    if (findTask > 1) {
+//                        return "businessCreated";
+//                    } else {
+//                        findTaskInstance = taskInstance;
+//                    }
+//                }
+//            }
+//
+//            if (findTaskInstance != null) {
+//                BusinessProcess.instance().resumeTask(findTaskInstance.getId());
+//                return taskPrepare.getTaskDescription(findTaskInstance.getId()).getTaskOperationPage();
+//            }
+//
+//        }
+//        return "businessCreated";
+//    }
 
 
 }

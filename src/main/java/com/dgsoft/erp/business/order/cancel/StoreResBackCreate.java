@@ -3,15 +3,16 @@ package com.dgsoft.erp.business.order.cancel;
 import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.jbpm.BussinessProcessUtils;
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.common.system.business.BusinessCreate;
-import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.business.order.BackItemCreate;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
@@ -33,12 +34,6 @@ public class StoreResBackCreate extends OrderBackHome {
 
     @In
     private Credentials credentials;
-
-    @In(create = true)
-    private StartData startData;
-
-    @In(create = true)
-    private BusinessDefineHome businessDefineHome;
 
     @In(create = true)
     private OrderBackHome orderBackHome;
@@ -67,14 +62,14 @@ public class StoreResBackCreate extends OrderBackHome {
     @In(required = false)
     private CustomerAreaHome customerAreaHome;
 
-    @In(create = true)
-    private BusinessCreate businessCreate;
-
     @DataModelSelection
     private BackItem selectBackItem;
 
     @In(create = true)
     private ResBackDispatch resBackDispatch;
+
+    @In
+    private NumberBuilder numberBuilder;
 
     @Override
     protected OrderBack createInstance() {
@@ -84,9 +79,8 @@ public class StoreResBackCreate extends OrderBackHome {
     @Override
     public void create(){
         super.create();
-        startData.generateKey();
-        businessDefineHome.setId("erp.business.orderCancel");
 
+        getInstance().setId("T" + numberBuilder.getSampleNumber("storeResBack"));
         if ((orderHome != null) && orderHome.isIdDefined()){
             getInstance();
             for (OrderItem orderItem: orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.WAIT_PRICE))){
@@ -105,7 +99,6 @@ public class StoreResBackCreate extends OrderBackHome {
     protected boolean wire() {
         if (!isManaged()) {
 
-            getInstance().setId(startData.getBusinessKey());
             getInstance().setApplyEmp(credentials.getUsername());
             getInstance().setMoneyComplete(!isNeedBackMoney());
             getInstance().setResComplete(!isNeedBackRes());
@@ -165,6 +158,18 @@ public class StoreResBackCreate extends OrderBackHome {
         return createBack();
     }
 
+
+    //TODO move to process EL
+    //----------------
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessDescription;
+
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessName;
+
+    //-----------------
+
+    @CreateProcess(definition = "orderCancel", processKey = "#{storeResBackCreate.instance.id}")
     @Transactional
     public String createBack() {
 
@@ -184,7 +189,12 @@ public class StoreResBackCreate extends OrderBackHome {
             getInstance().setMoneyComplete(true);
         }
         orderBackHome.setInstance(getInstance());
-        return businessCreate.create();
+        if (!"persisted".equals(persist())) {
+            return null;
+        }
+        businessDescription = customerHome.getInstance().getName();
+        businessName = "客户退货";
+        return "businessCreated";
 
     }
 
@@ -200,15 +210,5 @@ public class StoreResBackCreate extends OrderBackHome {
 //        return true;
 //    }
 
-
-    @Observer(value = "com.dgsoft.BusinessCreatePrepare.orderCancel", create = true)
-    @Transactional
-    public void createOrder(BusinessDefine businessDefine) {
-
-        if (!"persisted".equals(persist())) {
-            throw new ProcessCreatePrepareException("inventory persist fail");
-        }
-        startData.setDescription(getInstance().getCustomer().getName());
-    }
 
 }

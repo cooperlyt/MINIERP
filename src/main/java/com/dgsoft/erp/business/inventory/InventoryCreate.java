@@ -1,11 +1,10 @@
 package com.dgsoft.erp.business.inventory;
 
-import com.dgsoft.common.exception.ProcessCreatePrepareException;
-import com.dgsoft.common.system.action.BusinessDefineHome;
-import com.dgsoft.common.system.business.StartData;
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.erp.action.InventoryHome;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.security.Credentials;
 
 /**
@@ -21,16 +20,23 @@ import org.jboss.seam.security.Credentials;
 public class InventoryCreate {
 
     @In(create = true)
-    private StartData startData;
-
-    @In(create = true)
-    private BusinessDefineHome businessDefineHome;
-
-    @In(required = false)
     private InventoryHome inventoryHome;
 
     @In
+    private NumberBuilder numberBuilder;
+
+    @In
     private Credentials credentials;
+
+    //TODO move to process EL
+    //----------------
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessDescription;
+
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessName;
+
+    //-----------------
 
     private boolean lockStore = false;
 
@@ -43,22 +49,24 @@ public class InventoryCreate {
     }
 
     public void init() {
-        startData.generateKey();
-        businessDefineHome.setId("erp.business.inventory");
+        inventoryHome.getInstance().setId("P" + numberBuilder.getSampleNumber("inventory"));
     }
 
-    @Observer("com.dgsoft.BusinessCreatePrepare.inventory")
+
+    @CreateProcess(definition = "order", processKey = "#{orderCreate.instance.id}")
     @Transactional
-    public void beginInventory() {
+    public String beginInventory() {
         if (lockStore)
             inventoryHome.getInstance().getStore().setEnable(false);
-        inventoryHome.getInstance().setId(startData.getBusinessKey());
+
         inventoryHome.getInstance().setApplyEmp(credentials.getUsername());
         if (!"persisted".equals(inventoryHome.persist())) {
-            throw new ProcessCreatePrepareException("inventory persist fail");
+            return null;
         }
+        businessDescription = inventoryHome.getInstance().getStore().getName();
+        businessName = "盘点";
+        return "businessCreated";
 
-        startData.setDescription(inventoryHome.getInstance().getStore().getName());
     }
 
 

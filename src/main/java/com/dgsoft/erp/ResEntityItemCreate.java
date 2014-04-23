@@ -7,6 +7,7 @@ import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.international.StatusMessage;
 
 import java.util.Collection;
@@ -82,6 +83,7 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
         }
     }
 
+    @BypassInterceptors
     public E getEditingItem() {
         return editingItem;
     }

@@ -3,12 +3,11 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-    <param name="newOrder"/>
     <param name="from"/>
 
     <param name="customerId" value="#{customerHome.id}"/>
 
     <param name="customerAreaId" value="#{customerAreaHome.id}"/>
+    <param name="businessDefineId"  value="#{businessDefineHome.id}"/>
 
-    <action execute="#{orderCreate.beginCreateOrder}" if="#{empty newOrder ? true : newOrder}" on-postback="false"/>
 </page>

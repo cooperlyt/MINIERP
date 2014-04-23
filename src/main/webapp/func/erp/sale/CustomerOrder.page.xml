@@ -15,6 +15,7 @@
     <param name="createDateFrom" value="#{orderList.createDateFrom}"  converterId="searchDateConverter"/>
     <param name="createDateTo" value="#{orderList.createDateTo}"  converterId="searchDateConverter"/>
     <param name="orderId" value="#{orderList.orderId}"/>
+
     <param name="canceled" value="#{orderList.canceled}"/>
     <param name="allStoreOut" value="#{orderList.allStoreOut}"/>
     <param name="moneyComplete" value="#{orderList.moneyComplete}"/>
@@ -26,14 +27,5 @@
     <param name="cloneOrderId" value="#{orderHome.id}"/>
     <param name="cloneCustomerAreaId" value="#{customerAreaHome.id}"/>
 
-    <navigation from-action="#{orderCreate.createCloneOrder}">
-        <rule if-outcome="beginning">
-
-            <redirect include-page-params="true" view-id="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml">
-                <param name="newOrder" value="false"/>
-                <param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-            </redirect>
-        </rule>
-    </navigation>
 
 </page>

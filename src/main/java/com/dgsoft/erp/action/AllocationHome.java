@@ -1,21 +1,17 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
-import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.Allocation;
 import com.dgsoft.erp.model.StockChange;
-import com.dgsoft.erp.model.Store;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
-import java.util.Date;
 
 /**
  * Created by cooper on 3/6/14.
@@ -23,8 +19,8 @@ import java.util.Date;
 @Name("allocationHome")
 public class AllocationHome extends ErpEntityHome<Allocation> {
 
-    @In(create = true)
-    protected StartData startData;
+    @In
+    private NumberBuilder numberBuilder;
 
     @In
     protected RunParam runParam;
@@ -32,8 +28,6 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
     @In(required = false)
     private StockChangeHome stockChangeHome;
 
-    @In(create = true)
-    protected BusinessDefineHome businessDefineHome;
 
     @Factory(value = "allAllocationTypes", scope = ScopeType.SESSION)
     public Allocation.AllocationType[] getAllAllocationTypes() {
@@ -56,22 +50,25 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
     private FacesMessages facesMessages;
 
 
+
+
+
+    @Transactional
     public String createItem() {
         if (getInstance().getInStore().equals(getInstance().getOutStore())) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "AllocationStoreSameError");
             return null;
         }
 
-        businessDefineHome.setId("erp.business.allocation");
-        startData.generateKey();
-        startData.setDescription(getInstance().getOutStore().getName() + "->" + getInstance().getInStore().getName());
-        getInstance().setId(startData.getBusinessKey());
+
+
+        getInstance().setId("D" + numberBuilder.getSampleNumber("Allocation"));
 
         if (getInstance().getType().equals(Allocation.AllocationType.ALLOCATION)) {
             getInstance().setState(Allocation.AllocationState.WAITING_IN);
             stockChangeHome.getInstance().setStore(getInstance().getOutStore());
             if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {
-                stockChangeHome.getInstance().setId("AO-" + startData.getBusinessKey());
+                stockChangeHome.getInstance().setId("AO-" + getInstance().getId());
             }
             stockChangeHome.getInstance().setMemo(getInstance().getMemo());
             stockChangeHome.getInstance().setVerify(true);

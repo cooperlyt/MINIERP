@@ -3,15 +3,13 @@ package com.dgsoft.erp.business.order;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.NumberBuilder;
-import com.dgsoft.common.system.action.BusinessDefineHome;
-import com.dgsoft.common.system.business.StartData;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
@@ -30,6 +28,16 @@ public class OrderCreate extends OrderHome {
 
     private static final String ORDER_SEND_REASON_WORD_KEY = "erp.needResReason.order";
 
+    //TODO move to process EL
+    //----------------
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessDescription;
+
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessName;
+
+    //-----------------
+
     @In(create = true)
     private CustomerHome customerHome;
 
@@ -38,12 +46,6 @@ public class OrderCreate extends OrderHome {
 
     @In(required = false)
     private CustomerAreaHome customerAreaHome;
-
-    @In(create = true)
-    private StartData startData;
-
-    @In(create = true)
-    private BusinessDefineHome businessDefineHome;
 
     @In(create = true)
     private OrderDispatch orderDispatch;
@@ -203,7 +205,7 @@ public class OrderCreate extends OrderHome {
 
     private boolean dispatched = false;
 
-    public String dispatchBack(){
+    public String dispatchBack() {
         dispatched = false;
         return "/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml";
 
@@ -223,14 +225,13 @@ public class OrderCreate extends OrderHome {
     }
 
     private void genBusinessKey() {
-        startData.setBusinessKey(numberBuilder.getDayNumber("order"));
-        while (getEntityManager().find(getEntityClass(), startData.getBusinessKey()) != null) {
-            startData.setBusinessKey(numberBuilder.getDayNumber("order"));
+        getInstance().setId(numberBuilder.getDayNumber("order"));
+        while (getEntityManager().find(getEntityClass(), getInstance().getId()) != null) {
+            getInstance().setId(numberBuilder.getDayNumber("order"));
         }
     }
 
     public String beginCreateOrder() {
-        businessDefineHome.setId("erp.business.order");
         genBusinessKey();
 
         needResHome.getInstance().setCustomerOrder(getInstance());
@@ -242,13 +243,12 @@ public class OrderCreate extends OrderHome {
         getInstance().setMoney(BigDecimal.ZERO);
         getInstance().setEarnest(BigDecimal.ZERO);
         getInstance().getNeedReses().add(needResHome.getInstance());
-        return "beginning";
+        return "/business/startPrepare/erp/sale/CreateSaleOrder.xhtml";
     }
 
     public String createCloneOrder() {
         if (orderHome.isIdDefined()) {
 
-            businessDefineHome.setId("erp.business.order");
             genBusinessKey();
             needResHome.clearInstance();
 
@@ -296,7 +296,7 @@ public class OrderCreate extends OrderHome {
             return beginCreateOrder();
         }
 
-        return "beginning";
+        return "/business/startPrepare/erp/sale/CreateSaleOrder.xhtml";
     }
 
     @Factory("orderPayTypes")
@@ -316,7 +316,6 @@ public class OrderCreate extends OrderHome {
         calcMoneys();
         //getInstance().setCreateDate(new Date());
 
-        getInstance().setId(startData.getBusinessKey());
         if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
             getInstance().setEarnestFirst(false);
         }
@@ -353,25 +352,26 @@ public class OrderCreate extends OrderHome {
     }
 
 
-    @Observer("com.dgsoft.BusinessCreatePrepare.order")
+    @End
+    @CreateProcess(definition = "order", processKey = "#{orderCreate.instance.id}")
     @Transactional
-    public void createOrder(BusinessDefine businessDefine) {
+    public String createOrder() {
 
 
         if (!verifyItem()) {
-            throw new ProcessCreatePrepareException("order item verify fail");
+            return null;
         }
 
 
         if (!wireOrder()) {
-            throw new ProcessCreatePrepareException("create order wire fail");
+            return null;
         }
 
         if (dispatched) {
 
             if (!orderDispatch.isDispatchComplete()) {
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatch_not_complete");
-                throw new ProcessCreatePrepareException("dispatch not complete");
+                return null;
             }
 
             if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
@@ -384,7 +384,7 @@ public class OrderCreate extends OrderHome {
                 }
                 if (allCustomerSelf) {
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "canotAllCustomerSelf");
-                    throw new ProcessCreatePrepareException("dispatch error");
+                    return null;
                 }
             }
             orderDispatch.wire();
@@ -395,12 +395,16 @@ public class OrderCreate extends OrderHome {
         }
 
         if (!"persisted".equals(persist())) {
-            throw new ProcessCreatePrepareException("create order persist fail");
+            return null;
         }
 
-        startData.setDescription(getInstance().getCustomer().getName());
+        businessDescription = getInstance().getCustomer().getName();
+        businessName = "销售订单";
+
         orderHome.setId(getInstance().getId());
         needResHome.setId(getInstance().getNeedResList().get(0).getId());
+
+        return "/business/startPrepare/erp/sale/SaleOrderCreated.xhtml";
     }
 
     private List<TotalResItem> resItemList = null;

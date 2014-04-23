@@ -10,6 +10,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
@@ -25,12 +26,6 @@ import java.util.List;
 @Name("allocationCreateApply")
 @Scope(ScopeType.CONVERSATION)
 public class AllocationCreateApply {
-
-    @In
-    private ResHelper resHelper;
-
-    @In(create = true)
-    private BusinessCreate businessCreate;
 
     @In(create = true)
     private ResHome resHome;
@@ -70,6 +65,10 @@ public class AllocationCreateApply {
         editingApplyItems = new AllocationRes(storeRes);
     }
 
+
+
+
+    @Transactional
     public String complete() {
         if (applyItems.isEmpty()){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"noApplyItemData");
@@ -78,7 +77,7 @@ public class AllocationCreateApply {
         allocationHome.getInstance().getAllocationReses().clear();
         allocationHome.getInstance().getAllocationReses().addAll(applyItems);
         if ("persisted".equals(allocationHome.persist())) {
-            return businessCreate.create();
+            return "businessCreated";
         } else {
             return null;
         }

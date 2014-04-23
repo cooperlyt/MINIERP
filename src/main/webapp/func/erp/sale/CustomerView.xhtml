@@ -207,9 +207,10 @@
                 <h:graphicImage value="/img/order.png"/>
                 <s:link value="#{messages.newOrder}"
                         disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
-                        view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml" propagation="begin">
+                        action="#{orderCreate.beginCreateOrder}" propagation="begin">
                     <f:param name="from" value="/func/erp/sale/CustomerView.xhtml"/>
                     <f:param name="orderId" value=""/>
+                    <f:param name="businessDefineId" value="erp.business.order"/>
                     <f:param name="customerId" value="#{customerHome.instance.id}"/>
                     <f:param name="customerAreaId" value="#{customerHome.instance.customerArea.id}"/>
                 </s:link>

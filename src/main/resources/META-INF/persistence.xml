@@ -11,8 +11,6 @@
 
         <class>com.dgsoft.common.system.model.BusinessCategory</class>
         <class>com.dgsoft.common.system.model.BusinessDefine</class>
-        <class>com.dgsoft.common.system.model.BusinessInstance</class>
-        <class>com.dgsoft.common.system.model.BusinessTask</class>
         <class>com.dgsoft.common.system.model.ComplexVarSubscribe</class>
         <class>com.dgsoft.common.system.model.Employee</class>
         <class>com.dgsoft.common.system.model.FileSubscribe</class>
