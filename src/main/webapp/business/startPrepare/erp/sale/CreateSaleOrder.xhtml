@@ -98,6 +98,7 @@
 
     <rich:toolbarGroup location="right">
         <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                  includePageParams="false"
                   view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
         <h:commandButton styleClass="toolBarBtn" value="#{messages.Next}"
                          action="#{orderCreate.saveOrderCustomer}">

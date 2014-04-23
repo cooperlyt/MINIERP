@@ -5,6 +5,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
                 template="/layout/full-template.xhtml">
 
 
@@ -33,25 +34,21 @@
 
                 <rich:toolbarGroup location="right">
 
-                    <h:inputText required="true"
-                                 maxlength="32"
-                                 styleClass="barOrderNumber"
-                                 label="#{messages.OrderCode}"
-                                 value="#{startData.businessKey}">
-                        <rich:placeholder value="#{messages.OrderCode}"/>
-                    </h:inputText>
-
 
                     <s:button styleClass="toolBarBtn" value="#{messages.fallback}" action="#{orderCreate.dispatchBack}"
-                              view="/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml"/>
+                              view="/business/startPrepare/erp/sale/CreateSaleOrderMoney.xhtml">
+                        <f:param name="from" value="#{from}"/>
+                    </s:button>
 
                     <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              includePageParams="false"
 
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
+                    <s:button value="#{messages.complete}" view="/business/startPrepare/erp/sale/CreateSaleOrderConfirm.xhtml">
+                        <f:param name="from" value="#{from}"/>
+                    </s:button>
 
-                    <h:commandButton styleClass="toolBarBtn"  value="#{messages.complete}"
-                                     action="#{businessCreate.create}"/>
                 </rich:toolbarGroup>
             </rich:toolbar>
         </h:form>
