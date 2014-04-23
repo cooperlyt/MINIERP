@@ -205,17 +205,20 @@
             </f:facet>
         </rich:column>
 
-        <rich:column width="60px">
+        <rich:column width="110px">
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
                     <ui:param name="entityList" value="#{orderList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
-                    <ui:param name="propertyPath" value="customerOrder.customer.customerArea.name"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_field_createDate}"/>
+                    <ui:param name="propertyPath" value="customerOrder.createDate"/>
                 </ui:include>
             </f:facet>
-            #{_order.customer.customerArea.name}
-
+            <h:outputText value="#{_order.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
         </rich:column>
+
+
 
 
         <rich:column>
@@ -355,19 +358,18 @@
             </f:facet>
 
         </rich:column>
-        <rich:column width="110px">
+
+        <rich:column width="60px">
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
                     <ui:param name="entityList" value="#{orderList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.order_field_createDate}"/>
-                    <ui:param name="propertyPath" value="customerOrder.createDate"/>
+                    <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
+                    <ui:param name="propertyPath" value="customerOrder.customer.customerArea.name"/>
                 </ui:include>
             </f:facet>
-            <h:outputText value="#{_order.createDate}">
-                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-            </h:outputText>
-        </rich:column>
+            #{_order.customer.customerArea.name}
 
+        </rich:column>
         <rich:column>
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">

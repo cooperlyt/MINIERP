@@ -8,45 +8,41 @@
                 xmlns:rich="http://richfaces.org/rich">
 
     <!--params: format, template , required, noSelectionLabel, historys-->
-    <a:region>
-        <s:decorate template="#{template}">
-            <ui:define name="label">#{format.formatDefine.name}</ui:define>
+
+    <s:decorate template="#{template}">
+        <ui:define name="label">#{format.formatDefine.name}</ui:define>
 
 
-            <h:selectOneMenu label="#{format.formatDefine.name}" required="#{required}" value="#{format.formatValue}"
-                         rendered="#{format.formatDefine.dataType.name() eq 'WORD'}" >
-                <s:selectItems value="#{dictionary.getWordList(format.formatDefine.wordCategory)}"
-                               var="_word" itemValue="#{_word.id}" label="#{_word.value}"
-                               noSelectionLabel="#{(empty noSelectionLabel) ? messages.noSelectLabel : noSelectionLabel}"/>
-                <a:ajax event="valueChange" execute="@this" render="@region"/>
-            </h:selectOneMenu >
+        <h:selectOneMenu label="#{format.formatDefine.name}" required="#{required}" value="#{format.formatValue}"
+                         rendered="#{format.formatDefine.dataType.name() eq 'WORD'}">
+            <s:selectItems value="#{dictionary.getWordList(format.formatDefine.wordCategory)}"
+                           var="_word" itemValue="#{_word.id}" label="#{_word.value}"
+                           noSelectionLabel="#{(empty noSelectionLabel) ? messages.noSelectLabel : noSelectionLabel}"/>
+        </h:selectOneMenu>
 
-            <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client"
-                               value="#{format.intValue}" layout="div" label="#{format.formatDefine.name}"
-                               required="#{required}"
-                               var="_value" fetchValue="#{_value}"
-                               rendered="#{format.formatDefine.dataType.name() eq 'INTEGER'}"
-                               autocompleteList="#{historys}"
-                               converter="javax.faces.Integer" showButton="true">
-                <b>#{_value}</b>
-                <a:ajax event="blur" execute="@this" render="@region"/>
-            </rich:autocomplete>
+        <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client"
+                           value="#{format.intValue}" layout="div" label="#{format.formatDefine.name}"
+                           required="#{required}"
+                           var="_value" fetchValue="#{_value}"
+                           rendered="#{format.formatDefine.dataType.name() eq 'INTEGER'}"
+                           autocompleteList="#{historys}"
+                           converter="javax.faces.Integer" showButton="true">
+            <b>#{_value}</b>
+        </rich:autocomplete>
 
-            <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client"
-                               value="#{format.floatValue}" layout="div" label="#{format.formatDefine.name}"
-                               required="#{required}"
-                               var="_value" fetchValue="#{_value}"
-                               rendered="#{format.formatDefine.dataType.name() eq 'FLOAT'}"
-                               autocompleteList="#{historys}"
-                               converter="javax.faces.BigDecimal" showButton="true">
-                <b>#{_value}</b>
+        <rich:autocomplete inputClass="autoCompleteWidth50" popupClass="autoCompletePopupHieght" mode="client"
+                           value="#{format.floatValue}" layout="div" label="#{format.formatDefine.name}"
+                           required="#{required}"
+                           var="_value" fetchValue="#{_value}"
+                           rendered="#{format.formatDefine.dataType.name() eq 'FLOAT'}"
+                           autocompleteList="#{historys}"
+                           converter="javax.faces.BigDecimal" showButton="true">
+            <b>#{_value}</b>
 
-                <a:ajax event="blur" execute="@this" render="@region" />
-            </rich:autocomplete>
+        </rich:autocomplete>
 
 
-        </s:decorate>
-    </a:region>
+    </s:decorate>
 
 
 </ui:composition>

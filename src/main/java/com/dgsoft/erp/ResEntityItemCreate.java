@@ -94,6 +94,11 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
     }
 
     public void createNext() {
+        if (storeResHome.isIdDefined()){
+            storeResSelected();
+            return;
+        }
+
         switch (createBy){
 
             case RES_CATEGORY:

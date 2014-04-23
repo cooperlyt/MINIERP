@@ -2,6 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.ErpSimpleEntityHome;
+import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.tools.StoreResPropertyTreeNode;
@@ -44,9 +45,7 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
         log.debug("valid stores property count:" + storeResList.size());
         for (StoreRes storeRes : storeResList) {
 
-            log.debug("very StoreRes :" + storeRes.getName() + "| format count:" + storeRes.getFormats().size() + "| covnertRate:"
-                    + storeRes.getFloatConversionRate());
-            if (ResHelper.instance().sameFormat(storeRes.getFormats(), formatList)
+            if (ResHelper.instance().sameFormat(ResFormatCache.instance().getFormats(storeRes), formatList)
                     && (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
                     || (storeRes.getFloatConversionRate().compareTo(floatConvertRate) == 0))) {
 
