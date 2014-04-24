@@ -169,7 +169,7 @@
 	<task-node name="订金收款">
 		<task name="订金收款">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceiveOrderEarnest.xhtml&quot;}
+				{&quot;processName&quot;:&quot;销售订单&quot;,&quot;processKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;], &quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceiveOrderEarnest.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>
