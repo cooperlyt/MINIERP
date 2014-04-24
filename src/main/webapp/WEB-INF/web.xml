@@ -9,7 +9,6 @@
     <!-- birt -->
 
 
-
     <!-- Default locale setting.
 	-->
     <context-param>
@@ -245,7 +244,6 @@
     </jsp-config>
 
 
-
     <servlet>
         <servlet-name>JBoss BIRT Servlet</servlet-name>
         <servlet-class>org.jboss.tools.birt.servlet.JBossBirtServlet</servlet-class>
@@ -269,18 +267,6 @@
     <context-param>
         <param-name>org.richfaces.skin</param-name>
         <param-value>#{skinBean.skin}</param-value>
-    </context-param>
-
-    <servlet>
-        <servlet-name>Push Servlet</servlet-name>
-        <servlet-class>org.richfaces.webapp.PushServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-        <async-supported>true</async-supported>
-    </servlet>
-
-    <context-param>
-        <param-name>org.atmosphere.useBlocking</param-name>
-        <param-value>true</param-value>
     </context-param>
 
     <!-- built-in sorting and Filtering -->
@@ -312,6 +298,12 @@
         <param-value>false</param-value>
     </context-param>
 
+    <!--
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+                  -->
     <!-- Change load strategy to DEFAULT to disable sending scripts/styles as packs -->
 
     <context-param>
@@ -320,16 +312,71 @@
     </context-param>
 
     <!-- createTempFiles boolean attribute which defines whether the uploaded files are stored in temporary files or available in the listener directly as byte[] data (false for this example). -->
+    <!--
     <context-param>
         <param-name>createTempFiles</param-name>
         <param-value>false</param-value>
+    </context-param>  -->
+    <context-param>
+        <param-name>org.richfaces.fileUpload.createTempFiles</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.richfaces.fileUpload.maxRequestSize</param-name>
+        <param-value>100000</param-value>
+    </context-param>
+
+    <!-- Configures Push -->
+
+
+    <servlet>
+        <servlet-name>Push Servlet</servlet-name>
+        <servlet-class>org.richfaces.webapp.PushServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+
+    <context-param>
+        <param-name>org.atmosphere.useBlocking</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+
+    <context-param>
+        <param-name>org.richfaces.push.initializeOnStartup</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.richfaces.push.jms.enabled</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.richfaces.push.jms.connectionUsername</param-name>
+        <param-value>guest</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.richfaces.push.jms.connectionPassword</param-name>
+        <param-value>p@ssw0rd</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.richfaces.push.session.maxInactiveInterval</param-name>
+        <!-- interval in miliseconds; default value: 5 minutes -->
+        <param-value>300000</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.atmosphere.cpr.CometSupport.maxInactiveActivity</param-name>
+        <param-value>35000</param-value>
     </context-param>
 
     <!--maxRequestSize attribute defines max size in bytes of the uploaded files (1000000 for this example).-->
-    <context-param>
-        <param-name>maxRequestSize</param-name>
-        <param-value>1000000</param-value>
-    </context-param>
+    <!--
+     <context-param>
+         <param-name>maxRequestSize</param-name>
+         <param-value>1000000</param-value>
+     </context-param>
+            -->
+
 
     <context-param>
         <param-name>ddl</param-name>
@@ -382,7 +429,7 @@
     </mime-mapping>
 
 
-    <!-- Change to "Production" when you are ready to deploy -->
+    <!-- Change to "Production" when you are ready to deploy [Development]-->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
