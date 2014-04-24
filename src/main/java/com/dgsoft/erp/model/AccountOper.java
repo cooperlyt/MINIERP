@@ -210,8 +210,7 @@ public class AccountOper implements java.io.Serializable {
         this.operDate = operDate;
     }
 
-    @Column(name = "REMIT_FEE", nullable = false, scale = 3)
-    @NotNull
+    @Column(name = "REMIT_FEE", nullable = true, scale = 3)
     public BigDecimal getRemitFee() {
         return remitFee;
     }
@@ -231,8 +230,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "PAY_TYPE", nullable = false, length = 32)
-    @NotNull
+    @Column(name = "PAY_TYPE", nullable = true, length = 32)
     public PayType getPayType() {
         return this.payType;
     }

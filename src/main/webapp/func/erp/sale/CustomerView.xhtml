@@ -109,7 +109,7 @@
 
     </ui:define>
 </s:decorate>
-
+<ui:remove>
 <!--
 <rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="false" width="600" height="600"
                  moveable="true" resizeable="false">
@@ -149,7 +149,7 @@
 </a:commandLink>
 </rich:toolbarGroup>
 -->
-
+</ui:remove>
 <h:form>
     <a:outputPanel ajaxRendered="true">
         <rich:toolbar height="34" itemSeparator="line">
@@ -198,7 +198,7 @@
                 <s:link view="/func/erp/finance/cashier/CustomerMoneyRefund.xhtml"
                         value="#{messages.CustomerMoneyRefund}"
                         disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.finance.cashier'))}"
-                        propagation="begin" rendered="#{s:hasRole('erp.finance.cashier')}">
+                        propagation="begin">
                     <f:param name="customerId" value="#{customerHome.instance.id}"/>
                 </s:link>
             </rich:toolbarGroup>

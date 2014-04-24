@@ -3,11 +3,15 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.PreparePay;
+import com.dgsoft.erp.model.api.PayType;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.util.EnumSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +29,11 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
     @In
     private Credentials credentials;
 
+    @Factory(value = "prepareTypes",scope = ScopeType.CONVERSATION)
+    public EnumSet<AccountOper.AccountOperType> getPrepareTypes(){
+        return EnumSet.of(AccountOper.AccountOperType.PRE_DEPOSIT ,AccountOper.AccountOperType.ORDER_FREE);
+    }
+
     @Override
     public PreparePay createInstance(){
         PreparePay result = new PreparePay();
@@ -36,6 +45,11 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
     protected boolean wire(){
         if (!isManaged()){
 
+            if (getInstance().getAccountOper().getOperType().equals(AccountOper.AccountOperType.ORDER_FREE)){
+                getInstance().getAccountOper().setPayType(null);
+                getInstance().getAccountOper().setRemitFee(BigDecimal.ZERO);
+
+            }
             getInstance().getAccountOper().getCustomer().
                     setBalance(getInstance().getAccountOper().getCustomer().getBalance().add(getInstance().getAccountOper().getOperMoney()));
 
