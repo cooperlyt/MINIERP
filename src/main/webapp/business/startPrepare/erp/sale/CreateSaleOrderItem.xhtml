@@ -12,7 +12,7 @@
 <ui:param name="functionTitle" value="#{messages.createOrder}-#{messages.orderItem}"/>
 
 <ui:define name="func-body">
-<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/ZeroClipboard.js"/>
+
 
 
 <h:outputStylesheet>
@@ -45,12 +45,6 @@
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
 
-
-                <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
-                                 title="#{messages.storeResSelect}"
-                                 onclick="#{rich:component('resSelectPanel')}.show();return false;">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
             </h:panelGrid>
 
         </h:form>
@@ -61,10 +55,12 @@
 
 
         <s:button value="#{messages.cancel}" propagation="end"
-                  view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
+                  view="#{empty from ? '/func/erp/sale/CustomerOrder.xhtml' : from}"/>
 
         <s:button value="#{messages.Previous}"
-                  view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml"/>
+                  view="/business/startPrepare/erp/sale/CreateSaleOrder.xhtml">
+            <f:param name="from" value="#{from}"/>
+        </s:button>
 
         <s:button value="#{messages.Next}"
                   view="/business/startPrepare/erp/sale/CreateSaleOrderMoney.xhtml">
@@ -83,7 +79,7 @@
 
         <s:decorate template="/layout/seam-edit.xhtml">
             <ui:define name="label">#{messages.resCategory}</ui:define>
-            <h:selectOneMenu value="#{resCategoryHome.id}" rendered="true" label="#{messages.resCategory}">
+            <h:selectOneMenu value="#{resCategoryHome.id}" required="true" label="#{messages.resCategory}">
 
                 <s:selectItems value="#{resCategoryList.saleResCategorys}" var="_category" label="#{_category.name}"
                                itemValue="#{_category.id}" noSelectionLabel="#{messages.noSelectLabel}"/>

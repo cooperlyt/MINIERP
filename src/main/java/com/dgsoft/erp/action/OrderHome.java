@@ -138,6 +138,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public String getToastMessages() {
 
+        if (!isIdDefined()){
+            return "";
+        }
 
         StringBuffer result = new StringBuffer();
         result.append(messages.get("OrderCode") + ":" + getInstance().getId() + "\n");

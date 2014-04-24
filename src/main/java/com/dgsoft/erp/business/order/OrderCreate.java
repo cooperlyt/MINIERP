@@ -205,6 +205,10 @@ public class OrderCreate extends OrderHome {
 
     private boolean dispatched = false;
 
+    public boolean isDispatched() {
+        return dispatched;
+    }
+
     public String dispatchBack() {
         dispatched = false;
         return "/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml";

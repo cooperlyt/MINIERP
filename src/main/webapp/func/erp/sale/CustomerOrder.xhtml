@@ -417,10 +417,7 @@
                                      oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
                                      disabled="#{not (orderHome.anyOneMoneyPay and (not orderHome.anyOneStoreOut))}">
                         <a:attachQueue requestDelay="0"/>
-                        <a:param assignTo="#{startData.businessKey}" value="#{orderHome.instance.id}"/>
-                        <a:param assignTo="#{startData.description}"
-                                 value="#{orderHome.instance.customer.name}[#{orderHome.instance.id}]"/>
-                        <a:param assignTo="#{businessDefineHome.id}" value="erp.business.orderMoneyBack"/>
+                        <f:param name="customerOrderId" value="#{orderHome.instance.id}"/>
                     </a:commandButton>
 
 

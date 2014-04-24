@@ -86,35 +86,9 @@
 
 <a:outputPanel
         rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role) or s:hasRole('erp.finance.accountancy') or s:hasRole('erp.finance.cashier') }">
-    <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">
-            <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.earnestFirst}"/>
-            #{messages.order_field_earnestFirst}</ui:define>
-
-        <a:outputPanel rendered="#{orderHome.instance.earnestFirst and (not empty orderHome.instance.earnest)}">
-            <h:outputText value="#{orderHome.instance.earnest}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </a:outputPanel>
-
-    </s:decorate>
-
-    <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.orderSaleMoney}</ui:define>
-        <h:outputText value="#{orderHome.instance.money}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-        #{' '} = #{' '}
-        [#{messages.storeResMoney}]
-        <h:outputText value="#{orderHome.instance.resMoney}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-        #{' '} * #{' '}[#{messages.orderRebate}]
-        <h:outputText value="#{orderHome.instance.totalRebate}">
-            <f:convertNumber pattern="#0.##"/>
-        </h:outputText>
-
-    </s:decorate>
+    <ui:include src="/layout/erp/biz/OrderMoneyInfo.xhtml">
+        <ui:param name="order" value="#{orderHome.instance}"/>
+    </ui:include>
 </a:outputPanel>
 
 <br/>

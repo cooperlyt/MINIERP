@@ -5,10 +5,9 @@ import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.*;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.log.Log;
 
 import java.math.BigDecimal;
@@ -27,23 +26,33 @@ public class OrderCancel {
     private Log log;
 
     @In(create = true)
-    private BusinessCreate businessCreate;
-
-    @In(create = true)
     private ProcessInstanceHome processInstanceHome;
 
+
+    //TODO move to process EL
+    //----------------
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessDescription;
+
+    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
+    private String businessName;
+
+    //-----------------
     @In
     private OrderHome orderHome;
 
-
+    @CreateProcess(definition = "cancelOrderMoney",processKey = "#{orderHome.instance.id}")
     @Transactional
-    public void cancelOrderMoney() {
-        log.debug("cancelOrderMoney OrderId:" + orderHome);
+    public String cancelOrderMoney() {
         orderHome.getInstance().setCanceled(true);
         if ("updated".equals(orderHome.update())) {
             initProcessInstanceHome();
             processInstanceHome.suspend();
-            businessCreate.create();
+            businessDescription = orderHome.getInstance().getCustomer().getName() + "["  + orderHome.getInstance().getId() + "]";
+            businessName = "撤单退款";
+            return "updated";
+        }else{
+            return null;
         }
     }
 

@@ -29,9 +29,10 @@
 
             <s:decorate template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.Type}</ui:define>
-                <h:selectOneMenu disabled="#{(not dispatchHome.canAddRes) || (empty orderStoreOut.operOutItem.dispatchItem)}"
-                                 value="#{orderStoreOut.overlyOut}" rendered="true"
-                                 label="#{messages.Type}">
+                <h:selectOneMenu
+                        disabled="#{(not dispatchHome.canAddRes) || (empty orderStoreOut.operOutItem.dispatchItem)}"
+                        value="#{orderStoreOut.overlyOut}" rendered="true"
+                        label="#{messages.Type}">
                     <f:selectItem itemLabel="#{messages.dispatch_overly_items}" itemValue="#{true}"/>
                     <f:selectItem itemLabel="#{messages.dispatch_overly_sub_items}" itemValue="#{false}"/>
                     <a:ajax event="valueChange" render="storeOutChangeField" execute="@this"/>
@@ -133,11 +134,6 @@
 </h:form>
 <br/>
 
-<ui:include src="/layout/erp/biz/ResEntityItemCreateTree.xhtml">
-    <ui:param name="render" value="storeInItem"/>
-    <ui:param name="treeValue" value="#{saleStoreResTree}"/>
-    <ui:param name="createAction" value="#{orderItemCreate}"/>
-</ui:include>
 
 <h:form>
     <h:panelGrid rendered="#{dispatchHome.canAddRes}" id="resSearchForm" columns="4">
@@ -154,70 +150,80 @@
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
 
-
-        <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
-                         title="#{messages.storeResSelect}"
-                         onclick="#{rich:component('resSelectPanel')}.show();return false;">
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
     </h:panelGrid>
 </h:form>
 <h:form id="storeInItem">
-    <rich:panel rendered="#{dispatchHome.canAddRes and (resCategoryHome.idDefined or (not (empty orderItemCreate.editingItem)))}">
-        <a:outputPanel rendered="#{resCategoryHome.idDefined}">
-            <h:panelGrid columns="1">
-                <h:outputText value="#{resCategoryHome.instance.name}" styleClass="auto_width_name"/>
-            </h:panelGrid>
+    <rich:panel
+            rendered="#{dispatchHome.canAddRes}">
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.resCategory}</ui:define>
+            <h:selectOneMenu value="#{resCategoryHome.id}" required="true" label="#{messages.resCategory}">
 
-
-            <s:decorate template="/layout/seam-edit.xhtml">
-                <ui:define name="label">#{messages.res}</ui:define>
-                <h:selectOneMenu value="#{resHome.id}" required="true"
-                                 label="#{messages.res}">
-                    <s:selectItems value="#{resCategoryHome.reses}" var="_res"
-                                   label="#{_res.name}" itemValue="#{_res.id}"
-                                   noSelectionLabel="#{messages.noSelectLabel}"/>
-                    <a:ajax event="valueChange" listener="#{orderItemCreate.resChange}" render="storeInItem"/>
-                </h:selectOneMenu>
-            </s:decorate>
-        </a:outputPanel>
-
-        <a:outputPanel rendered="#{not (empty orderItemCreate.editingItem)}">
-
-            <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
-                <ui:param name="inputValue" value="#{orderItemCreate.editingItem}"/>
-                <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
-                <ui:param name="countLableStyleClass" value="name"/>
-                <ui:param name="showTitle" value="false"/>
-            </ui:include>
-
-
-            <s:decorate template="/layout/seam-edit.xhtml">
-                <ui:define name="label">#{messages.field_memo}</ui:define>
-                <h:inputTextarea value="#{orderItemCreate.editingItem.memo}" cols="65"/>
-            </s:decorate>
-
-
-            <!-- TODO BATCH -->
-
-            <s:span styleClass="value">
-                <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
-                                 action="#{orderItemCreate.clear}" render="orderItemDetails">
+                <s:selectItems value="#{resCategoryList.saleResCategorys}" var="_category" label="#{_category.name}"
+                               itemValue="#{_category.id}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                <a:ajax event="valueChange" listener="#{orderItemCreate.resCategorySelected}" render="categoryNextStep"
+                        execute="@this">
                     <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-            </s:span>
+                </a:ajax>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <a:outputPanel id="categoryNextStep">
+            <a:outputPanel rendered="#{resCategoryHome.idDefined}">
+                <h:panelGrid columns="1">
+                    <h:outputText value="#{resCategoryHome.instance.name}" styleClass="auto_width_name"/>
+                </h:panelGrid>
 
 
-            <s:span styleClass="value">
-                <a:commandButton value="#{messages.addItem}" execute="@form"
-                                 render="storeInItem,orderStoreOutItemsTable"
-                                 action="#{orderStoreOut.addNewOverlyOut}">
-                    <a:attachQueue requestDelay="0"/>
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res}</ui:define>
+                    <h:selectOneMenu value="#{resHome.id}" required="true"
+                                     label="#{messages.res}">
+                        <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                       label="#{_res.name}" itemValue="#{_res.id}"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <a:ajax event="valueChange" listener="#{orderItemCreate.resChange}" render="storeInItem"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+            </a:outputPanel>
 
-                </a:commandButton>
+            <a:outputPanel rendered="#{not (empty orderItemCreate.editingItem)}">
 
-            </s:span>
+                <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+                    <ui:param name="inputValue" value="#{orderItemCreate.editingItem}"/>
+                    <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                    <ui:param name="countLableStyleClass" value="name"/>
+                    <ui:param name="showTitle" value="false"/>
+                </ui:include>
 
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea value="#{orderItemCreate.editingItem.memo}" cols="65"/>
+                </s:decorate>
+
+
+                <!-- TODO BATCH -->
+
+                <s:span styleClass="value">
+                    <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                                     action="#{orderItemCreate.clear}" render="orderItemDetails">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </s:span>
+
+
+                <s:span styleClass="value">
+                    <a:commandButton value="#{messages.addItem}" execute="@form"
+                                     render="storeInItem,orderStoreOutItemsTable"
+                                     action="#{orderStoreOut.addNewOverlyOut}">
+                        <a:attachQueue requestDelay="0"/>
+
+                    </a:commandButton>
+
+                </s:span>
+
+            </a:outputPanel>
         </a:outputPanel>
 
         <div style="clear:both">
@@ -298,16 +304,23 @@
             </rich:columnGroup>
         </f:facet>
         <rich:column>
-
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{_dispatchItem.storeRes}"/>
-            </ui:include>
-
+            <a:outputPanel>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_dispatchItem.storeRes}"/>
+                    <ui:param name="showCode" value="false"/>
+                </ui:include>
+                <rich:tooltip styleClass="tooltip-custom-body"
+                              layout="block" mode="client">
+                    <span style="white-space: nowrap"> #{_dispatchItem.storeRes.code}</span>
+                </rich:tooltip>
+            </a:outputPanel>
         </rich:column>
         <rich:column>
-            <h:outputText value="#{_dispatchItem.dispatchItem.memo}"
-                          rendered="#{not empty _dispatchItem.dispatchItem}"/>
-            <h:outputText value="#{_dispatchItem.overlayItem.memo}" rendered="#{empty _dispatchItem.dispatchItem}"/>
+            <ui:include src="/layout/long-text-display.xhtml">
+                <ui:param name="value"
+                          value="#{(empty _dispatchItem.dispatchItem) ? _dispatchItem.overlayItem.memo : _dispatchItem.dispatchItem.memo}"/>
+                <ui:param name="size" value="4"/>
+            </ui:include>
         </rich:column>
         <rich:column>
             #{_dispatchItem.stock.displayMasterCount}
@@ -349,7 +362,8 @@
 
         <rich:column>
 
-            <h:outputText value="#{_dispatchItem.displayMasterCount}" style="#{(_dispatchItem.enough) ? '' : 'color: red;'}" />
+            <h:outputText value="#{_dispatchItem.displayMasterCount}"
+                          style="#{(_dispatchItem.enough) ? '' : 'color: red;'}"/>
 
             <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
                             title="#{messages.order_item_full}:#{_dispatchItem.stock.displayMasterCount}(#{_dispatchItem.displayAuxCount}) "
@@ -379,7 +393,8 @@
         </rich:column>
         <rich:column>
 
-            <h:outputText value="#{_dispatchItem.displayAuxCount}" style="#{(_dispatchItem.enough) ? '' : 'color: red;'}" />
+            <h:outputText value="#{_dispatchItem.displayAuxCount}"
+                          style="#{(_dispatchItem.enough) ? '' : 'color: red;'}"/>
         </rich:column>
         <rich:column style="text-align: center;">
 
