@@ -36,7 +36,7 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
             "backItem.orderBack.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "backItem.orderBack.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
             "backItem.orderBack.customer.type = #{customerSearchCondition.type}",
-            "lower(backItem.orderBack.customer.name) like lower(concat(#{customerSearchCondition.name},'%'))",
+            "lower(backItem.orderBack.customer.name) like lower(concat('%',#{customerSearchCondition.name},'%'))",
             "backItem.orderBack.customer.provinceCode = #{customerSearchCondition.provinceCode}",
     };
 

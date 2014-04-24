@@ -33,7 +33,7 @@ public class OrderResContactsTotal extends ErpEntityQuery<OrderItem>{
             "orderItem.needRes.customerOrder.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
             "orderItem.needRes.customerOrder.customer.type = #{customerSearchCondition.type}",
             "orderItem.needRes.customerOrder.customer.provinceCode <= #{customerSearchCondition.provinceCode}",
-            "lower(orderItem.needRes.customerOrder.customer.name) like lower(concat(#{customerSearchCondition.name},'%'))",
+            "lower(orderItem.needRes.customerOrder.customer.name) like lower(concat('%',#{customerSearchCondition.name},'%'))",
             "orderItem.presentation = #{customerResCondition.freeCondition}"
     };
 
