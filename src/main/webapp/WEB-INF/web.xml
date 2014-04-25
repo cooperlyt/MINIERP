@@ -324,7 +324,7 @@
 
     <context-param>
         <param-name>org.richfaces.fileUpload.maxRequestSize</param-name>
-        <param-value>100000</param-value>
+        <param-value>1000000</param-value>
     </context-param>
 
     <!-- Configures Push -->

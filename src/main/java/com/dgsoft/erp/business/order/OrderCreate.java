@@ -28,16 +28,6 @@ public class OrderCreate extends OrderHome {
 
     private static final String ORDER_SEND_REASON_WORD_KEY = "erp.needResReason.order";
 
-    //TODO move to process EL
-    //----------------
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessDescription;
-
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessName;
-
-    //-----------------
-
     @In(create = true)
     private CustomerHome customerHome;
 
@@ -401,9 +391,6 @@ public class OrderCreate extends OrderHome {
         if (!"persisted".equals(persist())) {
             return null;
         }
-
-        businessDescription = getInstance().getCustomer().getName();
-        businessName = "销售订单";
 
         orderHome.setId(getInstance().getId());
         needResHome.setId(getInstance().getNeedResList().get(0).getId());

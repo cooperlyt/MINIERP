@@ -22,7 +22,6 @@ import java.util.Set;
 @Name("ownerTaskInstanceCacheList")
 @Scope(ScopeType.SESSION)
 @AutoCreate
-@BypassInterceptors
 public class OwnerTaskInstanceCacheList extends TaskInstanceListCache{
 
     @Override

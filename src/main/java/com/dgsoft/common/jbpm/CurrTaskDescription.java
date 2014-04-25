@@ -1,4 +1,4 @@
-package com.dgsoft.common.system.business;
+package com.dgsoft.common.jbpm;
 
 import com.dgsoft.common.exception.ProcessDefineException;
 import org.jboss.seam.ScopeType;
@@ -30,16 +30,16 @@ public class CurrTaskDescription {
     public TaskDescription getTaskDescription() throws Exception {
         TaskInstance taskInstance = org.jboss.seam.bpm.TaskInstance.instance();
         if (taskInstance == null){
-            Logging.getLog(getClass()).warn("cant get TaskDescription reason: taskInstance return null.");
+            Logging.getLog(getClass()).warn("cant get BaseTaskDescription reason: taskInstance return null.");
             return null;
         }
 
         String taskJSONDescription = taskInstance.getDescription();
         if (taskJSONDescription == null || taskJSONDescription.trim().equals("")) {
-            return new TaskDescription();
+            return new BaseTaskDescription();
         }
         try {
-            return new TaskDescription(new JSONObject(taskJSONDescription));
+            return new BaseTaskDescription(new JSONObject(taskJSONDescription));
         } catch (JSONException e) {
             Logging.getLog(this.getClass()).error("jbpm process Define error task Description JSON ERROR", e);
             throw new ProcessDefineException("jbpm process Define error task Description JSON ERROR");

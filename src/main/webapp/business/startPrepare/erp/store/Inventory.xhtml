@@ -23,19 +23,21 @@
 
             <rich:toolbar height="26">
                 <rich:toolbarGroup location="right">
-                    <h:inputText required="true"
+                    <h:inputText id="businessKeyInput" required="true"
                                  maxlength="32"
                                  styleClass="barOrderNumber"
                                  label="#{messages.invertory_field_id}"
-                                 value="#{startData.businessKey}">
+                                 value="#{inventoryHome.instance.id}">
                         <rich:placeholder value="#{messages.invertory_field_id}"/>
                     </h:inputText>
+                    <rich:message for="businessKeyInput" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
 
                     <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
 
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.BeginInventory}" action="#{businessCreate.create}"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.BeginInventory}" action="#{inventoryCreate.beginInventory}"/>
 
                 </rich:toolbarGroup>
             </rich:toolbar>

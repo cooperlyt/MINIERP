@@ -28,16 +28,6 @@ public class InventoryCreate {
     @In
     private Credentials credentials;
 
-    //TODO move to process EL
-    //----------------
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessDescription;
-
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessName;
-
-    //-----------------
-
     private boolean lockStore = false;
 
     public boolean isLockStore() {
@@ -48,12 +38,13 @@ public class InventoryCreate {
         this.lockStore = lockStore;
     }
 
+    @Create
     public void init() {
         inventoryHome.getInstance().setId("P" + numberBuilder.getSampleNumber("inventory"));
     }
 
 
-    @CreateProcess(definition = "order", processKey = "#{orderCreate.instance.id}")
+    @CreateProcess(definition = "order", processKey = "#{inventoryHome.instance.id}")
     @Transactional
     public String beginInventory() {
         if (lockStore)
@@ -63,8 +54,6 @@ public class InventoryCreate {
         if (!"persisted".equals(inventoryHome.persist())) {
             return null;
         }
-        businessDescription = inventoryHome.getInstance().getStore().getName();
-        businessName = "盘点";
         return "businessCreated";
 
     }

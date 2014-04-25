@@ -11,7 +11,7 @@
 	<task-node name="订单出库(1库)">
 		<task name="订单出库(1库)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
 		</task>
@@ -21,7 +21,7 @@
 	<task-node name="订单收款">
 		<task name="订单收款">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceivablesOfOrder.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceivablesOfOrder.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>
@@ -31,7 +31,7 @@
 	<task-node name="客户收货确认">
 		<task name="客户收货确认">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/OrderCommodityConfirm.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/OrderCommodityConfirm.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
 		</task>
@@ -44,7 +44,7 @@
 	<task-node name="订单出库(2库)">
 		<task name="订单出库(2库)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
 		</task>
@@ -54,7 +54,7 @@
 	<task-node name="订单出库(天津)">
 		<task name="订单出库(天津)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('C')}"></assignment>
 		</task>
@@ -88,7 +88,7 @@
 	<task-node name="订单调度">
 		<task name="订单调度">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleDispatch.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleDispatch.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.storage.dispatch"></assignment>
 		</task>
@@ -169,7 +169,7 @@
 	<task-node name="订金收款">
 		<task name="订金收款">
 			<description>
-				{&quot;processName&quot;:&quot;销售订单&quot;,&quot;processKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;], &quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceiveOrderEarnest.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;], &quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceiveOrderEarnest.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>
@@ -179,7 +179,7 @@
 	<task-node name="订单发货(1库)">
 		<task name="订单发货(一库)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
 		</task>
@@ -216,7 +216,7 @@
 	<task-node name="订单发货(2库)">
 		<task name="订单发货(2库)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
 		</task>
@@ -226,7 +226,7 @@
 	<task-node name="订单发货(天津)">
 		<task name="订单发货(天津)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
 		</task>
@@ -278,7 +278,7 @@
 	<task-node name="订单更改">
 		<task name="订单更改">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/OrderChange.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/OrderChange.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
 		</task>
@@ -297,7 +297,7 @@
 	<task-node name="订单出库(公司)">
 		<task name="订单出库(公司)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('D')}"></assignment>
 		</task>
@@ -320,7 +320,7 @@
 	<task-node name="订单发货(公司)">
 		<task name="订单发货(公司)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/OrderShip.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{orderHome.instance.customer.customerArea.role}"></assignment>
 		</task>

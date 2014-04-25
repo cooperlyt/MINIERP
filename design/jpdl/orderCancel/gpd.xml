@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="orderCancel" width="980" height="607">
+<root-container name="orderCancel" width="773" height="607">
   <node name="退货" x="41" y="9" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>

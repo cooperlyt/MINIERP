@@ -52,6 +52,11 @@ public class PooledTaskUtils extends PooledTask {
     @Transactional
     @Override
     public String unassign() {
+        if ((getTaskInstance().getPooledActors() == null) || getTaskInstance().getPooledActors().isEmpty()){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"cantUnassignTask");
+            return null;
+        }
+
         String result = super.unassign();
         ManagedJbpmContext.instance().getSession().flush();
         if (result == null) {

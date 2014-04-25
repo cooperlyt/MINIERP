@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="inventory" width="766" height="533">
+<root-container name="inventory" width="720" height="533">
   <node name="开始盘点" x="83" y="50" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>

@@ -11,7 +11,8 @@
 
 <ui:define name="taskChangePush">
     <a:push id="pushTask" address="pushTaskChange">
-        <a:ajax event="dataavailable" render="ownerTasks,pooledTasks,taskOperLink,netOwnerTaskComeNotify,netPooledTaskComeNotify"/>
+        <a:ajax event="dataavailable"
+                render="ownerTasks,pooledTasks,taskOperLink,netOwnerTaskComeNotify,netPooledTaskComeNotify"/>
     </a:push>
 </ui:define>
 
@@ -38,10 +39,10 @@
 <h:form>
     <rich:extendedDataTable tableState="#{pooledTaskSortFilter.stateVar}" id="pooledTasks"
                             sortPriority="#{pooledTaskSortFilter.taskSortPriorities}"
-                            value="#{pooledTaskInstanceCacheList.taskInstancePriorityList}" var="_task"
+                            value="#{pooledTaskInstanceCacheList.taskInstancePriorityEntryList}" var="_task"
                             selectionMode="none" filterVar="_filterValue"
                             sortMode="#{pooledTaskSortFilter.sortMode}"
-                            style="height:300px; width:100%;" clientRows="0" frozenColumns="5">
+                            style="height:300px; width:100%;" clientRows="0" >
 
         <rich:column width="30px">
             <f:facet name="header"></f:facet>
@@ -49,21 +50,21 @@
                              immediate="true"
                              value="#{messages.acceptBusiness}" execute="@this"
                              action="#{pooledTask.assignToCurrentActor}">
-                <f:param name="taskId" value="#{_task.id}"/>
+                <f:param name="taskId" value="#{_task.key.id}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
         </rich:column>
 
 
-        <rich:column width="90px" sortBy="#{_task.processInstance.key}"
+        <rich:column width="100px" sortBy="#{_task.value.buninessKey}"
                      filterValue="#{pooledTaskSortFilter.codeFilter}"
-                     filterExpression="#{empty _filterValue or _task.processInstance.key eq _filterValue}">
+                     filterExpression="#{empty _filterValue or _task.value.buninessKey eq _filterValue}">
             <f:facet name="header">
                 <h:outputText value="#{messages.businessKey}"/>
             </f:facet>
             <a:outputPanel>
 
-                #{_task.processInstance.key}
+                #{_task.value.buninessKey}
                 <rich:tooltip mode="ajax" followMouse="false" showDelay="1500" styleClass="tooltip"
                               layout="block">
                     <f:facet name="loading">
@@ -71,72 +72,76 @@
                         &#160;
                         <h:outputText value="#{messages.wait_please}..."/>
                     </f:facet>
-                    <span style="white-space: nowrap">#{messages.businessDefineId}:<strong>#{_task.variables.businessDefineId}</strong><br/>
-                        #{messages.businessId}:<strong>#{_task.processInstance.id}</strong><br/>
-                        #{messages.taskId}:<strong>#{_task.id}</strong><br/>
-                        #{messages.processDefineDescription}: <strong>#{_task.processInstance.processDefinition.description}</strong>
+                    <span style="white-space: nowrap">#{messages.businessDefineId}:<strong>#{_task.key.processInstance.key}</strong><br/>
+                        #{messages.businessId}:<strong>#{_task.key.processInstance.id}</strong><br/>
+                        #{messages.taskId}:<strong>#{_task.key.id}</strong><br/>
+                        #{messages.processDefineDescription}: <strong>#{_task.key.processInstance.processDefinition.description}</strong>
+                        #{messages.businessCreatedTime}: <strong>
+                            <h:outputText value="#{_task.key.processInstance.start}">
+                                <s:convertDateTime
+                                        pattern="#{messages.displayDateTimePattern}"/>
+                            </h:outputText>
+
+                        </strong>
+                        #{messages.version}: <strong>#{_task.key.processInstance.processDefinition.version}</strong>
                     </span>
 
                 </rich:tooltip>
             </a:outputPanel>
         </rich:column>
-        <rich:column width="120px" sortBy="#{_task.variables.businessName}"
+        <rich:column width="120px" sortBy="#{_task.value.businessName}"
                      filterValue="#{pooledTaskSortFilter.nameFilter}"
-                     filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessName,_filterValue)}">
+                     filterExpression="#{empty _filterValue or fn:startsWith(_task.value.businessName,_filterValue)}">
             <f:facet name="header">#{messages.businessName}</f:facet>
             <h:graphicImage style="float:right" alt="rf" value="/img/new_messages.png"
-                            rendered="#{pooledTaskInstanceCacheList.isNewTask(_task.id)}"/>
+                            rendered="#{pooledTaskInstanceCacheList.isNewTask(_task.key.id)}"/>
 
-            <h:outputText value="#{_task.variables.businessName}"/>
+            <h:outputText value="#{_task.value.businessName}"/>
         </rich:column>
-        <rich:column width="90px" sortBy="#{_task.name}" filterValue="#{pooledTaskSortFilter.taskNameFilter}"
-                     filterExpression="#{empty _filterValue or fn:startsWith(_task.name, _filterValue)}">
+        <rich:column width="95px" sortBy="#{_task.key.name}" filterValue="#{pooledTaskSortFilter.taskNameFilter}"
+                     filterExpression="#{empty _filterValue or fn:startsWith(_task.key.name, _filterValue)}">
             <f:facet name="header">#{messages.taskName}</f:facet>
 
             <a:outputPanel>
-                <h:outputText value="#{_task.name}"/>
-                <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip"
-                              layout="block" rendered="#{not empty _task.description}">
-                    <span style="white-space: nowrap">#{_task.description}</span>
+                <h:outputText value="#{_task.key.name}"/>
+            </a:outputPanel>
+        </rich:column>
+        <rich:column width="140px" sortBy="#{_task.value.description}"
+                     filterValue="#{pooledTaskSortFilter.descripitionFilter}"
+                     filterExpression="#{empty _filterValue or fn:startsWith(_task.value.description,_filterValue)}">
+            <f:facet name="header">#{messages.businessDescription}</f:facet>
+            <a:outputPanel>
+                #{_task.value.description}
+                <rich:tooltip styleClass="tooltip-custom-body"
+                              layout="block" mode="client">
+                       <span style="white-space: nowrap">
+                            <ui:repeat value="#{_task.value.tags}" var="_tag">
+                                <strong>#{_tag}</strong><br/>
+                            </ui:repeat>
+                    </span>
                 </rich:tooltip>
             </a:outputPanel>
         </rich:column>
-        <rich:column width="90px" sortBy="#{_task.variables.businessDescription}"
-                     filterValue="#{pooledTaskSortFilter.descripitionFilter}"
-                     filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessDescription,_filterValue)}">
-            <f:facet name="header">#{messages.businessDescription}</f:facet>
-            #{_task.variables.businessDescription}
-        </rich:column>
 
-        <rich:column width="160px" sortBy="#{_task.processInstance.start}">
-            <f:facet name="header">#{messages.businessCreatedTime}</f:facet>
-            <h:outputText value="#{_task.processInstance.start}">
-                <s:convertDateTime
-                        pattern="#{messages.displayDateTimePattern}"/>
-            </h:outputText>
-        </rich:column>
-        <rich:column width="160px" sortBy="#{_task.create}">
+
+        <rich:column width="160px" sortBy="#{_task.key.create}">
             <f:facet name="header">#{messages.taskCreatedTime}</f:facet>
-            <h:outputText value="#{_task.create}">
+            <h:outputText value="#{_task.key.create}">
                 <s:convertDateTime
                         pattern="#{messages.displayDateTimePattern}"/>
             </h:outputText>
         </rich:column>
 
-        <rich:column width="80px" sortBy="#{_task.priority}">
+        <rich:column width="80px" sortBy="#{_task.key.priority}">
             <f:facet name="header">#{messages.taskPriority}</f:facet>
-            <h:outputText value="#{_task.priority}">
+            <h:outputText value="#{_task.key.priority}">
                 <f:converter converterId="priorityConverter"/>
             </h:outputText>
 
         </rich:column>
 
-        <rich:column width="70px" sortBy="#{_task.processInstance.version}">
-            <f:facet name="header">#{messages.version}</f:facet>
-            #{_task.processInstance.processDefinition.version}
-        </rich:column>
-
-        <f:facet name="footer">#{messages.todobusinessCount} #{pooledTaskInstanceCacheList.taskInstancePriorityList.size}</f:facet>
+        <f:facet
+                name="footer">#{messages.todobusinessCount} #{pooledTaskInstanceCacheList.taskInstancePriorityList.size}</f:facet>
     </rich:extendedDataTable>
 </h:form>
 
@@ -158,37 +163,36 @@
 <h:form>
     <rich:extendedDataTable id="ownerTasks"
                             tableState="#{taskSortFilter.stateVar}" sortPriority="#{taskSortFilter.taskSortPriorities}"
-                            value="#{ownerTaskInstanceCacheList.taskInstanceCreateList}" var="_task"
+                            value="#{ownerTaskInstanceCacheList.taskInstanceCreateEntryList}" var="_task"
                             selectionMode="none" filterVar="_filterValue" sortMode="#{taskSortFilter.sortMode}"
-                            style="height:260px; width:100%;" clientRows="0" frozenColumns="5">
+                            style="height:260px; width:100%;" clientRows="0">
 
         <rich:column width="50px">
             <f:facet name="header"></f:facet>
 
             <a:commandButton title="#{messages.unAcceptBusiness}" image="/img/forward.png"
                              action="#{pooledTask.unassign}" immediate="true"
-                             execute="@this"
-                             onclick="if (#{empty _task.pooledActors}) {alert('#{messages.cantUnassignTask}');return false;}">
-                <f:param name="taskId" value="#{_task.id}"/>
+                             execute="@this">
+                <f:param name="taskId" value="#{_task.key.id}"/>
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
             #{' '}
-            <s:link image="img/handle.png" action="#{taskPrepare.beginTask}" taskInstance="#{_task}">
+            <s:link image="img/handle.png" action="#{taskPrepare.beginTask}" taskInstance="#{_task.key}">
                 <s:graphicImage value="/img/handle.png" title="#{messages.operateBusiness}"/>
             </s:link>
 
         </rich:column>
 
 
-        <rich:column width="90px" sortBy="#{_task.processInstance.key}"
+        <rich:column width="100px" sortBy="#{_task.value.buninessKey}"
                      filterValue="#{taskSortFilter.codeFilter}"
-                     filterExpression="#{empty _filterValue or _task.processInstance.key eq _filterValue}">
+                     filterExpression="#{empty _filterValue or _task.value.buninessKey eq _filterValue}">
             <f:facet name="header">
                 #{messages.businessKey}
             </f:facet>
             <a:outputPanel>
 
-                <h:outputText value="#{_task.processInstance.key}"/>
+                <h:outputText value="#{_task.value.buninessKey}"/>
 
                 <rich:tooltip mode="ajax" followMouse="false" showDelay="1500" styleClass="tooltip"
                               layout="block">
@@ -197,69 +201,71 @@
                         &#160;
                         <h:outputText value="#{messages.wait_please}..."/>
                     </f:facet>
-                    <span style="white-space: nowrap">#{messages.businessDefineId}:<strong>#{_task.variables.businessDefineId}</strong><br/>
-                        #{messages.businessId}:<strong>#{_task.processInstance.id}</strong><br/>
-                        #{messages.taskId}:<strong>#{_task.id}</strong><br/>
-                        #{messages.processDefineDescription}: <strong>#{_task.processInstance.processDefinition.description}</strong>
+                    <span style="white-space: nowrap">#{messages.businessDefineId}:<strong>#{_task.key.processInstance.key}</strong><br/>
+                        #{messages.businessId}:<strong>#{_task.key.processInstance.id}</strong><br/>
+                        #{messages.taskId}:<strong>#{_task.key.id}</strong><br/>
+                        #{messages.processDefineDescription}: <strong>#{_task.key.processInstance.processDefinition.description}</strong>
+                        #{messages.version}: <strong>#{_task.key.processInstance.processDefinition.version}</strong>
+                        #{messages.businessCreatedTime}: <strong> <h:outputText value="#{_task.key.processInstance.start}">
+                            <s:convertDateTime
+                                    pattern="#{messages.displayDateTimePattern}"/>
+                        </h:outputText></strong>
                     </span>
 
                 </rich:tooltip>
             </a:outputPanel>
         </rich:column>
-        <rich:column width="120px" sortBy="#{_task.variables.businessName}"
+        <rich:column width="120px" sortBy="#{_task.value.businessName}"
                      filterValue="#{taskSortFilter.nameFilter}"
-                     filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessName,_filterValue)}">
+                     filterExpression="#{empty _filterValue or fn:startsWith(_task.value.businessName,_filterValue)}">
             <f:facet name="header">#{messages.businessName}</f:facet>
             <h:graphicImage style="float:right" alt="rf" value="/img/new_messages.png"
-                            rendered="#{ownerTaskInstanceCacheList.isNewTask(_task.id)}"/>
-            <h:outputText value="#{_task.variables.businessName}"/>
+                            rendered="#{ownerTaskInstanceCacheList.isNewTask(_task.key.id)}"/>
+            <h:outputText value="#{_task.value.businessName}"/>
         </rich:column>
-        <rich:column width="90px" sortBy="#{_task.name}" filterValue="#{taskSortFilter.taskNameFilter}"
-                     filterExpression="#{empty _filterValue or fn:startsWith(_task.name, _filterValue)}">
+        <rich:column width="95px" sortBy="#{_task.key.name}" filterValue="#{taskSortFilter.taskNameFilter}"
+                     filterExpression="#{empty _filterValue or fn:startsWith(_task.key.name, _filterValue)}">
             <f:facet name="header">#{messages.taskName}</f:facet>
 
             <a:outputPanel>
-                <h:outputText value="#{_task.name}"/>
-                <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip"
-                              layout="block">
-                    <span style="white-space: nowrap">#{_task.description}</span>
+                <h:outputText value="#{_task.key.name}"/>
+            </a:outputPanel>
+        </rich:column>
+        <rich:column width="120px" sortBy="#{_task.value.description}"
+                     filterValue="#{taskSortFilter.descripitionFilter}"
+                     filterExpression="#{empty _filterValue or fn:startsWith(_task.value.description,_filterValue)}">
+            <f:facet name="header">#{messages.businessDescription}</f:facet>
+            <a:outputPanel>
+                #{_task.value.description}
+                <rich:tooltip styleClass="tooltip-custom-body"
+                              layout="block" mode="client">
+                       <span style="white-space: nowrap">
+                            <ui:repeat value="#{_task.value.tags}" var="_tag">
+                                <strong>#{_tag}</strong><br/>
+                            </ui:repeat>
+                    </span>
                 </rich:tooltip>
             </a:outputPanel>
         </rich:column>
-        <rich:column width="90px" sortBy="#{_task.variables.businessDescription}"
-                     filterValue="#{taskSortFilter.descripitionFilter}"
-                     filterExpression="#{empty _filterValue or fn:startsWith(_task.variables.businessDescription,_filterValue)}">
-            <f:facet name="header">#{messages.businessDescription}</f:facet>
-            #{_task.variables.businessDescription}
-        </rich:column>
 
-        <rich:column width="160px" sortBy="#{_task.processInstance.start}">
-            <f:facet name="header">#{messages.businessCreatedTime}</f:facet>
-            <h:outputText value="#{_task.processInstance.start}">
-                <s:convertDateTime
-                        pattern="#{messages.displayDateTimePattern}"/>
-            </h:outputText>
-        </rich:column>
-        <rich:column width="160px" sortBy="#{_task.create}">
+
+        <rich:column width="160px" sortBy="#{_task.key.create}">
             <f:facet name="header">#{messages.taskCreatedTime}</f:facet>
-            <h:outputText value="#{_task.create}">
+            <h:outputText value="#{_task.key.create}">
                 <s:convertDateTime
                         pattern="#{messages.displayDateTimePattern}"/>
             </h:outputText>
         </rich:column>
 
-        <rich:column width="80px" sortBy="#{_task.priority}">
+        <rich:column width="80px" sortBy="#{_task.key.priority}">
             <f:facet name="header">#{messages.taskPriority}</f:facet>
 
-            <h:outputText value="#{_task.priority}">
+            <h:outputText value="#{_task.key.priority}">
                 <f:converter converterId="priorityConverter"/>
             </h:outputText>
         </rich:column>
 
-        <rich:column width="70px" sortBy="#{_task.processInstance.version}">
-            <f:facet name="header">#{messages.version}</f:facet>
-            #{_task.processInstance.processDefinition.version}
-        </rich:column>
+
         <f:facet
                 name="footer">#{messages.mybusinessCount} #{ownerTaskInstanceCacheList.taskInstanceCreateList.size}</f:facet>
 

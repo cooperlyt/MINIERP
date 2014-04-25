@@ -51,8 +51,6 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         this.enable = enable;
     }
 
-
-
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")

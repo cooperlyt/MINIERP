@@ -1,6 +1,8 @@
 package com.dgsoft.common.system.business;
 
 import com.dgsoft.common.exception.ProcessDefineException;
+import com.dgsoft.common.jbpm.BaseTaskDescription;
+import com.dgsoft.common.jbpm.TaskDescription;
 import org.jboss.seam.annotations.FlushModeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -37,7 +39,7 @@ public class TaskPrepare {
             String taskJSONDescription = targetTaskInstance.getDescription();
             Logging.getLog(this.getClass()).debug("task Description json str:" + taskJSONDescription);
             try {
-                return new TaskDescription(new JSONObject(taskJSONDescription));
+                return new BaseTaskDescription(new JSONObject(taskJSONDescription));
             } catch (JSONException e) {
                 Logging.getLog(this.getClass()).error("jbpm process Define error task Description JSON ERROR", e);
                 throw new ProcessDefineException("jbpm process Define error task Description JSON ERROR");

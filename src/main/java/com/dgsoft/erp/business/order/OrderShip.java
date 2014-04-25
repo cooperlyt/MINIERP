@@ -1,7 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.exception.ProcessDefineException;
-import com.dgsoft.common.system.business.TaskDescription;
+import com.dgsoft.common.jbpm.TaskDescription;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;

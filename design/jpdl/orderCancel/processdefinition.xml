@@ -11,7 +11,7 @@
 	<task-node name="退货入库(1库)">
 		<task name="退货入库(1库)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;A&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
 		</task>
@@ -21,7 +21,7 @@
 	<task-node name="退款">
 		<task name="退款">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/CancelOrderMoneyBack.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/CancelOrderMoneyBack.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>
@@ -90,7 +90,7 @@
 	<task-node name="退货入库(2库)">
 		<task name="退货入库(2库)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
 		</task>
@@ -100,7 +100,7 @@
 	<task-node name="退货入库(天津)">
 		<task name="退货入库(天津)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;C&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('C')}"></assignment>
 		</task>
@@ -110,7 +110,7 @@
 	<task-node name="退货调度">
 		<task name="退货调度">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackDispatch.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackDispatch.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.storage.dispatch"></assignment>
 		</task>
@@ -129,7 +129,7 @@
 	<task-node name="退货确认">
 		<task name="退货确认">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/ResBackConfirm.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/sale/ResBackConfirm.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{orderBackHome.instance.customer.customerArea.role}"></assignment>
 		</task>
@@ -148,7 +148,7 @@
 	<task-node name="退货入库(公司)">
 		<task name="退货入库(公司)">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;D&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
 		</task>

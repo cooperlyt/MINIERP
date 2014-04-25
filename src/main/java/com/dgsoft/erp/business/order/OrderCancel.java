@@ -5,7 +5,6 @@ import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.*;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.log.Log;
@@ -28,16 +27,6 @@ public class OrderCancel {
     @In(create = true)
     private ProcessInstanceHome processInstanceHome;
 
-
-    //TODO move to process EL
-    //----------------
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessDescription;
-
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessName;
-
-    //-----------------
     @In
     private OrderHome orderHome;
 
@@ -48,8 +37,6 @@ public class OrderCancel {
         if ("updated".equals(orderHome.update())) {
             initProcessInstanceHome();
             processInstanceHome.suspend();
-            businessDescription = orderHome.getInstance().getCustomer().getName() + "["  + orderHome.getInstance().getId() + "]";
-            businessName = "撤单退款";
             return "updated";
         }else{
             return null;

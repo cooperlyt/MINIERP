@@ -22,7 +22,6 @@ import java.util.Set;
 @Name("pooledTaskInstanceCacheList")
 @Scope(ScopeType.SESSION)
 @AutoCreate
-@BypassInterceptors
 public class PooledTaskInstanceCacheList extends TaskInstanceListCache{
 
 

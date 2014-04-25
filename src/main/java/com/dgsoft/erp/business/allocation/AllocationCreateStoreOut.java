@@ -36,17 +36,6 @@ public class AllocationCreateStoreOut extends StoreOutAction{
     }
 
 
-
-    //TODO move to process EL
-    //----------------
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessDescription;
-
-    @Out(scope = ScopeType.BUSINESS_PROCESS, required = false)
-    private String businessName;
-
-    //-----------------
-
     @CreateProcess(definition = "stockAllocation" , processKey = "#{allocationHome.instance.id}")
     @Transactional
     public String create(){
@@ -56,9 +45,6 @@ public class AllocationCreateStoreOut extends StoreOutAction{
         stockChangeHome.getInstance().setAllocationForStoreOut(allocationHome.getInstance());
         allocationHome.getInstance().setCreateDate(stockChangeHome.getInstance().getOperDate());
         allocationHome.getInstance().setStockChangeByStoreOut(stockChangeHome.getReadyInstance());
-        businessDescription = allocationHome.getInstance().getOutStore().getName() + "->" + allocationHome.getInstance().getInStore().getName();
-        businessName =  "仓库调拨";
-
         if ("persisted".equals(allocationHome.persist())){
             return "businessCreated";
         }else{

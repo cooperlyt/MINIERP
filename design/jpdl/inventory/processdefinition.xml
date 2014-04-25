@@ -11,7 +11,7 @@
 	<task-node name="盘点">
 		<task name="盘点">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/InventoryFirst.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;盘点&quot;,&quot;businessKey&quot;:&quot;#{inventoryHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{inventoryHome.instance.store.name}&quot;],&quot;description&quot;:&quot;#{inventoryHome.instance.store.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/InventoryFirst.xhtml&quot;}
 			</description>
 			<assignment actor-id="#{actor.id}"></assignment>
 		</task>
@@ -21,7 +21,7 @@
 	<task-node name="盘点审核">
 		<task name="盘点审核">
 			<description>
-				{&quot;description&quot;:&quot;&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/InventoryCheck.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;盘点&quot;,&quot;businessKey&quot;:&quot;#{inventoryHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{inventoryHome.instance.store.name}&quot;],&quot;description&quot;:&quot;#{inventoryHome.instance.store.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/InventoryCheck.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.finance.accountancy"></assignment>
 		</task>
