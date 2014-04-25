@@ -403,19 +403,20 @@ public class OrderCreate extends OrderHome {
     public List<TotalResItem> getResItemList() {
         if (resItemList == null) {
             resItemList = new ArrayList<TotalResItem>();
-            for (OrderItem item : needResHome.getOrderNeedItems()) {
-                boolean find = false;
-                for (TotalResItem tr : resItemList) {
-                    if (tr.isSameItem(item)) {
-                        tr.add(item);
-                        find = true;
+            if (needResHome.getOrderNeedItems() != null)
+                for (OrderItem item : needResHome.getOrderNeedItems()) {
+                    boolean find = false;
+                    for (TotalResItem tr : resItemList) {
+                        if (tr.isSameItem(item)) {
+                            tr.add(item);
+                            find = true;
+                        }
                     }
-                }
-                if (!find) {
-                    resItemList.add(new TotalResItem(item.getRes(), item.getResUnit(), item.getMoney(), item.getRebate(), item.getUseUnitCount()));
-                }
+                    if (!find) {
+                        resItemList.add(new TotalResItem(item.getRes(), item.getResUnit(), item.getMoney(), item.getRebate(), item.getUseUnitCount()));
+                    }
 
-            }
+                }
         }
         return resItemList;
     }
