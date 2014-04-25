@@ -43,8 +43,16 @@ public class InventoryCreate {
         inventoryHome.getInstance().setId("P" + numberBuilder.getSampleNumber("inventory"));
     }
 
+    public String getBusinessKey() {
+        return inventoryHome.getInstance().getId();
+    }
 
-    @CreateProcess(definition = "order", processKey = "#{inventoryHome.instance.id}")
+    public void setBusinessKey(String key) {
+        inventoryHome.getInstance().setId(key);
+    }
+
+
+    @CreateProcess(definition = "inventory", processKey = "#{inventoryHome.instance.id}")
     @Transactional
     public String beginInventory() {
         if (lockStore)

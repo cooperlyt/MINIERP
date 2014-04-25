@@ -11,6 +11,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
@@ -67,7 +68,7 @@ public class AllocationCreateApply {
 
 
 
-
+    @CreateProcess(definition = "stockAllocation" , processKey = "#{allocationHome.instance.id}")
     @Transactional
     public String complete() {
         if (applyItems.isEmpty()){

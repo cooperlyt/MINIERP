@@ -129,7 +129,7 @@ public class StoreResBackCreate extends OrderBackHome {
         return "/business/startPrepare/erp/sale/BackStoreResDispatch.xhtml";
     }
 
-
+    @CreateProcess(definition = "orderCancel", processKey = "#{storeResBackCreate.instance.id}")
     @Transactional
     public String dispatchAndCreateBack() {
         if (!resBackDispatch.isComplete()) {
