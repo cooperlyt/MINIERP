@@ -119,13 +119,13 @@
             <rich:column colspan="2">
                 #{messages.saleMoneyChart_backMoney}
             </rich:column>
-            <rich:column colspan="2">
+            <rich:column rowspan="2">
                 #{messages.saleMoneyChart_orderReceiveMoney}
             </rich:column>
-            <rich:column colspan="2">
+            <rich:column rowspan="2">
                 #{messages.saleMoneyChart_orderNoReceiveMoney}
             </rich:column>
-            <rich:column colspan="2">
+            <rich:column rowspan="2">
                 #{messages.saleMoneyChart_orderArrearsMoney}
             </rich:column>
 
@@ -148,24 +148,7 @@
             <rich:column>
                 #{messages.count}
             </rich:column>
-            <rich:column>
-                #{messages.Money}
-            </rich:column>
-            <rich:column>
-                #{messages.count}
-            </rich:column>
-            <rich:column>
-                #{messages.Money}
-            </rich:column>
-            <rich:column>
-                #{messages.count}
-            </rich:column>
-            <rich:column>
-                #{messages.Money}
-            </rich:column>
-            <rich:column>
-                #{messages.count}
-            </rich:column>
+
         </rich:columnGroup>
     </f:facet>
 
@@ -243,14 +226,6 @@
             </h:outputText>
         </f:facet>
     </rich:column>
-    <rich:column>
-        <h:outputText value="#{saleMoneyChartData.orderReceiveMoneyData.get(_area.id).count}">
-        </h:outputText>
-        <f:facet name="footer">
-            <h:outputText value="#{saleMoneyChartData.orderReceiveMoneyTotal.count}">
-            </h:outputText>
-        </f:facet>
-    </rich:column>
 
     <rich:column style="text-align: right">
         <h:outputText value="#{saleMoneyChartData.orderNoReceiveMoneyData.get(_area.id).money}">
@@ -263,14 +238,6 @@
         </f:facet>
     </rich:column>
 
-    <rich:column>
-        <h:outputText value="#{saleMoneyChartData.orderNoReceiveMoneyData.get(_area.id).count}">
-        </h:outputText>
-        <f:facet name="footer">
-            <h:outputText value="#{saleMoneyChartData.orderNoReceiveMoneyTotal.count}">
-            </h:outputText>
-        </f:facet>
-    </rich:column>
 
     <rich:column style="text-align: right">
         <h:outputText value="#{saleMoneyChartData.orderArrearsMoneyData.get(_area.id).money}">
@@ -282,19 +249,33 @@
             </h:outputText>
         </f:facet>
     </rich:column>
-    <rich:column>
-        <h:outputText value="#{saleMoneyChartData.orderArrearsMoneyData.get(_area.id).count}">
-        </h:outputText>
-        <f:facet name="footer">
-            <h:outputText value="#{saleMoneyChartData.orderArrearsMoneyTotal.count}">
-            </h:outputText>
-        </f:facet>
-    </rich:column>
+
 </rich:dataTable>
 
 </a:outputPanel>
 
+<p>
+    <b>#{messages.Tips}</b> : #{messages.OderCreateDateTip}
+</p>
+<ul>
+    <li><b>#{messages.saleMoneyChart_orderMoney}</b>: #{messages.saleMoneyChart_orderMoneyTip}
+    </li>
+    <li><b>#{messages.saleMoneyChart_outedOrderMoney}</b>:
+        #{messages.saleMoneyChart_outedOrderMoneyTip}</li>
+    <li><b>#{messages.saleMoneyChart_backMoney}</b>:
+        #{messages.saleMoneyChart_backMoneyTip}</li>
 
+    <li><b>#{messages.saleMoneyChart_orderReceiveMoney}</b>:
+        #{messages.saleMoneyChart_orderReceiveMoneyTip}</li>
+
+    <li><b>#{messages.saleMoneyChart_orderNoReceiveMoney}</b>:
+        #{messages.saleMoneyChart_orderNoReceiveMoneyTip}</li>
+
+    <li><b>#{messages.saleMoneyChart_orderArrearsMoney}</b>:
+        #{messages.saleMoneyChart_orderArrearsMoneyTip}</li>
+
+
+</ul>
 </ui:define>
 
 </ui:composition>
