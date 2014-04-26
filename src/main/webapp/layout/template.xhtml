@@ -34,6 +34,9 @@
                 <a:ajax event="dataavailable" render="taskOperLink,netOwnerTaskComeNotify,netPooledTaskComeNotify"/>
             </a:push>
 
+        </ui:insert>
+
+        <ui:insert name="taskNotify">
             <rich:notifyStack id="pooledTaskStack" position="topRight" direction="vertical" method="first"/>
             <rich:notifyStack id="ownerTaskStack" position="bottomRight" direction="horizontal" method="last"/>
 
@@ -61,7 +64,6 @@
                     </f:facet>
                 </rich:notify>
             </a:outputPanel>
-
         </ui:insert>
 
     </h:form>
