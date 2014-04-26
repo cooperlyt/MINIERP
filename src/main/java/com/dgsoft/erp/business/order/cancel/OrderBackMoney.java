@@ -70,6 +70,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
 
         orderBackHome.getInstance().getAccountOpers().add(getAccountOper());
+        orderBackHome.getInstance().setMoneyComplete(true);
         // orderBackHome.getInstance().getCustomerOrder().getCustomer().setBalance(accountOper.getAfterMoney());
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
         //businessProcess.stopProcess("order",orderHome.getInstance().getId());
