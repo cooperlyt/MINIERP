@@ -1,0 +1,312 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://jboss.org/schema/seam/pdf"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="func-body">
+<h:form>
+    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_search_BETWEEN_createDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{searchDateArea.dateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{searchDateArea.dateTo}">
+            </rich:calendar>
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+
+            <div class="actionButtons">
+
+                <a:outputPanel id="searchButton">
+                    <a:commandButton value="#{messages.search}"
+                                     execute="@form" action="#{saleMoneyChartData.totalData}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </a:outputPanel>
+            </div>
+
+        </h:panelGrid>
+
+    </rich:collapsiblePanel>
+</h:form>
+
+<br/>
+
+<a:outputPanel ajaxRendered="true">
+
+<h:panelGrid style="width: 100%; text-align: center;" columns="1">
+    <a:outputPanel rendered="#{not empty saleMoneyChartData.orderMoneyData}">
+        <p:barchart
+                title="#{messages.SaleMoney_OrderTotalMoney}"
+                legend="true" borderVisible="false"
+                borderBackgroundPaint="white"
+                width="700"
+                plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                baseSectionPaint="white"
+                circular="true" is3D="true" plotForegroundAlpha="0.9">
+            <p:series key="#{messages.saleMoneyChart_orderMoney}">
+                <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.orderMoneyData)}" var="_oms">
+                    <p:data key="#{_oms.value.key}" value="#{_oms.value.money}"/>
+                </ui:repeat>
+            </p:series>
+            <p:series key="#{messages.saleMoneyChart_outedOrderMoney}">
+                <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.outedOrderMoneyData)}" var="_oms">
+                    <p:data key="#{_oms.value.key}" value="#{_oms.value.money}"/>
+                </ui:repeat>
+            </p:series>
+
+            <p:series key="#{messages.saleMoneyChart_backMoney}">
+                <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.backMoneyData)}" var="_oms">
+                    <p:data key="#{_oms.value.key}" value="#{_oms.value.money}"/>
+                </ui:repeat>
+            </p:series>
+
+            <p:series key="#{messages.saleMoneyChart_orderReceiveMoney}">
+                <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.orderReceiveMoneyData)}" var="_oms">
+                    <p:data key="#{_oms.value.key}" value="#{_oms.value.money}"/>
+                </ui:repeat>
+            </p:series>
+
+            <p:series key="#{messages.saleMoneyChart_orderNoReceiveMoney}">
+                <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.orderNoReceiveMoneyData)}" var="_oms">
+                    <p:data key="#{_oms.value.key}" value="#{_oms.value.money}"/>
+                </ui:repeat>
+            </p:series>
+
+            <p:series key="#{messages.saleMoneyChart_orderArrearsMoney}">
+                <ui:repeat value="#{collectionTools.mapToList(saleMoneyChartData.orderArrearsMoneyData)}" var="_oms">
+                    <p:data key="#{_oms.value.key}" value="#{_oms.value.money}"/>
+                </ui:repeat>
+            </p:series>
+        </p:barchart>
+    </a:outputPanel>
+</h:panelGrid>
+
+<br/>
+
+<rich:dataTable style="width: 100%" rendered="#{not empty saleMoneyChartData.orderMoneyData}"
+                value="#{saleMoneyChartData.customerAreas}" var="_area">
+    <f:facet name="header">
+        <rich:columnGroup>
+            <rich:column rowspan="2">
+                #{messages.CustomerArea}
+            </rich:column>
+
+            <rich:column colspan="2">
+                #{messages.saleMoneyChart_orderMoney}
+            </rich:column>
+
+            <rich:column colspan="2">
+                #{messages.saleMoneyChart_outedOrderMoney}
+            </rich:column>
+
+            <rich:column colspan="2">
+                #{messages.saleMoneyChart_backMoney}
+            </rich:column>
+            <rich:column colspan="2">
+                #{messages.saleMoneyChart_orderReceiveMoney}
+            </rich:column>
+            <rich:column colspan="2">
+                #{messages.saleMoneyChart_orderNoReceiveMoney}
+            </rich:column>
+            <rich:column colspan="2">
+                #{messages.saleMoneyChart_orderArrearsMoney}
+            </rich:column>
+
+
+            <rich:column breakRowBefore="true">
+                #{messages.Money}
+            </rich:column>
+            <rich:column>
+                #{messages.count}
+            </rich:column>
+            <rich:column>
+                #{messages.Money}
+            </rich:column>
+            <rich:column>
+                #{messages.count}
+            </rich:column>
+            <rich:column>
+                #{messages.Money}
+            </rich:column>
+            <rich:column>
+                #{messages.count}
+            </rich:column>
+            <rich:column>
+                #{messages.Money}
+            </rich:column>
+            <rich:column>
+                #{messages.count}
+            </rich:column>
+            <rich:column>
+                #{messages.Money}
+            </rich:column>
+            <rich:column>
+                #{messages.count}
+            </rich:column>
+            <rich:column>
+                #{messages.Money}
+            </rich:column>
+            <rich:column>
+                #{messages.count}
+            </rich:column>
+        </rich:columnGroup>
+    </f:facet>
+
+    <rich:column>
+        #{_area.name}
+    </rich:column>
+
+    <rich:column style="text-align: right">
+        <h:outputText value="#{saleMoneyChartData.orderMoneyData.get(_area.id).money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderMoneyTotal.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+    <rich:column>
+        <h:outputText value="#{saleMoneyChartData.orderMoneyData.get(_area.id).count}">
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderMoneyTotal.count}"/>
+        </f:facet>
+    </rich:column>
+
+
+    <rich:column style="text-align: right">
+        <h:outputText value="#{saleMoneyChartData.outedOrderMoneyData.get(_area.id).money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.outedOrderMoneyTotal.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+
+    <rich:column>
+        <h:outputText value="#{saleMoneyChartData.outedOrderMoneyData.get(_area.id).count}">
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.outedOrderMoneyTotal.count}">
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+
+
+    <rich:column style="text-align: right">
+        <h:outputText value="#{saleMoneyChartData.backMoneyData.get(_area.id).money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.backMoneyDataTotal.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+
+    <rich:column>
+        <h:outputText value="#{saleMoneyChartData.backMoneyData.get(_area.id).count}">
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.backMoneyDataTotal.count}">
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+
+    <rich:column style="text-align: right">
+        <h:outputText value="#{saleMoneyChartData.orderReceiveMoneyData.get(_area.id).money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderReceiveMoneyTotal.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+    <rich:column>
+        <h:outputText value="#{saleMoneyChartData.orderReceiveMoneyData.get(_area.id).count}">
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderReceiveMoneyTotal.count}">
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+
+    <rich:column style="text-align: right">
+        <h:outputText value="#{saleMoneyChartData.orderNoReceiveMoneyData.get(_area.id).money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderNoReceiveMoneyTotal.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+
+    <rich:column>
+        <h:outputText value="#{saleMoneyChartData.orderNoReceiveMoneyData.get(_area.id).count}">
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderNoReceiveMoneyTotal.count}">
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+
+    <rich:column style="text-align: right">
+        <h:outputText value="#{saleMoneyChartData.orderArrearsMoneyData.get(_area.id).money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderArrearsMoneyTotal.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+    <rich:column>
+        <h:outputText value="#{saleMoneyChartData.orderArrearsMoneyData.get(_area.id).count}">
+        </h:outputText>
+        <f:facet name="footer">
+            <h:outputText value="#{saleMoneyChartData.orderArrearsMoneyTotal.count}">
+            </h:outputText>
+        </f:facet>
+    </rich:column>
+</rich:dataTable>
+
+</a:outputPanel>
+
+
+</ui:define>
+
+</ui:composition>
