@@ -44,7 +44,9 @@
                 <h:outputLink value="#"
                               onclick="jQuery(#{rich:element('hide')}).slideDown(); jQuery(#{rich:element('show')}).hide(); return false;"
                               id="sh1" styleClass="show-details">
-                    <h:outputText value="#{empty openLabel?'View Source' : openLabel }"/>
+
+                    <h:outputText value="#{empty openLabel?'View Source' : openLabel }"/>  #{' '}
+                    <h:graphicImage value="#{resource['org.richfaces:down_icon.gif']}"/>
                 </h:outputLink>
                 <s:span styleClass="value" rendered="#{not empty labelValue}">
                        <h:outputText  value="#{labelValue}"/>
@@ -57,7 +59,8 @@
             <a:outputPanel id="hide" layout="block" style="display:none">
                 <h:outputLink styleClass="hide-details" value="#"
                               onclick="jQuery(#{rich:element('hide')}).slideUp(); jQuery(#{rich:element('show')}).show(500); return false;">
-                    <h:outputText value="#{empty hideLabel? openLabel : hideLabel }"/>
+                    <h:outputText value="#{empty hideLabel? openLabel : hideLabel }"/> #{' '}
+                    <h:graphicImage value="#{resource['org.richfaces:up_icon.gif']}"/>
                 </h:outputLink>
 
                 <hr style="width: 97%; border:1px dashed #{a4jSkin.panelBorderColor};" size="1"/>
@@ -69,9 +72,12 @@
 
                 <hr style="width: 97%; border:1px dashed #{a4jSkin.panelBorderColor};" size="1"/>
 
+
+
                 <h:outputLink styleClass="hide-details" value="#"
                               onclick="jQuery(#{rich:element('hide')}).slideUp(); jQuery(#{rich:element('show')}).show(500); return false;">
-                    <h:outputText value="#{empty hideLabel? openLabel : hideLabel }"/>
+                    <h:graphicImage value="#{resource['org.richfaces:up_icon.gif']}"/>  #{' '}
+                    <h:outputText value="#{empty hideLabel? labelValue : hideLabel }"/>
                 </h:outputLink>
             </a:outputPanel>
         </a:outputPanel>

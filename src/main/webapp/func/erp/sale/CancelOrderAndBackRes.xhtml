@@ -24,6 +24,7 @@
 
 
 <ui:define name="body">
+<rich:messages ajaxRendered="true" globalOnly="true"/>
 <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
     <h:form>
         <s:decorate template="/layout/seam-display.xhtml">
@@ -137,8 +138,8 @@
             </f:facet>
 
 
-            <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_item.id}" target="_blank">
-                <f:param name="orderId" value="#{_item.id}"/>
+            <s:link view="/func/erp/sale/ResBackView.xhtml" value="#{_item.id}" target="_blank">
+                <f:param name="backId" value="#{_item.id}"/>
             </s:link>
 
             <f:facet name="footer">
@@ -207,6 +208,18 @@
             </f:facet>
 
 
+            <h:outputText rendered="#{_item.dispatched}" style="color: green"
+                          value="#{messages.order_status_dispatch}"/>
+
+            <h:outputText rendered="#{not _item.dispatched}"
+                          value="#{messages.order_status_dispatch}" style="color: darkred;"/>
+
+            <h:graphicImage value="/img/true.png" rendered="#{_item.dispatched}"/>
+
+            <h:graphicImage value="/img/false.png" rendered="#{not _item.dispatched}"/>
+
+            #{' '}/#{' '}
+
             <h:outputText rendered="#{_item.resComplete}" style="color: green"
                           value="#{messages.order_status_res}"/>
 
@@ -228,6 +241,8 @@
             <h:graphicImage value="/img/true.png" rendered="#{_item.moneyComplete}"/>
 
             <h:graphicImage value="/img/false.png" rendered="#{not _item.moneyComplete}"/>
+
+
 
         </rich:column>
 
@@ -270,11 +285,11 @@
 
         <rich:column rendered="#{s:hasRole('erp.sale.manager')}" style="text-align: center;" width="30px">
 
-            <a:commandButton image="/img/cancel.png" title="#{messages.delete}" immediate="true"
+            <a:commandButton image="/img/delete.png" title="#{messages.delete}" immediate="true"
                              execute="@this"
-                             render="cancelOrderIdTitle,cancelOrderOperAction"
-                             oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
-                             rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+                             render="dataListResult"
+                             action="#{orderBackHome.deleteBack}"
+                             onclick="JavaScript:if(confirm('#{messages.OrderBack_deleteConfirm}')){}else{return false;}">
 
                 <a:param value="#{_item.id}" assignTo="#{orderBackHome.id}"/>
                 <a:attachQueue requestDelay="0"/>

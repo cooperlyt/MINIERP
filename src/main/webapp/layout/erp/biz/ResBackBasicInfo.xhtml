@@ -8,15 +8,17 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
+    <!--param: orderBack -->
+
     <div style="clear: both"/>
 
     <s:decorate template="/layout/view-details.xhtml">
         <ui:include src="/layout/erp/CustomerView.xhtml">
 
-            <ui:param name="customer" value="#{orderBackHome.instance.customer}"/>
+            <ui:param name="customer" value="#{orderBack.customer}"/>
 
         </ui:include>
-        <ui:param name="labelValue" value="#{orderBackHome.instance.customer.name}"/>
+        <ui:param name="labelValue" value="#{orderBack.customer.name}"/>
         <ui:param name="openLabel" value="#{messages.Customer}"/>
         <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
     </s:decorate>
@@ -28,7 +30,7 @@
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.OrderBack_field_createDate}</ui:define>
 
-        <h:outputText value="#{orderBackHome.instance.createDate}">
+        <h:outputText value="#{orderBack.createDate}">
             <s:convertDateTime
                     pattern="#{messages.displayDatePattern}"/>
         </h:outputText>
@@ -40,19 +42,19 @@
         <ui:define
                 name="label">#{messages.OrderBack_field_BackReason}</ui:define>
 
-        <h:outputText value="#{dictionary.getWordValue(orderBackHome.instance.reason)}"/>
+        <h:outputText value="#{dictionary.getWordValue(orderBack.reason)}"/>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.OrderBack_field_applyEmp}</ui:define>
 
-        <h:outputText value="#{dictionary.getEmpNameById(orderBackHome.instance.applyEmp)}"/>
+        <h:outputText value="#{dictionary.getEmpNameById(orderBack.applyEmp)}"/>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
 
-        <h:outputText value="#{orderBackHome.instance.memo}"/>
+        <h:outputText value="#{orderBack.memo}"/>
     </s:decorate>
 
     <div style="clear: both"/>

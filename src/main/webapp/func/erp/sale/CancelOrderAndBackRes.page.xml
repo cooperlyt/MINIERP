@@ -19,7 +19,7 @@
 
     <param name="provinceCode" value="#{customerSearchCondition.provinceCode}"/>
 
-    <param name="myOrderOnly" value="#{resBackList.applyEmp}" />
+    <param name="myBusiness" value="#{resBackList.myBusiness}" />
     <param name="createDateFrom" value="#{resBackList.searchDateArea.dateFrom}" />
     <param name="createDateTo" value="#{resBackList.searchDateArea.searchDateTo}" />
 

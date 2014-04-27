@@ -1,0 +1,115 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.OrderBack}-#{orderBackHome.instance.id}"/>
+
+
+    <ui:define name="func-body">
+        <h:panelGrid columns="3">
+            <h:panelGroup>
+                <h:graphicImage value="/img/true.png" rendered="#{orderBackHome.instance.dispatched}"/>
+                <h:graphicImage value="/img/false.png" rendered="#{not orderBackHome.instance.dispatched}"/>
+
+                #{messages.OrderBack_field_dispatch}
+            </h:panelGroup>
+            <h:panelGroup>
+                <h:graphicImage value="/img/true.png" rendered="#{orderBackHome.instance.resComplete}"/>
+                <h:graphicImage value="/img/false.png" rendered="#{not orderBackHome.instance.resComplete}"/>
+
+                #{messages.OrderBack_field_resComplete}
+            </h:panelGroup>
+            <h:panelGroup>
+                <h:graphicImage value="/img/true.png" rendered="#{orderBackHome.instance.moneyComplete}"/>
+                <h:graphicImage value="/img/false.png" rendered="#{not orderBackHome.instance.moneyComplete}"/>
+
+                #{messages.OrderBack_field_moneyComplete}
+            </h:panelGroup>
+        </h:panelGrid>
+
+        <ui:include src="ResBackDetails.xhtml">
+            <ui:param name="orderBack" value="#{orderBackHome.instance}"/>
+            <ui:param name="showItemStatus" value="true"/>
+        </ui:include>
+
+        <br/>
+
+
+        <ui:repeat value="#{orderBackHome.instance.backDispatchList}" var="_dispatch">
+            <div style="clear: both;"/>
+            <s:decorate rendered="#{_dispatch.storeOut}" template="/layout/view-details.xhtml">
+                <ui:param name="openLabel" value="#{messages.Store}"/>
+                <ui:param name="labelValue" value="#{_dispatch.store.name}(#{_dispatch.store.id})"/>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">
+                        #{messages.Store}
+                    </ui:define>
+                    #{_dispatch.store.name}(#{_dispatch.store.id})
+
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">
+                        #{messages.storeIn_field_dateTime}
+                    </ui:define>
+                    <h:outputText value="#{_dispatch.stockChange.operDate}">
+                        <s:convertDateTime pattern="#{messages.displayTimePattern}"/>
+                    </h:outputText>
+
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">
+                        #{messages.StoreChange_field_operEmp}
+                    </ui:define>
+                    #{dictionary.getWordValue(_dispatch.stockChange.operEmp)}
+                </s:decorate>
+
+                <div style="clear: both;"/>
+
+                <rich:dataTable value="#{_dispatch.stockChange.stockChangeItemList}" var="_item">
+                    <f:facet name="header">
+                        <rich:columnGroup>
+                            <rich:column rowspan="2">
+                                #{messages.StoreRes}
+                            </rich:column>
+                            <rich:column colspan="2">
+                                #{messages.count}
+                            </rich:column>
+
+                            <rich:column breakRowBefore="true">
+                                #{messages.MasterUnitCount}
+                            </rich:column>
+                            <rich:column>
+                                #{messages.AuxUnitCount}
+                            </rich:column>
+                        </rich:columnGroup>
+                    </f:facet>
+                    <rich:column>
+                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                            <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                        </ui:include>
+                    </rich:column>
+                    <rich:column>
+                        #{_item.displayMasterCount}
+                    </rich:column>
+                    <rich:column>
+                        #{_item.displayAuxCount}
+                    </rich:column>
+                </rich:dataTable>
+
+            </s:decorate>
+            <br/>
+        </ui:repeat>
+
+    </ui:define>
+
+</ui:composition>

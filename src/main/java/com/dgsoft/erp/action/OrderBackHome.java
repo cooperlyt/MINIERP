@@ -2,10 +2,10 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.common.SetLinkList;
 
+import com.dgsoft.common.jbpm.ProcessInstanceHome;
 import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.model.BackDispatch;
-import com.dgsoft.erp.model.BackItem;
-import com.dgsoft.erp.model.OrderBack;
+import com.dgsoft.erp.model.*;
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.*;
 
 import java.math.BigDecimal;
@@ -61,6 +61,41 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
             }
         }
         return result;
+    }
+
+    @Transactional
+    public void deleteBack() {
+        BigDecimal operMoney = BigDecimal.ZERO;
+        for (AccountOper ao : getInstance().getAccountOpers()) {
+            if (ao.getOperType().isAdd()) {
+                operMoney = operMoney.subtract(ao.getOperMoney());
+            } else {
+                operMoney = operMoney.add(ao.getOperMoney());
+            }
+        }
+        log.debug("operMoney:" + operMoney);
+        if (operMoney.compareTo(BigDecimal.ZERO) != 0) {
+            getInstance().getCustomer().setBalance(getInstance().getCustomer().getBalance().subtract(operMoney));
+        }
+        getInstance().getCustomer().getAccountOpers().removeAll(getInstance().getAccountOpers());
+
+
+        for (BackDispatch dispatch : getInstance().getBackDispatchs()) {
+            if (dispatch.getStockChange() != null) {
+                for (StockChangeItem item : dispatch.getStockChange().getStockChangeItems()) {
+                    item.getStock().setCount(item.getStock().getCount().subtract(item.getCount()));
+                }
+                getEntityManager().remove(dispatch.getStockChange());
+            }
+        }
+
+        ProcessInstanceHome processInstanceHome = (ProcessInstanceHome) Component.getInstance(ProcessInstanceHome.class, true);
+        processInstanceHome.setProcessDefineName("orderCancel");
+        processInstanceHome.setProcessKey(getInstance().getId());
+        if ("removed".equals(remove())){
+            processInstanceHome.stop();
+        }
+
     }
 
     public void calcBackMoney() {

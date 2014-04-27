@@ -203,6 +203,7 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
 
         Logging.getLog(getClass()).debug("res back store in change stoce item count:" + stockChangeHome.getInstance().getStockChangeItems().size());
         dispatch.setStockChange(stockChangeHome.getReadyInstance());
+        dispatch.setStoreOut(true);
         orderBackHome.getInstance().setResComplete(true);
 
 

@@ -92,13 +92,29 @@ public class OrderBack implements java.io.Serializable {
         this.memo = memo;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderBack", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<BackDispatch> getBackDispatchs() {
         return this.backDispatchs;
     }
 
     public void setBackDispatchs(Set<BackDispatch> productBackReses) {
         this.backDispatchs = productBackReses;
+    }
+
+    @Transient
+    public List<BackDispatch> getBackDispatchList() {
+        List<BackDispatch> result = new ArrayList<BackDispatch>(getBackDispatchs());
+        Collections.sort(result, new Comparator<BackDispatch>() {
+            @Override
+            public int compare(BackDispatch o1, BackDispatch o2) {
+                if ((o1.getStore() != null) && (o2.getStore() != null)) {
+                    return o1.getStore().getId().compareTo(o2.getStore().getId());
+                }else{
+                    return 0;
+                }
+            }
+        });
+        return result;
     }
 
     @OneToMany(orphanRemoval = false, mappedBy = "orderBack", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})

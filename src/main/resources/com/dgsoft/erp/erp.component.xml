@@ -112,5 +112,9 @@
         <property name="ejbql">select rebateProgram from RebateProgram rebateProgram</property>
     </component>
 
+    <event type="org.jboss.seam.afterTransactionSuccess.OrderBack">
+        <action execute="#{resBackList.refresh}"/>
+    </event>
+
 
 </components>

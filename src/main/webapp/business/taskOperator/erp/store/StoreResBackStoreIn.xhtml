@@ -282,7 +282,10 @@
 
 <rich:collapsiblePanel switchType="client" header="#{messages.details}">
 
-    <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml"/>
+    <ui:include src="/layout/erp/biz/ResBackBasicInfo.xhtml">
+        <ui:param name="orderBack" value="#{orderBackHome.instance}"/>
+    </ui:include>
+
 
 </rich:collapsiblePanel>
 

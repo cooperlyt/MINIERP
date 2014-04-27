@@ -19,7 +19,8 @@
             <f:facet name="header">
                 #{messages.Presentation}
             </f:facet>
-            <h:selectBooleanCheckbox disabled="true" value="#{_item.presentation}"/>
+            <h:graphicImage rendered="#{_item.presentation}" value="/img/true.png"/>
+            <h:graphicImage rendered="#{not _item.presentation}" value="/img/false.png"/>
         </rich:column>
 
 
