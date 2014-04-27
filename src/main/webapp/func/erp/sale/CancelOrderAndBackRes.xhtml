@@ -8,23 +8,283 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
-    <ui:define name="toolbar">
-        <rich:toolbar height="34" itemSeparator="line">
+<ui:define name="toolbar">
+    <rich:toolbar height="34" itemSeparator="line">
 
-            <rich:toolbarGroup location="right">
-                <s:button value="#{messages.OrderBackRes}" styleClass="toolBarBtn"
-                          view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
-                    <f:param name="from" value="/func/erp/sale/CancelOrderAndBackRes.xhtml"/>
-                </s:button>
-            </rich:toolbarGroup>
-        </rich:toolbar>
-
-
-    </ui:define>
+        <rich:toolbarGroup location="right">
+            <s:button value="#{messages.OrderBackRes}" styleClass="toolBarBtn"
+                      view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
+                <f:param name="from" value="/func/erp/sale/CancelOrderAndBackRes.xhtml"/>
+            </s:button>
+        </rich:toolbarGroup>
+    </rich:toolbar>
 
 
-    <ui:define name="body">
+</ui:define>
 
-    </ui:define>
+
+<ui:define name="body">
+<rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+    <h:form>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_search_onlyMyResBack}</ui:define>
+            <h:selectBooleanCheckbox value="#{resBackList.myBusiness}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.OrderBack_field_id}</ui:define>
+            <h:inputText value="#{resBackList.id}" size="15"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.OrderBack_field_state}</ui:define>
+            <h:panelGrid columns="20">
+
+                <h:selectOneMenu value="#{resBackList.resComplete}">
+                    <f:selectItem itemLabel="#{messages.OrderBack_search_res_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.OrderBack_search_res_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.OrderBack_search_res_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+                <h:selectOneMenu value="#{resBackList.moneyComplete}">
+                    <f:selectItem itemLabel="#{messages.OrderBack_search_money_true}" itemValue="#{true}"/>
+                    <f:selectItem itemLabel="#{messages.OrderBack_search_money_false}" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="#{messages.OrderBack_search_money_null}" noSelectionOption="true"/>
+                </h:selectOneMenu>
+
+
+            </h:panelGrid>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.OrderBack_field_BackReason}</ui:define>
+            <h:selectOneMenu value="#{resBackList.reason}">
+                <s:selectItems value="#{dictionary.getWordList('erp.orderResBackReason')}" var="_word"
+                               itemValue="#{_word.id}" label="#{_word.value}"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <ui:include src="/layout/erp/biz/CustomerSearchCondition.xhtml"/>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.OrderBack_createDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.OrderBack_createDate}"
+                    value="#{resBackList.searchDateArea.dateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.OrderBack_createDate}"
+                    value="#{resBackList.searchDateArea.dateTo}">
+            </rich:calendar>
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel>
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="dataListResult" action="#{resBackList.first}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </h:form>
+</rich:collapsiblePanel>
+
+<br/>
+
+<h:form>
+    <rich:dataTable id="dataListResult" style="width: 100%" value="#{resBackList.resultList}" var="_item"
+                    noDataLabel="#{messages.emptyResult}">
+        <f:facet name="footer">
+            <a:outputPanel rendered="#{not empty resBackList.resultList}">
+                <ui:include src="/layout/pageA4jNavigation.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                </ui:include>
+            </a:outputPanel>
+        </f:facet>
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.OrderBack_field_id}"/>
+                    <ui:param name="propertyPath" value="orderBack.id"/>
+                </ui:include>
+            </f:facet>
+
+
+            <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_item.id}" target="_blank">
+                <f:param name="orderId" value="#{_item.id}"/>
+            </s:link>
+
+            <f:facet name="footer">
+                #{messages.recordTotal} #{resBackList.resultCount} #{messages.item}
+            </f:facet>
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.OrderBack_field_BackReason}"/>
+                    <ui:param name="propertyPath" value="orderBack.reason"/>
+                </ui:include>
+            </f:facet>
+
+            #{dictionary.getWordValue(_item.reason)}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
+                    <ui:param name="propertyPath" value="orderBack.customer.customerArea.name"/>
+                </ui:include>
+            </f:facet>
+
+            #{_item.customer.customerArea.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.Customer}"/>
+                    <ui:param name="propertyPath" value="orderBack.customer.name"/>
+                </ui:include>
+            </f:facet>
+
+            #{_item.customer.name}
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.OrderBack_field_createDate}"/>
+                    <ui:param name="propertyPath" value="orderBack.createDate"/>
+                </ui:include>
+            </f:facet>
+
+            <h:outputText value="#{_item.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column style="text-align: center">
+            <f:facet name="header">
+                #{messages.OrderBack_field_state}
+            </f:facet>
+
+
+            <h:outputText rendered="#{_item.resComplete}" style="color: green"
+                          value="#{messages.order_status_res}"/>
+
+            <h:outputText rendered="#{not _item.resComplete}"
+                          value="#{messages.order_status_res}" style="color: darkred;"/>
+
+            <h:graphicImage value="/img/true.png" rendered="#{_item.resComplete}"/>
+
+            <h:graphicImage value="/img/false.png" rendered="#{not _item.resComplete}"/>
+
+
+            #{' '}/#{' '}
+            <h:outputText rendered="#{_item.moneyComplete}" style="color: green"
+                          value="#{messages.order_status_money}"/>
+
+            <h:outputText rendered="#{not _item.moneyComplete}"
+                          value="#{messages.order_status_money}" style="color: darkred;"/>
+
+            <h:graphicImage value="/img/true.png" rendered="#{_item.moneyComplete}"/>
+
+            <h:graphicImage value="/img/false.png" rendered="#{not _item.moneyComplete}"/>
+
+        </rich:column>
+
+
+        <rich:column style="text-align: right;">
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.Money}"/>
+                    <ui:param name="propertyPath" value="orderBack.money"/>
+                </ui:include>
+            </f:facet>
+
+            <h:outputText value="#{_item.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{resBackList.totalMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{resBackList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.OrderBack_field_applyEmp}"/>
+                    <ui:param name="propertyPath" value="orderBack.applyEmp"/>
+                </ui:include>
+            </f:facet>
+
+            #{dictionary.getEmpNameById(_item.applyEmp)}
+        </rich:column>
+
+
+        <rich:column rendered="#{s:hasRole('erp.sale.manager')}" style="text-align: center;" width="30px">
+
+            <a:commandButton image="/img/cancel.png" title="#{messages.delete}" immediate="true"
+                             execute="@this"
+                             render="cancelOrderIdTitle,cancelOrderOperAction"
+                             oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
+                             rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+
+                <a:param value="#{_item.id}" assignTo="#{orderBackHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+        </rich:column>
+
+    </rich:dataTable>
+</h:form>
+
+</ui:define>
 
 </ui:composition>

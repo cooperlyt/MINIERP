@@ -139,6 +139,10 @@
         <restrict>#{s:hasRole('erp.transport.manager')}</restrict>
     </page>
 
+    <page view-id="/func/erp/total/*" login-required="true">
+        <restrict>#{s:hasRole('erp.sale.manager')}</restrict>
+    </page>
+
     <page view-id="/func/erp/store/storeChange/*" login-required="true">
         <restrict>#{s:hasRole('erp.storage.store')}</restrict>
 
