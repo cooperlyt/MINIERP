@@ -1,0 +1,80 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <rich:messages globalOnly="false" ajaxRendered="true"/>
+    <a:region>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.resCategory}</ui:define>
+            <h:selectOneMenu value="#{resCategoryHome.id}" label="#{messages.resCategory}">
+
+                <s:selectItems value="#{resCategoryList.saleResCategorys}" var="_category" label="#{_category.name}"
+                               itemValue="#{_category.id}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                <a:ajax event="valueChange" render="categoryNextStep"
+                        execute="@this">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <a:outputPanel id="categoryNextStep">
+            <s:decorate  template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.res}</ui:define>
+
+
+                <h:selectOneMenu value="#{resHome.id}"
+                                 label="#{messages.res}">
+                    <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                   label="#{_res.name}" itemValue="#{_res.id}"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                    <a:ajax event="valueChange" listener="#{storeResCondition.resSelected}" immediate="true" execute="@region"
+                            render="formatList">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </h:selectOneMenu>
+            </s:decorate>
+        </a:outputPanel>
+    </a:region>
+
+    <a:outputPanel id="formatList">
+        #{resHome.idDefined}
+        <a:outputPanel rendered="#{resHome.idDefined}">
+
+
+            <ui:include src="ResFormatsInput.xhtml">
+                <ui:param name="required" value="false"/>
+                <ui:param name="inputValue" value="#{storeResCondition}"/>
+                <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                <ui:param name="countLableStyleClass" value="name"/>
+                <ui:param name="showTitle" value="false"/>
+            </ui:include>
+
+
+            <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+                               value="#{storeResCondition.floatConvertRate}"
+                               layout="div"
+                               label="#{storeResCondition.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
+                               required="true"
+                               var="_value"
+                               selectFirst="false"
+                               fetchValue="#{_value}"
+                               autocompleteList="#{storeResCondition.floatConvertRateHistory}"
+                               showButton="true" converter="javax.faces.BigDecimal">
+                <b>#{_value}</b>
+            </rich:autocomplete>
+
+
+        </a:outputPanel>
+
+    </a:outputPanel>
+
+
+</ui:composition>

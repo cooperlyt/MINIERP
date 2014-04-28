@@ -24,17 +24,7 @@ public class StoreResEntity{
 
 
     public StoreResEntity(Res res) {
-        this.res = res;
-        this.formatHistory = ResHelper.instance().getFormatHistory(res);
-        formats = new ArrayList<Format>(res.getFormatDefines().size());
-        for (FormatDefine formatDefine : res.getFormatDefineList()) {
-            formats.add(new Format(formatDefine));
-        }
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-
-            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
-            floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
-        }
+        initByRes(res);
     }
 
     public StoreResEntity(StoreRes storeRes) {
@@ -49,6 +39,20 @@ public class StoreResEntity{
 
             this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
             floatConvertRate = storeRes.getFloatConversionRate();
+        }
+    }
+
+    protected void initByRes(Res res){
+        this.res = res;
+        this.formatHistory = ResHelper.instance().getFormatHistory(res);
+        formats = new ArrayList<Format>(res.getFormatDefines().size());
+        for (FormatDefine formatDefine : res.getFormatDefineList()) {
+            formats.add(new Format(formatDefine));
+        }
+        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+
+            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
+            floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
         }
     }
 

@@ -55,7 +55,7 @@ public class ResHelper {
             if (showKey)
                 result += " " + format.getFormatDefine().getName() + ":";
             if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)) {
-                if (!showKey)  {
+                if (!showKey) {
                     result += " ";
                 }
                 result += dictionary.getWordValue(format.getFormatValue());
@@ -91,15 +91,17 @@ public class ResHelper {
 
     public boolean matchFormat(Collection<Format> formats, StoreRes storeRes) {
         for (Format cFormat : formats) {
-            boolean find = false;
-            for (Format f : ResFormatCache.instance().getFormats(storeRes)) {
-                if (cFormat.equals(f)) {
-                    find = true;
-                    break;
+            if (cFormat.getFormatValue() != null) {
+                boolean find = false;
+                for (Format f : ResFormatCache.instance().getFormats(storeRes)) {
+                    if (cFormat.equals(f)) {
+                        find = true;
+                        break;
+                    }
                 }
-            }
-            if (!find) {
-                return false;
+                if (!find) {
+                    return false;
+                }
             }
         }
         return true;
@@ -164,7 +166,7 @@ public class ResHelper {
     }
 
     public String genStoreResCode(StoreRes storeRes) {
-        return genStoreResCode(storeRes.getRes().getCode(),ResFormatCache.instance().getFormats(storeRes),
+        return genStoreResCode(storeRes.getRes().getCode(), ResFormatCache.instance().getFormats(storeRes),
                 (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) ?
                         DataFormat.format(storeRes.getFloatConversionRate(), storeRes.getRes().getUnitGroup().getFloatConvertRateFormat()).toString() : null
         );
