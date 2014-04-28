@@ -54,13 +54,7 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
 
     public BigDecimal getResTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (BackItem item : getInstance().getBackItems()) {
-            if (item.getTotalMoney() != null) {
-                result = result.add(item.getTotalMoney());
-            }
-        }
-        return result;
+        return getInstance().getResTotalMoney();
     }
 
     @Transactional
@@ -75,7 +69,7 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         }
         log.debug("operMoney:" + operMoney);
         if (operMoney.compareTo(BigDecimal.ZERO) != 0) {
-            getInstance().getCustomer().setBalance(getInstance().getCustomer().getBalance().subtract(operMoney));
+            getInstance().getCustomer().setBalance(getInstance().getCustomer().getBalance().add(operMoney));
         }
         getInstance().getCustomer().getAccountOpers().removeAll(getInstance().getAccountOpers());
 

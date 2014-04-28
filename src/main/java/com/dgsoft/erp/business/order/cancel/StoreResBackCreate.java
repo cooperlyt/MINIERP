@@ -65,7 +65,7 @@ public class StoreResBackCreate extends OrderBackHome {
 
     @Override
     protected OrderBack createInstance() {
-        return new OrderBack(BigDecimal.ZERO, false);
+        return new OrderBack(BigDecimal.ZERO, false,credentials.getUsername());
     }
 
     @Override
@@ -85,17 +85,6 @@ public class StoreResBackCreate extends OrderBackHome {
     @Override
     public Class<OrderBack> getEntityClass() {
         return OrderBack.class;
-    }
-
-    @Override
-    protected boolean wire() {
-        if (!isManaged()) {
-
-            getInstance().setApplyEmp(credentials.getUsername());
-            getInstance().setMoneyComplete(!isNeedBackMoney());
-            getInstance().setResComplete(!isNeedBackRes());
-        }
-        return true;
     }
 
     public void deleteItem() {
@@ -129,34 +118,8 @@ public class StoreResBackCreate extends OrderBackHome {
         return "/business/startPrepare/erp/sale/BackStoreResDispatch.xhtml";
     }
 
-    @CreateProcess(definition = "orderCancel", processKey = "#{storeResBackCreate.instance.id}")
-    @Transactional
-    public String dispatchAndCreateBack() {
-        if (!resBackDispatch.isComplete()) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatchNotComplete");
-            return null;
-        }
+    public String createItems(){
 
-
-        getInstance().setDispatched(true);
-        getInstance().getBackDispatchs().clear();
-
-        getInstance().getBackDispatchs().addAll(resBackDispatch.getResBackDispatcheds());
-        for (BackItem item : getInstance().getBackItems()) {
-            item.setBackItemStatus(BackItem.BackItemStatus.DISPATCH);
-        }
-
-
-        return createBack();
-    }
-
-    @CreateProcess(definition = "orderCancel", processKey = "#{storeResBackCreate.instance.id}")
-    @Transactional
-    public String createBack() {
-
-        //if (!isCanCreate()) return null;
-
-        calcBackMoney();
         if (customerHome.isIdDefined()) {
             customerHome.refresh();
             getInstance().setCustomer(customerHome.getInstance());
@@ -165,10 +128,51 @@ public class StoreResBackCreate extends OrderBackHome {
             getInstance().getCustomer().setCustomerArea(customerAreaHome.getInstance());
         }
 
+        return "/business/startPrepare/erp/sale/ResBackItemCreate.xhtml";
+    }
+
+    public String toConfirm(){
+        calcBackMoney();
+        getInstance().getBackItems().clear();
         getInstance().getBackItems().addAll(backItems);
+        return  "/business/startPrepare/erp/sale/ResBackConfirm.xhtml";
+    }
+
+    public String dispatchToConfirm(){
+        getInstance().setDispatched(true);
+        if (!resBackDispatch.isComplete()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "dispatchNotComplete");
+            return null;
+        }
+
+
+        getInstance().getBackDispatchs().clear();
+
+        getInstance().getBackDispatchs().addAll(resBackDispatch.getResBackDispatcheds());
+        for (BackItem item : getInstance().getBackItems()) {
+            item.setBackItemStatus(BackItem.BackItemStatus.DISPATCH);
+        }
+        return toConfirm();
+    }
+
+    public String confirmtoPrevious(){
+        getInstance().setDispatched(false);
+        return "/business/startPrepare/erp/sale/ResBackItemCreate.xhtml";
+    }
+
+    @CreateProcess(definition = "orderCancel", processKey = "#{storeResBackCreate.instance.id}")
+    @Transactional
+    public String createBack() {
+        calcBackMoney();
+
+
+        getInstance().setResComplete(false);
         if (getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0){
             getInstance().setMoneyComplete(true);
+        }else{
+            getInstance().setMoneyComplete(false);
         }
+
         orderBackHome.setInstance(getInstance());
         if (!"persisted".equals(persist())) {
             return null;

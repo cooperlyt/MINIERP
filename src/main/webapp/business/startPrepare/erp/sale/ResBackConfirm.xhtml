@@ -1,0 +1,49 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+    <ui:param name="functionTitle" value="#{messages.BackStoreRes}-#{messages.BackStoreRes_confirme}"/>
+
+
+    <ui:define name="func-body">
+
+        <rich:toolbar>
+            <rich:toolbarGroup>
+                <h:outputText value="#{storeResBackCreate.instance.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+
+
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                          includePageParams="false"
+                          view="#{(empty from) ? '/func/erp/sale/CancelOrderAndBackRes.xhtml' : from}"/>
+
+
+                <s:button styleClass="toolBarBtn" value="#{messages.Previous}"
+                          action="#{storeResBackCreate.confirmtoPrevious}"/>
+
+
+                <s:button styleClass="toolBarBtn" value="#{messages.createProcess}"
+                          action="#{storeResBackCreate.createBack}"/>
+
+
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+        <ui:include src="/func/erp/sale/ResBackDetails.xhtml">
+            <ui:param name="orderBack" value="#{storeResBackCreate.instance}" />
+            <ui:param name="showItemStatus" value="false"/>
+        </ui:include>
+
+    </ui:define>
+
+
+</ui:composition>

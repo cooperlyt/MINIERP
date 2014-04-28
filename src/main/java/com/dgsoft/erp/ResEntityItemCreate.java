@@ -39,6 +39,15 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
     @In(create = true)
     private ResLocate resLocate;
 
+    private void setResCategory(ResCategory resCategory){
+        if (resCategory.isRoot()){
+            resCategoryHome.setId(resCategory.getId());
+        }else{
+            setResCategory(resCategory.getResCategory());
+        }
+
+    }
+
     public void locateByCode() {
 
         switch (resLocate.locateByCode(StockChange.StoreChangeType.SELL_OUT)) {
@@ -63,16 +72,14 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
 
     public void resSelected() {
         editingItem =  createInstance(resHome.getInstance());
-
-        resCategoryHome.setId(resHome.getInstance().getResCategory().getId());
+        setResCategory(resHome.getInstance().getResCategory());
         createBy = CreateBy.RES;
     }
 
     public void storeResSelected() {
         resHome.setId(storeResHome.getInstance().getRes().getId());
         editingItem = createInstance(storeResHome.getInstance());
-
-        resCategoryHome.setId(storeResHome.getInstance().getRes().getResCategory().getId());
+        setResCategory(storeResHome.getInstance().getRes().getResCategory());
         createBy = CreateBy.STORE_RES;
     }
 

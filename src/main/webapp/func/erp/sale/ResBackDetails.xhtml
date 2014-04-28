@@ -24,7 +24,7 @@
         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
     </h:outputText>
     =
-    <h:outputText value="#{orderBackHome.resTotalMoney}">
+    <h:outputText value="#{orderBack.resTotalMoney}">
         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
     </h:outputText>
     (#{messages.OrderBackResMoney})
@@ -108,7 +108,7 @@
                              type="currency" groupingUsed="true"/>
         </h:outputText>
         <f:facet name="footer">
-            <h:outputText value="#{orderBackHome.resTotalMoney}">
+            <h:outputText value="#{orderBack.resTotalMoney}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
@@ -173,7 +173,7 @@
 
     <rich:column>
         <f:facet name="footer">
-            <h:outputText value="#{orderBackHome.resTotalMoney}">
+            <h:outputText value="#{orderBack.resTotalMoney}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>

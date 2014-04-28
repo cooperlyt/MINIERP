@@ -33,9 +33,10 @@ public class OrderBack implements java.io.Serializable {
     public OrderBack() {
     }
 
-    public OrderBack(BigDecimal saveMoney, boolean dispatched) {
+    public OrderBack(BigDecimal saveMoney, boolean dispatched,String applyEmp) {
         this.saveMoney = saveMoney;
         this.dispatched = dispatched;
+        this.applyEmp = applyEmp;
     }
 
     @Id
@@ -221,5 +222,17 @@ public class OrderBack implements java.io.Serializable {
 
     public void setDispatched(boolean dispatched) {
         this.dispatched = dispatched;
+    }
+
+
+    @Transient
+    public BigDecimal getResTotalMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (BackItem item : getBackItems()) {
+            if (item.getTotalMoney() != null) {
+                result = result.add(item.getTotalMoney());
+            }
+        }
+        return result;
     }
 }

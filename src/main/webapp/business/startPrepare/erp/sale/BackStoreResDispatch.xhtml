@@ -18,11 +18,12 @@
 
                 <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end" includePageParams="false"
                           view="#{(empty from) ? '/func/erp/sale/CancelOrderAndBackRes.xhtml' : from}"/>
-                <s:button styleClass="toolBarBtn" value="#{messages.back_step}" includePageParams="true"
-                          view="#{stepFrom}"/>
 
-                <s:button styleClass="toolBarBtn" value="#{messages.BackStoreRes}"
-                          action="#{storeResBackCreate.dispatchAndCreateBack}"/>
+                <s:button styleClass="toolBarBtn" value="#{messages.Previous}"
+                          view="/business/startPrepare/erp/sale/ResBackItemCreate.xhtml"/>
+
+                <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                          action="#{storeResBackCreate.dispatchToConfirm}"/>
 
             </rich:toolbarGroup>
 

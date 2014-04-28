@@ -1,0 +1,301 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+<ui:param name="functionTitle" value="#{messages.BackStoreRes}-#{messages.BackStoreRes_item}"/>
+
+
+<ui:define name="func-body">
+
+
+<h:outputStylesheet>
+    .barOrderNumber {
+        height: 14px;
+        width: 100px;
+    }
+</h:outputStylesheet>
+
+
+<rich:toolbar>
+
+
+    <rich:toolbarGroup>
+        <h:form>
+            <rich:focus preserve="true"/>
+
+            <h:panelGrid id="resSearchForm" columns="4">
+
+                <h:inputText styleClass="barsearch" size="10" id="resItemCode"
+                             label="#{messages.res_field_code}"
+                             value="#{resLocate.code}"
+                             required="true">
+                    <rich:placeholder value="#{messages.res_field_code}"/>
+                </h:inputText>
+
+
+                <a:commandButton value="#{messages.search}" execute="@region"
+                                 render="orderItemDetails"
+                                 action="#{backItemCreate.locateByCode}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+            </h:panelGrid>
+
+        </h:form>
+    </rich:toolbarGroup>
+
+
+    <rich:toolbarGroup location="right">
+        <h:form>
+            <h:panelGrid columns="6">
+                <a:outputPanel ajaxRendered="true">
+                    <h:panelGrid columns="10">
+                        #{messages.OrderBack_field_SaveMoney}
+                        <a:outputPanel ajaxRendered="true">
+                            <h:inputText id="saveMoneyInput" styleClass="barOrderNumber"
+                                         label="#{messages.OrderBack_field_SaveMoney}" required="true"
+                                         value="#{storeResBackCreate.instance.saveMoney}">
+                                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                                 type="currency" groupingUsed="false"/>
+                                <f:validateDoubleRange minimum="0" maximum="#{storeResBackCreate.resTotalMoney}"/>
+                                <a:ajax event="blur" execute="@this"
+                                        listener="#{storeResBackCreate.calcBackMoney}"/>
+                            </h:inputText>
+                            <rich:message for="saveMoneyInput" styleClass="message-icon"
+                                          showDetail="true" showSummary="true" tooltip="true"/>
+
+                            <h:outputText value="#{storeResBackCreate.instance.money}">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                            </h:outputText>
+                        </a:outputPanel>
+                    </h:panelGrid>
+                </a:outputPanel>
+
+
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                          includePageParams="false"
+                          view="#{(empty from) ? '/func/erp/sale/CancelOrderAndBackRes.xhtml' : from}"/>
+
+
+                <s:button styleClass="toolBarBtn" value="#{messages.Previous}"
+                          view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml">
+                    <f:param name="from" value="#{from}"/>
+                </s:button>
+
+
+                <h:commandButton styleClass="toolBarBtn" value="#{messages.Dispatch}"
+                                 action="#{storeResBackCreate.dispatchBack}">
+                    <f:param name="from" value="#{from}"/>
+                </h:commandButton>
+
+
+                <h:commandButton styleClass="toolBarBtn" id="backButton"
+                                 value="#{messages.complete}"
+                                 action="#{storeResBackCreate.toConfirm}">
+                    <f:param name="from" value="#{from}"/>
+                </h:commandButton>
+
+            </h:panelGrid>
+        </h:form>
+    </rich:toolbarGroup>
+</rich:toolbar>
+
+<rich:messages ajaxRendered="true" globalOnly="false"/>
+
+
+<div style="clear: both;"/>
+<h:form id="createBackItem">
+
+    <rich:panel>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.resCategory}</ui:define>
+            <h:selectOneMenu value="#{resCategoryHome.id}" required="true" label="#{messages.resCategory}">
+
+                <s:selectItems value="#{resCategoryList.saleResCategorys}" var="_category" label="#{_category.name}"
+                               itemValue="#{_category.id}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                <a:ajax event="valueChange" listener="#{backItemCreate.resCategorySelected}" render="categoryNextStep"
+                        execute="@this">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </h:selectOneMenu>
+        </s:decorate>
+
+
+        <a:outputPanel id="categoryNextStep">
+
+            <a:outputPanel rendered="#{resCategoryHome.idDefined}">
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res}</ui:define>
+                    <h:selectOneMenu value="#{resHome.id}" required="true"
+                                     label="#{messages.res}">
+                        <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                       label="#{_res.name}" itemValue="#{_res.id}"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <a:ajax event="valueChange" listener="#{backItemCreate.resChange}" render="createBackItem"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+            </a:outputPanel>
+
+            <a:outputPanel rendered="#{not empty backItemCreate.editingItem}">
+
+                <ui:include src="/layout/erp/res/StoreResPriceInput.xhtml">
+                    <ui:param name="inputValue" value="#{backItemCreate.editingItem}"/>
+                    <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                    <ui:param name="countLableStyleClass" value="name"/>
+                    <ui:param name="showTitle" value="false"/>
+                </ui:include>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea value="#{backItemCreate.editingItem.memo}" cols="65"/>
+                </s:decorate>
+
+                <s:span styleClass="value">
+                    <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                                     action="#{backItemCreate.clear}" render="createBackItem">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </s:span>
+                <s:span styleClass="value">
+                    <a:commandButton value="#{messages.addItem}" execute="@form"
+                                     action="#{storeResBackCreate.addNewBackItem}"
+                                     render="backItemTable,createBackItem">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </s:span>
+            </a:outputPanel>
+        </a:outputPanel>
+
+        <div style="clear:both"/>
+    </rich:panel>
+
+
+</h:form>
+
+<br/>
+
+<h:form>
+    <rich:dataTable id="backItemTable" style="width: 100%" value="#{orderBackItems}" var="_item"
+                    noDataLabel="#{messages.noneBackItemAdd}">
+        <rich:column>
+            <f:facet name="header">
+                #{messages.StoreRes}
+
+            </f:facet>
+            <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                <ui:param name="storeRes" value="#{_item.storeRes}"/>
+            </ui:include>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.field_memo}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput style="width: 95%" value="#{_item.memo}"
+                                   label="#{messages.field_memo}">
+                    <a:ajax event="blur" render="@@none"/>
+                </rich:inplaceInput>
+            </s:decorate>
+
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.Res_Unit}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceSelect required="true" style="width: 95%" value="#{_item.useUnit}"
+                                    label="#{messages.Res_Unit}">
+                    <s:selectItems value="#{_item.storeRes.res.unitGroup.resUnitList}"
+                                   var="_unit" label="#{_unit.name}"/>
+                    <f:converter converterId="erpEntityConverter"/>
+                    <a:ajax event="selectitem" listener="#{storeResBackCreate.calcBackMoney}" render="backItemTable"/>
+                </rich:inplaceSelect>
+            </s:decorate>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.count}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput converter="javax.faces.BigDecimal"
+                                   required="true" style="width: 95%"
+                                   value="#{_item.useUnitCount}"
+                                   label="#{messages.count}">
+                    <f:convertNumber pattern="#{_item.useUnit.countFormate}"/>
+                    <f:validateDoubleRange minimum="0"/>
+                    <a:ajax event="blur" listener="#{storeResBackCreate.calcBackMoney}" render="backItemTable"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.orderItemUnitPrice}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput converter="javax.faces.BigDecimal"
+                                   required="true" style="width: 95%"
+                                   value="#{_item.inputMoney}"
+                                   label="#{messages.orderItemUnitPrice}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                     groupingUsed="false"/>
+                    <f:validateDoubleRange minimum="0"/>
+                    <a:ajax event="blur" listener="#{storeResBackCreate.calcBackMoney}" render="backItemTable"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.BackItemRebate}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <ui:define name="label">%</ui:define>
+                <rich:inplaceInput converter="javax.faces.BigDecimal" required="true"
+                                   style="width: 95%" value="#{_item.inputRebate}"
+                                   label="#{messages.BackItemRebate}">
+                    <f:validateDoubleRange minimum="0" maximum="100"/>
+                    <f:convertNumber pattern="#0.##"/>
+                    <a:ajax event="blur" listener="#{storeResBackCreate.calcBackMoney}" render="backItemTable"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.orderItemTotalPrice}
+            </f:facet>
+            <h:outputText value="#{_item.totalMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{storeResBackCreate.resTotalMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+
+        <rich:column style="text-align: center">
+            <f:facet name="header"></f:facet>
+            <a:commandButton image="/img/delete.png" title="#{messages.delete}"
+                             execute="@form" action="#{storeResBackCreate.deleteItem}" render="backItemTable">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </rich:column>
+
+    </rich:dataTable>
+</h:form>
+</ui:define>
+
+</ui:composition>
+
+
