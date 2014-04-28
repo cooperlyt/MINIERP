@@ -5,6 +5,7 @@ import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Set;
  * Date: 2/24/14
  * Time: 3:24 PM
  */
-public class StoreResEntity{
+public class StoreResEntity implements Serializable{
 
     public StoreResEntity() {
     }

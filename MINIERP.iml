@@ -234,6 +234,7 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-facet:3.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.jbpm.jbpm3:jbpm-jpdl:3.2.10.SP3_seam2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
+    <orderEntry type="library" name="Maven: biz.source_code:base64coder:2010-09-21" level="project" />
   </component>
 </module>
 

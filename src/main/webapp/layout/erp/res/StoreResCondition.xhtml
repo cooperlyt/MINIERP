@@ -9,10 +9,19 @@
                 xmlns:rich="http://richfaces.org/rich">
 
 
-    <rich:messages globalOnly="false" ajaxRendered="true"/>
+    <h:outputStylesheet>
+
+        .floatConvertRateWidth {
+            width: 60px !important;
+        }
+
+        .floatConvertRatePopupHeight {
+            width: 74px !important;
+        }
+    </h:outputStylesheet>
     <a:region>
 
-        <s:decorate template="/layout/seam-edit.xhtml">
+        <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.resCategory}</ui:define>
             <h:selectOneMenu value="#{resCategoryHome.id}" label="#{messages.resCategory}">
 
@@ -26,7 +35,7 @@
         </s:decorate>
 
         <a:outputPanel id="categoryNextStep">
-            <s:decorate  template="/layout/seam-display.xhtml">
+            <s:decorate rendered="#{resCategoryHome.idDefined}" template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.res}</ui:define>
 
 
@@ -35,7 +44,7 @@
                     <s:selectItems value="#{resCategoryHome.reses}" var="_res"
                                    label="#{_res.name}" itemValue="#{_res.id}"
                                    noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                    <a:ajax event="valueChange" listener="#{storeResCondition.resSelected}" immediate="true" execute="@region"
+                    <a:ajax event="valueChange" listener="#{storeResCondition.resSelected}" execute="@this"
                             render="formatList">
                         <a:attachQueue requestDelay="0"/>
                     </a:ajax>
@@ -45,31 +54,37 @@
     </a:region>
 
     <a:outputPanel id="formatList">
-        #{resHome.idDefined}
-        <a:outputPanel rendered="#{resHome.idDefined}">
+        <a:outputPanel rendered="#{not empty storeResCondition.storeResEntity}">
 
 
             <ui:include src="ResFormatsInput.xhtml">
                 <ui:param name="required" value="false"/>
-                <ui:param name="inputValue" value="#{storeResCondition}"/>
-                <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                <ui:param name="inputValue" value="#{storeResCondition.storeResEntity}"/>
+                <ui:param name="formatTemplate" value="/layout/seam-display.xhtml"/>
                 <ui:param name="countLableStyleClass" value="name"/>
                 <ui:param name="showTitle" value="false"/>
             </ui:include>
 
+            <div style="clear:both;"/>
 
-            <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
-                               value="#{storeResCondition.floatConvertRate}"
-                               layout="div"
-                               label="#{storeResCondition.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
-                               required="true"
-                               var="_value"
-                               selectFirst="false"
-                               fetchValue="#{_value}"
-                               autocompleteList="#{storeResCondition.floatConvertRateHistory}"
-                               showButton="true" converter="javax.faces.BigDecimal">
-                <b>#{_value}</b>
-            </rich:autocomplete>
+            <s:decorate rendered="#{resHome.instance.unitGroup.type eq 'FLOAT_CONVERT'}"
+                        template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{resHome.instance.unitGroup.name}</ui:define>
+
+                <rich:autocomplete
+                        inputClass="floatConvertRateWidth" mode="client"
+                        value="#{storeResCondition.storeResEntity.floatConvertRate}"
+                        layout="div"
+                        label="#{messages.storeIn_field_floatConvertRate}"
+                        required="true"
+                        var="_value"
+                        selectFirst="false"
+                        fetchValue="#{_value}"
+                        autocompleteList="#{storeResCondition.storeResEntity.floatConvertRateHistory}"
+                        showButton="true" converter="javax.faces.BigDecimal">
+                    <b>#{_value}</b>
+                </rich:autocomplete>
+            </s:decorate>
 
 
         </a:outputPanel>

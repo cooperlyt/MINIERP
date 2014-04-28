@@ -51,6 +51,14 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
             return out;
         }
 
+        public static EnumSet<StoreChangeType> getAllOut(){
+             return EnumSet.of(MATERIAL_OUT,SELL_OUT,ALLOCATION_OUT,ASSEMBLY_OUT,SCRAP_OUT,STORE_CHECK_LOSS,STORE_CHANGE_OUT);
+        }
+
+        public static EnumSet<StoreChangeType> getAllIn(){
+            return EnumSet.of(MATERIAL_IN,MATERIAL_BACK_IN,SELL_BACK,PRODUCE_IN,ALLOCATION_IN,ASSEMBLY_IN,STORE_CHECK_ADD,STORE_CHANGE_IN);
+        }
+
         private StoreChangeType(EnumSet<ResCategory.ResType> resTypes, boolean out) {
             this.resTypes = resTypes;
             this.out = out;

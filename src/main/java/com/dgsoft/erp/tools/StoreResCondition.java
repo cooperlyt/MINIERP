@@ -7,6 +7,7 @@ import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.Format;
 import com.dgsoft.erp.model.ResCategory;
 import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.UnitGroup;
 import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
@@ -23,7 +24,7 @@ import java.util.List;
  * Time: 下午3:06
  */
 @Name("storeResCondition")
-public class StoreResCondition extends StoreResEntity {
+public class StoreResCondition {
 
     @In
     private ResHome resHome;
@@ -31,16 +32,34 @@ public class StoreResCondition extends StoreResEntity {
     @In
     private ResHelper resHelper;
 
-    public void resSelected(){
+
+    private StoreResEntity storeResEntity;
+
+    public StoreResEntity getStoreResEntity() {
+        return storeResEntity;
+    }
+
+    public void setStoreResEntity(StoreResEntity storeResEntity) {
+        this.storeResEntity = storeResEntity;
+    }
+
+    public void resSelected() {
         Logging.getLog(StoreResCondition.class).debug("resSelect id is:" + resHome.getId());
-        initByRes(resHome.getInstance());
+        if (resHome.isIdDefined()) {
+            storeResEntity = new StoreResEntity(resHome.getInstance());
+        } else {
+            storeResEntity = null;
+        }
+
     }
 
     public boolean isResSearch() {
-        if (getRes() == null){
+        if (storeResEntity == null) {
             return false;
         }
-        for (Format format : getFormats()) {
+        if (storeResEntity.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))
+            return false;
+        for (Format format : storeResEntity.getFormats()) {
             if (format.getFormatValue() != null) {
                 return false;
             }
@@ -48,17 +67,26 @@ public class StoreResCondition extends StoreResEntity {
         return true;
     }
 
+    public String getSearchResId() {
+        if (isResSearch()) {
+            return storeResEntity.getRes().getId();
+        } else
+            return null;
+    }
+
     public List<String> getMatchStoreResIds() {
         List<String> result = new ArrayList<String>();
-        if (!isResSearch() && (getRes() != null)) {
+        if (!isResSearch() && (storeResEntity != null)) {
 
-            for(StoreRes storeRes: resHome.getInstance().getStoreReses()){
-                if (resHelper.matchFormat(getFormats(),storeRes) &&
-                        ((getFloatConvertRate() == null) || (getFloatConvertRate().compareTo(storeRes.getFloatConversionRate()) == 0) )){
+            for (StoreRes storeRes : resHome.getInstance().getStoreReses()) {
+                if (resHelper.matchFormat(storeResEntity.getFormats(), storeRes) &&
+                        (!storeResEntity.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ||
+                                (storeResEntity.getFloatConvertRate() == null) ||
+                                (storeResEntity.getFloatConvertRate().compareTo(storeRes.getFloatConversionRate()) == 0))) {
                     result.add(storeRes.getId());
                 }
             }
-            if (result.isEmpty()){
+            if (result.isEmpty()) {
                 result.add("-1");
             }
         }
