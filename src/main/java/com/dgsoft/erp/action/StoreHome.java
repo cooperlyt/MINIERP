@@ -126,13 +126,12 @@ public class StoreHome extends ErpEntityHome<Store> {
         List<Store> result = new ArrayList<Store>();
 
         for (Store store : getEntityManager().createQuery("select store from Store store where store.enable = true", Store.class).getResultList()) {
-            if (identity.hasRole(store.getRole())) {
+            if (identity.hasRole("erp.sale.manager") ||
+                    identity.hasRole("erp.finance.accountancy") || identity.hasRole(store.getRole())) {
                 result.add(store);
             }
         }
-
         return result;
-
     }
 
     public static class StoreAreaTreeNode implements TreeNode {

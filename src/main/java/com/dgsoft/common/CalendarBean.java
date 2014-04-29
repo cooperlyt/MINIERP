@@ -1,12 +1,16 @@
 package com.dgsoft.common;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 import javax.faces.event.ValueChangeEvent;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -17,9 +21,9 @@ import java.util.*;
  */
 
 @Name("calendarBean")
-@Scope(ScopeType.APPLICATION)
-@Synchronized
+@Scope(ScopeType.SESSION)
 @BypassInterceptors
+@AutoCreate
 public class CalendarBean implements java.io.Serializable {
 
     private Locale locale;
@@ -40,6 +44,15 @@ public class CalendarBean implements java.io.Serializable {
 
     public String getCurrencySymbol(){
        return Currency.getInstance(locale).getSymbol(locale);
+    }
+
+    public String convertCurrency(BigDecimal money){
+        NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(getLocale());
+        if (money == null){
+            return currencyFormat.format(0);
+        }
+
+        return currencyFormat.format(money);
     }
 
     public Locale getLocale() {

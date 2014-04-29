@@ -14,8 +14,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.log.Logging;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +28,7 @@ import java.util.List;
 @Name("storeResCondition")
 public class StoreResCondition {
 
-    @In
+    @In(create=true)
     private ResHome resHome;
 
     @In
@@ -55,10 +57,8 @@ public class StoreResCondition {
 
     public boolean isResSearch() {
         if (storeResEntity == null) {
-            return false;
+            return true;
         }
-        if (storeResEntity.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))
-            return false;
         for (Format format : storeResEntity.getFormats()) {
             if (format.getFormatValue() != null) {
                 return false;
@@ -68,10 +68,19 @@ public class StoreResCondition {
     }
 
     public String getSearchResId() {
-        if (isResSearch()) {
+        if (isResSearch() && (storeResEntity != null)) {
             return storeResEntity.getRes().getId();
         } else
             return null;
+    }
+
+    public BigDecimal getSearchFloatConvertRate(){
+        if (isResSearch() && (storeResEntity != null) &&
+                storeResEntity.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            return storeResEntity.getFloatConvertRate();
+        }else{
+            return null;
+        }
     }
 
     public List<String> getMatchStoreResIds() {
@@ -79,11 +88,13 @@ public class StoreResCondition {
         if (!isResSearch() && (storeResEntity != null)) {
 
             for (StoreRes storeRes : resHome.getInstance().getStoreReses()) {
+
                 if (resHelper.matchFormat(storeResEntity.getFormats(), storeRes) &&
-                        (!storeResEntity.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ||
+                        (!storeResEntity.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ||
                                 (storeResEntity.getFloatConvertRate() == null) ||
                                 (storeResEntity.getFloatConvertRate().compareTo(storeRes.getFloatConversionRate()) == 0))) {
                     result.add(storeRes.getId());
+
                 }
             }
             if (result.isEmpty()) {

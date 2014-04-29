@@ -27,7 +27,7 @@
 
                 <s:selectItems value="#{resCategoryList.saleResCategorys}" var="_category" label="#{_category.name}"
                                itemValue="#{_category.id}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                <a:ajax event="valueChange" render="categoryNextStep"
+                <a:ajax event="valueChange" render="categoryNextStep,formatList"
                         execute="@this">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
@@ -76,7 +76,6 @@
                         value="#{storeResCondition.storeResEntity.floatConvertRate}"
                         layout="div"
                         label="#{messages.storeIn_field_floatConvertRate}"
-                        required="true"
                         var="_value"
                         selectFirst="false"
                         fetchValue="#{_value}"

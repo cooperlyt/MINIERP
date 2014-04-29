@@ -422,9 +422,6 @@ public class CustomerOrder implements java.io.Serializable {
         if (getMoney() == null) {
             return BigDecimal.ZERO;
         }
-        if (getResMoney() == null) {
-            return getMoney();
-        }
         return getMoney().subtract(getReceiveMoney());
     }
 

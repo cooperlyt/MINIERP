@@ -37,7 +37,7 @@
         </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">
-            <a:commandButton value="#{messages.search}" styleClass="toolBarBtn"
+            <a:commandButton value="#{messages.search}" styleClass="toolBarBtn" render="totalResult"
                              execute="@form" action="#{saleMoneyChartData.totalData}">
                 <a:attachQueue requestDelay="0"/>
             </a:commandButton>
@@ -48,7 +48,7 @@
 
 <br/>
 
-<a:outputPanel ajaxRendered="true">
+<a:outputPanel id="totalResult">
 
 <h:panelGrid style="width: 100%; text-align: center;" columns="1">
     <a:outputPanel rendered="#{not empty saleMoneyChartData.orderMoneyData}">

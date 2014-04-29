@@ -46,7 +46,7 @@
                     <s:button styleClass="toolBarBtn" value="#{messages.reset}" includePageParams="false"/>
 
 
-                    <a:commandButton value="#{messages.total}" execute="@form">
+                    <a:commandButton value="#{messages.total}" execute="@form" render="dataResult">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
 
@@ -60,7 +60,7 @@
 </rich:collapsiblePanel>
 
 
-<a:outputPanel ajaxRendered="true">
+<a:outputPanel id="dataResult">
 
 
 

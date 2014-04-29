@@ -1,6 +1,8 @@
 package com.dgsoft.erp.total;
 
 import com.dgsoft.erp.model.StockChange;
+import com.dgsoft.erp.model.Store;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ public class StockChangeTypeCondition {
 
     private boolean storeIn = false;
 
+    private String storeId;
 
     private boolean materialIn = false;
     private boolean materialBackIn = false;
@@ -31,6 +34,21 @@ public class StockChangeTypeCondition {
     private boolean scrapOut = true;
     private boolean storeCheckLoss = true;
     private boolean storeChangeOut = true;
+
+    @In(create = true)
+    private List<Store> myStores;
+
+    public List<String> getSearchStoreIds() {
+        List<String> result = new ArrayList<String>();
+        if (storeId == null) {
+            for (Store store : myStores) {
+                result.add(store.getId());
+            }
+        } else {
+            result.add(storeId);
+        }
+        return result;
+    }
 
     public List<StockChange.StoreChangeType> getSearchTypes() {
         List<StockChange.StoreChangeType> result = new ArrayList<StockChange.StoreChangeType>();
@@ -98,6 +116,13 @@ public class StockChangeTypeCondition {
 
     }
 
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
 
     public boolean isStoreIn() {
         return storeIn;

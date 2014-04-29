@@ -99,9 +99,9 @@
 
 <h:panelGroup>
 
-<a:outputPanel ajaxRendered="true">
+<a:outputPanel id="dataListResult" >
 
-<rich:dataTable id="dataListResult" style="width: 100%" value="#{stockList.resultList}" var="_stock"
+<rich:dataTable style="width: 100%" value="#{stockList.resultList}" var="_stock"
                 noDataLabel="#{messages.emptyResult}" rendered="#{not empty stockList.maxResults}">
 
     <f:facet name="header">
