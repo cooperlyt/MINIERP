@@ -16,6 +16,8 @@ import javax.faces.event.ValueChangeEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -36,6 +38,8 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     private AccountOper debitAccountOper;
 
     private boolean freeMoney;
+
+    protected List<PayType> allowPayTypes;
 
     public BigDecimal getShortageMoney() {
         return orderHome.getInstance().getShortageMoney();
@@ -64,6 +68,10 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         checkCustomerAccountBlance();
         debitAccountOper.setAccountingByDebitAccount(null);
 
+    }
+
+    public List<PayType> getAllowPayTypes() {
+        return allowPayTypes;
     }
 
     public boolean isFreeMoney() {
@@ -112,17 +120,32 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     public void receiveMoney() {
 
 
-        if (debitAccountOper.getPayType().equals(PayType.ARREARS)){
-            debitAccountOper.setOperMoney(getShortageMoney());
+        boolean splitPay = false;
+
+        if (debitAccountOper.getPayType().equals(PayType.ARREARS)) {
+            if (!isFreeForPay() && (orderHome.getInstance().getCustomer().getBalance().compareTo(BigDecimal.ZERO) > 0)) {
+                if (orderHome.getInstance().getCustomer().getBalance().compareTo(getShortageMoney()) >= 0) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO, "orderFreeConvertToPreparePay");
+                    debitAccountOper.setPayType(PayType.FROM_PRE_DEPOSIT);
+                    debitAccountOper.setOperMoney(getShortageMoney());
+                } else {
+                    splitPay = true;
+                }
+            }
+            if (!splitPay) {
+                debitAccountOper.setOperMoney(getShortageMoney());
+            }
+
+
         }
 
-        if ((debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) ||  debitAccountOper.getPayType().equals(PayType.ARREARS)) &&
+        if ((debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) || debitAccountOper.getPayType().equals(PayType.ARREARS)) &&
                 (debitAccountOper.getOperMoney().compareTo(getShortageMoney()) > 0)) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderFreeMoneyLessMoney");
             return;
         }
 
-        if (debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) && orderHome.getInstance().getCustomer().getBalance().compareTo(debitAccountOper.getOperMoney()) < 0){
+        if (debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) && orderHome.getInstance().getCustomer().getBalance().compareTo(debitAccountOper.getOperMoney()) < 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "customerBalanceNotEn");
             return;
         }
@@ -133,11 +156,24 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             return;
         }
 
+        if (splitPay) {
+            debitAccountOper.setOperMoney(getShortageMoney().subtract(orderHome.getInstance().getCustomer().getBalance()));
+            AccountOper splitAccountOper = new AccountOper(getCustomer(),
+                    credentials.getUsername(), getCustomer().getBalance(),
+                    AccountOper.AccountOperType.ORDER_PAY,
+                    new Date(debitAccountOper.getOperDate().getTime()),
+                    debitAccountOper.getDescription(), PayType.FROM_PRE_DEPOSIT, orderHome.getInstance(),
+                    debitAccountOper.getCheckNumber(), BigDecimal.ZERO);
+            debitAccountOper.setOperDate(new Date(debitAccountOper.getOperDate().getTime() + 1001));
+
+            orderHome.getInstance().getAccountOpers().add(splitAccountOper);
+        }
 
         boolean saving = !debitAccountOper.getPayType().equals(PayType.FROM_PRE_DEPOSIT) && !debitAccountOper.getPayType().equals(PayType.ARREARS);
         //if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER)) {
         //    debitAccountOper.setOperMoney(debitAccountOper.getOperMoney().add(debitAccountOper.getRemitFee()));
         //}
+
 
         if (saving || isFreeForPay()) {
             AccountOper savingAccountOper = new AccountOper(getCustomer(),
@@ -146,15 +182,11 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
                     isFreeForPay() ? new Date(debitAccountOper.getOperDate().getTime() + 1001) :
                             new Date(debitAccountOper.getOperDate().getTime()),
                     debitAccountOper.getDescription(), debitAccountOper.getPayType(), orderHome.getInstance(),
-                    debitAccountOper.getCheckNumber(), BigDecimal.ZERO);
+                    debitAccountOper.getCheckNumber(), debitAccountOper.getRemitFee());
             if (debitAccountOper.getPayType().equals(PayType.BANK_TRANSFER) || orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-                savingAccountOper.setRemitFee(debitAccountOper.getRemitFee());
                 savingAccountOper.setBankAccount(debitAccountOper.getBankAccount());
                 debitAccountOper.setBankAccount(null);
-            } else {
-                savingAccountOper.setRemitFee(BigDecimal.ZERO);
             }
-
 
             orderHome.getInstance().getAccountOpers().add(savingAccountOper);
         }
@@ -178,8 +210,14 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             }
 
         } else {
-            if (!isFreeForPay())
-                getCustomer().setBalance(getCustomer().getBalance().subtract(debitAccountOper.getOperMoney()));
+            if (!isFreeForPay()) {
+
+                if (splitPay){
+                    getCustomer().setBalance(debitAccountOper.getOperMoney());
+                }else{
+                    getCustomer().setBalance(getCustomer().getBalance().subtract(debitAccountOper.getOperMoney()));
+                }
+            }
         }
 
         //debitAccountOper.setPayType(PayType.FROM_PRE_DEPOSIT);

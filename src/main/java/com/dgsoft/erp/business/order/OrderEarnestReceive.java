@@ -2,12 +2,16 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.model.AccountOper;
+import com.dgsoft.erp.model.CustomerOrder;
+import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Locale;
 
 /**
@@ -18,7 +22,7 @@ import java.util.Locale;
  */
 
 @Name("orderEarnestReceive")
-public class OrderEarnestReceive extends FinanceReceivables{
+public class OrderEarnestReceive extends FinanceReceivables {
 
     @In(create = true)
     private NeedResHome needResHome;
@@ -29,13 +33,29 @@ public class OrderEarnestReceive extends FinanceReceivables{
     }
 
     @Override
-    public BigDecimal getShortageMoney(){
-        return  orderHome.getInstance().getEarnest().subtract(orderHome.getInstance().getReceiveMoney());
+    public BigDecimal getShortageMoney() {
+        return orderHome.getInstance().getEarnest().subtract(orderHome.getInstance().getReceiveMoney());
     }
 
     @Override
-    protected String completeOrderTask(){
-        if (getShortageMoney().compareTo(BigDecimal.ZERO) > 0){
+    protected void initOrderTask() {
+        super.initOrderTask();
+
+        allowPayTypes = new ArrayList<PayType>(EnumSet.of(PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK));
+        if (orderHome.getInstance().getCustomer().getBalance().compareTo(getShortageMoney()) >= 0) {
+            allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
+        } else {
+            if (orderHome.getInstance().getCustomer().getBalance().compareTo(BigDecimal.ZERO) > 0) {
+                allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
+            }
+            allowPayTypes.add(PayType.ARREARS);
+        }
+
+    }
+
+    @Override
+    protected String completeOrderTask() {
+        if (getShortageMoney().compareTo(BigDecimal.ZERO) > 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_earnest_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getEarnest()),

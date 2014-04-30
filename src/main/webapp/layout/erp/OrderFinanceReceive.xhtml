@@ -70,7 +70,7 @@
                                  required="true"
                                  value="#{orderFinanceReveiveAction.debitAccountOper.payType}">
 
-                    <s:selectItems value="#{accountPayTypes}" var="_payType"
+                    <s:selectItems value="#{orderFinanceReveiveAction.AllowPayTypes}" var="_payType"
                                    label="#{messages[_payType.name()]}"/>
                     <s:convertEnum/>
                     <a:ajax event="valueChange" execute="@this"
@@ -96,17 +96,6 @@
                     </h:selectOneMenu>
 
 
-                    <h:outputText value="#{messages.accountOper_field_fee}#{' '}"
-                                  rendered="#{(orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER') or (orderHome.instance.payType eq 'EXPRESS_PROXY')}"/>
-
-                    <h:inputText
-                            rendered="#{(orderFinanceReveiveAction.debitAccountOper.payType eq 'BANK_TRANSFER') or (orderHome.instance.payType eq 'EXPRESS_PROXY')}"
-                            label="#{orderFinanceReveiveAction.debitAccountOper.remitFee}" required="true"
-                            size="15" value="#{orderFinanceReveiveAction.debitAccountOper.remitFee}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                         groupingUsed="false"/>
-                    </h:inputText>
-
                     <h:outputText value="#{messages.ORDER_FREE}"
                                   rendered="#{orderFinanceReveiveAction.debitAccountOper.payType eq 'ARREARS'}"/>
                     <h:selectBooleanCheckbox value="#{orderFinanceReveiveAction.freeMoney}"
@@ -125,6 +114,20 @@
             </s:decorate>
 
             <a:outputPanel id="operMoneyField">
+
+
+                <s:decorate template="/layout/seam-edit.xhtml"
+                            rendered="#{not (orderFinanceReveiveAction.debitAccountOper.payType eq 'ARREARS')  and not (orderFinanceReveiveAction.debitAccountOper.payType eq 'FROM_PRE_DEPOSIT') }">
+                    <ui:define name="label">
+                        #{messages.accountOper_field_fee}
+                    </ui:define>
+                    <h:inputText label="#{messages.accountOper_field_fee}" required="true"
+                            size="15" value="#{orderFinanceReveiveAction.debitAccountOper.remitFee}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                         groupingUsed="false"/>
+                    </h:inputText>
+                </s:decorate>
+
                 <s:decorate template="/layout/seam-edit.xhtml"
                             rendered="#{not (orderFinanceReveiveAction.debitAccountOper.payType eq 'ARREARS')}">
                     <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
@@ -149,7 +152,7 @@
                                  label="#{messages.accountOper_field_operMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                          groupingUsed="false"/>
-                                                    <!-- (orderHome.instance.shortageMoney gt orderHome.instance.customer.balance) ? orderHome.instance.customer.balance : orderHome.instance.shortageMoney -->
+                        <!-- (orderHome.instance.shortageMoney gt orderHome.instance.customer.balance) ? orderHome.instance.customer.balance : orderHome.instance.shortageMoney -->
 
                         <f:validateDoubleRange minimum="0.01"
                                                maximum="#{(orderHome.instance.shortageMoney gt orderHome.instance.customer.balance) ? orderHome.instance.customer.balance : orderHome.instance.shortageMoney}"/>

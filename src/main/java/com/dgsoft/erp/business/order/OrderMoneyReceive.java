@@ -3,12 +3,15 @@ package com.dgsoft.erp.business.order;
 import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.CustomerOrder;
+import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Locale;
 
 /**
@@ -28,6 +31,23 @@ public class OrderMoneyReceive extends FinanceReceivables {
         return AccountOper.AccountOperType.ORDER_PAY;
     }
 
+    @Override
+    protected void initOrderTask() {
+        super.initOrderTask();
+        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
+            allowPayTypes = new ArrayList<PayType>(EnumSet.of(PayType.CASH,PayType.CHECK));
+        }else{
+            allowPayTypes = new ArrayList<PayType>(EnumSet.of(PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK));
+            if (orderHome.getInstance().getCustomer().getBalance().compareTo(getShortageMoney()) >= 0){
+                allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
+            }else{
+                if (orderHome.getInstance().getCustomer().getBalance().compareTo(BigDecimal.ZERO) > 0){
+                    allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
+                }
+                allowPayTypes.add(PayType.ARREARS);
+            }
+        }
+    }
 
     @Override
     protected String completeOrderTask() {
