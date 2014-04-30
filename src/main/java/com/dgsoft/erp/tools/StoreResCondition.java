@@ -34,6 +34,8 @@ public class StoreResCondition {
     @In
     private ResHelper resHelper;
 
+    @In(required = false)
+    private ResCategoryHome resCategoryHome;
 
     private StoreResEntity storeResEntity;
 
@@ -53,6 +55,14 @@ public class StoreResCondition {
             storeResEntity = null;
         }
 
+    }
+
+    public List<String> getSearchResCategoryIds(){
+        if ((storeResEntity == null) && (resCategoryHome != null) && resCategoryHome.isIdDefined()){
+            return resCategoryHome.getIdAndChildIds();
+        }else {
+            return null;
+        }
     }
 
     public boolean isResSearch() {

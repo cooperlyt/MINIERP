@@ -18,16 +18,28 @@
                             alt="Seam logo"/>
             <s:div styleClass="info">
                 <p>
-                    <strong>MINIERP 2.1.12 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.1.13 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                    <li>[退货] 优化退货业务建立和出库</li>
-                    <li>[错误] 修复删除退货业务帐户问题</li>
+                    <li>[仓库] 增加库存项目分组查询</li>
+                    <li>[错误] 修正某些查询页面结果会消失问题</li>
+                    <li>[订单] 增加收费阶段任务描述</li>
                 </ul>
 
                 <strong>历史更新</strong>
                 <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.11 更新日志" name="openLabel"/>
+                    <ui:param value="2.1.12" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[退货] 优化退货业务建立和出库</li>
+                        <li>[错误] 修复删除退货业务帐户问题</li>
+                    </ul>
+                </s:decorate>
+
+                <div style="clear: both;"/>
+
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.1.11" name="openLabel"/>
                     <ul class="bullets">
                         <li>[退货] 增加退货业务列表</li>
                         <li>[错误] 修复退货业务状态错误</li>
@@ -35,6 +47,8 @@
                 </s:decorate>
 
                 <div style="clear: both;"/>
+
+
 
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.1.10" name="openLabel"/>

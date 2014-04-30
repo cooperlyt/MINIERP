@@ -72,6 +72,19 @@ public class ResCategoryHome extends ErpEntityHome<ResCategory> {
         return result;
     }
 
+    private List<String> getIdAndChildIds(ResCategory resCategory){
+        List<String> result = new ArrayList<String>();
+        result.add(resCategory.getId());
+        for (ResCategory child: resCategory.getResCategories()){
+            result.addAll(getIdAndChildIds(child));
+        }
+        return result;
+    }
+
+    public List<String> getIdAndChildIds(){
+        return getIdAndChildIds(getInstance());
+    }
+
 //    public static class StoreResNode implements TreeNode {
 //
 //        private TreeNode parent;
