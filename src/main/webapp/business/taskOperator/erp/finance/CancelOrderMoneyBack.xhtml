@@ -70,9 +70,10 @@
                                          value="#{orderBackMoney.accountOper.payType}">
 
                             <s:selectItems value="#{accountBackType}" var="_payType"
-                                           label="#{messages[_payType.name()]}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                                           label="#{messages[_payType.name()]}"
+                                           noSelectionLabel="#{messages.noSelectLabel}"/>
                             <s:convertEnum/>
-                            <a:ajax event="valueChange" execute="@this" render="payTypeField">
+                            <a:ajax event="valueChange" execute="@this" render="payTypeField,remitFeeField">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
                         </h:selectOneMenu>
@@ -81,19 +82,11 @@
                             <h:panelGrid columns="10"
                                          rendered="#{(orderBackMoney.accountOper.payType eq 'BANK_TRANSFER')}">
 
-                                <h:outputText value="#{messages.accountOper_field_fee}#{' '}"/>
-
-                                <h:inputText
-                                        label="#{messages.accountOper_field_fee}" required="true"
-                                        size="15" value="#{orderBackMoney.accountOper.remitFee}">
-                                    <f:validateDoubleRange minimum="0"/>
-                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                                     groupingUsed="false"/>
-                                </h:inputText>
 
                                 <h:outputText value="#{messages.BankAccount}#{' '}"/>
 
-                                <h:selectOneMenu value="#{orderBackMoney.accountOper.bankAccount}" label="#{messages.BankAccount}">
+                                <h:selectOneMenu value="#{orderBackMoney.accountOper.bankAccount}"
+                                                 label="#{messages.BankAccount}">
                                     <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
                                                    label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
                                                    noSelectionLabel="#{messages.noSelectLabel}"/>
@@ -122,6 +115,22 @@
                         </ui:define>
                     </s:decorate>
                 </a:region>
+
+                <a:outputPanel id="remitFeeField">
+                    <s:decorate template="/layout/seam-edit.xhtml"
+                                rendered="#{not (orderBackMoney.accountOper.payType eq 'FROM_PRE_DEPOSIT')}">
+                        <ui:define name="label">
+                            #{messages.accountOper_field_fee}
+                        </ui:define>
+                        <h:inputText
+                                label="#{messages.accountOper_field_fee}" required="true"
+                                size="15" value="#{orderBackMoney.accountOper.remitFee}">
+                            <f:validateDoubleRange minimum="0"/>
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                             groupingUsed="false"/>
+                        </h:inputText>
+                    </s:decorate>
+                </a:outputPanel>
 
                 <s:decorate template="/layout/seam-edit.xhtml">
                     <ui:define name="label">#{messages.description}</ui:define>

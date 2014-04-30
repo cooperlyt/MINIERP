@@ -104,12 +104,16 @@
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datetimepattern}"
-                    defaultTime="#{currentTime}"
-                    defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
                     required="true"
                     label="#{messages.dispatch_field_shipDate}"
                     value="#{dispatchHome.instance.sendTime}"/>
         </s:decorate>
+
+        <ui:remove>
+            <!--
+            defaultTime="#{currentTime}"
+            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"  -->
+        </ui:remove>
 
         <s:decorate template="/layout/seam-edit.xhtml">
             <ui:define name="label">#{messages.dispatch_field_Fare}</ui:define>

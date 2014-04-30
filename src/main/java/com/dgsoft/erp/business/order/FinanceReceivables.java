@@ -240,7 +240,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     }
 
     public void reset() {
-        debitAccountOper = new AccountOper(PayType.BANK_TRANSFER, credentials.getUsername());
+        debitAccountOper = new AccountOper(credentials.getUsername());
         debitAccountOper.setRemitFee(BigDecimal.ZERO);
         freeMoney = false;
     }

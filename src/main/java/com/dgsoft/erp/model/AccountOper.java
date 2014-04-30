@@ -76,8 +76,7 @@ public class AccountOper implements java.io.Serializable {
     public AccountOper() {
     }
 
-    public AccountOper(PayType payType, String operEmp) {
-        this.payType = payType;
+    public AccountOper(String operEmp) {
         this.operEmp = operEmp;
     }
 

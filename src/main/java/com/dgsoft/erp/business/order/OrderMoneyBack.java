@@ -56,7 +56,7 @@ public class OrderMoneyBack extends OrderTaskHandle {
             getAccountOper().setCheckNumber(null);
             backAccountOper.setRemitFee(getAccountOper().getRemitFee());
 
-            backAccountOper.setOperType(AccountOper.AccountOperType.ORDER_BACK);
+            backAccountOper.setOperType(AccountOper.AccountOperType.ORDER_CANCEL_BACK);
             backAccountOper.setOperDate(new Date(getAccountOper().getOperDate().getTime() + 1001));
 
             orderHome.getInstance().getAccountOpers().add(backAccountOper);

@@ -102,12 +102,13 @@
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datetimepattern}"
-                    defaultTime="#{currentTime}"
-                    defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
                     required="true"
                     label="#{messages.storeOut_field_dateTime}"
                     value="#{orderStoreOut.storeOutDate}"/>
         </s:decorate>
+
+
+
 
         <s:decorate template="/layout/seam-edit.xhtml"
                     rendered="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}">

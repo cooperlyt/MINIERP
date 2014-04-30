@@ -70,8 +70,8 @@
                                  required="true"
                                  value="#{orderFinanceReveiveAction.debitAccountOper.payType}">
 
-                    <s:selectItems value="#{orderFinanceReveiveAction.AllowPayTypes}" var="_payType"
-                                   label="#{messages[_payType.name()]}"/>
+                    <s:selectItems value="#{orderFinanceReveiveAction.allowPayTypes}" var="_payType"
+                                   label="#{messages[_payType.name()]}" noSelectionLabel="#{messages.noSelectLabel}"/>
                     <s:convertEnum/>
                     <a:ajax event="valueChange" execute="@this"
                             listener="#{orderFinanceReveiveAction.payTypeChangeListener}"

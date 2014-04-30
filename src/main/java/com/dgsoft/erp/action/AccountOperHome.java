@@ -78,7 +78,7 @@ public class AccountOperHome extends ErpEntityHome<AccountOper> {
 
     @Override
     protected AccountOper createInstance(){
-        return new AccountOper(PayType.BANK_TRANSFER,credentials.getUsername());
+        return new AccountOper(credentials.getUsername());
 
     }
 
