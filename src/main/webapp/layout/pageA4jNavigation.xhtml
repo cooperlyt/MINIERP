@@ -11,44 +11,61 @@
            render: render fo request
            entityList: entityQuery oper
     -->
-
+    <!-- entityList.previousExists" -->
     <span class="rf-ds">
-            <a:commandButton immediate="true" execute="@this"
-                             action="#{entityList.first}"
-                             render="dataListResult,#{render}"
-                             styleClass="rf-ds-btn rf-ds-btn-fastrwd"
-                             disabled="#{not entityList.previousExists}"
-                             value="#{messages.left}#{messages.left}">
+            <a:commandLink immediate="true" execute="@this"
+                           action="#{entityList.first}"
+                           render="dataListResult,#{render}"
+                           styleClass="rf-ds-btn rf-ds-btn-first #{entityList.previousExists ? '' : 'rf-ds-dis'}"
+                           disabled="#{not entityList.previousExists}"
+                           value="#{messages.left}#{messages.left}">
                 <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-                              <!-- entityList.previousExists" -->
-            <a:commandButton immediate="true" execute="@this"
-                             render="dataListResult,#{render}"
-                             action="#{entityList.previous}"
-                             disabled="#{not entityList.previousExists}"
-                             styleClass="rf-ds-btn rf-ds-btn-prev"
-                             value="#{messages.left}">
+            </a:commandLink>
+
+            <a:commandLink immediate="true" execute="@this"
+                           render="dataListResult,#{render}"
+                           action="#{entityList.previous}"
+                           disabled="#{not entityList.previousExists}"
+                           styleClass="rf-ds-btn rf-ds-btn-prev #{entityList.previousExists ? '' : 'rf-ds-dis'}"
+                           value="#{messages.left}">
                 <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
+            </a:commandLink>
 
 
-            <a:commandButton immediate="true" execute="@this"
-                             render="dataListResult,#{render}"
-                             styleClass="rf-ds-btn rf-ds-btn-prev"
-                             action="#{entityList.next}"
-                             disabled="#{not entityList.nextExists}"
-                             value="#{messages.right}">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
+        <a:repeat value="#{entityList.getShowPageNumbers((empty maxPages) ? 10 : maxPages)}" var="_page">
 
-            <a:commandButton immediate="true" execute="@this"
-                             render="dataListResult,#{render}"
-                             styleClass="rf-ds-btn rf-ds-btn-fastrwd"
-                             disabled="#{not entityList.nextExists}"
-                             action="#{entityList.last}"
-                             value="#{messages.right}#{messages.right}">
+            <a:commandLink immediate="true" execute="@this"
+                           render="dataListResult,#{render}"
+                           disabled="#{_page eq entityList.page}"
+                           styleClass="rf-ds-nmb-btn #{(_page eq entityList.page) ? 'rf-ds-act' : ''}"
+                           value="#{_page}">
                 <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
+                <f:param name="firstResult" value="#{(_page - 1) * entityList.maxResults}"/>
+            </a:commandLink>
+
+        </a:repeat>
+
+
+
+
+
+            <a:commandLink immediate="true" execute="@this"
+                           render="dataListResult,#{render}"
+                           styleClass="rf-ds-btn rf-ds-btn-next #{entityList.nextExists ? '' : 'rf-ds-dis'}"
+                           action="#{entityList.next}"
+                           disabled="#{not entityList.nextExists}"
+                           value="#{messages.right}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandLink>
+
+            <a:commandLink immediate="true" execute="@this"
+                           render="dataListResult,#{render}"
+                           styleClass="rf-ds-btn rf-ds-btn-last #{entityList.nextExists ? '' : 'rf-ds-dis'}"
+                           disabled="#{not entityList.nextExists}"
+                           action="#{entityList.last}"
+                           value="#{messages.right}#{messages.right}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandLink>
 
     </span>
 </ui:composition>

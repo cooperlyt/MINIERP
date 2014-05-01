@@ -1,8 +1,10 @@
 package com.dgsoft.common;
 
 import org.jboss.seam.framework.EntityQuery;
+import org.jboss.seam.log.Logging;
 import org.jboss.seam.persistence.QueryParser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,16 +20,57 @@ public class EntityQueryAdapter<E> extends EntityQuery<E> {
 
     private static final String COUNT_PATTERN = "select\\s*count\\([^\\)+]\\)";
 
-    private Map<String,Map<String,Number>> totalResults = new HashMap<String, Map<String, Number>>();
+    public List<Long> getShowPageNumbers(Long maxPageCount) {
+        long halfCount = (maxPageCount.longValue() - 1) / 2;
+        long beginPage = getPage().longValue() - halfCount;
+        if (beginPage <= 0) {
+            beginPage = 1;
+        }
+        if ((getPageCount().longValue() - beginPage + 1) < maxPageCount) {
+            beginPage = getPageCount().longValue() - (maxPageCount - 1);
+        }
+        if (beginPage <= 0) {
+            beginPage = 1;
+        }
 
-    protected String getTotalEjbql(String logic, String patch) {
-        String countEjbql = getCountEjbql();
-        return countEjbql.replaceFirst(COUNT_PATTERN,"select " + logic + "(" + patch + ") ");
+
+        List<Long> result = new ArrayList<Long>(maxPageCount.intValue());
+        for (int i = 0; i < maxPageCount; i++) {
+            if (beginPage > getPageCount()) {
+                break;
+            }
+            result.add(Long.valueOf(beginPage));
+
+            beginPage++;
+        }
+        return result;
+    }
+
+    public Long getPage() {
+
+        if ((getFirstResult() == null) || getFirstResult().equals(0)) {
+            return Long.valueOf(1);
+        }
+
+        return getFirstResult().longValue() / getMaxResults().longValue() + 1;
     }
 
 
-    protected javax.persistence.Query createTotalQuery(String logic, String path)
-    {
+//    @Override
+//    public void setFirstResult(Integer firstResult){
+//        super.setFirstResult(firstResult);
+//        Logging.getLog(getClass()).debug("setFirstResult: " + firstResult);
+//    }
+
+    private Map<String, Map<String, Number>> totalResults = new HashMap<String, Map<String, Number>>();
+
+    protected String getTotalEjbql(String logic, String patch) {
+        String countEjbql = getCountEjbql();
+        return countEjbql.replaceFirst(COUNT_PATTERN, "select " + logic + "(" + patch + ") ");
+    }
+
+
+    protected javax.persistence.Query createTotalQuery(String logic, String path) {
         parseEjbql();
 
         evaluateAllParameters();
@@ -35,76 +78,68 @@ public class EntityQueryAdapter<E> extends EntityQuery<E> {
         joinTransaction();
 
         javax.persistence.Query query = getEntityManager().createQuery(getTotalEjbql(logic, path));
-        setParameters( query, getQueryParameterValues(), 0 );
-        setParameters( query, getRestrictionParameterValues(), getQueryParameterValues().size() );
+        setParameters(query, getQueryParameterValues(), 0);
+        setParameters(query, getRestrictionParameterValues(), getQueryParameterValues().size());
         return query;
     }
 
 
-    public Number getResultTotalMin(String path){
-        return getResultTotal("MIN",path);
+    public Number getResultTotalMin(String path) {
+        return getResultTotal("MIN", path);
     }
 
-    public Number getResultTotalMax(String path){
-        return getResultTotal("MAX",path);
-    }
-
-
-    public Number getResultTotalAvg(String path){
-        return getResultTotal("AVG",path);
-    }
-
-    public Number getResultTotalSum(String path){
-        return getResultTotal("SUM",path);
+    public Number getResultTotalMax(String path) {
+        return getResultTotal("MAX", path);
     }
 
 
+    public Number getResultTotalAvg(String path) {
+        return getResultTotal("AVG", path);
+    }
 
-    protected Number getResultTotal(String logic, String path){
+    public Number getResultTotalSum(String path) {
+        return getResultTotal("SUM", path);
+    }
 
-        if (isAnyParameterDirty())
-        {
+
+    protected Number getResultTotal(String logic, String path) {
+
+        if (isAnyParameterDirty()) {
             refresh();
             totalResults.clear();
         }
 
         Number result;
-        Map<String,Number> logicTotals = totalResults.get(logic);
-        if (logicTotals == null){
+        Map<String, Number> logicTotals = totalResults.get(logic);
+        if (logicTotals == null) {
             logicTotals = new HashMap<String, Number>();
 
 
-            javax.persistence.Query query = createTotalQuery(logic,path);
-            result = query==null ?
+            javax.persistence.Query query = createTotalQuery(logic, path);
+            result = query == null ?
                     null : (Number) query.getSingleResult();
-            logicTotals.put(path,result);
-            totalResults.put(logic,logicTotals);
-        }else{
+            logicTotals.put(path, result);
+            totalResults.put(logic, logicTotals);
+        } else {
             result = logicTotals.get(path);
-            if (result == null){
-                javax.persistence.Query query = createTotalQuery(logic,path);
-                result = query==null ?
+            if (result == null) {
+                javax.persistence.Query query = createTotalQuery(logic, path);
+                result = query == null ?
                         null : (Number) query.getSingleResult();
-                logicTotals.put(path,result);
+                logicTotals.put(path, result);
             }
         }
         return result;
     }
 
-    private void setParameters(javax.persistence.Query query, List<Object> parameters, int start)
-    {
-        for (int i=0; i<parameters.size(); i++)
-        {
+    private void setParameters(javax.persistence.Query query, List<Object> parameters, int start) {
+        for (int i = 0; i < parameters.size(); i++) {
             Object parameterValue = parameters.get(i);
-            if ( isRestrictionParameterSet(parameterValue) )
-            {
-                query.setParameter( QueryParser.getParameterName(start + i), parameterValue );
+            if (isRestrictionParameterSet(parameterValue)) {
+                query.setParameter(QueryParser.getParameterName(start + i), parameterValue);
             }
         }
     }
-
-
-
 
 
 }
