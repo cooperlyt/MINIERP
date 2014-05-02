@@ -516,4 +516,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return !getInstance().isAllStoreOut();
     }
 
+    public BigDecimal getShortageMoney(){
+        return getInstance().getShortageMoney();
+    }
+
 }

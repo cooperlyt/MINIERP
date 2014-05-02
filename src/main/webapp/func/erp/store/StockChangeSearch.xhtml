@@ -176,7 +176,8 @@
             <f:facet name="header">
                 #{messages.order_field_reveiveContact}
             </f:facet>
-            <h:outputText value="#{_change.orderDispatch.needRes.receivePerson}" rendered="#{not empty _change.orderDispatch}"/>
+            <h:outputText value="#{_change.orderDispatch.needRes.receivePerson}"
+                          rendered="#{not empty _change.orderDispatch}"/>
 
         </rich:column>
 
@@ -185,7 +186,8 @@
                 #{messages.OrderCode}
             </f:facet>
 
-            <h:outputText value="#{_change.orderDispatch.needRes.customerOrder.id}" rendered="#{not empty _change.orderDispatch}"/>
+            <h:outputText value="#{_change.orderDispatch.needRes.customerOrder.id}"
+                          rendered="#{not empty _change.orderDispatch}"/>
 
         </rich:column>
 
@@ -222,123 +224,144 @@
             </h:panelGroup>
         </h:panelGrid>
     </f:facet>
+    <h:form>
+        <a:outputPanel id="stockChangeDetailsTable">
 
-    <a:outputPanel id="stockChangeDetailsTable">
+            <a:outputPanel rendered="#{stockChangeHome.idDefined}">
+                <rich:collapsiblePanel switchType="client" expanded="false"
+                                       header="#{messages[stockChangeHome.instance.operType.name()]}">
 
-        <a:outputPanel rendered="#{stockChangeHome.idDefined}">
-            <rich:collapsiblePanel switchType="client" expanded="false"
-                                   header="#{messages[stockChangeHome.instance.operType.name()]}">
+                    <a:region>
+                        <a:commandButton image="/img/delete.png" style="float: right" title="#{messages.delete}"
+                                         immediate="true"
+                                         onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                                         oncomplete="#{rich:component('stockChangeDetails')}.hide()"
+                                         render="dataListResult" action="#{stockChangeHome.remove}" execute="@this"
+                                         rendered="#{s:hasRole('erp.storage.manager') and ((stockChangeHome.instance.operType eq 'PRODUCE_IN') or (stockChangeHome.instance.operType eq 'STORE_CHANGE_IN') or (stockChangeHome.instance.operType eq 'STORE_CHANGE_OUT'))}">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{stockChangeHome.instance.id}" assignTo="#{stockChangeHome.id}"/>
+                        </a:commandButton>
 
-                <s:decorate template="/layout/seam-display.xhtml">
-                    <ui:define name="label">
-                        #{messages.storeIn_field_dateTime}
-                    </ui:define>
-                    <h:outputText value="#{stockChangeHome.instance.operDate}">
-                        <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
-                    </h:outputText>
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-display.xhtml">
-                    <ui:define name="label">#{messages.Store}</ui:define>
-                    #{stockChangeHome.instance.store.name}(#{stockChangeHome.instance.store.id})
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-display.xhtml">
-                    <ui:define name="label">#{messages.Store}</ui:define>
-                    #{stockChangeHome.instance.store.name}(#{stockChangeHome.instance.store.id})
-                </s:decorate>
-
-                <s:decorate template="/layout/seam-display.xhtml">
-                    <ui:define name="label">#{messages.StoreChange_field_operEmp}</ui:define>
-                    #{dictionary.getEmpNameById(stockChangeHome.instance.operEmp)}
-                </s:decorate>
-
-                <a:outputPanel rendered="#{stockChangeHome.instance.operType eq 'PRODUCE_IN'}">
-                    <s:decorate template="/layout/seam-display.xhtml">
-
-                     <ui:define name="label">#{messages.ProductGroup}</ui:define>
-                    #{stockChangeHome.instance.productStoreIn.productGroup.factory.name} - #{stockChangeHome.instance.productStoreIn.productGroup.name}
-                    </s:decorate>
-                </a:outputPanel>
-
-                <a:outputPanel rendered="#{stockChangeHome.instance.operType eq 'SELL_OUT'}">
-
-                    <h:graphicImage value="/img/print.png"/>
-
-                    <s:link target="_blank" value="#{messages.orderStoreOutPrint}"
+                    </a:region>
+                    <s:link target="_blank" style="float: right"
+                            rendered="#{stockChangeHome.instance.operType eq 'SELL_OUT'}"
                             view="/report/saleStoreOutPaper.xhtml">
                         <f:param value="#{stockChangeHome.instance.id}" name="stockChangeId"/>
-
+                        <s:graphicImage value="/img/print.png" title="#{messages.orderStoreOutPrint}"/>
                     </s:link>
 
-                    <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
-                        <s:decorate
-                                rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and (not orderHome.getInstance().moneyComplete)}"
-                                template="/layout/display.xhtml">
-                            <ui:define name="label">
-                                #{messages.EXPRESS_PROXY}
-                            </ui:define>
-                            <h:outputText value="#{orderHome.shortageMoney}">
-                                <f:convertNumber locale="#{calendarBean.locale}"
-                                                 type="currency" groupingUsed="true"/>
-                            </h:outputText>
-                        </s:decorate>
 
-
-                        <s:decorate template="/layout/seam-display.xhtml">
-                            <ui:define name="label">#{messages.order_fare_by_customer}</ui:define>
-                            <h:selectBooleanCheckbox disabled="true"
-                                                     value="#{stockChangeHome.instance.orderDispatch.needRes.fareByCustomer}"/>
-                        </s:decorate>
-
-
-                        <s:decorate template="/layout/seam-display.xhtml">
-                            <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
-                            #{stockChangeHome.instance.orderDispatch.needRes.receivePerson}
-                        </s:decorate>
-
-                        <s:decorate template="/layout/seam-display.xhtml">
-                            <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
-                            #{stockChangeHome.instance.orderDispatch.needRes.receiveTel}
-                        </s:decorate>
-
-                        <s:decorate template="/layout/seam-display.xhtml">
-                            <ui:define name="label">#{messages.order_field_address}</ui:define>
-                            <h:outputText value="#{stockChangeHome.instance.orderDispatch.needRes.address}"/>
-                        </s:decorate>
-
-                        <s:decorate template="/layout/seam-display.xhtml">
-                            <ui:define name="label">#{messages.order_field_postCode}</ui:define>
-                            <h:outputText value="#{stockChangeHome.instance.orderDispatch.needRes.postCode}"/>
-                        </s:decorate>
-
-                        <div style="clear: both;"/>
-
-
-                        <ui:include src="/layout/erp/biz/DeliverTypeView.xhtml">
-                            <ui:param name="dispatch" value="#{stockChangeHome.instance.orderDispatch}"/>
-                        </ui:include>
-
-
-
+                    <s:decorate template="/layout/seam-display.xhtml">
+                        <ui:define name="label">
+                            #{messages.storeIn_field_dateTime}
+                        </ui:define>
+                        <h:outputText value="#{stockChangeHome.instance.operDate}">
+                            <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+                        </h:outputText>
                     </s:decorate>
 
+                    <s:decorate template="/layout/seam-display.xhtml">
+                        <ui:define name="label">#{messages.Store}</ui:define>
+                        #{stockChangeHome.instance.store.name}(#{stockChangeHome.instance.store.id})
+                    </s:decorate>
 
-                </a:outputPanel>
-                <div style="clear: both;"/>
+                    <s:decorate template="/layout/seam-display.xhtml">
+                        <ui:define name="label">#{messages.Store}</ui:define>
+                        #{stockChangeHome.instance.store.name}(#{stockChangeHome.instance.store.id})
+                    </s:decorate>
 
-            </rich:collapsiblePanel>
+                    <s:decorate template="/layout/seam-display.xhtml">
+                        <ui:define name="label">#{messages.StoreChange_field_operEmp}</ui:define>
+                        #{dictionary.getEmpNameById(stockChangeHome.instance.operEmp)}
+                    </s:decorate>
 
-            <br/>
+                    <a:outputPanel rendered="#{stockChangeHome.instance.operType eq 'PRODUCE_IN'}">
+                        <s:decorate template="/layout/seam-display.xhtml">
+                            <ui:define name="label">#{messages.ProductGroup}</ui:define>
+                            #{stockChangeHome.instance.productStoreIn.productGroup.factory.name} - #{stockChangeHome.instance.productStoreIn.productGroup.name}
+                        </s:decorate>
+                    </a:outputPanel>
+
+                    <a:outputPanel
+                            rendered="#{(stockChangeHome.instance.operType eq 'STORE_CHANGE_IN') or (stockChangeHome.instance.operType eq 'STORE_CHANGE_OUT')}">
+                        <s:decorate template="/layout/seam-display.xhtml">
+                            <ui:define name="label">#{messages.StoreChangeType}</ui:define>
+                            #{messages[stockChangeHome.instance.storeChange.reason.name()]}
+                        </s:decorate>
+                    </a:outputPanel>
+
+                    <a:outputPanel rendered="#{stockChangeHome.instance.operType eq 'SELL_OUT'}">
+
+                        <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+                            <s:decorate
+                                    rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and (not orderHome.getInstance().moneyComplete)}"
+                                    template="/layout/display.xhtml">
+                                <ui:define name="label">
+                                    #{messages.EXPRESS_PROXY}
+                                </ui:define>
+                                <h:outputText value="#{orderHome.shortageMoney}">
+                                    <f:convertNumber locale="#{calendarBean.locale}"
+                                                     type="currency" groupingUsed="true"/>
+                                </h:outputText>
+                            </s:decorate>
 
 
-            <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
-                <ui:param name="value" value="#{stockChangeHome.instance.changeDetails}"/>
-            </ui:include>
+                            <s:decorate template="/layout/seam-display.xhtml">
+                                <ui:define name="label">#{messages.order_fare_by_customer}</ui:define>
+                                <h:selectBooleanCheckbox disabled="true"
+                                                         value="#{stockChangeHome.instance.orderDispatch.needRes.fareByCustomer}"/>
+                            </s:decorate>
+
+
+                            <s:decorate template="/layout/seam-display.xhtml">
+                                <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
+                                #{stockChangeHome.instance.orderDispatch.needRes.receivePerson}
+                            </s:decorate>
+
+                            <s:decorate template="/layout/seam-display.xhtml">
+                                <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
+                                #{stockChangeHome.instance.orderDispatch.needRes.receiveTel}
+                            </s:decorate>
+
+                            <s:decorate template="/layout/seam-display.xhtml">
+                                <ui:define name="label">#{messages.order_field_address}</ui:define>
+                                <h:outputText value="#{stockChangeHome.instance.orderDispatch.needRes.address}"/>
+                            </s:decorate>
+
+                            <s:decorate template="/layout/seam-display.xhtml">
+                                <ui:define name="label">#{messages.order_field_postCode}</ui:define>
+                                <h:outputText value="#{stockChangeHome.instance.orderDispatch.needRes.postCode}"/>
+                            </s:decorate>
+
+                            <div style="clear: both;"/>
+
+
+                            <ui:include src="/layout/erp/biz/DeliverTypeView.xhtml">
+                                <ui:param name="dispatch" value="#{stockChangeHome.instance.orderDispatch}"/>
+                            </ui:include>
+
+
+                        </s:decorate>
+
+
+                    </a:outputPanel>
+
+                    <div style="clear: both;"/>
+
+                </rich:collapsiblePanel>
+
+                <br/>
+
+
+                <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
+                    <ui:param name="value" value="#{stockChangeHome.instance.changeDetails}"/>
+                </ui:include>
+
+            </a:outputPanel>
 
         </a:outputPanel>
-    </a:outputPanel>
 
+    </h:form>
 </rich:popupPanel>
 </ui:define>
 

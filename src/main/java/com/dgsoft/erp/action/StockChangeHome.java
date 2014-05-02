@@ -8,6 +8,8 @@ import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -82,5 +84,65 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
         return inStock;
     }
 
+    @Transactional
+    @Override
+    public String remove(){
+                                //TODO implemete can delete type
+        boolean accept = false;
+        switch (getInstance().getOperType()){
+            case MATERIAL_IN:
+                break;
+            case MATERIAL_BACK_IN:
+                break;
+            case MATERIAL_OUT:
+                break;
+            case SELL_OUT:
+                break;
+            case SELL_BACK:
+                break;
+            case PRODUCE_IN:
+                getEntityManager().remove(getInstance().getProductStoreIn());
+                accept = true;
+                break;
+            case ALLOCATION_IN:
+                break;
+            case ALLOCATION_OUT:
+                break;
+            case ASSEMBLY_IN:
+                break;
+            case ASSEMBLY_OUT:
+                break;
+            case SCRAP_OUT:
+                break;
+            case STORE_CHECK_LOSS:
+                break;
+            case STORE_CHECK_ADD:
+                break;
+            case STORE_CHANGE_IN:
+            case STORE_CHANGE_OUT:
+                getEntityManager().remove(getInstance().getStoreChange());
+                accept = true;
+                break;
+        }
+
+        Logging.getLog(getClass()).debug("remove stockChange:" + getInstance().getOperType() + "-" + accept);
+        if (accept) {
+
+            for (StockChangeItem item: getInstance().getStockChangeItems()){
+                if (getInstance().getOperType().isOut()){
+                    item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
+                }else{
+                    item.getStock().setCount(item.getStock().getCount().subtract(item.getCount()));
+                }
+            }
+
+            getEntityManager().flush();
+            deletedMessage();
+            raiseAfterTransactionSuccessEvent();
+            return "removed";
+        }else
+            throw new IllegalArgumentException("operType storeChange can't remove:" + getInstance().getOperType());
+
+    }
 
 }

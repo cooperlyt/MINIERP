@@ -17,19 +17,32 @@
             <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png"
                             alt="Seam logo"/>
             <s:div styleClass="info">
+
                 <p>
-                    <strong>MINIERP 2.1.13 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.1.14 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                    <li>[仓库] 增加"出/入库分组汇总"查询</li>
-                    <li>[错误] 修正某些查询页面结果会消失问题</li>
-                    <li>[订单] 增加收费阶段任务描述</li>
-                    <li>[订单] 出库和发货去掉默认时间以避免出错</li>
-                    <li>[客户] 客户操作中增加"客户帐户操作流水查询"</li>
-                    <li>[订单] 更改为除帐户扣款外其它缴费方式也可填写手续费</li>
+                    <li>[收款] 增加客户预存货款/退预存货款查询，并且可删除和更改日期(需有权限用户)</li>
+                    <li>[系统] 优化数据分页</li>
+                    <li>[仓库] 出入库查询中增加删除功能(需有权限用户)</li>
                 </ul>
 
                 <strong>历史更新</strong>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.1.13" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[仓库] 增加"出/入库分组汇总"查询</li>
+                        <li>[错误] 修正某些查询页面结果会消失问题</li>
+                        <li>[订单] 增加收费阶段任务描述</li>
+                        <li>[订单] 出库和发货去掉默认时间以避免出错</li>
+                        <li>[客户] 客户操作中增加"客户帐户操作流水查询"</li>
+                        <li>[订单] 更改为除帐户扣款外其它缴费方式也可填写手续费</li>
+                    </ul>
+                </s:decorate>
+
+                <div style="clear: both;"/>
+
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.1.12" name="openLabel"/>
                     <ul class="bullets">
