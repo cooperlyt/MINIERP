@@ -88,6 +88,14 @@
         <action execute="#{orderHome.refresh}"/>
     </event>
 
+    <event type="org.jboss.seam.afterTransactionSuccess.BackPrepareMoney">
+        <action execute="#{backPrepareMoneyList.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.PreparePay">
+        <action execute="#{preparePayList.refresh}"/>
+    </event>
+
     <component name="validFactoryList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
         <property name="ejbql">select factory from Factory factory where enable=true</property>
     </component>

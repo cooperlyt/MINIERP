@@ -61,7 +61,8 @@
 </ui:define>
 
 <ui:define name="body">
-    <br/>
+<br/>
+<h:form>
     <rich:dataTable style="width: 100%" value="#{backPrepareMoneyList.resultList}" id="dataListResult" var="_item"
                     noDataLabel="#{messages.emptyResult}">
         <f:facet name="footer">
@@ -109,10 +110,9 @@
 
             </f:facet>
             <ui:include src="/layout/long-text-display.xhtml">
-                <ui:param name="value" value="#{_item.accountOper.customer.name}" />
-                <ui:param name="size" value="4" />
+                <ui:param name="value" value="#{_item.accountOper.customer.name}"/>
+                <ui:param name="size" value="4"/>
             </ui:include>
-
 
 
         </rich:column>
@@ -151,7 +151,7 @@
                 <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
             </h:outputText>
             <f:facet name="footer">
-                <h:outputText value="#{backPrepareMoneyList.totalRemitFee}" >
+                <h:outputText value="#{backPrepareMoneyList.totalRemitFee}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </f:facet>
@@ -236,8 +236,63 @@
 
         </rich:column>
 
-    </rich:dataTable>
+        <rich:column style="text-align: center;" rendered="#{s:hasRole('erp.finance.accountancy')}">
+            <a:commandButton image="/img/edit.png" action="#{actionExecuteState.clearState}"
+                             render="dateChangeInputPanel_form" title="#{messages.accountOperChangeDate}"
+                             oncomplete="#{rich:component('dateChangeInputPanel')}.show(); return false;">
+                <a:param value="#{_item.id}" assignTo="#{backPrepareMoneyHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+            #{' '}
+            <a:commandButton image="/img/delete.png" action="#{backPrepareMoneyHome.remove}" immediate="true"
+                             render="dataListResult" execute="@this"
+                             onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}">
+                <a:param value="#{_item.id}" assignTo="#{backPrepareMoneyHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </rich:column>
 
+    </rich:dataTable>
+</h:form>
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="dateChangeInputPanel"/>
+    <ui:param name="panelTitle" value="#{messages.accountOperChangeDate}" />
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+    <rich:calendar
+            enableManualInput="true"
+            inputSize="15"
+            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+            datePattern="#{messages.datetimepattern}"
+            label="#{messages.order_field_createDate}"
+            value="#{backPrepareMoneyHome.changeToDate}">
+    </rich:calendar>
+
+    <ui:define name="actionButtons">
+        <a:commandButton immediate="true"
+                         execute="@this" value="#{messages.cancel}"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+
+        <a:commandButton value="#{messages.ok}" action="#{backPrepareMoneyHome.changeDate}"
+                         execute="@form" render="dataListResult"
+                oncomplete="#{rich:component(panelId)}.hide();">
+            <a:attachQueue requestDelay="0"/>
+            <a:param value="#{backPrepareMoneyHome.instance.id}" assignTo="#{backPrepareMoneyHome.id}"/>
+        </a:commandButton>
+    </ui:define>
+
+</s:decorate>
 </ui:define>
 
 </ui:composition>

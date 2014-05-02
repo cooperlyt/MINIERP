@@ -1,13 +1,16 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.BackPrepareMoney;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +22,11 @@ import java.math.BigDecimal;
 @Name("backPrepareMoneyHome")
 public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
 
-    @In
+
+    @In(create = true)
+    private ActionExecuteState actionExecuteState;
+
+    @In(required = false)
     private CustomerHome customerHome;
 
     @In
@@ -27,9 +34,11 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
 
     @Override
     public BackPrepareMoney createInstance() {
-        BackPrepareMoney result = new BackPrepareMoney();
-        result.setAccountOper(new AccountOper(result, customerHome.getInstance(), credentials.getUsername(), BigDecimal.ZERO));
-        return result;
+        if (customerHome != null) {
+            BackPrepareMoney result = new BackPrepareMoney();
+            result.setAccountOper(new AccountOper(result, customerHome.getInstance(), credentials.getUsername(), BigDecimal.ZERO));
+            return result;
+        } else return super.createInstance();
     }
 
     @Override
@@ -41,6 +50,38 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
 
         return true;
     }
+
+    private Date changeToDate;
+
+    public Date getChangeToDate() {
+        return changeToDate;
+    }
+
+    public void setChangeToDate(Date changeToDate) {
+        this.changeToDate = changeToDate;
+    }
+
+    @Transactional
+    public String changeDate() {
+        getInstance().getAccountOper().setOperDate(changeToDate);
+        String result = update();
+        if (result.equals("updated")) {
+            actionExecuteState.actionExecute();
+        }
+        return result;
+    }
+
+    @Override
+    protected boolean verifyRemoveAvailable() {
+        //TODO check account
+        getInstance().getAccountOper().getCustomer().setBalance(
+                getInstance().getAccountOper().getCustomer().getBalance().add(
+                        getInstance().getAccountOper().getOperMoney()
+                )
+        );
+        return true;
+    }
+
 
     public void backAllMoney() {
         getInstance().getAccountOper().setOperMoney(customerHome.getInstance().getBalance());
