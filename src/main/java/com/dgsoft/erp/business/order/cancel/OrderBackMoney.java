@@ -21,59 +21,70 @@ import java.util.Date;
 @Name("orderBackMoney")
 public class OrderBackMoney extends CancelOrderTaskHandle {
 
-    private AccountOper accountOper;
+    private AccountOper customerOper;
 
     @In
     private Credentials credentials;
 
+    private Date operDate;
+
+    private AccountOper.AccountOperType operType;
+
+    public Date getOperDate() {
+        return operDate;
+    }
+
+    public void setOperDate(Date operDate) {
+        this.operDate = operDate;
+    }
+
+    public AccountOper.AccountOperType getOperType() {
+        return operType;
+    }
+
+    public void setOperType(AccountOper.AccountOperType operType) {
+        this.operType = operType;
+    }
+
     @Override
     protected void initCancelOrderTask() {
-        accountOper = new AccountOper(orderBackHome.getInstance(),
-                credentials.getUsername(),BigDecimal.ZERO);
+        customerOper = new AccountOper(orderBackHome.getInstance(),
+                credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_CUSTOMER,operDate,
+                BigDecimal.ZERO,BigDecimal.ZERO,orderBackHome.getInstance().getMoney());
     }
 
-    public AccountOper getAccountOper() {
-        return accountOper;
+    public AccountOper getCustomerOper() {
+        return customerOper;
     }
-
-    public void setAccountOper(AccountOper accountOper) {
-        this.accountOper = accountOper;
-    }
-
 
     @Override
     protected String completeOrderTask() {
         orderBackHome.getInstance().getAccountOpers().clear();
 
+        orderBackHome.getInstance().getAccountOpers().add(new AccountOper(orderBackHome.getInstance(),
+                credentials.getUsername(), AccountOper.AccountOperType.ORDER_BACK, operDate,
+                BigDecimal.ZERO, BigDecimal.ZERO, orderBackHome.getInstance().getResMoney()));
 
-        if (!getAccountOper().getPayType().equals(PayType.FROM_PRE_DEPOSIT)) {
-            AccountOper backAccountOper = new AccountOper(orderBackHome.getInstance(), credentials.getUsername(),getAccountOper().getRemitFee());
 
-            backAccountOper.setPayType(getAccountOper().getPayType());
-            backAccountOper.setOperMoney(getAccountOper().getOperMoney());
-            backAccountOper.setBankAccount(getAccountOper().getBankAccount());
-            getAccountOper().setBankAccount(null);
-            backAccountOper.setCheckNumber(getAccountOper().getCheckNumber());
-            getAccountOper().setCheckNumber(null);
-            backAccountOper.setRemitFee(getAccountOper().getRemitFee());
-            backAccountOper.setOperType(AccountOper.AccountOperType.ORDER_BACK);
-            backAccountOper.setOperDate(new Date(getAccountOper().getOperDate().getTime() + 1001));
-
-            orderBackHome.getInstance().getAccountOpers().add(backAccountOper);
+        if (getOperType().equals(PayType.FROM_PRE_DEPOSIT)) {
+            orderBackHome.getInstance().getAccountOpers().add(
+                    new AccountOper(orderBackHome.getInstance(),
+                            credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_PREPARE, new Date(operDate.getTime() + 1001),
+                            BigDecimal.ZERO, orderBackHome.getInstance().getMoney(), orderBackHome.getInstance().getMoney()));
         } else {
 
-            orderBackHome.getInstance().getCustomer().setBalance(orderBackHome.getInstance().getCustomer().getBalance().add(getAccountOper().getOperMoney()));
+            customerOper.setOperDate(new Date(operDate.getTime() + 1001));
+            orderBackHome.getInstance().getAccountOpers().add(customerOper);
+
         }
-        getAccountOper().setRemitFee(BigDecimal.ZERO);
 
-        // clacAfterBalance();
+        for(AccountOper ap: orderBackHome.getInstance().getAccountOpers()){
+            ap.calcCustomerMoney();
+        }
 
 
-        orderBackHome.getInstance().getAccountOpers().add(getAccountOper());
         orderBackHome.getInstance().setMoneyComplete(true);
-        // orderBackHome.getInstance().getCustomerOrder().getCustomer().setBalance(accountOper.getAfterMoney());
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
-        //businessProcess.stopProcess("order",orderHome.getInstance().getId());
         if ("updated".equals(orderBackHome.update())) {
             return super.completeOrderTask();
         } else

@@ -36,7 +36,7 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
     public BackPrepareMoney createInstance() {
         if (customerHome != null) {
             BackPrepareMoney result = new BackPrepareMoney();
-            result.setAccountOper(new AccountOper(result, customerHome.getInstance(), credentials.getUsername(), BigDecimal.ZERO));
+            result.setAccountOper(new AccountOper(result, customerHome.getInstance(), credentials.getUsername()));
             return result;
         } else return super.createInstance();
     }
@@ -84,6 +84,6 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
 
 
     public void backAllMoney() {
-        getInstance().getAccountOper().setOperMoney(customerHome.getInstance().getBalance());
+        getInstance().getAccountOper().setAdvanceReceivable(customerHome.getInstance().getBalance());
     }
 }

@@ -47,7 +47,7 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal money;
     private BigDecimal resMoney;
     private BigDecimal middleTotal;
-    private BigDecimal receiveMoney;
+    //private BigDecimal receiveMoney;
 
 
     private boolean middlePayed;
@@ -407,15 +407,15 @@ public class CustomerOrder implements java.io.Serializable {
         this.money = money;
     }
 
-    @Column(name = "RECEIVE_MONEY", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getReceiveMoney() {
-        return receiveMoney;
-    }
-
-    public void setReceiveMoney(BigDecimal receiveMoney) {
-        this.receiveMoney = receiveMoney;
-    }
+//    @Column(name = "RECEIVE_MONEY", nullable = false, scale = 3)
+//    @NotNull
+//    public BigDecimal getReceiveMoney() {
+//        return receiveMoney;
+//    }
+//
+//    public void setReceiveMoney(BigDecimal receiveMoney) {
+//        this.receiveMoney = receiveMoney;
+//    }
 
     @Transient
     public BigDecimal getShortageMoney() {
@@ -425,6 +425,33 @@ public class CustomerOrder implements java.io.Serializable {
         return getMoney().subtract(getReceiveMoney());
     }
 
+    @Transient
+    public BigDecimal getReceiveMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (AccountOper ap: getAccountOpers()){
+            switch (ap.getOperType()){
+
+
+                case ORDER_SAVINGS:
+                    result = result.add(ap.getRemitFee()).add(ap.getAccountsReceivable()).add(ap.getProxcAccountsReceiveable());
+                    break;
+                case ORDER_FREE:
+                    result = result.add(ap.getRemitFee());
+                    break;
+                case ORDER_PAY:
+                    result = result.add(ap.getAdvanceReceivable());
+                    break;
+                case ORDER_CANCEL_SAVINGS:
+                case ORDER_CANCEL_BACK:
+                    result = result.subtract(ap.getAdvanceReceivable()).subtract(ap.getAccountsReceivable());
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("unkonw operType:" + ap.getOperType());
+            }
+        }
+        return result;
+    }
 
     @Transient
     public BigDecimal getArrears() {

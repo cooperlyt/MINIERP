@@ -21,36 +21,62 @@ public class CustomerMoneyCondition {
 
     private boolean containBack = true;
 
-    private boolean containCancelBack = true;
+    private boolean containCancel = true;
 
-    private boolean containOrderFee = false;
+    private boolean containOrderFree = false;
+
+    private boolean containOrderPay = false;
+
+    private boolean containMoneyBackToCustomer= false;
+
+    private boolean containMoneyBackToPrepare = false;
+
 
 
     @BypassInterceptors
-    public List<AccountOper.AccountOperType> getSearchAccountOperTypes(){
+    public List<AccountOper.AccountOperType> getSearchAccountOperTypes() {
         List<AccountOper.AccountOperType> result = new ArrayList<AccountOper.AccountOperType>();
-        if (containOrderSavings){
+        if (containOrderSavings) {
             result.add(AccountOper.AccountOperType.ORDER_SAVINGS);
         }
-        if (containPreDeposit){
+        if (containPreDeposit) {
             result.add(AccountOper.AccountOperType.PRE_DEPOSIT);
         }
-        if (containBack){
+        if (containBack) {
             result.add(AccountOper.AccountOperType.ORDER_BACK);
         }
-        if (containBackPre){
+        if (containBackPre) {
             result.add(AccountOper.AccountOperType.DEPOSIT_BACK);
         }
-        if (containCancelBack){
-            result.add(AccountOper.AccountOperType.ORDER_CANCEL_BACK);
+        if (containCancel) {
+            result.add(AccountOper.AccountOperType.ORDER_CANCEL);
         }
-        if (containOrderFee){
+        if (containOrderFree) {
             result.add(AccountOper.AccountOperType.ORDER_FREE);
         }
-        if (result.isEmpty())
-            result.addAll(AccountOper.AccountOperType.allCustomerOper());
+        if (containOrderPay){
+            result.add(AccountOper.AccountOperType.ORDER_PAY);
+        }
+        if (containMoneyBackToCustomer){
+            result.add(AccountOper.AccountOperType.MONEY_BACK_TO_CUSTOMER);
+        }
+        if (containMoneyBackToPrepare){
+            result.add(AccountOper.AccountOperType.MONEY_BACK_TO_PREPARE);
+        }
+
+
         return result;
     }
+
+    @BypassInterceptors
+    public boolean isContainOrderPay() {
+        return containOrderPay;
+    }
+
+    public void setContainOrderPay(boolean containOrderPay) {
+        this.containOrderPay = containOrderPay;
+    }
+
 
     @BypassInterceptors
     public boolean isContainBackPre() {
@@ -89,22 +115,38 @@ public class CustomerMoneyCondition {
     }
 
     @BypassInterceptors
-    public boolean isContainCancelBack() {
-        return containCancelBack;
+    public boolean isContainCancel() {
+        return containCancel;
     }
 
-    public void setContainCancelBack(boolean containCancelBack) {
-        this.containCancelBack = containCancelBack;
+    public void setContainCancel(boolean containCancel) {
+        this.containCancel = containCancel;
     }
 
     @BypassInterceptors
-    public boolean isContainOrderFee() {
-        return containOrderFee;
+    public boolean isContainOrderFree() {
+        return containOrderFree;
     }
 
-    public void setContainOrderFee(boolean containOrderFee) {
-        this.containOrderFee = containOrderFee;
+    public void setContainOrderFree(boolean containOrderFree) {
+        this.containOrderFree = containOrderFree;
     }
 
+    @BypassInterceptors
+    public boolean isContainMoneyBackToCustomer() {
+        return containMoneyBackToCustomer;
+    }
 
+    public void setContainMoneyBackToCustomer(boolean containMoneyBackToCustomer) {
+        this.containMoneyBackToCustomer = containMoneyBackToCustomer;
+    }
+
+    @BypassInterceptors
+    public boolean isContainMoneyBackToPrepare() {
+        return containMoneyBackToPrepare;
+    }
+
+    public void setContainMoneyBackToPrepare(boolean containMoneyBackToPrepare) {
+        this.containMoneyBackToPrepare = containMoneyBackToPrepare;
+    }
 }

@@ -26,6 +26,10 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     private String name;
     private String type;
     private BigDecimal balance;
+    private BigDecimal advanceMoney;// ADVANCE_MONEY;
+    private BigDecimal accountMoney;// ACCOUNT_MONEY;
+    private BigDecimal proxyAccountMoney; // PROXY_ACCOUNT_MONEY;
+
     private String fax;
     private String memo;
     private String mail;
@@ -41,6 +45,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     private Set<CustomerDetailsCheckout> customerDetailsCheckouts = new HashSet<CustomerDetailsCheckout>(0);
     private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
     private Set<QuotedPrice> quotedPrices = new HashSet<QuotedPrice>(0);
+
 
     public Customer() {
         balance = BigDecimal.ZERO;
@@ -272,6 +277,37 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
     public void setQuotedPrices(Set<QuotedPrice> quotedPrices) {
         this.quotedPrices = quotedPrices;
+    }
+
+
+    @Column(name = "ADVANCE_MONEY", scale = 3, nullable = false)
+    @NotNull
+    public BigDecimal getAdvanceMoney() {
+        return advanceMoney;
+    }
+
+    public void setAdvanceMoney(BigDecimal advanceMoney) {
+        this.advanceMoney = advanceMoney;
+    }
+
+    @Column(name = "ACCOUNT_MONEY", scale = 3, nullable = false)
+    @NotNull
+    public BigDecimal getAccountMoney() {
+        return accountMoney;
+    }
+
+    public void setAccountMoney(BigDecimal accountMoney) {
+        this.accountMoney = accountMoney;
+    }
+
+    @Column(name = "PROXY_ACCOUNT_MONEY", scale = 3, nullable = false)
+    @NotNull
+    public BigDecimal getProxyAccountMoney() {
+        return proxyAccountMoney;
+    }
+
+    public void setProxyAccountMoney(BigDecimal proxyAccountMoney) {
+        this.proxyAccountMoney = proxyAccountMoney;
     }
 
     @Transient

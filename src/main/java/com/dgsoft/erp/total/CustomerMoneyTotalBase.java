@@ -132,7 +132,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
             inRealMoney = BigDecimal.ZERO;
             remitFee = BigDecimal.ZERO;
             typeTotalData = new HashMap<AccountOper.AccountOperType, BigDecimal>();
-            for (AccountOper.AccountOperType type: AccountOper.AccountOperType.allCustomerOper()){
+            for (AccountOper.AccountOperType type: AccountOper.AccountOperType.getCustomerOpers()){
                 typeTotalData.put(type,BigDecimal.ZERO);
             }
         }

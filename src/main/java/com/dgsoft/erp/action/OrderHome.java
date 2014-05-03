@@ -292,14 +292,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public void calcReceiveMoney() {
-        BigDecimal money = BigDecimal.ZERO;
-        for (AccountOper oper : getAccountOperByType(
-                EnumSet.of(AccountOper.AccountOperType.ORDER_PAY, AccountOper.AccountOperType.ORDER_EARNEST))) {
-            money = money.add(oper.getOperMoney());
-        }
-        getInstance().setReceiveMoney(money);
-    }
+
 
     public BigDecimal getEarnestScale() {
         if (getInstance().getEarnest() == null) {
@@ -310,8 +303,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public void calcMoneys() {
         calcTotalResMoney();
-        //TODO calc sale poly sub Moey
-        calcReceiveMoney();
 
         getInstance().setMoney(getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney()));
     }
@@ -412,12 +403,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-
-    public List<AccountOper> getOrderPayOpers() {
-        return getAccountOperByType(EnumSet.of(AccountOper.AccountOperType.ORDER_PAY, AccountOper.AccountOperType.ORDER_EARNEST));
-    }
-
-
     public BigDecimal getTotalItemMiddleMoney() {
         BigDecimal result = BigDecimal.ZERO;
         for (NeedRes needRes : getInstance().getNeedReses())
@@ -434,15 +419,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderFee orderFee : getInstance().getOrderFees()) {
             result = result.add(orderFee.getMoney());
-        }
-        return result;
-    }
-
-    public BigDecimal getReveiveEarnest() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper oper : getInstance().getAccountOpers()) {
-            if (oper.getOperType().equals(AccountOper.AccountOperType.ORDER_EARNEST))
-                result = result.add(oper.getOperMoney());
         }
         return result;
     }

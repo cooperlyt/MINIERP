@@ -47,35 +47,35 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
 
 
     @Transactional
-    public String changeDate(){
+    public String changeDate() {
         getInstance().getAccountOper().setOperDate(changeToDate);
         String result = update();
-        if (result.equals("updated")){
+        if (result.equals("updated")) {
             actionExecuteState.actionExecute();
         }
         return result;
     }
 
-    @Factory(value = "prepareTypes",scope = ScopeType.CONVERSATION)
-    public EnumSet<AccountOper.AccountOperType> getPrepareTypes(){
-        return EnumSet.of(AccountOper.AccountOperType.PRE_DEPOSIT ,AccountOper.AccountOperType.ORDER_FREE);
+    @Factory(value = "prepareTypes", scope = ScopeType.CONVERSATION)
+    public EnumSet<AccountOper.AccountOperType> getPrepareTypes() {
+        return EnumSet.of(AccountOper.AccountOperType.PRE_DEPOSIT, AccountOper.AccountOperType.ORDER_FREE);
     }
 
     @Override
-    public PreparePay createInstance(){
+    public PreparePay createInstance() {
 
-        if (customerHome != null){
-        PreparePay result = new PreparePay();
-        result.setAccountOper(new AccountOper(result,customerHome.getInstance(),credentials.getUsername(), BigDecimal.ZERO));
-        return result;      }
-        else return super.createInstance();
+        if (customerHome != null) {
+            PreparePay result = new PreparePay();
+            result.setAccountOper(new AccountOper(result, customerHome.getInstance(), credentials.getUsername()));
+            return result;
+        } else return super.createInstance();
     }
 
     @Override
-    protected boolean wire(){
-        if (!isManaged()){
+    protected boolean wire() {
+        if (!isManaged()) {
 
-            if (getInstance().getAccountOper().getOperType().equals(AccountOper.AccountOperType.ORDER_FREE)){
+            if (getInstance().getAccountOper().getOperType().equals(AccountOper.AccountOperType.ORDER_FREE)) {
                 getInstance().getAccountOper().setPayType(null);
                 getInstance().getAccountOper().setRemitFee(BigDecimal.ZERO);
 
