@@ -31,14 +31,9 @@ public class StoreResBackConfirm extends CancelOrderTaskHandle {
         return result;
     }
 
-    @Override
-    protected void initCancelOrderTask() {
-        orderBackHome.calcBackMoney();
-    }
 
     @Override
     protected String completeOrderTask() {
-        orderBackHome.calcBackMoney();
         if ("updated".equals(orderBackHome.update())) {
             return "taskComplete";
         } else

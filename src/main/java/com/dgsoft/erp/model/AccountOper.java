@@ -54,29 +54,37 @@ public class AccountOper implements java.io.Serializable {
 //    }
 
     public enum AccountOperType {
-        DEPOSIT_BACK,
-        PRE_DEPOSIT,
+        DEPOSIT_BACK(false),
+        PRE_DEPOSIT(true),
 
 
-        ORDER_SAVINGS,
-        ORDER_FREE,
-        ORDER_PAY,
+        ORDER_SAVINGS(true),
+        ORDER_FREE(null),
+        ORDER_PAY(null),
 
-        ORDER_BACK,
-        ORDER_CANCEL,
+        ORDER_BACK(null),
+        ORDER_CANCEL(null),
 
-        MONEY_BACK_TO_PREPARE,
-        MONEY_BACK_TO_CUSTOMER;
+        MONEY_BACK_TO_PREPARE(null),
+        MONEY_BACK_TO_CUSTOMER(false);
 
         public static EnumSet<AccountOperType> getCustomerOpers() {
             return EnumSet.of(ORDER_SAVINGS, PRE_DEPOSIT, DEPOSIT_BACK, MONEY_BACK_TO_CUSTOMER);
         }
 
-
         public boolean isCustomerOper() {
             return getCustomerOpers().contains(this);
         }
 
+        private Boolean receive;
+
+        public Boolean isReceive() {
+            return receive;
+        }
+
+        private AccountOperType(Boolean receive) {
+            this.receive = receive;
+        }
     }
 
     private String id;
@@ -156,6 +164,20 @@ public class AccountOper implements java.io.Serializable {
         this.operDate = operDate;
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
     }
+
+    public AccountOper(CustomerOrder order, String operEmp, AccountOperType operType, Date operDate,
+                       BigDecimal remitFee, BigDecimal advanceReceivable, BigDecimal accountsReceivable, BigDecimal proxcAccountsReceiveable) {
+        this.customerOrder = order;
+        this.customer = order.getCustomer();
+        this.operEmp = operEmp;
+        this.operType = operType;
+        this.remitFee = remitFee;
+        this.advanceReceivable = advanceReceivable;
+        this.accountsReceivable = accountsReceivable;
+        this.operDate = operDate;
+        this.proxcAccountsReceiveable = proxcAccountsReceiveable;
+    }
+
 //
 //    public AccountOper(CustomerOrder order, String operEmp, BigDecimal remitFee) {
 //        this.customerOrder = order;
@@ -353,14 +375,80 @@ public class AccountOper implements java.io.Serializable {
         this.proxcAccountsReceiveable = proxcAccountsReceiveable;
     }
 
+//    @Transient
+//    public BigDecimal getRealMoney() {
+//        return getAccountsReceivable().add(getAdvanceReceivable()).add(getProxcAccountsReceiveable());
+//    }
+//
+//    @Transient
+//    public BigDecimal getOperMoney() {
+//        return getRealMoney().add(getRemitFee());
+//    }
+
     @Transient
-    public BigDecimal getRealMoney() {
-        return getAccountsReceivable().add(getAdvanceReceivable()).add(getProxcAccountsReceiveable());
+    public BigDecimal getCustomerOperMoney(){
+        switch (getOperType()){
+
+            case DEPOSIT_BACK:
+                return getAdvanceReceivable();
+            case PRE_DEPOSIT:
+                return getAdvanceReceivable();
+            case ORDER_SAVINGS:
+                return getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable()).add(getRemitFee());
+            case ORDER_FREE:
+                return getRemitFee();
+            case ORDER_PAY:
+                return getAdvanceReceivable();
+            case ORDER_BACK:
+                return BigDecimal.ZERO;
+            case ORDER_CANCEL:
+                return BigDecimal.ZERO;
+            case MONEY_BACK_TO_PREPARE:
+                return getAdvanceReceivable();
+            case MONEY_BACK_TO_CUSTOMER:
+                return getAccountsReceivable();
+        }
+
+        throw new IllegalArgumentException("unkonw operType:" + getOperType());
     }
 
     @Transient
-    public BigDecimal getOperMoney() {
-        return getRealMoney().add(getRemitFee());
+    public void revertCustomerMoney(){
+        switch (getOperType()){
+
+            case DEPOSIT_BACK:
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                break;
+            case PRE_DEPOSIT:
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                break;
+            case ORDER_SAVINGS:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
+                break;
+            case ORDER_FREE:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                break;
+            case ORDER_PAY:
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
+                break;
+            case ORDER_BACK:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                break;
+            case ORDER_CANCEL:
+                throw new IllegalArgumentException("ORDER IS EXISTS ORDER_CANCEL OPER");
+                //getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+            case MONEY_BACK_TO_PREPARE:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                break;
+            case MONEY_BACK_TO_CUSTOMER:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                break;
+        }
     }
 
     @Transient

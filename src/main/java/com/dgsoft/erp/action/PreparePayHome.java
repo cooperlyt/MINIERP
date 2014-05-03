@@ -74,15 +74,15 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
     @Override
     protected boolean wire() {
         if (!isManaged()) {
-
             if (getInstance().getAccountOper().getOperType().equals(AccountOper.AccountOperType.ORDER_FREE)) {
                 getInstance().getAccountOper().setPayType(null);
-                getInstance().getAccountOper().setRemitFee(BigDecimal.ZERO);
-
+                getInstance().getAccountOper().setRemitFee(getInstance().getAccountOper().getAccountsReceivable());
+                getInstance().getAccountOper().setProxcAccountsReceiveable(BigDecimal.ZERO);
+                getInstance().getAccountOper().setAdvanceReceivable(BigDecimal.ZERO);
+            }else{
+                getInstance().getAccountOper().setAccountsReceivable(BigDecimal.ZERO);
+                getInstance().getAccountOper().setProxcAccountsReceiveable(BigDecimal.ZERO);
             }
-            getInstance().getAccountOper().getCustomer().
-                    setBalance(getInstance().getAccountOper().getCustomer().getBalance().add(getInstance().getAccountOper().getOperMoney()));
-
         }
 
         return true;
@@ -91,11 +91,7 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
     @Override
     protected boolean verifyRemoveAvailable() {
         //TODO check account
-        getInstance().getAccountOper().getCustomer().setBalance(
-                getInstance().getAccountOper().getCustomer().getBalance().subtract(
-                        getInstance().getAccountOper().getOperMoney()
-                )
-        );
+        getInstance().getAccountOper().revertCustomerMoney();
         return true;
     }
 

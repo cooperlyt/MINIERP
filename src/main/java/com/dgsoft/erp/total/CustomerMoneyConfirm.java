@@ -40,9 +40,7 @@ public class CustomerMoneyConfirm extends CustomerMoneyTotalBase {
     }
 
     public List<AccountOper.AccountOperType> getShowAccountTypes(){
-        return new ArrayList<AccountOper.AccountOperType>(EnumSet.of(AccountOper.AccountOperType.ORDER_SAVINGS,
-                AccountOper.AccountOperType.PRE_DEPOSIT,AccountOper.AccountOperType.DEPOSIT_BACK,
-                AccountOper.AccountOperType.ORDER_BACK,AccountOper.AccountOperType.ORDER_CANCEL_BACK));
+        return new ArrayList<AccountOper.AccountOperType>(AccountOper.AccountOperType.getCustomerOpers());
     }
 
 }

@@ -441,11 +441,10 @@ public class CustomerOrder implements java.io.Serializable {
                 case ORDER_PAY:
                     result = result.add(ap.getAdvanceReceivable());
                     break;
-                case ORDER_CANCEL_SAVINGS:
-                case ORDER_CANCEL_BACK:
-                    result = result.subtract(ap.getAdvanceReceivable()).subtract(ap.getAccountsReceivable());
+                case ORDER_CANCEL:
+                case MONEY_BACK_TO_PREPARE:
+                case MONEY_BACK_TO_CUSTOMER:
                     break;
-
                 default:
                     throw new IllegalArgumentException("unkonw operType:" + ap.getOperType());
             }

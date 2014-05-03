@@ -25,7 +25,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     private MiddleMan middleMan;
     private String name;
     private String type;
-    private BigDecimal balance;
+    //private BigDecimal balance;
     private BigDecimal advanceMoney;// ADVANCE_MONEY;
     private BigDecimal accountMoney;// ACCOUNT_MONEY;
     private BigDecimal proxyAccountMoney; // PROXY_ACCOUNT_MONEY;
@@ -48,11 +48,9 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
 
     public Customer() {
-        balance = BigDecimal.ZERO;
     }
 
     public Customer(boolean enable){
-        balance = BigDecimal.ZERO;
         this.enable = enable;
     }
 
@@ -135,15 +133,15 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     }
 
 
-    @Column(name = "BALANCE", scale = 3, nullable = false)
-    @NotNull
-    public BigDecimal getBalance() {
-        return this.balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+//    @Column(name = "BALANCE", scale = 3, nullable = false)
+//    @NotNull
+//    public BigDecimal getBalance() {
+//        return this.balance;
+//    }
+//
+//    public void setBalance(BigDecimal balance) {
+//        this.balance = balance;
+//    }
 
     @Column(name = "FAX", length = 50)
     @Size(max = 50)

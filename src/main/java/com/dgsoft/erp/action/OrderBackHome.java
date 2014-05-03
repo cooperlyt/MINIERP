@@ -59,18 +59,14 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
     @Transactional
     public void deleteBack() {
-        BigDecimal operMoney = BigDecimal.ZERO;
+        //BigDecimal operMoney = BigDecimal.ZERO;
         for (AccountOper ao : getInstance().getAccountOpers()) {
-            if (ao.getOperType().isAdd()) {
-                operMoney = operMoney.subtract(ao.getOperMoney());
-            } else {
-                operMoney = operMoney.add(ao.getOperMoney());
-            }
+            ao.revertCustomerMoney();
         }
-        log.debug("operMoney:" + operMoney);
-        if (operMoney.compareTo(BigDecimal.ZERO) != 0) {
-            getInstance().getCustomer().setBalance(getInstance().getCustomer().getBalance().add(operMoney));
-        }
+        //log.debug("operMoney:" + operMoney);
+//        if (operMoney.compareTo(BigDecimal.ZERO) != 0) {
+//            getInstance().getCustomer().setBalance(getInstance().getCustomer().getBalance().add(operMoney));
+//        }
         getInstance().getCustomer().getAccountOpers().removeAll(getInstance().getAccountOpers());
 
 
@@ -92,8 +88,5 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
     }
 
-    public void calcBackMoney() {
-        getInstance().setMoney(getResTotalMoney().subtract(getInstance().getSaveMoney()));
-    }
 
 }

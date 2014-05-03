@@ -65,7 +65,7 @@ public class StoreResBackCreate extends OrderBackHome {
 
     @Override
     protected OrderBack createInstance() {
-        return new OrderBack(BigDecimal.ZERO, false,credentials.getUsername());
+        return new OrderBack(false,credentials.getUsername());
     }
 
     @Override
@@ -78,7 +78,6 @@ public class StoreResBackCreate extends OrderBackHome {
             for (OrderItem orderItem: orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.WAIT_PRICE))){
                 getBackItems().add(new BackItem(getInstance(),orderItem));
             }
-            calcBackMoney();
         }
     }
 
@@ -89,7 +88,6 @@ public class StoreResBackCreate extends OrderBackHome {
 
     public void deleteItem() {
         getBackItems().remove(selectBackItem);
-        calcBackMoney();
     }
 
     public void addNewBackItem() {
@@ -103,9 +101,6 @@ public class StoreResBackCreate extends OrderBackHome {
             item.calcMoney();
 
             backItems.add(item);
-
-
-            calcBackMoney();
             backItemCreate.createNext();
         } else {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
@@ -132,7 +127,6 @@ public class StoreResBackCreate extends OrderBackHome {
     }
 
     public String toConfirm(){
-        calcBackMoney();
         getInstance().getBackItems().clear();
         getInstance().getBackItems().addAll(backItems);
         return  "/business/startPrepare/erp/sale/ResBackConfirm.xhtml";
@@ -163,8 +157,6 @@ public class StoreResBackCreate extends OrderBackHome {
     @CreateProcess(definition = "orderCancel", processKey = "#{storeResBackCreate.instance.id}")
     @Transactional
     public String createBack() {
-        calcBackMoney();
-
 
         getInstance().setResComplete(false);
         if (getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0){

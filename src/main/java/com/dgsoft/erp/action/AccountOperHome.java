@@ -36,61 +36,6 @@ public class AccountOperHome extends ErpEntityHome<AccountOper> {
         return EnumSet.of(PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK).toArray(new PayType[0]);
     }
 
-    @In
-    protected Credentials credentials;
-
-    public String getDebitAccountId(){
-        if (getInstance().getAccountingByDebitAccount() == null){
-            return null;
-        }else{
-            log.debug(getInstance().getAccountingByDebitAccount().getId());
-            return getInstance().getAccountingByDebitAccount().getId();
-        }
-    }
-
-    public void setDebitAccountId(String accountingId){
-        log.debug("DebitAccountId:"+  accountingId+"|");
-       if (accountingId == null || "".equals(accountingId.trim())){
-           getInstance().setAccountingByDebitAccount(null);
-       }else {
-           log.debug(getEntityManager().find(Accounting.class,accountingId));
-           getInstance().setAccountingByDebitAccount(getEntityManager().find(Accounting.class,accountingId));
-       }
-    }
-
-    public String getCreditAccountId(){
-        if (getInstance().getAccountingByCreditAccount() == null){
-            return null;
-        }else{
-            return getInstance().getAccountingByCreditAccount().getId();
-        }
-    }
-
-    public void setCreditAccountId(String accountingId){
-
-        log.debug("setCreditAccountId:"+  accountingId+"|");
-        if (accountingId == null || "".equals(accountingId.trim())){
-            getInstance().setAccountingByCreditAccount(null);
-        }else {
-            getInstance().setAccountingByCreditAccount(getEntityManager().find(Accounting.class,accountingId));
-        }
-    }
-
-    @Override
-    protected AccountOper createInstance(){
-        return new AccountOper(credentials.getUsername());
-
-    }
-
-    @Override
-    protected boolean wire(){
-        getInstance().setOperEmp(credentials.getUsername());
-        return true;
-    }
-
-    public void payTypeChangeListener(){
-        getInstance().setAccountingByDebitAccount(null);
-    }
 
 
 //

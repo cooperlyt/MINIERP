@@ -38,23 +38,23 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
     private List<TotalDataGroup<Customer, AccountOper>> customerGroupResultList = null;
 
-    private void initCustomerGroupResultList(){
-        if (customerGroupResultList == null){
-            customerGroupResultList = TotalDataGroup.groupBy(getResultList(),new TotalGroupStrategy<Customer, AccountOper>() {
+    private void initCustomerGroupResultList() {
+        if (customerGroupResultList == null) {
+            customerGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<Customer, AccountOper>() {
                 @Override
                 public Customer getKey(AccountOper accountOper) {
                     return accountOper.getCustomer();
                 }
 
                 @Override
-                public Object totalGroupData(Collection<AccountOper> datas){
+                public Object totalGroupData(Collection<AccountOper> datas) {
                     return totalData(datas);
                 }
             });
         }
     }
 
-    public List<TotalDataGroup<Customer, AccountOper>> getCustomerGroupResultList(){
+    public List<TotalDataGroup<Customer, AccountOper>> getCustomerGroupResultList() {
         if (isAnyParameterDirty()) {
             refresh();
         }
@@ -73,7 +73,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
                 }
 
                 @Override
-                public Object totalGroupData(Collection<AccountOper> datas){
+                public Object totalGroupData(Collection<AccountOper> datas) {
                     return totalData(datas);
                 }
 
@@ -81,9 +81,9 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
         }
     }
 
-    private CustomerMoneyTotalData totalData(Collection<AccountOper> datas){
+    private CustomerMoneyTotalData totalData(Collection<AccountOper> datas) {
         CustomerMoneyTotalData result = new CustomerMoneyTotalData();
-        for (AccountOper oper: datas){
+        for (AccountOper oper : datas) {
             result.add(oper);
         }
         return result;
@@ -106,66 +106,52 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
         customerGroupResultList = null;
     }
 
-    public CustomerMoneyTotalData getResultTotalData(){
-        return  totalData(getResultList());
+    public CustomerMoneyTotalData getResultTotalData() {
+        return totalData(getResultList());
     }
 
 
     public class CustomerMoneyTotalData {
 
-        Map<AccountOper.AccountOperType,BigDecimal> typeTotalData;
+        Map<AccountOper.AccountOperType, BigDecimal> typeTotalData;
 
         BigDecimal outMoney;
 
         BigDecimal inMoney;
 
-        BigDecimal outRealMoney;
-
-        BigDecimal inRealMoney;
-
-        BigDecimal remitFee;
-
         public CustomerMoneyTotalData() {
             outMoney = BigDecimal.ZERO;
             inMoney = BigDecimal.ZERO;
-            outRealMoney = BigDecimal.ZERO;
-            inRealMoney = BigDecimal.ZERO;
-            remitFee = BigDecimal.ZERO;
             typeTotalData = new HashMap<AccountOper.AccountOperType, BigDecimal>();
-            for (AccountOper.AccountOperType type: AccountOper.AccountOperType.getCustomerOpers()){
-                typeTotalData.put(type,BigDecimal.ZERO);
+            for (AccountOper.AccountOperType type : AccountOper.AccountOperType.getCustomerOpers()) {
+                typeTotalData.put(type, BigDecimal.ZERO);
             }
         }
 
-        public BigDecimal getTypeTotalByName(String name){
-          return  typeTotalData.get(Enum.valueOf(AccountOper.AccountOperType.class,name));
+        public BigDecimal getTypeTotalByName(String name) {
+            return typeTotalData.get(Enum.valueOf(AccountOper.AccountOperType.class, name));
         }
 
-        public List<Map.Entry<AccountOper.AccountOperType,BigDecimal>> getTypeOperMoney(){
-            List<Map.Entry<AccountOper.AccountOperType,BigDecimal>> result =
+        public List<Map.Entry<AccountOper.AccountOperType, BigDecimal>> getTypeOperMoney() {
+            List<Map.Entry<AccountOper.AccountOperType, BigDecimal>> result =
                     new ArrayList<Map.Entry<AccountOper.AccountOperType, BigDecimal>>(typeTotalData.entrySet());
-            Collections.sort(result,new Comparator<Map.Entry<AccountOper.AccountOperType, BigDecimal>>() {
+            Collections.sort(result, new Comparator<Map.Entry<AccountOper.AccountOperType, BigDecimal>>() {
                 @Override
                 public int compare(Map.Entry<AccountOper.AccountOperType, BigDecimal> o1, Map.Entry<AccountOper.AccountOperType, BigDecimal> o2) {
-                    return Integer.valueOf(o1.getKey().ordinal()).compareTo(o2.getKey().ordinal()) ;
+                    return Integer.valueOf(o1.getKey().ordinal()).compareTo(o2.getKey().ordinal());
                 }
             });
             return result;
         }
 
-        public void add(AccountOper oper){
-            typeTotalData.put(oper.getOperType(),typeTotalData.get(oper.getOperType()).add(oper.getOperMoney()));
-
-            if (oper.getOperType().isAdd()){
-                inMoney = inMoney.add(oper.getOperMoney());
-                inRealMoney = inRealMoney.add(oper.getRealMoney());
-            }else{
-                outMoney = outMoney.add(oper.getOperMoney());
-                outRealMoney = outRealMoney.add(oper.getRealMoney());
-            }
-            if (oper.getRemitFee() != null){
-                remitFee = remitFee.add(oper.getRemitFee());
-            }
+        public void add(AccountOper oper) {
+            typeTotalData.put(oper.getOperType(), typeTotalData.get(oper.getOperType()).add(oper.getCustomerOperMoney()));
+            if (oper.getOperType().isCustomerOper())
+                if (oper.getOperType().isReceive()) {
+                    inMoney = inMoney.add(oper.getCustomerOperMoney());
+                } else {
+                    outMoney = outMoney.add(oper.getAccountsReceivable());
+                }
         }
 
         public BigDecimal getOutMoney() {
@@ -174,18 +160,6 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
         public BigDecimal getInMoney() {
             return inMoney;
-        }
-
-        public BigDecimal getOutRealMoney() {
-            return outRealMoney;
-        }
-
-        public BigDecimal getInRealMoney() {
-            return inRealMoney;
-        }
-
-        public BigDecimal getRemitFee() {
-            return remitFee;
         }
     }
 }

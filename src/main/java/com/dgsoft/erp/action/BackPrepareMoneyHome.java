@@ -44,8 +44,8 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
     @Override
     protected boolean wire() {
         if (!isManaged()) {
-
-            getInstance().getAccountOper().getCustomer().setBalance(getInstance().getAccountOper().getCustomer().getBalance().subtract(getInstance().getAccountOper().getOperMoney()));
+            getInstance().getAccountOper().calcCustomerMoney();
+            //getInstance().getAccountOper().getCustomer().setBalance(getInstance().getAccountOper().getCustomer().getBalance().subtract(getInstance().getAccountOper().getOperMoney()));
         }
 
         return true;
@@ -74,16 +74,13 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
     @Override
     protected boolean verifyRemoveAvailable() {
         //TODO check account
-        getInstance().getAccountOper().getCustomer().setBalance(
-                getInstance().getAccountOper().getCustomer().getBalance().add(
-                        getInstance().getAccountOper().getOperMoney()
-                )
-        );
+        getInstance().getAccountOper().revertCustomerMoney();
+
         return true;
     }
 
 
     public void backAllMoney() {
-        getInstance().getAccountOper().setAdvanceReceivable(customerHome.getInstance().getBalance());
+        getInstance().getAccountOper().setAdvanceReceivable(customerHome.getInstance().getAdvanceMoney());
     }
 }

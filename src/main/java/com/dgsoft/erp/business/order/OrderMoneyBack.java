@@ -11,7 +11,9 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by cooper on 4/10/14.
@@ -20,7 +22,7 @@ import java.util.Date;
 @Scope(ScopeType.CONVERSATION)
 public class OrderMoneyBack extends OrderTaskHandle {
 
-    private AccountOper accountOper;
+    private AccountOper customerOper;
 
     @In
     private Credentials credentials;
@@ -28,49 +30,70 @@ public class OrderMoneyBack extends OrderTaskHandle {
     @In(create = true)
     private ProcessInstanceHome processInstanceHome;
 
-    public AccountOper getAccountOper() {
-        return accountOper;
+
+    private Date operDate;
+
+    private AccountOper.AccountOperType operType;
+
+    public Date getOperDate() {
+        return operDate;
     }
 
-    public void setAccountOper(AccountOper accountOper) {
-        this.accountOper = accountOper;
+    public void setOperDate(Date operDate) {
+        this.operDate = operDate;
+    }
+
+    public AccountOper.AccountOperType getOperType() {
+        return operType;
+    }
+
+    public void setOperType(AccountOper.AccountOperType operType) {
+        this.operType = operType;
+    }
+
+    public AccountOper getCustomerOper() {
+        return customerOper;
     }
 
     protected void initOrderTask(){
-        accountOper = new AccountOper(orderHome.getInstance(),
-                credentials.getUsername(), BigDecimal.ZERO);
+        customerOper = new AccountOper(orderHome.getInstance(),
+                credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_CUSTOMER,operDate,
+                BigDecimal.ZERO,BigDecimal.ZERO,orderHome.getInstance().getReceiveMoney(),BigDecimal.ZERO);
     }
 
 
 
     protected String completeOrderTask(){
 
-        if (!getAccountOper().getPayType().equals(PayType.FROM_PRE_DEPOSIT)) {
-            AccountOper backAccountOper = new AccountOper(orderHome.getInstance(), credentials.getUsername(),getAccountOper().getRemitFee());
 
-            backAccountOper.setPayType(getAccountOper().getPayType());
-            backAccountOper.setOperMoney(getAccountOper().getOperMoney());
-            backAccountOper.setBankAccount(getAccountOper().getBankAccount());
-            getAccountOper().setBankAccount(null);
-            backAccountOper.setCheckNumber(getAccountOper().getCheckNumber());
-            getAccountOper().setCheckNumber(null);
-            backAccountOper.setRemitFee(getAccountOper().getRemitFee());
+        List<AccountOper> accountOpers = new ArrayList<AccountOper>(2);
 
-            backAccountOper.setOperType(AccountOper.AccountOperType.ORDER_CANCEL_BACK);
-            backAccountOper.setOperDate(new Date(getAccountOper().getOperDate().getTime() + 1001));
+        accountOpers.add(new AccountOper(orderHome.getInstance(),
+                credentials.getUsername(), AccountOper.AccountOperType.ORDER_CANCEL, operDate,
+                BigDecimal.ZERO, BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(),BigDecimal.ZERO));
 
-            orderHome.getInstance().getAccountOpers().add(backAccountOper);
+
+        if (getOperType().equals(PayType.FROM_PRE_DEPOSIT)) {
+            accountOpers.add(
+                    new AccountOper(orderHome.getInstance(),
+                            credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_PREPARE, new Date(operDate.getTime() + 1001),
+                            BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(), orderHome.getInstance().getReceiveMoney(),BigDecimal.ZERO));
         } else {
-            orderHome.getInstance().getCustomer().setBalance(orderHome.getInstance().getCustomer().getBalance().add(getAccountOper().getOperMoney()));
+
+            customerOper.setOperDate(new Date(operDate.getTime() + 1001));
+            accountOpers.add(customerOper);
+
         }
 
-        getAccountOper().setRemitFee(BigDecimal.ZERO);
-        // clacAfterBalance();
+        for(AccountOper ap: accountOpers){
+            ap.calcCustomerMoney();
+        }
+        orderHome.getInstance().getAccountOpers().addAll(accountOpers);
 
 
-        orderHome.getInstance().getAccountOpers().add(getAccountOper());
+
         orderHome.getInstance().setCanceled(true);
-        orderHome.getInstance().setMoneyComplete(false);
+        orderHome.getInstance().setMoneyComplete(true);
         // orderBackHome.getInstance().getCustomerOrder().getCustomer().setBalance(accountOper.getAfterMoney());
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
         //businessProcess.stopProcess("order",orderHome.getInstance().getId());
