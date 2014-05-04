@@ -44,6 +44,8 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
     @Override
     protected boolean wire() {
         if (!isManaged()) {
+            getInstance().getAccountOper().setAccountsReceivable(BigDecimal.ZERO);
+            getInstance().getAccountOper().setProxcAccountsReceiveable(BigDecimal.ZERO);
             getInstance().getAccountOper().calcCustomerMoney();
             //getInstance().getAccountOper().getCustomer().setBalance(getInstance().getAccountOper().getCustomer().getBalance().subtract(getInstance().getAccountOper().getOperMoney()));
         }
