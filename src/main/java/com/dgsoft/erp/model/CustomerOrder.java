@@ -431,7 +431,6 @@ public class CustomerOrder implements java.io.Serializable {
         for (AccountOper ap: getAccountOpers()){
             switch (ap.getOperType()){
 
-
                 case ORDER_SAVINGS:
                     result = result.add(ap.getRemitFee()).add(ap.getAccountsReceivable()).add(ap.getProxcAccountsReceiveable());
                     break;

@@ -6,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
-                xmlns:a="http://richfaces.org/a4j"
+                xmlns:a="http://richfaces.org/a4j" xmlns:p="http://www.eclipse.org/birt/taglibs/birt.tld"
                 template="/layout/full-template.xhtml">
 
 
@@ -187,6 +187,7 @@
                         disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.finance.cashier'))}"
                         propagation="begin">
                     <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                    <p:param name="from" value="/func/erp/sale/CustomerView.xhtml"/>
                 </s:link>
                 #{' '}
 
@@ -260,7 +261,7 @@
         <h:panelGrid columns="2">
             <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
                 <ui:define name="label">#{messages.CustomerArea}</ui:define>
-                <rich:select value="#{customerAreaHome.id}" required="true"
+                <rich:select value="#{customerAreaHome.id}"
                              label="#{messages.CustomerArea}"
                              styleClass="saleAreaSelect" listWidth="132px">
                     <s:selectItems value="#{mySaleArea}" var="_customerArea"
@@ -372,9 +373,27 @@
                         <f:facet name="header">
                             #{messages.accountOper_field_operMoney}
                         </f:facet>
-                        <h:outputText value="#{_item.operMoney}" style="#{_item.operType.add ? '' : 'color: #ff0000'}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                        </h:outputText>
+                        <a:outputPanel>
+                            <h:outputText value="#{_item.customerOperMoney}">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                            </h:outputText>
+                            <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                                          layout="block">
+                                    <span style="white-space: nowrap">
+                                        #{messages.customer_field_ad}
+                                        <h:outputText value="#{_item.advanceReceivable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>  #{messages.customer_field_ac}
+                                               <h:outputText value="#{_item.accountsReceivable}">
+                                                   <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                               </h:outputText>   <br/>   #{messages.customer_field_pac}
+                                        <h:outputText value="#{_item.proxcAccountsReceiveable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>
+                                    </span>
+
+                            </rich:tooltip>
+                        </a:outputPanel>
                     </rich:column>
 
                     <rich:column style="text-align: right">
@@ -382,27 +401,11 @@
                             #{messages.accountOper_field_fee}
                         </f:facet>
                         <h:outputText value="#{_item.remitFee}"
-                                      style="#{_item.operType.containRemitFee ? 'color: #ff0000' : ''}"
                                       rendered="#{_item.operType.customerOper}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                     </rich:column>
 
-                    <rich:column style="text-align: right">
-                        <f:facet name="header">
-                            #{messages.accountOper_field_realMoney}
-                        </f:facet>
-                        <h:outputText value="#{_item.realMoney}" style="#{_item.operType.add ? '' : 'color: #ff0000'}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                        </h:outputText>
-                    </rich:column>
-                    <rich:column style="text-align: right">
-                        <f:facet name="header">
-                            #{messages.accountOper_field_afterBanance}
-                        </f:facet>
-
-
-                    </rich:column>
                     <rich:column>
                         <f:facet name="header">
                             #{messages.accountOper_field_payType}
@@ -430,7 +433,8 @@
                         </f:facet>
                         <a:outputPanel rendered="#{_item.operType.customerOper}">
                             <ui:include src="/layout/long-text-display.xhtml">
-                                <ui:param name="value" value="#{_item.bankAccount.bank} (#{_item.bankAccount.number})"/>
+                                <ui:param name="value"
+                                          value="#{_item.bankAccount.bank} (#{_item.bankAccount.number})"/>
                                 <ui:param name="size" value="5"/>
                             </ui:include>
                         </a:outputPanel>

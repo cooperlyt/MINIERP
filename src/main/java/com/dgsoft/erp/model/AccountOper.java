@@ -108,6 +108,7 @@ public class AccountOper implements java.io.Serializable {
     private OrderBack orderBack;
     private CustomerOrder customerOrder;
     private BankAccount bankAccount;
+    private boolean useCheck;
 
 
     public AccountOper() {
@@ -163,6 +164,13 @@ public class AccountOper implements java.io.Serializable {
         this.accountsReceivable = accountsReceivable;
         this.operDate = operDate;
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
+    }
+
+    public AccountOper(CustomerOrder order, String operEmp, AccountOperType operType){
+        this.customerOrder = order;
+        this.customer = order.getCustomer();
+        this.operEmp = operEmp;
+        this.operType = operType;
     }
 
     public AccountOper(CustomerOrder order, String operEmp, AccountOperType operType, Date operDate,
@@ -375,7 +383,15 @@ public class AccountOper implements java.io.Serializable {
         this.proxcAccountsReceiveable = proxcAccountsReceiveable;
     }
 
-//    @Transient
+    @Column(name="USE_CHECK",nullable = false)
+    public boolean isUseCheck() {
+        return useCheck;
+    }
+
+    public void setUseCheck(boolean useCheck) {
+        this.useCheck = useCheck;
+    }
+    //    @Transient
 //    public BigDecimal getRealMoney() {
 //        return getAccountsReceivable().add(getAdvanceReceivable()).add(getProxcAccountsReceiveable());
 //    }
@@ -392,13 +408,13 @@ public class AccountOper implements java.io.Serializable {
             case DEPOSIT_BACK:
                 return getAdvanceReceivable();
             case PRE_DEPOSIT:
-                return getAdvanceReceivable();
+                return getAdvanceReceivable().add(getAccountsReceivable());
             case ORDER_SAVINGS:
-                return getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable()).add(getRemitFee());
+                return getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable());
             case ORDER_FREE:
-                return getRemitFee();
+                return getAccountsReceivable();
             case ORDER_PAY:
-                return getAdvanceReceivable();
+                return getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable());
             case ORDER_BACK:
                 return BigDecimal.ZERO;
             case ORDER_CANCEL:
@@ -420,6 +436,7 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
                 break;
             case PRE_DEPOSIT:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
                 break;
             case ORDER_SAVINGS:
@@ -459,6 +476,7 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
                 break;
             case PRE_DEPOSIT:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
                 break;
             case ORDER_SAVINGS:

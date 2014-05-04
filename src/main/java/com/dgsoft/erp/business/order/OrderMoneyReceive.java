@@ -26,52 +26,77 @@ public class OrderMoneyReceive extends FinanceReceivables {
     @In(create = true)
     private NeedResHome needResHome;
 
-    @Override
-    protected AccountOper.AccountOperType getAccountOperType() {
-        return AccountOper.AccountOperType.ORDER_PAY;
+    private boolean freeMoney;
+
+    public boolean isFreeMoney() {
+        return freeMoney;
+    }
+
+    public void setFreeMoney(boolean freeMoney) {
+        this.freeMoney = freeMoney;
     }
 
     @Override
-    protected void initOrderTask() {
-        super.initOrderTask();
-        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
-            allowPayTypes = new ArrayList<PayType>(EnumSet.of(PayType.CASH,PayType.CHECK));
-        }else{
-            allowPayTypes = new ArrayList<PayType>(EnumSet.of(PayType.BANK_TRANSFER,PayType.CASH,PayType.CHECK));
-            if (orderHome.getInstance().getCustomer().getBalance().compareTo(getShortageMoney()) >= 0){
-                allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
-            }else{
-                if (orderHome.getInstance().getCustomer().getBalance().compareTo(BigDecimal.ZERO) > 0){
-                    allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
-                }
-                allowPayTypes.add(PayType.ARREARS);
-            }
+    protected boolean receiveAccountOper() {
+
+        if (isFreeMoney() && orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+            throw new IllegalArgumentException("EXPRESS_PROXY cant free Money");
         }
+
+        if (!orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
+            if (isFreeMoney()) {
+                accountOper = new AccountOper(orderHome.getInstance(),
+                        credentials.getUsername(), AccountOper.AccountOperType.ORDER_FREE,
+                        accountOper.getOperDate(), getOperMoney(), BigDecimal.ZERO, getOperMoney(), BigDecimal.ZERO);
+            } else {
+
+                BigDecimal orderMoney = getOperMoney();
+                BigDecimal advanceMoney = BigDecimal.ZERO;
+
+                if (orderMoney.compareTo(getOrderShortageMoney()) > 0) {
+                    orderMoney = getOrderShortageMoney();
+                    advanceMoney = getOperMoney().subtract(orderMoney);
+                }
+
+                accountOper.setAdvanceReceivable(advanceMoney);
+                if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                    accountOper.setAccountsReceivable(BigDecimal.ZERO);
+                    accountOper.setProxcAccountsReceiveable(orderMoney);
+                } else {
+                    accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+                    accountOper.setAccountsReceivable(orderMoney);
+                }
+            }
+        } else {
+            receiveAdvance();
+        }
+        return true;
     }
 
     @Override
     protected String completeOrderTask() {
-        if (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0) {
+        //orderPayType change from payFirst
 
-
+        if (!(!orderHome.isAnyOneStoreOut() && !orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST))
+                && !orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.OVERDRAFT) &&
+                orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_money_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getShortageMoney()));
-
             return null;
 
         }
 
         orderHome.getInstance().setMoneyComplete(true);
 
-        if (orderHome.update().equals("updated")){
-            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)){
+        if (orderHome.update().equals("updated")) {
+            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
                 needResHome.setId(orderHome.getMasterNeedRes().getId());
             }
             return "taskComplete";
-        }else
+        } else
             return null;
 
     }

@@ -33,6 +33,8 @@ public class OrderMoneyBack extends OrderTaskHandle {
 
     private Date operDate;
 
+    public boolean backToAdvance = true;
+
     private AccountOper.AccountOperType operType;
 
     public Date getOperDate() {
@@ -55,6 +57,14 @@ public class OrderMoneyBack extends OrderTaskHandle {
         return customerOper;
     }
 
+    public boolean isBackToAdvance() {
+        return backToAdvance;
+    }
+
+    public void setBackToAdvance(boolean backToAdvance) {
+        this.backToAdvance = backToAdvance;
+    }
+
     protected void initOrderTask(){
         customerOper = new AccountOper(orderHome.getInstance(),
                 credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_CUSTOMER,operDate,
@@ -70,10 +80,10 @@ public class OrderMoneyBack extends OrderTaskHandle {
 
         accountOpers.add(new AccountOper(orderHome.getInstance(),
                 credentials.getUsername(), AccountOper.AccountOperType.ORDER_CANCEL, operDate,
-                BigDecimal.ZERO, BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(),BigDecimal.ZERO));
+                BigDecimal.ZERO, BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(), BigDecimal.ZERO));
 
 
-        if (getOperType().equals(PayType.FROM_PRE_DEPOSIT)) {
+        if (backToAdvance) {
             accountOpers.add(
                     new AccountOper(orderHome.getInstance(),
                             credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_PREPARE, new Date(operDate.getTime() + 1001),

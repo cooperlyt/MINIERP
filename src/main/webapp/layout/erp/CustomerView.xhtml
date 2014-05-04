@@ -28,23 +28,14 @@
         #{customer.city}
     </s:decorate>
 
-    <s:decorate  template="/layout/seam-display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_type}</ui:define>
         #{dictionary.getWordValue(customer.type)}
 
     </s:decorate>
 
-    <s:decorate  template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.customer_field_balance}</ui:define>
-        <h:outputText value="#{customer.balance}">
-            <f:convertNumber locale="#{calendarBean.locale}"
-                             type="currency" groupingUsed="true"/>
-        </h:outputText>
 
-    </s:decorate>
-
-
-    <s:decorate  template="/layout/seam-display.xhtml">
+    <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_mail}</ui:define>
         <h:outputText value="#{customer.mail}"/>
     </s:decorate>
@@ -71,7 +62,41 @@
         <ui:define name="label">#{messages.field_memo}</ui:define>
         <h:outputText value="#{customer.memo}"/>
     </s:decorate>
+    <s:decorate template="/layout/seam-display.xhtml">
+        <h:panelGrid columns="20">
 
+            #{messages.customer_field_ad}:
+            <h:outputText value="#{customerHome.instance.advanceMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+
+            #{messages.customer_field_ac}:
+            <h:outputText value="#{customerHome.instance.accountMoney}" style="color: #ff0000">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+            #{messages.customer_field_pac}:
+            <h:outputText value="#{customerHome.instance.proxyAccountMoney}" style="color: #ff0000">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+
+
+            #{messages.customer_field_accountBlance}:
+            <h:outputText value="#{customerHome.instance.accountBalance}"
+                          style="#{(customerHome.instance.accountBalance lt 0) ? 'color: #ff0000;' : ''}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+            #{messages.customer_field_balance}:
+            <h:outputText value="#{customerHome.instance.balance}"
+                          style="#{(customerHome.instance.balance lt 0) ? 'color: #ff0000;' : ''}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+            </h:outputText>
+        </h:panelGrid>
+    </s:decorate>
 
     <div style="clear: both"/>
 
@@ -109,7 +134,7 @@
                 template="/layout/view-details.xhtml">
         <ui:param name="labelValue" value="#{customer.middleMan.name}"/>
         <ui:param name="openLabel" value="#{messages.MiddleMan}"/>
-        <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.MiddleMan}" />
+        <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.MiddleMan}"/>
         <ui:include src="/layout/erp/MiddleManView.xhtml">
             <ui:param name="middleMan" value="#{customer.middleMan}"/>
         </ui:include>

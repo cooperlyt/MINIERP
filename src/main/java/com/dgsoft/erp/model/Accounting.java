@@ -119,16 +119,6 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
         this.root = root;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByDebitAccount")
-    public Set<AccountOper> getAccountOpersForDebitAccount() {
-        return this.accountOpersForDebitAccount;
-    }
-
-    public void setAccountOpersForDebitAccount(
-            Set<AccountOper> accountOpersForDebitAccount) {
-        this.accountOpersForDebitAccount = accountOpersForDebitAccount;
-    }
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "debitAccounting")
     public Set<OrderFee> getOrderFeesForDebit() {
         return orderFeesForDebit;
@@ -163,16 +153,6 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
 
     public void setRes(Res res) {
         this.res = res;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountingByCreditAccount")
-    public Set<AccountOper> getAccountOpersForCreditAccount() {
-        return this.accountOpersForCreditAccount;
-    }
-
-    public void setAccountOpersForCreditAccount(
-            Set<AccountOper> accountOpersForCreditAccount) {
-        this.accountOpersForCreditAccount = accountOpersForCreditAccount;
     }
 
     @Transient

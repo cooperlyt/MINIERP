@@ -1,17 +1,13 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.action.NeedResHome;
-import com.dgsoft.erp.model.AccountOper;
-import com.dgsoft.erp.model.CustomerOrder;
-import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.Locale;
 
 /**
@@ -28,39 +24,24 @@ public class OrderEarnestReceive extends FinanceReceivables {
     private NeedResHome needResHome;
 
     @Override
-    protected AccountOper.AccountOperType getAccountOperType() {
-        return AccountOper.AccountOperType.ORDER_EARNEST;
-    }
-
-    @Override
     public BigDecimal getShortageMoney() {
         return orderHome.getInstance().getEarnest().subtract(orderHome.getInstance().getReceiveMoney());
     }
 
     @Override
-    protected void initOrderTask() {
-        super.initOrderTask();
-
-        allowPayTypes = new ArrayList<PayType>(EnumSet.of(PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK));
-        if (orderHome.getInstance().getCustomer().getBalance().compareTo(getShortageMoney()) >= 0) {
-            allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
-        } else {
-            if (orderHome.getInstance().getCustomer().getBalance().compareTo(BigDecimal.ZERO) > 0) {
-                allowPayTypes.add(PayType.FROM_PRE_DEPOSIT);
-            }
-            allowPayTypes.add(PayType.ARREARS);
-        }
-
+    public boolean receiveAccountOper() {
+        receiveAdvance();
+        return true;
     }
 
     @Override
     protected String completeOrderTask() {
-        if (getShortageMoney().compareTo(BigDecimal.ZERO) > 0) {
+        if (orderHome.getInstance().isEarnestFirst() && getShortageMoney().compareTo(BigDecimal.ZERO) > 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_earnest_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getEarnest()),
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getOrderShortageMoney()));
 
             return null;
         }

@@ -14,9 +14,42 @@
     <ui:define name="func-body">
         <h:form>
             <rich:toolbar>
+
+                <rich:toolbarGroup>
+                    #{messages.customer_field_ad}:
+                    <h:outputText value="#{customerHome.instance.advanceMoney}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup>
+                    #{messages.customer_field_ac}:
+                    <h:outputText value="#{customerHome.instance.accountMoney}" style="color: #ff0000">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+                <rich:toolbarGroup>
+                    #{messages.customer_field_pac}:
+                    <h:outputText value="#{customerHome.instance.proxyAccountMoney}" style="color: #ff0000">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup>
+                    #{messages.customer_field_accountBlance}:
+                    <h:outputText value="#{customerHome.instance.accountBalance}"
+                                  style="#{(customerHome.instance.accountBalance lt 0) ? 'color: #ff0000;' : ''}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
                 <rich:toolbarGroup>
                     #{messages.customer_field_balance}:
-                    <h:outputText value="#{customerHome.instance.balance}">
+                    <h:outputText value="#{customerHome.instance.balance}"
+                                  style="#{(customerHome.instance.balance lt 0) ? 'color: #ff0000;' : ''}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -56,7 +89,8 @@
                     <ui:define name="label">#{messages.Type}</ui:define>
                     <h:selectOneMenu value="#{preparePayHome.instance.accountOper.operType}"
                                      required="true" label="#{messages.Type}">
-                        <s:selectItems value="#{prepareTypes}" var="_type" label="#{messages[_type.name()]}"
+                        <s:selectItems value="#{preparePayHome.prepareTypes}" var="_type"
+                                       label="#{messages[_type.name()]}"
                                        itemValue="#{_type}"/>
                         <s:convertEnum/>
                         <a:ajax event="valueChange" render="payFields" execute="@this">
@@ -67,60 +101,23 @@
 
                 <a:outputPanel id="payFields">
 
-                    <s:decorate id="payTypeField" rendered="#{preparePayHome.instance.accountOper.operType eq 'PRE_DEPOSIT'}"
-                                template="/layout/seam-edit.xhtml">
-                        <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
-                        <h:selectOneMenu style="width: 120px" label="#{messages.accountOper_field_payType}"
-                                         required="true"
-                                         value="#{preparePayHome.instance.accountOper.payType}">
+                    <a:outputPanel rendered="#{not (preparePayHome.instance.accountOper.operType eq 'ORDER_FREE')}">
+                        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                            <ui:param name="accountOper" value="#{preparePayHome.instance.accountOper}"/>
+                        </ui:include>
 
-                            <s:selectItems value="#{moneyPayTypes}" var="_payType"
-                                           label="#{messages[_payType.name()]}"
-                                           noSelectionLabel="#{messages.noSelectLabel}"/>
-                            <s:convertEnum/>
-                            <a:ajax event="valueChange" execute="@this"
-                                    render="payTypeField">
-                                <a:attachQueue requestDelay="0"/>
-
-                            </a:ajax>
-                        </h:selectOneMenu>
-
-                        <ui:define name="tail">
-
-                            <h:outputText value="#{messages.BankAccount}#{' '}"
-                                          rendered="#{preparePayHome.instance.accountOper.payType eq 'BANK_TRANSFER'}"/>
-
-                            <h:selectOneMenu value="#{preparePayHome.instance.accountOper.bankAccount}"
-                                             rendered="#{preparePayHome.instance.accountOper.payType eq 'BANK_TRANSFER'}"
-                                             label="#{messages.BankAccount}">
-                                <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
-                                               label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
-                                               noSelectionLabel="#{messages.noSelectLabel}"/>
-                                <f:converter converterId="erpEntityConverter"/>
-                            </h:selectOneMenu>
-
-
-                            <h:outputText value="#{messages.accountOper_field_checkNumber}#{' '}"
-                                          rendered="#{preparePayHome.instance.accountOper.payType eq 'CHECK'}"/>
-                            <h:inputText rendered="#{preparePayHome.instance.accountOper.payType eq 'CHECK'}"
-                                         label="#{messages.accountOper_field_checkNumber}"
-                                         value="#{preparePayHome.instance.accountOper.checkNumber}">
-                            </h:inputText>
-                        </ui:define>
-                    </s:decorate>
-
-
-                    <s:decorate template="/layout/seam-edit.xhtml" >
+                    </a:outputPanel>
+                    <s:decorate template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{messages.savingsMoney}</ui:define>
-                        <h:inputText value="#{preparePayHome.instance.accountOper.operMoney}"
+                        <h:inputText value="#{preparePayHome.operMoney}"
                                      label="#{messages.savingsMoney}"
-                                     validator="javax.faces.validator.GtZeroNumberValidator"
                                      converter="javax.faces.BigDecimal" required="true">
-
+                            <f:validateDoubleRange minimum="0.01"/>
                         </h:inputText>
                     </s:decorate>
 
-                    <s:decorate template="/layout/seam-edit.xhtml">
+                    <s:decorate rendered="#{not (preparePayHome.instance.accountOper.operType eq 'ORDER_FREE')}"
+                                template="/layout/seam-edit.xhtml">
                         <ui:define name="label">#{messages.accountOper_field_fee}</ui:define>
                         <h:inputText value="#{preparePayHome.instance.accountOper.remitFee}"
                                      label="#{messages.accountOper_field_fee}"
@@ -130,12 +127,7 @@
                         </h:inputText>
                     </s:decorate>
                 </a:outputPanel>
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.description}</ui:define>
-                    <h:inputTextarea label="#{messages.description}"
-                                     value="#{preparePayHome.instance.accountOper.description}"
-                                     rows="2" cols="100"/>
-                </s:decorate>
+
 
                 <s:decorate template="/layout/seam-edit.xhtml">
                     <ui:define name="label">#{messages.field_memo}</ui:define>

@@ -5,10 +5,17 @@
 
     <param name="customerId" value="#{customerHome.id}"/>
 
+    <param name="from"/>
+
+
     <navigation from-action="#{preparePayHome.persist}">
-        <rule if-outcome="persisted">
+        <rule if-outcome="persisted" if="#{empty from}">
             <end-conversation/>
             <redirect view-id="/func/erp/sale/Customer.xhtml"/>
+        </rule>
+        <rule if-outcome="persisted" if="#{not empty from}">
+            <end-conversation/>
+            <redirect view-id="#{from}"/>
         </rule>
     </navigation>
 </page>

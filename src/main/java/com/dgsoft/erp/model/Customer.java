@@ -394,7 +394,16 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         } else{
             return getId().compareTo(o.getId());
         }
+    }
 
+    @Transient
+    public BigDecimal getBalance(){
+        return getAdvanceMoney().subtract(getAccountMoney()).subtract(getProxyAccountMoney());
+    }
+
+    @Transient
+    public BigDecimal getAccountBalance(){
+        return getAdvanceMoney().subtract(getAccountMoney());
     }
 
 }

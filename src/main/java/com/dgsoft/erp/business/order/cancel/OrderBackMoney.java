@@ -42,15 +42,25 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
         return operType;
     }
 
+    public boolean backToAdvance = true;
+
     public void setOperType(AccountOper.AccountOperType operType) {
         this.operType = operType;
+    }
+
+    public boolean isBackToAdvance() {
+        return backToAdvance;
+    }
+
+    public void setBackToAdvance(boolean backToAdvance) {
+        this.backToAdvance = backToAdvance;
     }
 
     @Override
     protected void initCancelOrderTask() {
         customerOper = new AccountOper(orderBackHome.getInstance(),
-                credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_CUSTOMER,operDate,
-                BigDecimal.ZERO,BigDecimal.ZERO,orderBackHome.getInstance().getMoney());
+                credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_CUSTOMER, operDate,
+                BigDecimal.ZERO, BigDecimal.ZERO, orderBackHome.getInstance().getMoney());
     }
 
     public AccountOper getCustomerOper() {
@@ -66,7 +76,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
                 BigDecimal.ZERO, BigDecimal.ZERO, orderBackHome.getInstance().getResMoney()));
 
 
-        if (getOperType().equals(PayType.FROM_PRE_DEPOSIT)) {
+        if (backToAdvance) {
             orderBackHome.getInstance().getAccountOpers().add(
                     new AccountOper(orderBackHome.getInstance(),
                             credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_PREPARE, new Date(operDate.getTime() + 1001),
@@ -78,7 +88,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
         }
 
-        for(AccountOper ap: orderBackHome.getInstance().getAccountOpers()){
+        for (AccountOper ap : orderBackHome.getInstance().getAccountOpers()) {
             ap.calcCustomerMoney();
         }
 

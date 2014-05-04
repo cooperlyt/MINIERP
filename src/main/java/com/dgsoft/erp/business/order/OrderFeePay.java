@@ -26,11 +26,6 @@ public class OrderFeePay extends OrderTaskHandle {
 
     private List<OrderFee> payCompleteOrderFeeList;
 
-    @Factory(value = "feePayTypes", scope = ScopeType.CONVERSATION)
-    public PayType[] getFeePayTypes() {
-        return new PayType[]{PayType.BANK_TRANSFER, PayType.CASH, PayType.CHECK};
-    }
-
     public enum ItemMiddleMoneyCalcType {
         NOT_CALC, ITEM_FIX, ITEM_RATE, CROSS_CALC;
     }

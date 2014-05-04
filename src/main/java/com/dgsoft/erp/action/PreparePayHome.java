@@ -10,6 +10,8 @@ import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
@@ -33,7 +35,12 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
     private CustomerHome customerHome;
 
     @In
+    private FacesMessages facesMessages;
+
+    @In
     private Credentials credentials;
+
+    private BigDecimal operMoney;
 
     private Date changeToDate;
 
@@ -45,6 +52,13 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
         this.changeToDate = changeToDate;
     }
 
+    public BigDecimal getOperMoney() {
+        return operMoney;
+    }
+
+    public void setOperMoney(BigDecimal operMoney) {
+        this.operMoney = operMoney;
+    }
 
     @Transactional
     public String changeDate() {
@@ -56,9 +70,14 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
         return result;
     }
 
-    @Factory(value = "prepareTypes", scope = ScopeType.CONVERSATION)
+
     public EnumSet<AccountOper.AccountOperType> getPrepareTypes() {
-        return EnumSet.of(AccountOper.AccountOperType.PRE_DEPOSIT, AccountOper.AccountOperType.ORDER_FREE);
+        if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) > 0){
+            return EnumSet.of(AccountOper.AccountOperType.PRE_DEPOSIT, AccountOper.AccountOperType.ORDER_FREE);
+        }else{
+            return EnumSet.of(AccountOper.AccountOperType.PRE_DEPOSIT);
+        }
+
     }
 
     @Override
@@ -76,21 +95,49 @@ public class PreparePayHome extends ErpEntityHome<PreparePay> {
         if (!isManaged()) {
             if (getInstance().getAccountOper().getOperType().equals(AccountOper.AccountOperType.ORDER_FREE)) {
                 getInstance().getAccountOper().setPayType(null);
-                getInstance().getAccountOper().setRemitFee(getInstance().getAccountOper().getAccountsReceivable());
+                getInstance().getAccountOper().setCheckNumber(null);
+                getInstance().getAccountOper().setUseCheck(false);
+                getInstance().getAccountOper().setRemitFee(getOperMoney());
+                getInstance().getAccountOper().setAccountsReceivable(getOperMoney());
                 getInstance().getAccountOper().setProxcAccountsReceiveable(BigDecimal.ZERO);
                 getInstance().getAccountOper().setAdvanceReceivable(BigDecimal.ZERO);
-            }else{
-                getInstance().getAccountOper().setAccountsReceivable(BigDecimal.ZERO);
+            } else {
+
+                BigDecimal accountsMoney;
+                BigDecimal advanceMoney;
+
+                if (getOperMoney().compareTo(customerHome.getInstance().getAccountMoney()) > 0 ){
+                    accountsMoney = customerHome.getInstance().getAccountMoney();
+                    advanceMoney =  getOperMoney().subtract(accountsMoney);
+                }else{
+                    advanceMoney = BigDecimal.ZERO;
+                    accountsMoney = getOperMoney();
+                }
+
+                getInstance().getAccountOper().setAdvanceReceivable(advanceMoney);
+                getInstance().getAccountOper().setAccountsReceivable(accountsMoney);
                 getInstance().getAccountOper().setProxcAccountsReceiveable(BigDecimal.ZERO);
             }
+            getInstance().getAccountOper().calcCustomerMoney();
         }
 
         return true;
     }
 
     @Override
+    protected boolean verifyPersistAvailable() {
+        if (getInstance().getAccountOper().getOperType().equals(AccountOper.AccountOperType.ORDER_FREE)
+                && (customerHome.getInstance().getAccountMoney().compareTo(getOperMoney()) < 0)) {
+            facesMessages.add(StatusMessage.Severity.ERROR, "cantFreeMoney");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     protected boolean verifyRemoveAvailable() {
         //TODO check account
+
         getInstance().getAccountOper().revertCustomerMoney();
         return true;
     }

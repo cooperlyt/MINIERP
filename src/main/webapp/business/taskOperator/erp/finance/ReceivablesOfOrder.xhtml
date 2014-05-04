@@ -50,7 +50,7 @@
         <rich:toolbarGroup>
             <a:outputPanel ajaxRendered="true">
                 #{' '}#{messages.order_money_lacking}:
-                <h:outputText value="#{orderMoneyReceive.shortageMoney}">
+                <h:outputText value="#{orderMoneyReceive.orderShortageMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </a:outputPanel>
