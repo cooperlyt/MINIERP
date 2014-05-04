@@ -26,16 +26,6 @@ public class OrderMoneyReceive extends FinanceReceivables {
     @In(create = true)
     private NeedResHome needResHome;
 
-    private boolean freeMoney;
-
-    public boolean isFreeMoney() {
-        return freeMoney;
-    }
-
-    public void setFreeMoney(boolean freeMoney) {
-        this.freeMoney = freeMoney;
-    }
-
     @Override
     protected boolean receiveAccountOper() {
 

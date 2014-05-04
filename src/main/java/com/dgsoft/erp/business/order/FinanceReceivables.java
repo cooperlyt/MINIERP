@@ -32,6 +32,16 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
     private BigDecimal operMoney;
 
+    private boolean freeMoney;
+
+    public boolean isFreeMoney() {
+        return freeMoney;
+    }
+
+    public void setFreeMoney(boolean freeMoney) {
+        this.freeMoney = freeMoney;
+    }
+
     public BigDecimal getOrderShortageMoney() {
         return orderHome.getInstance().getShortageMoney();
     }

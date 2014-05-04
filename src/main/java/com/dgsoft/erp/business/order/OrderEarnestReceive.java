@@ -35,13 +35,18 @@ public class OrderEarnestReceive extends FinanceReceivables {
     }
 
     @Override
+    public boolean isFreeMoney(){
+        return false;
+    }
+
+    @Override
     protected String completeOrderTask() {
         if (orderHome.getInstance().isEarnestFirst() && getShortageMoney().compareTo(BigDecimal.ZERO) > 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_earnest_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getEarnest()),
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getOrderShortageMoney()));
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
 
             return null;
         }
