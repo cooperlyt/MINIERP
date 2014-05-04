@@ -23,7 +23,7 @@ import java.util.*;
  * Time: 2:36 PM
  */
 @Name("orderChange")
-public class OrderChange extends OrderTaskHandle {
+public class OrderChange extends OrderShipTaskHandle {
 
     private static final String SUPPLEMENT_REASON = "erp.needResReason.supplement";
 
@@ -203,7 +203,10 @@ public class OrderChange extends OrderTaskHandle {
                 orderDispatch.wire();
                 needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
             }
-            orderHome.getInstance().setAllStoreOut(false);
+
+
+            shipComplete(orderHome.getLastShipDate());
+            //orderHome.getInstance().setAllStoreOut(false);
         }
 
 

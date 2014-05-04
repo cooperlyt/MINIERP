@@ -9,6 +9,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,16 +18,13 @@ import java.math.BigDecimal;
  * Time: 10:33 AM
  */
 @Name("orderShip")
-public class OrderShip extends OrderTaskHandle {
+public class OrderShip extends OrderShipTaskHandle {
 
     @In
     private TaskDescription taskDescription;
 
     @In(create = true)
     private DispatchHome dispatchHome;
-
-    @In
-    private Credentials credentials;
 
     private boolean inputDetails;
 
@@ -46,7 +44,7 @@ public class OrderShip extends OrderTaskHandle {
 
     @Override
     protected void initOrderTask() {
-        String storeId = taskDescription.getValue(OrderStoreOut.TASK_STORE_ID_KEY);
+        String storeId = taskDescription.getStringValue(OrderStoreOut.TASK_STORE_ID_KEY);
         if (storeId == null) {
             throw new ProcessDefineException("Order Store out store ID not Define");
         }
@@ -81,12 +79,8 @@ public class OrderShip extends OrderTaskHandle {
                 }
 
             }
-
         }
-
-
     }
-
 
     @Override
     protected String completeOrderTask() {
@@ -109,9 +103,10 @@ public class OrderShip extends OrderTaskHandle {
         }
         //dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
         if (dispatchHome.update().equals("updated")) {
-            return "taskComplete";
+            calcStoreResCompleted(dispatchHome.getInstance().getSendTime());
+            return super.completeOrderTask();
         } else {
-            return "fail";
+            return null;
         }
 
 

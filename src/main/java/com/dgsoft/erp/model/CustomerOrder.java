@@ -28,6 +28,7 @@ public class CustomerOrder implements java.io.Serializable {
     private String orderEmp;
     private OrderPayType payType;
     private Date createDate;
+    private Date allShipDate;
 
     private BigDecimal profit;
     private String memo;
@@ -132,6 +133,16 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "ALL_SHIP_DATE", nullable = true, length = 19)
+    public Date getAllShipDate() {
+        return allShipDate;
+    }
+
+    public void setAllShipDate(Date allShipDate) {
+        this.allShipDate = allShipDate;
     }
 
     @Column(name = "ORDER_EMPLOYEE", nullable = false, length = 32)

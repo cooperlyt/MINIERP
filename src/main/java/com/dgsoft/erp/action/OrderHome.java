@@ -15,6 +15,7 @@ import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.security.Credentials;
 
 import javax.persistence.criteria.Order;
 import java.math.BigDecimal;
@@ -31,10 +32,7 @@ import java.util.*;
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     @In(create = true)
-    private Map<String, String> messages;
-
-    @In
-    private ResHelper resHelper;
+    protected Map<String, String> messages;
 
     public List<OrderItem> getOrderItemByStatus(EnumSet<OrderItem.OrderItemStatus> statuses) {
         List<OrderItem> result = new ArrayList<OrderItem>();
@@ -138,7 +136,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public String getToastMessages() {
 
-        if (!isIdDefined()){
+        if (!isIdDefined()) {
             return "";
         }
 
@@ -293,7 +291,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-
     public BigDecimal getEarnestScale() {
         if (getInstance().getEarnest() == null) {
             return BigDecimal.ZERO;
@@ -305,26 +302,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         calcTotalResMoney();
 
         getInstance().setMoney(getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney()));
-    }
-
-    public void calcStoreResCompleted() {
-        for (NeedRes needRes : getInstance().getNeedReses()) {
-            for (OrderItem item : needRes.getOrderItems()) {
-                if (!item.getStatus().equals(OrderItem.OrderItemStatus.COMPLETED)) {
-                    getInstance().setAllStoreOut(false);
-                    return;
-                }
-            }
-            for (Dispatch dispatch : needRes.getDispatches()) {
-                if (dispatch.isHaveNoOutOweItem()) {
-                    getInstance().setAllStoreOut(false);
-                    return;
-                }
-            }
-
-        }
-        getInstance().setAllStoreOut(true);
-        getInstance().setResReceived(!isHaveShip());
     }
 
 
@@ -352,6 +329,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             if ((result == null) ||
                     (result.getCreateDate().getTime() < nr.getCreateDate().getTime()))
                 result = nr;
+        }
+        return result;
+    }
+
+    public Date getLastShipDate(){
+        Date result = null;
+        for (Dispatch dispatch: getLastNeedRes().getDispatches()){
+            if ((result == null) ||
+                    ((dispatch.getSendTime() != null) && (dispatch.getSendTime().compareTo(result) > 0))){
+                result = dispatch.getSendTime();
+            }
         }
         return result;
     }
@@ -492,7 +480,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return !getInstance().isAllStoreOut();
     }
 
-    public BigDecimal getShortageMoney(){
+    public BigDecimal getShortageMoney() {
         return getInstance().getShortageMoney();
     }
 

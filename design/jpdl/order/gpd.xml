@@ -145,36 +145,12 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="订单发货(1库)" x="462" y="547" width="132" height="36">
+  <node name="订单发货(1库)" x="359" y="477" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="发货方式(1库)" x="300" y="477" width="132" height="36">
-    <edge>
-      <label x="-41" y="-22"/>
-    </edge>
-    <edge>
-      <label x="-17" y="-12"/>
-    </edge>
-  </node>
-  <node name="发货方式(2库)" x="207" y="622" width="132" height="36">
-    <edge>
-      <label x="-35" y="-5"/>
-    </edge>
-    <edge>
-      <label x="-19" y="-14"/>
-    </edge>
-  </node>
-  <node name="发货方式(天津)" x="46" y="747" width="132" height="36">
-    <edge>
-      <label x="-16" y="-11"/>
-    </edge>
-    <edge>
-      <label x="-21" y="-10"/>
-    </edge>
-  </node>
-  <node name="订单发货(2库)" x="368" y="621" width="132" height="36">
+  <node name="订单发货(2库)" x="279" y="627" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -236,14 +212,6 @@
     </edge>
   </node>
   <node name="订单出库(公司)" x="116" y="842" width="132" height="36">
-    <edge>
-      <label x="5" y="-10"/>
-    </edge>
-  </node>
-  <node name="发货方式(公司)" x="304" y="841" width="132" height="36">
-    <edge>
-      <label x="5" y="-10"/>
-    </edge>
     <edge>
       <label x="5" y="-10"/>
     </edge>

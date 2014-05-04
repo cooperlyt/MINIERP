@@ -46,8 +46,6 @@ public class OrderCreate extends OrderHome {
     @In
     private FacesMessages facesMessages;
 
-    @In
-    private Credentials credentials;
 
     @In(create = true)
     protected OrderHome orderHome;

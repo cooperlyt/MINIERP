@@ -202,7 +202,7 @@ public class OrderStoreOut extends OrderTaskHandle {
 
 
         //if (allStoreOut) {
-        orderHome.calcStoreResCompleted();
+        //orderHome.calcStoreResCompleted(); move to ship
         //}
 
         boolean needResComplete = true;

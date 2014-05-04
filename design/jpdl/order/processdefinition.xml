@@ -15,7 +15,7 @@
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('A')}"></assignment>
 		</task>
-		<transition to="发货方式(1库)"></transition>
+		<transition to="订单发货(1库)"></transition>
 	</task-node>
 
 	<task-node name="订单收款">
@@ -48,7 +48,7 @@
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
 		</task>
-		<transition to="发货方式(2库)"></transition>
+		<transition to="订单发货(2库)"></transition>
 	</task-node>
 
 	<task-node name="订单出库(天津)">
@@ -58,7 +58,7 @@
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('C')}"></assignment>
 		</task>
-		<transition to="发货方式(天津)"></transition>
+		<transition to="订单发货(天津)"></transition>
 	</task-node>
 
 	<join name="join2">
@@ -186,33 +186,6 @@
 		<transition to="出库完成(1库)"></transition>
 	</task-node>
 
-	<decision name="发货方式(1库)">
-		<transition to="出库完成(1库)">
-			<condition expression="#{(not dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-		<transition to="订单发货(1库)" name="发货">
-			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-	</decision>
-
-	<decision name="发货方式(2库)">
-		<transition to="出库完成(2库)" name="无发货">
-			<condition expression="#{(not dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-		<transition to="订单发货(2库)">
-			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-	</decision>
-
-	<decision name="发货方式(天津)">
-		<transition to="出库完成(天津)">
-			<condition expression="#{(not dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-		<transition to="订单发货(天津)" name="发货">
-			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-	</decision>
-
 	<task-node name="订单发货(2库)">
 		<task name="订单发货(2库)">
 			<description>
@@ -301,17 +274,8 @@
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('D')}"></assignment>
 		</task>
-		<transition to="发货方式(公司)"></transition>
+		<transition to="订单发货(公司)"></transition>
 	</task-node>
-
-	<decision name="发货方式(公司)">
-		<transition to="订单发货(公司)" name="发货">
-			<condition expression="#{(dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-		<transition to="出库完成(公司)">
-			<condition expression="#{not (dispatchHome.instance.deliveryType.ship) }"></condition>
-		</transition>
-	</decision>
 
 	<node name="出库完成(公司)">
 		<transition to="join3"></transition>
