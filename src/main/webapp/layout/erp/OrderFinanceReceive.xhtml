@@ -8,170 +8,172 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-<ui:define name="func-body">
-    <rich:toolbar height="20" itemSeparator="line">
+    <ui:define name="func-body">
+        <rich:toolbar height="20" itemSeparator="line">
 
-        <ui:insert name="toolbarContext"/>
+            <ui:insert name="toolbarContext"/>
 
-        <rich:toolbarGroup>
-            #{messages.customer_field_balance}:
-            <h:outputText value="#{customerHome.instance.balance}"
-                          style="#{(customerHome.instance.balance lt 0) ? 'color: #ff0000;' : ''}">
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency" groupingUsed="true"/>
-            </h:outputText>
-        </rich:toolbarGroup>
+            <rich:toolbarGroup>
+                <a:outputPanel ajaxRendered="true">
+                    #{messages.customer_field_balance}:
+                    <h:outputText value="#{customerHome.instance.balance}"
+                                  style="#{(customerHome.instance.balance lt 0) ? 'color: #ff0000;' : ''}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </a:outputPanel>
+            </rich:toolbarGroup>
 
-        <rich:toolbarGroup location="right">
-
-
-            <h:panelGroup>
-                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
-                          view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
-
-                <ui:insert name="commpleteBtn"/>
-
-            </h:panelGroup>
-
-        </rich:toolbarGroup>
-    </rich:toolbar>
-
-    <br/>
-    <rich:messages ajaxRendered="true" globalOnly="false"/>
-
-    <ui:insert name="tipMessages"/>
+            <rich:toolbarGroup location="right">
 
 
-    <h:form>
+                <h:panelGroup>
+                    <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                              view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
-        <rich:panel id="receiveDetails">
+                    <ui:insert name="commpleteBtn"/>
 
-            <s:decorate template="/layout/seam-edit.xhtml">
-                <ui:define name="label">#{messages.accountOper_field_operDate}</ui:define>
-                <rich:calendar id="orderSendLimitDateField"
-                               enableManualInput="true"
-                               inputSize="20"
-                               timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                               showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                               datePattern="#{messages.datetimepattern}"
-                               required="true"
-                               defaultTime="#{currentTime}"
-                               defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
-                               label="#{messages.accountOper_field_operDate}"
-                               value="#{orderFinanceReveiveAction.accountOper.operDate}">
-                </rich:calendar>
-            </s:decorate>
+                </h:panelGroup>
+
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+        <br/>
+        <rich:messages ajaxRendered="true" globalOnly="false"/>
+
+        <ui:insert name="tipMessages"/>
 
 
-            <a:region>
+        <h:form>
+
+            <rich:panel id="receiveDetails">
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.accountOper_field_operDate}</ui:define>
+                    <rich:calendar id="orderSendLimitDateField"
+                                   enableManualInput="true"
+                                   inputSize="20"
+                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                   datePattern="#{messages.datetimepattern}"
+                                   required="true"
+                                   defaultTime="#{currentTime}"
+                                   defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                                   label="#{messages.accountOper_field_operDate}"
+                                   value="#{orderFinanceReveiveAction.accountOper.operDate}">
+                    </rich:calendar>
+                </s:decorate>
 
 
-                <a:outputPanel id="operMoneyField">
-                    <a:outputPanel rendered="#{not orderFinanceReveiveAction.freeMoney}">
+                <a:region>
 
-                        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
-                            <ui:param name="accountOper" value="#{orderFinanceReveiveAction.accountOper}"/>
-                        </ui:include>
+
+                    <a:outputPanel id="operMoneyField">
+                        <a:outputPanel rendered="#{not orderFinanceReveiveAction.freeMoney}">
+
+                            <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                                <ui:param name="accountOper" value="#{orderFinanceReveiveAction.accountOper}"/>
+                            </ui:include>
+
+                            <s:decorate template="/layout/seam-edit.xhtml">
+                                <ui:define name="label">
+                                    #{messages.accountOper_field_fee}
+                                </ui:define>
+                                <h:inputText label="#{messages.accountOper_field_fee}" required="true"
+                                             size="15" value="#{orderFinanceReveiveAction.accountOper.remitFee}">
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                                     groupingUsed="false"/>
+                                    <f:validateDoubleRange minimum="0"/>
+                                </h:inputText>
+                            </s:decorate>
+                        </a:outputPanel>
 
                         <s:decorate template="/layout/seam-edit.xhtml">
-                            <ui:define name="label">
-                                #{messages.accountOper_field_fee}
-                            </ui:define>
-                            <h:inputText label="#{messages.accountOper_field_fee}" required="true"
-                                         size="15" value="#{orderFinanceReveiveAction.accountOper.remitFee}">
+                            <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
+                            <h:inputText style="width: 120px"
+                                         value="#{orderFinanceReveiveAction.operMoney}"
+                                         required="true"
+                                         size="27"
+                                         label="#{messages.accountOper_field_operMoney}">
                                 <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                                  groupingUsed="false"/>
-                                <f:validateDoubleRange minimum="0"/>
+                                <f:validateDoubleRange minimum="0.01"/>
                             </h:inputText>
+
+                            <ui:define name="tail">
+                                <a:commandButton styleClass="tailBtn" immediate="true" value="#{messages.All}"
+                                                 action="#{orderFinanceReveiveAction.allMoney}"
+                                                 execute="@this" render="operMoneyField">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandButton>
+                            </ui:define>
                         </s:decorate>
+
                     </a:outputPanel>
+                </a:region>
 
-                    <s:decorate template="/layout/seam-edit.xhtml">
-                        <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
-                        <h:inputText style="width: 120px"
-                                     value="#{orderFinanceReveiveAction.operMoney}"
-                                     required="true"
-                                     size="27"
-                                     label="#{messages.accountOper_field_operMoney}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                             groupingUsed="false"/>
-                            <f:validateDoubleRange minimum="0.01"/>
-                        </h:inputText>
+                <div class="requiredTip">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
 
-                        <ui:define name="tail">
-                            <a:commandButton styleClass="tailBtn" immediate="true" value="#{messages.All}"
-                                             action="#{orderFinanceReveiveAction.allMoney}"
-                                             execute="@this" render="operMoneyField">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:commandButton>
-                        </ui:define>
-                    </s:decorate>
+                <div style="clear:both">
+                    <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                </div>
+                <h:panelGrid columns="1" style="width: 100%; text-align: center">
+                    <s:div styleClass="actionButtons">
 
-                </a:outputPanel>
-            </a:region>
+                        <a:commandButton immediate="true" value="#{messages.reset}"
+                                         action="#{orderFinanceReveiveAction.reset}"
+                                         execute="@this" render="receiveDetails">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                        <a:commandButton value="#{messages.receviceMoney}" execute="@form"
+                                         action="#{orderFinanceReveiveAction.receiveMoney}"
+                                         render="orderPayRecord,receiveDetails">
+                            <a:attachQueue requestDelay="0"/>
 
-            <div class="requiredTip">
-                <span class="required">*</span>
-                #{messages.requiredFields}
-            </div>
+                        </a:commandButton>
 
-            <div style="clear:both">
-                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-            </div>
-            <h:panelGrid columns="1" style="width: 100%; text-align: center">
-                <s:div styleClass="actionButtons">
+                    </s:div>
 
-                    <a:commandButton immediate="true" value="#{messages.reset}"
-                                     action="#{orderFinanceReveiveAction.reset}"
-                                     execute="@this" render="receiveDetails">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:commandButton>
-                    <a:commandButton value="#{messages.receviceMoney}" execute="@form"
-                                     action="#{orderFinanceReveiveAction.receiveMoney}"
-                                     render="orderPayRecord,receiveDetails">
-                        <a:attachQueue requestDelay="0"/>
+                </h:panelGrid>
+            </rich:panel>
 
-                    </a:commandButton>
-
-                </s:div>
-
-            </h:panelGrid>
-        </rich:panel>
-
-    </h:form>
-    <br/>
-    <a:outputPanel id="orderPayRecord">
-        <ui:include src="/layout/erp/OrderPayRecord.xhtml">
-            <ui:param name="order" value="#{orderHome.instance}"/>
-        </ui:include>
-    </a:outputPanel>
-
-
-    <h:form>
+        </h:form>
         <br/>
-        <rich:collapsiblePanel switchType="client" expanded="#{false}"
-                               header="#{messages.Customer}: #{customerHome.instance.name}">
-
-            <ui:include src="/layout/erp/CustomerView.xhtml">
-                <ui:param name="customer" value="#{customerHome.instance}"/>
+        <a:outputPanel id="orderPayRecord">
+            <ui:include src="/layout/erp/biz/CustomerAccountOperTable.xhtml">
+                <ui:param name="value" value="#{orderHome.instance.accountOperList}"/>
             </ui:include>
+        </a:outputPanel>
 
-        </rich:collapsiblePanel>
 
-        <br/>
-        <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
-            <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
-                <s:decorate template="/layout/seam-display.xhtml">
-                    <ui:define name="label">#{messages.order_field_totalMoney}</ui:define>
-                    <h:outputText value="#{orderHome.instance.money}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
+        <h:form>
+            <br/>
+            <rich:collapsiblePanel switchType="client" expanded="#{false}"
+                                   header="#{messages.Customer}: #{customerHome.instance.name}">
+
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{customerHome.instance}"/>
+                </ui:include>
+
+            </rich:collapsiblePanel>
+
+            <br/>
+            <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
+                <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+                    <s:decorate template="/layout/seam-display.xhtml">
+                        <ui:define name="label">#{messages.order_field_totalMoney}</ui:define>
+                        <h:outputText value="#{orderHome.instance.money}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </s:decorate>
                 </s:decorate>
-            </s:decorate>
-        </rich:collapsiblePanel>
-        <br/>
-    </h:form>
-</ui:define>
+            </rich:collapsiblePanel>
+            <br/>
+        </h:form>
+    </ui:define>
 
 
 </ui:composition>

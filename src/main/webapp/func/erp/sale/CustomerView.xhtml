@@ -345,109 +345,16 @@
                         </a:commandButton>
                     </h:panelGrid>
                 </a:region>
-                <rich:dataTable id="dataResult" style="width: 100%" noDataLabel="#{messages.emptyResult}"
-                                value="#{accountOperList.resultList}" var="_item">
 
-                    <f:facet name="footer">
-                        <a:outputPanel rendered="#{not empty accountOperList.resultList}">
-                            <ui:include src="/layout/pageA4jNavigation.xhtml">
-                                <ui:param name="entityList" value="#{accountOperList}"/>
-                            </ui:include>
-                        </a:outputPanel>
-                    </f:facet>
-                    <rich:column>
-                        <f:facet name="header">
-                            #{messages.accountOper_field_operDate}
-                        </f:facet>
-                        <h:outputText value="#{_item.operDate}">
-                            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-                        </h:outputText>
-                    </rich:column>
-                    <rich:column>
-                        <f:facet name="header">
-                            #{messages.accountOper_field_operType}
-                        </f:facet>
-                        #{messages[_item.operType.name()]}
-                    </rich:column>
-                    <rich:column style="text-align: right">
-                        <f:facet name="header">
-                            #{messages.accountOper_field_operMoney}
-                        </f:facet>
-                        <a:outputPanel>
-                            <h:outputText value="#{_item.customerOperMoney}">
-                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                            </h:outputText>
-                            <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
-                                          layout="block">
-                                    <span style="white-space: nowrap">
-                                        #{messages.customer_field_ad}
-                                        <h:outputText value="#{_item.advanceReceivable}">
-                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                                        </h:outputText>   <br/>  #{messages.customer_field_ac}
-                                               <h:outputText value="#{_item.accountsReceivable}">
-                                                   <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                                               </h:outputText>   <br/>   #{messages.customer_field_pac}
-                                        <h:outputText value="#{_item.proxcAccountsReceiveable}">
-                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                                        </h:outputText>   <br/>
-                                    </span>
+                <s:decorate id="dataResult" template="/layout/erp/biz/CustomerAccountOperTable.xhtml">
+                    <ui:param name="value" value="#{accountOperList.resultList}"/>
+                    <a:outputPanel rendered="#{not empty accountOperList.resultList}">
+                        <ui:include src="/layout/pageA4jNavigation.xhtml">
+                            <ui:param name="entityList" value="#{accountOperList}"/>
+                        </ui:include>
+                    </a:outputPanel>
+                </s:decorate>
 
-                            </rich:tooltip>
-                        </a:outputPanel>
-                    </rich:column>
-
-                    <rich:column style="text-align: right">
-                        <f:facet name="header">
-                            #{messages.accountOper_field_fee}
-                        </f:facet>
-                        <h:outputText value="#{_item.remitFee}"
-                                      rendered="#{_item.operType.customerOper}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                        </h:outputText>
-                    </rich:column>
-
-                    <rich:column>
-                        <f:facet name="header">
-                            #{messages.accountOper_field_payType}
-                        </f:facet>
-                        <h:outputText value="#{messages[_item.payType.name()]}"
-                                      rendered="#{_item.operType.customerOper}"/>
-                    </rich:column>
-
-                    <rich:column>
-                        <f:facet name="header">
-                            #{messages.accountOper_field_checkNumber}
-                        </f:facet>
-                        <a:outputPanel rendered="#{_item.operType.customerOper}">
-                            <ui:include src="/layout/long-text-display.xhtml">
-                                <ui:param name="value" value="#{_item.checkNumber}"/>
-                                <ui:param name="size" value="5"/>
-                            </ui:include>
-                        </a:outputPanel>
-
-                    </rich:column>
-
-                    <rich:column>
-                        <f:facet name="header">
-                            #{messages.BankAccount}
-                        </f:facet>
-                        <a:outputPanel rendered="#{_item.operType.customerOper}">
-                            <ui:include src="/layout/long-text-display.xhtml">
-                                <ui:param name="value"
-                                          value="#{_item.bankAccount.bank} (#{_item.bankAccount.number})"/>
-                                <ui:param name="size" value="5"/>
-                            </ui:include>
-                        </a:outputPanel>
-                    </rich:column>
-
-                    <rich:column>
-                        <f:facet name="header">
-                            #{messages.accountOper_field_operEmp}
-                        </f:facet>
-                        #{dictionary.getEmpNameById(_item.operEmp)}
-                    </rich:column>
-
-                </rich:dataTable>
             </rich:collapsiblePanel>
 
         </a:outputPanel>

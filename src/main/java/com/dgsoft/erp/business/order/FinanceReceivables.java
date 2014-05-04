@@ -75,7 +75,6 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     }
 
     protected void receiveAdvance() {
-        accountOper.setOperType(AccountOper.AccountOperType.PRE_DEPOSIT);
         accountOper.setAdvanceReceivable(getOperMoney());
         accountOper.setAccountsReceivable(BigDecimal.ZERO);
         accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
@@ -89,6 +88,15 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         if (getOrderShortageMoney().compareTo(BigDecimal.ZERO) <= 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderMoneyIsComplete");
             return;
+        }
+
+        if (isFreeMoney() && orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+            throw new IllegalArgumentException("EXPRESS_PROXY cant free Money");
+        }
+
+        if (!isFreeMoney() && (accountOper.getRemitFee().compareTo(getOperMoney()) >= 0)){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"remitFeeGtOperMoney");
+            return ;
         }
 
         if (receiveAccountOper()) {

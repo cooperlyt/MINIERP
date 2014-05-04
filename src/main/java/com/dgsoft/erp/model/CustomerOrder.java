@@ -422,7 +422,12 @@ public class CustomerOrder implements java.io.Serializable {
         if (getMoney() == null) {
             return BigDecimal.ZERO;
         }
-        return getMoney().subtract(getReceiveMoney());
+        BigDecimal result = getMoney().subtract(getReceiveMoney());
+        if (result.compareTo(BigDecimal.ZERO) < 0){
+            return BigDecimal.ZERO;
+        }else{
+            return result;
+        }
     }
 
     @Transient
@@ -432,10 +437,10 @@ public class CustomerOrder implements java.io.Serializable {
             switch (ap.getOperType()){
 
                 case ORDER_SAVINGS:
-                    result = result.add(ap.getRemitFee()).add(ap.getAccountsReceivable()).add(ap.getProxcAccountsReceiveable());
+                    result = result.add(ap.getAccountsReceivable()).add(ap.getProxcAccountsReceiveable()).add(ap.getAdvanceReceivable());
                     break;
                 case ORDER_FREE:
-                    result = result.add(ap.getRemitFee());
+                    result = result.add(ap.getAccountsReceivable());
                     break;
                 case ORDER_PAY:
                     result = result.add(ap.getAdvanceReceivable());

@@ -29,9 +29,6 @@ public class OrderMoneyReceive extends FinanceReceivables {
     @Override
     protected boolean receiveAccountOper() {
 
-        if (isFreeMoney() && orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-            throw new IllegalArgumentException("EXPRESS_PROXY cant free Money");
-        }
 
         if (!orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
             if (isFreeMoney()) {
@@ -39,6 +36,7 @@ public class OrderMoneyReceive extends FinanceReceivables {
                         credentials.getUsername(), AccountOper.AccountOperType.ORDER_FREE,
                         accountOper.getOperDate(), getOperMoney(), BigDecimal.ZERO, getOperMoney(), BigDecimal.ZERO);
             } else {
+
 
                 BigDecimal orderMoney = getOperMoney();
                 BigDecimal advanceMoney = BigDecimal.ZERO;
