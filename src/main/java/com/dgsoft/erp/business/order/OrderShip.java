@@ -23,6 +23,9 @@ public class OrderShip extends OrderShipTaskHandle {
     @In
     private TaskDescription taskDescription;
 
+    @In(create=true)
+    private CustomerHome customerHome;
+
     @In(create = true)
     private DispatchHome dispatchHome;
 
@@ -48,7 +51,7 @@ public class OrderShip extends OrderShipTaskHandle {
         if (storeId == null) {
             throw new ProcessDefineException("Order Store out store ID not Define");
         }
-
+        customerHome.setId(orderHome.getInstance().getCustomer().getId());
         NeedRes needRes = orderHome.getLastNeedRes();
 
         for (Dispatch dispatch : needRes.getDispatches()) {
@@ -102,8 +105,9 @@ public class OrderShip extends OrderShipTaskHandle {
             }
         }
         //dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
+        calcStoreResCompleted(dispatchHome.getInstance().getSendTime());
         if (dispatchHome.update().equals("updated")) {
-            calcStoreResCompleted(dispatchHome.getInstance().getSendTime());
+
             return super.completeOrderTask();
         } else {
             return null;

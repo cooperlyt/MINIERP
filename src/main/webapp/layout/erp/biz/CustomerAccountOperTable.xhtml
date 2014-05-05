@@ -96,7 +96,7 @@
             <a:outputPanel rendered="#{_item.operType.customerOper}">
                 <ui:include src="/layout/long-text-display.xhtml">
                     <ui:param name="value"
-                              value="#{_item.bankAccount.bank} (#{_item.bankAccount.number})"/>
+                              value="#{dictionary.getWordValue(_item.bankAccount.bank)} (#{_item.bankAccount.number})"/>
                     <ui:param name="size" value="5"/>
                 </ui:include>
             </a:outputPanel>

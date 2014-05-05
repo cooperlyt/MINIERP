@@ -15,9 +15,8 @@
 
             <rich:toolbarGroup>
                 <a:outputPanel ajaxRendered="true">
-                    #{messages.customer_field_balance}:
-                    <h:outputText value="#{customerHome.instance.balance}"
-                                  style="#{(customerHome.instance.balance lt 0) ? 'color: #ff0000;' : ''}">
+                    #{messages.customer_field_canUseBalance}:
+                    <h:outputText value="#{customerHome.canUseAdvanceMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -165,7 +164,7 @@
             </rich:collapsiblePanel>
 
             <br/>
-            <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}">
+            <rich:collapsiblePanel switchType="client" expanded="false" header="#{messages.order_info}:#{orderHome.instance.id}">
                 <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
                     <s:decorate template="/layout/seam-display.xhtml">
                         <ui:define name="label">#{messages.order_field_totalMoney}</ui:define>

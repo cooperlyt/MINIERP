@@ -49,6 +49,7 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal resMoney;
     private BigDecimal middleTotal;
     private BigDecimal receiveMoney;
+    private BigDecimal advanceMoney;
 
 
     private boolean middlePayed;
@@ -79,6 +80,7 @@ public class CustomerOrder implements java.io.Serializable {
         moneyComplete = false;
         earnestFirst = false;
         receiveMoney = BigDecimal.ZERO;
+        advanceMoney = BigDecimal.ZERO;
     }
 
     @Id
@@ -429,32 +431,15 @@ public class CustomerOrder implements java.io.Serializable {
         this.receiveMoney = receiveMoney;
     }
 
-    @Transient
-    private BigDecimal getOrderReceiveMoney(){
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper ap: getAccountOpers()){
-            switch (ap.getOperType()){
-
-                case ORDER_SAVINGS:
-                    result = result.add(ap.getAccountsReceivable()).add(ap.getProxcAccountsReceiveable()).add(ap.getAdvanceReceivable());
-                    break;
-                case ORDER_FREE:
-                    result = result.add(ap.getAccountsReceivable());
-                    break;
-                case ORDER_PAY:
-                    result = result.add(ap.getAdvanceReceivable());
-                    break;
-                case ORDER_CANCEL:
-                case MONEY_BACK_TO_PREPARE:
-                case MONEY_BACK_TO_CUSTOMER:
-                    break;
-                default:
-                    throw new IllegalArgumentException("unkonw operType:" + ap.getOperType());
-            }
-        }
-        return result;
+    @Column(name = "ADVANCE_MONEY", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getAdvanceMoney() {
+        return advanceMoney;
     }
 
+    public void setAdvanceMoney(BigDecimal advanceMoney) {
+        this.advanceMoney = advanceMoney;
+    }
 
     @Transient
     public BigDecimal getShortageMoney() {
@@ -465,7 +450,7 @@ public class CustomerOrder implements java.io.Serializable {
         if (isAllStoreOut()){
             result = getMoney().subtract(getReceiveMoney());
         }else{
-            result = getMoney().subtract(getOrderReceiveMoney());
+            result = getMoney().subtract(getAdvanceMoney());
         }
 
         if (result.compareTo(BigDecimal.ZERO) < 0){

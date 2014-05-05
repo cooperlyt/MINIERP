@@ -94,7 +94,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             throw new IllegalArgumentException("EXPRESS_PROXY cant free Money");
         }
 
-        if (!isFreeMoney() && (accountOper.getAccountsReceivable().compareTo(getOperMoney()) >= 0)) {
+        if (!isFreeMoney() && (accountOper.getRemitFee().compareTo(getOperMoney()) >= 0)) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "remitFeeGtOperMoney");
             return;
         }
@@ -103,14 +103,15 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         accountOper.calcCustomerMoney();
         orderHome.getInstance().getAccountOpers().add(accountOper);
 
-        orderHome.calcMoneys();
+
 
         if (!orderHome.getInstance().isAllStoreOut()) {
-            orderHome.getInstance().setReceiveMoney(
-                    orderHome.getInstance().getReceiveMoney().
+            orderHome.getInstance().setAdvanceMoney(
+                    orderHome.getInstance().getAdvanceMoney().
                             add((getOperMoney().compareTo(orderHome.getInstance().getMoney()) > 0) ? orderHome.getInstance().getMoney() : getOperMoney() ));
         }
 
+        orderHome.calcMoneys();
         if ("updated".equals(orderHome.update())) {
             reset();
 

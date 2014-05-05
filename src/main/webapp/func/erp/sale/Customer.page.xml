@@ -6,7 +6,7 @@
     <param name="firstResult" value="#{customerList.firstResult}"/>
     <param name="sort" value="#{customerList.orderColumn}"/>
     <param name="dir" value="#{customerList.orderDirection}"/>
-
+    <param name="orderExpress" value="#{customerList.orderExpress}"/>
 
     <param name="customerAreaId" value="#{customerSearchCondition.customerAreaId}"/>
 

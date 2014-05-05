@@ -46,6 +46,46 @@ public class EntityQueryAdapter<E> extends EntityQuery<E> {
         return result;
     }
 
+    private String orderExpress;
+
+    private String order;
+
+    public String getOrderExpress() {
+        return orderExpress;
+    }
+
+    public void setOrderExpress(String orderExpress) {
+        this.orderExpress = orderExpress;
+    }
+
+    @Override
+    public void setOrder(String order)
+    {
+        this.order = order;
+        refresh();
+    }
+
+    @Override
+    public String getOrder() {
+        String column = getOrderColumn();
+
+        if (column == null){
+            column = getOrderExpress();
+        }
+
+        if (column == null) {
+            return order;
+        }
+
+        String direction = getOrderDirection();
+
+        if (direction == null) {
+            return column;
+        } else {
+            return column + ' ' + direction;
+        }
+    }
+
     public Long getPage() {
 
         if ((getFirstResult() == null) || getFirstResult().equals(0)) {
