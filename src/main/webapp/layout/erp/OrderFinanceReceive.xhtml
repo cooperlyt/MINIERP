@@ -69,24 +69,8 @@
 
 
                     <a:outputPanel id="operMoneyField">
-                        <a:outputPanel rendered="#{not orderFinanceReveiveAction.freeMoney}">
 
-                            <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
-                                <ui:param name="accountOper" value="#{orderFinanceReveiveAction.accountOper}"/>
-                            </ui:include>
 
-                            <s:decorate template="/layout/seam-edit.xhtml">
-                                <ui:define name="label">
-                                    #{messages.accountOper_field_fee}
-                                </ui:define>
-                                <h:inputText label="#{messages.accountOper_field_fee}" required="true"
-                                             size="15" value="#{orderFinanceReveiveAction.accountOper.remitFee}">
-                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                                     groupingUsed="false"/>
-                                    <f:validateDoubleRange minimum="0"/>
-                                </h:inputText>
-                            </s:decorate>
-                        </a:outputPanel>
 
                         <s:decorate template="/layout/seam-edit.xhtml">
                             <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
@@ -108,6 +92,26 @@
                                 </a:commandButton>
                             </ui:define>
                         </s:decorate>
+
+                        <a:outputPanel rendered="#{not orderFinanceReveiveAction.freeMoney}">
+
+                            <s:decorate template="/layout/seam-edit.xhtml">
+                                <ui:define name="label">
+                                    #{messages.accountOper_field_fee}
+                                </ui:define>
+                                <h:inputText label="#{messages.accountOper_field_fee}" required="true"
+                                             size="10" value="#{orderFinanceReveiveAction.accountOper.remitFee}">
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                                     groupingUsed="false"/>
+                                    <f:validateDoubleRange minimum="0"/>
+                                </h:inputText>
+                            </s:decorate>
+
+                            <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                                <ui:param name="accountOper" value="#{orderFinanceReveiveAction.accountOper}"/>
+                            </ui:include>
+
+                        </a:outputPanel>
 
                     </a:outputPanel>
                 </a:region>

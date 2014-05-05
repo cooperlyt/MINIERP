@@ -280,6 +280,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         getInstance().setResMoney(result);
     }
 
+
+
     public List<AccountOper> getAccountOperByType(EnumSet<AccountOper.AccountOperType> types) {
         List<AccountOper> result = new ArrayList<AccountOper>();
         for (AccountOper oper : getInstance().getAccountOpers()) {
@@ -302,6 +304,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         calcTotalResMoney();
 
         getInstance().setMoney(getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney()));
+
     }
 
 
@@ -333,11 +336,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result;
     }
 
-    public Date getLastShipDate(){
+    public Date getLastShipDate() {
         Date result = null;
-        for (Dispatch dispatch: getLastNeedRes().getDispatches()){
+        for (Dispatch dispatch : getLastNeedRes().getDispatches()) {
             if ((result == null) ||
-                    ((dispatch.getSendTime() != null) && (dispatch.getSendTime().compareTo(result) > 0))){
+                    ((dispatch.getSendTime() != null) && (dispatch.getSendTime().compareTo(result) > 0))) {
                 result = dispatch.getSendTime();
             }
         }

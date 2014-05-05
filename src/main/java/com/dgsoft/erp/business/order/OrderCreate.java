@@ -28,6 +28,9 @@ public class OrderCreate extends OrderHome {
 
     private static final String ORDER_SEND_REASON_WORD_KEY = "erp.needResReason.order";
 
+    @In
+    private Credentials credentials;
+
     @In(create = true)
     private CustomerHome customerHome;
 

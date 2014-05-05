@@ -29,9 +29,8 @@ public class OrderEarnestReceive extends FinanceReceivables {
     }
 
     @Override
-    public boolean receiveAccountOper() {
+    public void receiveAccountOper() {
         receiveAdvance();
-        return true;
     }
 
     @Override

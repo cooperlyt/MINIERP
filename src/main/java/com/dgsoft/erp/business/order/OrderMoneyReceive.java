@@ -27,9 +27,9 @@ public class OrderMoneyReceive extends FinanceReceivables {
     private NeedResHome needResHome;
 
     @Override
-    protected boolean receiveAccountOper() {
+    protected void receiveAccountOper() {
 
-
+        BigDecimal result = null;
         if (!orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
             if (isFreeMoney()) {
                 accountOper = new AccountOper(orderHome.getInstance(),
@@ -58,24 +58,42 @@ public class OrderMoneyReceive extends FinanceReceivables {
         } else {
             receiveAdvance();
         }
-        return true;
+
+    }
+
+    private void addCantCompleteMsg(){
+        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                "order_money_not_enough",
+                DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
+                DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
+                DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getShortageMoney()));
     }
 
     @Override
     protected String completeOrderTask() {
         //orderPayType change from payFirst
 
-        if (!(!orderHome.isAnyOneStoreOut() && !orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST))
-                && !orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.OVERDRAFT) &&
-                orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                    "order_money_not_enough",
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getShortageMoney()));
-            return null;
 
+
+        //更改收费方式 先发货  允许完成
+        if (!(!orderHome.isAnyOneStoreOut() && !orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST))) {
+            addCantCompleteMsg();
+            return null;
         }
+
+        if (!orderHome.isAnyOneStoreOut() &&
+                (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0) &&
+                (orderHome.getInstance().getShortageMoney().compareTo(customerHome.getCanUseAdvanceMoney()) <= 0)){
+            orderHome.getInstance().setReceiveMoney(orderHome.getInstance().getReceiveMoney().add(orderHome.getInstance().getShortageMoney()));
+            //除欠款发货 外 其它都不允许完成
+        }else if (!orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.OVERDRAFT) &&
+                (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0)){
+            addCantCompleteMsg();
+            return null;
+        }
+
+
+
 
         orderHome.getInstance().setMoneyComplete(true);
 

@@ -10,10 +10,10 @@
 
     <!-- param: accountOper  render -->
     <f:subview>
-        <s:decorate id="payTypeField" rendered="#{accountOper.operType eq 'PRE_DEPOSIT'}"
+        <s:decorate id="payTypeField"
                     template="/layout/seam-edit.xhtml">
             <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
-            <h:selectOneMenu style="width: 120px" label="#{messages.accountOper_field_payType}"
+            <h:selectOneMenu label="#{messages.accountOper_field_payType}"
                              required="true"
                              value="#{accountOper.payType}">
 
@@ -44,7 +44,7 @@
                         <f:converter converterId="erpEntityConverter"/>
                     </h:selectOneMenu>
 
-                    <h:selectBooleanCheckbox value="#{accountOper.useCheck}">
+                    <h:selectBooleanCheckbox value="#{accountOper.useCheck}" rendered="#{not empty accountOper.payType}">
 
                         <a:ajax execute="@this" event="click" render="checkNumberField"/>
                     </h:selectBooleanCheckbox>

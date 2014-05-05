@@ -3,6 +3,7 @@ package com.dgsoft.erp.action;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerContact;
+import com.dgsoft.erp.tools.CustomerMoneyTool;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -11,6 +12,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -137,6 +139,9 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
         return true;
     }
 
+    public BigDecimal getCanUseAdvanceMoney(){
+       return getInstance().getAdvanceMoney().subtract(CustomerMoneyTool.instance().getOrderAdvance(getInstance().getId()));
+    }
 
     public void clearCustomerAndMiddleMan() {
         clearInstance();
@@ -146,8 +151,6 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
 
 
     public void middleManPayChangeListener() {
-
-
         if (haveMiddleMan && isIdDefined() && (getInstance().getMiddleMan() != null)) {
             middleManHome.setId(getInstance().getMiddleMan().getId());
         } else {

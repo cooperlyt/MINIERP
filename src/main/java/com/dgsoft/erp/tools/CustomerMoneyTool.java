@@ -21,10 +21,10 @@ public class CustomerMoneyTool {
     private EntityManager erpEntityManager;
 
     public BigDecimal getOrderAdvance(String customerId){
-        return erpEntityManager.createQuery("select sum(customerOrder.money) from CustomerOrder customerOrder " +
+        return erpEntityManager.createQuery("select sum(customerOrder.receiveMoney) from CustomerOrder customerOrder " +
                 "where customerOrder.canceled = false and customerOrder.customer.id = :customerId " +
-                "and customerOrder.payType = 'PAY_FIRST' and customerOrder.moneyComplete = true " +
                 "and customerOrder.allStoreOut = false",BigDecimal.class).setParameter("customerId", customerId).getSingleResult();
+
     }
 
 

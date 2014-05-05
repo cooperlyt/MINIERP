@@ -48,7 +48,7 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal money;
     private BigDecimal resMoney;
     private BigDecimal middleTotal;
-    //private BigDecimal receiveMoney;
+    private BigDecimal receiveMoney;
 
 
     private boolean middlePayed;
@@ -78,6 +78,7 @@ public class CustomerOrder implements java.io.Serializable {
         includeMiddleMan = false;
         moneyComplete = false;
         earnestFirst = false;
+        receiveMoney = BigDecimal.ZERO;
     }
 
     @Id
@@ -418,31 +419,18 @@ public class CustomerOrder implements java.io.Serializable {
         this.money = money;
     }
 
-//    @Column(name = "RECEIVE_MONEY", nullable = false, scale = 3)
-//    @NotNull
-//    public BigDecimal getReceiveMoney() {
-//        return receiveMoney;
-//    }
-//
-//    public void setReceiveMoney(BigDecimal receiveMoney) {
-//        this.receiveMoney = receiveMoney;
-//    }
+    @Column(name = "RECEIVE_MONEY", nullable = false, scale = 3)
+    @NotNull
+    public BigDecimal getReceiveMoney() {
+        return receiveMoney;
+    }
 
-    @Transient
-    public BigDecimal getShortageMoney() {
-        if (getMoney() == null) {
-            return BigDecimal.ZERO;
-        }
-        BigDecimal result = getMoney().subtract(getReceiveMoney());
-        if (result.compareTo(BigDecimal.ZERO) < 0){
-            return BigDecimal.ZERO;
-        }else{
-            return result;
-        }
+    public void setReceiveMoney(BigDecimal receiveMoney) {
+        this.receiveMoney = receiveMoney;
     }
 
     @Transient
-    public BigDecimal getReceiveMoney(){
+    private BigDecimal getOrderReceiveMoney(){
         BigDecimal result = BigDecimal.ZERO;
         for (AccountOper ap: getAccountOpers()){
             switch (ap.getOperType()){
@@ -465,6 +453,27 @@ public class CustomerOrder implements java.io.Serializable {
             }
         }
         return result;
+    }
+
+
+    @Transient
+    public BigDecimal getShortageMoney() {
+        if ((getMoney() == null) || isCanceled()) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal result;
+        if (isAllStoreOut()){
+            result = getMoney().subtract(getReceiveMoney());
+        }else{
+            result = getMoney().subtract(getOrderReceiveMoney());
+        }
+
+        if (result.compareTo(BigDecimal.ZERO) < 0){
+            return BigDecimal.ZERO;
+        }else{
+            return result;
+        }
+
     }
 
     @Transient

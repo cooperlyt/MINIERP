@@ -80,7 +80,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
     }
 
-    protected abstract boolean receiveAccountOper();
+    protected abstract void receiveAccountOper();
 
     @Transactional
     public void receiveMoney() {
@@ -94,26 +94,35 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             throw new IllegalArgumentException("EXPRESS_PROXY cant free Money");
         }
 
-        if (!isFreeMoney() && (accountOper.getRemitFee().compareTo(getOperMoney()) >= 0)){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"remitFeeGtOperMoney");
-            return ;
+        if (!isFreeMoney() && (accountOper.getAccountsReceivable().compareTo(getOperMoney()) >= 0)) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "remitFeeGtOperMoney");
+            return;
         }
 
-        if (receiveAccountOper()) {
-            accountOper.calcCustomerMoney();
-            orderHome.getInstance().getAccountOpers().add(accountOper);
+        receiveAccountOper();
+        accountOper.calcCustomerMoney();
+        orderHome.getInstance().getAccountOpers().add(accountOper);
 
-            orderHome.calcMoneys();
-            if ("updated".equals(orderHome.update())) {
-                reset();
-                Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
-            }
+        orderHome.calcMoneys();
+
+        if (!orderHome.getInstance().isAllStoreOut()) {
+            orderHome.getInstance().setReceiveMoney(
+                    orderHome.getInstance().getReceiveMoney().
+                            add((getOperMoney().compareTo(orderHome.getInstance().getMoney()) > 0) ? orderHome.getInstance().getMoney() : getOperMoney() ));
         }
+
+        if ("updated".equals(orderHome.update())) {
+            reset();
+
+            Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
+        }
+
     }
 
     public void reset() {
         accountOper = new AccountOper(orderHome.getInstance(), credentials.getUsername(),
                 AccountOper.AccountOperType.ORDER_SAVINGS);
+        setOperMoney(null);
     }
 
     @Override
