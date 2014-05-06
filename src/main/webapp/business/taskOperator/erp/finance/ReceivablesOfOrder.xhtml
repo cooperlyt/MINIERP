@@ -15,6 +15,17 @@
 
     <ui:param name="orderFinanceReveiveAction" value="#{orderMoneyReceive}"/>
 
+    <ui:define name="moneyOperBefor">
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.ORDER_FREE}</ui:define>
+            <h:selectBooleanCheckbox value="#{orderMoneyReceive.freeMoney}">
+                <a:ajax event="click" render="operMoneyField" execute="@this">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </h:selectBooleanCheckbox>
+        </s:decorate>
+    </ui:define>
+
     <ui:define name="tipMessages">
         <h:panelGrid columns="2" rendered="#{orderHome.instance.payType eq 'OVERDRAFT'}">
             <h:graphicImage value="/img/msginfo.png" title="#{messages.infoMessage}" alt="#{messages.infoMessage}:"/>

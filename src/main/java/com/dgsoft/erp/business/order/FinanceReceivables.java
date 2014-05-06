@@ -22,9 +22,6 @@ import java.math.BigDecimal;
 
 public abstract class FinanceReceivables extends OrderTaskHandle {
 
-    @In(create = true)
-    protected CustomerHome customerHome;
-
     protected AccountOper accountOper;
 
     @In
@@ -129,7 +126,6 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     @Override
     protected void initOrderTask() {
         reset();
-        customerHome.setId(orderHome.getInstance().getCustomer().getId());
         super.initOrderTask();
     }
 

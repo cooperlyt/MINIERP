@@ -66,6 +66,7 @@
 
                 <a:region>
 
+                    <ui:insert name="moneyOperBefor"/>
 
                     <a:outputPanel id="operMoneyField">
 
@@ -76,7 +77,17 @@
                             <h:inputText style="width: 120px"
                                          value="#{orderFinanceReveiveAction.operMoney}"
                                          required="true"
-                                         size="27"
+                                         size="27"  rendered="#{orderFinanceReveiveAction.freeMoney}"
+                                         label="#{messages.accountOper_field_operMoney}">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                                 groupingUsed="false"/>
+                                <f:validateDoubleRange minimum="0.01" maximum="#{orderFinanceReveiveAction.shortageMoney}"/>
+                            </h:inputText>
+
+                            <h:inputText style="width: 120px"
+                                         value="#{orderFinanceReveiveAction.operMoney}"
+                                         required="true"
+                                         size="27"  rendered="#{not orderFinanceReveiveAction.freeMoney}"
                                          label="#{messages.accountOper_field_operMoney}">
                                 <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
                                                  groupingUsed="false"/>

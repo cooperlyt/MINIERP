@@ -1,6 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.system.business.TaskHandle;
+import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.OrderHome;
 import org.jboss.seam.annotations.In;
 
@@ -16,6 +17,9 @@ public abstract class OrderTaskHandle extends TaskHandle {
 
     @In(create= true)
     protected OrderHome orderHome;
+
+    @In(create = true)
+    protected CustomerHome customerHome;
 
     protected void initOrderTask(){
     }
@@ -34,6 +38,7 @@ public abstract class OrderTaskHandle extends TaskHandle {
     @Override
     protected final void initTask() {
         orderHome.setId(taskInstance.getProcessInstance().getKey());
+        customerHome.setId(orderHome.getInstance().getCustomer().getId());
         initOrderTask();
     }
 

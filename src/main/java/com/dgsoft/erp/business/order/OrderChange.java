@@ -28,9 +28,6 @@ public class OrderChange extends OrderShipTaskHandle {
     private static final String SUPPLEMENT_REASON = "erp.needResReason.supplement";
 
     @In(create = true)
-    private CustomerHome customerHome;
-
-    @In(create = true)
     private OrderDispatch orderDispatch;
 
     @In(create = true)
@@ -140,7 +137,6 @@ public class OrderChange extends OrderShipTaskHandle {
 
     @Override
     protected void initOrderTask() {
-        customerHome.setId(orderHome.getInstance().getCustomer().getId());
 
         overlyItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.WAIT_PRICE));
 
@@ -157,8 +153,7 @@ public class OrderChange extends OrderShipTaskHandle {
             OrderItem matchItem = null;
             for (OrderItem orderItem : orderHome.getOrderItemByStatus(
                     EnumSet.of(OrderItem.OrderItemStatus.CREATED,
-                            OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED)
-            )) {
+                            OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))) {
                 if (orderItem.getStoreRes().equals(oweOut.getStoreRes())) {
                     matchItem = orderItem;
                     break;
@@ -194,6 +189,7 @@ public class OrderChange extends OrderShipTaskHandle {
                 item.setStatus(OrderItem.OrderItemStatus.CREATED);
                 item.setDispatch(null);
             }
+            shipComplete(orderHome.getLastShipDate());
         } else {
             if (dispatched) {
                 if (!orderDispatch.isDispatchComplete()) {
@@ -204,9 +200,7 @@ public class OrderChange extends OrderShipTaskHandle {
                 needResHome.getInstance().setStatus(NeedRes.NeedResStatus.DISPATCHED);
             }
 
-
-            shipComplete(orderHome.getLastShipDate());
-            //orderHome.getInstance().setAllStoreOut(false);
+            orderHome.getInstance().setAllStoreOut(false);
         }
 
 

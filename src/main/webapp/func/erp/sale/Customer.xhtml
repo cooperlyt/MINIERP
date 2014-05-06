@@ -78,7 +78,7 @@
 
 <br/>
 <h:form>
-    <rich:extendedDataTable style="width: 100%; height: 500px" id="dataListResult" value="#{customerList.resultList}"
+    <rich:extendedDataTable style="width: 100%" id="dataListResult" value="#{customerList.resultList}"
                             var="_customer" noDataLabel="#{messages.emptyResult}" frozenColumns="5">
         <f:facet name="footer">
             <a:outputPanel rendered="#{not empty customerList.resultList}">
