@@ -4,21 +4,15 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.PayType;
 import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.total.SameFormatResGroupStrategy;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
 
-import javax.persistence.Transient;
-import javax.persistence.criteria.Order;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -31,6 +25,31 @@ import java.util.*;
  */
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
+
+    @In
+    private Identity identity;
+
+    public enum OrderCancelType{
+        ORDER_RES_BACK,DELETE_ORDER,CANCEL_ORDER;
+    }
+
+    public List<OrderCancelType> getAllowCancelType(){
+        if (isIdDefined()){
+            List<OrderCancelType> result = new ArrayList<OrderCancelType>();
+            if (identity.hasRole("erp.sale.manager")){
+                result.add(OrderCancelType.DELETE_ORDER);
+            }
+            if (isAnyOneMoneyPay() && !isAnyOneStoreOut() && identity.hasRole("erp.sale.manager")){
+                result.add(OrderCancelType.CANCEL_ORDER);
+            }
+            if (isAnyOneStoreOut()){
+                result.add(OrderCancelType.ORDER_RES_BACK);
+            }
+            return result;
+        }else
+            return new ArrayList<OrderCancelType>(0);
+
+    }
 
     @In(create = true)
     protected Map<String, String> messages;
@@ -323,7 +342,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                     case ORDER_PAY:
                         result = result.add(ap.getAdvanceReceivable());
                         break;
-                    case ORDER_CANCEL:
+                    case ORDER_CANCELED:
                     case MONEY_BACK_TO_PREPARE:
                     case MONEY_BACK_TO_CUSTOMER:
                         break;

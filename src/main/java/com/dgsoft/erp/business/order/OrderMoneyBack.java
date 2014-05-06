@@ -2,7 +2,6 @@ package com.dgsoft.erp.business.order;
 
 import com.dgsoft.common.jbpm.ProcessInstanceHome;
 import com.dgsoft.erp.model.AccountOper;
-import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -79,7 +78,7 @@ public class OrderMoneyBack extends OrderTaskHandle {
         List<AccountOper> accountOpers = new ArrayList<AccountOper>(2);
 
         accountOpers.add(new AccountOper(orderHome.getInstance(),
-                credentials.getUsername(), AccountOper.AccountOperType.ORDER_CANCEL, operDate,
+                credentials.getUsername(), AccountOper.AccountOperType.ORDER_CANCELED, operDate,
                 BigDecimal.ZERO, BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(), BigDecimal.ZERO));
 
 

@@ -63,7 +63,7 @@ public class AccountOper implements java.io.Serializable {
         ORDER_PAY(null),
 
         ORDER_BACK(null),
-        ORDER_CANCEL(null),
+        ORDER_CANCELED(null),
 
         MONEY_BACK_TO_PREPARE(null),
         MONEY_BACK_TO_CUSTOMER(false);
@@ -416,9 +416,9 @@ public class AccountOper implements java.io.Serializable {
             case ORDER_PAY:
                 return getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable());
             case ORDER_BACK:
-                return BigDecimal.ZERO;
-            case ORDER_CANCEL:
-                return BigDecimal.ZERO;
+                return getAccountsReceivable();
+            case ORDER_CANCELED:
+                return getAccountsReceivable().add(getProxcAccountsReceiveable());
             case MONEY_BACK_TO_PREPARE:
                 return getAdvanceReceivable();
             case MONEY_BACK_TO_CUSTOMER:
@@ -455,8 +455,8 @@ public class AccountOper implements java.io.Serializable {
             case ORDER_BACK:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
                 break;
-            case ORDER_CANCEL:
-                throw new IllegalArgumentException("ORDER IS EXISTS ORDER_CANCEL OPER");
+            case ORDER_CANCELED:
+                throw new IllegalArgumentException("ORDER IS EXISTS ORDER_CANCELED OPER");
                 //getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
             case MONEY_BACK_TO_PREPARE:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
@@ -495,7 +495,7 @@ public class AccountOper implements java.io.Serializable {
             case ORDER_BACK:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                 break;
-            case ORDER_CANCEL:
+            case ORDER_CANCELED:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                 break;
             case MONEY_BACK_TO_PREPARE:

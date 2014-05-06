@@ -24,7 +24,7 @@ public class OrderBack implements java.io.Serializable {
     private boolean resComplete;
     private String applyEmp;
     //private BigDecimal saveMoney;
-    private BigDecimal resMoney;
+    //private BigDecimal resMoney;
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
     private Customer customer;
     private Set<BackDispatch> backDispatchs = new HashSet<BackDispatch>(0);
@@ -196,16 +196,16 @@ public class OrderBack implements java.io.Serializable {
     }
 
 
-    @Column(name = "RES_MONEY", nullable = false,scale = 3)
-    @NotNull
-    public BigDecimal getResMoney() {
-        return resMoney;
-    }
-
-    public void setResMoney(BigDecimal resMoney) {
-        this.resMoney = resMoney;
-    }
-
+//    @Column(name = "RES_MONEY", nullable = false,scale = 3)
+//    @NotNull
+//    public BigDecimal getResMoney() {
+//        return resMoney;
+//    }
+//
+//    public void setResMoney(BigDecimal resMoney) {
+//        this.resMoney = resMoney;
+//    }
+//
 
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -229,14 +229,4 @@ public class OrderBack implements java.io.Serializable {
     }
 
 
-    @Transient
-    public BigDecimal getResTotalMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (BackItem item : getBackItems()) {
-            if (item.getTotalMoney() != null) {
-                result = result.add(item.getTotalMoney());
-            }
-        }
-        return result;
-    }
 }

@@ -28,8 +28,6 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
     private Date operDate;
 
-    private AccountOper.AccountOperType operType;
-
     public Date getOperDate() {
         return operDate;
     }
@@ -38,15 +36,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
         this.operDate = operDate;
     }
 
-    public AccountOper.AccountOperType getOperType() {
-        return operType;
-    }
-
-    public boolean backToAdvance = true;
-
-    public void setOperType(AccountOper.AccountOperType operType) {
-        this.operType = operType;
-    }
+    public boolean backToAdvance = false;
 
     public boolean isBackToAdvance() {
         return backToAdvance;
@@ -73,7 +63,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
         orderBackHome.getInstance().getAccountOpers().add(new AccountOper(orderBackHome.getInstance(),
                 credentials.getUsername(), AccountOper.AccountOperType.ORDER_BACK, operDate,
-                BigDecimal.ZERO, BigDecimal.ZERO, orderBackHome.getInstance().getResMoney()));
+                BigDecimal.ZERO, BigDecimal.ZERO, orderBackHome.getInstance().getMoney()));
 
 
         if (backToAdvance) {

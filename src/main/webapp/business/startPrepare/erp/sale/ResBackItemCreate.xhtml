@@ -53,29 +53,6 @@
     <rich:toolbarGroup location="right">
         <h:form>
             <h:panelGrid columns="6">
-                <a:outputPanel ajaxRendered="true">
-                    <h:panelGrid columns="10">
-                        #{messages.OrderBack_field_SaveMoney}
-                        <a:outputPanel ajaxRendered="true">
-                            <h:inputText id="saveMoneyInput" styleClass="barOrderNumber"
-                                         label="#{messages.OrderBack_field_SaveMoney}" required="true"
-                                         value="#{storeResBackCreate.instance.saveMoney}">
-                                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                                 type="currency" groupingUsed="false"/>
-                                <f:validateDoubleRange minimum="0" maximum="#{storeResBackCreate.resTotalMoney}"/>
-                                <a:ajax event="blur" execute="@this"
-                                        listener="#{storeResBackCreate.calcBackMoney}"/>
-                            </h:inputText>
-                            <rich:message for="saveMoneyInput" styleClass="message-icon"
-                                          showDetail="true" showSummary="true" tooltip="true"/>
-
-                            <h:outputText value="#{storeResBackCreate.instance.money}">
-                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                            </h:outputText>
-                        </a:outputPanel>
-                    </h:panelGrid>
-                </a:outputPanel>
-
 
                 <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                           includePageParams="false"
@@ -277,7 +254,7 @@
                 <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
             </h:outputText>
             <f:facet name="footer">
-                <h:outputText value="#{storeResBackCreate.resTotalMoney}">
+                <h:outputText value="#{storeResBackCreate.instance.money}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </f:facet>

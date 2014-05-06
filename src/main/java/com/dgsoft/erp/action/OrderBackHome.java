@@ -8,6 +8,7 @@ import com.dgsoft.erp.model.*;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.*;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -53,8 +54,19 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
     }
 
 
+    public void calcBackMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (BackItem item : getBackItems()) {
+            if (item.getTotalMoney() != null) {
+                result = result.add(item.getTotalMoney());
+            }
+        }
+        getInstance().setMoney(result);
+    }
+
+    @Deprecated
     public BigDecimal getResTotalMoney() {
-        return getInstance().getResTotalMoney();
+        return getInstance().getMoney();
     }
 
     @Transactional
@@ -82,7 +94,7 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         ProcessInstanceHome processInstanceHome = (ProcessInstanceHome) Component.getInstance(ProcessInstanceHome.class, true);
         processInstanceHome.setProcessDefineName("orderCancel");
         processInstanceHome.setProcessKey(getInstance().getId());
-        if ("removed".equals(remove())){
+        if ("removed".equals(remove())) {
             processInstanceHome.stop();
         }
 

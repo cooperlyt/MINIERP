@@ -102,6 +102,7 @@ public class StoreResBackCreate extends OrderBackHome {
 
             backItems.add(item);
             backItemCreate.createNext();
+            calcBackMoney();
         } else {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
         }

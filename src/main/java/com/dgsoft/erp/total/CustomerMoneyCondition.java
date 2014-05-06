@@ -49,7 +49,7 @@ public class CustomerMoneyCondition {
             result.add(AccountOper.AccountOperType.DEPOSIT_BACK);
         }
         if (containCancel) {
-            result.add(AccountOper.AccountOperType.ORDER_CANCEL);
+            result.add(AccountOper.AccountOperType.ORDER_CANCELED);
         }
         if (containOrderFree) {
             result.add(AccountOper.AccountOperType.ORDER_FREE);

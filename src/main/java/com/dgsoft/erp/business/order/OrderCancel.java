@@ -24,13 +24,23 @@ public class OrderCancel {
     @Logger
     private Log log;
 
+    private OrderHome.OrderCancelType orderCancelType;
+
+    public OrderHome.OrderCancelType getOrderCancelType() {
+        return orderCancelType;
+    }
+
+    public void setOrderCancelType(OrderHome.OrderCancelType orderCancelType) {
+        this.orderCancelType = orderCancelType;
+    }
+
     @In(create = true)
     private ProcessInstanceHome processInstanceHome;
 
     @In
     private OrderHome orderHome;
 
-    @CreateProcess(definition = "cancelOrderMoney",processKey = "#{orderHome.instance.id}")
+    @CreateProcess(definition = "cancelOrderMoney", processKey = "#{orderHome.instance.id}")
     @Transactional
     public String cancelOrderMoney() {
         orderHome.getInstance().setCanceled(true);
@@ -38,7 +48,7 @@ public class OrderCancel {
             initProcessInstanceHome();
             processInstanceHome.suspend();
             return "updated";
-        }else{
+        } else {
             return null;
         }
     }
@@ -60,37 +70,43 @@ public class OrderCancel {
 //        }
 //        log.debug("backMoney:" + operMoney);
 //        if (operMoney.compareTo(BigDecimal.ZERO) != 0) {
-         //   orderHome.getInstance().getCustomer().setBalance(
-         //           orderHome.getInstance().getCustomer().getBalance().add(operMoney));
+        //   orderHome.getInstance().getCustomer().setBalance(
+        //           orderHome.getInstance().getCustomer().getBalance().add(operMoney));
         //}
 
-        for (AccountOper ao : orderHome.getInstance().getAccountOpers()) {
-            ao.revertCustomerMoney();
-        }
+        if (orderCancelType.equals(OrderHome.OrderCancelType.DELETE_ORDER)) {
+            for (AccountOper ao : orderHome.getInstance().getAccountOpers()) {
+                ao.revertCustomerMoney();
+            }
 
-        orderHome.getInstance().getCustomer().getAccountOpers().removeAll(orderHome.getInstance().getAccountOpers());
-        orderHome.getInstance().getAccountOpers().clear();
+            orderHome.getInstance().getCustomer().getAccountOpers().removeAll(orderHome.getInstance().getAccountOpers());
+            orderHome.getInstance().getAccountOpers().clear();
+        }
         orderHome.getInstance().setMoneyComplete(false);
         //orderHome.getInstance().setReceiveMoney(BigDecimal.ZERO);
 
 
         for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
-            for (Dispatch dispatch : needRes.getDispatches()) {
-                if (dispatch.getStockChange() != null) {
-                    for (StockChangeItem item : dispatch.getStockChange().getStockChangeItems()) {
-                        item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
+            if (orderCancelType.equals(OrderHome.OrderCancelType.DELETE_ORDER)) {
+                for (Dispatch dispatch : needRes.getDispatches()) {
+                    if (dispatch.getStockChange() != null) {
+                        for (StockChangeItem item : dispatch.getStockChange().getStockChangeItems()) {
+                            item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
+                        }
+                        orderHome.getEntityManager().remove(dispatch.getStockChange());
                     }
-                    orderHome.getEntityManager().remove(dispatch.getStockChange());
+                    dispatch.getOrderItems().clear();
                 }
-                dispatch.getOrderItems().clear();
+                needRes.getDispatches().clear();
             }
-            needRes.getDispatches().clear();
             needRes.setStatus(NeedRes.NeedResStatus.REMOVED);
         }
 
         for (OrderItem orderItem : orderHome.getOrderItemByStatus(EnumSet.allOf(OrderItem.OrderItemStatus.class))) {
             orderItem.setStatus(OrderItem.OrderItemStatus.REMOVED);
-            orderItem.setDispatch(null);
+            if (orderCancelType.equals(OrderHome.OrderCancelType.DELETE_ORDER)) {
+                orderItem.setDispatch(null);
+            }
         }
 
         orderHome.getInstance().setResReceived(false);

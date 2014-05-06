@@ -83,6 +83,6 @@ public class BackPrepareMoneyHome extends ErpEntityHome<BackPrepareMoney> {
 
 
     public void backAllMoney() {
-        getInstance().getAccountOper().setAdvanceReceivable(customerHome.getInstance().getAdvanceMoney());
+        getInstance().getAccountOper().setAdvanceReceivable(customerHome.getCanUseAdvanceMoney());
     }
 }

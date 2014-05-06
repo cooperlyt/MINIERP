@@ -18,8 +18,6 @@ public abstract class CancelOrderTaskHandle extends TaskHandle {
     @In(create = true)
     protected OrderBackHome orderBackHome;
 
-    @In(create = true)
-    private BussinessProcessUtils businessProcess;
 
     protected void initCancelOrderTask() {
     }

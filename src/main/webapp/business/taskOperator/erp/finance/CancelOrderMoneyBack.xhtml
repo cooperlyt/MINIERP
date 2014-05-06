@@ -18,7 +18,7 @@
 
                 <rich:toolbarGroup>
                     <h:outputText value="#{messages.OrderBackMoney}"/>
-                    <h:outputText value="#{orderBackMoney.accountOper.operMoney}">
+                    <h:outputText value="#{orderBackMoney.customerOper.accountsReceivable}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                 </rich:toolbarGroup>
@@ -55,87 +55,43 @@
                             defaultTime="#{currentTime}"
                             defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
                             label="#{messages.BackMoneyTime}"
-                            value="#{orderBackMoney.accountOper.operDate}">
+                            value="#{orderBackMoney.operDate}">
 
                     </rich:calendar>
 
                 </s:decorate>
 
-
-                <a:region>
-                    <s:decorate id="payTypeField" template="/layout/seam-edit.xhtml">
-                        <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
-                        <h:selectOneMenu style="width: 120px" label="#{messages.accountOper_field_payType}"
-                                         required="true"
-                                         value="#{orderBackMoney.accountOper.payType}">
-
-                            <s:selectItems value="#{accountBackType}" var="_payType"
-                                           label="#{messages[_payType.name()]}"
-                                           noSelectionLabel="#{messages.noSelectLabel}"/>
-                            <s:convertEnum/>
-                            <a:ajax event="valueChange" execute="@this" render="payTypeField,remitFeeField">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                        </h:selectOneMenu>
-
-                        <ui:define name="tail">
-                            <h:panelGrid columns="10"
-                                         rendered="#{(orderBackMoney.accountOper.payType eq 'BANK_TRANSFER')}">
-
-
-                                <h:outputText value="#{messages.BankAccount}#{' '}"/>
-
-                                <h:selectOneMenu value="#{orderBackMoney.accountOper.bankAccount}"
-                                                 label="#{messages.BankAccount}">
-                                    <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
-                                                   label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
-                                                   noSelectionLabel="#{messages.noSelectLabel}"/>
-                                    <f:converter converterId="erpEntityConverter"/>
-                                </h:selectOneMenu>
-
-                            </h:panelGrid>
-
-                            <h:outputText value="#{' '}#{messages.customer_field_balance}:"
-                                          rendered="#{orderBackMoney.accountOper.payType eq 'FROM_PRE_DEPOSIT'}"/>
-
-                            <h:outputText value="#{orderBackHome.instance.customer.balance}"
-                                          rendered="#{orderBackMoney.accountOper.payType eq 'FROM_PRE_DEPOSIT'}">
-                                <f:convertNumber locale="#{calendarBean.locale}"
-                                                 type="currency" groupingUsed="true"/>
-                            </h:outputText>
-
-                            <h:outputText value="#{messages.accountOper_field_checkNumber}#{' '}"
-                                          rendered="#{orderBackMoney.accountOper.payType eq 'CHECK'}"/>
-                            <h:inputText rendered="#{orderBackMoney.accountOper.payType eq 'CHECK'}"
-                                         label="#{messages.accountOper_field_checkNumber}"
-                                         value="#{orderBackMoney.accountOper.checkNumber}">
-                            </h:inputText>
-
-
-                        </ui:define>
-                    </s:decorate>
-                </a:region>
-
-                <a:outputPanel id="remitFeeField">
-                    <s:decorate template="/layout/seam-edit.xhtml"
-                                rendered="#{not (orderBackMoney.accountOper.payType eq 'FROM_PRE_DEPOSIT')}">
-                        <ui:define name="label">
-                            #{messages.accountOper_field_fee}
-                        </ui:define>
-                        <h:inputText
-                                label="#{messages.accountOper_field_fee}" required="true"
-                                size="15" value="#{orderBackMoney.accountOper.remitFee}">
-                            <f:validateDoubleRange minimum="0"/>
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                             groupingUsed="false"/>
-                        </h:inputText>
-                    </s:decorate>
-                </a:outputPanel>
-
                 <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.description}</ui:define>
-                    <h:inputTextarea value="#{orderBackMoney.accountOper.description}" rows="2" cols="100"/>
+                    <ui:define name="label">#{messages.MONEY_BACK_TO_PREPARE}</ui:define>
+                    <h:selectBooleanCheckbox value="#{orderBackMoney.backToAdvance}">
+                        <a:ajax event="click" execute="@this" render="customerBackMoneyFields"/>
+                    </h:selectBooleanCheckbox>
                 </s:decorate>
+
+
+                <a:outputPanel id="customerBackMoneyFields">
+                    <a:outputPanel rendered="#{not orderBackMoney.backToAdvance}">
+                        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                            <ui:param name="accountOper" value="#{orderBackMoney.customerOper}"/>
+                        </ui:include>
+
+
+                        <a:outputPanel id="remitFeeField">
+                            <s:decorate template="/layout/seam-edit.xhtml">
+                                <ui:define name="label">
+                                    #{messages.accountOper_field_fee}
+                                </ui:define>
+                                <h:inputText
+                                        label="#{messages.accountOper_field_fee}" required="true"
+                                        size="15" value="#{orderBackMoney.customerOper.remitFee}">
+                                    <f:validateDoubleRange minimum="0"/>
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                                     groupingUsed="false"/>
+                                </h:inputText>
+                            </s:decorate>
+                        </a:outputPanel>
+                    </a:outputPanel>
+                </a:outputPanel>
 
                 <div style="clear:both">
                     <span class="required">*</span>

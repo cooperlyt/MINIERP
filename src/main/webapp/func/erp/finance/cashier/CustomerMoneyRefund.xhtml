@@ -24,29 +24,6 @@
                 </rich:toolbarGroup>
 
                 <rich:toolbarGroup>
-                    #{messages.customer_field_ac}:
-                    <h:outputText value="#{customerHome.instance.accountMoney}" style="color: #ff0000">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </rich:toolbarGroup>
-                <rich:toolbarGroup>
-                    #{messages.customer_field_pac}:
-                    <h:outputText value="#{customerHome.instance.proxyAccountMoney}" style="color: #ff0000">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </rich:toolbarGroup>
-
-                <rich:toolbarGroup>
-                    #{messages.customer_field_accountBlance}:
-                    <h:outputText value="#{customerHome.instance.accountBalance}"
-                                  style="#{(customerHome.instance.accountBalance lt 0) ? 'color: #ff0000;' : ''}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </rich:toolbarGroup>
-                <rich:toolbarGroup>
                     #{messages.customer_field_balance}:
                     <h:outputText value="#{customerHome.instance.balance}"
                                   style="#{(customerHome.instance.balance lt 0) ? 'color: #ff0000;' : ''}">
@@ -55,6 +32,14 @@
                     </h:outputText>
                 </rich:toolbarGroup>
 
+                <rich:toolbarGroup>
+                    #{messages.customer_field_canUseBalance}:
+                    <h:outputText value="#{customerHome.canUseAdvanceMoney}"
+                                  style="#{(customerHome.canUseAdvanceMoney lt 0) ? 'color: #ff0000;' : ''}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
                     <s:button styleClass="toolBarBtn" value="#{messages.cancel}" view="/func/erp/sale/Customer.xhtml"
@@ -96,7 +81,7 @@
                     <h:inputText value="#{backPrepareMoneyHome.instance.accountOper.advanceReceivable}"
                                  label="#{messages.refundMoney}"
                                  converter="javax.faces.BigDecimal" required="true">
-                        <f:validateDoubleRange minimum="0.01" maximum="#{customerHome.instance.advanceMoney}"/>
+                        <f:validateDoubleRange minimum="0.01" maximum="#{customerHome.canUseAdvanceMoney}"/>
                     </h:inputText>
 
                     <ui:define name="tail">
