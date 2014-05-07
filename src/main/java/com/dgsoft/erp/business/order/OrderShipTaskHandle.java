@@ -13,9 +13,6 @@ import java.util.Date;
  */
 public abstract class OrderShipTaskHandle extends OrderTaskHandle {
 
-    @In
-    protected Credentials credentials;
-
 
     protected void calcStoreResCompleted(Date shipDate) {
         for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
@@ -44,10 +41,10 @@ public abstract class OrderShipTaskHandle extends OrderTaskHandle {
 
         AccountOper accountOper;
         if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
-            accountOper = new AccountOper(orderHome.getInstance(), credentials.getUsername(), AccountOper.AccountOperType.ORDER_PAY,
+            accountOper = new AccountOper(orderHome.getInstance(), orderHome.getInstance().getOrderEmp(), AccountOper.AccountOperType.ORDER_PAY,
                     shipDate, BigDecimal.ZERO, orderHome.getInstance().getMoney(), BigDecimal.ZERO, BigDecimal.ZERO);
         } else if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-            accountOper = new AccountOper(orderHome.getInstance(), credentials.getUsername(), AccountOper.AccountOperType.ORDER_PAY,
+            accountOper = new AccountOper(orderHome.getInstance(), orderHome.getInstance().getOrderEmp(), AccountOper.AccountOperType.ORDER_PAY,
                     shipDate, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, orderHome.getInstance().getMoney());
         } else {
             BigDecimal canUseAvanceMoney = orderHome.getInstance().getCustomer().getAdvanceMoney().
@@ -55,7 +52,7 @@ public abstract class OrderShipTaskHandle extends OrderTaskHandle {
             if (canUseAvanceMoney.compareTo(orderHome.getInstance().getMoney()) > 0) {
                 canUseAvanceMoney = orderHome.getInstance().getMoney();
             }
-            accountOper = new AccountOper(orderHome.getInstance(), credentials.getUsername(), AccountOper.AccountOperType.ORDER_PAY,
+            accountOper = new AccountOper(orderHome.getInstance(), orderHome.getInstance().getOrderEmp(), AccountOper.AccountOperType.ORDER_PAY,
                     shipDate, BigDecimal.ZERO, canUseAvanceMoney, orderHome.getInstance().getMoney().subtract(canUseAvanceMoney), BigDecimal.ZERO);
         }
 
