@@ -21,8 +21,6 @@ public class CustomerMoneyCondition {
 
     private boolean containBack = true;
 
-    private boolean containCancel = true;
-
     private boolean containOrderFree = false;
 
     private boolean containOrderPay = false;
@@ -47,9 +45,6 @@ public class CustomerMoneyCondition {
         }
         if (containBackPre) {
             result.add(AccountOper.AccountOperType.DEPOSIT_BACK);
-        }
-        if (containCancel) {
-            result.add(AccountOper.AccountOperType.ORDER_CANCELED);
         }
         if (containOrderFree) {
             result.add(AccountOper.AccountOperType.ORDER_FREE);
@@ -112,15 +107,6 @@ public class CustomerMoneyCondition {
 
     public void setContainBack(boolean containBack) {
         this.containBack = containBack;
-    }
-
-    @BypassInterceptors
-    public boolean isContainCancel() {
-        return containCancel;
-    }
-
-    public void setContainCancel(boolean containCancel) {
-        this.containCancel = containCancel;
     }
 
     @BypassInterceptors

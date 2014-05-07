@@ -342,7 +342,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                     case ORDER_PAY:
                         result = result.add(ap.getAdvanceReceivable());
                         break;
-                    case ORDER_CANCELED:
                     case MONEY_BACK_TO_PREPARE:
                     case MONEY_BACK_TO_CUSTOMER:
                         break;

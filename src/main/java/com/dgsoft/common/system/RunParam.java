@@ -5,6 +5,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.framework.EntityQuery;
+import org.jboss.seam.log.Logging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ public class RunParam {
     public void load() {
 
         EntityQuery<SystemParam> systemParamList = (EntityQuery<SystemParam>) Component.getInstance("systemParamList", true, true);
+
+        Logging.getLog(getClass()).debug("systemParamList" + systemParamList);
 
         loadParams(systemParamList);
 

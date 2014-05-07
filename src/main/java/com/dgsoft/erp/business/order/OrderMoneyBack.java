@@ -74,47 +74,47 @@ public class OrderMoneyBack extends OrderTaskHandle {
 
     protected String completeOrderTask(){
 
-
-        List<AccountOper> accountOpers = new ArrayList<AccountOper>(2);
-
-        accountOpers.add(new AccountOper(orderHome.getInstance(),
-                credentials.getUsername(), AccountOper.AccountOperType.ORDER_CANCELED, operDate,
-                BigDecimal.ZERO, BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(), BigDecimal.ZERO));
-
-
-        if (backToAdvance) {
-            accountOpers.add(
-                    new AccountOper(orderHome.getInstance(),
-                            credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_PREPARE, new Date(operDate.getTime() + 1001),
-                            BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(), orderHome.getInstance().getReceiveMoney(),BigDecimal.ZERO));
-        } else {
-
-            customerOper.setOperDate(new Date(operDate.getTime() + 1001));
-            accountOpers.add(customerOper);
-
-        }
-
-        for(AccountOper ap: accountOpers){
-            ap.calcCustomerMoney();
-        }
-        orderHome.getInstance().getAccountOpers().addAll(accountOpers);
-
-
-
-        orderHome.getInstance().setCanceled(true);
-        orderHome.getInstance().setMoneyComplete(true);
-        // orderBackHome.getInstance().getCustomerOrder().getCustomer().setBalance(accountOper.getAfterMoney());
-        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
-        //businessProcess.stopProcess("order",orderHome.getInstance().getId());
-        processInstanceHome.setProcessDefineName("order");
-        processInstanceHome.setProcessKey(orderHome.getInstance().getId());
-
-        if ("updated".equals(orderHome.update())) {
-
-
-            processInstanceHome.stop();
-            return super.completeOrderTask();
-        } else
+//
+//        List<AccountOper> accountOpers = new ArrayList<AccountOper>(2);
+//
+//        accountOpers.add(new AccountOper(orderHome.getInstance(),
+//                credentials.getUsername(), AccountOper.AccountOperType.ORDER_CANCELED, operDate,
+//                BigDecimal.ZERO, BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(), BigDecimal.ZERO));
+//
+//
+//        if (backToAdvance) {
+//            accountOpers.add(
+//                    new AccountOper(orderHome.getInstance(),
+//                            credentials.getUsername(), AccountOper.AccountOperType.MONEY_BACK_TO_PREPARE, new Date(operDate.getTime() + 1001),
+//                            BigDecimal.ZERO, orderHome.getInstance().getReceiveMoney(), orderHome.getInstance().getReceiveMoney(),BigDecimal.ZERO));
+//        } else {
+//
+//            customerOper.setOperDate(new Date(operDate.getTime() + 1001));
+//            accountOpers.add(customerOper);
+//
+//        }
+//
+//        for(AccountOper ap: accountOpers){
+//            ap.calcCustomerMoney();
+//        }
+//        orderHome.getInstance().getAccountOpers().addAll(accountOpers);
+//
+//
+//
+//        orderHome.getInstance().setCanceled(true);
+//        orderHome.getInstance().setMoneyComplete(true);
+//        // orderBackHome.getInstance().getCustomerOrder().getCustomer().setBalance(accountOper.getAfterMoney());
+//        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
+//        //businessProcess.stopProcess("order",orderHome.getInstance().getId());
+//        processInstanceHome.setProcessDefineName("order");
+//        processInstanceHome.setProcessKey(orderHome.getInstance().getId());
+//
+//        if ("updated".equals(orderHome.update())) {
+//
+//
+//            processInstanceHome.stop();
+//            return super.completeOrderTask();
+//        } else
             return null;
     }
 
