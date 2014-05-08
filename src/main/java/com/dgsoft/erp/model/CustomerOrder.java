@@ -54,7 +54,7 @@ public class CustomerOrder implements java.io.Serializable {
 
     private boolean middlePayed;
     private boolean includeMiddleMan;
-    private boolean moneyComplete;
+    //private boolean moneyComplete;
     private boolean earnestFirst;
 
     private RebateProgram.OrderRebateMode middleMoneyCalcType;
@@ -77,7 +77,6 @@ public class CustomerOrder implements java.io.Serializable {
         totalRebateMoney = BigDecimal.ZERO;
         middlePayed = false;
         includeMiddleMan = false;
-        moneyComplete = false;
         earnestFirst = false;
         receiveMoney = BigDecimal.ZERO;
         advanceMoney = BigDecimal.ZERO;
@@ -307,13 +306,10 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
 
-    @Column(name = "MONEY_COMPLETE", nullable = false)
+    @Transient
+    @Deprecated
     public boolean isMoneyComplete() {
-        return moneyComplete;
-    }
-
-    public void setMoneyComplete(boolean moneyComplete) {
-        this.moneyComplete = moneyComplete;
+        return true;
     }
 
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)

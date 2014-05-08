@@ -28,15 +28,7 @@ public class OrderEarnestReceive extends FinanceReceivables {
         return orderHome.getInstance().getEarnest().subtract(orderHome.getInstance().getReceiveMoney());
     }
 
-    @Override
-    public void receiveAccountOper() {
-        receiveAdvance();
-    }
 
-    @Override
-    public boolean isFreeMoney(){
-        return false;
-    }
 
     @Override
     protected String completeOrderTask() {

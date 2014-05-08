@@ -324,37 +324,37 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         calcTotalResMoney();
 
         getInstance().setMoney(getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney()));
-        calcReceiveMoney();
+        //calcReceiveMoney();
     }
 
-    public void calcReceiveMoney(){
-        if (getInstance().isAllStoreOut()){
-            BigDecimal result = BigDecimal.ZERO;
-            for (AccountOper ap: getInstance().getAccountOpers()){
-                switch (ap.getOperType()){
-
-                    case ORDER_SAVINGS:
-                        result = result.add(ap.getAccountsReceivable()).add(ap.getProxcAccountsReceiveable()).add(ap.getAdvanceReceivable());
-                        break;
-                    case ORDER_FREE:
-                        result = result.add(ap.getAccountsReceivable());
-                        break;
-                    case ORDER_PAY:
-                        result = result.add(ap.getAdvanceReceivable());
-                        break;
-                    case MONEY_BACK_TO_PREPARE:
-                    case MONEY_BACK_TO_CUSTOMER:
-                        break;
-                    default:
-                        throw new IllegalArgumentException("unkonw operType:" + ap.getOperType());
-                }
-            }
-
-            getInstance().setReceiveMoney(result);
-        }else{
-            getInstance().setReceiveMoney(getInstance().getAdvanceMoney());
-        }
-    }
+//    public void calcReceiveMoney(){
+//        if (getInstance().isAllStoreOut()){
+//            BigDecimal result = BigDecimal.ZERO;
+//            for (AccountOper ap: getInstance().getAccountOpers()){
+//                switch (ap.getOperType()){
+//
+//                    case ORDER_SAVINGS:
+//                        result = result.add(ap.getAccountsReceivable()).add(ap.getProxcAccountsReceiveable()).add(ap.getAdvanceReceivable());
+//                        break;
+//                    case ORDER_FREE:
+//                        result = result.add(ap.getAccountsReceivable());
+//                        break;
+//                    case ORDER_PAY:
+//                        result = result.add(ap.getAdvanceReceivable());
+//                        break;
+//                    case MONEY_BACK_TO_PREPARE:
+//                    case MONEY_BACK_TO_CUSTOMER:
+//                        break;
+//                    default:
+//                        throw new IllegalArgumentException("unkonw operType:" + ap.getOperType());
+//                }
+//            }
+//
+//            getInstance().setReceiveMoney(result);
+//        }else{
+//            getInstance().setReceiveMoney(getInstance().getAdvanceMoney());
+//        }
+//    }
 
     public BigDecimal getAllFare() {
         BigDecimal result = BigDecimal.ZERO;

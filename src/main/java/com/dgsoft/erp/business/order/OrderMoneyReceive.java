@@ -27,76 +27,30 @@ public class OrderMoneyReceive extends FinanceReceivables {
     private NeedResHome needResHome;
 
     @Override
-    protected void receiveAccountOper() {
-
-        BigDecimal result = null;
-        if (!orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
-            if (isFreeMoney()) {
-                accountOper = new AccountOper(orderHome.getInstance(),
-                        credentials.getUsername(), AccountOper.AccountOperType.ORDER_FREE,
-                        accountOper.getOperDate(), getOperMoney(), BigDecimal.ZERO, getOperMoney(), BigDecimal.ZERO);
-            } else {
-
-
-                BigDecimal orderMoney = getOperMoney();
-                BigDecimal advanceMoney = BigDecimal.ZERO;
-
-                if (orderMoney.compareTo(getOrderShortageMoney()) > 0) {
-                    orderMoney = getOrderShortageMoney();
-                    advanceMoney = getOperMoney().subtract(orderMoney);
-                }
-
-                accountOper.setAdvanceReceivable(advanceMoney);
-                if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-                    accountOper.setAccountsReceivable(BigDecimal.ZERO);
-                    accountOper.setProxcAccountsReceiveable(orderMoney);
-                } else {
-                    accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
-                    accountOper.setAccountsReceivable(orderMoney);
-                }
-            }
+    public BigDecimal getShortageMoney() {
+        if (orderHome.getInstance().getCustomer().getAdvanceMoney().compareTo(orderHome.getInstance().getMoney()) >= 0) {
+            return BigDecimal.ZERO;
         } else {
-            receiveAdvance();
+            return orderHome.getInstance().getMoney().subtract(orderHome.getInstance().getAdvanceMoney());
         }
-
-    }
-
-    private void addCantCompleteMsg() {
-        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                "order_money_not_enough",
-                DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
-                DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
-                DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getShortageMoney()));
     }
 
     @Override
     protected String completeOrderTask() {
-        //orderPayType change from payFirst
 
-
-        //更改收费方式 先发货  允许完成
-        if (!(!orderHome.isAnyOneStoreOut() && !orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST))) {
-            if (!orderHome.isAnyOneStoreOut() &&
-                    (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0) &&
-                    (orderHome.getInstance().getShortageMoney().compareTo(customerHome.getCanUseAdvanceMoney()) <= 0)) {
-                orderHome.getInstance().setAdvanceMoney(orderHome.getInstance().getAdvanceMoney().add(orderHome.getInstance().getShortageMoney()));
-                //除欠款发货 外 其它都不允许完成
-            } else if (!orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.OVERDRAFT) &&
-                    (orderHome.getInstance().getShortageMoney().compareTo(BigDecimal.ZERO) != 0)) {
-                addCantCompleteMsg();
+        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
+            if (getShortageMoney().compareTo(BigDecimal.ZERO) > 0) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                        "order_money_not_enough",
+                        DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
+                        DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getCustomer().getAdvanceMoney()),
+                        DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney().subtract(orderHome.getInstance().getCustomer().getAdvanceMoney())));
                 return null;
             }
-            orderHome.getInstance().setMoneyComplete(true);
+            needResHome.setId(orderHome.getMasterNeedRes().getId());
         }
+        return "taskComplete";
 
-        orderHome.calcMoneys();
-        if (orderHome.update().equals("updated")) {
-            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
-                needResHome.setId(orderHome.getMasterNeedRes().getId());
-            }
-            return "taskComplete";
-        } else
-            return null;
 
     }
 }

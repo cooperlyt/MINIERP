@@ -3,6 +3,7 @@ package com.dgsoft.erp.business.order;
 import com.dgsoft.common.system.business.TaskHandle;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.OrderHome;
+import com.dgsoft.erp.model.Customer;
 import org.jboss.seam.annotations.In;
 
 import java.math.BigDecimal;
@@ -15,17 +16,22 @@ import java.math.BigDecimal;
  */
 public abstract class OrderTaskHandle extends TaskHandle {
 
-    @In(create= true)
+    @In(create = true)
     protected OrderHome orderHome;
 
+    @Deprecated
     @In(create = true)
     protected CustomerHome customerHome;
 
-    protected void initOrderTask(){
+    protected void initOrderTask() {
     }
 
-    protected String completeOrderTask(){
+    protected String completeOrderTask() {
         return "taskComplete";
+    }
+
+    public Customer getCustomer() {
+        return orderHome.getInstance().getCustomer();
     }
 
     @Override

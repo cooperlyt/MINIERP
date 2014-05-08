@@ -22,42 +22,28 @@ import java.math.BigDecimal;
 
 public abstract class FinanceReceivables extends OrderTaskHandle {
 
-    protected AccountOper accountOper;
+//    protected AccountOper accountOper;
 
-    @In
-    protected Credentials credentials;
+//    @In
+//    protected Credentials credentials;
 
     private BigDecimal operMoney;
 
-    private boolean freeMoney;
-
-    public boolean isFreeMoney() {
-        return freeMoney;
-    }
-
-    public void setFreeMoney(boolean freeMoney) {
-        this.freeMoney = freeMoney;
-    }
-
-    public BigDecimal getOrderShortageMoney() {
-        return orderHome.getInstance().getShortageMoney();
-    }
-
     public BigDecimal getShortageMoney() {
-        return getOrderShortageMoney();
+        if (orderHome.getInstance().getCustomer().getAdvanceMoney().compareTo(orderHome.getInstance().getMoney()) >= 0) {
+            return BigDecimal.ZERO;
+        } else {
+            return orderHome.getInstance().getMoney().subtract(orderHome.getInstance().getAdvanceMoney());
+        }
     }
 
-//    private Customer getCustomer() {
-//        return orderHome.getInstance().getCustomer();
+//    public AccountOper getAccountOper() {
+//        return accountOper;
 //    }
-
-    public AccountOper getAccountOper() {
-        return accountOper;
-    }
-
-    public void setAccountOper(AccountOper accountOper) {
-        this.accountOper = accountOper;
-    }
+//
+//    public void setAccountOper(AccountOper accountOper) {
+//        this.accountOper = accountOper;
+//    }
 
     public BigDecimal getOperMoney() {
         return operMoney;
@@ -67,48 +53,48 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         this.operMoney = operMoney;
     }
 
-    public void allMoney() {
-        setOperMoney(getShortageMoney());
-    }
+//    public void allMoney() {
+//        setOperMoney(getShortageMoney());
+//    }
 
-    protected void receiveAdvance() {
-        accountOper.setAdvanceReceivable(getOperMoney());
-        accountOper.setAccountsReceivable(BigDecimal.ZERO);
-        accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+    public boolean isMoneyComplete(){
+        return getShortageMoney().compareTo(BigDecimal.ZERO) <= 0;
     }
-
-    protected abstract void receiveAccountOper();
 
     @Transactional
     public void receiveMoney() {
 
-        if (getOrderShortageMoney().compareTo(BigDecimal.ZERO) <= 0) {
+        if (getShortageMoney().compareTo(BigDecimal.ZERO) <= 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderMoneyIsComplete");
             return;
         }
 
-        if (isFreeMoney() && orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-            throw new IllegalArgumentException("EXPRESS_PROXY cant free Money");
-        }
 
-        if (!isFreeMoney() && (accountOper.getRemitFee().compareTo(getOperMoney()) >= 0)) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "remitFeeGtOperMoney");
-            return;
-        }
+//        if ((accountOper.getRemitFee().compareTo(getOperMoney()) >= 0)) {
+//            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "remitFeeGtOperMoney");
+//            return;
+//        }
 
-        receiveAccountOper();
+        //if (getCustomer().getAccountMoney().compareTo(BigDecimal.ZERO) > 0){
+            //TODO  if  getCustomer().getAccountMoney().compareTo(BigDecimal.ZERO) > 0
+
+
+            accountOper.setAdvanceReceivable(getOperMoney());
+            accountOper.setAccountsReceivable(BigDecimal.ZERO);
+            accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+       // }
+
+
         accountOper.calcCustomerMoney();
-        orderHome.getInstance().getAccountOpers().add(accountOper);
+        //orderHome.getInstance().getAccountOpers().add(accountOper);
 
 
+        orderHome.getInstance().setAdvanceMoney(
+                orderHome.getInstance().getAdvanceMoney().
+                        add((getOperMoney().compareTo(orderHome.getInstance().getMoney()) > 0) ? orderHome.getInstance().getMoney() : getOperMoney())
+        );
 
-        if (!orderHome.getInstance().isAllStoreOut()) {
-            orderHome.getInstance().setAdvanceMoney(
-                    orderHome.getInstance().getAdvanceMoney().
-                            add((getOperMoney().compareTo(orderHome.getInstance().getMoney()) > 0) ? orderHome.getInstance().getMoney() : getOperMoney() ));
-        }
-
-        orderHome.calcMoneys();
+        //TODO not save orderHome
         if ("updated".equals(orderHome.update())) {
             reset();
 
