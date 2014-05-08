@@ -240,7 +240,7 @@ public class OrderDispatch {
         operOrderItem = selectedOrderItem;
 
         operCount = new StoreResCount(operOrderItem.getStoreRes(), operOrderItem.getCount());
-
+        operCount.setUseUnit(operOrderItem.getStoreRes().getRes().getResUnitByMasterUnit());
 
         actionExecuteState.clearState();
         clearDispatch();

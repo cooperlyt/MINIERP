@@ -21,7 +21,7 @@ public class CustomerMoneyTool {
     private EntityManager erpEntityManager;
 
     public BigDecimal getOrderAdvance(String customerId){
-        return erpEntityManager.createQuery("select sum(customerOrder.advanceMoney) from CustomerOrder customerOrder " +
+        return erpEntityManager.createQuery("select COALESCE(sum(customerOrder.advanceMoney),0) from CustomerOrder customerOrder " +
                 "where customerOrder.canceled = false and customerOrder.customer.id = :customerId " +
                 "and customerOrder.allStoreOut = false",BigDecimal.class).setParameter("customerId", customerId).getSingleResult();
 

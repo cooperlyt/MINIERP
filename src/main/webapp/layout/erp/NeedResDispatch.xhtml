@@ -27,7 +27,7 @@
                              required="true" label="#{messages.dispatch_field_store}">
                 <s:selectItems value="#{storeList.resultList}" var="_store"
                                label="#{_store.name}(#{_store.id})" noSelectionLabel="#{messages.noSelectLabel}"/>
-                <a:ajax event="valueChange" render="newDispatchFields"
+                <a:ajax event="valueChange" render="newDispatchFields" execute="@this"
                         listener="#{orderDispatch.storeSelectListener}" disabled="#{orderDispatch.editInfo}"/>
                 <f:converter converterId="erpEntityConverter"/>
             </h:selectOneMenu>
@@ -53,7 +53,7 @@
                                            label="#{messages[_type.name()]}"
                                            noSelectionLabel="#{messages.noSelectLabel}"/>
                             <s:convertEnum/>
-                            <a:ajax event="valueChange" render="deliveryTypeField,expressInfoField">
+                            <a:ajax event="valueChange" execute="@this" render="deliveryTypeField,expressInfoField">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
 
