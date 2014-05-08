@@ -161,12 +161,13 @@ public class OrderChange extends OrderShipTaskHandle {
             }
 
             OrderItem newItem = new OrderItem(oweOut.getStoreRes(), oweOut.getCount(), false,
-                    OrderItem.OrderItemStatus.CREATED, false, oweOut.getDescription(), oweOut.getNeedConvertRate());
+                    OrderItem.OrderItemStatus.CREATED, false, oweOut.getDescription(), (oweOut.getNeedConvertRate() == null) ? oweOut.getStoreRes().getFloatConversionRate() : oweOut.getNeedConvertRate());
 
             if (matchItem != null) {
                 newItem.setUseUnit(matchItem.getResUnit());
                 newItem.setMoney(matchItem.getMoney());
                 newItem.setRebate(matchItem.getRebate());
+
                 newItem.calcMoney();
             }
             if (newItem.getUseUnit() == null) {
