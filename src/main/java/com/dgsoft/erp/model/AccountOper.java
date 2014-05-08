@@ -107,7 +107,7 @@ public class AccountOper implements java.io.Serializable {
     private BackPrepareMoney backPrepareMoney;
     private PreparePay preparePay;
     private OrderBack orderBack;
-    private Set<CustomerOrder> customerOrders = new HashSet<CustomerOrder>(0);
+    private CustomerOrder customerOrder;
     private BankAccount bankAccount;
     private boolean useCheck;
 
@@ -168,8 +168,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
     public AccountOper(CustomerOrder order, String operEmp, AccountOperType operType){
-        //this.customerOrder = order;
-        this.customerOrders.add(order);
+        this.customerOrder = order;
         this.customer = order.getCustomer();
         this.operEmp = operEmp;
         this.operType = operType;
@@ -177,8 +176,7 @@ public class AccountOper implements java.io.Serializable {
 
     public AccountOper(CustomerOrder order, String operEmp, AccountOperType operType, Date operDate,
                        BigDecimal remitFee, BigDecimal advanceReceivable, BigDecimal accountsReceivable, BigDecimal proxcAccountsReceiveable) {
-        //this.customerOrder = order;
-        this.customerOrders.add(order);
+        this.customerOrder = order;
         this.customer = order.getCustomer();
         this.operEmp = operEmp;
         this.operType = operType;
@@ -306,14 +304,14 @@ public class AccountOper implements java.io.Serializable {
         this.checkNumber = checkNumber;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY,targetEntity = CustomerOrder.class)
-    @JoinTable(name = "ORDER_OPER", joinColumns = @JoinColumn(name = "OPER_ID"), inverseJoinColumns = @JoinColumn(name = "ORDER_ID"))
-    public Set<CustomerOrder> getCustomerOrders() {
-        return customerOrders;
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "CUSTOMER_ORDER", nullable = true)
+    public CustomerOrder getCustomerOrder() {
+        return this.customerOrder;
     }
 
-    public void setCustomerOrders(Set<CustomerOrder> customerOrders) {
-        this.customerOrders = customerOrders;
+    public void setCustomerOrder(CustomerOrder orderPays) {
+        this.customerOrder = orderPays;
     }
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "accountOper")

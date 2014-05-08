@@ -336,7 +336,7 @@ public class CustomerOrder implements java.io.Serializable {
     }
 
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "customerOrders", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     public Set<AccountOper> getAccountOpers() {
         return accountOpers;
     }
