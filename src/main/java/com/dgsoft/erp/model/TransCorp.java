@@ -28,6 +28,7 @@ public class TransCorp implements java.io.Serializable,NamedEntity {
 	private String contact;
 	private boolean enable;
     private Set<Dispatch> dispatches = new HashSet<Dispatch>(0);
+    private Set<MoneySave> moneySaves = new HashSet<MoneySave>(0);
     private TransCorpType transCorpType;
 
 	public TransCorp() {
@@ -121,5 +122,15 @@ public class TransCorp implements java.io.Serializable,NamedEntity {
 
     public void setTransCorpType(TransCorpType transCorpType) {
         this.transCorpType = transCorpType;
+    }
+
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "transCorp")
+    public Set<MoneySave> getMoneySaves() {
+        return moneySaves;
+    }
+
+    public void setMoneySaves(Set<MoneySave> moneySaves) {
+        this.moneySaves = moneySaves;
     }
 }

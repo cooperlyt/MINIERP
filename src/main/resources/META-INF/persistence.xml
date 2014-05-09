@@ -56,7 +56,6 @@
         <class>com.dgsoft.erp.model.Allocation</class>
         <class>com.dgsoft.erp.model.AllocationRes</class>
         <class>com.dgsoft.erp.model.Assembly</class>
-        <class>com.dgsoft.erp.model.BackPrepareMoney</class>
         <class>com.dgsoft.erp.model.BackDispatch</class>
         <class>com.dgsoft.erp.model.Batch</class>
         <class>com.dgsoft.erp.model.Customer</class>
@@ -73,7 +72,6 @@
         <class>com.dgsoft.erp.model.MiddleMoneyPay</class>
         <class>com.dgsoft.erp.model.NoConvertCount</class>
         <class>com.dgsoft.erp.model.OrderBack</class>
-        <class>com.dgsoft.erp.model.PreparePay</class>
         <class>com.dgsoft.erp.model.ProductStoreIn</class>
         <class>com.dgsoft.erp.model.Res</class>
         <class>com.dgsoft.erp.model.ResCategory</class>
@@ -113,7 +111,7 @@
         <class>com.dgsoft.erp.model.StoreResRebate</class>
         <class>com.dgsoft.erp.model.PriceItem</class>
         <class>com.dgsoft.erp.model.QuotedPrice</class>
-
+        <class>com.dgsoft.erp.model.MoneySave</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

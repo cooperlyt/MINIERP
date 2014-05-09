@@ -24,7 +24,7 @@ public class BankAccount implements java.io.Serializable, NamedEntity {
 
     private boolean enable;
 
-    private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
+    private Set<MoneySave> moneySaves = new HashSet<MoneySave>(0);
 
     public BankAccount() {
     }
@@ -67,12 +67,12 @@ public class BankAccount implements java.io.Serializable, NamedEntity {
     }
 
     @OneToMany(orphanRemoval = false, fetch = FetchType.LAZY, mappedBy = "bankAccount")
-    public Set<AccountOper> getAccountOpers() {
-        return accountOpers;
+    public Set<MoneySave> getMoneySaves() {
+        return moneySaves;
     }
 
-    public void setAccountOpers(Set<AccountOper> accountOpers) {
-        this.accountOpers = accountOpers;
+    public void setMoneySaves(Set<MoneySave> moneySaves) {
+        this.moneySaves = moneySaves;
     }
 
     @Column(name = "ENABLE", nullable = false)
