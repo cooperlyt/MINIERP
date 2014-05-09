@@ -27,7 +27,8 @@ public class CustomerAccountOper implements Serializable {
         return EnumSet.of(AccountOper.AccountOperType.PROXY_SAVINGS,
                 AccountOper.AccountOperType.CUSTOMER_SAVINGS,
                 AccountOper.AccountOperType.MONEY_FREE,
-                AccountOper.AccountOperType.DEPOSIT_PAY);
+                AccountOper.AccountOperType.DEPOSIT_PAY,
+                AccountOper.AccountOperType.DEPOSIT_BACK);
     }
 
     @In

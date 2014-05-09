@@ -1,12 +1,159 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+
+    <ui:param name="functionTitle" value="#{messages.CustomerMoneySavings}"/>
+
+    <ui:define name="func-body">
+        <h:form>
+            <rich:toolbar>
+
+                <rich:toolbarGroup>
+                    #{messages.customer_field_ad}:
+                    <h:outputText value="#{customerHome.instance.advanceMoney}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup>
+                    #{messages.customer_field_ac}:
+                    <h:outputText value="#{customerHome.instance.accountMoney}" style="color: #ff0000">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+                <rich:toolbarGroup>
+                    #{messages.customer_field_pac}:
+                    <h:outputText value="#{customerHome.instance.proxyAccountMoney}" style="color: #ff0000">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup>
+                    #{messages.customer_field_accountBlance}:
+                    <h:outputText value="#{customerHome.instance.accountBalance}"
+                                  style="#{(customerHome.instance.accountBalance lt 0) ? 'color: #ff0000;' : ''}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+                <rich:toolbarGroup>
+                    #{messages.customer_field_balance}:
+                    <h:outputText value="#{customerHome.instance.balance}"
+                                  style="#{(customerHome.instance.balance lt 0) ? 'color: #ff0000;' : ''}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup location="right">
+                    <s:button value="#{messages.cancel}" action="cancel"/>
+                    <h:commandButton action="next" value="#{messages.Next}"/>
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
+            <rich:panel>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.accountOper_field_operDate}</ui:define>
+                    <rich:calendar id="orderSendLimitDateField"
+                                   enableManualInput="true"
+                                   inputSize="20"
+                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                   datePattern="#{messages.datetimepattern}"
+                                   required="true"
+                                   defaultTime="#{currentTime}"
+                                   defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                                   label="#{messages.accountOper_field_operDate}"
+                                   value="#{preparePayHome.instance.accountOper.operDate}">
+                    </rich:calendar>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.Type}</ui:define>
+                    <h:selectOneMenu value="#{preparePayHome.instance.accountOper.operType}"
+                                     required="true" label="#{messages.Type}">
+                        <s:selectItems value="#{preparePayHome.prepareTypes}" var="_type"
+                                       label="#{messages[_type.name()]}"
+                                       itemValue="#{_type}"/>
+                        <s:convertEnum/>
+                        <a:ajax event="valueChange" render="payFields" execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </h:selectOneMenu>
+                </s:decorate>
+
+                <a:outputPanel id="payFields">
+
+                    <a:outputPanel rendered="#{not (preparePayHome.instance.accountOper.operType eq 'ORDER_FREE')}">
+                        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                            <ui:param name="accountOper" value="#{preparePayHome.instance.accountOper}"/>
+                        </ui:include>
+
+                    </a:outputPanel>
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.savingsMoney}</ui:define>
+                        <h:inputText value="#{preparePayHome.operMoney}"
+                                     label="#{messages.savingsMoney}"
+                                     converter="javax.faces.BigDecimal" required="true">
+                            <f:validateDoubleRange minimum="0.01"/>
+                        </h:inputText>
+                    </s:decorate>
+
+                    <s:decorate rendered="#{not (preparePayHome.instance.accountOper.operType eq 'ORDER_FREE')}"
+                                template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.accountOper_field_fee}</ui:define>
+                        <h:inputText value="#{preparePayHome.instance.accountOper.remitFee}"
+                                     label="#{messages.accountOper_field_fee}"
+                                     required="true"
+                                     converter="javax.faces.BigDecimal">
+                            <f:validateDoubleRange minimum="0"/>
+                        </h:inputText>
+                    </s:decorate>
+                </a:outputPanel>
+
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.field_memo}</ui:define>
+                    <h:inputTextarea label="#{messages.field_memo}" value="#{preparePayHome.instance.memo}"
+                                     rows="2" cols="100"/>
+                </s:decorate>
+
+
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
+            </rich:panel>
+
+
+        </h:form>
+        <br/>
+        <h:form>
+            <rich:collapsiblePanel switchType="client"
+                                   header="#{messages.Customer}: #{customerHome.instance.name}">
+
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{customerHome.instance}"/>
+                </ui:include>
+
+            </rich:collapsiblePanel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -145,29 +145,27 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             getSingleAccountOper().setCustomer(customerHome.getReadyInstance());
             if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)) {
                 getSingleAccountOper().setAdvanceReceivable(getInstance().getMoney());
-            } else {
-                if (customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
-                    switch (saveType) {
+            } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
+                switch (saveType) {
 
-                        case BY_CURR:
-                            if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) > 0) {
-                                getSingleAccountOper().setAdvanceReceivable(getOperMoney().subtract(customerHome.getInstance().getAccountMoney()));
-                                getSingleAccountOper().setAccountsReceivable(customerHome.getInstance().getAccountMoney());
-                            } else {
-                                getSingleAccountOper().setAdvanceReceivable(getOperMoney());
-                            }
-                            break;
-                        case BY_ADVANCE:
+                    case BY_CURR:
+                        if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) > 0) {
+                            getSingleAccountOper().setAdvanceReceivable(getOperMoney().subtract(customerHome.getInstance().getAccountMoney()));
+                            getSingleAccountOper().setAccountsReceivable(customerHome.getInstance().getAccountMoney());
+                        } else {
                             getSingleAccountOper().setAdvanceReceivable(getOperMoney());
-                            break;
-                        case BY_ACCOUNT:
-                            getSingleAccountOper().setAccountsReceivable(getToAccountMoney());
-                            getSingleAccountOper().setAdvanceReceivable(getToAdvanceMoney());
-                            break;
-                    }
-                } else {
-                    throw new IllegalArgumentException("unkonw type:" + customerAccountOper.getType());
+                        }
+                        break;
+                    case BY_ADVANCE:
+                        getSingleAccountOper().setAdvanceReceivable(getOperMoney());
+                        break;
+                    case BY_ACCOUNT:
+                        getSingleAccountOper().setAccountsReceivable(getToAccountMoney());
+                        getSingleAccountOper().setAdvanceReceivable(getToAdvanceMoney());
+                        break;
                 }
+            } else {
+                throw new IllegalArgumentException("unkonw type:" + customerAccountOper.getType());
             }
         }
 

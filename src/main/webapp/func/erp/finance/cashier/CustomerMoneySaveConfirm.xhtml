@@ -1,12 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+
+    <ui:param name="functionTitle" value="#{messages.CustomerMoneySavings}"/>
+
+
+
+
+    <s:button value="#{messages.cancel}" action="cancel"/>
+    <s:button value="#{messages.complete}" action="#{customerAccountOper.doOper}"
+              rendered="#{(customerAccountOper.type eq 'DEPOSIT_PAY') or (customerAccountOper.type eq 'MONEY_FREE')}"/>
+    <s:button value="#{messages.complete}" action="#{moneySaveHome.persist}"
+            rendered="#{not (customerAccountOper.type eq 'DEPOSIT_PAY') and not (customerAccountOper.type eq 'MONEY_FREE')}"/>
+
+
+</ui:composition>
