@@ -34,7 +34,7 @@ public class AccountOper implements java.io.Serializable {
 
 
         public static EnumSet<AccountOperType> getCustomerOpers() {
-            return EnumSet.of(DEPOSIT_BACK, PROXY_SAVINGS,CUSTOMER_SAVINGS) ;
+            return EnumSet.of(DEPOSIT_BACK, PROXY_SAVINGS, CUSTOMER_SAVINGS);
         }
 
         public boolean isCustomerOper() {
@@ -55,7 +55,6 @@ public class AccountOper implements java.io.Serializable {
     private String id;
     private Customer customer;
     private String operEmp;
-    //private BigDecimal operMoney;
     private AccountOperType operType;
     private Date operDate;
     private String description;
@@ -69,13 +68,16 @@ public class AccountOper implements java.io.Serializable {
 
     public AccountOper() {
     }
-//
-//    public AccountOper(AccountOperType operType, Customer customer, String operEmp) {
-//        this.operEmp = operEmp;
-//        this.operType = operType;
-//        this.customer = customer;
-//    }
-//
+
+    public AccountOper(AccountOperType operType, Customer customer, String operEmp) {
+        this.operEmp = operEmp;
+        this.operType = operType;
+        this.customer = customer;
+        this.advanceReceivable = BigDecimal.ZERO;
+        this.accountsReceivable = BigDecimal.ZERO;
+        this.proxcAccountsReceiveable = BigDecimal.ZERO;
+    }
+
 //    public AccountOper(PreparePay preparePay, Customer customer, String operEmp) {
 //        this.operType = AccountOperType.PRE_DEPOSIT;
 //        this.preparePay = preparePay;
@@ -183,7 +185,6 @@ public class AccountOper implements java.io.Serializable {
     }
 
 
-
     @Column(name = "DESCRIPTION", length = 200)
     @Size(max = 200)
     public String getDescription() {
@@ -226,8 +227,8 @@ public class AccountOper implements java.io.Serializable {
         this.proxcAccountsReceiveable = proxcAccountsReceiveable;
     }
 
-    @ManyToOne(optional = true,fetch = FetchType.LAZY)
-    @JoinColumn(name = "SAVEING",nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "SAVEING", nullable = true)
     public MoneySave getMoneySave() {
         return moneySave;
     }
@@ -237,8 +238,8 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
-    public BigDecimal getCustomerOperMoney(){
-        switch (getOperType()){
+    public BigDecimal getCustomerOperMoney() {
+        switch (getOperType()) {
 
             case DEPOSIT_BACK:
                 return getAdvanceReceivable();
@@ -262,8 +263,8 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
-    public void calcCustomerMoney(){
-        switch (getOperType()){
+    public void calcCustomerMoney() {
+        switch (getOperType()) {
 
             case DEPOSIT_BACK:
                 //getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
@@ -281,7 +282,8 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
                 break;
             case DEPOSIT_PAY:
-
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                 break;
             case MONEY_FREE:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
@@ -298,8 +300,8 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
-    public void revertCustomerMoney(){
-        switch (getOperType()){
+    public void revertCustomerMoney() {
+        switch (getOperType()) {
 
 
             case PROXY_SAVINGS:
@@ -320,9 +322,12 @@ public class AccountOper implements java.io.Serializable {
             case ORDER_BACK:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
                 break;
+            case DEPOSIT_PAY:
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                break;
         }
     }
-
 
 
 }
