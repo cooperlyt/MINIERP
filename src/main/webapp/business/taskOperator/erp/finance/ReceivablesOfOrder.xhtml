@@ -15,59 +15,6 @@
 
     <ui:param name="orderFinanceReveiveAction" value="#{orderMoneyReceive}"/>
 
-    <ui:define name="moneyOperBefor">
-        <s:decorate template="/layout/seam-edit.xhtml">
-            <ui:define name="label">#{messages.ORDER_FREE}</ui:define>
-            <h:selectBooleanCheckbox value="#{orderMoneyReceive.freeMoney}">
-                <a:ajax event="click" render="operMoneyField" execute="@this">
-                    <a:attachQueue requestDelay="0"/>
-                </a:ajax>
-            </h:selectBooleanCheckbox>
-        </s:decorate>
-    </ui:define>
-
-    <ui:define name="tipMessages">
-        <h:panelGrid columns="2" rendered="#{orderHome.instance.payType eq 'OVERDRAFT'}">
-            <h:graphicImage value="/img/msginfo.png" title="#{messages.infoMessage}" alt="#{messages.infoMessage}:"/>
-            <h:outputText value="#{messages.order_OVERDRAFT_tip}"/>
-        </h:panelGrid>
-    </ui:define>
-    <ui:define name="toolbarContext">
-        <rich:toolbarGroup>
-            #{messages[orderHome.instance.payType.name()]}
-        </rich:toolbarGroup>
-
-        <rich:toolbarGroup>
-            <a:outputPanel ajaxRendered="true">
-                #{' '}#{messages.order_money}:
-
-                <h:outputText value="#{orderHome.instance.money}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-
-
-            </a:outputPanel>
-        </rich:toolbarGroup>
-
-        <rich:toolbarGroup>
-            <a:outputPanel ajaxRendered="true">
-                #{' '} #{messages.order_money_real}:
-                <h:outputText value="#{orderHome.instance.receiveMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </a:outputPanel>
-        </rich:toolbarGroup>
-
-        <rich:toolbarGroup>
-            <a:outputPanel ajaxRendered="true">
-                #{' '}#{messages.order_money_lacking}:
-                <h:outputText value="#{orderMoneyReceive.orderShortageMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </a:outputPanel>
-        </rich:toolbarGroup>
-
-    </ui:define>
     <ui:define name="commpleteBtn">
 
         <s:button styleClass="toolBarBtn" value="#{messages.complete}"

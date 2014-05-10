@@ -20,29 +20,15 @@ import java.util.Locale;
 @Name("orderEarnestReceive")
 public class OrderEarnestReceive extends FinanceReceivables {
 
-    @In(create = true)
-    private NeedResHome needResHome;
 
     @Override
-    public BigDecimal getShortageMoney() {
-        return orderHome.getInstance().getEarnest().subtract(orderHome.getInstance().getReceiveMoney());
-    }
-
-
-
-    @Override
-    protected String completeOrderTask() {
-        if (orderHome.getInstance().isEarnestFirst() && getShortageMoney().compareTo(BigDecimal.ZERO) > 0) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                    "order_earnest_not_enough",
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getEarnest()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getReceiveMoney()),
-                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
-
-            return null;
+    public BigDecimal getNeedMoney() {
+        if (orderHome.getInstance().isEarnestFirst()){
+            return orderHome.getInstance().getEarnest();
+        }else{
+            return BigDecimal.ZERO;
         }
-
-        needResHome.setId(orderHome.getMasterNeedRes().getId());
-        return "taskComplete";
     }
+
+
 }

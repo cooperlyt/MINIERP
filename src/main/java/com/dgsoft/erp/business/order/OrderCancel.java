@@ -24,16 +24,6 @@ public class OrderCancel {
     @Logger
     private Log log;
 
-    private OrderHome.OrderCancelType orderCancelType;
-
-    public OrderHome.OrderCancelType getOrderCancelType() {
-        return orderCancelType;
-    }
-
-    public void setOrderCancelType(OrderHome.OrderCancelType orderCancelType) {
-        this.orderCancelType = orderCancelType;
-    }
-
     @In(create = true)
     private ProcessInstanceHome processInstanceHome;
 
@@ -74,39 +64,26 @@ public class OrderCancel {
         //           orderHome.getInstance().getCustomer().getBalance().add(operMoney));
         //}
 
-        if (orderCancelType.equals(OrderHome.OrderCancelType.DELETE_ORDER)) {
-            for (AccountOper ao : orderHome.getInstance().getAccountOpers()) {
-                ao.revertCustomerMoney();
-            }
-
-            orderHome.getInstance().getCustomer().getAccountOpers().removeAll(orderHome.getInstance().getAccountOpers());
-            orderHome.getInstance().getAccountOpers().clear();
-        }
-        orderHome.getInstance().setMoneyComplete(false);
         //orderHome.getInstance().setReceiveMoney(BigDecimal.ZERO);
 
 
         for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
-            if (orderCancelType.equals(OrderHome.OrderCancelType.DELETE_ORDER)) {
-                for (Dispatch dispatch : needRes.getDispatches()) {
-                    if (dispatch.getStockChange() != null) {
-                        for (StockChangeItem item : dispatch.getStockChange().getStockChangeItems()) {
-                            item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
-                        }
-                        orderHome.getEntityManager().remove(dispatch.getStockChange());
+            for (Dispatch dispatch : needRes.getDispatches()) {
+                if (dispatch.getStockChange() != null) {
+                    for (StockChangeItem item : dispatch.getStockChange().getStockChangeItems()) {
+                        item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
                     }
-                    dispatch.getOrderItems().clear();
+                    orderHome.getEntityManager().remove(dispatch.getStockChange());
                 }
-                needRes.getDispatches().clear();
+                dispatch.getOrderItems().clear();
             }
+            needRes.getDispatches().clear();
             needRes.setStatus(NeedRes.NeedResStatus.REMOVED);
         }
 
         for (OrderItem orderItem : orderHome.getOrderItemByStatus(EnumSet.allOf(OrderItem.OrderItemStatus.class))) {
             orderItem.setStatus(OrderItem.OrderItemStatus.REMOVED);
-            if (orderCancelType.equals(OrderHome.OrderCancelType.DELETE_ORDER)) {
-                orderItem.setDispatch(null);
-            }
+            orderItem.setDispatch(null);
         }
 
         orderHome.getInstance().setResReceived(false);

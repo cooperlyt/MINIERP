@@ -2,6 +2,9 @@ package com.dgsoft.erp.business.order;
 
 
 import com.dgsoft.erp.action.CustomerHome;
+import com.dgsoft.erp.action.MoneySaveHome;
+import com.dgsoft.erp.action.NeedResHome;
+import com.dgsoft.erp.business.CustomerAccountOper;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerOrder;
@@ -12,6 +15,8 @@ import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,91 +27,68 @@ import java.math.BigDecimal;
 
 public abstract class FinanceReceivables extends OrderTaskHandle {
 
-//    protected AccountOper accountOper;
+    @In(create = true)
+    private CustomerAccountOper customerAccountOper;
 
-//    @In
-//    protected Credentials credentials;
+    @In(create = true)
+    private MoneySaveHome moneySaveHome;
 
-    private BigDecimal operMoney;
+    @In(create = true)
+    private NeedResHome needResHome;
+
+    public abstract BigDecimal getNeedMoney();
 
     public BigDecimal getShortageMoney() {
-        if (orderHome.getInstance().getCustomer().getAdvanceMoney().compareTo(orderHome.getInstance().getMoney()) >= 0) {
+        BigDecimal result = getNeedMoney().subtract(customerHome.getCanUseAdvanceMoney());
+        if (result.compareTo(BigDecimal.ZERO) <= 0){
             return BigDecimal.ZERO;
-        } else {
-            return orderHome.getInstance().getMoney().subtract(orderHome.getInstance().getAdvanceMoney());
+        }else{
+            return result;
         }
     }
 
-//    public AccountOper getAccountOper() {
-//        return accountOper;
-//    }
-//
-//    public void setAccountOper(AccountOper accountOper) {
-//        this.accountOper = accountOper;
-//    }
 
-    public BigDecimal getOperMoney() {
-        return operMoney;
-    }
-
-    public void setOperMoney(BigDecimal operMoney) {
-        this.operMoney = operMoney;
-    }
-
-//    public void allMoney() {
-//        setOperMoney(getShortageMoney());
-//    }
-
-    public boolean isMoneyComplete(){
+    public boolean isMoneyComplete() {
         return getShortageMoney().compareTo(BigDecimal.ZERO) <= 0;
     }
 
-    @Transactional
-    public void receiveMoney() {
 
-        if (getShortageMoney().compareTo(BigDecimal.ZERO) <= 0) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderMoneyIsComplete");
-            return;
+    @Override
+    protected String completeOrderTask() {
+        if (!isMoneyComplete()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                    "order_earnest_not_enough",
+                    DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
+
+            return null;
         }
 
-
-//        if ((accountOper.getRemitFee().compareTo(getOperMoney()) >= 0)) {
-//            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "remitFeeGtOperMoney");
-//            return;
-//        }
-
-        //if (getCustomer().getAccountMoney().compareTo(BigDecimal.ZERO) > 0){
-            //TODO  if  getCustomer().getAccountMoney().compareTo(BigDecimal.ZERO) > 0
-
-
-            accountOper.setAdvanceReceivable(getOperMoney());
-            accountOper.setAccountsReceivable(BigDecimal.ZERO);
-            accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
-       // }
-
-
-        accountOper.calcCustomerMoney();
-        //orderHome.getInstance().getAccountOpers().add(accountOper);
-
-
-        orderHome.getInstance().setAdvanceMoney(
-                orderHome.getInstance().getAdvanceMoney().
-                        add((getOperMoney().compareTo(orderHome.getInstance().getMoney()) > 0) ? orderHome.getInstance().getMoney() : getOperMoney())
-        );
-
-        //TODO not save orderHome
+        orderHome.getInstance().setAdvanceMoney(getNeedMoney());
         if ("updated".equals(orderHome.update())) {
-            reset();
-
-            Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
+            needResHome.setId(orderHome.getMasterNeedRes().getId());
+            return "taskComplete";
+        } else {
+            return null;
         }
-
     }
 
+    public void receiveMoney(){
+        if("persisted".equals(moneySaveHome.persist())){
+            customerAccountOper.setType(AccountOper.AccountOperType.CUSTOMER_SAVINGS);
+            customerAccountOper.setOperMoney(BigDecimal.ZERO);
+            moneySaveHome.clearInstance();
+            moneySaveHome.setSaveType(MoneySaveHome.SaveToAccountType.BY_ADVANCE);
+            moneySaveHome.initAccountOper();
+        }
+    }
+
+
     public void reset() {
-        accountOper = new AccountOper(orderHome.getInstance(), credentials.getUsername(),
-                AccountOper.AccountOperType.ORDER_SAVINGS);
-        setOperMoney(null);
+        customerAccountOper.setType(AccountOper.AccountOperType.CUSTOMER_SAVINGS);
+        customerAccountOper.setOperMoney(BigDecimal.ZERO);
+        moneySaveHome.clearInstance();
+        moneySaveHome.setSaveType(MoneySaveHome.SaveToAccountType.BY_ADVANCE);
+        moneySaveHome.initAccountOper();
     }
 
     @Override

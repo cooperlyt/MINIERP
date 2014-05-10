@@ -12,8 +12,6 @@
     <ui:param name="functionTitle" value="#{messages.CustomerMoneySavings}"/>
 
 
-
-
     <s:button value="#{messages.cancel}" action="cancel"/>
     <s:button value="#{messages.complete}" action="#{customerAccountOper.doOper}"
               rendered="#{(customerAccountOper.type eq 'DEPOSIT_PAY') or (customerAccountOper.type eq 'MONEY_FREE')}"/>

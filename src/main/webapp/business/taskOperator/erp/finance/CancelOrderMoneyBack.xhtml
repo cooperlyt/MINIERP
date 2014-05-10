@@ -52,46 +52,12 @@
                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                             datePattern="#{messages.datetimepattern}"
                             required="true"
-                            defaultTime="#{currentTime}"
-                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
                             label="#{messages.BackMoneyTime}"
-                            value="#{orderBackMoney.operDate}">
+                            value="#{orderBackMoney.customerOper.operDate}">
 
                     </rich:calendar>
 
                 </s:decorate>
-
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.MONEY_BACK_TO_PREPARE}</ui:define>
-                    <h:selectBooleanCheckbox value="#{orderBackMoney.backToAdvance}">
-                        <a:ajax event="click" execute="@this" render="customerBackMoneyFields"/>
-                    </h:selectBooleanCheckbox>
-                </s:decorate>
-
-
-                <a:outputPanel id="customerBackMoneyFields">
-                    <a:outputPanel rendered="#{not orderBackMoney.backToAdvance}">
-                        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
-                            <ui:param name="accountOper" value="#{orderBackMoney.customerOper}"/>
-                        </ui:include>
-
-
-                        <a:outputPanel id="remitFeeField">
-                            <s:decorate template="/layout/seam-edit.xhtml">
-                                <ui:define name="label">
-                                    #{messages.accountOper_field_fee}
-                                </ui:define>
-                                <h:inputText
-                                        label="#{messages.accountOper_field_fee}" required="true"
-                                        size="15" value="#{orderBackMoney.customerOper.remitFee}">
-                                    <f:validateDoubleRange minimum="0"/>
-                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
-                                                     groupingUsed="false"/>
-                                </h:inputText>
-                            </s:decorate>
-                        </a:outputPanel>
-                    </a:outputPanel>
-                </a:outputPanel>
 
                 <div style="clear:both">
                     <span class="required">*</span>

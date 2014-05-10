@@ -8,14 +8,13 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <!-- param: accountOper  render -->
     <f:subview>
         <s:decorate id="payTypeField"
                     template="/layout/seam-edit.xhtml">
             <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
             <h:selectOneMenu label="#{messages.accountOper_field_payType}"
                              required="true"
-                             value="#{accountOper.payType}">
+                             value="#{moneySaveHome.instance.payType}">
 
                 <s:selectItems value="#{accountPayTypes}" var="_payType"
                                label="#{messages[_payType.name()]}"
@@ -33,10 +32,10 @@
                 <h:panelGrid columns="10">
 
                     <h:outputText value="#{messages.BankAccount}"
-                                  rendered="#{accountOper.payType eq 'BANK_TRANSFER'}"/>
+                                  rendered="#{moneySaveHome.instance.payType eq 'BANK_TRANSFER'}"/>
 
-                    <h:selectOneMenu value="#{accountOper.bankAccount}"
-                                     rendered="#{accountOper.payType eq 'BANK_TRANSFER'}"
+                    <h:selectOneMenu value="#{moneySaveHome.instance.bankAccount}"
+                                     rendered="#{moneySaveHome.instance.payType eq 'BANK_TRANSFER'}"
                                      label="#{messages.BankAccount}">
                         <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
                                        label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
@@ -44,18 +43,18 @@
                         <f:converter converterId="erpEntityConverter"/>
                     </h:selectOneMenu>
 
-                    <h:selectBooleanCheckbox value="#{accountOper.useCheck}" rendered="#{not empty accountOper.payType}">
+                    <h:selectBooleanCheckbox value="#{moneySaveHome.instance.useCheck}" rendered="#{not empty moneySaveHome.instance.payType}">
 
                         <a:ajax execute="@this" event="click" render="checkNumberField"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText
-                            value="#{(accountOper.payType eq 'BANK_TRANSFER') ? messages.BANK_CHECK : messages.CASH_CHECK}"
-                            rendered="#{not empty accountOper.payType}"/>
+                            value="#{(moneySaveHome.instance.payType eq 'BANK_TRANSFER') ? messages.BANK_CHECK : messages.CASH_CHECK}"
+                            rendered="#{not empty moneySaveHome.instance.payType}"/>
                     <a:outputPanel id="checkNumberField">
 
-                        <h:inputText rendered="#{accountOper.useCheck}"
+                        <h:inputText rendered="#{moneySaveHome.instance.useCheck}"
                                      label="#{messages.accountOper_field_checkNumber}"
-                                     value="#{accountOper.checkNumber}">
+                                     value="#{moneySaveHome.instance.checkNumber}">
                         </h:inputText>
                     </a:outputPanel>
                 </h:panelGrid>

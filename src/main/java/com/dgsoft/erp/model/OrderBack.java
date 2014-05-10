@@ -118,15 +118,6 @@ public class OrderBack implements java.io.Serializable {
         return result;
     }
 
-    @OneToMany(orphanRemoval = false, mappedBy = "orderBack", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
-    public Set<AccountOper> getAccountOpers() {
-        return accountOpers;
-    }
-
-    public void setAccountOpers(Set<AccountOper> accountOpers) {
-        this.accountOpers = accountOpers;
-    }
-
     @Column(name = "MONEY_COMPLETE", nullable = false)
     public boolean isMoneyComplete() {
         return moneyComplete;

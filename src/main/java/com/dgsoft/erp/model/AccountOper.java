@@ -78,6 +78,16 @@ public class AccountOper implements java.io.Serializable {
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
     }
 
+    public AccountOper(MoneySave moneySave,AccountOperType operType, Customer customer, String operEmp) {
+        this.operEmp = operEmp;
+        this.operType = operType;
+        this.customer = customer;
+        this.moneySave = moneySave;
+        this.advanceReceivable = BigDecimal.ZERO;
+        this.accountsReceivable = BigDecimal.ZERO;
+        this.proxcAccountsReceiveable = BigDecimal.ZERO;
+    }
+
 //    public AccountOper(PreparePay preparePay, Customer customer, String operEmp) {
 //        this.operType = AccountOperType.PRE_DEPOSIT;
 //        this.preparePay = preparePay;
@@ -295,6 +305,7 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case ORDER_BACK:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
                 break;
         }
     }
@@ -321,6 +332,7 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case ORDER_BACK:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
                 break;
             case DEPOSIT_PAY:
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));

@@ -87,7 +87,6 @@ public class OrderCreate extends OrderHome {
     public void calcMoneys() {
         super.calcMoneys();
         calcEarnest();
-        getInstance().setMoneyComplete(getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0);
     }
 
     private void calcEarnest() {
@@ -306,7 +305,6 @@ public class OrderCreate extends OrderHome {
 
         //TODO cost calc for  BOM table
         getInstance().setTotalCost(new BigDecimal(0));
-        getInstance().setMoneyComplete(false);
 
         calcMoneys();
         //getInstance().setCreateDate(new Date());

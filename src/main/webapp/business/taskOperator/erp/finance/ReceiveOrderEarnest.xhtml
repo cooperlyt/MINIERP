@@ -11,25 +11,7 @@
     <ui:param name="functionTitle" value="#{orderEarnestReceive.taskName}"/>
 
     <ui:param name="orderFinanceReveiveAction" value="#{orderEarnestReceive}"/>
-    <ui:define name="toolbarContext">
-        <rich:toolbarGroup>
-            <a:outputPanel ajaxRendered="true">
-                #{messages.order_money}
 
-                <h:outputText value="#{orderHome.instance.earnest}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-                #{messages.order_money_real}
-                <h:outputText value="#{orderHome.instance.receiveMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-                #{messages.order_money_lacking}
-                <h:outputText value="#{orderEarnestReceive.shortageMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </a:outputPanel>
-        </rich:toolbarGroup>
-    </ui:define>
     <ui:define name="commpleteBtn">
 
         <s:button styleClass="toolBarBtn" value="#{messages.complete}"

@@ -71,16 +71,6 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
     @Transactional
     public void deleteBack() {
-        //BigDecimal operMoney = BigDecimal.ZERO;
-        for (AccountOper ao : getInstance().getAccountOpers()) {
-            ao.revertCustomerMoney();
-        }
-        //log.debug("operMoney:" + operMoney);
-//        if (operMoney.compareTo(BigDecimal.ZERO) != 0) {
-//            getInstance().getCustomer().setBalance(getInstance().getCustomer().getBalance().add(operMoney));
-//        }
-        getInstance().getCustomer().getAccountOpers().removeAll(getInstance().getAccountOpers());
-
 
         for (BackDispatch dispatch : getInstance().getBackDispatchs()) {
             if (dispatch.getStockChange() != null) {

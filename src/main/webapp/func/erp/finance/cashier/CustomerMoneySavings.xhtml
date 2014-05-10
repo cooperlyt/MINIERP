@@ -11,26 +11,28 @@
 
     <ui:param name="functionTitle" value="#{messages.CustomerMoneySavings}"/>
 
+    <ui:define name="toolbar">
 
-    <ui:define name="func-body">
-        <h:form>
-            <rich:toolbar>
-                <rich:toolbarGroup location="right">
+        <rich:toolbar>
 
-                    <h:commandButton value="#{messages.moneySave}">
-                        <s:conversationPropagation pageflow="customerMoneyOper" type="join"/>
+            <rich:toolbarGroup location="right">
+                <h:form>
+                    <h:selectOneMenu value="#{customerAccountOper.type}" label=" #{messages.accountOper_field_operType}"
+                                     required="true">
+                        <s:selectItems value="#{moneySaveTypes}" var="_type" label="#{messages[_type.name()]}"/>
+                        <s:convertEnum/>
+                    </h:selectOneMenu>
+
+                    <h:commandButton id="beginBtn" styleClass="toolBarBtn" action="#{customerAccountOper.beginOper}"  value="#{messages.ok}">
                     </h:commandButton>
+                </h:form>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+    </ui:define>
 
 
+    <ui:define name="body">
 
-                </rich:toolbarGroup>
-            </rich:toolbar>
-
-            <rich:messages globalOnly="true" ajaxRendered="true"/>
-
-
-
-        </h:form>
     </ui:define>
 
 </ui:composition>

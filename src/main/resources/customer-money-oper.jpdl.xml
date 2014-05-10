@@ -3,11 +3,10 @@
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation=
                              "http://jboss.org/schema/seam/pageflow http://jboss.org/schema/seam/pageflow-2.3.xsd"
-                     name="customerMoneyOper">
+                     name="CustomerMoneyOper">
     <start-state>
         <transition to="decideOperType"/>
     </start-state>
-
 
     <decision name="decideOperType" expression="#{customerAccountOper.type eq 'PROXY_SAVINGS'}">
         <transition name="true" to="proxyMoneySave"/>
@@ -27,29 +26,25 @@
 
     <page view-id="/func/erp/finance/cashier/ProxyMoneySave.xhtml" name="proxyMoneySave"
           no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
-        <redirect/>
         <transition to="confirm" name="next"/>
         <transition to="done" name="cancel"/>
     </page>
 
     <page view-id="/func/erp/finance/cashier/SingleCustomerMoneySave.xhtml" name="singleCustomerSave"
           no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
-        <redirect/>
         <transition to="confirm" name="next"/>
         <transition to="done" name="cancel"/>
     </page>
 
     <page view-id="/func/erp/finance/cashier/CustomerMoneySaveConfirm.xhtml" name="confirm"
           no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
-        <redirect/>
         <transition to="done" name="cancel"/>
         <transition to="done" name="updated"/>
         <transition to="confirm"/>
     </page>
 
-    <page view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" name="done">
+    <page view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" name="done" redirect="true">
         <end-conversation before-redirect="true"/>
-        <redirect/>
     </page>
 
 </pageflow-definition>

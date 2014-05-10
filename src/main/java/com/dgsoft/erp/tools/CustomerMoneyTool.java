@@ -22,7 +22,7 @@ public class CustomerMoneyTool {
 
     public BigDecimal getOrderAdvance(String customerId){
         return erpEntityManager.createQuery("select COALESCE(sum(customerOrder.advanceMoney),0) from CustomerOrder customerOrder " +
-                "where customerOrder.canceled = false and customerOrder.customer.id = :customerId " +
+                "where customerOrder.canceled = false and customerOrder.customer.id = :customerId and  customerOrder.payType = 'PAY_FIRST' " +
                 "and customerOrder.allStoreOut = false",BigDecimal.class).setParameter("customerId", customerId).getSingleResult();
 
     }

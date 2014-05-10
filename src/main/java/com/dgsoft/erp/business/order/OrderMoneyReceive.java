@@ -23,34 +23,15 @@ import java.util.Locale;
 @Name("orderMoneyReceive")
 public class OrderMoneyReceive extends FinanceReceivables {
 
-    @In(create = true)
-    private NeedResHome needResHome;
 
     @Override
-    public BigDecimal getShortageMoney() {
-        if (orderHome.getInstance().getCustomer().getAdvanceMoney().compareTo(orderHome.getInstance().getMoney()) >= 0) {
+    public BigDecimal getNeedMoney() {
+        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)){
+            return orderHome.getInstance().getMoney();
+        }else{
             return BigDecimal.ZERO;
-        } else {
-            return orderHome.getInstance().getMoney().subtract(orderHome.getInstance().getAdvanceMoney());
         }
     }
 
-    @Override
-    protected String completeOrderTask() {
 
-        if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
-            if (getShortageMoney().compareTo(BigDecimal.ZERO) > 0) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                        "order_money_not_enough",
-                        DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney()),
-                        DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getCustomer().getAdvanceMoney()),
-                        DecimalFormat.getCurrencyInstance(Locale.CHINA).format(orderHome.getInstance().getMoney().subtract(orderHome.getInstance().getCustomer().getAdvanceMoney())));
-                return null;
-            }
-            needResHome.setId(orderHome.getMasterNeedRes().getId());
-        }
-        return "taskComplete";
-
-
-    }
 }

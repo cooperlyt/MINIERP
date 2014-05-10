@@ -29,27 +29,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     @In
     private Identity identity;
 
-    public enum OrderCancelType{
-        ORDER_RES_BACK,DELETE_ORDER,CANCEL_ORDER;
-    }
-
-    public List<OrderCancelType> getAllowCancelType(){
-        if (isIdDefined()){
-            List<OrderCancelType> result = new ArrayList<OrderCancelType>();
-            if (identity.hasRole("erp.sale.manager")){
-                result.add(OrderCancelType.DELETE_ORDER);
-            }
-            if (isAnyOneMoneyPay() && !isAnyOneStoreOut() && identity.hasRole("erp.sale.manager")){
-                result.add(OrderCancelType.CANCEL_ORDER);
-            }
-            if (isAnyOneStoreOut()){
-                result.add(OrderCancelType.ORDER_RES_BACK);
-            }
-            return result;
-        }else
-            return new ArrayList<OrderCancelType>(0);
-
-    }
 
     @In(create = true)
     protected Map<String, String> messages;
@@ -302,17 +281,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
 
-    public List<AccountOper> getAccountOperByType(EnumSet<AccountOper.AccountOperType> types) {
-        List<AccountOper> result = new ArrayList<AccountOper>();
-        for (AccountOper oper : getInstance().getAccountOpers()) {
-            if (types.contains(oper.getOperType())) {
-                result.add(oper);
-            }
-        }
-        return result;
-    }
-
-
     public BigDecimal getEarnestScale() {
         if (getInstance().getEarnest() == null) {
             return BigDecimal.ZERO;
@@ -490,14 +458,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return null;
     }
 
-    public boolean isCanBackMoney() {
-        return isAnyOneMoneyPay() && !isAnyOneStoreOut();
-    }
 
-
-    public boolean isAnyOneMoneyPay() {
-        return !getInstance().getAccountOpers().isEmpty();
-    }
 
 //    public  getFirstPrice(StoreRes storeRes){
 //
@@ -531,8 +492,5 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return !getInstance().isAllStoreOut();
     }
 
-    public BigDecimal getShortageMoney() {
-        return getInstance().getShortageMoney();
-    }
 
 }

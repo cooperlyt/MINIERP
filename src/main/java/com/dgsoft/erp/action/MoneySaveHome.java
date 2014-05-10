@@ -11,6 +11,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
@@ -39,6 +41,9 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     private TransCorp transCorp;
 
     @In
+    private FacesMessages facesMessages;
+
+    @In(required = false)
     private CustomerHome customerHome;
 
     @In
@@ -100,7 +105,28 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
         this.transCorp = transCorp;
     }
 
-    public void onOperTypeChange() {
+    public void addProxyItem(){
+        getAccountOperList().add(new AccountOper(getInstance(),AccountOper.AccountOperType.PROXY_SAVINGS,customerHome.getInstance(),credentials.getUsername()));
+    }
+
+    public BigDecimal getTotalCustomerPorxyMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for(AccountOper accountOper: getAccountOperList()){
+            result = result.add(accountOper.getCustomer().getProxyAccountMoney());
+        }
+        return result;
+    }
+
+    public BigDecimal getTotalReceiveProxyMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for(AccountOper accountOper: getAccountOperList()){
+            result = result.add(accountOper.getProxcAccountsReceiveable());
+        }
+        return result;
+    }
+
+
+    public void initAccountOper() {
         getAccountOperList().clear();
 
         switch (customerAccountOper.getType()) {
@@ -113,6 +139,16 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
                 break;
 
         }
+    }
+
+    public String checkProxyMoney(){
+        if(!getTotalReceiveProxyMoney().equals(getOperMoney())){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"proxyMoneyNotBalance",getOperMoney(),getTotalReceiveProxyMoney());
+            return null;
+        }
+
+
+        return "next";
     }
 
     @Override

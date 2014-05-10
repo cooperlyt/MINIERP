@@ -3,10 +3,7 @@ package com.dgsoft.erp.business;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.security.Credentials;
 
 import javax.persistence.EntityManager;
@@ -31,7 +28,7 @@ public class CustomerAccountOper implements Serializable {
                 AccountOper.AccountOperType.DEPOSIT_BACK);
     }
 
-    @In
+    @In(required = false)
     private CustomerHome customerHome;
 
     @In
@@ -68,6 +65,10 @@ public class CustomerAccountOper implements Serializable {
 
     public void setOperMoney(BigDecimal operMoney) {
         this.operMoney = operMoney;
+    }
+
+    @Begin(pageflow = "CustomerMoneyOper",flushMode = FlushModeType.MANUAL)
+    public void beginOper(){
     }
 
     public String doOper() {

@@ -140,7 +140,12 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     }
 
     public BigDecimal getCanUseAdvanceMoney(){
-       return getInstance().getAdvanceMoney().subtract(CustomerMoneyTool.instance().getOrderAdvance(getInstance().getId()));
+        BigDecimal result = getInstance().getAdvanceMoney().subtract(CustomerMoneyTool.instance().getOrderAdvance(getInstance().getId()));
+        if (result.compareTo(BigDecimal.ZERO) <= 0){
+            return BigDecimal.ZERO;
+        }else{
+            return result;
+        }
     }
 
     public void clearCustomerAndMiddleMan() {

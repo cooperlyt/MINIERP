@@ -48,7 +48,6 @@ public class CustomerOrder implements java.io.Serializable {
     private BigDecimal money;
     private BigDecimal resMoney;
     private BigDecimal middleTotal;
-    private BigDecimal receiveMoney;
     private BigDecimal advanceMoney;
 
 
@@ -78,7 +77,6 @@ public class CustomerOrder implements java.io.Serializable {
         middlePayed = false;
         includeMiddleMan = false;
         earnestFirst = false;
-        receiveMoney = BigDecimal.ZERO;
         advanceMoney = BigDecimal.ZERO;
     }
 
@@ -305,9 +303,8 @@ public class CustomerOrder implements java.io.Serializable {
         this.tel = tel;
     }
 
-
-    @Transient
     @Deprecated
+    @Transient
     public boolean isMoneyComplete() {
         return true;
     }
@@ -331,15 +328,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.middleMoneyPay = middleMoneys;
     }
 
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    public Set<AccountOper> getAccountOpers() {
-        return accountOpers;
-    }
-
-    public void setAccountOpers(Set<AccountOper> accountOpers) {
-        this.accountOpers = accountOpers;
-    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<OrderFee> getOrderFees() {
@@ -417,16 +405,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.money = money;
     }
 
-    @Column(name = "RECEIVE_MONEY", nullable = false, scale = 3)
-    @NotNull
-    public BigDecimal getReceiveMoney() {
-        return receiveMoney;
-    }
-
-    public void setReceiveMoney(BigDecimal receiveMoney) {
-        this.receiveMoney = receiveMoney;
-    }
-
     @Column(name = "ADVANCE_MONEY", nullable = false, scale = 3)
     @NotNull
     public BigDecimal getAdvanceMoney() {
@@ -437,46 +415,6 @@ public class CustomerOrder implements java.io.Serializable {
         this.advanceMoney = advanceMoney;
     }
 
-    @Transient
-    public BigDecimal getShortageMoney() {
-        if ((getMoney() == null) || isCanceled()) {
-            return BigDecimal.ZERO;
-        }
-        BigDecimal result;
-        if (isAllStoreOut()){
-            result = getMoney().subtract(getReceiveMoney());
-        }else{
-            result = getMoney().subtract(getAdvanceMoney());
-        }
-
-        if (result.compareTo(BigDecimal.ZERO) < 0){
-            return BigDecimal.ZERO;
-        }else{
-            return result;
-        }
-
-    }
-
-    @Transient
-    public BigDecimal getArrears() {
-        if (isAllStoreOut()) {
-            return getShortageMoney();
-        } else {
-            return BigDecimal.ZERO;
-        }
-    }
-
-    @Transient
-    public List<AccountOper> getAccountOperList() {
-        List<AccountOper> result = new ArrayList<AccountOper>(getAccountOpers());
-        Collections.sort(result, new Comparator<AccountOper>() {
-            @Override
-            public int compare(AccountOper o1, AccountOper o2) {
-                return o1.getOperDate().compareTo(o2.getOperDate());
-            }
-        });
-        return result;
-    }
 
     @Transient
     public StoreResPriceGroup getAllOrderItemList() {

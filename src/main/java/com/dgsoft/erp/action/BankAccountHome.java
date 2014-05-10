@@ -20,7 +20,7 @@ public class BankAccountHome extends ErpSimpleEntityHome<BankAccount> {
 
     @Override
     protected boolean verifyRemoveAvailable() {
-        if (!getInstance().getAccountOpers().isEmpty()) {
+        if (!getInstance().getMoneySaves().isEmpty()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "CantRemoveBankAccount");
             return false;
         }
