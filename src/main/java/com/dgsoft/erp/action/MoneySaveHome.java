@@ -65,7 +65,12 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     }
 
     public BigDecimal getOperMoney() {
-        return getInstance().getMoney().add(getInstance().getRemitFee());
+        if (customerAccountOper.getOperMoney() == null) {
+            return null;
+        } else if (getInstance().getRemitFee() == null) {
+            return customerAccountOper.getOperMoney();
+        } else
+            return customerAccountOper.getOperMoney().add(getInstance().getRemitFee());
     }
 
     public SaveToAccountType getSaveType() {
@@ -93,7 +98,13 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     }
 
     public BigDecimal getToAdvanceMoney() {
-        return getOperMoney().subtract(getToAccountMoney());
+        if (getOperMoney() == null) {
+            return null;
+        }
+        if (getToAccountMoney() == null) {
+            return getOperMoney();
+        } else
+            return getOperMoney().subtract(getToAccountMoney());
     }
 
 
@@ -105,21 +116,21 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
         this.transCorp = transCorp;
     }
 
-    public void addProxyItem(){
-        getAccountOperList().add(new AccountOper(getInstance(),AccountOper.AccountOperType.PROXY_SAVINGS,customerHome.getInstance(),credentials.getUsername()));
+    public void addProxyItem() {
+        getAccountOperList().add(new AccountOper(getInstance(), AccountOper.AccountOperType.PROXY_SAVINGS, customerHome.getInstance(), credentials.getUsername()));
     }
 
-    public BigDecimal getTotalCustomerPorxyMoney(){
+    public BigDecimal getTotalCustomerPorxyMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for(AccountOper accountOper: getAccountOperList()){
+        for (AccountOper accountOper : getAccountOperList()) {
             result = result.add(accountOper.getCustomer().getProxyAccountMoney());
         }
         return result;
     }
 
-    public BigDecimal getTotalReceiveProxyMoney(){
+    public BigDecimal getTotalReceiveProxyMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for(AccountOper accountOper: getAccountOperList()){
+        for (AccountOper accountOper : getAccountOperList()) {
             result = result.add(accountOper.getProxcAccountsReceiveable());
         }
         return result;
@@ -127,13 +138,14 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
 
 
     public void initAccountOper() {
+        getInstance();
         getAccountOperList().clear();
 
         switch (customerAccountOper.getType()) {
 
             case DEPOSIT_BACK:
             case CUSTOMER_SAVINGS:
-                getAccountOperList().add(new AccountOper(customerAccountOper.getType(), customerHome.getReadyInstance(), credentials.getUsername()));
+                getAccountOperList().add(new AccountOper(customerAccountOper.getType(), credentials.getUsername()));
                 break;
             case PROXY_SAVINGS:
                 break;
@@ -141,9 +153,9 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
         }
     }
 
-    public String checkProxyMoney(){
-        if(!getTotalReceiveProxyMoney().equals(getOperMoney())){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"proxyMoneyNotBalance",getOperMoney(),getTotalReceiveProxyMoney());
+    public String checkProxyMoney() {
+        if (!getTotalReceiveProxyMoney().equals(getOperMoney())) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "proxyMoneyNotBalance", getOperMoney(), getTotalReceiveProxyMoney());
             return null;
         }
 
@@ -153,6 +165,7 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
 
     @Override
     protected boolean wire() {
+        getInstance().setMoney(customerAccountOper.getOperMoney());
 
         if (!customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) &&
                 (getAccountOperList().size() != 1)) {
@@ -169,8 +182,11 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             accountOper.setMoneySave(getInstance());
             accountOper.setAdvanceReceivable(BigDecimal.ZERO);
             accountOper.setAccountsReceivable(BigDecimal.ZERO);
+
             if (!customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS)) {
                 accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+                accountOper.setCustomer(customerHome.getReadyInstance());
+
             }
         }
 

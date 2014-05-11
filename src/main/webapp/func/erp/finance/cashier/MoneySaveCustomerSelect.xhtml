@@ -16,11 +16,18 @@
         <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
         <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
 
+        <h:outputStylesheet>
+
+            .saleAreaSelect input[type="text"] {
+                width: 115px;
+            }
+        </h:outputStylesheet>
+
         <h:form>
             <rich:toolbar>
                 <rich:toolbarGroup location="right">
                     <s:button value="#{messages.cancel}" action="cancel"/>
-                    <h:commandButton action="next" value="#{messages.Next}"/>
+                    <h:commandButton styleClass="toolBarBtn" action="next" value="#{messages.Next}"/>
 
                 </rich:toolbarGroup>
             </rich:toolbar>
@@ -33,15 +40,15 @@
 
                 <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
                     <ui:define name="label">#{messages.CustomerArea}</ui:define>
-                    <rich:select value="#{customerAreaHome.id}" required="true"
+                    <rich:select value="#{customerAreaHome.id}"  required="#{not customerHome.idDefined}"
                                  label="#{messages.CustomerArea}"
                                  styleClass="saleAreaSelect" listWidth="132px">
-                        <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                        <s:selectItems value="#{customerAreaList}" var="_customerArea"
                                        noSelectionLabel="#{messages.noSelectLabel}"
                                        label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
                         <a:ajax event="selectitem" execute="@this"
                                 listener="#{orderCreate.clearCustomer}"
-                                render="customerSelectNameField,customerInfo,orderContactFields">
+                                render="customerSelectNameField,customerInfo">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </rich:select>
@@ -53,7 +60,6 @@
                     <rich:autocomplete id="pinyinSearchCustomer"
                                        mode="client" minChars="1" autofill="false"
                                        showButton="true"
-                                       disabled="#{not customerAreaHome.idDefined}"
                                        selectFirst="true"
                                        label="#{messages.Customer}"
                                        clientFilterFunction="pinyinFilter"
@@ -63,11 +69,11 @@
 
                         <h:outputText value="#{_customer.name}"/>
                         <a:ajax event="selectitem"
-                                render="pinyinSearchCustomer,customerInfo" execute="@this">
+                                render="pinyinSearchCustomer,customerInfo,customerAreaField" execute="@this">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                         <a:ajax event="blur" execute="@this"
-                                render="pinyinSearchCustomer,customerInfo">
+                                render="pinyinSearchCustomer,customerInfo,customerAreaField">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </rich:autocomplete>
@@ -75,7 +81,7 @@
                         <a:commandButton immediate="true" image="/img/refresh.png"
                                          action="#{orderCreate.clearCustomerAndMiddleMan}"
                                          execute="@this"
-                                         render="customerInfo,customerSelectNameField">
+                                         render="customerInfo,customerSelectNameField,customerAreaField">
                             <a:attachQueue requestDelay="0"/>
                         </a:commandButton>
                     </ui:define>
@@ -84,7 +90,6 @@
 
 
             <a:outputPanel id="customerInfo">
-                <a:outputPanel rendered="#{customerAreaHome.idDefined}">
                     <rich:panel>
 
                         <f:facet name="header">
@@ -105,7 +110,6 @@
 
                     </rich:panel>
 
-                </a:outputPanel>
 
             </a:outputPanel>
 

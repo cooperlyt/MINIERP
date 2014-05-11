@@ -19,9 +19,7 @@
 
     <s:decorate template="/layout/view-details.xhtml">
         <ui:include src="/layout/erp/CustomerView.xhtml">
-
             <ui:param name="customer" value="#{orderHome.instance.customer}"/>
-
         </ui:include>
         <ui:param name="labelValue" value="#{orderHome.instance.customer.name}"/>
         <ui:param name="openLabel" value="#{messages.Customer}"/>

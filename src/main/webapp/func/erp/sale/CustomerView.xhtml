@@ -268,7 +268,7 @@
                                    noSelectionLabel="#{messages.searchNoSelectLabel}"
                                    label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
                     <a:ajax event="selectitem" execute="@this"
-                            listener="#{orderCreate.clearCustomer}"
+                            listener="#{customerHome.clearCustomerAndMiddleMan}"
                             render="customerSelectNameField,customerAreaField,customerDetails">
                         <a:attachQueue requestDelay="0"/>
                     </a:ajax>
@@ -289,8 +289,7 @@
                                    fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
 
                     <h:outputText value="#{_customer.name}"/>
-                    <a:ajax event="selectitem" render="customerSelectNameField,customerDetails"
-                            listener="#{needResHome.customerChangeListener}" execute="@this">
+                    <a:ajax event="selectitem" render="customerSelectNameField,customerDetails" execute="@this">
                         <a:attachQueue requestDelay="0"/>
                     </a:ajax>
                     <a:ajax event="blur" execute="@this" render="customerSelectNameField,customerDetails">

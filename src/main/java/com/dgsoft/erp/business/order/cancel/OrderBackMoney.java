@@ -28,9 +28,10 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
     @Override
     protected void initCancelOrderTask() {
-        customerOper = new AccountOper(AccountOper.AccountOperType.ORDER_BACK,orderBackHome.getInstance().getCustomer(),credentials.getUsername());
+        customerOper = new AccountOper(AccountOper.AccountOperType.ORDER_BACK,credentials.getUsername());
         customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
         customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
+        customerOper.setCustomer(orderBackHome.getInstance().getCustomer());
     }
 
     public AccountOper getCustomerOper() {

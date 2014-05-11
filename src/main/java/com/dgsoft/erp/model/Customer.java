@@ -52,6 +52,9 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
     public Customer(boolean enable){
         this.enable = enable;
+        advanceMoney = BigDecimal.ZERO;
+        accountMoney = BigDecimal.ZERO;
+        proxyAccountMoney = BigDecimal.ZERO;
     }
 
     @Id

@@ -1,7 +1,9 @@
 package com.dgsoft.erp.business;
 
 import com.dgsoft.erp.action.CustomerHome;
+import com.dgsoft.erp.action.MoneySaveHome;
 import com.dgsoft.erp.model.AccountOper;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.security.Credentials;
@@ -69,12 +71,15 @@ public class CustomerAccountOper implements Serializable {
 
     @Begin(pageflow = "CustomerMoneyOper",flushMode = FlushModeType.MANUAL)
     public void beginOper(){
+        if (!getType().equals(AccountOper.AccountOperType.DEPOSIT_PAY) && !getType().equals(AccountOper.AccountOperType.MONEY_FREE)){
+            ((MoneySaveHome)Component.getInstance(MoneySaveHome.class,true)).initAccountOper();
+        }
     }
 
     public String doOper() {
-        AccountOper accountOper = new AccountOper(getType(), customerHome.getReadyInstance(), credentials.getUsername());
+        AccountOper accountOper = new AccountOper(getType(), credentials.getUsername());
         accountOper.setOperDate(getOperDate());
-
+        accountOper.setCustomer(customerHome.getReadyInstance());
         if (getType().equals(AccountOper.AccountOperType.DEPOSIT_PAY)) {
             accountOper.setAdvanceReceivable(getOperMoney());
             accountOper.setAccountsReceivable(getOperMoney());
@@ -84,9 +89,8 @@ public class CustomerAccountOper implements Serializable {
             accountOper.setAccountsReceivable(getOperMoney());
             accountOper.calcCustomerMoney();
         } else {
-            throw new IllegalArgumentException("doOper unkonw operType:" + getType());
+           return  ((MoneySaveHome)Component.getInstance(MoneySaveHome.class,true)).persist();
         }
-
 
         erpEntityManager.persist(accountOper);
         erpEntityManager.flush();

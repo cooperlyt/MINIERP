@@ -3,6 +3,25 @@ DELETE FROM MINI_ERP.ACCOUNT_OPER WHERE OPER_TYPE='ORDER_PAY' and
 
 
 
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.sale.manager' AND FUN_ID = 'erp.search.preparePayList');
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.sale.manager'AND FUN_ID = 'erp.search.backPrepareList');
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.sale.saler'AND FUN_ID = 'erp.search.preparePayList');
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.sale.saler'AND FUN_ID = 'erp.search.backPrepareList');
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.finance.accountancy'AND FUN_ID = 'erp.search.preparePayList');
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.finance.accountancy'AND FUN_ID = 'erp.search.backPrepareList');
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.finance.cashier'AND FUN_ID = 'erp.search.preparePayList');
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE (ROL_ID = 'erp.finance.cashier'AND FUN_ID = 'erp.search.backPrepareList');
+
+DELETE FROM DG_SYSTEM.FUNCTION WHERE (ID='erp.search.preparePayList');
+DELETE FROM DG_SYSTEM.FUNCTION WHERE (ID= 'erp.search.backPrepareList');
+
+
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.cashier.moneySave','收款','erp.sale.mgr','','/func/erp/finance/cashier/CustomerMoneySavings.seam','','501','');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.accountancy', 'erp.cashier.moneySave');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.cashier', 'erp.cashier.moneySave');
+
+
+
 
 ALTER TABLE MINI_ERP.CUSTOMER_ORDER DROP RECEIVE_MONEY;
 

@@ -40,8 +40,9 @@ public abstract class OrderShipTaskHandle extends OrderTaskHandle {
         orderHome.getInstance().setAllShipDate(shipDate);
 
         if (orderHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) != 0) {
-            AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, getCustomer(), orderHome.getInstance().getOrderEmp());
+            AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, orderHome.getInstance().getOrderEmp());
             accountOper.setOperDate(shipDate);
+            accountOper.setCustomer(getCustomer());
             if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
                 accountOper.setAdvanceReceivable(orderHome.getInstance().getMoney());
             } else if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
