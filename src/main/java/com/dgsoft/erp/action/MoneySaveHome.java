@@ -69,8 +69,10 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             return null;
         } else if (getInstance().getRemitFee() == null) {
             return customerAccountOper.getOperMoney();
-        } else
+        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) || customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)){
             return customerAccountOper.getOperMoney().add(getInstance().getRemitFee());
+        } else return customerAccountOper.getOperMoney();
+
     }
 
     public SaveToAccountType getSaveType() {
@@ -154,7 +156,7 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     }
 
     public String checkProxyMoney() {
-        if (!getTotalReceiveProxyMoney().equals(getOperMoney())) {
+        if (getTotalReceiveProxyMoney().compareTo(getOperMoney()) != 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "proxyMoneyNotBalance", getOperMoney(), getTotalReceiveProxyMoney());
             return null;
         }

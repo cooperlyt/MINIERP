@@ -278,13 +278,8 @@ public class AccountOper implements java.io.Serializable {
         switch (getOperType()) {
 
             case DEPOSIT_BACK:
-                //getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
-//                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
-//                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
-//                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
                 break;
-
-
             case PROXY_SAVINGS:
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
                 break;
@@ -315,7 +310,9 @@ public class AccountOper implements java.io.Serializable {
     public void revertCustomerMoney() {
         switch (getOperType()) {
 
-
+            case DEPOSIT_BACK:
+                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                break;
             case PROXY_SAVINGS:
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
                 break;
