@@ -50,22 +50,10 @@ public class OrderCancel {
 
     @Transactional
     public void removeOrder() {
-//        BigDecimal operMoney = BigDecimal.ZERO;
-//        for (AccountOper ao : orderHome.getInstance().getAccountOpers()) {
-//            if (ao.getOperType().isAdd()) {
-//                operMoney = operMoney.subtract(ao.getOperMoney());
-//            } else {
-//                operMoney = operMoney.add(ao.getOperMoney());
-//            }
-//        }
-//        log.debug("backMoney:" + operMoney);
-//        if (operMoney.compareTo(BigDecimal.ZERO) != 0) {
-        //   orderHome.getInstance().getCustomer().setBalance(
-        //           orderHome.getInstance().getCustomer().getBalance().add(operMoney));
-        //}
-
-        //orderHome.getInstance().setReceiveMoney(BigDecimal.ZERO);
-
+        for (AccountOper ao : orderHome.getInstance().getAccountOpers()) {
+            ao.revertCustomerMoney();
+            orderHome.getEntityManager().remove(ao);
+        }
 
         for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
             for (Dispatch dispatch : needRes.getDispatches()) {

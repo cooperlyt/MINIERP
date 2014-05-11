@@ -65,10 +65,11 @@ public class AccountOper implements java.io.Serializable {
 
     private MoneySave moneySave;
 
+    private CustomerOrder customerOrder;
+
 
     public AccountOper() {
     }
-
 
 
     public AccountOper(AccountOperType operType, String operEmp) {
@@ -238,7 +239,7 @@ public class AccountOper implements java.io.Serializable {
         this.proxcAccountsReceiveable = proxcAccountsReceiveable;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "SAVEING", nullable = true)
     public MoneySave getMoneySave() {
         return moneySave;
@@ -246,6 +247,16 @@ public class AccountOper implements java.io.Serializable {
 
     public void setMoneySave(MoneySave moneySave) {
         this.moneySave = moneySave;
+    }
+
+    @ManyToOne(optional = true, fetch = FetchType.LAZY,targetEntity = CustomerOrder.class)
+    @JoinColumn(name="CUSTOMER_ORDER",nullable = true)
+    public CustomerOrder getCustomerOrder() {
+        return customerOrder;
+    }
+
+    public void setCustomerOrder(CustomerOrder customerOrder) {
+        this.customerOrder = customerOrder;
     }
 
     @Transient

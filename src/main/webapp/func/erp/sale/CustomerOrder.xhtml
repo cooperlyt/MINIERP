@@ -242,7 +242,7 @@
     #{messages[_order.payType.name()]}
 
 </rich:column>
-<rich:column style="text-align: center; font-size: 8pt;" width="170px">
+<rich:column style="text-align: center; font-size: 8pt;" width="130px">
     <f:facet name="header">
         #{messages.order_status}
     </f:facet>
@@ -270,54 +270,6 @@
 
     <f:facet name="footer">
         <h:outputText value="#{orderList.totalMoney}">
-            <f:convertNumber locale="#{calendarBean.locale}"
-                             type="currency" groupingUsed="true"/>
-        </h:outputText>
-
-    </f:facet>
-</rich:column>
-
-<rich:column style="text-align: right" footerClass="moneyTableFooter"
-             rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
-
-    <f:facet name="header">
-        <ui:include src="/layout/a4jSort.xhtml">
-            <ui:param name="entityList" value="#{orderList}"/>
-            <ui:param name="propertyLabel" value="#{messages.orderReceiveMoney}"/>
-            <ui:param name="propertyPath" value="customerOrder.receiveMoney"/>
-        </ui:include>
-    </f:facet>
-
-    <h:outputText value="#{_order.receiveMoney}">
-        <f:convertNumber locale="#{calendarBean.locale}"
-                         type="currency" groupingUsed="true"/>
-    </h:outputText>
-
-
-    <f:facet name="footer">
-        <h:outputText value="#{orderList.totalReceiveMoney}">
-            <f:convertNumber locale="#{calendarBean.locale}"
-                             type="currency" groupingUsed="true"/>
-        </h:outputText>
-
-    </f:facet>
-</rich:column>
-
-<rich:column style="text-align: right" footerClass="moneyTableFooter"
-             rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
-
-    <f:facet name="header">
-        #{messages.orderShortageMoney}
-    </f:facet>
-
-    <h:outputText value="#{_order.shortageMoney}">
-        <f:convertNumber locale="#{calendarBean.locale}"
-                         type="currency" groupingUsed="true"/>
-    </h:outputText>
-
-
-    <f:facet name="footer">
-        <h:outputText value="#{orderList.totalShortageMoney}">
             <f:convertNumber locale="#{calendarBean.locale}"
                              type="currency" groupingUsed="true"/>
         </h:outputText>

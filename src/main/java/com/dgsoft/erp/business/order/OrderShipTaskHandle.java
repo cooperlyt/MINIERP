@@ -41,6 +41,7 @@ public abstract class OrderShipTaskHandle extends OrderTaskHandle {
 
         if (orderHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) != 0) {
             AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, orderHome.getInstance().getOrderEmp());
+            accountOper.setCustomerOrder(orderHome.getInstance());
             accountOper.setOperDate(shipDate);
             accountOper.setCustomer(getCustomer());
             if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
@@ -52,7 +53,7 @@ public abstract class OrderShipTaskHandle extends OrderTaskHandle {
             }
 
             accountOper.calcCustomerMoney();
-            orderHome.getEntityManager().persist(accountOper);
+            orderHome.getInstance().getAccountOpers().add(accountOper);
         }
     }
 

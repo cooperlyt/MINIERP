@@ -63,6 +63,7 @@ public class CustomerOrder implements java.io.Serializable {
     private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
     private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
 
+
     public CustomerOrder() {
     }
 
@@ -309,6 +310,12 @@ public class CustomerOrder implements java.io.Serializable {
         return true;
     }
 
+    @Deprecated
+    @Transient
+    public BigDecimal getShortageMoney() {
+        return null;
+    }
+
     @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
     public boolean isIncludeMiddleMan() {
         return this.includeMiddleMan;
@@ -415,6 +422,14 @@ public class CustomerOrder implements java.io.Serializable {
         this.advanceMoney = advanceMoney;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "customerOrder")
+    public Set<AccountOper> getAccountOpers() {
+        return accountOpers;
+    }
+
+    public void setAccountOpers(Set<AccountOper> accountOpers) {
+        this.accountOpers = accountOpers;
+    }
 
     @Transient
     public StoreResPriceGroup getAllOrderItemList() {

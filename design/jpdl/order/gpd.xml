@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="order" width="1003" height="879">
+<root-container name="order" width="989" height="879">
   <node name="生成订单" x="43" y="15" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>

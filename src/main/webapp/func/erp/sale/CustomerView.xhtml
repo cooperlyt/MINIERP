@@ -181,30 +181,6 @@
             </rich:toolbarGroup>
 
             <rich:toolbarGroup>
-                <h:graphicImage value="/img/savingsMoney.png"/>
-                <s:link view="/func/erp/finance/cashier/CustomerMoneySavings.xhtml"
-                        value="#{messages.CustomerMoneySavings}"
-                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.finance.cashier'))}"
-                        propagation="begin">
-                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
-                    <p:param name="from" value="/func/erp/sale/CustomerView.xhtml"/>
-                </s:link>
-                #{' '}
-
-            </rich:toolbarGroup>
-
-
-            <rich:toolbarGroup>
-                <h:graphicImage value="/img/refundMoney.png"/>
-                <s:link view="/func/erp/finance/cashier/CustomerMoneyRefund.xhtml"
-                        value="#{messages.CustomerMoneyRefund}"
-                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.finance.cashier'))}"
-                        propagation="begin">
-                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
-                </s:link>
-            </rich:toolbarGroup>
-
-            <rich:toolbarGroup>
                 <h:graphicImage value="/img/order.png"/>
                 <s:link value="#{messages.newOrder}"
                         disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
@@ -345,14 +321,103 @@
                     </h:panelGrid>
                 </a:region>
 
-                <s:decorate id="dataResult" template="/layout/erp/biz/CustomerAccountOperTable.xhtml">
-                    <ui:param name="value" value="#{accountOperList.resultList}"/>
-                    <a:outputPanel rendered="#{not empty accountOperList.resultList}">
-                        <ui:include src="/layout/pageA4jNavigation.xhtml">
-                            <ui:param name="entityList" value="#{accountOperList}"/>
-                        </ui:include>
-                    </a:outputPanel>
-                </s:decorate>
+
+                <rich:dataTable id="dataResult" style="width: 100%" noDataLabel="#{messages.emptyResult}"
+                                 value="#{accountOperList.resultList}" var="_item">
+
+                    <f:facet name="footer">
+                        <a:outputPanel rendered="#{not empty accountOperList.resultList}">
+                            <ui:include src="/layout/pageA4jNavigation.xhtml">
+                                <ui:param name="entityList" value="#{accountOperList}"/>
+                            </ui:include>
+                        </a:outputPanel>
+                    </f:facet>
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operDate}
+                        </f:facet>
+                        <h:outputText value="#{_item.operDate}">
+                            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                        </h:outputText>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operType}
+                        </f:facet>
+                        #{messages[_item.operType.name()]}
+                    </rich:column>
+                    <rich:column style="text-align: right">
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operMoney}
+                        </f:facet>
+                        <a:outputPanel>
+                            <h:outputText value="#{_item.customerOperMoney}">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                            </h:outputText>
+                            <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                                          layout="block">
+                                    <span style="white-space: nowrap">
+                                        #{messages.customer_field_ad}
+                                        <h:outputText value="#{_item.advanceReceivable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>  #{messages.customer_field_ac}
+                                        <h:outputText value="#{_item.accountsReceivable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>   #{messages.customer_field_pac}
+                                        <h:outputText value="#{_item.proxcAccountsReceiveable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>
+                                    </span>
+
+                            </rich:tooltip>
+                        </a:outputPanel>
+                    </rich:column>
+
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_payType}
+                        </f:facet>
+                        <h:outputText value="#{messages[_item.moneySave.payType.name()]}"
+                                      rendered="#{not empty _item.moneySave}"/>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_checkNumber}
+                        </f:facet>
+                        <a:outputPanel rendered="#{(not empty _item.moneySave) and (_item.moneySave.useCheck)}">
+                            <ui:include src="/layout/long-text-display.xhtml">
+                                <ui:param name="value" value="#{_item.moneySave.checkNumber}"/>
+                                <ui:param name="size" value="5"/>
+                            </ui:include>
+                        </a:outputPanel>
+
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.BankAccount}
+                        </f:facet>
+                        <a:outputPanel rendered="#{(not empty _item.moneySave) and (not empty _item.moneySave.bankAccount) }">
+                            <ui:include src="/layout/long-text-display.xhtml">
+                                <ui:param name="value"
+                                          value="#{dictionary.getWordValue(_item.moneySave.bankAccount.bank)} (#{_item.moneySave.bankAccount.number})"/>
+                                <ui:param name="size" value="5"/>
+                            </ui:include>
+                        </a:outputPanel>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operEmp}
+                        </f:facet>
+                        <h:outputText value="#{dictionary.getEmpNameById(_item.operEmp)}" rendered="#{not (_item.operType eq 'ORDER_PAY')}"/>
+
+                    </rich:column>
+
+                </rich:dataTable>
+
 
             </rich:collapsiblePanel>
 

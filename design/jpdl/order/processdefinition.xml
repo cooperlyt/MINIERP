@@ -21,7 +21,7 @@
 	<task-node name="订单收款">
 		<task name="订单收款">
 			<description>
-				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;,&quot;#{calendarBean.convertCurrency(orderHome.instance.shortageMoney)}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}(#{messages[orderHome.instance.payType.name()]})&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceivablesOfOrder.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}(#{messages[orderHome.instance.payType.name()]})&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/ReceivablesOfOrder.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="erp.finance.cashier"></assignment>
 		</task>

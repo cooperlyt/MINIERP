@@ -171,23 +171,9 @@
 
     </a:repeat>
 
-
     <div style="clear: both"/>
 
-
-    
 </a:outputPanel>
 
-<a:outputPanel
-        rendered="#{s:hasRole('erp.sale.manager') or s:hasRole('erp.finance.accountancy') or s:hasRole('erp.finance.cashier')}">
-    <br/>
-
-
-    <ui:include src="/layout/erp/biz/CustomerAccountOperTable.xhtml">
-        <ui:param name="value" value="#{orderHome.instance.accountOperList}"/>
-
-    </ui:include >
-
-</a:outputPanel>
 
 </ui:composition>
