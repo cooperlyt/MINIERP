@@ -1,9 +1,6 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.tools.CustomerMoneyTool;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.util.Date;

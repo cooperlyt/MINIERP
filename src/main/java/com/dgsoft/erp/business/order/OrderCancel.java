@@ -55,6 +55,7 @@ public class OrderCancel {
             orderHome.getEntityManager().remove(ao);
         }
 
+        orderHome.getInstance().getAccountOpers().clear();
         for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
             for (Dispatch dispatch : needRes.getDispatches()) {
                 if (dispatch.getStockChange() != null) {

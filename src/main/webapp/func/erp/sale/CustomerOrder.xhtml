@@ -351,38 +351,25 @@
             <rich:panel
                     rendered="#{orderHome.idDefined and (not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role))}">
 
-                <h:selectOneMenu value="#{orderCancel.orderCancelType}" rendered="true">
-                    <s:selectItems value="#{orderHome.allowCancelType}" var="_type" label="#{messages[_type.name()]}"/>
-                    <s:convertEnum/>
-                    <a:ajax render="orderCancelAction" event="valueChange" execute="@this"/>
-                </h:selectOneMenu>
-                <a:outputPanel id="orderCancelAction">
+
+                <s:link  disabled="#{not orderHome.anyOneStoreOut}"
+                          view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
+                    <f:param name="customerOrderId" value="#{orderHome.instance.id}"/>
+                    <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+                    <s:graphicImage value="/img/erp/res_back.png" title="#{messages.ORDER_RES_BACK}"/>
+                </s:link>
+
+                #{' '}
+
+                <a:commandButton image="/img/erp/delete_order.png" title="#{messages.DELETE_ORDER}"
+                                 oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
+                                 render="dataListResult"
+                                 action="#{orderCancel.removeOrder}"
+                                 disabled="#{(orderHome.anyOneStoreOut and (not s:hasRole('erp.sale.manager')))}">
+                    <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
+                </a:commandButton>
 
 
-                    <s:button value="#{messages.ok}" rendered="#{orderCancel.orderCancelType eq 'ORDER_RES_BACK'}"
-                              view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
-                        <f:param name="customerOrderId" value="#{orderHome.instance.id}"/>
-                        <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-                    </s:button>
-
-                    <a:commandButton value="#{messages.ok}"
-                                     oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
-                                     render="dataListResult"
-                                     action="#{orderCancel.removeOrder}"
-                                     rendered="#{not (orderCancel.orderCancelType eq 'ORDER_RES_BACK')}">
-                        <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
-                    </a:commandButton>
-                    <br/>
-                    <a:outputPanel rendered="#{orderCancel.orderCancelType eq 'ORDER_RES_BACK'}">
-                        #{messages.orderResBackTip}
-                    </a:outputPanel>
-                    <a:outputPanel rendered="#{orderCancel.orderCancelType eq 'DELETE_ORDER'}">
-                        #{messages.orderRemoveTip}
-                    </a:outputPanel>
-                    <a:outputPanel rendered="#{orderCancel.orderCancelType eq 'CANCEL_ORDER'}">
-                        #{messages.orderCancelTip}
-                    </a:outputPanel>
-                </a:outputPanel>
 
             </rich:panel>
         </a:outputPanel>
