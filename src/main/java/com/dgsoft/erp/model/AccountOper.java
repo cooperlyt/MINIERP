@@ -66,6 +66,7 @@ public class AccountOper implements java.io.Serializable {
     private MoneySave moneySave;
 
     private CustomerOrder customerOrder;
+    private OrderBack orderBack;
 
 
     public AccountOper() {
@@ -259,6 +260,16 @@ public class AccountOper implements java.io.Serializable {
         this.customerOrder = customerOrder;
     }
 
+    @ManyToOne(optional = true, fetch = FetchType.LAZY,targetEntity = OrderBack.class)
+    @JoinColumn(name="ORDER_BACK",nullable = true)
+    public OrderBack getOrderBack() {
+        return orderBack;
+    }
+
+    public void setOrderBack(OrderBack orderBack) {
+        this.orderBack = orderBack;
+    }
+
     @Transient
     public BigDecimal getCustomerOperMoney() {
         switch (getOperType()) {
@@ -311,7 +322,6 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
                 break;
             case ORDER_BACK:
-                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
                 break;
         }
@@ -340,7 +350,6 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
                 break;
             case ORDER_BACK:
-                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
                 break;
             case DEPOSIT_PAY:

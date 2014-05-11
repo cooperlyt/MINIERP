@@ -166,6 +166,15 @@ public class OrderBack implements java.io.Serializable {
         this.backItems = backItems;
     }
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "orderBack",cascade = {CascadeType.ALL})
+    public Set<AccountOper> getAccountOpers() {
+        return accountOpers;
+    }
+
+    public void setAccountOpers(Set<AccountOper> accountOpers) {
+        this.accountOpers = accountOpers;
+    }
+
     @Transient
     public List<BackItem> getBackItemList() {
         List<BackItem> result = new ArrayList<BackItem>(getBackItems());
@@ -219,5 +228,15 @@ public class OrderBack implements java.io.Serializable {
         this.dispatched = dispatched;
     }
 
+    @Transient
+    public boolean isAnyOneStoreIn(){
+        for (BackDispatch dispatch : getBackDispatchs()) {
+            if (dispatch.isStoreOut()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }

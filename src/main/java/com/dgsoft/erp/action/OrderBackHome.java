@@ -45,10 +45,12 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         return backItems;
     }
 
+    @Deprecated
     public boolean isNeedBackMoney() {
         return getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0;
     }
 
+    @Deprecated
     public boolean isNeedBackRes() {
         return !getInstance().getBackItems().isEmpty();
     }
@@ -69,8 +71,13 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
         return getInstance().getMoney();
     }
 
+
     @Transactional
     public void deleteBack() {
+
+        for(AccountOper oper: getInstance().getAccountOpers()){
+            oper.revertCustomerMoney();
+        }
 
         for (BackDispatch dispatch : getInstance().getBackDispatchs()) {
             if (dispatch.getStockChange() != null) {

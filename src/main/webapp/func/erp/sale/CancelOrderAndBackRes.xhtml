@@ -282,12 +282,13 @@
         </rich:column>
 
 
-        <rich:column rendered="#{s:hasRole('erp.sale.manager')}" style="text-align: center;" width="30px">
+        <rich:column style="text-align: center;" width="30px">
 
             <a:commandButton image="/img/delete.png" title="#{messages.delete}" immediate="true"
                              execute="@this"
                              render="dataListResult"
                              action="#{orderBackHome.deleteBack}"
+                             rendered="#{s:hasRole('erp.sale.manager') or (not _item.anyOneStoreIn)}"
                              onclick="JavaScript:if(confirm('#{messages.OrderBack_deleteConfirm}')){}else{return false;}">
 
                 <a:param value="#{_item.id}" assignTo="#{orderBackHome.id}"/>

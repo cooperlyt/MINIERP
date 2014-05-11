@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="orderCancel" width="773" height="607">
+<root-container name="orderCancel" width="775" height="737">
   <node name="退货" x="41" y="9" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -11,14 +11,9 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="退款" x="546" y="83" width="132" height="36">
+  <node name="退款判断" x="642" y="174" width="132" height="36">
     <edge>
-      <label x="5" y="-10"/>
-    </edge>
-  </node>
-  <node name="退货完成" x="640" y="208" width="132" height="36">
-    <edge>
-      <label x="5" y="-10"/>
+      <label x="-15" y="-10"/>
     </edge>
     <edge>
       <label x="-12" y="3"/>
@@ -105,7 +100,7 @@
       <label x="-13" y="-19"/>
     </edge>
   </node>
-  <node name="退货确认" x="547" y="146" width="132" height="36">
+  <node name="退货确认" x="639" y="256" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
@@ -128,5 +123,10 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="结束" x="639" y="12" width="132" height="36"/>
+  <node name="退款" x="538" y="90" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="结束" x="641" y="12" width="132" height="36"/>
 </root-container>

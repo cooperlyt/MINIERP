@@ -19,13 +19,13 @@ import java.util.List;
 public class StoreResBackConfirm extends CancelOrderTaskHandle {
 
     @DataModel("confirmBackItems")
-    private List<BackItem> getConfirmBackItems(){
+    private List<BackItem> getConfirmBackItems() {
         return orderBackHome.getBackItems();
     }
 
-    public BigDecimal getResTotalMoney(){
+    public BigDecimal getResTotalMoney() {
         BigDecimal result = BigDecimal.ZERO;
-        for (BackItem item: getConfirmBackItems()){
+        for (BackItem item : getConfirmBackItems()) {
             result = result.add(item.getTotalMoney());
         }
         return result;
@@ -34,6 +34,9 @@ public class StoreResBackConfirm extends CancelOrderTaskHandle {
 
     @Override
     protected String completeOrderTask() {
+        orderBackHome.calcBackMoney();
+        orderBackHome.getInstance().setMoneyComplete(orderBackHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0);
+
         if ("updated".equals(orderBackHome.update())) {
             return "taskComplete";
         } else

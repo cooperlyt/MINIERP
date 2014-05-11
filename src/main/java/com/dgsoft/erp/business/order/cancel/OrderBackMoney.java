@@ -32,6 +32,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
         customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
         customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
         customerOper.setCustomer(orderBackHome.getInstance().getCustomer());
+        customerOper.setOrderBack(orderBackHome.getInstance());
     }
 
     public AccountOper getCustomerOper() {
@@ -41,7 +42,7 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
     @Override
     protected String completeOrderTask() {
 
-
+        customerOper.calcCustomerMoney();
         orderBackHome.getEntityManager().persist(customerOper);
         orderBackHome.getInstance().setMoneyComplete(true);
         Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");

@@ -18,22 +18,12 @@
 		<transition to="入库完成(1库)"></transition>
 	</task-node>
 
-	<task-node name="退款">
-		<task name="退款">
-			<description>
-				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/CancelOrderMoneyBack.xhtml&quot;}
-			</description>
-			<assignment pooled-actors="erp.finance.cashier"></assignment>
-		</task>
-		<transition to="结束"></transition>
-	</task-node>
-
-	<decision name="退货完成">
-		<transition to="退货确认">
-			<condition expression="#{orderBackHome.needBackMoney}"></condition>
+	<decision name="退款判断">
+		<transition to="退款">
+			<condition expression="#{not orderBackHome.instance.moneyComplete}"></condition>
 		</transition>
-		<transition to="结束" name="结束">
-			<condition expression="#{not orderBackHome.needBackMoney}"></condition>
+		<transition to="结束" name="无须退款">
+			<condition expression="#{orderBackHome.instance.moneyComplete}"></condition>
 		</transition>
 	</decision>
 
@@ -45,7 +35,7 @@
 	</fork>
 
 	<join name="join2">
-		<transition to="退货完成"></transition>
+		<transition to="退货确认"></transition>
 	</join>
 
 	<node name="入库完成(1库)">
@@ -133,7 +123,7 @@
 			</description>
 			<assignment pooled-actors="#{orderBackHome.instance.customer.customerArea.role}"></assignment>
 		</task>
-		<transition to="退款"></transition>
+		<transition to="退款判断"></transition>
 	</task-node>
 
 	<decision name="入库判断(公司)">
@@ -158,6 +148,16 @@
 	<node name="入库完成(公司)">
 		<transition to="join2"></transition>
 	</node>
+
+	<task-node name="退款">
+		<task name="退款">
+			<description>
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/finance/CancelOrderMoneyBack.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="erp.finance.cashier"></assignment>
+		</task>
+		<transition to="结束"></transition>
+	</task-node>
 
 
 	<end-state name="结束"></end-state>
