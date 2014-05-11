@@ -14,7 +14,7 @@
             <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
             <h:selectOneMenu label="#{messages.accountOper_field_payType}"
                              required="true"
-                             value="#{moneySaveHome.instance.payType}">
+                             value="#{moneySave.payType}">
 
                 <s:selectItems value="#{accountPayTypes}" var="_payType"
                                label="#{messages[_payType.name()]}"
@@ -32,10 +32,10 @@
                 <h:panelGrid columns="10">
 
                     <h:outputText value="#{messages.BankAccount}"
-                                  rendered="#{moneySaveHome.instance.payType eq 'BANK_TRANSFER'}"/>
+                                  rendered="#{moneySave.payType eq 'BANK_TRANSFER'}"/>
 
-                    <h:selectOneMenu value="#{moneySaveHome.instance.bankAccount}"
-                                     rendered="#{moneySaveHome.instance.payType eq 'BANK_TRANSFER'}"
+                    <h:selectOneMenu value="#{moneySave.bankAccount}"
+                                     rendered="#{moneySave.payType eq 'BANK_TRANSFER'}"
                                      label="#{messages.BankAccount}">
                         <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
                                        label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
@@ -43,18 +43,18 @@
                         <f:converter converterId="erpEntityConverter"/>
                     </h:selectOneMenu>
 
-                    <h:selectBooleanCheckbox value="#{moneySaveHome.instance.useCheck}" rendered="#{not empty moneySaveHome.instance.payType}">
+                    <h:selectBooleanCheckbox value="#{moneySave.useCheck}" rendered="#{not empty moneySave.payType}">
 
                         <a:ajax execute="@this" event="click" render="checkNumberField"/>
                     </h:selectBooleanCheckbox>
                     <h:outputText
-                            value="#{(moneySaveHome.instance.payType eq 'BANK_TRANSFER') ? messages.BANK_CHECK : messages.CASH_CHECK}"
-                            rendered="#{not empty moneySaveHome.instance.payType}"/>
+                            value="#{(moneySave.payType eq 'BANK_TRANSFER') ? messages.BANK_CHECK : messages.CASH_CHECK}"
+                            rendered="#{not empty moneySave.payType}"/>
                     <a:outputPanel id="checkNumberField">
 
-                        <h:inputText rendered="#{moneySaveHome.instance.useCheck}"
+                        <h:inputText rendered="#{moneySave.useCheck}"
                                      label="#{messages.accountOper_field_checkNumber}"
-                                     value="#{moneySaveHome.instance.checkNumber}">
+                                     value="#{moneySave.checkNumber}">
                         </h:inputText>
                     </a:outputPanel>
                 </h:panelGrid>

@@ -3,6 +3,7 @@ package com.dgsoft.erp.business.order.cancel;
 import com.dgsoft.common.jbpm.BussinessProcessUtils;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
+import com.dgsoft.erp.model.MoneySave;
 import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -26,11 +27,27 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
     @In
     private Credentials credentials;
 
+    private boolean backToPreMoney = false;
+
+    private MoneySave moneySave;
+
+    public boolean isBackToPreMoney() {
+        return backToPreMoney;
+    }
+
+    public void setBackToPreMoney(boolean backToPreMoney) {
+        this.backToPreMoney = backToPreMoney;
+    }
+
+    public MoneySave getMoneySave() {
+        return moneySave;
+    }
+
+
     @Override
     protected void initCancelOrderTask() {
+        moneySave = new MoneySave();
         customerOper = new AccountOper(AccountOper.AccountOperType.ORDER_BACK,credentials.getUsername());
-        customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
-        customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
         customerOper.setCustomer(orderBackHome.getInstance().getCustomer());
         customerOper.setOrderBack(orderBackHome.getInstance());
     }
@@ -41,12 +58,24 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
     @Override
     protected String completeOrderTask() {
-
+        customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
+        if (backToPreMoney){
+            customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
+            customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+            customerOper.setMoneySave(null);
+        }else{
+            customerOper.setAdvanceReceivable(BigDecimal.ZERO);
+            customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+            moneySave.setMoney(orderBackHome.getInstance().getMoney());
+            moneySave.getAccountOpers().clear();
+            moneySave.getAccountOpers().add(customerOper);
+            customerOper.setMoneySave(moneySave);
+        }
         customerOper.calcCustomerMoney();
-        orderBackHome.getEntityManager().persist(customerOper);
+        orderBackHome.getInstance().getAccountOpers().add(customerOper);
         orderBackHome.getInstance().setMoneyComplete(true);
-        Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
         if ("updated".equals(orderBackHome.update())) {
+            Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess.AccountOper");
             return super.completeOrderTask();
         } else
             return null;

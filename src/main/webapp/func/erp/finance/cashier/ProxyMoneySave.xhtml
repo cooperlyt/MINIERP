@@ -51,7 +51,9 @@
                 </rich:calendar>
             </s:decorate>
 
-            <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml"/>
+            <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                <ui:param name="moneySave" value="#{moneySaveHome.instance}"/>
+            </ui:include>
 
             <s:decorate id="operMoneyField" template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>

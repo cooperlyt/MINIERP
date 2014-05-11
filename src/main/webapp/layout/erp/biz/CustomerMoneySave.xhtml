@@ -29,7 +29,9 @@
     <a:outputPanel
             rendered="#{(customerAccountOper.type eq 'CUSTOMER_SAVINGS') or (customerAccountOper.type eq 'DEPOSIT_BACK')}">
 
-        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml"/>
+        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+            <ui:param name="moneySave" value="#{moneySaveHome.instance}"/>
+        </ui:include>
     </a:outputPanel>
     <a:region id="moneyRegion">
 

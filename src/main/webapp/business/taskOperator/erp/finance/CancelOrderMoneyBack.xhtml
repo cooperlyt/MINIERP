@@ -18,7 +18,7 @@
 
                 <rich:toolbarGroup>
                     <h:outputText value="#{messages.OrderBackMoney}"/>
-                    <h:outputText value="#{orderBackMoney.customerOper.accountsReceivable}">
+                    <h:outputText value="#{orderBackHome.instance.money}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                 </rich:toolbarGroup>
@@ -58,6 +58,41 @@
                     </rich:calendar>
 
                 </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.BackMoneyToPre}
+                    </ui:define>
+                    <h:selectBooleanCheckbox value="#{orderBackMoney.backToPreMoney}">
+                        <a:ajax render="saveFields" execute="@this" event="click">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </h:selectBooleanCheckbox>
+                </s:decorate>
+
+                <a:outputPanel id="saveFields">
+
+                    <a:outputPanel rendered="#{not orderBackMoney.backToPreMoney}">
+                        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                            <ui:param name="moneySave" value="#{orderBackMoney.moneySave}"/>
+                        </ui:include>
+
+
+                        <s:decorate id="remitFeeField"
+                                    template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.accountOper_field_fee}</ui:define>
+                            <h:inputText value="#{orderBackMoney.moneySave.remitFee}"
+                                         label="#{messages.accountOper_field_fee}"
+                                         required="true"
+                                         converter="javax.faces.BigDecimal">
+                                <f:validateDoubleRange minimum="0"/>
+                                <a:ajax event="blur" execute="@this" render="remitFeeField"/>
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                                 currencySymbol=""/>
+                            </h:inputText>
+                        </s:decorate>
+                    </a:outputPanel>
+                </a:outputPanel>
 
                 <div style="clear:both">
                     <span class="required">*</span>
