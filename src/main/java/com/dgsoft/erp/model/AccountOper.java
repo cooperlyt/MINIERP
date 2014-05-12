@@ -81,7 +81,7 @@ public class AccountOper implements java.io.Serializable {
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
     }
 
-    public AccountOper(MoneySave moneySave,AccountOperType operType, Customer customer, String operEmp) {
+    public AccountOper(MoneySave moneySave, AccountOperType operType, Customer customer, String operEmp) {
         this.operEmp = operEmp;
         this.operType = operType;
         this.customer = customer;
@@ -250,8 +250,8 @@ public class AccountOper implements java.io.Serializable {
         this.moneySave = moneySave;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY,targetEntity = CustomerOrder.class)
-    @JoinColumn(name="CUSTOMER_ORDER",nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, targetEntity = CustomerOrder.class)
+    @JoinColumn(name = "CUSTOMER_ORDER", nullable = true)
     public CustomerOrder getCustomerOrder() {
         return customerOrder;
     }
@@ -260,8 +260,8 @@ public class AccountOper implements java.io.Serializable {
         this.customerOrder = customerOrder;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY,targetEntity = OrderBack.class)
-    @JoinColumn(name="ORDER_BACK",nullable = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, targetEntity = OrderBack.class)
+    @JoinColumn(name = "ORDER_BACK", nullable = true)
     public OrderBack getOrderBack() {
         return orderBack;
     }
