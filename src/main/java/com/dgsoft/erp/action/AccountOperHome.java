@@ -8,6 +8,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.security.Credentials;
 
 import java.util.Date;
@@ -27,6 +28,11 @@ public class AccountOperHome extends ErpEntityHome<AccountOper> {
         return PayType.values();
     }
 
-
+    @Transactional
+    @Override
+    public String remove(){
+        getInstance().revertCustomerMoney();
+        return super.remove();
+    }
 
 }

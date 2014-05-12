@@ -118,208 +118,208 @@
 
 <h:form>
 <rich:dataTable style="width: 100%" id="dataListResult" value="#{customerMoneyOperList.resultList}" var="_item">
-    <f:facet name="footer">
-        <a:outputPanel rendered="#{not empty customerMoneyOperList.resultList}">
-            <ui:include src="/layout/pageA4jNavigation.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-            </ui:include>
-        </a:outputPanel>
+<f:facet name="footer">
+    <a:outputPanel rendered="#{not empty customerMoneyOperList.resultList}">
+        <ui:include src="/layout/pageA4jNavigation.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+        </ui:include>
+    </a:outputPanel>
+</f:facet>
+
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_name}"/>
+            <ui:param name="propertyPath" value="accountOper.customer.name"/>
+        </ui:include>
+
     </f:facet>
 
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.customer_field_name}"/>
-                <ui:param name="propertyPath" value="accountOper.customer.name"/>
-            </ui:include>
 
-        </f:facet>
+    <s:link target="_blank" view="/func/erp/sale/CustomerView.xhtml" value="#{_item.customer.name}"
+            style="#{_item.customer.enable ? '' : 'text-decoration:line-through; color: red;'}">
+        <f:param name="customerId" value="#{_item.customer.id}"/>
+    </s:link>
+</rich:column>
 
 
-        <s:link target="_blank" view="/func/erp/sale/CustomerView.xhtml" value="#{_item.customer.name}"
-                style="#{_item.customer.enable ? '' : 'text-decoration:line-through; color: red;'}">
-            <f:param name="customerId" value="#{_item.customer.id}"/>
-        </s:link>
-    </rich:column>
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.accountOper_field_operDate}"/>
+            <ui:param name="propertyPath" value="accountOper.operDate"/>
+        </ui:include>
 
+    </f:facet>
 
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.accountOper_field_operDate}"/>
-                <ui:param name="propertyPath" value="accountOper.operDate"/>
-            </ui:include>
-
-        </f:facet>
-
-        <a:outputPanel>
-            <h:outputText value="#{_item.operDate}">
-                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-            </h:outputText>
-            <rich:tooltip styleClass="tooltip-custom-body"
-                          layout="block">
+    <a:outputPanel>
+        <h:outputText value="#{_item.operDate}">
+            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+        </h:outputText>
+        <rich:tooltip styleClass="tooltip-custom-body"
+                      layout="block">
                     <span style="white-space: nowrap"><h:outputText value="#{_item.operDate}">
                         <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
                     </h:outputText></span>
-            </rich:tooltip>
+        </rich:tooltip>
 
-        </a:outputPanel>
-    </rich:column>
-
-
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.accountOper_field_operType}"/>
-                <ui:param name="propertyPath" value="accountOper.operType"/>
-            </ui:include>
-        </f:facet>
-
-        #{messages[_item.operType.name()]}
-
-    </rich:column>
-
-    <rich:column style="text-align: right;">
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.customer_field_ad}"/>
-                <ui:param name="propertyPath" value="accountOper.advanceReceivable"/>
-            </ui:include>
-        </f:facet>
-
-        <h:outputText value="#{_item.advanceReceivable}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
+    </a:outputPanel>
+</rich:column>
 
 
-    </rich:column>
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.accountOper_field_operType}"/>
+            <ui:param name="propertyPath" value="accountOper.operType"/>
+        </ui:include>
+    </f:facet>
 
-    <rich:column style="text-align: right;">
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.customer_field_ac}"/>
-                <ui:param name="propertyPath" value="accountOper.accountsReceivable"/>
-            </ui:include>
-        </f:facet>
+    #{messages[_item.operType.name()]}
 
-        <h:outputText value="#{_item.accountsReceivable}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
+</rich:column>
 
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_ad}"/>
+            <ui:param name="propertyPath" value="accountOper.advanceReceivable"/>
+        </ui:include>
+    </f:facet>
 
-    </rich:column>
-
-
-    <rich:column style="text-align: right;">
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.customer_field_pac}"/>
-                <ui:param name="propertyPath" value="accountOper.proxcAccountsReceiveable"/>
-            </ui:include>
-        </f:facet>
-
-        <h:outputText value="#{_item.proxcAccountsReceiveable}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-
-    </rich:column>
+    <h:outputText value="#{_item.advanceReceivable}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
 
 
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.orderFee_field_payType}"/>
-                <ui:param name="propertyPath" value="accountOper.moneySave.payType"/>
-            </ui:include>
-        </f:facet>
+</rich:column>
 
-        <a:outputPanel rendered="#{not empty _item.moneySave}">
-            <h:outputText value="#{_item.moneySave.useCheck ? messages.CASH_CHECK : messages.CASH}"
-                          rendered="#{_item.moneySave.payType eq 'CASH'}"/>
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_ac}"/>
+            <ui:param name="propertyPath" value="accountOper.accountsReceivable"/>
+        </ui:include>
+    </f:facet>
 
-            <h:outputText value="#{_item.moneySave.useCheck ? messages.BANK_CHECK : messages.BANK_TRANSFER}"
-                          rendered="#{_item.moneySave.payType eq 'BANK_TRANSFER'}"/>
-            <rich:tooltip styleClass="tooltip-custom-body"
-                          layout="block" rendered="#{_item.moneySave.useCheck}">
-                <span style="white-space: nowrap">#{_item.moneySave.checkNumber}</span>
-            </rich:tooltip>
-        </a:outputPanel>
-
-    </rich:column>
-
-    <rich:column style="text-align: right;">
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.customerPayMoney}"/>
-                <ui:param name="propertyPath" value="accountOper.moneySave.money"/>
-            </ui:include>
-        </f:facet>
-
-        <h:outputText rendered="#{not empty _item.moneySave}" value="#{_item.moneySave.money}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-
-    </rich:column>
+    <h:outputText value="#{_item.accountsReceivable}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
 
 
-    <rich:column style="text-align: right;">
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.accountOper_field_fee}"/>
-                <ui:param name="propertyPath" value="accountOper.moneySave.remitFee"/>
-            </ui:include>
-        </f:facet>
-
-        <h:outputText rendered="#{not empty _item.moneySave}" value="#{_item.moneySave.remitFee}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-
-    </rich:column>
-
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
-                <ui:param name="propertyLabel" value="#{messages.orderFee_field_bankNumber}"/>
-                <ui:param name="propertyPath" value="accountOper.moneySave.bankAccount.number"/>
-            </ui:include>
-        </f:facet>
-
-        <a:outputPanel>
-            #{dictionary.getWordValue(_item.moneySave.bankAccount.bank)}
-            <rich:tooltip styleClass="tooltip-custom-body"
-                          layout="block">
-                <span style="white-space: nowrap">#{_item.moneySave.bankAccount.number}</span>
-            </rich:tooltip>
-        </a:outputPanel>
+</rich:column>
 
 
-    </rich:column>
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customer_field_pac}"/>
+            <ui:param name="propertyPath" value="accountOper.proxcAccountsReceiveable"/>
+        </ui:include>
+    </f:facet>
 
-    <rich:column>
-        <a:commandButton image="/img/dtpick.gif" title="#{messages.accountOperChangeDate}" render="dateChangePanel_form"
-                         execute="@this" oncomplete="#{rich:component('dateChangePanel')}.show();">
-            <a:param value="#{_item.id}" assignTo="#{accountOperHome.id}"/>
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
+    <h:outputText value="#{_item.proxcAccountsReceiveable}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
 
-        <a:commandButton image="/img/delete.png"
-                         onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
-                         action="#{accountOperHome.remove}"
-                         title="#{messages.delete}" execute="@this">
-            <a:param value="#{_item.id}" assignTo="#{accountOperHome.id}" render="dataListResult"/>
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-    </rich:column>
+</rich:column>
+
+
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.orderFee_field_payType}"/>
+            <ui:param name="propertyPath" value="accountOper.moneySave.payType"/>
+        </ui:include>
+    </f:facet>
+
+    <a:outputPanel rendered="#{not empty _item.moneySave}">
+        <h:outputText value="#{_item.moneySave.useCheck ? messages.CASH_CHECK : messages.CASH}"
+                      rendered="#{_item.moneySave.payType eq 'CASH'}"/>
+
+        <h:outputText value="#{_item.moneySave.useCheck ? messages.BANK_CHECK : messages.BANK_TRANSFER}"
+                      rendered="#{_item.moneySave.payType eq 'BANK_TRANSFER'}"/>
+        <rich:tooltip styleClass="tooltip-custom-body"
+                      layout="block" rendered="#{_item.moneySave.useCheck}">
+            <span style="white-space: nowrap">#{_item.moneySave.checkNumber}</span>
+        </rich:tooltip>
+    </a:outputPanel>
+
+</rich:column>
+
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.customerPayMoney}"/>
+            <ui:param name="propertyPath" value="accountOper.moneySave.money"/>
+        </ui:include>
+    </f:facet>
+
+    <h:outputText rendered="#{not empty _item.moneySave}" value="#{_item.moneySave.money}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+
+</rich:column>
+
+
+<rich:column style="text-align: right;">
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.accountOper_field_fee}"/>
+            <ui:param name="propertyPath" value="accountOper.moneySave.remitFee"/>
+        </ui:include>
+    </f:facet>
+
+    <h:outputText rendered="#{not empty _item.moneySave}" value="#{_item.moneySave.remitFee}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+
+</rich:column>
+
+<rich:column>
+    <f:facet name="header">
+        <ui:include src="/layout/a4jSort.xhtml">
+            <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+            <ui:param name="propertyLabel" value="#{messages.orderFee_field_bankNumber}"/>
+            <ui:param name="propertyPath" value="accountOper.moneySave.bankAccount.number"/>
+        </ui:include>
+    </f:facet>
+
+    <a:outputPanel>
+        #{dictionary.getWordValue(_item.moneySave.bankAccount.bank)}
+        <rich:tooltip styleClass="tooltip-custom-body"
+                      layout="block">
+            <span style="white-space: nowrap">#{_item.moneySave.bankAccount.number}</span>
+        </rich:tooltip>
+    </a:outputPanel>
+
+
+</rich:column>
+
+<rich:column>
+    <a:commandButton image="/img/dtpick.gif" title="#{messages.accountOperChangeDate}" render="dateChangePanel_form"
+                     execute="@this" oncomplete="#{rich:component('dateChangePanel')}.show();">
+        <f:param name="selectOperId" value="#{_item.id}"/>
+        <a:attachQueue requestDelay="0"/>
+    </a:commandButton>
+
+    <a:commandButton image="/img/delete.png"
+                     onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                     action="#{accountOperHome.remove}" render="dataListResult"
+                     title="#{messages.delete}" execute="@this">
+        <f:param name="selectOperId" value="#{_item.id}"/>
+        <a:attachQueue requestDelay="0"/>
+    </a:commandButton>
+</rich:column>
 
 </rich:dataTable>
 
@@ -355,7 +355,6 @@
         #{' '}
         <a:commandButton value="#{messages.ok}" execute="@form" action="#{accountOperHome.update}"
                          oncomplete="#{rich:component(panelId)}.hide();" render="dataListResult">
-            <a:param value="#{accountOperHome.instance.id}" assignTo="#{accountOperHome.id}"/>
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
 
