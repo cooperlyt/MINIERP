@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action.store;
 
+import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.StockChangeHome;
@@ -29,6 +30,9 @@ public abstract class StoreOutAction {
 
     @In
     protected FacesMessages facesMessages;
+
+    @In
+    private ActionExecuteState actionExecuteState;
 
     @In(create = true)
     protected StockChangeHome stockChangeHome;
@@ -62,30 +66,10 @@ public abstract class StoreOutAction {
             editStockOutItem = new StockChangeItem(stockChangeHome.getInstance(), stockHome.getInstance(), BigDecimal.ZERO);
             editStockOutItem.setUseUnit(editStockOutItem.getRes().getResUnitByInDefault());
         }
+        actionExecuteState.clearState();
         Logging.getLog(this.getClass()).warn("store out beginAdd not set STOCK");
 
     }
-
-    @org.jboss.seam.annotations.Observer(value = "erp.resLocateSelected", create = false)
-    public void codeTypeByRes(Res res) {
-        editStockOutItem = null;
-        stockHome.clearInstance();
-        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeOutOnlySelectStoreRes");
-    }
-
-    @org.jboss.seam.annotations.Observer(value = "erp.storeResLocateSelected", create = false)
-    public void generateStoreInItemByStoreRes(StoreRes storeRes) {
-
-        for (Stock stock : storeRes.getStocks()) {
-            if (stock.getStore().getId().equals(stockChangeHome.getInstance().getStore().getId())) {
-                stockHome.setId(stock.getId());
-                beginAddItem();
-                return;
-            }
-        }
-        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeResNotInStore");
-    }
-
 
     public void addItem() {
         if (editStockOutItem.getCount().compareTo(editStockOutItem.getStock().getCount()) > 0) {
@@ -104,7 +88,7 @@ public abstract class StoreOutAction {
         }
         editStockOutItem = null;
         stockHome.clearInstance();
-
+        actionExecuteState.actionExecute();
     }
 
 
@@ -122,39 +106,5 @@ public abstract class StoreOutAction {
         }
 
     }
-
-
-//    public List<StoreOutItemGroup> getStoreOutItemGroups() {
-//        List<StoreOutItemGroup> result = new ArrayList<StoreOutItemGroup>();
-//        if (groupByRes) {
-//            Map<Res, List<Stock>> resGroup = new HashMap<Res, List<Stock>>();
-//            for (Stock storeOutItem : storeOutItems) {
-//                List<Stock> temp = resGroup.get(storeOutItem.getStoreRes().getRes());
-//                if (temp == null) {
-//                    temp = new ArrayList<Stock>();
-//                    resGroup.put(storeOutItem.getStoreRes().getRes(), temp);
-//                }
-//                temp.add(storeOutItem);
-//            }
-//            for (Res res : resGroup.keySet()) {
-//                result.add(new StoreOutItemGroup(res.getName() + "(" + res.getCode() + ")", resGroup.get(res)));
-//            }
-//        } else {
-//            Map<StoreRes, List<Stock>> storeResGroup = new HashMap<StoreRes, List<Stock>>();
-//            for (Stock storeOutItem : storeOutItems) {
-//                List<Stock> temp = storeResGroup.get(storeOutItem.getStoreRes());
-//                if (temp == null) {
-//                    temp = new ArrayList<Stock>();
-//                    storeResGroup.put(storeOutItem.getStoreRes(), temp);
-//                }
-//                temp.add(storeOutItem);
-//            }
-//            for (StoreRes storeRes : storeResGroup.keySet()) {
-//                result.add(new StoreOutItemGroup(storeRes, storeResGroup.get(storeRes)));
-//            }
-//
-//        }
-//        return result;
-//    }
 
 }

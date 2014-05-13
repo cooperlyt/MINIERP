@@ -32,6 +32,7 @@ import java.util.*;
  */
 @Name("stockList")
 @Scope(ScopeType.CONVERSATION)
+@Deprecated
 public class StockList extends ErpEntityQuery<Stock> {
 
     private static final String EJBQL = "select stock from Stock stock";

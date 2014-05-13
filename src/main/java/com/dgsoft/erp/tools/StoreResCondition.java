@@ -10,8 +10,10 @@ import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
 import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
@@ -26,6 +28,7 @@ import java.util.logging.Logger;
  * Time: 下午3:06
  */
 @Name("storeResCondition")
+@Scope(ScopeType.CONVERSATION)
 public class StoreResCondition {
 
     @In(create=true)
@@ -38,6 +41,8 @@ public class StoreResCondition {
     private ResCategoryHome resCategoryHome;
 
     private StoreResEntity storeResEntity;
+
+    private String resCode = null;
 
     public StoreResEntity getStoreResEntity() {
         return storeResEntity;
@@ -54,15 +59,21 @@ public class StoreResCondition {
         } else {
             storeResEntity = null;
         }
-
     }
 
     public List<String> getSearchResCategoryIds(){
+        if (isCodeSearch()){
+            return null;
+        }
         if ((storeResEntity == null) && (resCategoryHome != null) && resCategoryHome.isIdDefined()){
             return resCategoryHome.getIdAndChildIds();
         }else {
             return null;
         }
+    }
+
+    private boolean isCodeSearch(){
+        return (resCode != null) && !"".equals(resCode.trim());
     }
 
     public boolean isResSearch() {
@@ -78,13 +89,20 @@ public class StoreResCondition {
     }
 
     public String getSearchResId() {
+        if (isCodeSearch()){
+            return null;
+        }
         if (isResSearch() && (storeResEntity != null)) {
             return storeResEntity.getRes().getId();
-        } else
+        } else {
             return null;
+        }
     }
 
     public BigDecimal getSearchFloatConvertRate(){
+        if (isCodeSearch()){
+            return null;
+        }
         if (isResSearch() && (storeResEntity != null) &&
                 storeResEntity.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
             return storeResEntity.getFloatConvertRate();
@@ -94,7 +112,11 @@ public class StoreResCondition {
     }
 
     public List<String> getMatchStoreResIds() {
+        if (isCodeSearch()){
+            return new ArrayList<String>(0);
+        }
         List<String> result = new ArrayList<String>();
+
         if (!isResSearch() && (storeResEntity != null)) {
 
             for (StoreRes storeRes : resHome.getInstance().getStoreReses()) {
@@ -114,5 +136,17 @@ public class StoreResCondition {
         return result;
     }
 
+    public String getStoreResCode() {
+        return resCode;
+    }
 
+    public void setStoreResCode(String resCode) {
+        this.resCode = resCode;
+    }
+
+    public void reset(){
+        storeResEntity = null;
+        resCategoryHome.clearInstance();
+        resCode = null;
+    }
 }

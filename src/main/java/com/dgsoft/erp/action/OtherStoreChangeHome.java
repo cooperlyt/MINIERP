@@ -49,7 +49,7 @@ public class OtherStoreChangeHome extends ErpEntityHome<StoreChange>{
             OtherStockOut otherStockOut = (OtherStockOut) Component.getInstance("otherStockOut", true, true);
 
 
-            ((StockList)Component.getInstance("stockList", true, true)).setStoreId(stockChangeHome.getInstance().getStore().getId());
+            ((StockSearchList)Component.getInstance("stockSearchList", true, true)).setStoreId(stockChangeHome.getInstance().getStore().getId());
             return otherStockOut.begin();
         }
     }

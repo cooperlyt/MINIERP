@@ -9,22 +9,7 @@
                 template="/layout/full-template.xhtml">
 <ui:define name="toolbar">
     <rich:toolbar>
-        <rich:toolbarGroup>
-            <h:form id="resSearchForm">
-                <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocate.code}"
-                             required="true">
-                    <rich:placeholder value="#{messages.res_field_code}"/>
-                </h:inputText>
 
-
-                <a:commandButton id="searchCodeBtn" value="#{messages.search}" execute="@form"
-                                 render="outCountInput,resSearchForm"
-                                 action="#{resLocate.locateByCode(storeChangeType)}">
-                    <rich:componentControl target="stockCollapsiblePanel" operation="expand" event="click"/>
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-            </h:form>
-        </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">
 
@@ -51,195 +36,157 @@
 
 <ui:define name="body">
 
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="stockOutPanel"/>
+    <ui:param name="panelTitle" value="#{messages.StoreOut}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+        </a:commandButton>
+    </ui:define>
 
-<h:outputStylesheet>
-    .leftColumn {
-        vertical-align: top;
-        width: 200px;
-    }
+    <s:decorate rendered="#{stockHome.idDefined}" template="/layout/erp/res/StoreResCountInput.xhtml">
 
-    .rightColumn {
-        vertical-align: top;
-    }
-</h:outputStylesheet>
+        <ui:param name="inputValue" value="#{sotreOutAction.editStockOutItem}"/>
+        <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+        <ui:param name="countLableStyleClass" value="name"/>
 
-
-<rich:collapsiblePanel id="stockCollapsiblePanel" switchType="client" header="#{stockChangeHome.instance.store.name} - #{messages.Stock}">
-    <h:panelGrid width="100%" columns="2" columnClasses="leftColumn,rightColumn">
-
-        <rich:panel style="min-height: 200px; height: 100%">
-
-
-            <h:form>
-                <rich:tree
-                        var="_node"
-                        value="#{allStoreResTree}"
-                        nodeType="#{_node.nodeType}"
-                        selectionChangeListener="#{stockList.treeSectionChanged}"
-                        onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
-                        render="dataListResult"
-                        toggleType="client"
-                        selectionType="ajax">
-                    <rich:treeNode type="category">
-                        #{_node.data.name}
-                    </rich:treeNode>
-                    <rich:treeNode type="res" iconLeaf="/img/res.png" iconCollapsed="/img/res.png"
-                                   iconExpanded="/img/res.png">
-                        #{_node.data.name}(#{_node.data.code})
-                    </rich:treeNode>
-                    <rich:treeNode type="property">
-
-                        #{_node.formatDefine.name}
-
-                        <h:outputText value="#{messages.formatNotSet}" rendered="#{empty _node.data}"/>
-
-                        <a:outputPanel rendered="#{not empty _node.data}">
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.InventoryCount}</ui:define>
+            #{stockHome.instance.displayMasterCount}
+            (#{stockHome.instance.displayAuxCount})
+        </s:decorate>
+    </s:decorate>
 
 
-                            <h:outputText value="#{dictionary.getWordValue(_node.data.formatValue)}"
-                                          rendered="#{_node.data.formatDefine.dataType.name() eq 'WORD'}"/>
-                            <h:outputText value="#{_node.data.formatValue}"
-                                          rendered="#{not (_node.data.formatDefine.dataType.name() eq 'WORD')}"/>
-                        </a:outputPanel>
-
-                    </rich:treeNode>
-                    <rich:treeNode type="storeRes" iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
-                                   iconCollapsed="/img/store_res.png">
-                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                            <ui:param name="storeRes" value="#{_node.data}"/>
-                        </ui:include>
-                    </rich:treeNode>
-                </rich:tree>
-
-            </h:form>
-        </rich:panel>
-
-        <h:panelGroup>
-            <h:form>
-                <a:outputPanel id="outCountInput">
-                    <rich:panel rendered="#{stockHome.idDefined}">
+    <ui:define name="actionButtons">
+        <a:commandButton immediate="true"
+                         execute="@this" value="#{messages.cancel}"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+        </a:commandButton>
 
 
-                        <s:decorate template="/layout/erp/res/StoreResCountInput.xhtml">
+        <a:commandButton value="#{messages.ok}"
+                         data="#{actionExecuteState.lastState}"
+                         oncomplete="if (event.data == 'success') #{rich:component(panelId)}.hide();"
+                         render="storeOutItems,outCountInput"
+                         action="#{sotreOutAction.addItem}">
 
-                            <ui:param name="inputValue" value="#{sotreOutAction.editStockOutItem}"/>
-                            <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
-                            <ui:param name="countLableStyleClass" value="name"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
 
-                            <s:decorate template="/layout/seam-display.xhtml">
-                                <ui:define name="label">#{messages.InventoryCount}</ui:define>
-                                #{stockHome.instance.displayMasterCount}
-                                (#{stockHome.instance.displayAuxCount})
-                            </s:decorate>
-                        </s:decorate>
+</s:decorate>
 
-                        <a:commandButton style="float: left;" value="#{messages.ok}"
-                                         render="storeOutItems,outCountInput"
-                                         action="#{sotreOutAction.addItem}">
 
+<rich:collapsiblePanel id="stockCollapsiblePanel" switchType="client"
+                       header="#{stockChangeHome.instance.store.name} - #{messages.Stock}">
+
+    <h:form id="resSearchCondition">
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.storeRes_field_code}
+            </ui:define>
+            <h:inputText value="#{storeResCondition.storeResCode}"/>
+        </s:decorate>
+
+        <ui:include src="/layout/erp/res/StoreResCondition.xhtml"/>
+
+        <div style="clear: both;"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel>
+                <div class="actionButtons">
+                    <a:commandButton id="reset" value="#{messages.reset}"
+                                     action="#{storeResCondition.reset}"
+                                     render="resSearchCondition,dataListResult">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="dataListResult">
                             <a:attachQueue requestDelay="0"/>
                         </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </h:form>
 
-                        <div style="clear:both">
-                            <span class="required">*</span>
-                            #{messages.requiredFields}
-                        </div>
-                        <br/>
-                    </rich:panel>
+    <h:form>
+        <rich:dataTable id="dataListResult" style="width: 100%" value="#{stockSearchList.resultList}" var="_stock"
+                        noDataLabel="#{messages.emptyResult}">
+
+            <f:facet name="footer">
+                <a:outputPanel rendered="#{not empty stockSearchList.resultList}">
+                    <ui:include src="/layout/pageA4jNavigation.xhtml">
+                        <ui:param name="entityList" value="#{stockSearchList}"/>
+                    </ui:include>
                 </a:outputPanel>
-            </h:form>
 
-            <h:form>
-                <rich:dataTable id="dataListResult" style="width: 100%" value="#{stockList.resultList}" var="_stock"
-                                noDataLabel="#{messages.emptyResult}">
+            </f:facet>
 
-                    <f:facet name="header">
-                        <h:outputText value="#{stockList.selectedTitle}"
-                                      rendered="#{empty stockList.selectedStoreRes}"/>
-                        <a:outputPanel rendered="#{not empty stockList.selectedStoreRes}">
-                            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                                <ui:param name="storeRes" value="#{stockList.selectedStoreRes}"/>
-                            </ui:include>
-                        </a:outputPanel>
-                    </f:facet>
+            <rich:column>
+                <f:facet name="header">
 
-                    <f:facet name="footer">
-                        <a:outputPanel rendered="#{not empty stockList.resultList}">
-                            <ui:include src="/layout/pageA4jNavigation.xhtml">
-                                <ui:param name="entityList" value="#{stockList}"/>
-                            </ui:include>
-                        </a:outputPanel>
-
-                    </f:facet>
-
-                    <rich:column>
-                        <f:facet name="header">
-
-                            <ui:include src="/layout/a4jSort.xhtml">
-                                <ui:param name="entityList" value="#{stockList}"/>
-                                <ui:param name="propertyLabel" value="#{messages.StoreRes}"/>
-                                <ui:param name="propertyPath" value="stock.storeRes.id"/>
-                            </ui:include>
-                        </f:facet>
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{stockSearchList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.StoreRes}"/>
+                        <ui:param name="propertyPath" value="stock.storeRes.id"/>
+                    </ui:include>
+                </f:facet>
 
 
-                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                            <ui:param name="storeRes" value="#{_stock.storeRes}"/>
-                        </ui:include>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_stock.storeRes}"/>
+                </ui:include>
 
 
-                    </rich:column>
+            </rich:column>
 
-                    <rich:column>
-                        <f:facet name="header">
-                            <ui:include src="/layout/a4jSort.xhtml">
-                                <ui:param name="entityList" value="#{stockList}"/>
-                                <ui:param name="propertyLabel" value="#{messages.MasterUnitCount}"/>
-                                <ui:param name="propertyPath" value="stock.count"/>
-                            </ui:include>
-                        </f:facet>
-                        #{_stock.displayMasterCount}
-                        <f:facet name="footer">
-                            <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
-                                <f:convertNumber pattern="#0.#####"
-                                                 groupingUsed="false"/>
-                            </h:outputText>
+            <rich:column>
+                <f:facet name="header">
+                    <ui:include src="/layout/a4jSort.xhtml">
+                        <ui:param name="entityList" value="#{stockSearchList}"/>
+                        <ui:param name="propertyLabel" value="#{messages.MasterUnitCount}"/>
+                        <ui:param name="propertyPath" value="stock.count"/>
+                    </ui:include>
+                </f:facet>
+                #{_stock.displayMasterCount}
+                <f:facet name="footer">
+                    <h:outputText value="#{stockSearchList.getResultTotalSum('stock.count')}">
+                        <f:convertNumber pattern="#0.#####"
+                                         groupingUsed="false"/>
+                    </h:outputText>
 
-                        </f:facet>
-                    </rich:column>
+                </f:facet>
+            </rich:column>
 
-                    <rich:column>
-                        <f:facet name="header">
-                            #{messages.AuxUnitCount}
-                        </f:facet>
-                        #{_stock.displayAuxCount}
-
-                        <f:facet name="footer">
-                            <h:outputText value="#{stockList.totalAuxCount}">
-                                <f:convertNumber pattern="#0.#####"
-                                                 groupingUsed="false"/>
-                            </h:outputText>
-
-                        </f:facet>
-
-                    </rich:column>
-
-                    <rich:column style="width: 20px;text-align: center;">
-                        <f:facet name="header">
-
-                        </f:facet>
-                        <a:commandButton image="/img/out_edit.png" render="outCountInput" immediate="true"
-                                         action="#{sotreOutAction.beginAddItem}">
-                            <a:attachQueue requestDelay="0"/>
-                            <a:param value="#{_stock.id}" assignTo="#{stockHome.id}"/>
-                        </a:commandButton>
-                    </rich:column>
-                </rich:dataTable>
-            </h:form>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.AuxUnitCount}
+                </f:facet>
+                #{_stock.displayAuxCount}
 
 
-        </h:panelGroup>
-    </h:panelGrid>
+            </rich:column>
+
+            <rich:column style="width: 20px;text-align: center;">
+                <f:facet name="header">
+
+                </f:facet>
+                <a:commandButton image="/img/out_edit.png" render="stockOutPanel_form" immediate="true"
+                                 action="#{sotreOutAction.beginAddItem}" oncomplete="#{rich:component('stockOutPanel')}.show();">
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{_stock.id}" assignTo="#{stockHome.id}"/>
+                </a:commandButton>
+            </rich:column>
+        </rich:dataTable>
+    </h:form>
+
+
 </rich:collapsiblePanel>
 <br/>
 <h:form>

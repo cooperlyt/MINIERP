@@ -73,7 +73,7 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
             stockChangeHome.getInstance().setMemo(getInstance().getMemo());
             stockChangeHome.getInstance().setVerify(true);
             stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.ALLOCATION_OUT);
-            ((StockList) Component.getInstance("stockList", true, true)).setStoreId(getInstance().getOutStore().getId());
+            ((StockSearchList) Component.getInstance("stockSearchList", true, true)).setStoreId(getInstance().getOutStore().getId());
             return "/business/startPrepare/erp/store/AllocationStoreOut.xhtml";
         } else {
             getInstance().setState(Allocation.AllocationState.WAITING_OUT);
