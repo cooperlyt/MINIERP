@@ -146,12 +146,13 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
         public void add(AccountOper oper) {
             typeTotalData.put(oper.getOperType(), typeTotalData.get(oper.getOperType()).add(oper.getCustomerOperMoney()));
-            if (oper.getOperType().isCustomerOper())
-                if (oper.getOperType().isReceive()) {
-                    inMoney = inMoney.add(oper.getCustomerOperMoney());
-                } else {
-                    outMoney = outMoney.add(oper.getAccountsReceivable());
-                }
+//            if (oper.getOperType().isCustomerOper())
+                //TODO complete
+//                if (oper.getOperType().isReceive()) {
+//                    inMoney = inMoney.add(oper.getCustomerOperMoney());
+//                } else {
+//                    outMoney = outMoney.add(oper.getAccountsReceivable());
+//              }
         }
 
         public BigDecimal getOutMoney() {

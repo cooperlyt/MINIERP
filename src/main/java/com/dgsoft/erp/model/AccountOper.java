@@ -22,15 +22,15 @@ public class AccountOper implements java.io.Serializable {
 
 
     public enum AccountOperType {
-        DEPOSIT_BACK(false),
+        DEPOSIT_BACK(Accounting.Direction.DBEDIT, Accounting.Direction.DBEDIT),   //false
 
-        PROXY_SAVINGS(true),
-        CUSTOMER_SAVINGS(true),
-        DEPOSIT_PAY(null),
-        MONEY_FREE(null),
-        ORDER_PAY(null),
+        PROXY_SAVINGS(Accounting.Direction.CREDIT, Accounting.Direction.CREDIT),   //true
+        CUSTOMER_SAVINGS(Accounting.Direction.CREDIT, Accounting.Direction.CREDIT),  //true
+        DEPOSIT_PAY(Accounting.Direction.DBEDIT, Accounting.Direction.CREDIT),
+        MONEY_FREE(Accounting.Direction.CREDIT, Accounting.Direction.CREDIT),
+        ORDER_PAY(Accounting.Direction.DBEDIT, Accounting.Direction.DBEDIT),
 
-        ORDER_BACK(null);
+        ORDER_BACK(Accounting.Direction.CREDIT, null);       //不包含冲帐
 
 
         public static EnumSet<AccountOperType> getCustomerOpers() {
@@ -41,14 +41,23 @@ public class AccountOper implements java.io.Serializable {
             return getCustomerOpers().contains(this);
         }
 
-        private Boolean receive;
+        private Accounting.Direction adDirection; //贷方科目
 
-        public Boolean isReceive() {
-            return receive;
+        private Accounting.Direction acDirection; //借方科目
+
+
+        public Accounting.Direction getAdDirection() {
+            return adDirection;
         }
 
-        private AccountOperType(Boolean receive) {
-            this.receive = receive;
+        public Accounting.Direction getAcDirection() {
+            return acDirection;
+        }
+
+        private AccountOperType(Accounting.Direction adDirection,
+                                Accounting.Direction acDirection) {
+            this.adDirection = adDirection;
+            this.acDirection = acDirection;
         }
     }
 
@@ -67,6 +76,8 @@ public class AccountOper implements java.io.Serializable {
 
     private CustomerOrder customerOrder;
     private OrderBack orderBack;
+
+    private Integer version;
 
 
     public AccountOper() {
@@ -268,6 +279,16 @@ public class AccountOper implements java.io.Serializable {
 
     public void setOrderBack(OrderBack orderBack) {
         this.orderBack = orderBack;
+    }
+
+    @Version
+    @Column(name = "VERSION", nullable = true)
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     @Transient

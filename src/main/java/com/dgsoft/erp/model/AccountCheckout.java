@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,6 +38,20 @@ public class AccountCheckout implements Serializable {
     private Checkout checkout;
 
     private Account account;
+
+    public AccountCheckout() {
+    }
+
+    public AccountCheckout(Account account, Checkout checkout, BigDecimal beginningBalance, BigDecimal beginningCount) {
+        this.account = account;
+        this.checkout = checkout;
+        this.beginningBalance = beginningBalance;
+        this.beginningCount = beginningCount;
+        this.debitMoney = BigDecimal.ZERO;
+        this.debitCount = BigDecimal.ZERO;
+        this.creditCount = BigDecimal.ZERO;
+        this.creditMoney = BigDecimal.ZERO;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -162,4 +178,6 @@ public class AccountCheckout implements Serializable {
     public void setCreditCount(BigDecimal creditCount) {
         this.creditCount = creditCount;
     }
+
+
 }

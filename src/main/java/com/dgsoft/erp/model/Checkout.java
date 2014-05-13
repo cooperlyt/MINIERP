@@ -5,9 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -121,6 +119,15 @@ public class Checkout implements java.io.Serializable {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    @Transient
+    public Map<String,AccountCheckout> getAccountCheckOutMap(){
+        Map<String,AccountCheckout> accountCheckouts = new HashMap<String, AccountCheckout>();
+        for (AccountCheckout accountCheckout: getAccountCheckouts()){
+            accountCheckouts.put(accountCheckout.getAccount().getCode(),accountCheckout);
+        }
+        return accountCheckouts;
     }
 
 }

@@ -29,6 +29,13 @@ public class Account implements Serializable {
     public Account() {
     }
 
+    public Account(String code, Accounting.Direction direction, int level, String name) {
+        this.code = code;
+        this.direction = direction;
+        this.level = level;
+        this.name = name;
+    }
+
     @Id
     @Column(name = "ACCOUNT_CODE", unique = true, nullable = false, length = 32)
     @NotNull

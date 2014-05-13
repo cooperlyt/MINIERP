@@ -35,6 +35,10 @@ public class SearchDateArea {
         return new Date(dateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
     }
 
+    public Date getSearchDateFrom(){
+        return DataFormat.halfTime(dateFrom);
+    }
+
     public Date getDateTo() {
         return dateTo;
     }
