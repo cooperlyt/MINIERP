@@ -5,38 +5,37 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA.
  * User: cooperlee
- * Date: 2/16/14
- * Time: 9:08 PM
+ * Date: 14-5-13
+ * Time: 上午10:13
  */
-
 @Entity
-@Table(name = "ACCOUNT_CHECKOUT", catalog = "MINI_ERP")
-public class AccountCheckout implements java.io.Serializable {
+@Table(name = "ACCOUNT_CHECK_OUT", catalog = "MINI_ERP")
+public class AccountCheckout implements Serializable {
 
     private String id;
 
-    private int year;
+    private BigDecimal beginningBalance;
+    private BigDecimal beginningCount;
+    private BigDecimal closingBalance;
+    private BigDecimal closingCount;
 
-    private int month;
+    private BigDecimal debitMoney;
+    private BigDecimal debitCount;
 
-    private Date operDate;
+    private BigDecimal creditMoney;
+    private BigDecimal creditCount;
 
-    private String operEmp;
+    private Integer version;
 
-    private Set<CustomerDetailsCheckout> customerDetailsCheckouts = new HashSet<CustomerDetailsCheckout>(0);
+    private Checkout checkout;
 
-    private Set<StockDetailsCheckout> stockDetailsCheckouts = new HashSet<StockDetailsCheckout>(0);
-
-    public AccountCheckout() {
-    }
-
+    private Account account;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -52,62 +51,115 @@ public class AccountCheckout implements java.io.Serializable {
         this.id = id;
     }
 
-
-    @Column(name = "C_YEAR", nullable = false)
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    @Column(name = "C_MONTH", nullable = false)
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CHECKOUT_TIME", nullable = false, length = 19)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="ACCOUNT_CODE",nullable = false)
     @NotNull
-    public Date getOperDate() {
-        return operDate;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setOperDate(Date operDate) {
-        this.operDate = operDate;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
-    @Column(name = "OPER_EMP", nullable = false, length = 32)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="CHECKOUT",nullable = false)
     @NotNull
-    @Size(max = 32)
-    public String getOperEmp() {
-        return operEmp;
+    public Checkout getCheckout() {
+        return checkout;
     }
 
-    public void setOperEmp(String operEmp) {
-        this.operEmp = operEmp;
+    public void setCheckout(Checkout checkout) {
+        this.checkout = checkout;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "accountCheckout")
-    public Set<StockDetailsCheckout> getStockDetailsCheckouts() {
-        return stockDetailsCheckouts;
+    @Version
+    @Column(name = "VERSION")
+    public Integer getVersion() {
+        return this.version;
     }
 
-    public void setStockDetailsCheckouts(Set<StockDetailsCheckout> stockDetailsCheckouts) {
-        this.stockDetailsCheckouts = stockDetailsCheckouts;
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "accountCheckout")
-    public Set<CustomerDetailsCheckout> getCustomerDetailsCheckouts() {
-        return customerDetailsCheckouts;
+    @Column(name = "BEGINNING_BALANCE",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getBeginningBalance() {
+        return beginningBalance;
     }
 
-    public void setCustomerDetailsCheckouts(Set<CustomerDetailsCheckout> customerDetailsCheckouts) {
-        this.customerDetailsCheckouts = customerDetailsCheckouts;
+    public void setBeginningBalance(BigDecimal beginningBalance) {
+        this.beginningBalance = beginningBalance;
+    }
+
+    @Column(name = "BEGINNING_COUNT",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getBeginningCount() {
+        return beginningCount;
+    }
+
+    public void setBeginningCount(BigDecimal beginningCount) {
+        this.beginningCount = beginningCount;
+    }
+
+    @Column(name = "CLOSING_BALANCE",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getClosingBalance() {
+        return closingBalance;
+    }
+
+    public void setClosingBalance(BigDecimal closingBalance) {
+        this.closingBalance = closingBalance;
+    }
+
+    @Column(name = "CLOSING_COUNT",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getClosingCount() {
+        return closingCount;
+    }
+
+    public void setClosingCount(BigDecimal closingCount) {
+        this.closingCount = closingCount;
+    }
+
+    @Column(name = "DEBIT_MONEY",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getDebitMoney() {
+        return debitMoney;
+    }
+
+    public void setDebitMoney(BigDecimal debitMoney) {
+        this.debitMoney = debitMoney;
+    }
+
+    @Column(name = "DEBIT_COUNT",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getDebitCount() {
+        return debitCount;
+    }
+
+    public void setDebitCount(BigDecimal debitCount) {
+        this.debitCount = debitCount;
+    }
+
+    @Column(name = "CREDIT_MONEY",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getCreditMoney() {
+        return creditMoney;
+    }
+
+    public void setCreditMoney(BigDecimal creditMoney) {
+        this.creditMoney = creditMoney;
+    }
+
+    @Column(name = "CREDIT_COUNT",scale = 4,nullable = false)
+    @NotNull
+    public BigDecimal getCreditCount() {
+        return creditCount;
+    }
+
+    public void setCreditCount(BigDecimal creditCount) {
+        this.creditCount = creditCount;
     }
 }

@@ -1,6 +1,6 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.erp.model.AccountCheckout;
+import com.dgsoft.erp.model.Checkout;
 
 import java.math.BigDecimal;
 
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 public interface AccountDetailsCheckout{
 
-    public AccountCheckout getAccountCheckout();
+    public Checkout getCheckout();
 
     public BigDecimal getBeginningBalance();
 

@@ -25,7 +25,6 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
     private BigDecimal count;
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
-    private Set<StockDetailsCheckout> stockDetailsCheckouts = new HashSet<StockDetailsCheckout>(0);
 
     public Stock() {
     }
@@ -114,15 +113,6 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
 
     public void setNoConvertCounts(Set<NoConvertCount> noConvertCounts) {
         this.noConvertCounts = noConvertCounts;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stock", orphanRemoval = false)
-    public Set<StockDetailsCheckout> getStockDetailsCheckouts() {
-        return stockDetailsCheckouts;
-    }
-
-    public void setStockDetailsCheckouts(Set<StockDetailsCheckout> stockDetailsCheckouts) {
-        this.stockDetailsCheckouts = stockDetailsCheckouts;
     }
 
     @Transient
