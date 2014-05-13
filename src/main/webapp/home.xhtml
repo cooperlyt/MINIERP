@@ -19,16 +19,26 @@
             <s:div styleClass="info">
 
                 <p>
-                    <strong>MINIERP 2.2.0 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.2.1 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                    <li>[错误] 修正订单更改阶段错误</li>
-                    <li>[更改] 更改收款方式和记录方式，影响客户货款往来查询，后续版本修正</li>
-                    <li>[系统] 优化数据分页</li>
-                    <li>[仓库] 出入库查询中增加删除功能(需有权限用户)</li>
+                    <li>[更改] 修改订单流程,去掉收款阶段</li>
+                    <li>[新增] 收款功能,所有客户货款操作都在此功能中进行,可删除和修改(需有权限用户)</li>
+                    <li>[错误] 修正增加新用户错误</li>
+                    <li>[错误] 修正订单更改多仓库调拨时出错</li>
                 </ul>
 
                 <strong>历史更新</strong>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.2.0" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[错误] 修正订单更改阶段错误</li>
+                        <li>[更改] 更改收款方式和记录方式，影响客户货款往来查询，后续版本修正</li>
+                        <li>[系统] 优化数据分页</li>
+                        <li>[仓库] 出入库查询中增加删除功能(需有权限用户)</li>
+                    </ul>
+                </s:decorate>
 
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.1.13" name="openLabel"/>
