@@ -305,13 +305,14 @@
 
 </rich:column>
 
-<rich:column>
+<rich:column style="text-align: center;" rendered="#{s:hasRole('erp.finance.accountancy')}">
     <a:commandButton image="/img/dtpick.gif" title="#{messages.accountOperChangeDate}" render="dateChangePanel_form"
                      execute="@this" oncomplete="#{rich:component('dateChangePanel')}.show();">
         <f:param name="selectOperId" value="#{_item.id}"/>
         <a:attachQueue requestDelay="0"/>
     </a:commandButton>
 
+    #{' '}
     <a:commandButton image="/img/delete.png"
                      onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
                      action="#{accountOperHome.remove}" render="dataListResult"
