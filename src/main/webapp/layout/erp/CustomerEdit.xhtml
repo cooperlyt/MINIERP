@@ -37,6 +37,18 @@
 </h:outputStylesheet>
 
 <h:panelGrid columns="2">
+    <s:decorate id="customerIdField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.customer_field_id}</ui:define>
+        <h:inputText required="true" label="#{messages.customer_field_id}"
+                     disabled="#{customerHome.managed}"
+                     valueChangeListener="#{customerHome.verifyIdAvailable}"
+                     value="#{customerHome.instance.id}" size="20" maxlength="32">
+            <f:validateRegex pattern="^\d+$"/>
+            <rich:validator/>
+            <a:ajax event="blur" render="customerIdField"/>
+        </h:inputText>
+    </s:decorate>
+
     <s:decorate id="customerNameField" template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.customer_field_name}</ui:define>
         <h:inputText label="#{messages.customer_field_name}"
@@ -118,7 +130,7 @@
     <s:decorate id="mailField" template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.customer_field_mail}</ui:define>
         <h:inputText label="#{messages.customer_field_mail}"
-                     size="17"
+                     size="15"
                      maxlength="50"
                      value="#{customerHome.instance.mail}">
         </h:inputText>
@@ -137,14 +149,14 @@
     <s:decorate id="addressField" template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.customer_field_address}</ui:define>
         <h:inputTextarea label="#{messages.customer_field_address}"
-                         cols="78"
+                         cols="70"
                          rows="2"
                          value="#{customerHome.instance.address}"/>
     </s:decorate>
     <s:decorate id="memoField" template="/layout/edit.xhtml">
         <ui:define name="label">#{messages.field_memo}</ui:define>
         <h:inputTextarea label="#{messages.field_memo}"
-                         cols="78"
+                         cols="70"
                          rows="2"
                          value="#{customerHome.instance.memo}"/>
     </s:decorate>

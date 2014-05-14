@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "ACCOUNT", catalog = "MINI_ERP")
-public class Account implements Serializable {
+public class Account implements Serializable{
 
     private String code;
 

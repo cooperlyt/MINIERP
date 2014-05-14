@@ -4,6 +4,7 @@ import com.dgsoft.common.system.model.SystemParam;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.framework.EntityQuery;
 import org.jboss.seam.log.Logging;
 
@@ -125,5 +126,13 @@ public class RunParam {
 
     public int getRunCount() {
         return runCount;
+    }
+
+
+    public static RunParam instance() {
+        if (!Contexts.isEventContextActive()) {
+            throw new IllegalStateException("no active event context");
+        }
+        return (RunParam) Component.getInstance(RunParam.class, ScopeType.APPLICATION, false);
     }
 }

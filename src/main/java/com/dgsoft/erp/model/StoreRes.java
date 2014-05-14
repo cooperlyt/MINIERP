@@ -21,7 +21,7 @@ import java.util.*;
  */
 @Entity
 @Cacheable
-@Table(name = "STORE_RES", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
+@Table(name = "STORE_RES", catalog = "MINI_ERP")
 @UniqueVerify(name = "code", severity = StatusMessage.Severity.ERROR, field = {"code"})
 public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<StoreRes> {
 
@@ -91,7 +91,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
         this.res = res;
     }
 
-    @Column(name = "CODE", nullable = false, length = 50)
+    @Column(name = "CODE", unique = true, nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
     public String getCode() {

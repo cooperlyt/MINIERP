@@ -112,6 +112,7 @@
         <class>com.dgsoft.erp.model.PriceItem</class>
         <class>com.dgsoft.erp.model.QuotedPrice</class>
         <class>com.dgsoft.erp.model.MoneySave</class>
+        <class>com.dgsoft.erp.model.SaleCertificate</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

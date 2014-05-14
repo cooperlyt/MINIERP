@@ -11,7 +11,7 @@
     <s:decorate template="/layout/seam-display.xhtml">
         <ui:define name="label">#{messages.customer_field_name}</ui:define>
 
-        <h:outputText value="#{customer.name}"/>
+        <h:outputText value="#{customer.name}  (#{customer.id})"/>
 
     </s:decorate>
 

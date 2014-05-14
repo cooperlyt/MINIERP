@@ -27,21 +27,21 @@
                 </a:ajax>
             </h:selectOneMenu>
 
+
+            <h:selectOneMenu value="#{moneySave.bankAccount}" required="true"
+                             rendered="#{moneySave.payType eq 'BANK_TRANSFER'}"
+                             label="#{messages.BankAccount}">
+                <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
+                               label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                <a:ajax event="valueChange" execute="@this"
+                        render="payTypeField"/>
+                <f:converter converterId="erpEntityConverter"/>
+            </h:selectOneMenu>
             <ui:define name="tail">
 
                 <h:panelGrid columns="10">
 
-                    <h:outputText value="#{messages.BankAccount}"
-                                  rendered="#{moneySave.payType eq 'BANK_TRANSFER'}"/>
-
-                    <h:selectOneMenu value="#{moneySave.bankAccount}"
-                                     rendered="#{moneySave.payType eq 'BANK_TRANSFER'}"
-                                     label="#{messages.BankAccount}">
-                        <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
-                                       label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
-                                       noSelectionLabel="#{messages.noSelectLabel}"/>
-                        <f:converter converterId="erpEntityConverter"/>
-                    </h:selectOneMenu>
 
                     <h:selectBooleanCheckbox value="#{moneySave.useCheck}" rendered="#{not empty moneySave.payType}">
 

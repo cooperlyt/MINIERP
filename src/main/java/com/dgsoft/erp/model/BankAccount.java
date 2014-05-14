@@ -1,7 +1,9 @@
 package com.dgsoft.erp.model;
 
 import com.dgsoft.common.NamedEntity;
+import com.dgsoft.common.utils.persistence.UniqueVerify;
 import org.hibernate.annotations.GenericGenerator;
+import org.jboss.seam.international.StatusMessage;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,7 +16,10 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "BANK_ACCOUNT", catalog = "MINI_ERP")
+@UniqueVerify(name = "number", severity = StatusMessage.Severity.ERROR, field = {"number"})
 public class BankAccount implements java.io.Serializable, NamedEntity {
+
+    private String id;
 
     private String number;
     private String bank;
@@ -34,6 +39,18 @@ public class BankAccount implements java.io.Serializable, NamedEntity {
     }
 
     @Id
+    @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @NotNull
+    @Size(max = 32)
+    public String getId(){
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
     @Column(name = "NUMBER", unique = true, nullable = false, length = 100)
     @NotNull
     @Size(max = 100)
@@ -110,9 +127,4 @@ public class BankAccount implements java.io.Serializable, NamedEntity {
         return getNumber();
     }
 
-    @Override
-    @Transient
-    public String getId(){
-        return getNumber();
-    }
 }

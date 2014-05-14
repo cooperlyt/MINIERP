@@ -35,7 +35,9 @@
                     <f:facet name="header">
                         <h:outputText value="#{messages.BankAccount}"/>
                     </f:facet>
-                    <a:commandLink style="#{_dataItem.enable ? '' : 'text-decoration:line-through; color: red;'}" value="#{dictionary.getWordValue(_dataItem.bank)}(#{_dataItem.number})" immediate="true"
+                    <a:commandLink style="#{_dataItem.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                                   value="#{dictionary.getWordValue(_dataItem.bank)}(#{_dataItem.number})"
+                                   immediate="true"
                                    execute="@this" image="/img/edit.png"
                                    render="#{detailsRender},details">
                         <a:param value="#{_dataItem.id}" assignTo="#{bankAccountHome.id}"/>
@@ -59,18 +61,32 @@
 
     <ui:define name="editFields">
         <s:decorate id="idField" template="/layout/seam-edit.xhtml">
-            <ui:define name="label">#{messages.BankAccount_field_Number}</ui:define>
-            <h:inputText required="true" label="#{messages.BankAccount_field_Number}"
+            <ui:define name="label">#{messages.BankAccount_field_id}</ui:define>
+            <h:inputText required="true" label="#{messages.BankAccount_field_id}"
                          readonly="#{not bankAccountHome.editing}"
                          disabled="#{bankAccountHome.managed}"
                          valueChangeListener="#{bankAccountHome.verifyIdAvailable}"
-                         value="#{bankAccountHome.instance.number}" size="20" maxlength="100">
+                         value="#{bankAccountHome.instance.id}" size="20" maxlength="32">
+                <f:validateRegex pattern="^\d+$"/>
+                <rich:validator/>
                 <a:ajax event="blur" render="idField"/>
             </h:inputText>
 
             <ui:define name="tail">
-                <h:selectBooleanCheckbox disabled="#{not bankAccountHome.editing}" value="#{bankAccountHome.instance.enable}" title="#{messages.enable}"/>
+                <h:selectBooleanCheckbox disabled="#{not bankAccountHome.editing}"
+                                         value="#{bankAccountHome.instance.enable}" title="#{messages.enable}"/>
             </ui:define>
+        </s:decorate>
+
+        <s:decorate id="numberField" template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.BankAccount_field_Number}</ui:define>
+            <h:inputText required="true" label="#{messages.BankAccount_field_Number}"
+                         readonly="#{not bankAccountHome.editing}" unique="number"
+                         valueChangeListener="#{bankAccountHome.verifyUniqueAvailable}"
+                         value="#{bankAccountHome.instance.number}" size="20" maxlength="100">
+                <a:ajax event="blur" render="numberField"/>
+            </h:inputText>
+
         </s:decorate>
 
         <s:decorate id="bankField" template="/layout/seam-edit.xhtml">
@@ -78,8 +94,8 @@
             <h:selectOneMenu value="#{bankAccountHome.instance.bank}" required="true"
                              disabled="#{not bankAccountHome.editing}"
                              label="#{messages.BankAccount_finel_Bank}">
-                 <s:selectItems value="#{dictionary.getWordList('erp.bank')}" var="_word" label="#{_word.value}"
-                                itemValue="#{_word.id}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                <s:selectItems value="#{dictionary.getWordList('erp.bank')}" var="_word" label="#{_word.value}"
+                               itemValue="#{_word.id}" noSelectionLabel="#{messages.noSelectLabel}"/>
             </h:selectOneMenu>
 
         </s:decorate>
@@ -104,7 +120,8 @@
 
         <s:decorate template="/layout/seam-edit.xhtml">
             <ui:define name="label">#{messages.field_memo}</ui:define>
-            <h:inputTextarea readonly="#{not bankAccountHome.editing}" cols="50" value="#{bankAccountHome.instance.memo}"/>
+            <h:inputTextarea readonly="#{not bankAccountHome.editing}" cols="50"
+                             value="#{bankAccountHome.instance.memo}"/>
         </s:decorate>
 
     </ui:define>
