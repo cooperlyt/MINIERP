@@ -15,10 +15,10 @@ import java.math.BigDecimal;
  * Time: 上午10:13
  */
 @Entity
-@Table(name = "ACCOUNT_CHECK_OUT", catalog = "MINI_ERP")
+@Table(name = "ACCOUNT_CHECK_OUT", catalog = "MINI_ERP",uniqueConstraints = @UniqueConstraint(columnNames = {"ACCOUNT_CODE", "CHECKOUT"}))
 public class AccountCheckout implements Serializable {
 
-    private String id;
+    private long id;
 
     private BigDecimal beginningBalance;
     private BigDecimal beginningCount;
@@ -51,17 +51,17 @@ public class AccountCheckout implements Serializable {
         this.creditMoney = BigDecimal.ZERO;
     }
 
+
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
     @NotNull
     @Size(max = 32)
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
