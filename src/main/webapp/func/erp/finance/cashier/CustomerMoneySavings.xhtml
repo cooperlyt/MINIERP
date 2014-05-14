@@ -307,6 +307,7 @@
 
 <rich:column style="text-align: center;" rendered="#{s:hasRole('erp.finance.accountancy')}">
     <a:commandButton image="/img/dtpick.gif" title="#{messages.accountOperChangeDate}" render="dateChangePanel_form"
+                     rendered="#{not (_item.operType eq 'ORDER_PAY') and not (_item.operType eq 'ORDER_BACK') }"
                      execute="@this" oncomplete="#{rich:component('dateChangePanel')}.show();">
         <f:param name="selectOperId" value="#{_item.id}"/>
         <a:attachQueue requestDelay="0"/>
@@ -315,6 +316,7 @@
     #{' '}
     <a:commandButton image="/img/delete.png"
                      onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                     rendered="#{not (_item.operType eq 'ORDER_PAY') and not (_item.operType eq 'ORDER_BACK') }"
                      action="#{accountOperHome.remove}" render="dataListResult"
                      title="#{messages.delete}" execute="@this">
         <f:param name="selectOperId" value="#{_item.id}"/>

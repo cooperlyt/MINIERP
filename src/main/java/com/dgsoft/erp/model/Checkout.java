@@ -18,7 +18,7 @@ import java.util.*;
 @Table(name = "CHECK_OUT", catalog = "MINI_ERP")
 public class Checkout implements java.io.Serializable {
 
-    private String id;
+    private long id;
 
     private int year;
 
@@ -39,18 +39,17 @@ public class Checkout implements java.io.Serializable {
 
 
     @Id
-    @Column(name = "ID", unique = true, nullable = false, length = 32)
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
+    @Column(name = "ID", unique = true, nullable = false)
     @NotNull
-    @Size(max = 32)
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
+
+
 
 
     @Column(name = "C_YEAR", nullable = false)

@@ -37,6 +37,13 @@ public class SaleCertificate implements Serializable {
     public SaleCertificate() {
     }
 
+    public SaleCertificate(String word, int code, Date date, String preparedEmp) {
+        this.word = word;
+        this.code = code;
+        this.date = date;
+        this.preparedEmp = preparedEmp;
+    }
+
     public SaleCertificate(String word, int code, Date date, String preparedEmp,
                            String approvedEmp, String checkedEmp, String cashier, String memo, Integer vouchersCount) {
         this.word = word;

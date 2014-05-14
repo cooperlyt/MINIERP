@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 @Table(name = "ACCOUNT_CHECK_OUT", catalog = "MINI_ERP",uniqueConstraints = @UniqueConstraint(columnNames = {"ACCOUNT_CODE", "CHECKOUT"}))
 public class AccountCheckout implements Serializable {
 
-    private long id;
+    private String id;
 
     private BigDecimal beginningBalance;
     private BigDecimal beginningCount;
@@ -51,19 +51,20 @@ public class AccountCheckout implements Serializable {
         this.creditMoney = BigDecimal.ZERO;
     }
 
-
-
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
     @NotNull
     @Size(max = 32)
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="ACCOUNT_CODE",nullable = false)

@@ -281,7 +281,7 @@ public class AccountOper implements java.io.Serializable {
         this.orderBack = orderBack;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "CERTIFICATE", nullable = true)
     public SaleCertificate getSaleCertificate() {
         return saleCertificate;
