@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.finance;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.model.AccountCheckout;
 import com.dgsoft.erp.model.Checkout;
@@ -8,6 +9,8 @@ import org.jboss.seam.annotations.*;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -33,7 +36,7 @@ public class AccountDateHelper implements Serializable {
     public void load(){
         Long maxId = erpEntityManager.createQuery("select max(checkout.id) from Checkout checkout",Long.class).getSingleResult();
         if (maxId == null) {
-            nextBeginDate = new Date(0);
+            nextBeginDate = null;
         }else{
 
             Checkout checkout = erpEntityManager.find(Checkout.class, maxId);
@@ -46,19 +49,45 @@ public class AccountDateHelper implements Serializable {
     }
 
     public Date getNextBeginDate() {
+        if (nextBeginDate == null){
+            Date saleMinDate = erpEntityManager.createQuery("select min(accountoper.operDate) from AccountOper accountoper",Date.class).getSingleResult();
+            Date storeMinDate = erpEntityManager.createQuery("select min(stockChange.operDate) from StockChange stockChange ", Date.class).getSingleResult();
+            Date minDate = null;
+            if (saleMinDate == null){
+                minDate = storeMinDate;
+            }else if (storeMinDate != null){
+                minDate = (storeMinDate.compareTo(saleMinDate) > 0) ? saleMinDate : storeMinDate;
+            }
+
+            if (minDate == null){
+                minDate = new Date();
+            }
+            minDate = DataFormat.halfTime(minDate);
+            Calendar calendar = Calendar.getInstance(Locale.CHINA);
+            calendar.setTime(minDate);
+            if (calendar.get(Calendar.DATE) >= RunParam.instance().getIntParamValue("erp.finance.beginningDay")){
+                calendar.set(Calendar.DATE,RunParam.instance().getIntParamValue("erp.finance.beginningDay"));
+            }else{
+                calendar.set(Calendar.DATE,RunParam.instance().getIntParamValue("erp.finance.beginningDay"));
+                calendar.add(Calendar.MONTH,-1);
+            }
+            return calendar.getTime();
+        }
         return nextBeginDate;
+    }
+
+    public String getDisplayBeginDate(){
+
+        return new SimpleDateFormat("yyyy-MM-dd").format(getNextBeginDate());
     }
 
 
     public Date getNextCloseDate(){
-        if (nextBeginDate == null){
-            return null;
-        }
         Calendar calendar = Calendar.getInstance(Locale.CHINA);
-        calendar.setTime(nextBeginDate);
+        calendar.setTime(getNextBeginDate());
         calendar.set(Calendar.DATE, RunParam.instance().getIntParamValue("erp.finance.beginningDay"));
         calendar.add(Calendar.MONTH,1);
-        return calendar.getTime();
+        return new Date(calendar.getTime().getTime() - 1);
     }
 
 

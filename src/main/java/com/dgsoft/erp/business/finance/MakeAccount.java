@@ -36,19 +36,6 @@ public class MakeAccount implements Serializable {
     @In
     private FacesMessages facesMessages;
 
-    private Date makeToDate;
-
-    public Date getMakeToDate() {
-        return makeToDate;
-    }
-
-    public void setMakeToDate(Date makeToDate) {
-        this.makeToDate = makeToDate;
-    }
-
-    private Date getSearchToDate() {
-        return new Date(DataFormat.halfTime(makeToDate).getTime() + 24 * 60 * 60 * 1000 - 1);
-    }
 
     private int getMakeBeginCode() {
         Integer result = erpEntityManager.createQuery("select max(saleCertificate.code) from SaleCertificate saleCertificate", Integer.class).getSingleResult();
@@ -61,7 +48,16 @@ public class MakeAccount implements Serializable {
 
     @Transactional
     public void deleteAll() {
+        erpEntityManager.createQuery("update AccountOper accountOper set accountOper.saleCertificate = null " +
+                "where accountOper.saleCertificate.id in (select saleCertificate.id  from SaleCertificate saleCertificate where saleCertificate.date >= :beginDate)")
+                .setParameter("beginDate", accountDateHelper.getNextBeginDate()).executeUpdate();
 
+        erpEntityManager.createQuery("update MoneySave moneySave set moneySave.saleCertificate = null " +
+                "where moneySave.saleCertificate.id in (select saleCertificate.id  from SaleCertificate saleCertificate where saleCertificate.date >= :beginDate)")
+                .setParameter("beginDate", accountDateHelper.getNextBeginDate()).executeUpdate();
+
+        erpEntityManager.createQuery("delete from SaleCertificate saleCertificate where saleCertificate.date >= :beginDate")
+                .setParameter("beginDate", accountDateHelper.getNextBeginDate()).executeUpdate();
     }
 
     @Transactional
@@ -70,10 +66,10 @@ public class MakeAccount implements Serializable {
         int code = getMakeBeginCode();
         int count = 0;
         List<AccountOper> accountOpers = erpEntityManager.createQuery("select accountOper from AccountOper  accountOper left join fetch accountOper.moneySave moneySave " +
-                        "left join fetch accountOper.customer left join fetch moneySave.bankAccount left join moneySave.transCorp" +
-                        "where accountOper.operDate >= :beginDate and accountOper.operDate <= :endDate and accountOper.saleCertificate is null order by accountOper.operDate",
+                        "left join fetch accountOper.customer left join fetch moneySave.bankAccount left join moneySave.transCorp " +
+                        " where accountOper.operDate >= :beginDate and accountOper.operDate <= :endDate and accountOper.saleCertificate is null order by accountOper.operDate",
                 AccountOper.class
-        ).setParameter("beginDate", accountDateHelper.getNextBeginDate()).setParameter("endDate", getSearchToDate()).getResultList();
+        ).setParameter("beginDate", accountDateHelper.getNextBeginDate()).setParameter("endDate", accountDateHelper.getNextCloseDate()).getResultList();
 
         for (AccountOper accountOper : accountOpers) {
             if ((accountOper.getMoneySave() != null) && (accountOper.getMoneySave().getSaleCertificate() != null)) {
@@ -82,6 +78,8 @@ public class MakeAccount implements Serializable {
             } else {
                 accountOper.setSaleCertificate(new SaleCertificate(RunParam.instance().getStringParamValue("erp.finance.c.wrod"),
                         code, accountOper.getOperDate(), credentials.getUsername()));
+                accountOper.getSaleCertificate().setMemo(accountOper.getDescription());
+                accountOper.getSaleCertificate().setCashier(accountOper.getOperEmp());
                 accountOper.getSaleCertificate().getAccountOpers().add(accountOper);
                 if (accountOper.getMoneySave() != null) {
                     accountOper.getMoneySave().setSaleCertificate(accountOper.getSaleCertificate());
@@ -102,9 +100,11 @@ public class MakeAccount implements Serializable {
                 debit = debit.add(item.getDebit());
                 credit = credit.add(item.getCredit());
             }
+
             if (debit.compareTo(credit) != 0) {
                 throw new IllegalArgumentException("certificate error not pin:" + accountOper.getId() + "debit:" + debit + "credit:" + credit);
             }
+            accountOper.getSaleCertificate().setMoney(debit);
         }
 
         erpEntityManager.flush();

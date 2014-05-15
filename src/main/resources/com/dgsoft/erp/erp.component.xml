@@ -84,18 +84,6 @@
         <property name="ejbql">select distinct customer.name from Customer customer</property>
     </component>
 
-    <event type="org.jboss.seam.afterTransactionSuccess.AccountOper">
-        <action execute="#{orderHome.refresh}"/>
-    </event>
-
-    <event type="org.jboss.seam.afterTransactionSuccess.BackPrepareMoney">
-        <action execute="#{backPrepareMoneyList.refresh}"/>
-    </event>
-
-    <event type="org.jboss.seam.afterTransactionSuccess.PreparePay">
-        <action execute="#{preparePayList.refresh}"/>
-    </event>
-
     <component name="validFactoryList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
         <property name="ejbql">select factory from Factory factory where enable=true</property>
     </component>
@@ -120,9 +108,26 @@
         <property name="ejbql">select rebateProgram from RebateProgram rebateProgram</property>
     </component>
 
+    <component name="notCheckSaleCertificateList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
+        <property name="ejbql">select saleCertificate from SaleCertificate saleCertificate where date >= &apos;#{accountDateHelper.displayBeginDate}&apos; order by saleCertificate.code</property>
+        <property name="maxResults">25</property>
+    </component>
+
+
     <event type="org.jboss.seam.afterTransactionSuccess.OrderBack">
         <action execute="#{resBackList.refresh}"/>
     </event>
 
+    <event type="org.jboss.seam.afterTransactionSuccess.AccountOper">
+        <action execute="#{orderHome.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.BackPrepareMoney">
+        <action execute="#{backPrepareMoneyList.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.PreparePay">
+        <action execute="#{preparePayList.refresh}"/>
+    </event>
 
 </components>

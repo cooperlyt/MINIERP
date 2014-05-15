@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -29,6 +30,8 @@ public class SaleCertificate implements Serializable {
     private String cashier;
     private String memo;
     private Integer vouchersCount;
+
+    private BigDecimal money;
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<MoneySave> moneySaves = new HashSet<MoneySave>(0);
@@ -161,7 +164,7 @@ public class SaleCertificate implements Serializable {
         this.vouchersCount = vouchersCount;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "saleCertificate")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "saleCertificate")
     public Set<AccountOper> getAccountOpers() {
         return accountOpers;
     }
@@ -170,7 +173,7 @@ public class SaleCertificate implements Serializable {
         this.accountOpers = accountOpers;
     }
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "saleCertificate")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "saleCertificate")
     public Set<MoneySave> getMoneySaves() {
         return moneySaves;
     }
@@ -179,19 +182,28 @@ public class SaleCertificate implements Serializable {
         this.moneySaves = moneySaves;
     }
 
+    @Column(name = "MONEY", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
+
     @Transient
-    public List<CertificateItem> getCertificateItems(){
-        if (getAccountOpers().isEmpty()){
+    public List<CertificateItem> getCertificateItems() {
+        if (getAccountOpers().isEmpty()) {
             throw new IllegalArgumentException("getAccountOpers() is empty");
         }
         List<CertificateItem> result = new ArrayList<CertificateItem>();
-        for (MoneySave moneySave: getMoneySaves()){
+        for (MoneySave moneySave : getMoneySaves()) {
             result.addAll(moneySave.getCertificateItems());
         }
-        for (AccountOper accountOper: getAccountOpers()){
+        for (AccountOper accountOper : getAccountOpers()) {
             result.addAll(accountOper.getCertificateItems());
         }
         return result;
-
     }
 }
