@@ -40,7 +40,7 @@
                            styleClass="rf-ds-nmb-btn #{(_page eq entityList.page) ? 'rf-ds-act' : ''}"
                            value="#{_page}">
                 <a:attachQueue requestDelay="0"/>
-                <f:param name="firstResult" value="#{(_page - 1) * entityList.maxResults}"/>
+                <a:param value="#{(_page - 1) * entityList.maxResults}" assignTo="#{entityList.firstResult}" />
             </a:commandLink>
 
         </a:repeat>

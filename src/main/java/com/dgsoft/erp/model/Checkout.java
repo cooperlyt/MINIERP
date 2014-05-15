@@ -124,7 +124,7 @@ public class Checkout implements java.io.Serializable {
     public Map<String,AccountCheckout> getAccountCheckOutMap(){
         Map<String,AccountCheckout> accountCheckouts = new HashMap<String, AccountCheckout>();
         for (AccountCheckout accountCheckout: getAccountCheckouts()){
-            accountCheckouts.put(accountCheckout.getAccount().getCode(),accountCheckout);
+            accountCheckouts.put(accountCheckout.getAccountCode(),accountCheckout);
         }
         return accountCheckouts;
     }

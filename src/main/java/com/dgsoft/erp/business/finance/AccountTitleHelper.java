@@ -2,7 +2,6 @@ package com.dgsoft.erp.business.finance;
 
 import com.dgsoft.common.system.DictionaryWord;
 import com.dgsoft.common.system.RunParam;
-import com.dgsoft.erp.model.Account;
 import com.dgsoft.erp.model.Accounting;
 import com.dgsoft.erp.model.BankAccount;
 import com.dgsoft.erp.model.Customer;
