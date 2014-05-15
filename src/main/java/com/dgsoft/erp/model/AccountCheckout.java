@@ -35,13 +35,13 @@ public class AccountCheckout implements Serializable {
 
     private Checkout checkout;
 
-    private Account account;
+    private String accountCode;
 
     public AccountCheckout() {
     }
 
-    public AccountCheckout(Account account, Checkout checkout, BigDecimal beginningBalance, BigDecimal beginningCount) {
-        this.account = account;
+    public AccountCheckout(String accountCode, Checkout checkout, BigDecimal beginningBalance, BigDecimal beginningCount) {
+        this.accountCode = accountCode;
         this.checkout = checkout;
         this.beginningBalance = beginningBalance;
         this.beginningCount = beginningCount;
@@ -65,16 +65,15 @@ public class AccountCheckout implements Serializable {
         this.id = id;
     }
 
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="ACCOUNT_CODE",nullable = false)
+    @Column(name="ACCOUNT_CODE",nullable = false,length = 50)
+    @Size(max = 50)
     @NotNull
-    public Account getAccount() {
-        return account;
+    public String getAccountCode() {
+        return accountCode;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccountCode(String accountCode) {
+        this.accountCode = accountCode;
     }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

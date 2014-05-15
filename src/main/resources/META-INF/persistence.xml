@@ -102,7 +102,6 @@
         <class>com.dgsoft.erp.model.Factory</class>
 
         <class>com.dgsoft.erp.model.Checkout</class>
-        <class>com.dgsoft.erp.model.Account</class>
         <class>com.dgsoft.erp.model.AccountCheckout</class>
         <class>com.dgsoft.erp.model.BackItem</class>
         <class>com.dgsoft.erp.model.BankAccount</class>
