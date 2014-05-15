@@ -130,4 +130,8 @@
         <action execute="#{preparePayList.refresh}"/>
     </event>
 
+    <event type="org.jboss.seam.afterTransactionSuccess.Allocation">
+        <action execute="#{allocationList.refresh}"/>
+    </event>
+
 </components>

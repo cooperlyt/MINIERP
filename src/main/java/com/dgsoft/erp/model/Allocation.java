@@ -75,7 +75,7 @@ public class Allocation implements java.io.Serializable {
         this.inStore = storeByTargetStore;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
+    @ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     @JoinColumn(name = "STORE_IN", nullable = true)
     public StockChange getStockChangeByStoreIn() {
         return this.stockChangeByStoreIn;
@@ -96,7 +96,7 @@ public class Allocation implements java.io.Serializable {
         this.outStore = storeByApplyStore;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     @JoinColumn(name = "STORE_OUT", nullable = true)
     public StockChange getStockChangeByStoreOut() {
         return this.stockChangeByStoreOut;

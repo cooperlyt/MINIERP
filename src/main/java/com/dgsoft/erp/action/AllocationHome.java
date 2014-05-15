@@ -1,11 +1,13 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.jbpm.ProcessInstanceHome;
 import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.Allocation;
 import com.dgsoft.erp.model.StockChange;
+import com.dgsoft.erp.model.StockChangeItem;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -50,7 +52,35 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
     private FacesMessages facesMessages;
 
 
+    private void revertStockChange(StockChange stockChange){
+        if (stockChange == null){
+            return;
+        }
+        for (StockChangeItem item: stockChange.getStockChangeItems()){
+            if (stockChange.getOperType().isOut()){
+                item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
+            }else{
+                item.getStock().setCount(item.getStock().getCount().subtract(item.getCount()));
+            }
+        }
+    }
 
+    @In(create = true)
+    private ProcessInstanceHome processInstanceHome;
+
+    @Override
+    public String remove(){
+        revertStockChange(getInstance().getStockChangeByStoreIn());
+        revertStockChange(getInstance().getStockChangeByStoreOut());
+        processInstanceHome.setProcessDefineName("stockAllocation");
+        processInstanceHome.setProcessKey(getInstance().getId());
+        processInstanceHome.stop();
+        String result = super.remove();
+        if ("removed".equals(result)){
+            processInstanceHome.stop();
+        }
+        return result;
+    }
 
 
     @Transactional

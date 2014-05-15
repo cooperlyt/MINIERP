@@ -134,6 +134,20 @@ public class StoreHome extends ErpEntityHome<Store> {
         return result;
     }
 
+    @Factory(value = "myStoreIds", scope = ScopeType.CONVERSATION)
+    public List<String> getMyStoreIdList() {
+
+        List<String> result = new ArrayList<String>();
+
+        for (Store store : getEntityManager().createQuery("select store from Store store where store.enable = true", Store.class).getResultList()) {
+            if (identity.hasRole("erp.sale.manager") ||
+                    identity.hasRole("erp.finance.accountancy") || identity.hasRole(store.getRole())) {
+                result.add(store.getId());
+            }
+        }
+        return result;
+    }
+
     public static class StoreAreaTreeNode implements TreeNode {
 
         private StoreArea area;
