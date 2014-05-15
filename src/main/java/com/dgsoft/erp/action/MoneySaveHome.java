@@ -71,7 +71,10 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             return customerAccountOper.getOperMoney();
         } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) || customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)){
             return customerAccountOper.getOperMoney().add(getInstance().getRemitFee());
-        } else return customerAccountOper.getOperMoney();
+        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)){
+            return customerAccountOper.getOperMoney().subtract(getInstance().getRemitFee());
+        } else
+            return customerAccountOper.getOperMoney();
 
     }
 
@@ -198,7 +201,7 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             getInstance().setTransCorp(null);
             getSingleAccountOper().setCustomer(customerHome.getReadyInstance());
             if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)) {
-                getSingleAccountOper().setAdvanceReceivable(getInstance().getMoney());
+                getSingleAccountOper().setAdvanceReceivable(getOperMoney());
             } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
                 switch (saveType) {
 

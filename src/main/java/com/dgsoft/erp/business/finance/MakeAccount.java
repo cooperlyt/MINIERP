@@ -69,7 +69,8 @@ public class MakeAccount implements Serializable {
 
         int code = getMakeBeginCode();
         int count = 0;
-        List<AccountOper> accountOpers = erpEntityManager.createQuery("select accountOper from AccountOper  accountOper " +
+        List<AccountOper> accountOpers = erpEntityManager.createQuery("select accountOper from AccountOper  accountOper left join fetch accountOper.moneySave moneySave " +
+                        "left join fetch accountOper.customer left join fetch moneySave.bankAccount left join moneySave.transCorp" +
                         "where accountOper.operDate >= :beginDate and accountOper.operDate <= :endDate and accountOper.saleCertificate is null order by accountOper.operDate",
                 AccountOper.class
         ).setParameter("beginDate", accountDateHelper.getNextBeginDate()).setParameter("endDate", getSearchToDate()).getResultList();
@@ -102,7 +103,7 @@ public class MakeAccount implements Serializable {
                 credit = credit.add(item.getCredit());
             }
             if (debit.compareTo(credit) != 0) {
-                throw new IllegalArgumentException("certificate error not pin:" + accountOper.getId());
+                throw new IllegalArgumentException("certificate error not pin:" + accountOper.getId() + "debit:" + debit + "credit:" + credit);
             }
         }
 

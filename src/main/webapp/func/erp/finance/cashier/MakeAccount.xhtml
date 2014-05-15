@@ -26,7 +26,7 @@
                                    inputSize="10"
                                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                                   datePattern="#{messages.datetimepattern}"
+                                   datePattern="#{messages.datePattern}"
                                    required="true"
                                    label="#{messages.MakeAccountToDate}"
                                    value="#{makeAccount.makeToDate}">
@@ -36,7 +36,7 @@
                     <rich:message for="makeToDate" styleClass="message-icon"
                                   showDetail="true" showSummary="true" tooltip="true"/>
 
-                    <a:commandButton render="dataListResult" action="#{makeAccount.make}"
+                    <a:commandButton styleClass="toolBarBtn" render="dataListResult" action="#{makeAccount.make}"
                                      value="#{messages.MakeAccount}" execute="@form"
                                      status="processWaiting">
                          <a:attachQueue requestDelay="0"/>

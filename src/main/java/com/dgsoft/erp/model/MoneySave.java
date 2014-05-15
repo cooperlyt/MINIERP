@@ -141,7 +141,7 @@ public class MoneySave implements Serializable {
         this.accountOpers = accountOpers;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
     @JoinColumn(nullable = true, name = "CERTIFICATE")
     public SaleCertificate getSaleCertificate() {
         return saleCertificate;
@@ -158,7 +158,7 @@ public class MoneySave implements Serializable {
         if (!getAccountOpers().isEmpty()) {
             if (getRemitFee().compareTo(BigDecimal.ZERO) > 0){
                 result.add(new SampleCertificateItem(" ",
-                        RunParam.instance().getStringParamValue("erp.finance.mgrFee"), BigDecimal.ZERO, getRemitFee()));
+                        RunParam.instance().getStringParamValue("erp.finance.mgrFee"), getRemitFee(), BigDecimal.ZERO));
             }
             if (getMoney().compareTo(BigDecimal.ZERO) > 0) {
                 AccountOper oper = getAccountOpers().iterator().next();
