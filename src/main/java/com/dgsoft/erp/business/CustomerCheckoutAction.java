@@ -2,7 +2,6 @@ package com.dgsoft.erp.business;
 
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.Account;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
