@@ -48,63 +48,74 @@
     </ui:define>
 
     <ui:define name="body">
-        <rich:dataTable style="width: 100%" id="dataListResult" value="#{notCheckSaleCertificateList.resultList}"
-                        var="_item">
-            <f:facet name="footer">
-                <a:outputPanel rendered="#{not empty notCheckSaleCertificateList.resultList}">
-                    <ui:include src="/layout/pageA4jNavigation.xhtml">
-                        <ui:param name="entityList" value="#{notCheckSaleCertificateList}"/>
-                    </ui:include>
-                </a:outputPanel>
-            </f:facet>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.CertificateCode}
+        <h:form>
+
+            <rich:dataTable style="width: 100%" id="dataListResult" value="#{notCheckSaleCertificateList.resultList}"
+                            var="_item">
+                <f:facet name="footer">
+                    <a:outputPanel rendered="#{not empty notCheckSaleCertificateList.resultList}">
+                        <ui:include src="/layout/pageA4jNavigation.xhtml">
+                            <ui:param name="entityList" value="#{notCheckSaleCertificateList}"/>
+                        </ui:include>
+                    </a:outputPanel>
                 </f:facet>
 
-                <a:commandLink value="#{_item.word}-#{_item.code}">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandLink>
-            </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificateCode}
+                    </f:facet>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.CertificateDate}
-                </f:facet>
+                    <a:commandLink value="#{_item.word}-#{_item.code}" execute="@this" render="certificateDetails,certificatePanel_title"
+                                   oncomplete="#{rich:component('certificatePanel')}.show();">
+                        <a:param value="#{_item.id}" assignTo="#{saleCertificateHome.id}"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandLink>
+                </rich:column>
 
-                <h:outputText value="#{_item.date}">
-                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
-                </h:outputText>
-            </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificateDate}
+                    </f:facet>
 
-            <rich:column style="text-align: right">
-                <f:facet name="header">
-                    #{messages.CertificateMoney}
-                </f:facet>
+                    <h:outputText value="#{_item.date}">
+                        <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                    </h:outputText>
+                </rich:column>
 
-                <h:outputText value="#{_item.money}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </rich:column>
+                <rich:column style="text-align: right">
+                    <f:facet name="header">
+                        #{messages.CertificateMoney}
+                    </f:facet>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.CertificateCashier}
-                </f:facet>
+                    <h:outputText value="#{_item.money}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
 
-                #{dictionary.getEmpNameById(_item.cashier)}
-            </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificateCashier}
+                    </f:facet>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.CertificatePreparedEmp}
-                </f:facet>
+                    #{dictionary.getEmpNameById(_item.cashier)}
+                </rich:column>
 
-                #{dictionary.getEmpNameById(_item.preparedEmp)}
-            </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificatePreparedEmp}
+                    </f:facet>
 
-        </rich:dataTable>
+                    #{dictionary.getEmpNameById(_item.preparedEmp)}
+                </rich:column>
+
+            </rich:dataTable>
+
+        </h:form>
+        <ui:include src="/layout/erp/biz/Certificate.xhtml">
+            <ui:param name="certificate" value="#{saleCertificateHome.instance}"/>
+            <ui:param name="rendered" value="#{saleCertificateHome.idDefined}"/>
+        </ui:include>
     </ui:define>
 
 </ui:composition>

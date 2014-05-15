@@ -457,7 +457,7 @@ public class AccountOper implements java.io.Serializable {
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), BigDecimal.ZERO, getAccountsReceivable()));
                     result.add(new SampleCertificateItem(
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.mf.MONEY_FREE"), getCustomer().getName()),
-                            RunParam.instance().getStringParamValue("erp.finance.mgrFee") + getCustomer().getId(), getAccountsReceivable(), BigDecimal.ZERO));
+                            RunParam.instance().getStringParamValue("erp.finance.mgrFee"), getAccountsReceivable(), BigDecimal.ZERO));
                 }
                 if ((getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) || (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0)) {
                     throw new IllegalArgumentException(" PROXY_SAVINGS unSupport type");
@@ -481,7 +481,7 @@ public class AccountOper implements java.io.Serializable {
                 }
                 result.add(new SampleCertificateItem(
                         String.format(RunParam.instance().getStringParamValue("erp.ADF.rm.ORDER_PAY"), getCustomer().getName()),
-                        RunParam.instance().getStringParamValue("erp.finance.receive") + getCustomer().getId(), BigDecimal.ZERO,
+                        RunParam.instance().getStringParamValue("erp.finance.receive"), BigDecimal.ZERO,
                         getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable())));
 
                 break;
@@ -492,7 +492,7 @@ public class AccountOper implements java.io.Serializable {
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable().multiply(new BigDecimal("-1")), BigDecimal.ZERO));
                     result.add(new SampleCertificateItem(
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.rm.ORDER_BACK"), getCustomer().getName()),
-                            RunParam.instance().getStringParamValue("erp.finance.receive") + getCustomer().getId(), BigDecimal.ZERO, getAccountsReceivable().multiply(new BigDecimal("-1"))));
+                            RunParam.instance().getStringParamValue("erp.finance.receive"), BigDecimal.ZERO, getAccountsReceivable().multiply(new BigDecimal("-1"))));
                     result.add(new SampleCertificateItem(
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.c.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable(), BigDecimal.ZERO));

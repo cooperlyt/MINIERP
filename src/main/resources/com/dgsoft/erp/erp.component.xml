@@ -20,7 +20,7 @@
     </component>
 
     <component name="rootAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="event">
-        <property name="ejbql">select accounting from Accounting accounting where accounting.root = true</property>
+        <property name="ejbql">select accounting from Accounting accounting where accounting.level = 1</property>
     </component>
 
     <component name="rootCashAccountingList" class="com.dgsoft.erp.ErpEntityQuery" scope="conversation">

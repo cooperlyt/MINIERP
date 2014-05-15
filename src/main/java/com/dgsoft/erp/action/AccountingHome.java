@@ -54,9 +54,9 @@ public class AccountingHome extends ErpSimpleEntityHome<Accounting> {
     public String createNew() {
         log.debug("call create new");
         if (selectId == null || selectId.trim().equals("")){
-            getInstance().setRoot(true);
+            getInstance().setLevel(1);
         }else{
-            getInstance().setRoot(false);
+            getInstance().setLevel(-1);
         }
         rootChangeListener();
         return super.createNew();
@@ -64,12 +64,15 @@ public class AccountingHome extends ErpSimpleEntityHome<Accounting> {
 
     @Override
     protected boolean wire(){
-        if (getInstance().isRoot()){
-            getInstance().setAccounting(null);
-        }else{
-            getInstance().setAccounting(getEntityManager().find(Accounting.class,selectId));
-            getInstance().setDirection(getInstance().getAccounting().getDirection());
-            getInstance().setAccountingType(getInstance().getAccounting().getAccountingType());
+        if (!isManaged()) {
+            if (getInstance().isRoot()) {
+                getInstance().setAccounting(null);
+            } else {
+                getInstance().setAccounting(getEntityManager().find(Accounting.class, selectId));
+                getInstance().setLevel(getInstance().getAccounting().getLevel() + 1);
+                getInstance().setDirection(getInstance().getAccounting().getDirection());
+                getInstance().setAccountingType(getInstance().getAccounting().getAccountingType());
+            }
         }
         return true;
     }

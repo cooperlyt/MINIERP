@@ -1,8 +1,10 @@
 package com.dgsoft.common.system;
 
 import com.dgsoft.common.system.model.*;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.contexts.Contexts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,6 +141,14 @@ public class DictionaryWord {
         } else {
             return city.getName();
         }
+    }
+
+
+    public static DictionaryWord instance() {
+        if (!Contexts.isEventContextActive()) {
+            throw new IllegalStateException("no active event context");
+        }
+        return (DictionaryWord) Component.getInstance(DictionaryWord.class, ScopeType.APPLICATION, false);
     }
 
 }

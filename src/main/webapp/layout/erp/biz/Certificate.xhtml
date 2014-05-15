@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.org/schema/seam/taglib">
+
+    <!--required param:  panelId -->
+
+    <rich:popupPanel id="certificatePanel" modal="true" autosized="false" height="350" width="650"
+                     moveable="true" resizeable="false">
+
+        <f:facet name="header">
+            <h:panelGroup id="certificatePanel_title">
+                <h:outputText value="#{messages.Certificate}: #{certificate.word}-#{certificate.code}"/>
+            </h:panelGroup>
+        </f:facet>
+        <f:facet name="controls">
+
+            <h:panelGroup>
+                <ui:insert name="controls">
+                    <a:commandButton immediate="true"
+                                     execute="@this" image="/img/close.png"
+                                     onclick="#{rich:component('certificatePanel')}.hide(); return false;">
+                    </a:commandButton>
+                </ui:insert>
+            </h:panelGroup>
+        </f:facet>
+
+        <a:outputPanel id="certificateDetails">
+            <a:outputPanel rendered="#{rendered}">
+                <rich:dataTable style="width: 100% "  var="_item"
+                                        value="#{certificate.certificateItems}" clientRows="0">
+                    <rich:column width="200px">
+                        <f:facet name="header">
+                            #{messages.CertificateItemDescription}
+                        </f:facet>
+                        #{_item.description}
+
+                        <f:facet name="footer">
+                            #{messages.recordTotal}
+                        </f:facet>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.CertificateItemAccount}
+                        </f:facet>
+                        #{_item.accountCode}  <br/>
+                        #{accountTitleHelper.getAccountTitleByCode(_item.accountCode)}
+
+                    </rich:column>
+                    <rich:column style="text-align: right">
+                        <f:facet name="header">
+                            #{messages.CertificateItemDebit}
+                        </f:facet>
+                        <h:outputText value="#{_item.debit}">
+                            <f:convertNumber type="currency" currencySymbol="" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </rich:column>
+                    <rich:column style="text-align: right">
+                        <f:facet name="header">
+                            #{messages.CertificateItemCredit}
+                        </f:facet>
+                        <h:outputText value="#{_item.credit}">
+                            <f:convertNumber type="currency" currencySymbol="" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                        <f:facet name="footer">
+                            <h:outputText value="#{certificate.money}">
+                                <f:convertNumber type="currency" currencySymbol="" locale="#{calendarBean.locale}"/>
+                            </h:outputText>
+                        </f:facet>
+                    </rich:column>
+
+                </rich:dataTable>
+            </a:outputPanel>
+        </a:outputPanel>
+    </rich:popupPanel>
+
+</ui:composition>

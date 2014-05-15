@@ -31,11 +31,9 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
     private String name;
     private String currency;
     private Direction direction;
-    private boolean root;
+    private int level;
     private Res res;
-    private Set<AccountOper> accountOpersForDebitAccount = new HashSet<AccountOper>(0);
     private Set<Accounting> accountings = new HashSet<Accounting>(0);
-    private Set<AccountOper> accountOpersForCreditAccount = new HashSet<AccountOper>(0);
     private Set<OrderFee> orderFeesForDebit = new HashSet<OrderFee>(0);
     private Set<OrderFee> orderFeesForCredit = new HashSet<OrderFee>(0);
 
@@ -110,13 +108,13 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
         this.direction = directoin;
     }
 
-    @Column(name = "ROOT", nullable = false)
-    public boolean isRoot() {
-        return this.root;
+    @Column(name="LEVEL", nullable = false)
+    public int getLevel() {
+        return level;
     }
 
-    public void setRoot(boolean root) {
-        this.root = root;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "debitAccounting")
@@ -156,6 +154,15 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
     }
 
     @Transient
+    public String getPathName(){
+        if (isRoot()){
+            return getName();
+        }else{
+            return getAccounting().getPathName() + " > " + getName();
+        }
+    }
+
+    @Transient
     public List<Accounting> getAccountingList() {
         List<Accounting> result = new ArrayList<Accounting>(getAccountings());
         Collections.sort(result, new Comparator<Accounting>() {
@@ -167,6 +174,22 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
             }
         });
         return result;
+    }
+
+    @Transient
+    public boolean isRoot(){
+        return getLevel() == 1;
+    }
+
+    @Transient
+    public void setRoot(boolean root){
+       if (root){
+           setLevel(1);
+       }else if (getAccounting() != null){
+           setLevel(getAccounting().getLevel() + 1);
+       }else{
+           setLevel(-1);
+       }
     }
 
     @Override
