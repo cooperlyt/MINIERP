@@ -1,7 +1,10 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
+import com.dgsoft.erp.total.SameFormatResGroupStrategy;
+import com.dgsoft.erp.total.StoreResGroupStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -200,6 +203,11 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
 
     public void setPrepareStockChanges(Set<PrepareStockChange> prepareStockChanges) {
         this.prepareStockChanges = prepareStockChanges;
+    }
+
+    @Transient
+    public List<TotalDataGroup<Res,StockChangeItem>> getStockChangeGroup(){
+        return TotalDataGroup.groupBy(getStockChangeItems(),new StoreResGroupStrategy<StockChangeItem>(), new SameFormatResGroupStrategy<StockChangeItem>());
     }
 
     @Transient

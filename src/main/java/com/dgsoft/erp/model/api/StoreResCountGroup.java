@@ -1,9 +1,13 @@
 package com.dgsoft.erp.model.api;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.Res;
+import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.total.SameFormatResGroupStrategy;
+import com.dgsoft.erp.total.StoreResGroupStrategy;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -23,8 +27,8 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
     }
 
     public List<E> getStoreResCountList() {
-         List<E> result = new ArrayList<E>(values());
-        Collections.sort(result,new Comparator<E>() {
+        List<E> result = new ArrayList<E>(values());
+        Collections.sort(result, new Comparator<E>() {
             @Override
             public int compare(E o1, E o2) {
                 return o1.getStoreRes().compareTo(o2.getStoreRes());
@@ -36,7 +40,7 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
 
     public E put(E v) {
 
-        resGroupList = null;
+        clearGroupData();
         E result = get(v.getStoreRes());
         if (result == null) {
             return super.put(v.getStoreRes(), v);
@@ -55,16 +59,16 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
     }
 
     @Override
-    public void clear(){
+    public void clear() {
         super.clear();
-        resGroupList = null;
+        clearGroupData();
     }
 
     @Override
-    public E remove(Object key){
+    public E remove(Object key) {
         E result = super.remove(key);
-        if (result != null){
-            resGroupList = null;
+        if (result != null) {
+            clearGroupData();
         }
         return result;
     }
@@ -88,6 +92,19 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
         return result;
     }
 
+    private List<TotalDataGroup<Res, E>> formatGroup;
+
+    public List<TotalDataGroup<Res, E>> getFormatGroup() {
+        initFormatGroup();
+        return formatGroup;
+    }
+
+    protected void initFormatGroup() {
+        if (formatGroup == null) {
+            formatGroup = TotalDataGroup.groupBy(values(), new StoreResGroupStrategy<E>(), new SameFormatResGroupStrategy<E>());
+        }
+    }
+
     private List<ResCountTotal<StoreResCount>> resGroupList = null;
 
     public List<ResCountTotal<StoreResCount>> getResGroupList() {
@@ -95,7 +112,7 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
         return resGroupList;
     }
 
-    public void initResGroupList() {
+    protected void initResGroupList() {
         if (resGroupList == null) {
             resGroupList = new ArrayList<ResCountTotal<StoreResCount>>();
             for (Map.Entry<Res, List<E>> entry : getResGroupMap().entrySet()) {
@@ -111,6 +128,10 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
         }
     }
 
+    private void clearGroupData() {
+        resGroupList = null;
+    }
+
     public static class ResCountTotal<E extends StoreResCountEntity> {
 
         private Res res;
@@ -123,7 +144,7 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
             Collections.sort(this.values, new Comparator<E>() {
                 @Override
                 public int compare(E o1, E o2) {
-                    if (o1.getStoreRes() == null){
+                    if (o1.getStoreRes() == null) {
                         return 0;
                     }
                     return o1.getStoreRes().compareTo(o2.getStoreRes());

@@ -144,6 +144,23 @@
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
                     <ui:param name="entityList" value="#{allocationList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.Allocation_field_type}"/>
+                    <ui:param name="propertyPath" value="allocation.type"/>
+                </ui:include>
+            </f:facet>
+
+            <s:link value="#{messages[_item.type.name()]}" view="/func/erp/store/AllocationView.xhtml" target="_blank">
+                   <f:param name="allocationId" value="#{_item.id}"/>
+            </s:link>
+
+
+
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{allocationList}"/>
                     <ui:param name="propertyLabel" value="#{messages.Allocation_field_createDate}"/>
                     <ui:param name="propertyPath" value="allocation.createDate"/>
                 </ui:include>
@@ -179,18 +196,6 @@
             #{_item.inStore.name}
         </rich:column>
 
-        <rich:column>
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{allocationList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.Allocation_field_type}"/>
-                    <ui:param name="propertyPath" value="allocation.type"/>
-                </ui:include>
-            </f:facet>
-
-            #{messages[_item.type.name()]}
-
-        </rich:column>
 
         <rich:column>
             <f:facet name="header">
