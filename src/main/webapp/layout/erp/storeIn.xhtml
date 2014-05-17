@@ -24,14 +24,6 @@
         }
     </h:outputStylesheet>
 
-    
-    <ui:include src="/layout/erp/biz/ResEntityItemCreateTree.xhtml">
-        <ui:param name="render" value="storeInItem"/>
-        <ui:param name="treeValue" value="#{storeResTreeValue}"/>
-        <ui:param name="createAction" value="#{stockChangeItemCreate}"/>
-    </ui:include>
-
-
     <rich:toolbar height="26">
 
         <rich:toolbarGroup>
@@ -50,12 +42,6 @@
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
 
-
-                    <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
-                                     title="#{messages.storeResSelect}"
-                                     onclick="#{rich:component('resSelectPanel')}.show();return false;">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:commandButton>
                 </h:panelGrid>
             </h:form>
         </rich:toolbarGroup>
@@ -123,55 +109,70 @@
     </s:decorate>
 
     <h:form id="storeInItem">
-        <rich:panel rendered="#{resCategoryHome.idDefined or (not (empty stockChangeItemCreate.editingItem))}">
-            <a:outputPanel rendered="#{resCategoryHome.idDefined}">
-                <h:panelGrid columns="1">
-                    <h:outputText value="#{resCategoryHome.instance.name}" styleClass="auto_width_name"/>
-                </h:panelGrid>
 
 
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.res}</ui:define>
-                    <h:selectOneMenu value="#{resHome.id}" required="true" label="#{messages.res}">
-                        <s:selectItems value="#{resCategoryHome.reses}" var="_res"
-                                       label="#{_res.name}" itemValue="#{_res.id}"
-                                       noSelectionLabel="#{messages.noSelectLabel}"/>
-                        <a:ajax event="valueChange" listener="#{stockChangeItemCreate.resChange}" render="storeInItem"/>
-                    </h:selectOneMenu>
-                </s:decorate>
-            </a:outputPanel>
+        <rich:panel>
 
-            <a:outputPanel rendered="#{not (empty stockChangeItemCreate.editingItem)}">
+            <s:decorate template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.resCategory}</ui:define>
+                <h:selectOneMenu value="#{resCategoryHome.id}" required="true" label="#{messages.resCategory}">
 
-                <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
-                    <ui:param name="inputValue" value="#{stockChangeItemCreate.editingItem}"/>
-                    <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
-                    <ui:param name="countLableStyleClass" value="name"/>
-                    <ui:param name="showTitle" value="false"/>
-                </ui:include>
-
-
-                <ui:insert name="addItemAction">
-
-                    <!-- TODO BATCH -->
-
-
-                    <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
-                                     render="storeInItem,storeInItems,newStoreResCodeInputPanel_inputs"
-                                     data="#{sotreInAction.addItemLastState}"
-                                     oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
-                                     action="#{sotreInAction.addItem}">
+                    <s:selectItems value="#{resCategoryList.allResCategorys}" var="_category" label="#{_category.name}"
+                                   itemValue="#{_category.id}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <a:ajax event="valueChange" listener="#{stockChangeItemCreate.resCategorySelected}"
+                            render="categoryNextStep"
+                            execute="@this">
                         <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </h:selectOneMenu>
+            </s:decorate>
 
-                    </a:commandButton>
-                </ui:insert>
+            <a:outputPanel id="categoryNextStep">
+                <a:outputPanel rendered="#{resCategoryHome.idDefined}">
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.res}</ui:define>
+                        <h:selectOneMenu value="#{resHome.id}" required="true" label="#{messages.res}">
+                            <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                           label="#{_res.name}" itemValue="#{_res.id}"
+                                           noSelectionLabel="#{messages.noSelectLabel}"/>
+                            <a:ajax event="valueChange" listener="#{stockChangeItemCreate.resChange}"
+                                    render="storeInItem"/>
+                        </h:selectOneMenu>
+                    </s:decorate>
+                </a:outputPanel>
+
+                <a:outputPanel rendered="#{not (empty stockChangeItemCreate.editingItem)}">
+
+                    <ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+                        <ui:param name="inputValue" value="#{stockChangeItemCreate.editingItem}"/>
+                        <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                        <ui:param name="countLableStyleClass" value="name"/>
+                        <ui:param name="showTitle" value="false"/>
+                    </ui:include>
+
+
+                    <ui:insert name="addItemAction">
+
+                        <!-- TODO BATCH -->
+
+
+                        <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
+                                         render="storeInItem,storeInItems,newStoreResCodeInputPanel_inputs"
+                                         data="#{sotreInAction.addItemLastState}"
+                                         oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
+                                         action="#{sotreInAction.addItem}">
+                            <a:attachQueue requestDelay="0"/>
+
+                        </a:commandButton>
+                    </ui:insert>
+                </a:outputPanel>
+
+                <div style="clear:both">
+                    <span class="required">*</span>
+                    #{messages.requiredFields}
+                </div>
             </a:outputPanel>
-
-            <div style="clear:both">
-                <span class="required">*</span>
-                #{messages.requiredFields}
-            </div>
-
 
         </rich:panel>
     </h:form>
@@ -248,7 +249,7 @@
                                          immediate="true" image="/img/delete.png"
                                          action="#{sotreInAction.removeItem}" render="storeInItems">
                             <a:attachQueue requestDelay="0"/>
-                            <a:param value="#{_item1.storeRes.code}" assignTo="#{sotreInAction.editItemCode}" />
+                            <a:param value="#{_item1.storeRes.code}" assignTo="#{sotreInAction.editItemCode}"/>
                         </a:commandButton>
                     </rich:column>
 

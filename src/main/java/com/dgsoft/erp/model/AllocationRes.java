@@ -19,7 +19,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "ALLOCATION_RES", catalog = "MINI_ERP")
-public class AllocationRes extends StoreResCountEntity implements java.io.Serializable {
+public class AllocationRes extends StoreResCountEntity implements Comparable<AllocationRes>, java.io.Serializable {
 
     private String id;
     private StoreRes storeRes;
@@ -90,4 +90,8 @@ public class AllocationRes extends StoreResCountEntity implements java.io.Serial
         this.count = count;
     }
 
+    @Override
+    public int compareTo(AllocationRes o) {
+        return getStoreRes().compareTo(o.getStoreRes());
+    }
 }

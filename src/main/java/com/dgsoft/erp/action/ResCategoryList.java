@@ -45,4 +45,14 @@ public class ResCategoryList extends ErpEntityQuery<ResCategory> {
         acceptTypes = new ArrayList<ResCategory.ResType>(StockChange.StoreChangeType.SELL_OUT.getResTypes());
         return getResultList();
     }
+    public List<ResCategory> getResCategorys(String storeChangeTypeName){
+        acceptTypes = new ArrayList<ResCategory.ResType>(Enum.valueOf(StockChange.StoreChangeType.class,storeChangeTypeName).getResTypes());
+        return getResultList();
+    }
+
+    public List<ResCategory> getAllResCategorys(){
+        acceptTypes = new ArrayList<ResCategory.ResType>(0);
+        return getResultList();
+    }
+
 }
