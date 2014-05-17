@@ -20,6 +20,7 @@
                 showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                 datePattern="#{messages.datetimepattern}"
                 required="true"
+                defaultTime="#{currentTime}"
                 label="#{messages.accountOper_field_operDate}"
                 value="#{customerAccountOper.operDate}">
         </rich:calendar>

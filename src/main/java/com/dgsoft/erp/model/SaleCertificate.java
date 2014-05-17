@@ -1,5 +1,6 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.common.utils.finance.Certificate;
 import com.dgsoft.common.utils.finance.CertificateItem;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,7 +19,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "SALE_PREPARED", catalog = "MINI_ERP")
-public class SaleCertificate implements Serializable {
+public class SaleCertificate implements Serializable, Certificate {
 
     private String id;
     private String word;
@@ -74,6 +75,7 @@ public class SaleCertificate implements Serializable {
         this.id = id;
     }
 
+    @Override
     @Column(name = "_WORD", nullable = false, length = 10)
     @NotNull
     @Size(max = 10)
@@ -85,6 +87,7 @@ public class SaleCertificate implements Serializable {
         this.word = word;
     }
 
+    @Override
     @Column(name = "_CODE", nullable = false)
     public int getCode() {
         return code;
@@ -94,6 +97,7 @@ public class SaleCertificate implements Serializable {
         this.code = code;
     }
 
+    @Override
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CERTIFICATE_DATE", nullable = false, length = 19)
     @NotNull
@@ -105,6 +109,7 @@ public class SaleCertificate implements Serializable {
         this.date = date;
     }
 
+    @Override
     @Column(name = "PREPARED_EMP", nullable = true, length = 32)
     @Size(max = 32)
     public String getPreparedEmp() {
@@ -115,6 +120,7 @@ public class SaleCertificate implements Serializable {
         this.preparedEmp = preparedEmp;
     }
 
+    @Override
     @Column(name = "APPROVED_EMP", nullable = true, length = 32)
     @Size(max = 32)
     public String getApprovedEmp() {
@@ -125,6 +131,7 @@ public class SaleCertificate implements Serializable {
         this.approvedEmp = approvedEmp;
     }
 
+    @Override
     @Column(name = "CHECKED_EMP", nullable = true, length = 32)
     @Size(max = 32)
     public String getCheckedEmp() {
@@ -135,6 +142,7 @@ public class SaleCertificate implements Serializable {
         this.checkedEmp = checkedEmp;
     }
 
+    @Override
     @Column(name = "CASHIER", nullable = true, length = 32)
     @Size(max = 32)
     public String getCashier() {
@@ -145,6 +153,7 @@ public class SaleCertificate implements Serializable {
         this.cashier = cashier;
     }
 
+    @Override
     @Column(name = "MEMO", nullable = true, length = 200)
     @Size(max = 200)
     public String getMemo() {
@@ -182,6 +191,7 @@ public class SaleCertificate implements Serializable {
         this.moneySaves = moneySaves;
     }
 
+    @Override
     @Column(name = "MONEY", nullable = false, scale = 4)
     @NotNull
     public BigDecimal getMoney() {
@@ -192,6 +202,7 @@ public class SaleCertificate implements Serializable {
         this.money = money;
     }
 
+    @Override
     @Transient
     public List<CertificateItem> getCertificateItems() {
         if (getAccountOpers().isEmpty()) {

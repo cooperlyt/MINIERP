@@ -69,9 +69,9 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             return null;
         } else if (getInstance().getRemitFee() == null) {
             return customerAccountOper.getOperMoney();
-        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) || customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)){
+        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) || customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
             return customerAccountOper.getOperMoney().add(getInstance().getRemitFee());
-        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)){
+        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)) {
             return customerAccountOper.getOperMoney().subtract(getInstance().getRemitFee());
         } else
             return customerAccountOper.getOperMoney();
@@ -206,11 +206,12 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
                 switch (saveType) {
 
                     case BY_CURR:
-                        if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) > 0) {
+                        if (customerHome.getInstance().getAccountMoney().compareTo(getOperMoney()) >= 0) {
+                            getSingleAccountOper().setAdvanceReceivable(BigDecimal.ZERO);
+                            getSingleAccountOper().setAccountsReceivable(getOperMoney());
+                        } else {
                             getSingleAccountOper().setAdvanceReceivable(getOperMoney().subtract(customerHome.getInstance().getAccountMoney()));
                             getSingleAccountOper().setAccountsReceivable(customerHome.getInstance().getAccountMoney());
-                        } else {
-                            getSingleAccountOper().setAdvanceReceivable(getOperMoney());
                         }
                         break;
                     case BY_ADVANCE:

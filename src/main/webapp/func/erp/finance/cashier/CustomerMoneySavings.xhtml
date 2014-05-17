@@ -342,10 +342,11 @@
 
     <rich:calendar rendered="#{accountOperHome.idDefined}"
                    enableManualInput="true"
-                   inputSize="10" required="true"
+                   inputSize="20" required="true"
                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                   datePattern="#{messages.datePattern}"
+                   datePattern="#{messages.datetimepattern}"
+                   defaultTime="#{currentTime}"
                    label="#{messages.accountOperChangeDate}"
                    value="#{accountOperHome.instance.operDate}">
     </rich:calendar>

@@ -8,6 +8,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 
 import javax.persistence.EntityManager;
+import javax.xml.crypto.Data;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,6 +34,7 @@ public class AccountDateHelper implements Serializable {
     private Date nextBeginDate;
 
     @Create
+    @Observer("erp.closingAccount")
     public void load(){
         Long maxId = erpEntityManager.createQuery("select max(checkout.id) from Checkout checkout",Long.class).getSingleResult();
         if (maxId == null) {
@@ -42,10 +44,18 @@ public class AccountDateHelper implements Serializable {
             Checkout checkout = erpEntityManager.find(Checkout.class, maxId);
 
             Calendar calendar = Calendar.getInstance(Locale.CHINA);
-            calendar.set(checkout.getYear(),checkout.getMonth(),checkout.getBeginDay());
-            calendar.add(Calendar.MONTH,1);
+            calendar.setTime(checkout.getCloseDate());
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.add(Calendar.DATE,1);
             nextBeginDate = calendar.getTime();
         }
+    }
+
+    public boolean isFirst(){
+        return nextBeginDate == null;
     }
 
     public Date getNextBeginDate() {
@@ -62,13 +72,15 @@ public class AccountDateHelper implements Serializable {
             if (minDate == null){
                 minDate = new Date();
             }
-            minDate = DataFormat.halfTime(minDate);
             Calendar calendar = Calendar.getInstance(Locale.CHINA);
             calendar.setTime(minDate);
-            if (calendar.get(Calendar.DATE) >= RunParam.instance().getIntParamValue("erp.finance.beginningDay")){
-                calendar.set(Calendar.DATE,RunParam.instance().getIntParamValue("erp.finance.beginningDay"));
-            }else{
-                calendar.set(Calendar.DATE,RunParam.instance().getIntParamValue("erp.finance.beginningDay"));
+            calendar.set(Calendar.DATE,RunParam.instance().getIntParamValue("erp.finance.beginningDay"));
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            if (calendar.get(Calendar.DATE) < RunParam.instance().getIntParamValue("erp.finance.beginningDay")){
                 calendar.add(Calendar.MONTH,-1);
             }
             return calendar.getTime();
@@ -79,6 +91,18 @@ public class AccountDateHelper implements Serializable {
     public String getDisplayBeginDate(){
 
         return new SimpleDateFormat("yyyy-MM-dd").format(getNextBeginDate());
+    }
+
+    public int getCloseMonth(){
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+        calendar.setTime(getNextCloseDate());
+        return calendar.get(Calendar.MONTH);
+    }
+
+    public int getBeginMonth(){
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+        calendar.setTime(getNextBeginDate());
+        return calendar.get(Calendar.MONTH);
     }
 
 

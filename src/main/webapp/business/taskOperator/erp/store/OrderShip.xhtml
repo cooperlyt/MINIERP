@@ -105,6 +105,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datetimepattern}"
                     required="true"
+                    defaultTime="#{currentTime}"
                     label="#{messages.dispatch_field_shipDate}"
                     value="#{dispatchHome.instance.sendTime}"/>
         </s:decorate>

@@ -20,23 +20,29 @@ public class Checkout implements java.io.Serializable {
 
     private long id;
 
-    private int year;
-
-    private int month;
-
     private Date operDate;
 
     private String operEmp;
 
-    private int beginDay;
-
     private Integer version;
+
+
+    private Date beginDate;
+
+    private Date closeDate;
 
     private Set<AccountCheckout> accountCheckouts = new HashSet<AccountCheckout>(0);
 
     public Checkout() {
     }
 
+    public Checkout(long id, Date operDate, String operEmp, Date beginDate, Date closeDate) {
+        this.id = id;
+        this.operDate = operDate;
+        this.operEmp = operEmp;
+        this.beginDate = beginDate;
+        this.closeDate = closeDate;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
@@ -47,36 +53,6 @@ public class Checkout implements java.io.Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-
-
-
-    @Column(name = "C_YEAR", nullable = false)
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    @Column(name = "C_MONTH", nullable = false)
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    @Column(name = "BEGIN_DAY", nullable = false)
-    public int getBeginDay() {
-        return beginDay;
-    }
-
-    public void setBeginDay(int beginDay) {
-        this.beginDay = beginDay;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -101,7 +77,29 @@ public class Checkout implements java.io.Serializable {
         this.operEmp = operEmp;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "checkout")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="BEGIN_DATE",nullable = false,length = 19)
+    @NotNull
+    public Date getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(Date beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="CLOSE_DATE",nullable = false,length = 19)
+    @NotNull
+    public Date getCloseDate() {
+        return closeDate;
+    }
+
+    public void setCloseDate(Date closeDate) {
+        this.closeDate = closeDate;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "checkout",cascade = {CascadeType.ALL})
     public Set<AccountCheckout> getAccountCheckouts() {
         return accountCheckouts;
     }

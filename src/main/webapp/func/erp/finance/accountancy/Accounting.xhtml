@@ -1,0 +1,36 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+    <ui:define name="toolbar">
+
+        <rich:toolbar>
+
+
+            <rich:toolbarGroup location="right">
+
+                <h:form>
+                    <a:commandButton value="#{messages.UnCloseAccount} #{accountDateHelper.beginMonth}"
+                                     action="#{closingAccount.unclosing}" status="processWaiting"
+                                     rendered="#{not accountDateHelper.first}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    <a:commandButton value="#{messages.CloseAccount} #{accountDateHelper.closeMonth}"
+                                     action="#{closingAccount.closing}" status="processWaiting">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                </h:form>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+    </ui:define>
+
+
+</ui:composition>

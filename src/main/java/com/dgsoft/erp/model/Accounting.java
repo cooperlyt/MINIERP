@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Nov 5, 2013 1:58:21 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.NamedEntity;
+import com.dgsoft.common.utils.finance.Account;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.google.common.collect.Iterators;
 import org.jboss.seam.international.StatusMessage;
@@ -19,18 +20,15 @@ import java.util.*;
 @Table(name = "ACCOUNTING", catalog = "MINI_ERP")
 @UniqueVerify(name = "Name", severity = StatusMessage.Severity.WARN, field = {"name"})
 @NamedQuery(name = "findAccountingByName", query = "select accounting from Accounting accounting where accounting.name=:name")
-public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
+public class Accounting implements java.io.Serializable, NamedEntity,Account {
 
-    public enum Direction {
-        CREDIT, DBEDIT;
-    }
 
     private String id;
     private Accounting accounting;
     private String accountingType;
     private String name;
     private String currency;
-    private Direction direction;
+    private Account.Direction direction;
     private int level;
     private Res res;
     private Set<Accounting> accountings = new HashSet<Accounting>(0);
@@ -63,6 +61,15 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
         this.accounting = accounting;
     }
 
+    @Override
+    @Transient
+    public Account getParent(){
+        if (isRoot()) {
+            return null;
+        } else {
+            return getAccounting();
+        }
+    }
 
     @Column(name = "TYPE", nullable = false, length = 32)
     @Size(max = 32)
@@ -75,6 +82,7 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
         this.accountingType = accountingType;
     }
 
+    @Override
     @Column(name = "NAME", nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
@@ -97,17 +105,19 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
         this.currency = currency;
     }
 
+    @Override
     @Enumerated(EnumType.STRING)
     @Column(name = "DIRECTION", nullable = false, length = 10)
     @NotNull
-    public Direction getDirection() {
+    public Account.Direction getDirection() {
         return this.direction;
     }
 
-    public void setDirection(Direction directoin) {
+    public void setDirection(Account.Direction directoin) {
         this.direction = directoin;
     }
 
+    @Override
     @Column(name="LEVEL", nullable = false)
     public int getLevel() {
         return level;
@@ -202,16 +212,6 @@ public class Accounting implements java.io.Serializable, TreeNode, NamedEntity {
     @Transient
     public int getChildCount() {
         return getAccountings().size();
-    }
-
-    @Override
-    @Transient
-    public TreeNode getParent() {
-        if (isRoot()) {
-            return null;
-        } else {
-            return getAccounting();
-        }
     }
 
     @Override
