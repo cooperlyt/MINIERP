@@ -97,9 +97,10 @@ public class SaleAccountClose {
             calcMoney = calcCustomerAdvanceMoney(customerId, accountDateHelper.getNextBeginDate());
             customerMoney = erpEntityManager.find(Customer.class, customerId).getAdvanceMoney();
         } else
-            throw new IllegalArgumentException("nukonw type" + code);
+           return BigDecimal.ZERO;
         if (customerMoney.compareTo(calcMoney) < 0) {
-            throw new IllegalArgumentException("customer begin money error:" + customerId);
+            throw new IllegalArgumentException("customer begin money error code:" + code +
+                    "|customerMoney:" + customerMoney + "|calcMoney:" + calcMoney);
         }
         return customerMoney.subtract(calcMoney);
     }
@@ -124,8 +125,8 @@ public class SaleAccountClose {
                     money = money.add(cc.getBeginningBalance());
                 }
                 money = money.add(calcCustomerAccountMoney(customer.getId(),checkout.getBeginDate()));
-                if (money.compareTo(customer.getAccountBalance()) != 0){
-                    throw new IllegalArgumentException("customer Account balance error:" + customer.getId());
+                if (money.compareTo(customer.getAccountMoney()) != 0){
+                    throw new IllegalArgumentException("customer Account balance error:" + customer.getId() + "m:" +  money + "cm:" + customer.getAccountMoney());
                 }
 
                 //--------------------------
@@ -184,6 +185,34 @@ public class SaleAccountClose {
             }
         }
 
+        if (accountDateHelper.isFirst()){
+            List<Customer> customers = erpEntityManager.createQuery("select customer from Customer customer ", Customer.class).getResultList();
+            for (Customer customer: customers){
+                if ((customer.getProxyAccountMoney().compareTo(BigDecimal.ZERO) != 0) ||
+                        (customer.getAccountMoney().compareTo(BigDecimal.ZERO) != 0) ||
+                        (customer.getAdvanceMoney().compareTo(BigDecimal.ZERO) != 0)){
+                    initNoOperCustomerAccount(checkout,checkoutMap,
+                            RunParam.instance().getStringParamValue("erp.finance.customerAccount") + customer.getId(),customer.getAccountMoney());
+                    initNoOperCustomerAccount(checkout,checkoutMap,
+                            RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + customer.getId(),customer.getProxyAccountMoney());
+                    initNoOperCustomerAccount(checkout,checkoutMap,
+                            RunParam.instance().getStringParamValue("erp.finance.advance") + customer.getId(),customer.getAdvanceMoney());
+
+
+                }
+            }
+        }
+
 
     }
+
+    private void initNoOperCustomerAccount(Checkout checkout,Map<String, AccountCheckout> checkoutMap,String code, BigDecimal money){
+        if (checkoutMap.get(code) == null){
+            AccountCheckout accountCheckout = new AccountCheckout(code, checkout, money, BigDecimal.ZERO);
+            checkoutMap.put(accountCheckout.getAccountCode(), accountCheckout);
+            checkout.getAccountCheckouts().add(accountCheckout);
+        }
+
+    }
+
 }
