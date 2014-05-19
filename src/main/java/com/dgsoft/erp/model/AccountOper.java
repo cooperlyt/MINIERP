@@ -327,6 +327,46 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
+    public BigDecimal getCustomerAdvanceMoney(){
+        switch (getOperType()) {
+
+            case DEPOSIT_BACK:
+            case DEPOSIT_PAY:
+            case ORDER_PAY:
+                return  getAdvanceReceivable().multiply(new BigDecimal("-1"));
+            case CUSTOMER_SAVINGS:
+            case ORDER_BACK:
+                return getAdvanceReceivable();
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Transient
+    public BigDecimal getCustomerProxyAccountMoney(){
+        switch (getOperType()) {
+
+            case PROXY_SAVINGS:
+                return getProxcAccountsReceiveable().multiply(new BigDecimal("-1"));
+            case ORDER_PAY:
+                return getProxcAccountsReceiveable();
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Transient
+    public BigDecimal getCustomerAccountMoney(BigDecimal beginMoney){
+        switch (getOperType()) {
+            case CUSTOMER_SAVINGS:
+            case DEPOSIT_PAY:
+            case MONEY_FREE:
+                return getAccountsReceivable().multiply(new BigDecimal("-1"));
+            case ORDER_PAY:
+                return getAccountsReceivable();
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Transient
     public void calcCustomerMoney() {
         switch (getOperType()) {
 

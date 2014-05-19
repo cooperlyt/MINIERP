@@ -23,70 +23,18 @@ import java.util.Locale;
 public class TestKnow {
 
 
+    private static void testDecimal(BigDecimal m){
+        m = m.add(new BigDecimal("1"));
 
-    public static class TestAnn{
-
-
-        private String name;
-
-
-
-        public String getName() {
-            return name;
-        }
-
-
-
-
-        public void setName(String name) {
-            this.name = name;
-        }
     }
-
 
     public static void main(String[] args){
-       System.out.println(new BigDecimal("98").divide(new BigDecimal(10),0,BigDecimal.ROUND_DOWN) );
 
+      BigDecimal t = new BigDecimal("1");
+        testDecimal(t);
+        System.out.println(t.intValue() );
 
 
     }
 
-    private String v1;
-
-    private String v2;
-
-    @Logger
-    private org.jboss.seam.log.Log log;
-
-    public void printPageContext(){
-        log.debug("print page Context-------------");
-       for(String name:Contexts.getPageContext().getNames()){
-
-
-          log.debug(name + ":" + Contexts.getPageContext().get(name));
-       }
-
-
-        org.jboss.seam.faces.FacesPage fp = (FacesPage) Contexts.getPageContext().get("org.jboss.seam.faces.facesPage");;
-        log.debug("page context convertID:" +  fp.getConversationId());
-
-        log.debug("print page Context end-------------");
-    }
-
-    public String getV1() {
-        return v1;
-    }
-
-    public void setV1(String v1) {
-        this.v1 = v1;
-    }
-
-    public String getV2() {
-
-       return v2;
-    }
-
-    public void setV2(String v2) {
-        this.v2 = v2;
-    }
 }

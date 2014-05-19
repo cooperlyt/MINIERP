@@ -51,9 +51,7 @@ public class ClosingAccount {
     @Transactional
     public void closing(){
         Long maxId = erpEntityManager.createQuery("select max(checkout.id) from Checkout checkout",Long.class).getSingleResult();
-        if (!saleAccountClose.canClose()){
-            return;
-        }
+
 
         Checkout checkout = new Checkout((maxId == null) ? new Long(1) : maxId + 1 ,new Date(),credentials.getUsername(),accountDateHelper.getNextBeginDate(),accountDateHelper.getNextCloseDate());
         if (maxId != null){
@@ -61,7 +59,9 @@ public class ClosingAccount {
                 checkout.getAccountCheckouts().add(new AccountCheckout(aco.getAccountCode(),checkout,aco.getClosingBalance(),aco.getClosingCount()));
             }
         }
-
+        if (!saleAccountClose.canClose(checkout)){
+            return;
+        }
         saleAccountClose.doClose(checkout);
 
 
