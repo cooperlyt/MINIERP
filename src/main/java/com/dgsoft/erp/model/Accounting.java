@@ -107,6 +107,12 @@ public class Accounting implements java.io.Serializable, NamedEntity,Account {
     }
 
     @Override
+    @Transient
+    public String getAccountCode() {
+        return getId();
+    }
+
+    @Override
     @Enumerated(EnumType.STRING)
     @Column(name = "DIRECTION", nullable = false, length = 10)
     @NotNull

@@ -13,13 +13,14 @@ public class SampleLeafAccount implements Account{
     private String name;
     private Account parent;
     private int level;
+    private String accountCode;
 
-
-    public SampleLeafAccount(Direction direction, String name, Account parent, int level) {
+    public SampleLeafAccount(Direction direction, String name, Account parent, int level, String accountCode) {
         this.direction = direction;
         this.name = name;
         this.parent = parent;
         this.level = level;
+        this.accountCode = accountCode;
     }
 
     @Override
@@ -72,6 +73,11 @@ public class SampleLeafAccount implements Account{
         return level;
     }
 
+    public String getAccountCode() {
+        return accountCode;
+    }
 
-
+    public void setAccountCode(String accountCode) {
+        this.accountCode = accountCode;
+    }
 }

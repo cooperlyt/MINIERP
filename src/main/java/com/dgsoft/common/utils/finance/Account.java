@@ -11,6 +11,8 @@ public interface Account extends TreeNode {
         CREDIT, DBEDIT;
     }
 
+    public abstract String getAccountCode();
+
     public abstract Direction getDirection();
 
     public abstract String getName();
