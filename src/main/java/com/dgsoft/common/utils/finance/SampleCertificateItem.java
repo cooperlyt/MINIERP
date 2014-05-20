@@ -18,14 +18,17 @@ public class SampleCertificateItem implements CertificateItem {
 
     private BigDecimal credit;
 
+    private Certificate certificate;
+
     public SampleCertificateItem() {
     }
 
-    public SampleCertificateItem(String description, String accountCode, BigDecimal debit, BigDecimal credit) {
+    public SampleCertificateItem(Certificate certificate,String description, String accountCode, BigDecimal debit, BigDecimal credit) {
         this.description = description;
         this.accountCode = accountCode;
         this.debit = debit;
         this.credit = credit;
+        this.certificate = certificate;
     }
 
     @Override
@@ -61,5 +64,13 @@ public class SampleCertificateItem implements CertificateItem {
 
     public void setCredit(BigDecimal credit) {
         this.credit = credit;
+    }
+
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(Certificate certificate) {
+        this.certificate = certificate;
     }
 }

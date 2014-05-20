@@ -17,4 +17,6 @@ public interface CertificateItem {
     public BigDecimal getDebit();
 
     public BigDecimal getCredit();
+
+    public Certificate getCertificate();
 }

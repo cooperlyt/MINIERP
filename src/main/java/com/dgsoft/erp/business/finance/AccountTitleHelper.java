@@ -39,20 +39,25 @@ public class AccountTitleHelper {
         if (code.startsWith(RunParam.instance().getStringParamValue("erp.finance.customerAccount"))) {
             accounting = erpEntityManager.find(Accounting.class, RunParam.instance().getStringParamValue("erp.finance.customerAccount"));
             customerId = code.substring(RunParam.instance().getStringParamValue("erp.finance.customerAccount").length());
-            return new SampleLeafAccount(accounting.getDirection(),erpEntityManager.find(Customer.class,customerId).getName(),accounting,accounting.getLevel() + 1);
+            return new SampleLeafAccount(accounting.getDirection(),
+                    erpEntityManager.find(Customer.class,customerId).getName(),accounting,accounting.getLevel() + 1,code);
         }else if (code.startsWith(RunParam.instance().getStringParamValue("erp.finance.proxyAccount"))) {
             accounting = erpEntityManager.find(Accounting.class, RunParam.instance().getStringParamValue("erp.finance.proxyAccount"));
             customerId = code.substring(RunParam.instance().getStringParamValue("erp.finance.proxyAccount").length());
-            return new SampleLeafAccount(accounting.getDirection(),erpEntityManager.find(Customer.class,customerId).getName(),accounting,accounting.getLevel() + 1);
+            return new SampleLeafAccount(accounting.getDirection(),
+                    erpEntityManager.find(Customer.class,customerId).getName(),accounting,accounting.getLevel() + 1,code);
 
         }else if (code.startsWith(RunParam.instance().getStringParamValue("erp.finance.advance"))){
             accounting = erpEntityManager.find(Accounting.class, RunParam.instance().getStringParamValue("erp.finance.advance"));
             customerId = code.substring(RunParam.instance().getStringParamValue("erp.finance.advance").length());
-            return new SampleLeafAccount(accounting.getDirection(),erpEntityManager.find(Customer.class,customerId).getName(),accounting,accounting.getLevel() + 1);
+            return new SampleLeafAccount(accounting.getDirection(),
+                    erpEntityManager.find(Customer.class,customerId).getName(),accounting,accounting.getLevel() + 1,code);
         }else if (code.startsWith(RunParam.instance().getStringParamValue("erp.finance.bankAccount"))){
             accounting = erpEntityManager.find(Accounting.class, RunParam.instance().getStringParamValue("erp.finance.bankAccount"));
             String bankId =code.substring(RunParam.instance().getStringParamValue("erp.finance.bankAccount").length());
-            return new SampleLeafAccount(accounting.getDirection(),DictionaryWord.instance().getWordValue(erpEntityManager.find(BankAccount.class,bankId).getBank()),accounting,accounting.getLevel() + 1);
+            return new SampleLeafAccount(accounting.getDirection(),
+                    DictionaryWord.instance().getWordValue(erpEntityManager.find(BankAccount.class,bankId).getBank()),
+                    accounting,accounting.getLevel() + 1,code);
 
 
         } else {

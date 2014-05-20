@@ -11,6 +11,8 @@ public interface Certificate {
 
     public abstract List<CertificateItem> getCertificateItems();
 
+    public List<CertificateItem> getItemByCodes(List<String> codes);
+
     public abstract BigDecimal getMoney();
 
     public String getMemo();

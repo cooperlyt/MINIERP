@@ -157,7 +157,7 @@ public class MoneySave implements Serializable {
 
         if (!getAccountOpers().isEmpty()) {
             if (getRemitFee().compareTo(BigDecimal.ZERO) > 0){
-                result.add(new SampleCertificateItem(" ",
+                result.add(new SampleCertificateItem(getSaleCertificate()," ",
                         RunParam.instance().getStringParamValue("erp.finance.mgrFee"), getRemitFee(), BigDecimal.ZERO));
             }
             if (getMoney().compareTo(BigDecimal.ZERO) > 0) {
@@ -169,7 +169,7 @@ public class MoneySave implements Serializable {
                 switch (oper.getOperType()) {
 
                     case DEPOSIT_BACK:
-                        result.add(new SampleCertificateItem(
+                        result.add(new SampleCertificateItem(getSaleCertificate(),
                                 String.format(RunParam.instance().getStringParamValue("erp.ADF.s.DEPOSIT_BACK"), oper.getCustomer().getName()),
                                 accountCode, BigDecimal.ZERO, getMoney()));
                         break;
@@ -178,12 +178,12 @@ public class MoneySave implements Serializable {
                         if (getTransCorp() != null) {
                             transCorpName = getTransCorp().getName();
                         }
-                        result.add(new SampleCertificateItem(
+                        result.add(new SampleCertificateItem(getSaleCertificate(),
                                 String.format(RunParam.instance().getStringParamValue("erp.ADF.s.PROXY_SAVINGS"), transCorpName),
                                 accountCode, getMoney(), BigDecimal.ZERO));
                         break;
                     case CUSTOMER_SAVINGS:
-                        result.add(new SampleCertificateItem(
+                        result.add(new SampleCertificateItem(getSaleCertificate(),
                                 String.format(RunParam.instance().getStringParamValue("erp.ADF.o.CUSTOMER_SAVINGS"), oper.getCustomer().getName()),
                                 accountCode, getMoney(), BigDecimal.ZERO));
                         break;
@@ -194,7 +194,7 @@ public class MoneySave implements Serializable {
                     case ORDER_PAY:
                         throw new IllegalArgumentException("DEPOSIT_PAY nukown type");
                     case ORDER_BACK:
-                        result.add(new SampleCertificateItem(
+                        result.add(new SampleCertificateItem(getSaleCertificate(),
                                 String.format(RunParam.instance().getStringParamValue("erp.ADF.o.ORDER_BACK"), oper.getCustomer().getName()),
                                 accountCode, BigDecimal.ZERO, getMoney()));
                         break;

@@ -217,4 +217,16 @@ public class SaleCertificate implements Serializable, Certificate {
         }
         return result;
     }
+
+    @Transient
+    @Override
+    public List<CertificateItem> getItemByCodes(List<String> codes){
+        List<CertificateItem> result = new ArrayList<CertificateItem>();
+        for (CertificateItem item: getCertificateItems()){
+            if (codes.contains(item.getAccountCode())){
+                result.add(item);
+            }
+        }
+        return result;
+    }
 }

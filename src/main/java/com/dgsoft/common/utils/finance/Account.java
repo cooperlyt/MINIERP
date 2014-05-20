@@ -9,6 +9,14 @@ public interface Account extends TreeNode {
 
     public enum Direction {
         CREDIT, DBEDIT;
+
+        public Direction reverse(){
+            if (this.equals(Direction.CREDIT)){
+                return Direction.DBEDIT;
+            }else{
+                return Direction.CREDIT;
+            }
+        }
     }
 
     public abstract String getAccountCode();
