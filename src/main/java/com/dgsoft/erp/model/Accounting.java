@@ -6,6 +6,7 @@ import com.dgsoft.common.utils.finance.Account;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.google.common.collect.Iterators;
 import org.jboss.seam.international.StatusMessage;
+import sun.reflect.generics.tree.Tree;
 
 import javax.persistence.*;
 import javax.swing.tree.TreeNode;
@@ -186,6 +187,29 @@ public class Accounting implements java.io.Serializable, NamedEntity,Account {
         return result;
     }
 
+    private List<TreeNode> childs = new ArrayList<TreeNode>();
+
+    @Transient
+    public List<TreeNode> getChilds() {
+         if (getAccountings().isEmpty()){
+             List<TreeNode> result = new ArrayList<TreeNode>();
+             for (Accounting ac: getAccountingList()){
+                 result.add(ac);
+             }
+             return result;
+         }else{
+             return childs;
+         }
+
+    }
+
+    public void setChilds(List<TreeNode> childs) {
+        if (!getAccountings().isEmpty()){
+            throw new IllegalArgumentException("not leaf accounting can't set!");
+        }
+        this.childs = childs;
+    }
+
     @Transient
     public boolean isRoot(){
         return getLevel() == 1;
@@ -205,19 +229,19 @@ public class Accounting implements java.io.Serializable, NamedEntity,Account {
     @Override
     @Transient
     public TreeNode getChildAt(int childIndex) {
-        return getAccountingList().get(childIndex);
+        return getChilds().get(childIndex);
     }
 
     @Override
     @Transient
     public int getChildCount() {
-        return getAccountings().size();
+        return getChilds().size();
     }
 
     @Override
     @Transient
     public int getIndex(TreeNode node) {
-        return getAccountingList().indexOf(node);
+        return getChilds().indexOf(node);
     }
 
     @Override
@@ -229,12 +253,12 @@ public class Accounting implements java.io.Serializable, NamedEntity,Account {
     @Override
     @Transient
     public boolean isLeaf() {
-        return getAccountings().isEmpty();
+        return getChilds().isEmpty();
     }
 
     @Override
     @Transient
     public Enumeration children() {
-        return Iterators.asEnumeration(getAccountingList().iterator());
+        return Iterators.asEnumeration(getChilds().iterator());
     }
 }

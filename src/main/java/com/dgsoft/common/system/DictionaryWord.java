@@ -4,12 +4,10 @@ import com.dgsoft.common.system.model.*;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.contexts.Contexts;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -83,6 +81,12 @@ public class DictionaryWord {
                 result.add(word);
             }
         }
+        Collections.sort(result,new Comparator<Word>() {
+            @Override
+            public int compare(Word o1, Word o2) {
+                return Integer.valueOf(o1.getPriority()).compareTo(o2.getPriority());
+            }
+        });
         return result;
     }
 

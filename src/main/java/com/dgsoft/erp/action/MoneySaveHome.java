@@ -209,6 +209,9 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
                         if (customerHome.getInstance().getAccountMoney().compareTo(getOperMoney()) >= 0) {
                             getSingleAccountOper().setAdvanceReceivable(BigDecimal.ZERO);
                             getSingleAccountOper().setAccountsReceivable(getOperMoney());
+                        } else if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) <= 0) {
+                            getSingleAccountOper().setAdvanceReceivable(getOperMoney());
+                            getSingleAccountOper().setAccountsReceivable(BigDecimal.ZERO);
                         } else {
                             getSingleAccountOper().setAdvanceReceivable(getOperMoney().subtract(customerHome.getInstance().getAccountMoney()));
                             getSingleAccountOper().setAccountsReceivable(customerHome.getInstance().getAccountMoney());

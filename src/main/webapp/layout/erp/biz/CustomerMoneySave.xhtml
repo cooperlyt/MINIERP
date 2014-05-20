@@ -37,18 +37,29 @@
     <a:region id="moneyRegion">
 
         <a:outputPanel id="operMoneyInput">
-            <s:decorate id="operMoneyField" template="/layout/seam-edit.xhtml">
+            <s:decorate id="operMoneyField1" rendered="#{not (customerAccountOper.type eq 'DEPOSIT_PAY')}" template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
                 <h:inputText value="#{customerAccountOper.operMoney}"
                              label="#{messages.accountOper_field_operMoney}"
                              converter="javax.faces.BigDecimal" required="true">
                     <f:validateDoubleRange minimum="0.01"/>
-                    <a:ajax event="blur" execute="@this" render="operMoneyField,#{render}"/>
+                    <a:ajax event="blur" execute="@this" render="operMoneyField1,#{render}"/>
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
                                      currencySymbol=""/>
                 </h:inputText>
             </s:decorate>
 
+            <s:decorate id="operMoneyField" rendered="#{(customerAccountOper.type eq 'DEPOSIT_PAY')}" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
+                <h:inputText value="#{customerAccountOper.operMoney}"
+                             label="#{messages.accountOper_field_operMoney}"
+                             converter="javax.faces.BigDecimal" required="true">
+                    <f:validateDoubleRange minimum="0.01" maximum="#{customerHome.instance.advanceMoney}"/>
+                    <a:ajax event="blur" execute="@this" render="operMoneyField,#{render}"/>
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                     currencySymbol=""/>
+                </h:inputText>
+            </s:decorate>
 
             <s:decorate id="remitFeeField"
                         rendered="#{(customerAccountOper.type eq 'CUSTOMER_SAVINGS') or (customerAccountOper.type eq 'DEPOSIT_BACK')}"

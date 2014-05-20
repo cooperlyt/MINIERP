@@ -42,7 +42,7 @@ public class CustomerMoneyCondition {
             result.add(AccountOper.AccountOperType.CUSTOMER_SAVINGS);
         }
         if (containDepositPay) {
-            result.add(AccountOper.AccountOperType.DEPOSIT_BACK);
+            result.add(AccountOper.AccountOperType.DEPOSIT_PAY);
         }
         if (containMoneyFree) {
             result.add(AccountOper.AccountOperType.MONEY_FREE);
