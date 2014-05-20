@@ -305,7 +305,7 @@
 
 </rich:column>
 
-<rich:column style="text-align: center;" rendered="#{s:hasRole('erp.finance.accountancy')}">
+<rich:column style="text-align: center;" rendered="#{s:hasRole('erp.finance.cashier')}">
     <a:commandButton image="/img/dtpick.gif" title="#{messages.accountOperChangeDate}" render="dateChangePanel_form"
                      rendered="#{not (_item.operType eq 'ORDER_PAY') and not (_item.operType eq 'ORDER_BACK') }"
                      execute="@this" oncomplete="#{rich:component('dateChangePanel')}.show();">

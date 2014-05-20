@@ -25,10 +25,6 @@ public class CustomerMoneyCondition {
     private boolean containOrderBack = true;// ORDER_BACK(null);
 
 
-
-
-
-
     @BypassInterceptors
     public List<AccountOper.AccountOperType> getSearchAccountOperTypes() {
         List<AccountOper.AccountOperType> result = new ArrayList<AccountOper.AccountOperType>();
