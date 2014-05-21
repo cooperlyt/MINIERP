@@ -31,3 +31,8 @@ REFERENCES MINI_ERP.SALE_PREPARED (ID)
   ON UPDATE RESTRICT
   ON DELETE RESTRICT
 ;
+
+
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('finance.account','结账','finance.config','','/func/erp/finance/accountancy/Accounting.seam','','4','');
+
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.accountancy', 'finance.account');
