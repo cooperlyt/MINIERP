@@ -73,6 +73,11 @@ public class SampleLeafAccount implements Account{
         return level;
     }
 
+    @Override
+    public Account getData() {
+        return this;
+    }
+
     public String getAccountCode() {
         return accountCode;
     }

@@ -29,4 +29,6 @@ public interface Account extends TreeNode {
 
     public abstract int getLevel();
 
+    public abstract Account getData();
+
 }

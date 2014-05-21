@@ -78,6 +78,7 @@ public class MakeAccount implements Serializable {
             } else {
                 accountOper.setSaleCertificate(new SaleCertificate(RunParam.instance().getStringParamValue("erp.finance.c.wrod"),
                         code, accountOper.getOperDate(), credentials.getUsername()));
+
                 accountOper.getSaleCertificate().setMemo(accountOper.getDescription());
                 accountOper.getSaleCertificate().setCashier(accountOper.getOperEmp());
                 accountOper.getSaleCertificate().getAccountOpers().add(accountOper);
@@ -85,6 +86,8 @@ public class MakeAccount implements Serializable {
                     accountOper.getMoneySave().setSaleCertificate(accountOper.getSaleCertificate());
                     accountOper.getSaleCertificate().getMoneySaves().add(accountOper.getMoneySave());
                 }
+                accountOper.getSaleCertificate().writeItem();
+
                 code++;
                 count++;
             }

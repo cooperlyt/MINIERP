@@ -197,7 +197,7 @@ public class Accounting implements java.io.Serializable, NamedEntity,Account {
 
     @Transient
     public List<TreeNode> getChilds() {
-         if (getAccountings().isEmpty()){
+         if (!getAccountings().isEmpty()){
              List<TreeNode> result = new ArrayList<TreeNode>();
              for (Accounting ac: getAccountingList()){
                  result.add(ac);
@@ -266,5 +266,11 @@ public class Accounting implements java.io.Serializable, NamedEntity,Account {
     @Transient
     public Enumeration children() {
         return Iterators.asEnumeration(getChilds().iterator());
+    }
+
+    @Override
+    @Transient
+    public Account getData() {
+        return this;
     }
 }

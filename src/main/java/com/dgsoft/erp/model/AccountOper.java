@@ -3,7 +3,6 @@ package com.dgsoft.erp.model;
 
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.utils.finance.CertificateItem;
-import com.dgsoft.common.utils.finance.SampleCertificateItem;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -436,13 +435,13 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
-    public List<CertificateItem> getCertificateItems() {
-        List<CertificateItem> result = new ArrayList<CertificateItem>();
+    public List<SaleCertificateItem> getCertificateItems() {
+        List<SaleCertificateItem> result = new ArrayList<SaleCertificateItem>();
         switch (getOperType()) {
 
             case DEPOSIT_BACK:
                 if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0)
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.DEPOSIT_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
                 if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) || (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0)) {
@@ -451,7 +450,7 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case PROXY_SAVINGS:
                 if (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.pac.PROXY_SAVINGS"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + getCustomer().getId(), BigDecimal.ZERO, getProxcAccountsReceiveable()));
                 }
@@ -461,12 +460,12 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case CUSTOMER_SAVINGS:
                 if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.CUSTOMER_SAVINGS"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), BigDecimal.ZERO, getAdvanceReceivable()));
                 }
                 if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.CUSTOMER_SAVINGS"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), BigDecimal.ZERO, getAccountsReceivable()));
                 }
@@ -476,12 +475,12 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case DEPOSIT_PAY:
                 if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.DEPOSIT_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
                 }
                 if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.DEPOSIT_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), BigDecimal.ZERO, getAccountsReceivable()));
                 }
@@ -492,10 +491,10 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case MONEY_FREE:
                 if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.MONEY_FREE"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), BigDecimal.ZERO, getAccountsReceivable()));
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.mf.MONEY_FREE"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.mgrFee"), getAccountsReceivable(), BigDecimal.ZERO));
                 }
@@ -505,21 +504,21 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case ORDER_PAY:
                 if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.ORDER_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
                 }
                 if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.ORDER_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable(), BigDecimal.ZERO));
                 }
                 if (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.pac.ORDER_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + getCustomer().getId(), getProxcAccountsReceiveable(), BigDecimal.ZERO));
                 }
-                result.add(new SampleCertificateItem(getSaleCertificate(),
+                result.add(new SaleCertificateItem(getSaleCertificate(),
                         String.format(RunParam.instance().getStringParamValue("erp.ADF.rm.ORDER_PAY"), getCustomer().getName()),
                         RunParam.instance().getStringParamValue("erp.finance.receive"), BigDecimal.ZERO,
                         getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable())));
@@ -527,18 +526,18 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case ORDER_BACK:
                 if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable().multiply(new BigDecimal("-1")), BigDecimal.ZERO));
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.rm.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.receive"), BigDecimal.ZERO, getAccountsReceivable().multiply(new BigDecimal("-1"))));
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.c.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable(), BigDecimal.ZERO));
                 }
                 if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SampleCertificateItem(getSaleCertificate(),
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), BigDecimal.ZERO, getAdvanceReceivable()));
                 }

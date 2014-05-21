@@ -112,7 +112,7 @@
         <class>com.dgsoft.erp.model.QuotedPrice</class>
         <class>com.dgsoft.erp.model.MoneySave</class>
         <class>com.dgsoft.erp.model.SaleCertificate</class>
-
+        <class>com.dgsoft.erp.model.SaleCertificateItem</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

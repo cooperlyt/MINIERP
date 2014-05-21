@@ -36,7 +36,7 @@ public class SaleCertificate implements Serializable, Certificate {
 
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<MoneySave> moneySaves = new HashSet<MoneySave>(0);
-
+    private Set<SaleCertificateItem> saleCertificateItems = new HashSet<SaleCertificateItem>(0);
 
     public SaleCertificate() {
     }
@@ -191,6 +191,15 @@ public class SaleCertificate implements Serializable, Certificate {
         this.moneySaves = moneySaves;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "saleCertificate",orphanRemoval = true,cascade = {CascadeType.ALL})
+    public Set<SaleCertificateItem> getSaleCertificateItems() {
+        return saleCertificateItems;
+    }
+
+    public void setSaleCertificateItems(Set<SaleCertificateItem> saleCertificateItems) {
+        this.saleCertificateItems = saleCertificateItems;
+    }
+
     @Override
     @Column(name = "MONEY", nullable = false, scale = 4)
     @NotNull
@@ -205,17 +214,18 @@ public class SaleCertificate implements Serializable, Certificate {
     @Override
     @Transient
     public List<CertificateItem> getCertificateItems() {
-        if (getAccountOpers().isEmpty()) {
-            throw new IllegalArgumentException("getAccountOpers() is empty");
-        }
-        List<CertificateItem> result = new ArrayList<CertificateItem>();
+       return new ArrayList<CertificateItem>(getSaleCertificateItems());
+    }
+
+    @Transient
+    public void writeItem(){
+        getSaleCertificateItems().clear();
         for (MoneySave moneySave : getMoneySaves()) {
-            result.addAll(moneySave.getCertificateItems());
+            getSaleCertificateItems().addAll(moneySave.getCertificateItems());
         }
         for (AccountOper accountOper : getAccountOpers()) {
-            result.addAll(accountOper.getCertificateItems());
+            getSaleCertificateItems().addAll(accountOper.getCertificateItems());
         }
-        return result;
     }
 
     @Transient
