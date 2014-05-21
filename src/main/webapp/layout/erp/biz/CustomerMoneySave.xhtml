@@ -22,7 +22,8 @@
                 required="true"
                 defaultTime="#{currentTime}"
                 label="#{messages.accountOper_field_operDate}"
-                value="#{customerAccountOper.operDate}">
+                value="#{customerAccountOper.operDate}" validator="operDateValidator">
+
         </rich:calendar>
     </s:decorate>
 

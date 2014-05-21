@@ -53,13 +53,13 @@ INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
 VALUES ('erp.ADF.ac.MONEY_FREE','STRING', '%s 减免货款',  '减免 应收账款');
 
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
-VALUES ('erp.ADF.ad.ORDER_PAY','STRING', '%s 支付货款',  '订单支付 预收账款');
+VALUES ('erp.ADF.ad.ORDER_PAY','STRING', '%s 发货',  '订单支付 预收账款');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
 VALUES ('erp.ADF.ac.ORDER_PAY','STRING', '%s 赊款发货',  '订单支付 应收账款');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
 VALUES ('erp.ADF.pac.ORDER_PAY','STRING', '%s 代收发货',  '订单支付 应收账款');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
-VALUES ('erp.ADF.rm.ORDER_PAY','STRING', '%s 赊发货款',  '支付货款 主营业务收入');
+VALUES ('erp.ADF.rm.ORDER_PAY','STRING', '%s 发货',  '支付货款 主营业务收入');
 
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
 VALUES ('erp.ADF.ac.ORDER_BACK','STRING', '%s 退货冲账',  '退货退款 应收账款');

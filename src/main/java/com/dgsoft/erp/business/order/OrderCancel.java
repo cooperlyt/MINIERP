@@ -7,6 +7,8 @@ import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.bpm.CreateProcess;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 
 import java.math.BigDecimal;
@@ -21,8 +23,8 @@ import java.util.EnumSet;
 @Name("orderCancel")
 public class OrderCancel {
 
-    @Logger
-    private Log log;
+    @In
+    private FacesMessages facesMessages;
 
     @In(create = true)
     private ProcessInstanceHome processInstanceHome;
@@ -48,8 +50,13 @@ public class OrderCancel {
         processInstanceHome.setProcessKey(orderHome.getInstance().getId());
     }
 
+
     @Transactional
     public void removeOrder() {
+        if (orderHome.isInAccount()){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "isInAccount");
+            return;
+        }
         for (AccountOper ao : orderHome.getInstance().getAccountOpers()) {
             ao.revertCustomerMoney();
             orderHome.getEntityManager().remove(ao);

@@ -7,6 +7,8 @@ import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 
 import javax.persistence.Transient;
 import java.math.BigDecimal;
@@ -22,6 +24,9 @@ import java.util.List;
 public class OrderBackHome extends ErpEntityHome<OrderBack> {
 
     protected List<BackItem> backItems;
+
+    @In
+    private FacesMessages facesMessages;
 
     @Override
     protected void initInstance() {
@@ -72,10 +77,25 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
     }
 
 
+    private boolean isInAccount() {
+        if (getInstance().isMoneyComplete()) {
+            for (AccountOper ao : getInstance().getAccountOpers()) {
+                if (ao.getSaleCertificate() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Transactional
     public void deleteBack() {
+        if (isInAccount()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "isInAccount");
+            return;
+        }
 
-        for(AccountOper oper: getInstance().getAccountOpers()){
+        for (AccountOper oper : getInstance().getAccountOpers()) {
             oper.revertCustomerMoney();
         }
 

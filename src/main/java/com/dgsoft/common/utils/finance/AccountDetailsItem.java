@@ -121,6 +121,13 @@ public class AccountDetailsItem {
         return null;
     }
 
+    public String getCertificateId(){
+        if (certificateItem != null) {
+            return certificateItem.getCertificate().getId();
+        }
+        return null;
+    }
+
     public AccountDetailsItem getParent() {
         return parent;
     }

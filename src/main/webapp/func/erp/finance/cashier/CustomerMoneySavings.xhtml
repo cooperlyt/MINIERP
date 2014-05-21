@@ -83,12 +83,6 @@
             <h:selectBooleanCheckbox value="#{customerMoneyCondition.containMoneyFree}">
                 #{messages.MONEY_FREE}
             </h:selectBooleanCheckbox>
-            <h:selectBooleanCheckbox value="#{customerMoneyCondition.containOrderBack}">
-                #{messages.ORDER_BACK}
-            </h:selectBooleanCheckbox>
-            <h:selectBooleanCheckbox value="#{customerMoneyCondition.containOrderPay}">
-                #{messages.ORDER_PAY}
-            </h:selectBooleanCheckbox>
 
         </h:panelGrid>
 
@@ -307,6 +301,7 @@
 
 <rich:column style="text-align: center;" rendered="#{s:hasRole('erp.finance.cashier')}">
     <a:commandButton image="/img/dtpick.gif" title="#{messages.accountOperChangeDate}" render="dateChangePanel_form"
+                     onclick=" if  ( #{not (empty _item.saleCertificate)} ){alert('#{messages.isInAccount}');return false;}"
                      rendered="#{not (_item.operType eq 'ORDER_PAY') and not (_item.operType eq 'ORDER_BACK') }"
                      execute="@this" oncomplete="#{rich:component('dateChangePanel')}.show();">
         <f:param name="selectOperId" value="#{_item.id}"/>
@@ -315,7 +310,7 @@
 
     #{' '}
     <a:commandButton image="/img/delete.png"
-                     onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                     onclick="JavaScript:if ( #{ not (empty _item.saleCertificate)} ){alert('#{messages.isInAccount}');return false;}  if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
                      rendered="#{not (_item.operType eq 'ORDER_PAY') and not (_item.operType eq 'ORDER_BACK') }"
                      action="#{accountOperHome.remove}" render="dataListResult"
                      title="#{messages.delete}" execute="@this">
@@ -346,7 +341,7 @@
                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                    datePattern="#{messages.datetimepattern}"
-                   defaultTime="#{currentTime}"
+                   defaultTime="#{currentTime}" validator="operDateValidator"
                    label="#{messages.accountOperChangeDate}"
                    value="#{accountOperHome.instance.operDate}">
     </rich:calendar>

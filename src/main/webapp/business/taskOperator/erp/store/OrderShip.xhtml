@@ -104,7 +104,7 @@
                     timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datetimepattern}"
-                    required="true"
+                    required="true"  validator="operDateValidator"
                     defaultTime="#{currentTime}"
                     label="#{messages.dispatch_field_shipDate}"
                     value="#{dispatchHome.instance.sendTime}"/>

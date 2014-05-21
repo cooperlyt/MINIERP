@@ -56,6 +56,10 @@ public class MakeAccount implements Serializable {
                 "where moneySave.saleCertificate.id in (select saleCertificate.id  from SaleCertificate saleCertificate where saleCertificate.date >= :beginDate)")
                 .setParameter("beginDate", accountDateHelper.getNextBeginDate()).executeUpdate();
 
+        erpEntityManager.createQuery("delete from SaleCertificateItem item " +
+                "where item.saleCertificate.id in (select saleCertificate.id  from SaleCertificate saleCertificate where saleCertificate.date >= :beginDate)")
+                .setParameter("beginDate", accountDateHelper.getNextBeginDate()).executeUpdate();
+
         erpEntityManager.createQuery("delete from SaleCertificate saleCertificate where saleCertificate.date >= :beginDate")
                 .setParameter("beginDate", accountDateHelper.getNextBeginDate()).executeUpdate();
     }

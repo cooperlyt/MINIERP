@@ -30,4 +30,6 @@ public interface Certificate {
     public int getCode();
 
     public String getWord();
+
+    public String getId();
 }

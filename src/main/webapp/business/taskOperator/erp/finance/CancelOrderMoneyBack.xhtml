@@ -51,7 +51,7 @@
                             timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
                             showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                             datePattern="#{messages.datetimepattern}"
-                            required="true"
+                            required="true" validator="operDateValidator"
                             label="#{messages.BackMoneyTime}"
                             value="#{orderBackMoney.customerOper.operDate}">
 

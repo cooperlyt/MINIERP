@@ -4,8 +4,10 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.model.AccountCheckout;
 import com.dgsoft.erp.model.Checkout;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.contexts.Contexts;
 
 import javax.persistence.EntityManager;
 import javax.xml.crypto.Data;
@@ -114,6 +116,11 @@ public class AccountDateHelper implements Serializable {
         return new Date(calendar.getTime().getTime() - 1);
     }
 
-
+    public static AccountDateHelper instance() {
+        if (!Contexts.isEventContextActive()) {
+            throw new IllegalStateException("no active event context");
+        }
+        return (AccountDateHelper) Component.getInstance(AccountDateHelper.class, ScopeType.APPLICATION, false);
+    }
 
 }

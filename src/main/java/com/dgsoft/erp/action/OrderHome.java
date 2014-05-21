@@ -493,4 +493,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
+    public boolean isInAccount() {
+        if (getInstance().isAllStoreOut()) {
+            for (AccountOper ao : getInstance().getAccountOpers()) {
+                if (ao.getSaleCertificate() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
