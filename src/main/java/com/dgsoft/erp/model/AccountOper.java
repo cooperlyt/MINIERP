@@ -30,18 +30,36 @@ public class AccountOper implements java.io.Serializable {
 
         ORDER_BACK(Accounting.Direction.CREDIT, null);       //不包含冲帐
 
+        public static EnumSet<AccountOperType> getCustomerMoneyAdd() {
+            return EnumSet.of(PROXY_SAVINGS, CUSTOMER_SAVINGS);
+        }
+
+        public static EnumSet<AccountOperType> getCustomerMoneySub() {
+            return EnumSet.of(ORDER_BACK, DEPOSIT_BACK);
+        }
 
         public static EnumSet<AccountOperType> getCustomerOpers() {
-            return EnumSet.of(DEPOSIT_BACK, PROXY_SAVINGS, CUSTOMER_SAVINGS,ORDER_BACK);
+            return EnumSet.of(DEPOSIT_BACK, PROXY_SAVINGS, CUSTOMER_SAVINGS, ORDER_BACK);
         }
 
         public boolean isCustomerOper() {
             return getCustomerOpers().contains(this);
         }
 
+        public Boolean getAdd(){
+            if (getCustomerMoneyAdd().contains(this)){
+                return true;
+            }
+            if (getCustomerMoneySub().contains(this)){
+                return false;
+            }
+            return null;
+        }
+
         private Accounting.Direction adDirection; //贷方科目
 
         private Accounting.Direction acDirection; //借方科目
+
 
 
         public Accounting.Direction getAdDirection() {

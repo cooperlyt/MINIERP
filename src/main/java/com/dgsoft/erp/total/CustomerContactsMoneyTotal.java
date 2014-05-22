@@ -18,8 +18,8 @@ import java.util.*;
 public class CustomerContactsMoneyTotal extends CustomerMoneyTotalBase {
 
 
-    protected static final String MEJBQL = "select accountOper from AccountOper accountOper " +
-            "where (accountOper.operType = 'DEPOSIT_BACK' or accountOper.operType = 'PROXY_SAVINGS' " +
+    protected static final String MEJBQL = "select accountOper from AccountOper accountOper left join fetch accountOper.moneySave " +
+            " where (accountOper.operType = 'DEPOSIT_BACK' or accountOper.operType = 'PROXY_SAVINGS' " +
             " or accountOper.operType = 'CUSTOMER_SAVINGS' or ( accountOper.operType = 'ORDER_BACK' and accountOper.advanceReceivable = 0))";
 
 
