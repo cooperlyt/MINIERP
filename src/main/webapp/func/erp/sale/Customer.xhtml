@@ -32,6 +32,12 @@
             </s:link>
         </rich:toolbarGroup>
 
+        <rich:toolbarGroup rendered="#{s:hasRole('erp.sale.saler')}">
+            <h:graphicImage value="/img/ranking.png"/>
+            <s:link value="#{messages.customerTopReport}" target="_blank"
+                    view="/report/customerTop.xhtml"/>
+        </rich:toolbarGroup>
+
     </rich:toolbar>
 </ui:define>
 
@@ -53,11 +59,6 @@
                 <div class="actionButtons">
 
                     <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
-
-                    <h:commandLink styleClass="rich-button-link"
-                                   target="_blank" action="#{customerList.customerTopReport}">
-                        #{messages.customerTopReport}
-                    </h:commandLink>
 
 
                     <a:outputPanel id="searchButton">
@@ -102,6 +103,10 @@
                     style="#{_customer.enable ? '' : 'text-decoration:line-through; color: red;'}">
                 <f:param name="customerId" value="#{_customer.id}"/>
             </s:link>
+
+            <f:facet name="footer">
+                #{messages.recordTotal} #{customerList.resultCount}
+            </f:facet>
         </rich:column>
 
         <rich:column width="60px">
@@ -167,6 +172,11 @@
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{customerList.totalAdMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
         </rich:column>
 
         <rich:column style="text-align: right;">
@@ -182,6 +192,11 @@
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{customerList.totalAcMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
         </rich:column>
 
         <rich:column style="text-align: right;">
@@ -197,6 +212,11 @@
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{customerList.totalPacMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
         </rich:column>
 
         <rich:column style="text-align: right;">
@@ -213,6 +233,12 @@
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{customerList.totalNoProxyBalance}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
         </rich:column>
 
         <rich:column style="text-align: right;">
@@ -228,6 +254,11 @@
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{customerList.totalBalance}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
         </rich:column>
 
         <rich:column>

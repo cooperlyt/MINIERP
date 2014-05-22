@@ -2,18 +2,10 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.Customer;
-import com.dgsoft.erp.model.CustomerArea;
-import com.dgsoft.erp.model.api.CustomerData;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.log.Logging;
-import org.jboss.seam.persistence.QueryParser;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -57,6 +49,27 @@ public class CustomerList extends ErpEntityQuery<Customer> {
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
         setMaxResults(25);
+    }
+
+    public BigDecimal getTotalAdMoney(){
+
+        return new BigDecimal(getResultTotalSum("customer.advanceMoney").doubleValue());
+    }
+
+    public BigDecimal getTotalAcMoney(){
+        return new BigDecimal(getResultTotalSum("customer.accountMoney").doubleValue());
+    }
+
+    public BigDecimal getTotalPacMoney(){
+        return new BigDecimal(getResultTotalSum("customer.proxyAccountMoney").doubleValue());
+    }
+
+    public BigDecimal getTotalNoProxyBalance(){
+        return  getTotalAdMoney().subtract(getTotalAcMoney());
+    }
+
+    public BigDecimal getTotalBalance(){
+        return getTotalAdMoney().subtract(getTotalAcMoney()).subtract(getTotalPacMoney());
     }
 
 
