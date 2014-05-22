@@ -60,36 +60,44 @@
 
         <ui:include src="/layout/erp/biz/CustomerSearchCondition.xhtml"/>
 
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.groupByDay}
+            </ui:define>
+            <h:selectBooleanCheckbox value="#{customerContactsMoneyTotal.groupByDay}">
+
+            </h:selectBooleanCheckbox>
+        </s:decorate>
+
 
         <a:outputPanel id="containTypesCondition">
 
             <s:decorate
-                    rendered="#{(empty customerContactsSearchCondition.showMoney) or customerContactsSearchCondition.showMoney }"
                     template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.customerMoneyContactsTypes}</ui:define>
-                <h:panelGrid style="text-align: right" columns="3">
+                <div style="clear: both;"/>
+                <h:panelGrid columns="14">
+                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containDepositBack}">
 
-                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containOrderSavings}">
-                        #{messages.ORDER_SAVINGS}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containPreDeposit}">
-                        #{messages.PRE_DEPOSIT}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containBackPre}">
-                        #{messages.DEPOSIT_BACK}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containBack}">
-                        #{messages.ORDER_BACK}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containCancelBack}">
-                        #{messages.ORDER_CANCEL_BACK}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containOrderFee}">
-                        #{messages.ORDER_FREE}
-                    </h:selectBooleanCheckbox>
-                    <h:selectBooleanCheckbox value="#{customerContactsMoneyTotal.groupByDay}">
-                        #{messages.groupByDay}
-                    </h:selectBooleanCheckbox>
+                    </h:selectBooleanCheckbox> #{messages.DEPOSIT_BACK}
+                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containProxySavings}">
+
+                    </h:selectBooleanCheckbox>   #{messages.PROXY_SAVINGS}
+                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containCustomerSavings}">
+
+                    </h:selectBooleanCheckbox>  #{messages.CUSTOMER_SAVINGS}
+                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containDepositPay}">
+
+                    </h:selectBooleanCheckbox>      #{messages.DEPOSIT_PAY}
+                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containMoneyFree}">
+
+                    </h:selectBooleanCheckbox>     #{messages.MONEY_FREE}
+                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containOrderBack}">
+
+                    </h:selectBooleanCheckbox> #{messages.ORDER_BACK}
+                    <h:selectBooleanCheckbox value="#{customerMoneyCondition.containOrderPay}">
+
+                    </h:selectBooleanCheckbox> #{messages.ORDER_PAY}
                 </h:panelGrid>
 
             </s:decorate>
@@ -152,16 +160,16 @@
             </rich:column>
 
             <rich:column>
-                #{messages.ORDER_SAVINGS}
+                #{messages.CUSTOMER_SAVINGS}
             </rich:column>
             <rich:column>
-                #{messages.PRE_DEPOSIT}
+                #{messages.PROXY_SAVINGS}
             </rich:column>
             <rich:column>
                 #{messages.DEPOSIT_BACK}
             </rich:column>
             <rich:column>
-                #{messages.ORDER_FREE}
+                #{messages.MONEY_FREE}
             </rich:column>
             <rich:column>
                 #{messages.ORDER_BACK}
@@ -204,10 +212,7 @@
     </f:facet>
 
     <f:facet name="footer">
-        <ui:include src="AccountOperMoneyTotalData.xhtml">
-            <ui:param name="itemCount" value="#{customerContactsMoneyTotal.resultCount}"/>
-            <ui:param name="totalData" value="#{customerContactsMoneyTotal.resultTotalData}"/>
-        </ui:include>
+
 
     </f:facet>
 
@@ -307,10 +312,7 @@
 
         <f:facet name="footer">
 
-            <ui:include src="AccountOperMoneyTotalData.xhtml">
-                <ui:param name="itemCount" value="#{_moneyOper.values.size}"/>
-                <ui:param name="totalData" value="#{_moneyOper.totalData}"/>
-            </ui:include>
+
         </f:facet>
 
     </rich:collapsibleSubTable>
@@ -396,10 +398,7 @@
         </f:facet>
 
         <f:facet name="footer">
-            <ui:include src="AccountOperMoneyTotalData.xhtml">
-                <ui:param name="itemCount" value="#{customerContactsMoneyTotal.resultCount}"/>
-                <ui:param name="totalData" value="#{customerContactsMoneyTotal.resultTotalData}"/>
-            </ui:include>
+
 
         </f:facet>
 
@@ -496,10 +495,7 @@
 
             <f:facet name="footer">
 
-                <ui:include src="AccountOperMoneyTotalData.xhtml">
-                    <ui:param name="itemCount" value="#{_moneyOper.values.size}"/>
-                    <ui:param name="totalData" value="#{_moneyOper.totalData}"/>
-                </ui:include>
+
             </f:facet>
 
         </rich:collapsibleSubTable>

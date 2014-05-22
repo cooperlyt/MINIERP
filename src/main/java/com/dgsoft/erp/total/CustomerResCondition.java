@@ -28,7 +28,7 @@ public class CustomerResCondition {
 
     private boolean containResBack = true;
 
-    private boolean containFreeRes = false;
+    private boolean containFreeRes = true;
 
     @BypassInterceptors
     public boolean isContainStoreOut() {
