@@ -10,9 +10,7 @@ import org.jboss.seam.annotations.*;
 import org.jboss.seam.contexts.Contexts;
 
 import javax.persistence.EntityManager;
-import javax.xml.crypto.Data;
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;

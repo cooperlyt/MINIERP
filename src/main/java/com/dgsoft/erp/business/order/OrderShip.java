@@ -1,15 +1,19 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.jbpm.TaskDescription;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -83,6 +87,17 @@ public class OrderShip extends OrderShipTaskHandle {
 
     @Override
     protected String completeOrderTask() {
+        if (dispatchHome.getInstance().getSendTime().compareTo(DataFormat.getTodayLastTime()) > 0) {
+            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(dispatchHome.getInstance().getSendTime()) );
+            return null;
+        }
+
+        if (dispatchHome.getInstance().getSendTime().compareTo(DataFormat.halfTime(orderHome.getInstance().getCreateDate())) < 0){
+            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture",
+                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(dispatchHome.getInstance().getSendTime()),
+                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(orderHome.getInstance().getCreateDate()));
+            return null;
+        }
 
         if (inputDetails) {
             switch (dispatchHome.getInstance().getDeliveryType()) {
@@ -101,6 +116,8 @@ public class OrderShip extends OrderShipTaskHandle {
             }
         }
         //dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
+
+
         calcStoreResCompleted(dispatchHome.getInstance().getSendTime());
         if (dispatchHome.update().equals("updated")) {
 

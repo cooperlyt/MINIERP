@@ -33,7 +33,9 @@ public class DataFormat {
         return halfUpCurrency(number,Locale.CHINA);
     }
 
-
+    public static Date getTodayLastTime(){
+       return new Date(halfTime(new Date()).getTime() + 24 * 60 * 60 * 1000 - 1);
+    }
 
     public static BigDecimal format(BigDecimal value, String formatStr) {
         DecimalFormat df = new DecimalFormat(formatStr);

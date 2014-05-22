@@ -14,7 +14,7 @@ public class CustomerMoneyOperList extends ErpEntityQuery<AccountOper> {
 
     private static final String EJBQL = "select accountOper from AccountOper accountOper " +
             "left join fetch accountOper.customer left join fetch accountOper.moneySave moneySave " +
-            "left join fetch moneySave.bankAccount left join fetch accountOper.saleCertificate  where accountOper.operType <> 'ORDER_BACK' and  accountOper.operType <> 'ORDER_PAY'";
+            "left join fetch moneySave.bankAccount left join fetch accountOper.saleCertificate  ";
 
     private static final String[] RESTRICTIONS = {
             "accountOper.operDate >= #{searchDateArea.dateFrom}",

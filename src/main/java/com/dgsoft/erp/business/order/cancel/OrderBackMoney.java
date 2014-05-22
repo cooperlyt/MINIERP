@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order.cancel;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.jbpm.BussinessProcessUtils;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
@@ -8,9 +9,11 @@ import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.Date;
 
 /**
@@ -58,6 +61,19 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
 
     @Override
     protected String completeOrderTask() {
+
+        if (customerOper.getOperDate().compareTo(DataFormat.getTodayLastTime()) > 0) {
+            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(customerOper.getOperDate()));
+            return null;
+        }
+
+        if (customerOper.getOperDate().compareTo(DataFormat.halfTime(orderBackHome.getInstance().getCreateDate())) < 0){
+            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture",
+                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(customerOper.getOperDate()),
+                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(orderBackHome.getInstance().getCreateDate()));
+            return null;
+        }
+
         customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
         if (backToPreMoney){
             customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
