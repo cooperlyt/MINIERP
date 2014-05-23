@@ -23,11 +23,12 @@ public class OrderResContactsTotal extends ErpEntityQuery<OrderItem>{
             "left join fetch orderItem.needRes needRes left join fetch needRes.customerOrder customerOrder " +
             "left join fetch customerOrder.customer customer left join fetch customer.customerArea " +
 
-            "left join fetch customer.customerLevel where orderItem.status in ('WAIT_PRICE', 'COMPLETED')";
+            "left join fetch customer.customerLevel " +
+            "where orderItem.status in ('WAIT_PRICE', 'COMPLETED') and orderItem.needRes.customerOrder.allStoreOut = true";
 
     protected static final String[] RESTRICTIONS = {
-            "orderItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",
-            "orderItem.dispatch.stockChange.operDate <= #{searchDateArea.searchDateTo}",
+            "orderItem.dispatch.sendTime >= #{searchDateArea.dateFrom}",
+            "orderItem.dispatch.sendTime <= #{searchDateArea.searchDateTo}",
             "orderItem.needRes.customerOrder.customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",
             "orderItem.needRes.customerOrder.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "orderItem.needRes.customerOrder.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",

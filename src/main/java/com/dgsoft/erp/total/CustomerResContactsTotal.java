@@ -5,6 +5,7 @@ import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.model.BackItem;
 import com.dgsoft.erp.model.Customer;
+import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.OrderItem;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.jboss.seam.annotations.In;
@@ -61,12 +62,12 @@ public class CustomerResContactsTotal {
         this.onlyModel = onlyModel;
     }
 
-    public BigDecimal getTotalPrice(){
-        BigDecimal result = BigDecimal.ZERO;
-        for (StoreResPriceEntity item: getResultList()){
-            result = result.add(item.getTotalMoney());
-        }
-        return result;
+    public RebateMoney getTotalPrice(){
+//        BigDecimal result = BigDecimal.ZERO;
+//        for (StoreResPriceEntity item: getResultList()){
+//            result = result.add(item.getTotalMoney());
+//        }
+        return genRebateMoney(getResultList());
     }
 
 
@@ -165,11 +166,7 @@ public class CustomerResContactsTotal {
 
             @Override
             public Object totalGroupData(Collection<StoreResPriceEntity> datas) {
-                BigDecimal result = BigDecimal.ZERO;
-                for(StoreResPriceEntity item: datas){
-                    result = result.add(item.getTotalMoney());
-                }
-                return result;
+                return genRebateMoney(datas);
             }
         }, new CustomerGroupStrategy(), new StoreResGroupStrategy<StoreResPriceEntity>(), new SameFormatResGroupStrategy<StoreResPriceEntity>());
     }
@@ -188,11 +185,58 @@ public class CustomerResContactsTotal {
 
         @Override
         public Object totalGroupData(Collection<StoreResPriceEntity> datas) {
-            BigDecimal result = BigDecimal.ZERO;
-            for(StoreResPriceEntity item: datas){
-                result = result.add(item.getTotalMoney());
+            return genRebateMoney(datas);
+        }
+    }
+
+    private static RebateMoney genRebateMoney(Collection<StoreResPriceEntity> datas){
+        Map<String,BigDecimal> orderRebateMap = new HashMap<String, BigDecimal>();
+
+        BigDecimal money = BigDecimal.ZERO;
+        for(StoreResPriceEntity item: datas){
+            if (item instanceof OrderItem) {
+                CustomerOrder order = ((OrderItem)item).getNeedRes().getCustomerOrder();
+                if (orderRebateMap.get(order.getId()) == null){
+                    orderRebateMap.put(order.getId(),order.getTotalRebateMoney());
+                }
             }
-            return result;
+            money = money.add(item.getTotalMoney());
+        }
+
+        BigDecimal rebate = BigDecimal.ZERO;
+        for (BigDecimal r: orderRebateMap.values()){
+            rebate = rebate.add(r);
+        }
+
+        return new RebateMoney(money,rebate);
+    }
+
+    public static class RebateMoney{
+
+        private BigDecimal money;
+
+        private BigDecimal rebate;
+
+        public RebateMoney(BigDecimal money, BigDecimal rebate) {
+            this.money = money;
+            this.rebate = rebate;
+        }
+
+        public RebateMoney(BigDecimal money) {
+            this.money = money;
+            rebate = BigDecimal.ZERO;
+        }
+
+        public BigDecimal getMoney() {
+            return money;
+        }
+
+        public BigDecimal getRebate() {
+            return rebate;
+        }
+
+        public BigDecimal getCalcMoney(){
+            return money.subtract(rebate);
         }
     }
 
