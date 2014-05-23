@@ -92,56 +92,7 @@ public class CustomerResContactsTotal {
                 result.addAll(backResContactsTotal.getResultList());
             }
         }
-        Collections.sort(result, new Comparator<StoreResPriceEntity>() {
-            @Override
-            public int compare(StoreResPriceEntity o1, StoreResPriceEntity o2) {
-                Date o1Date;
-                if (o1 instanceof OrderItem) {
-                    o1Date = ((OrderItem) o1).getDispatch().getStockChange().getOperDate();
-                } else {
-                    o1Date = ((BackItem) o1).getDispatch().getStockChange().getOperDate();
-                }
-
-                Date o2Date;
-                if (o2 instanceof OrderItem) {
-                    o2Date = ((OrderItem) o2).getDispatch().getStockChange().getOperDate();
-                } else {
-                    o2Date = ((BackItem) o2).getDispatch().getStockChange().getOperDate();
-                }
-                int result = o1Date.compareTo(o2Date);
-                if (result == 0) {
-
-                    String o1CId;
-
-                    if (o1 instanceof OrderItem) {
-                        o1CId = ((OrderItem) o1).getNeedRes().getCustomerOrder().getCustomer().getId();
-                    } else {
-                        o1CId = ((BackItem) o1).getOrderBack().getCustomer().getId();
-                    }
-
-                    String o2CId;
-                    if (o2 instanceof OrderItem) {
-                        o2CId = ((OrderItem) o2).getNeedRes().getCustomerOrder().getCustomer().getId();
-                    } else {
-                        o2CId = ((BackItem) o2).getOrderBack().getCustomer().getId();
-                    }
-
-                    result = o1CId.compareTo(o2CId);
-
-                    if (result == 0) {
-
-                        result = o1.getRes().compareTo(o2.getRes());
-
-                        if (result == 0) {
-                            result = o1.getStoreRes().compareTo(o2.getStoreRes());
-                        }
-
-                    }
-
-                }
-                return result;
-            }
-        });
+        Collections.sort(result, new SaleBackItemComparator());
 
         return result;
     }

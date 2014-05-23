@@ -18,9 +18,6 @@ import java.util.*;
 public class CustomerContactsMoneyTotal extends CustomerMoneyTotalBase {
 
 
-    protected static final String MEJBQL = "select accountOper from AccountOper accountOper left join fetch accountOper.moneySave " +
-            " where (accountOper.operType = 'DEPOSIT_BACK' or accountOper.operType = 'PROXY_SAVINGS' " +
-            " or accountOper.operType = 'CUSTOMER_SAVINGS' or ( accountOper.operType = 'ORDER_BACK' and accountOper.advanceReceivable = 0))";
 
 
     protected static final String[] RESTRICTIONS = {
@@ -49,7 +46,6 @@ public class CustomerContactsMoneyTotal extends CustomerMoneyTotalBase {
     public CustomerContactsMoneyTotal() {
         super();
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
-        setEjbql(MEJBQL);
     }
 
 

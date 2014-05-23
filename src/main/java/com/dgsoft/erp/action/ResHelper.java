@@ -35,9 +35,18 @@ public class ResHelper {
 
     public String generateStoreResTitle(StoreRes storeRes) {
 
-        String result = storeRes.getRes().getName() + "(" + storeRes.getRes().getCode() + ")";
+        return generateStoreResTitle(storeRes ,false);
+    }
 
-        result += getFormatsTitle(ResFormatCache.instance().getFormats(storeRes), true);
+    public String generateStoreResTitle(StoreRes storeRes,boolean shortFormat) {
+
+        String result = storeRes.getRes().getName() ;
+
+        if (!shortFormat){
+            result += "(" + storeRes.getRes().getCode() + ")";
+        }
+
+        result += getFormatsTitle(ResFormatCache.instance().getFormats(storeRes), !shortFormat);
 
         if (storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             result += " " + DataFormat.format(storeRes.getFloatConversionRate(),

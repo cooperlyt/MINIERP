@@ -27,7 +27,7 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
             "left join fetch backItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
             "left join fetch backItem.orderBack orderBack left join fetch orderBack.customer customer " +
             "left join fetch customer.customerArea left join fetch customer.customerLevel  " +
-            "where backItem.backItemStatus = 'STORE_IN'";
+            "where backItem.backItemStatus = 'STORE_IN' and backItem.orderBack.moneyComplete = true";
 
     protected static final String[] RESTRICTIONS = {
             "backItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",
