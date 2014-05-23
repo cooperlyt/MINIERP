@@ -6,6 +6,7 @@ import org.jboss.seam.annotations.In;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,14 @@ public abstract class CustomerAreaChart {
             customerAreas = erpEntityManager.createQuery("select area from CustomerArea area ", CustomerArea.class).getResultList();
         }
         return customerAreas;
+    }
+
+    public Map<String,CustomerArea> getAreaMap(){
+        Map<String,CustomerArea> result = new HashMap<String, CustomerArea>();
+        for (CustomerArea area: getCustomerAreas()){
+            result.put(area.getId(),area);
+        }
+        return result;
     }
 
 

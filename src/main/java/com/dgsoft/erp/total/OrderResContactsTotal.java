@@ -22,9 +22,9 @@ public class OrderResContactsTotal extends ErpEntityQuery<OrderItem>{
             "left join fetch res.unitGroup unitGroup left join fetch dispatch.stockChange " +
             "left join fetch orderItem.needRes needRes left join fetch needRes.customerOrder customerOrder " +
             "left join fetch customerOrder.customer customer left join fetch customer.customerArea " +
-
             "left join fetch customer.customerLevel " +
-            "where orderItem.status in ('WAIT_PRICE', 'COMPLETED') and orderItem.needRes.customerOrder.allStoreOut = true";
+            "where orderItem.needRes.customerOrder.canceled = false and " +
+            "orderItem.status in ('WAIT_PRICE', 'COMPLETED') and orderItem.needRes.customerOrder.allStoreOut = true";
 
     protected static final String[] RESTRICTIONS = {
             "orderItem.dispatch.sendTime >= #{searchDateArea.dateFrom}",
