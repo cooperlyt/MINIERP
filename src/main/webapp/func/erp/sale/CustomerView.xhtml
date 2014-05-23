@@ -213,6 +213,16 @@
                 </s:link>
             </rich:toolbarGroup>
 
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/match_price.png"/>
+                <s:link target="_blank" view="/report/customerAccountConfirm.xhtml"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole('erp.finance.cashier') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                        value="#{messages.customerAccountConfirmPager}">
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
             <rich:toolbarGroup location="right">
                 <s:button styleClass="toolBarBtn" value="#{messages.return}"
                           view="#{empty from ? '/home.xhtml' : from}"/>

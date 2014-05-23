@@ -1116,7 +1116,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                             <property name="fontFamily">"SimSun"</property>
                                             <property name="fontSize">10pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <text-property name="text">收:</text-property>
+                                            <text-property name="text">支:</text-property>
                                         </label>
                                     </cell>
                                     <cell id="748">
@@ -1138,7 +1138,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                             <property name="fontFamily">"SimSun"</property>
                                             <property name="fontSize">10pt</property>
                                             <property name="fontWeight">bold</property>
-                                            <text-property name="text">支:</text-property>
+                                            <text-property name="text">收:</text-property>
                                         </label>
                                     </cell>
                                     <cell id="773">
@@ -1333,7 +1333,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                         <property name="fontFamily">"SimSun"</property>
                                         <property name="fontSize">11pt</property>
                                         <property name="fontWeight">normal</property>
-                                        <text-property name="text">收:</text-property>
+                                        <text-property name="text">支:</text-property>
                                     </label>
                                 </cell>
                                 <cell id="802">
@@ -1355,7 +1355,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                         <property name="fontFamily">"SimSun"</property>
                                         <property name="fontSize">11pt</property>
                                         <property name="fontWeight">normal</property>
-                                        <text-property name="text">支:</text-property>
+                                        <text-property name="text">收:</text-property>
                                     </label>
                                 </cell>
                                 <cell id="806">
@@ -1723,7 +1723,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <property name="borderTopWidth">thin</property>
                         <label id="992">
                             <property name="fontFamily">"SimSun"</property>
-                            <text-property name="text">收</text-property>
+                            <text-property name="text">支</text-property>
                         </label>
                     </cell>
                     <cell id="917">
@@ -1737,7 +1737,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <property name="borderTopWidth">thin</property>
                         <label id="993">
                             <property name="fontFamily">"SimSun"</property>
-                            <text-property name="text">支</text-property>
+                            <text-property name="text">收</text-property>
                         </label>
                     </cell>
                 </row>
@@ -2215,7 +2215,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <property name="borderTopWidth">thin</property>
                         <label id="686">
                             <property name="fontFamily">"SimSun"</property>
-                            <text-property name="text">支付方式</text-property>
+                            <text-property name="text">银行</text-property>
                         </label>
                     </cell>
                 </row>
@@ -2390,7 +2390,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                 <cell id="1015">
                                     <label id="1016">
                                         <property name="fontFamily">"SimSun"</property>
-                                        <text-property name="text">收:</text-property>
+                                        <text-property name="text">支:</text-property>
                                     </label>
                                 </cell>
                                 <cell id="1017">
@@ -2408,7 +2408,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                 <cell id="1019">
                                     <label id="1020">
                                         <property name="fontFamily">"SimSun"</property>
-                                        <text-property name="text">支:</text-property>
+                                        <text-property name="text">收:</text-property>
                                     </label>
                                 </cell>
                                 <cell id="1021">
@@ -2815,6 +2815,12 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <data id="1413">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
                             <property name="resultSetColumn">UNIT_MONEY</property>
                         </data>
                     </cell>
