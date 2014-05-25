@@ -31,11 +31,11 @@ public class AccountOper implements java.io.Serializable {
         ORDER_BACK(Accounting.Direction.CREDIT, null);       //不包含冲帐
 
         public static EnumSet<AccountOperType> getCustomerMoneyAdd() {
-            return EnumSet.of(PROXY_SAVINGS, CUSTOMER_SAVINGS);
+            return EnumSet.of(PROXY_SAVINGS, CUSTOMER_SAVINGS,MONEY_FREE);
         }
 
         public static EnumSet<AccountOperType> getCustomerMoneySub() {
-            return EnumSet.of(ORDER_BACK, DEPOSIT_BACK);
+            return EnumSet.of(ORDER_BACK, DEPOSIT_BACK,ORDER_PAY);
         }
 
         public static EnumSet<AccountOperType> getCustomerOpers() {

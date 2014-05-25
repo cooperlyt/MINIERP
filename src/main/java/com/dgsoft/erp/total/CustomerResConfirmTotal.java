@@ -1,14 +1,15 @@
 package com.dgsoft.erp.total;
 
 import com.dgsoft.common.SearchDateArea;
-import com.dgsoft.erp.model.BackItem;
-import com.dgsoft.erp.model.CustomerOrder;
-import com.dgsoft.erp.model.OrderItem;
+import com.dgsoft.common.system.RunParam;
+import com.dgsoft.common.utils.finance.Account;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -49,6 +50,15 @@ public class CustomerResConfirmTotal {
             "and orderItem.dispatch.sendTime >= :dateFrom and orderItem.dispatch.sendTime <= :searchDateTo " +
             "and orderItem.dispatch.needRes.customerOrder.customer.id = :customerId";
 
+    private static final String ACCOUNT_MONETY_EJBQL = "select accountOper from AccountOper accountOper where " +
+            "(accountOper.operType in ('DEPOSIT_BACK', 'PROXY_SAVINGS','CUSTOMER_SAVINGS','MONEY_FREE','ORDER_PAY') " +
+            " or (accountOper.operType = 'ORDER_BACK' and  accountOper.advanceReceivable = 0)) and " +
+            "accountOper.customer.id =:customerId and accountOper.saleCertificate.date >= :beginDate and " +
+            "accountOper.saleCertificate.date <= :endDate order by accountOper.saleCertificate.date";
+
+    private static final String ACCOUNT_CHECKOUT_EJBQL = " select accountCheckout from AccountCheckout accountCheckout where " +
+            "accountCheckout.accountCode = :aCode  and accountCheckout.checkout.id = :checkoutId  ";
+
 
     @In
     private EntityManager erpEntityManager;
@@ -67,20 +77,88 @@ public class CustomerResConfirmTotal {
 
     private List<StoreResPriceEntity> resultList;
 
-    private void initResultList(){
-        if (resultList == null){
+    private BigDecimal accountBeginBalance;
+
+    private BigDecimal accountCloseBalance;
+
+    private List<AccountOper> accountOpers;
+
+    public BigDecimal getAccountBeginBalance() {
+        return accountBeginBalance;
+    }
+
+    public BigDecimal getAccountCloseBalance() {
+        return accountCloseBalance;
+    }
+
+    public List<AccountOper> getAccountOpers() {
+        return accountOpers;
+    }
+
+    public boolean setAccountConfirmDate(int year, int month) {
+        try {
+            Checkout checkout = erpEntityManager.createQuery("select checkout from Checkout checkout " +
+                    "where year(checkout.closeDate) = :year and month(checkout.closeDate) = :month", Checkout.class)
+                    .setParameter("year", year).setParameter("month", month).getSingleResult();
+            searchDateArea.setDateFrom(checkout.getBeginDate());
+            searchDateArea.setDateTo(checkout.getCloseDate());
+
+
+            AccountCheckout accountCheckout = erpEntityManager.createQuery(ACCOUNT_CHECKOUT_EJBQL, AccountCheckout.class)
+                    .setParameter("checkoutId", checkout.getId())
+                    .setParameter("aCode", RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomerId()).getSingleResult();
+
+            accountBeginBalance = accountCheckout.getBeginningBalance();
+
+            accountCloseBalance = accountCheckout.getClosingBalance();
+
+
+            accountCheckout = erpEntityManager.createQuery(ACCOUNT_CHECKOUT_EJBQL, AccountCheckout.class)
+                    .setParameter("checkoutId", checkout.getId())
+                    .setParameter("aCode", RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomerId()).getSingleResult();
+
+
+            accountBeginBalance = accountBeginBalance.subtract(accountCheckout.getBeginningBalance());
+
+            accountCloseBalance = accountCloseBalance.subtract(accountCheckout.getClosingBalance());
+
+
+            accountCheckout = erpEntityManager.createQuery(ACCOUNT_CHECKOUT_EJBQL, AccountCheckout.class)
+                    .setParameter("checkoutId", checkout.getId())
+                    .setParameter("aCode", RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + getCustomerId()).getSingleResult();
+
+
+            accountBeginBalance = accountBeginBalance.subtract(accountCheckout.getBeginningBalance());
+
+            accountCloseBalance = accountCloseBalance.subtract(accountCheckout.getClosingBalance());
+
+
+            accountOpers = erpEntityManager.createQuery(ACCOUNT_MONETY_EJBQL, AccountOper.class)
+                    .setParameter("beginDate", checkout.getBeginDate())
+                    .setParameter("endDate", checkout.getCloseDate()).setParameter("customerId", getCustomerId()).getResultList();
+
+            return true;
+        } catch (NoResultException e) {
+            return false;
+        }
+    }
+
+    private void initResultList() {
+        if (resultList == null) {
             resultList = new ArrayList<StoreResPriceEntity>();
             resultList.addAll(
                     erpEntityManager.createQuery(BACK_ITEM_EJBQL, BackItem.class)
                             .setParameter("dateFrom", searchDateArea.getDateFrom())
                             .setParameter("searchDateTo", searchDateArea.getSearchDateTo())
-                            .setParameter("customerId", getCustomerId()).getResultList());
+                            .setParameter("customerId", getCustomerId()).getResultList()
+            );
 
             resultList.addAll(
                     erpEntityManager.createQuery(ORDER_TEIM_EJBQL, OrderItem.class)
                             .setParameter("dateFrom", searchDateArea.getDateFrom())
                             .setParameter("searchDateTo", searchDateArea.getSearchDateTo())
-                            .setParameter("customerId", getCustomerId()).getResultList());
+                            .setParameter("customerId", getCustomerId()).getResultList()
+            );
 
             Collections.sort(resultList, new SaleBackItemComparator());
         }
@@ -91,19 +169,55 @@ public class CustomerResConfirmTotal {
         return resultList;
     }
 
-    public BigDecimal getTotalMoney(){
-        Map<String,BigDecimal> resultMap = new HashMap<String, BigDecimal>();
-        for(StoreResPriceEntity entity: getResultList()){
-            if (entity instanceof OrderItem){
-                CustomerOrder order = ((OrderItem)entity).getDispatch().getNeedRes().getCustomerOrder();
-                resultMap.put(order.getId(),order.getMoney());
+
+    public ResTotalMoney getTotalMoney() {
+        Map<String, BigDecimal> saleMoneyMap = new HashMap<String, BigDecimal>();
+        Map<String, BigDecimal> backMoneyMap = new HashMap<String, BigDecimal>();
+        for (StoreResPriceEntity entity : getResultList()) {
+            if (entity instanceof OrderItem) {
+                CustomerOrder order = ((OrderItem) entity).getDispatch().getNeedRes().getCustomerOrder();
+                saleMoneyMap.put(order.getId(), order.getMoney());
+            } else if (entity instanceof BackItem) {
+                OrderBack orderBack = ((BackItem) entity).getOrderBack();
+                backMoneyMap.put(orderBack.getId(), orderBack.getMoney());
             }
         }
-        BigDecimal result = BigDecimal.ZERO;
-        for(BigDecimal money: resultMap.values()){
-            result = result.add(money);
+        BigDecimal saleMoney = BigDecimal.ZERO;
+
+        for (BigDecimal money : saleMoneyMap.values()) {
+            saleMoney = saleMoney.add(money);
         }
-        return result;
+
+        BigDecimal backMoney = BigDecimal.ZERO;
+        for (BigDecimal money : backMoneyMap.values()) {
+            backMoney = saleMoney.add(money);
+        }
+        return new ResTotalMoney(saleMoney, backMoney);
+    }
+
+    public class ResTotalMoney {
+
+        private BigDecimal saleMoney;
+
+        private BigDecimal backMoney;
+
+        public ResTotalMoney(BigDecimal saleMoney, BigDecimal backMoney) {
+            this.saleMoney = saleMoney;
+            this.backMoney = backMoney;
+        }
+
+        public BigDecimal getBackMoney() {
+            return backMoney;
+        }
+
+
+        public BigDecimal getSaleMoney() {
+            return saleMoney;
+        }
+
+        public BigDecimal getTotalMoney() {
+            return saleMoney.subtract(backMoney);
+        }
     }
 
 }

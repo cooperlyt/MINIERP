@@ -8,6 +8,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
@@ -96,13 +97,14 @@ public class AccountDateHelper implements Serializable {
     public int getCloseMonth(){
         Calendar calendar = Calendar.getInstance(Locale.CHINA);
         calendar.setTime(getNextCloseDate());
-        return calendar.get(Calendar.MONTH);
+
+        return calendar.get(Calendar.MONTH) + 1;
     }
 
     public int getBeginMonth(){
         Calendar calendar = Calendar.getInstance(Locale.CHINA);
         calendar.setTime(getNextBeginDate());
-        return calendar.get(Calendar.MONTH);
+        return calendar.get(Calendar.MONTH) + 1;
     }
 
 
