@@ -18,6 +18,7 @@ public class OrderBack implements java.io.Serializable {
     private Integer version;
     private String reason;
     private Date createDate;
+    private Date completeDate;
     private BigDecimal money;
     private String memo;
     private boolean moneyComplete;
@@ -81,6 +82,16 @@ public class OrderBack implements java.io.Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="COMPLETE_DATE", nullable = true,length = 19)
+    public Date getCompleteDate() {
+        return completeDate;
+    }
+
+    public void setCompleteDate(Date completeDate) {
+        this.completeDate = completeDate;
     }
 
     @Column(name = "MEMO", length = 200)

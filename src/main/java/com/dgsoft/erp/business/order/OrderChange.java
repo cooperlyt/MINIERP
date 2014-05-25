@@ -141,11 +141,10 @@ public class OrderChange extends OrderShipTaskHandle {
         overlyItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.WAIT_PRICE));
 
 
-
         oweItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED));
 
         if (!oweItems.isEmpty())
-            for (NeedRes needRes: orderHome.getInstance().getNeedReses()){
+            for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
                 needRes.getOrderItems().removeAll(oweItems);
             }
 
@@ -153,7 +152,8 @@ public class OrderChange extends OrderShipTaskHandle {
             OrderItem matchItem = null;
             for (OrderItem orderItem : orderHome.getOrderItemByStatus(
                     EnumSet.of(OrderItem.OrderItemStatus.CREATED,
-                            OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED))) {
+                            OrderItem.OrderItemStatus.COMPLETED, OrderItem.OrderItemStatus.DISPATCHED)
+            )) {
                 if (orderItem.getStoreRes().equals(oweOut.getStoreRes())) {
                     matchItem = orderItem;
                     break;
@@ -205,8 +205,7 @@ public class OrderChange extends OrderShipTaskHandle {
         }
 
 
-        if (!orderHome.getInstance().isMoneyComplete())
-            orderHome.calcMoneys();
+        orderHome.calcMoneys();
 
         for (OrderItem item : overlyItems) {
             item.setStatus(OrderItem.OrderItemStatus.COMPLETED);

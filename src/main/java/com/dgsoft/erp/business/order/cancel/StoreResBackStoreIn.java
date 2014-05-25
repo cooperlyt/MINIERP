@@ -205,7 +205,7 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
         dispatch.setStockChange(stockChangeHome.getReadyInstance());
         dispatch.setStoreOut(true);
         orderBackHome.getInstance().setResComplete(true);
-
+        orderBackHome.getInstance().setCompleteDate(stockChangeHome.getInstance().getOperDate());
 
         if ("updated".equals(orderBackHome.update())) {
             return "taskComplete";
