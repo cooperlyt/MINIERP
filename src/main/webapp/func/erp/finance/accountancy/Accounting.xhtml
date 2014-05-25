@@ -157,7 +157,7 @@
                         <f:facet name="header">
                             #{messages.CertificateItemDebit}
                         </f:facet>
-                        <h:outputText value="#{_item.debit}">
+                        <h:outputText value="#{_item.debit}" rendered="#{_item.debit gt 0}">
                             <f:convertNumber type="currency" currencySymbol="" locale="#{calendarBean.locale}"/>
                         </h:outputText>
 
@@ -166,7 +166,7 @@
                         <f:facet name="header">
                             #{messages.CertificateItemCredit}
                         </f:facet>
-                        <h:outputText value="#{_item.credit}">
+                        <h:outputText value="#{_item.credit}" rendered="#{_item.credit gt 0}">
                             <f:convertNumber type="currency" currencySymbol="" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                     </rich:column>
