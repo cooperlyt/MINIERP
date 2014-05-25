@@ -36,6 +36,13 @@
                     </rich:calendar>
                 </rich:toolbarGroup>
 
+                <rich:toolbarGroup>
+                    <h:selectOneMenu value="#{saleMoneyChartData.useSaleArea}" required="true">
+                        <f:selectItem itemValue="#{true}" itemLabel="#{messages.SaleArea}"/>
+                        <f:selectItem itemValue="#{false}" itemLabel="#{messages.CustomerCity}"/>
+                    </h:selectOneMenu>
+                </rich:toolbarGroup>
+
                 <rich:toolbarGroup location="right">
                     <a:commandButton value="#{messages.search}" styleClass="toolBarBtn" render="totalResult"
                                      execute="@form" action="#{saleMoneyChartData.totalData}">
@@ -65,7 +72,6 @@
 
 
 
-                <a:outputPanel rendered="#{not empty saleMoneyChartData.orderMoneyData}">
 
                     <p:piechart title="#{messages.SaleMoney_OrderTotalMoney}"
                                 legend="false" borderVisible="false"
@@ -76,7 +82,8 @@
                                 circular="true" is3D="true" plotForegroundAlpha="0.9">
 
                         <ui:repeat value="#{saleMoneyChartData.orderMoneyData}" var="_oms">
-                            <p:data key="#{saleMoneyChartData.areaMap.get(_oms.key).name}" value="#{_oms.money}"/>
+                            <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_oms.key).name : dictionary.getCityName(_oms.key)}"
+                                    value="#{_oms.money}"/>
                         </ui:repeat>
                     </p:piechart>
 
@@ -90,13 +97,10 @@
                                 circular="true" is3D="true" plotForegroundAlpha="0.9">
 
                         <ui:repeat value="#{saleMoneyChartData.backMoneyData}" var="_oms">
-                            <p:data key="#{saleMoneyChartData.areaMap.get(_oms.key).name}" value="#{_oms.money}"/>
+                            <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_oms.key).name : dictionary.getCityName(_oms.key)}" value="#{_oms.money}"/>
                         </ui:repeat>
                     </p:piechart>
 
-                </a:outputPanel>
-
-                <a:outputPanel rendered="#{not empty saleMoneyChartData.orderMoneyData}">
 
                     <p:barchart
                             title="#{messages.SaleMoney_ResTotalMoney}"
@@ -110,18 +114,17 @@
                         <ui:repeat value="#{saleMoneyChartData.areaResMoneyDataList}" var="_entry">
                             <p:series key="#{_entry.key}">
                                 <ui:repeat value="#{_entry.value}" var="_item">
-                                    <p:data key="#{_item.areaName}" value="#{_item.money}"/>
+                                    <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_item.areaId).name : dictionary.getCityName(_item.areaId)}" value="#{_item.money}"/>
                                 </ui:repeat>
                             </p:series>
                         </ui:repeat>
                     </p:barchart>
-                </a:outputPanel>
             </h:panelGrid>
 
             <br/>
 
-            <rich:dataTable style="width: 100%" rendered="#{not empty saleMoneyChartData.orderMoneyData}"
-                            value="#{saleMoneyChartData.customerAreas}" var="_area">
+            <rich:dataTable style="width: 100%"
+                            value="#{saleMoneyChartData.validCodes}" var="_area">
                 <f:facet name="header">
                     <rich:columnGroup>
                         <rich:column rowspan="2">
@@ -160,11 +163,11 @@
                 </f:facet>
 
                 <rich:column>
-                    #{_area.name}
+                    #{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_area).name : dictionary.getCityName(_area)}
                 </rich:column>
 
                 <rich:column style="text-align: right">
-                    <h:outputText value="#{saleMoneyChartData.orderMoneyDataMap.get(_area.id).money}">
+                    <h:outputText value="#{saleMoneyChartData.orderMoneyDataMap.get(_area).money}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                     <f:facet name="footer">
@@ -174,7 +177,7 @@
                     </f:facet>
                 </rich:column>
                 <rich:column>
-                    <h:outputText value="#{saleMoneyChartData.orderMoneyDataMap.get(_area.id).count}">
+                    <h:outputText value="#{saleMoneyChartData.orderMoneyDataMap.get(_area).count}">
                     </h:outputText>
                     <f:facet name="footer">
                         <h:outputText value="#{saleMoneyChartData.orderMoneyTotal.count}"/>
@@ -183,7 +186,7 @@
 
 
                 <rich:column style="text-align: right">
-                    <h:outputText value="#{saleMoneyChartData.backMoneyDataMap.get(_area.id).money}">
+                    <h:outputText value="#{saleMoneyChartData.backMoneyDataMap.get(_area).money}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                     <f:facet name="footer">
@@ -194,7 +197,7 @@
                 </rich:column>
 
                 <rich:column>
-                    <h:outputText value="#{saleMoneyChartData.backMoneyDataMap.get(_area.id).count}">
+                    <h:outputText value="#{saleMoneyChartData.backMoneyDataMap.get(_area).count}">
                     </h:outputText>
                     <f:facet name="footer">
                         <h:outputText value="#{saleMoneyChartData.backMoneyDataTotal.count}">
@@ -203,7 +206,7 @@
                 </rich:column>
 
                 <rich:column style="text-align: right">
-                    <h:outputText value="#{saleMoneyChartData.orderMoneyDataMap.get(_area.id).money - saleMoneyChartData.backMoneyDataMap.get(_area.id).money}">
+                    <h:outputText value="#{saleMoneyChartData.orderMoneyDataMap.get(_area).money - saleMoneyChartData.backMoneyDataMap.get(_area).money}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                     <f:facet name="footer">

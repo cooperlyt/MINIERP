@@ -8,10 +8,7 @@ import org.jboss.seam.log.Logging;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,60 +17,93 @@ import java.util.Map;
  * Time: 11:22
  */
 @Name("customerAccountChartData")
-public class CustomerAccountChartData {
+public class CustomerAccountChartData extends CustomerAreaChart {
 
-
-    @In(create = true)
-    private EntityManager erpEntityManager;
-
-
-    public Number getCustomerCount(){
-        return (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.enable = true").getSingleResult();
+    public void refresh() {
+        areaArrearsData = null;
+        areaSaveData = null;
     }
 
-    public Map<String,Number> getCustomerMoneyCountSum() {
-        Map<String,Number> result = new HashMap<String, Number>();
+    private Map<Object, OrderMoneySeries> areaArrearsData;
 
-        result.put("overdraftCount",
-                (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance < 0 and customer.enable = true").getSingleResult());
 
-        result.put("depositCount",
-                (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance > 0 and customer.enable = true").getSingleResult());
+    private Map<Object, OrderMoneySeries> areaSaveData;
 
-        result.put("zeroCount",
-                (Number) erpEntityManager.createQuery("select count(customer.id) as c from Customer customer where customer.balance = 0 and customer.enable = true").getSingleResult());
+    private void initAreaArrearsData() {
+        if (areaArrearsData == null) {
+            areaArrearsData = new HashMap<Object, OrderMoneySeries>();
+            if (isUseSaleArea()) {
 
-        return result;
-    }
 
-    public String getCustomerOverdraftMoneyTotal(){
-        return DecimalFormat.getCurrencyInstance(Locale.CHINA).format((BigDecimal) erpEntityManager.createQuery("select sum(customer.balance) as c from Customer customer where customer.balance < 0 and customer.enable = true ").getSingleResult());
-    }
+                for (OrderMoneySeries data : erpEntityManager.createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(customer.customerArea.id," +
+                        "abs(sum(customer.advanceMoney - customer.accountMoney)),count(customer.id) )  from Customer customer " +
+                        "where customer.enable = true and (customer.advanceMoney - customer.accountMoney) < 0 group by customer.customerArea.id", OrderMoneySeries.class).getResultList()) {
+                    areaArrearsData.put(data.getKey(), data);
+                }
+            } else {
+                for (OrderMoneySeries data : erpEntityManager.createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(customer.provinceCode," +
+                        "abs(sum(customer.advanceMoney - customer.accountMoney)),count(customer.id) )  from Customer customer " +
+                        "where customer.enable = true and (customer.advanceMoney - customer.accountMoney) < 0 group by customer.provinceCode", OrderMoneySeries.class).getResultList()) {
+                    areaArrearsData.put(data.getKey(), data);
+                }
+            }
 
-    public Map<String,Number> getCustomerOverdraftMoneySum(){
-        Map<String,Number> result = new HashMap<String, Number>();
-        List qResult = erpEntityManager.createQuery("select count(customer.id) as c, sum(customer.balance) * -1 as b ,max(customer.customerArea.name) as n from Customer customer where customer.balance < 0 and customer.enable = true group by customer.customerArea.id").getResultList();
-        for(Object o: qResult){
 
-            result.put(((Object[])o)[2] + " " + DecimalFormat.getCurrencyInstance(Locale.CHINA).format((BigDecimal) ((Object[]) o)[1]) + "(" + ((Object[])o)[0] + ")" ,  (Number)((Object[])o)[1]);
         }
-        return result;
     }
 
-
-    public String getCustomerDepositMoneyTotal(){
-        return DecimalFormat.getCurrencyInstance(Locale.CHINA).format((Number) erpEntityManager.createQuery("select sum(customer.balance) as c from Customer customer where customer.balance > 0 and customer.enable = true ").getSingleResult());
+    public Map<Object, OrderMoneySeries> getAreaArrearsData() {
+        initAreaArrearsData();
+        return areaArrearsData;
     }
 
+    public List<OrderMoneySeries> getAreaArrears() {
+        return new ArrayList<OrderMoneySeries>(getAreaArrearsData().values());
+    }
 
-    public Map<String,Number> getCustomerDepositMoneySum(){
-        Map<String,Number> result = new HashMap<String, Number>();
-        List qResult = erpEntityManager.createQuery("select count(customer.id) as c, sum(customer.balance) as b ,max(customer.customerArea.name) as n from Customer customer where customer.balance > 0 and customer.enable = true group by customer.customerArea.id").getResultList();
-        for(Object o: qResult){
-            result.put(((Object[])o)[2] + " " + DecimalFormat.getCurrencyInstance(Locale.CHINA).format((BigDecimal)((Object[]) o)[1]) + "(" + ((Object[])o)[0] + ")" , (Number)((Object[])o)[1]);
+    private void initAreaSaveData() {
+        if (areaSaveData == null) {
+            areaSaveData = new HashMap<Object, OrderMoneySeries>();
+            if (isUseSaleArea()) {
+                for (OrderMoneySeries data : erpEntityManager.createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(customer.customerArea.id," +
+                        "sum(customer.advanceMoney - customer.accountMoney),count(customer.id) )  from Customer customer " +
+                        "where customer.enable = true and (customer.advanceMoney - customer.accountMoney) > 0 group by customer.customerArea.id", OrderMoneySeries.class).getResultList()) {
+                    areaSaveData.put(data.getKey(), data);
+                }
+            } else {
+                for (OrderMoneySeries data : erpEntityManager.createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(customer.provinceCode," +
+                        "sum(customer.advanceMoney - customer.accountMoney),count(customer.id) )  from Customer customer " +
+                        "where customer.enable = true and (customer.advanceMoney - customer.accountMoney) > 0 group by customer.provinceCode", OrderMoneySeries.class).getResultList()) {
+                    areaSaveData.put(data.getKey(), data);
+                }
+            }
+
         }
-        return result;
     }
 
+    public Map<Object, OrderMoneySeries> getAreaSaveData() {
+        initAreaSaveData();
+        return areaSaveData;
+    }
+
+    public List<OrderMoneySeries> getAreaSave() {
+        return new ArrayList<OrderMoneySeries>(getAreaSaveData().values());
+    }
+
+
+    public OrderMoneySeries getArrearsTotal() {
+        return totalDatas(getAreaArrears());
+    }
+
+    public OrderMoneySeries getSaveTotal() {
+        return totalDatas(getAreaSave());
+    }
+
+    public List<Object> getValidCodes(){
+        Set<Object> result = new HashSet<Object>();
+        result.addAll(getAreaArrearsData().keySet());
+        result.addAll(getAreaSaveData().keySet());
+        return new ArrayList<Object>(result);
+    }
 
 }

@@ -7,9 +7,7 @@ import java.math.BigDecimal;
  */
 public class AreaResSaleGroupData {
 
-    private String areaId;
-
-    private String areaName;
+    private Object areaId;
 
     private String resId;
 
@@ -22,21 +20,16 @@ public class AreaResSaleGroupData {
     public AreaResSaleGroupData() {
     }
 
-    public AreaResSaleGroupData(String areaId,String areaName, String resId, String resName, BigDecimal money, BigDecimal count) {
+    public AreaResSaleGroupData(Object areaId, String resId, String resName, BigDecimal money, BigDecimal count) {
         this.areaId = areaId;
         this.resId = resId;
         this.resName = resName;
         this.money = money;
         this.count = count;
-        this.areaName = areaName;
     }
 
-    public String getAreaId() {
+    public Object getAreaId() {
         return areaId;
-    }
-
-    public String getAreaName() {
-        return areaName;
     }
 
     public String getResId() {

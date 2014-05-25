@@ -15,11 +15,11 @@ public class OrderMoneySeries {
     public OrderMoneySeries() {
     }
 
-    public OrderMoneySeries(String key) {
+    public OrderMoneySeries(Object key) {
         this.key = key;
     }
 
-    public OrderMoneySeries(String key, BigDecimal money, Long count) {
+    public OrderMoneySeries(Object key, BigDecimal money, Long count) {
         this.key = key;
         this.money = money;
         this.count = count;
@@ -30,20 +30,17 @@ public class OrderMoneySeries {
         this.money = money;
     }
 
-    private String key;
+    private Object key;
 
     private BigDecimal money;
 
     private Long count;
 
-    public String getKey() {
-        if (key == null){
-            return "";
-        }
+    public Object getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(Object key) {
         this.key = key;
     }
 

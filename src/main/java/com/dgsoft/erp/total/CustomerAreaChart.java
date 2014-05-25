@@ -1,5 +1,6 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerArea;
 import org.jboss.seam.annotations.In;
 
@@ -22,21 +23,38 @@ public abstract class CustomerAreaChart {
     protected EntityManager erpEntityManager;
 
 
+    private Map<String,CustomerArea> customerAreaMap;
+
     private List<CustomerArea> customerAreas;
 
-    public List<CustomerArea> getCustomerAreas() {
-        if (customerAreas == null) {
-            customerAreas = erpEntityManager.createQuery("select area from CustomerArea area ", CustomerArea.class).getResultList();
-        }
-        return customerAreas;
+    private boolean useSaleArea = true;
+
+    public boolean isUseSaleArea() {
+        return useSaleArea;
     }
 
-    public Map<String,CustomerArea> getAreaMap(){
-        Map<String,CustomerArea> result = new HashMap<String, CustomerArea>();
-        for (CustomerArea area: getCustomerAreas()){
-            result.put(area.getId(),area);
+    public void setUseSaleArea(boolean useSaleArea) {
+        this.useSaleArea = useSaleArea;
+    }
+
+    private void initCustomerArea(){
+        if ((customerAreaMap == null) || (customerAreas == null)){
+            customerAreas = erpEntityManager.createQuery("select area from CustomerArea area ", CustomerArea.class).getResultList();
+            customerAreaMap = new HashMap<String, CustomerArea>();
+           for(CustomerArea area: customerAreas){
+               customerAreaMap.put(area.getId(),area);
+           }
         }
-        return result;
+    }
+
+    public Map<String, CustomerArea> getAreaMap() {
+        initCustomerArea();
+        return customerAreaMap;
+    }
+
+    public List<CustomerArea> getCustomerAreas() {
+        initCustomerArea();
+        return customerAreas;
     }
 
 
