@@ -137,6 +137,9 @@
                             #{messages.saleMoneyChart_backMoney}
                         </rich:column>
 
+                        <rich:column rowspan="2">
+                            #{messages.Total}
+                        </rich:column>
 
                         <rich:column breakRowBefore="true">
                             #{messages.Money}
@@ -150,6 +153,8 @@
                         <rich:column>
                             #{messages.count}
                         </rich:column>
+
+
 
                     </rich:columnGroup>
                 </f:facet>
@@ -197,6 +202,16 @@
                     </f:facet>
                 </rich:column>
 
+                <rich:column style="text-align: right">
+                    <h:outputText value="#{saleMoneyChartData.orderMoneyDataMap.get(_area.id).money - saleMoneyChartData.backMoneyDataMap.get(_area.id).money}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="#{saleMoneyChartData.orderMoneyTotal.money - saleMoneyChartData.backMoneyDataTotal.money}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </rich:column>
 
             </rich:dataTable>
 

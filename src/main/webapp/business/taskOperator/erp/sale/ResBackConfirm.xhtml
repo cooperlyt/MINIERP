@@ -22,6 +22,7 @@
                             </h:outputText>
                         </a:outputPanel>
                     </h:panelGrid>
+
                 </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
@@ -33,10 +34,25 @@
 
                 </rich:toolbarGroup>
             </rich:toolbar>
-        </h:form>
+
 
         <br/>
-        <h:form>
+
+                 <s:decorate template="/layout/seam-edit.xhtml">
+                     <ui:define name="label">#{messages.OrderBack_field_completeDate}</ui:define>
+                     <rich:calendar
+                                    enableManualInput="true"
+                                    inputSize="10"
+                                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                    datePattern="#{messages.datePattern}"
+                                    required="true"
+                                    label="#{messages.OrderBack_field_completeDate}"
+                                    value="#{orderBackHome.instance.completeDate}">
+                     </rich:calendar>
+                 </s:decorate>
+            <br/>
+
             <rich:dataTable style="width: 100%" id="backResEditTable" value="#{confirmBackItems}" var="_item">
                 <f:facet name="header">
                     <rich:columnGroup>

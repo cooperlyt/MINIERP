@@ -36,7 +36,7 @@ public class StoreResBackConfirm extends CancelOrderTaskHandle {
     protected String completeOrderTask() {
         orderBackHome.calcBackMoney();
         orderBackHome.getInstance().setMoneyComplete(orderBackHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) == 0);
-
+        orderBackHome.getInstance().setConfirmed(true);
         if ("updated".equals(orderBackHome.update())) {
             return "taskComplete";
         } else

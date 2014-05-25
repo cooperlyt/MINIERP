@@ -31,13 +31,15 @@ public class OrderBack implements java.io.Serializable {
     private Set<BackDispatch> backDispatchs = new HashSet<BackDispatch>(0);
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private boolean dispatched;
+    private boolean confirmed;
 
     public OrderBack() {
     }
 
-    public OrderBack(boolean dispatched,String applyEmp) {
+    public OrderBack(boolean dispatched,boolean confirmed,String applyEmp) {
         this.dispatched = dispatched;
         this.applyEmp = applyEmp;
+        this.confirmed = confirmed;
     }
 
     @Id
@@ -237,6 +239,15 @@ public class OrderBack implements java.io.Serializable {
 
     public void setDispatched(boolean dispatched) {
         this.dispatched = dispatched;
+    }
+
+    @Column(name = "COFIRMED" ,nullable = false)
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
     }
 
     @Transient
