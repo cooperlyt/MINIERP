@@ -2,6 +2,7 @@ package com.dgsoft.erp.business.order.cancel;
 
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.jbpm.BussinessProcessUtils;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.MoneySave;
@@ -75,13 +76,16 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
         }
 
         customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
+        customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
         if (backToPreMoney){
-            customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
-            customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+            if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")) {
+                customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
+            }else {
+                customerOper.setAdvanceReceivable(BigDecimal.ZERO);
+            }
             customerOper.setMoneySave(null);
         }else{
             customerOper.setAdvanceReceivable(BigDecimal.ZERO);
-            customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
             moneySave.setMoney(orderBackHome.getInstance().getMoney());
             moneySave.getAccountOpers().clear();
             moneySave.getAccountOpers().add(customerOper);

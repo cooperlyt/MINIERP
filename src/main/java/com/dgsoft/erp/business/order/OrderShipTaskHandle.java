@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.model.*;
 
 import java.math.BigDecimal;
@@ -41,7 +42,8 @@ public abstract class OrderShipTaskHandle extends OrderTaskHandle {
             accountOper.setCustomerOrder(orderHome.getInstance());
             accountOper.setOperDate(shipDate);
             accountOper.setCustomer(getCustomer());
-            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
+            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST) &&
+                    RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")) {
                 accountOper.setAdvanceReceivable(orderHome.getInstance().getMoney());
             } else if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                 accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());

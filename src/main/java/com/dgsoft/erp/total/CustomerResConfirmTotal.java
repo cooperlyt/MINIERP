@@ -52,7 +52,7 @@ public class CustomerResConfirmTotal {
 
     private static final String ACCOUNT_MONETY_EJBQL = "select accountOper from AccountOper accountOper where " +
             "(accountOper.operType in ('DEPOSIT_BACK', 'PROXY_SAVINGS','CUSTOMER_SAVINGS','MONEY_FREE','ORDER_PAY') " +
-            " or (accountOper.operType = 'ORDER_BACK' and  accountOper.advanceReceivable = 0)) and " +
+            " or (accountOper.operType = 'ORDER_BACK' and  accountOper.advanceReceivable = 0 and accountOper.moneySave is null)) and " +
             "accountOper.customer.id =:customerId and accountOper.saleCertificate.date >= :beginDate and " +
             "accountOper.saleCertificate.date <= :endDate order by accountOper.saleCertificate.date";
 

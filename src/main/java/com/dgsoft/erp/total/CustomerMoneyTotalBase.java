@@ -22,7 +22,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
     protected static final String EJBQL = "select accountOper from AccountOper accountOper left join fetch accountOper.moneySave " +
             " where (accountOper.operType = 'DEPOSIT_BACK' or accountOper.operType = 'PROXY_SAVINGS' " +
-            " or accountOper.operType = 'CUSTOMER_SAVINGS' or ( accountOper.operType = 'ORDER_BACK' and accountOper.advanceReceivable = 0))";
+            " or accountOper.operType = 'CUSTOMER_SAVINGS' or ( accountOper.operType = 'ORDER_BACK' and accountOper.advanceReceivable = 0 and accountOper.moneySave is null))";
 
     public CustomerMoneyTotalBase() {
         setEjbql(EJBQL);

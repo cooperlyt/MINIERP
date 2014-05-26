@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerContact;
@@ -140,7 +141,14 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     }
 
     public BigDecimal getCanUseAdvanceMoney(){
-        BigDecimal result = getInstance().getAdvanceMoney().subtract(CustomerMoneyTool.instance().getOrderAdvance(getInstance().getId()));
+        BigDecimal result;
+        if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")){
+            result = getInstance().getAdvanceMoney().subtract(CustomerMoneyTool.instance().getOrderAdvance(getInstance().getId()));
+        }else{
+            result  = getInstance().getAdvanceMoney().subtract(getInstance().getAccountMoney()).subtract(CustomerMoneyTool.instance().getOrderAdvance(getInstance().getId()));
+        }
+
+
         if (result.compareTo(BigDecimal.ZERO) <= 0){
             return BigDecimal.ZERO;
         }else{

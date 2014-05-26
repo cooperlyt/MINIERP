@@ -31,11 +31,11 @@ public class AccountOper implements java.io.Serializable {
         ORDER_BACK(Accounting.Direction.CREDIT, null);       //不包含冲帐
 
         public static EnumSet<AccountOperType> getCustomerMoneyAdd() {
-            return EnumSet.of(PROXY_SAVINGS, CUSTOMER_SAVINGS,MONEY_FREE);
+            return EnumSet.of(PROXY_SAVINGS, CUSTOMER_SAVINGS, MONEY_FREE);
         }
 
         public static EnumSet<AccountOperType> getCustomerMoneySub() {
-            return EnumSet.of(ORDER_BACK, DEPOSIT_BACK,ORDER_PAY);
+            return EnumSet.of(ORDER_BACK, DEPOSIT_BACK, ORDER_PAY);
         }
 
         public static EnumSet<AccountOperType> getCustomerOpers() {
@@ -46,11 +46,11 @@ public class AccountOper implements java.io.Serializable {
             return getCustomerOpers().contains(this);
         }
 
-        public Boolean getAdd(){
-            if (getCustomerMoneyAdd().contains(this)){
+        public Boolean getAdd() {
+            if (getCustomerMoneyAdd().contains(this)) {
                 return true;
             }
-            if (getCustomerMoneySub().contains(this)){
+            if (getCustomerMoneySub().contains(this)) {
                 return false;
             }
             return null;
@@ -59,7 +59,6 @@ public class AccountOper implements java.io.Serializable {
         private Accounting.Direction adDirection; //贷方科目
 
         private Accounting.Direction acDirection; //借方科目
-
 
 
         public Accounting.Direction getAdDirection() {
@@ -344,13 +343,13 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
-    public BigDecimal getCustomerAdvanceMoney(){
+    public BigDecimal getCustomerAdvanceMoney() {
         switch (getOperType()) {
 
             case DEPOSIT_BACK:
             case DEPOSIT_PAY:
             case ORDER_PAY:
-                return  getAdvanceReceivable().multiply(new BigDecimal("-1"));
+                return getAdvanceReceivable().multiply(new BigDecimal("-1"));
             case CUSTOMER_SAVINGS:
             case ORDER_BACK:
                 return getAdvanceReceivable();
@@ -359,7 +358,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
-    public BigDecimal getCustomerProxyAccountMoney(){
+    public BigDecimal getCustomerProxyAccountMoney() {
         switch (getOperType()) {
 
             case PROXY_SAVINGS:
@@ -371,7 +370,7 @@ public class AccountOper implements java.io.Serializable {
     }
 
     @Transient
-    public BigDecimal getCustomerAccountMoney(BigDecimal beginMoney){
+    public BigDecimal getCustomerAccountMoney(BigDecimal beginMoney) {
         switch (getOperType()) {
             case CUSTOMER_SAVINGS:
             case DEPOSIT_PAY:
@@ -462,7 +461,13 @@ public class AccountOper implements java.io.Serializable {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.DEPOSIT_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
-                if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) || (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0)) {
+                if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0)){
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
+                            String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.DEPOSIT_BACK"), getCustomer().getName()),
+                            RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
+                }
+
+                if ((getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0)) {
                     throw new IllegalArgumentException(" DEPOSIT_BACK unSupport type");
                 }
                 break;
@@ -550,14 +555,19 @@ public class AccountOper implements java.io.Serializable {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.rm.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.receive"), BigDecimal.ZERO, getAccountsReceivable().multiply(new BigDecimal("-1"))));
+                }
+
+
+                if ((getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) || (getMoneySave() != null)) {
+
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.c.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable(), BigDecimal.ZERO));
-                }
-                if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SaleCertificateItem(getSaleCertificate(),
-                            String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.ORDER_BACK"), getCustomer().getName()),
-                            RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), BigDecimal.ZERO, getAdvanceReceivable()));
+                    if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0)
+
+                        result.add(new SaleCertificateItem(getSaleCertificate(),
+                                String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.ORDER_BACK"), getCustomer().getName()),
+                                RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), BigDecimal.ZERO, getAdvanceReceivable()));
                 }
                 break;
         }

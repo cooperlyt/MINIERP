@@ -21,7 +21,6 @@
         <a:region rendered="#{not empty orderNeedItems}">
 
             <rich:select id="oweOutItemIsSendSelect" value="#{orderChange.reSend}" required="true"
-                         disabled="#{orderHome.instance.moneyComplete}"
                          label="#{messages.sub_overly_oper_type}">
                 <f:selectItem itemLabel="#{messages.sub_overly_oper_render_true}" itemValue="#{true}"/>
                 <f:selectItem itemLabel="#{messages.sub_overly_oper_render_false}" itemValue="#{false}"/>
