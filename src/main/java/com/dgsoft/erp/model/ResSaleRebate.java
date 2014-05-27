@@ -31,7 +31,7 @@ public class ResSaleRebate implements Serializable{
     private BigDecimal rebateRateCount;
     private BigDecimal rebateCount;
     private BigDecimal rebateMoney;
-    private BigDecimal memo;
+    private String memo;
 
 
     @Id
@@ -154,11 +154,11 @@ public class ResSaleRebate implements Serializable{
 
     @Column(name="MEMO",nullable = true,length = 200)
     @Size(max = 200)
-    public BigDecimal getMemo() {
+    public String getMemo() {
         return memo;
     }
 
-    public void setMemo(BigDecimal memo) {
+    public void setMemo(String memo) {
         this.memo = memo;
     }
 }

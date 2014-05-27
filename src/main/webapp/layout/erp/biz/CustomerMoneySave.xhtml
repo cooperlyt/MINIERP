@@ -55,7 +55,7 @@
                 <h:inputText value="#{customerAccountOper.operMoney}"
                              label="#{messages.accountOper_field_operMoney}"
                              converter="javax.faces.BigDecimal" required="true">
-                    <f:validateDoubleRange minimum="0.01" maximum="#{customerHome.instance.advanceMoney}"/>
+                    <f:validateDoubleRange minimum="0.01" maximum="#{customerHome.canUseAdvanceMoney}"/>
                     <a:ajax event="blur" execute="@this" render="operMoneyField,#{render}"/>
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
                                      currencySymbol=""/>
