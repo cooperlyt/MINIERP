@@ -32,6 +32,7 @@ public class StockChangeItemTotal extends ErpEntityQuery<StockChangeItem> {
             "stockChangeItem.stockChange.operDate >= #{searchDateArea.dateFrom}",
             "stockChangeItem.stockChange.operDate <= #{searchDateArea.searchDateTo}",
             "stockChangeItem.stockChange.operType in (#{stockChangeTypeCondition.searchTypes})",
+            "stockChangeItem.stockChange.store.id = #{stockChangeTypeCondition.storeId}",
             "stockChangeItem.storeRes.res.resCategory.id in (#{storeResCondition.searchResCategoryIds})",
             "stockChangeItem.storeRes.res.id = #{storeResCondition.searchResId}",
             "stockChangeItem.storeRes.floatConversionRate = #{storeResCondition.searchFloatConvertRate}",
