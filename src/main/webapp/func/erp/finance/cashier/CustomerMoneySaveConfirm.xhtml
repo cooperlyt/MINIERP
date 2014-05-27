@@ -68,35 +68,6 @@
             </h:outputText>
         </s:decorate>
 
-        <a:outputPanel rendered="#{customerAccountOper.type eq 'CUSTOMER_SAVINGS'}">
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">
-                    #{messages.SaveToAccountType}
-                </ui:define>
-                #{messages[moneySaveHome.saveType.name()]}
-            </s:decorate>
-
-
-            <s:decorate rendered="#{moneySaveHome.saveType eq 'BY_ACCOUNT'}" template="/layout/seam-display.xhtml">
-                <ui:define name="label">
-                    #{messages.customer_field_ac}
-                </ui:define>
-                <h:outputText value="#{moneySaveHome.toAccountMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </s:decorate>
-
-            <s:decorate rendered="#{moneySaveHome.saveType eq 'BY_ACCOUNT'}" template="/layout/seam-display.xhtml">
-                <ui:define name="label">
-                    #{messages.customer_field_ad}
-                </ui:define>
-                <h:outputText value="#{moneySaveHome.toAdvanceMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </s:decorate>
-
-        </a:outputPanel>
-
         <div style="clear: both"/>
 
         <a:outputPanel rendered="#{not (customerAccountOper.type eq 'PROXY_SAVINGS')}">
@@ -147,7 +118,7 @@
                 #{dictionary.getCityName(_oper.customer.provinceCode)}
             </rich:column>
 
-            <rich:column style="text-align: right;">
+            <rich:column style="text-align: right;" rendered="#{runParam.getBooleanParamValue('erp.finance.useAdvance')}">
                 <f:facet name="header">
                     #{messages.customer_field_ad}
                 </f:facet>

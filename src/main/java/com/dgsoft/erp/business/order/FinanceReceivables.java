@@ -74,11 +74,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
 
     public void receiveMoney(){
         if("persisted".equals(moneySaveHome.persist())){
-            customerAccountOper.setType(AccountOper.AccountOperType.CUSTOMER_SAVINGS);
-            customerAccountOper.setOperMoney(BigDecimal.ZERO);
-            moneySaveHome.clearInstance();
-            moneySaveHome.setSaveType(MoneySaveHome.SaveToAccountType.BY_ADVANCE);
-            moneySaveHome.initAccountOper();
+            reset();
         }
     }
 
@@ -87,7 +83,6 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         customerAccountOper.setType(AccountOper.AccountOperType.CUSTOMER_SAVINGS);
         customerAccountOper.setOperMoney(BigDecimal.ZERO);
         moneySaveHome.clearInstance();
-        moneySaveHome.setSaveType(MoneySaveHome.SaveToAccountType.BY_ADVANCE);
         moneySaveHome.initAccountOper();
     }
 

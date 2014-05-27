@@ -322,7 +322,7 @@ public class AccountOper implements java.io.Serializable {
         switch (getOperType()) {
 
             case DEPOSIT_BACK:
-                return getAdvanceReceivable();
+                return getAdvanceReceivable().add(getAccountsReceivable());
 
             case PROXY_SAVINGS:
                 return getProxcAccountsReceiveable();
@@ -388,6 +388,7 @@ public class AccountOper implements java.io.Serializable {
 
             case DEPOSIT_BACK:
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
                 break;
             case PROXY_SAVINGS:
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
@@ -409,7 +410,15 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
                 break;
             case ORDER_BACK:
-                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                if (getMoneySave() == null) {
+
+                    if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) == 0) {
+                        getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                    }else{
+                        getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                    }
+                }
+
                 break;
         }
     }
@@ -420,6 +429,7 @@ public class AccountOper implements java.io.Serializable {
 
             case DEPOSIT_BACK:
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                 break;
             case PROXY_SAVINGS:
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
@@ -437,7 +447,14 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
                 break;
             case ORDER_BACK:
-                getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                if (getMoneySave() == null) {
+
+                    if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) == 0) {
+                        getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                    }else{
+                        getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                    }
+                }
                 break;
             case DEPOSIT_PAY:
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
@@ -461,7 +478,7 @@ public class AccountOper implements java.io.Serializable {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.DEPOSIT_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
-                if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0)){
+                if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0)) {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.DEPOSIT_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));

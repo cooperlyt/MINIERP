@@ -183,7 +183,7 @@
                     #{dictionary.getCityName(_oper.customer.provinceCode)}
                 </rich:column>
 
-                <rich:column style="text-align: right;">
+                <rich:column style="text-align: right;" rendered="#{runParam.getBooleanParamValue('erp.finance.useAdvance')}">
                     <f:facet name="header">
                         #{messages.customer_field_ad}
                     </f:facet>
@@ -234,6 +234,17 @@
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                     </f:facet>
+                </rich:column>
+
+                <rich:column style="text-align: center;">
+                    <f:facet name="header">
+
+                    </f:facet>
+                     <a:commandButton image="/img/delete.png" title="#{messages.remove}"
+                                      action="#{moneySaveHome.removeProxyItem}" render="accountOperList">
+                         <a:attachQueue requestDelay="0"/>
+                              <a:param value="#{_oper.customer.id}" assignTo="#{moneySaveHome.removeProxyCustomerId}"/>
+                     </a:commandButton>
                 </rich:column>
 
             </rich:dataTable>

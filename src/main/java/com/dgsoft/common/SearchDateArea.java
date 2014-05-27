@@ -13,8 +13,8 @@ import java.util.Date;
 public class SearchDateArea {
 
     public SearchDateArea() {
-        this.dateFrom = new Date();
-        this.dateTo = new Date();
+        setDateFrom(new Date());
+        setDateTo(new Date());
     }
 
 

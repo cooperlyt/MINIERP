@@ -65,19 +65,25 @@
     <s:decorate template="/layout/seam-display.xhtml">
         <h:panelGrid columns="20">
 
-            #{messages.customer_field_ad}:
-            <h:outputText value="#{customer.advanceMoney}">
+
+            <h:outputText value="#{messages.customer_field_ad}:"
+                          rendered="#{s:hasRole('erp.finance.cashier') and runParam.getBooleanParamValue('erp.finance.useAdvance')}"/>
+
+            <h:outputText value="#{customer.advanceMoney}" rendered="#{s:hasRole('erp.finance.cashier') and runParam.getBooleanParamValue('erp.finance.useAdvance')}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
 
-            #{messages.customer_field_ac}:
-            <h:outputText value="#{customer.accountMoney}" style="color: #ff0000">
+            <h:outputText value="#{messages.customer_field_ac}:" rendered="#{s:hasRole('erp.finance.cashier')}"/>
+
+            <h:outputText value="#{customer.accountMoney}" style="color: #ff0000" rendered="#{s:hasRole('erp.finance.cashier')}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>
-            #{messages.customer_field_pac}:
-            <h:outputText value="#{customer.proxyAccountMoney}" style="color: #ff0000">
+
+            <h:outputText value="#{messages.customer_field_pac}:"  rendered="#{s:hasRole('erp.finance.cashier')}"/>
+
+            <h:outputText value="#{customer.proxyAccountMoney}" style="color: #ff0000" rendered="#{s:hasRole('erp.finance.cashier')}">
                 <f:convertNumber locale="#{calendarBean.locale}"
                                  type="currency" groupingUsed="true"/>
             </h:outputText>

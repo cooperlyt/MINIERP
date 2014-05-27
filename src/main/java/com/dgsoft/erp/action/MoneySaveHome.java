@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.common.SetLinkList;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.business.CustomerAccountOper;
@@ -28,15 +29,9 @@ import java.util.EnumSet;
 @Name("moneySaveHome")
 public class MoneySaveHome extends ErpEntityHome<MoneySave> {
 
-    public enum SaveToAccountType {
-        BY_CURR, BY_ADVANCE, BY_ACCOUNT;
-    }
-
-    private SaveToAccountType saveType;
-
     private SetLinkList<AccountOper> accountOperList;
 
-    private BigDecimal toAccountMoney;
+    //private BigDecimal toAccountMoney;
 
     private TransCorp transCorp;
 
@@ -52,11 +47,6 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     @In
     private CustomerAccountOper customerAccountOper;
 
-
-    @Factory(value = "moneySaveToTypes", scope = ScopeType.CONVERSATION)
-    public EnumSet<SaveToAccountType> getMoneySaveToTypes() {
-        return EnumSet.allOf(SaveToAccountType.class);
-    }
 
     @Override
     protected void initInstance() {
@@ -78,14 +68,6 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
 
     }
 
-    public SaveToAccountType getSaveType() {
-        return saveType;
-    }
-
-    public void setSaveType(SaveToAccountType saveType) {
-        this.saveType = saveType;
-    }
-
     public SetLinkList<AccountOper> getAccountOperList() {
         return accountOperList;
     }
@@ -93,25 +75,6 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     public AccountOper getSingleAccountOper() {
         return accountOperList.get(0);
     }
-
-    public BigDecimal getToAccountMoney() {
-        return toAccountMoney;
-    }
-
-    public void setToAccountMoney(BigDecimal toAccountMoney) {
-        this.toAccountMoney = toAccountMoney;
-    }
-
-    public BigDecimal getToAdvanceMoney() {
-        if (getOperMoney() == null) {
-            return null;
-        }
-        if (getToAccountMoney() == null) {
-            return getOperMoney();
-        } else
-            return getOperMoney().subtract(getToAccountMoney());
-    }
-
 
     public TransCorp getTransCorp() {
         return transCorp;
@@ -122,7 +85,32 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     }
 
     public void addProxyItem() {
+        for (AccountOper oper: getAccountOperList()){
+            if (oper.getCustomer().getId().equals(customerHome.getInstance().getId())){
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"CustomerExistsInOperList");
+                return;
+            }
+        }
         getAccountOperList().add(new AccountOper(getInstance(), AccountOper.AccountOperType.PROXY_SAVINGS, customerHome.getInstance(), credentials.getUsername()));
+    }
+
+    private String removeProxyCustomerId;
+
+    public String getRemoveProxyCustomerId() {
+        return removeProxyCustomerId;
+    }
+
+    public void setRemoveProxyCustomerId(String removeProxyCustomerId) {
+        this.removeProxyCustomerId = removeProxyCustomerId;
+    }
+
+    public void removeProxyItem(){
+        for (AccountOper oper: getAccountOperList()){
+            if (oper.getCustomer().getId().equals(removeProxyCustomerId)){
+                getAccountOperList().remove(oper);
+                return;
+            }
+        }
     }
 
     public BigDecimal getTotalCustomerPorxyMoney() {
@@ -201,29 +189,27 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             getInstance().setTransCorp(null);
             getSingleAccountOper().setCustomer(customerHome.getReadyInstance());
             if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)) {
-                getSingleAccountOper().setAdvanceReceivable(getOperMoney());
-            } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
-                switch (saveType) {
+                if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")) {
+                    getSingleAccountOper().setAdvanceReceivable(getOperMoney());
+                }else{
+                    getSingleAccountOper().setAccountsReceivable(getOperMoney());
+                }
 
-                    case BY_CURR:
-                        if (customerHome.getInstance().getAccountMoney().compareTo(getOperMoney()) >= 0) {
-                            getSingleAccountOper().setAdvanceReceivable(BigDecimal.ZERO);
-                            getSingleAccountOper().setAccountsReceivable(getOperMoney());
-                        } else if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) <= 0) {
-                            getSingleAccountOper().setAdvanceReceivable(getOperMoney());
-                            getSingleAccountOper().setAccountsReceivable(BigDecimal.ZERO);
-                        } else {
-                            getSingleAccountOper().setAdvanceReceivable(getOperMoney().subtract(customerHome.getInstance().getAccountMoney()));
-                            getSingleAccountOper().setAccountsReceivable(customerHome.getInstance().getAccountMoney());
-                        }
-                        break;
-                    case BY_ADVANCE:
+            } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
+
+                if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")) {
+                    if (customerHome.getInstance().getAccountMoney().compareTo(getOperMoney()) >= 0) {
+                        getSingleAccountOper().setAdvanceReceivable(BigDecimal.ZERO);
+                        getSingleAccountOper().setAccountsReceivable(getOperMoney());
+                    } else if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) <= 0) {
                         getSingleAccountOper().setAdvanceReceivable(getOperMoney());
-                        break;
-                    case BY_ACCOUNT:
-                        getSingleAccountOper().setAccountsReceivable(getToAccountMoney());
-                        getSingleAccountOper().setAdvanceReceivable(getToAdvanceMoney());
-                        break;
+                        getSingleAccountOper().setAccountsReceivable(BigDecimal.ZERO);
+                    } else {
+                        getSingleAccountOper().setAdvanceReceivable(getOperMoney().subtract(customerHome.getInstance().getAccountMoney()));
+                        getSingleAccountOper().setAccountsReceivable(customerHome.getInstance().getAccountMoney());
+                    }
+                } else {
+                    getSingleAccountOper().setAccountsReceivable(getOperMoney());
                 }
             } else {
                 throw new IllegalArgumentException("unkonw type:" + customerAccountOper.getType());

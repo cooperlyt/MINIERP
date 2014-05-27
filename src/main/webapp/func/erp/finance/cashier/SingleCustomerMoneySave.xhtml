@@ -15,9 +15,10 @@
         <h:form>
             <rich:toolbar>
 
-                <rich:toolbarGroup>
-                    #{messages.customer_field_ad}:
-                    <h:outputText value="#{customerHome.instance.advanceMoney}">
+                <rich:toolbarGroup rendered="#{runParam.getBooleanParamValue('erp.finance.useAdvance')}">
+
+                    <h:outputText value="#{messages.customer_field_ad}:" />
+                    <h:outputText value="#{customerHome.instance.advanceMoney}" >
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -25,7 +26,7 @@
 
                 <rich:toolbarGroup>
                     #{messages.customer_field_ac}:
-                    <h:outputText value="#{customerHome.instance.accountMoney}" style="color: #ff0000">
+                    <h:outputText value="#{customerHome.instance.accountMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -69,47 +70,6 @@
                     <ui:param name="render" value="moneyPatchFields"/>
                 </ui:include>
 
-                <a:outputPanel id="moneyPatchFields" rendered="#{customerAccountOper.type eq 'CUSTOMER_SAVINGS'}">
-
-                    <s:decorate template="/layout/seam-edit.xhtml">
-                        <ui:define name="label">
-                            #{messages.SaveToAccountType}
-                        </ui:define>
-                        <h:selectOneMenu value="#{moneySaveHome.saveType}" label="#{messages.SaveToAccountType}"
-                                         required="true">
-                            <s:selectItems value="#{moneySaveToTypes}" var="_type" label="#{messages[_type.name()]}"/>
-                            <s:convertEnum/>
-                            <a:ajax event="valueChange" execute="@this" render="moneyPatchFields"/>
-                        </h:selectOneMenu>
-                    </s:decorate>
-
-                    <a:outputPanel id="splitMoneyField">
-                        <s:decorate rendered="#{moneySaveHome.saveType eq 'BY_ACCOUNT'}"
-                                    template="/layout/seam-edit.xhtml">
-                            <ui:define name="label">
-                                #{messages.customer_field_ac}
-                            </ui:define>
-                            <h:inputText value="#{moneySaveHome.toAccountMoney}"
-                                         label="#{messages.customer_field_ac}"
-                                         required="true"
-                                         converter="javax.faces.BigDecimal">
-                                <a:ajax event="blur" execute="@this" render="splitMoneyField"/>
-                                <f:validateDoubleRange minimum="0.01"/>
-                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
-                                                 currencySymbol=""/>
-                            </h:inputText>
-                            <ui:define name="tail">
-                                #{messages.customer_field_ad}:
-                                <h:outputText id="toAdvanceMoney" value="#{moneySaveHome.toAdvanceMoney}">
-                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                                </h:outputText>
-                            </ui:define>
-                        </s:decorate>
-
-                    </a:outputPanel>
-
-
-                </a:outputPanel>
 
                 <div style="clear:both">
                     <span class="required">*</span>

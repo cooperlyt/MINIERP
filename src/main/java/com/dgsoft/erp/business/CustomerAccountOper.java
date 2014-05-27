@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business;
 
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.MoneySaveHome;
 import com.dgsoft.erp.model.AccountOper;
@@ -23,11 +24,17 @@ public class CustomerAccountOper implements Serializable {
 
     @Factory(value = "moneySaveTypes", scope = ScopeType.CONVERSATION)
     public EnumSet<AccountOper.AccountOperType> getMoneySaveTypes() {
-        return EnumSet.of(AccountOper.AccountOperType.PROXY_SAVINGS,
+        if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance"))
+            return EnumSet.of(AccountOper.AccountOperType.PROXY_SAVINGS,
                 AccountOper.AccountOperType.CUSTOMER_SAVINGS,
                 AccountOper.AccountOperType.MONEY_FREE,
                 AccountOper.AccountOperType.DEPOSIT_PAY,
                 AccountOper.AccountOperType.DEPOSIT_BACK);
+       else
+            return EnumSet.of(AccountOper.AccountOperType.PROXY_SAVINGS,
+                    AccountOper.AccountOperType.CUSTOMER_SAVINGS,
+                    AccountOper.AccountOperType.MONEY_FREE,
+                    AccountOper.AccountOperType.DEPOSIT_BACK);
     }
 
     @In(required = false)
