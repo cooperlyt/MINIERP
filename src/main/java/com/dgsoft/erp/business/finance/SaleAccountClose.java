@@ -102,10 +102,7 @@ public class SaleAccountClose {
             customerMoney = erpEntityManager.find(Customer.class, customerId).getAdvanceMoney();
         } else
            return BigDecimal.ZERO;
-        if (customerMoney.compareTo(calcMoney) < 0) {
-            throw new IllegalArgumentException("customer begin money error code:" + code +
-                    "|customerMoney:" + customerMoney + "|calcMoney:" + calcMoney);
-        }
+
         return customerMoney.subtract(calcMoney);
     }
 

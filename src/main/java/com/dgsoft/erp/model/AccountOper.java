@@ -481,7 +481,7 @@ public class AccountOper implements java.io.Serializable {
                 if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0)) {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.DEPOSIT_BACK"), getCustomer().getName()),
-                            RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
+                            RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable(), BigDecimal.ZERO));
                 }
 
                 if ((getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0)) {

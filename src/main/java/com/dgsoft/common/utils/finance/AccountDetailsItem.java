@@ -18,6 +18,7 @@ public class AccountDetailsItem {
     private AccountDetailsItem parent;
 
     private BigDecimal afterMoney = null;
+    private BigDecimal balance = null;
 
     private String description;
 
@@ -39,14 +40,14 @@ public class AccountDetailsItem {
         } else {
             afterMoney = afterMoney.add(certificateItem.getCredit()).subtract(certificateItem.getDebit());
         }
-        initAfterMoney(accountDirection);
+        initBalance(accountDirection);
     }
 
     public AccountDetailsItem(String description, BigDecimal afterMoney, Account.Direction accountDirection, Date itemTime) {
         this.description = description;
         this.afterMoney = afterMoney;
         this.itemTime = itemTime;
-        initAfterMoney(accountDirection);
+        initBalance(accountDirection);
     }
 
     public AccountDetailsItem(String description, BigDecimal debit, BigDecimal credit,
@@ -56,14 +57,15 @@ public class AccountDetailsItem {
         this.debit = debit;
         this.credit = credit;
         this.itemTime = itemTime;
-        initAfterMoney(accountDirection);
+        initBalance(accountDirection);
     }
 
-    private void initAfterMoney(Account.Direction accountDirection) {
+    private void initBalance(Account.Direction accountDirection) {
         if (afterMoney.compareTo(BigDecimal.ZERO) < 0) {
             balanceDir = accountDirection.reverse();
-            afterMoney = afterMoney.abs();
+            balance = afterMoney.abs();
         } else {
+            balance = afterMoney;
             balanceDir = accountDirection;
         }
     }
@@ -132,8 +134,16 @@ public class AccountDetailsItem {
         return parent;
     }
 
-    public BigDecimal getAfterMoney() {
+    private BigDecimal getAfterMoney() {
         return afterMoney;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public Account.Direction getBalanceDir() {
