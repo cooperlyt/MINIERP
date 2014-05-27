@@ -62,6 +62,7 @@ public class CustomerOrder implements java.io.Serializable {
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
     private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
+    private Set<ResSaleRebate> resSaleRebates = new HashSet<ResSaleRebate>(0);
 
 
     public CustomerOrder() {
@@ -335,6 +336,14 @@ public class CustomerOrder implements java.io.Serializable {
         this.middleMoneyPay = middleMoneys;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "customerOrder", cascade = {CascadeType.ALL})
+    public Set<ResSaleRebate> getResSaleRebates() {
+        return resSaleRebates;
+    }
+
+    public void setResSaleRebates(Set<ResSaleRebate> resSaleRebates) {
+        this.resSaleRebates = resSaleRebates;
+    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<OrderFee> getOrderFees() {
