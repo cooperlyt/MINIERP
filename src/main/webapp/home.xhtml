@@ -19,15 +19,24 @@
             <s:div styleClass="info">
 
                 <p>
-                    <strong>MINIERP 2.2.5 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.2.6 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                    <li>[收款] 去掉预收账款</li>
-                    <li>[收款] 增加代收重复客户验证和移除</li>
-                    <li>[仓库] 修正出入库查询汇总表的仓库条件无效问题</li>
+                    <li>[销售] 修正订单更改</li>
+                    <li>[销售] 保存订单反点</li>
+                    <li>[销售] 增加客户金额排行</li>
                 </ul>
 
                 <strong>历史更新</strong>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.2.5" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[收款] 去掉预收账款</li>
+                        <li>[收款] 增加代收重复客户验证和移除</li>
+                        <li>[仓库] 修正出入库查询汇总表的仓库条件无效问题</li>
+                    </ul>
+                </s:decorate>
 
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.2.4" name="openLabel"/>
