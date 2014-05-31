@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityHome;
@@ -26,9 +27,23 @@ import java.util.*;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
-    @In
-    private Identity identity;
 
+    protected SetLinkList<ResSaleRebate> resSaleRebates;
+
+    public void reCreateResSaleBebates(){
+        resSaleRebates.clear();
+    }
+
+
+    @Override
+    protected void initInstance(){
+        super.initInstance();
+        resSaleRebates = new SetLinkList<ResSaleRebate>(getInstance().getResSaleRebates());
+    }
+
+    public SetLinkList<ResSaleRebate> getResSaleRebates() {
+        return resSaleRebates;
+    }
 
     @In(create = true)
     protected Map<String, String> messages;
@@ -289,6 +304,18 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     public void calcMoneys() {
+
+        setUseScaleRebate(false);
+        BigDecimal result = BigDecimal.ZERO;
+        for (ResSaleRebate item : resSaleRebates) {
+            if (item.isCanRebate()){
+                item.calcMoney();
+                result = result.add(item.getRebateMoney());
+            }
+        }
+        getInstance().setTotalRebateMoney(result);
+
+
         calcTotalResMoney();
 
         getInstance().setMoney(getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney()));

@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.NumberBuilder;
@@ -53,6 +54,7 @@ public class OrderCreate extends OrderHome {
     @In(create = true)
     protected OrderHome orderHome;
 
+
     @In
     private NumberBuilder numberBuilder;
 
@@ -72,6 +74,7 @@ public class OrderCreate extends OrderHome {
         return new CustomerOrder(credentials.getUsername(), new Date());
     }
 
+
     private BigDecimal earnestScale = BigDecimal.ZERO;
 
     public BigDecimal getEarnestScale() {
@@ -85,6 +88,8 @@ public class OrderCreate extends OrderHome {
 
     @Override
     public void calcMoneys() {
+
+
         super.calcMoneys();
         calcEarnest();
     }
@@ -165,13 +170,11 @@ public class OrderCreate extends OrderHome {
 
     public void removeItem() {
         needResHome.removeItem();
-        resItemList = null;
     }
 
     public void addOrderItem() {
         needResHome.addOrderItem();
         calcMoneys();
-        resItemList = null;
     }
 
 
@@ -191,6 +194,27 @@ public class OrderCreate extends OrderHome {
 
         }
         return "/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml";
+    }
+
+    public String toOrderMoneyCalc() {
+        resSaleRebates.clear();
+
+
+        for (OrderItem item : needResHome.getOrderNeedItems()) {
+            boolean find = false;
+            for (ResSaleRebate tr : resSaleRebates) {
+                if (tr.isSameItem(item)) {
+                    tr.add(item);
+                    find = true;
+                }
+            }
+            if (!find) {
+                resSaleRebates.add(new ResSaleRebate(getInstance(), item.getRes(), item.getUseUnit(), item.getUseUnitCount(), item.getMoney(), item.getRebate()));
+            }
+
+        }
+        return "/business/startPrepare/erp/sale/CreateSaleOrderMoney.xhtml";
+
     }
 
     private boolean dispatched = false;
@@ -397,169 +421,121 @@ public class OrderCreate extends OrderHome {
         return "/business/startPrepare/erp/sale/SaleOrderCreated.xhtml";
     }
 
-    private List<TotalResItem> resItemList = null;
+    //private List<TotalResItem> resItemList = null;
 
-    public List<TotalResItem> getResItemList() {
-        if (resItemList == null) {
-            resItemList = new ArrayList<TotalResItem>();
-            if (needResHome.getOrderNeedItems() != null)
-                for (OrderItem item : needResHome.getOrderNeedItems()) {
-                    boolean find = false;
-                    for (TotalResItem tr : resItemList) {
-                        if (tr.isSameItem(item)) {
-                            tr.add(item);
-                            find = true;
-                        }
-                    }
-                    if (!find) {
-                        resItemList.add(new TotalResItem(item.getRes(), item.getResUnit(), item.getMoney(), item.getRebate(), item.getUseUnitCount()));
-                    }
 
-                }
-        }
-        return resItemList;
-    }
-
-    public BigDecimal getTotalResFreeMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (TotalResItem item : getResItemList()) {
-            if (item.isCanRebate())
-                result = result.add(item.getFreeMoney());
-        }
-        return result;
-    }
-
-    public void setResItemFreeMoneyToOrder() {
-        setUseScaleRebate(false);
-        getInstance().setTotalRebateMoney(getTotalResFreeMoney());
+    public void calcOrderFreeMoney() {
         calcMoneys();
     }
 
-    public class TotalResItem {
+//    public class TotalResItem {
+//
+//        private Res res;
+//
+//        private ResUnit resUnit;
+//
+//        private BigDecimal money;
+//
+//        private BigDecimal rebate;
+//
+//        private BigDecimal count;
+//
+//        private BigDecimal freeCountBasicRate = BigDecimal.ZERO;
+//
+//        private BigDecimal freeCountRate = BigDecimal.ZERO;
+//
+//        public TotalResItem(Res res, ResUnit resUnit, BigDecimal money, BigDecimal rebate, BigDecimal count) {
+//            this.res = res;
+//            this.resUnit = resUnit;
+//            this.money = money;
+//            this.rebate = rebate;
+//            this.count = count;
+//        }
+//
+//        public void add(OrderItem other) {
+//            if (!isSameItem(other))
+//                throw new IllegalArgumentException("not same");
+//            count = count.add(other.getUseUnitCount());
+//        }
+//
+//        public boolean isSameItem(OrderItem other) {
+//            return res.equals(other.getRes()) && resUnit.getId().equals(other.getResUnit().getId())
+//                    && (other.getMoney().compareTo(money) == 0) &&
+//                    (other.getRebate().compareTo(rebate) == 0);
+//        }
+//
+//        public Res getRes() {
+//            return res;
+//        }
+//
 
-        private Res res;
-
-        private ResUnit resUnit;
-
-        private BigDecimal money;
-
-        private BigDecimal rebate;
-
-        private BigDecimal count;
-
-        private BigDecimal freeCountBasicRate = BigDecimal.ZERO;
-
-        private BigDecimal freeCountRate = BigDecimal.ZERO;
-
-        public TotalResItem(Res res, ResUnit resUnit, BigDecimal money, BigDecimal rebate, BigDecimal count) {
-            this.res = res;
-            this.resUnit = resUnit;
-            this.money = money;
-            this.rebate = rebate;
-            this.count = count;
-        }
-
-        public void add(OrderItem other) {
-            if (!isSameItem(other))
-                throw new IllegalArgumentException("not same");
-            count = count.add(other.getUseUnitCount());
-        }
-
-        public boolean isSameItem(OrderItem other) {
-            return res.equals(other.getRes()) && resUnit.getId().equals(other.getResUnit().getId())
-                    && (other.getMoney().compareTo(money) == 0) &&
-                    (other.getRebate().compareTo(rebate) == 0);
-        }
-
-        public Res getRes() {
-            return res;
-        }
-
-        public BigDecimal getFreeCount() {
-            if (DataFormat.isEmpty(freeCountBasicRate)) {
-                return BigDecimal.ZERO;
-            }
-            return count.divide(freeCountBasicRate, 0, BigDecimal.ROUND_DOWN).multiply(freeCountRate);
-        }
-
-        public boolean isCanRebate() {
-            return (getMoney().compareTo(BigDecimal.ZERO) > 0);
-        }
-
-        public BigDecimal getFreeMoney() {
-            if (DataFormat.isEmpty(freeCountBasicRate)) {
-                return BigDecimal.ZERO;
-            }
-
-            return DataFormat.halfUpCurrency(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)).multiply(getFreeCount()));
-        }
-
-        public BigDecimal getTotalPrice() {
-
-            return DataFormat.halfUpCurrency(count.multiply(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
-        }
-
-        public BigDecimal getMoney() {
-            return money;
-        }
-
-        public void setMoney(BigDecimal money) {
-            this.money = money;
-        }
-
-        public ResUnit getResUnit() {
-            return resUnit;
-        }
-
-        public void setResUnit(ResUnit resUnit) {
-            this.resUnit = resUnit;
-        }
-
-        public void setRebate(BigDecimal rebate) {
-            this.rebate = rebate;
-        }
-
-        public BigDecimal getRebate() {
-            return rebate;
-        }
-
-        public boolean isPresentation() {
-            return false;
-        }
-
-        public void setPresentation(boolean presentation) {
-        }
-
-        public BigDecimal getCount() {
-            return count;
-        }
-
-        public void setCount(BigDecimal count) {
-            this.count = count;
-        }
-
-        public StoreRes getStoreRes() {
-            return null;
-        }
-
-        public void setStoreRes(StoreRes storeRes) {
-        }
-
-        public BigDecimal getFreeCountRate() {
-            return freeCountRate;
-        }
-
-        public void setFreeCountRate(BigDecimal freeCountRate) {
-            this.freeCountRate = freeCountRate;
-        }
-
-        public BigDecimal getFreeCountBasicRate() {
-            return freeCountBasicRate;
-        }
-
-        public void setFreeCountBasicRate(BigDecimal freeCountBasicRate) {
-            this.freeCountBasicRate = freeCountBasicRate;
-        }
-    }
+//
+//        public BigDecimal getTotalPrice() {
+//
+//            return DataFormat.halfUpCurrency(count.multiply(getMoney().multiply(getRebate().divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP))));
+//        }
+//
+//        public BigDecimal getMoney() {
+//            return money;
+//        }
+//
+//        public void setMoney(BigDecimal money) {
+//            this.money = money;
+//        }
+//
+//        public ResUnit getResUnit() {
+//            return resUnit;
+//        }
+//
+//        public void setResUnit(ResUnit resUnit) {
+//            this.resUnit = resUnit;
+//        }
+//
+//        public void setRebate(BigDecimal rebate) {
+//            this.rebate = rebate;
+//        }
+//
+//        public BigDecimal getRebate() {
+//            return rebate;
+//        }
+//
+//        public boolean isPresentation() {
+//            return false;
+//        }
+//
+//        public void setPresentation(boolean presentation) {
+//        }
+//
+//        public BigDecimal getCount() {
+//            return count;
+//        }
+//
+//        public void setCount(BigDecimal count) {
+//            this.count = count;
+//        }
+//
+//        public StoreRes getStoreRes() {
+//            return null;
+//        }
+//
+//        public void setStoreRes(StoreRes storeRes) {
+//        }
+//
+//        public BigDecimal getFreeCountRate() {
+//            return freeCountRate;
+//        }
+//
+//        public void setFreeCountRate(BigDecimal freeCountRate) {
+//            this.freeCountRate = freeCountRate;
+//        }
+//
+//        public BigDecimal getFreeCountBasicRate() {
+//            return freeCountBasicRate;
+//        }
+//
+//        public void setFreeCountBasicRate(BigDecimal freeCountBasicRate) {
+//            this.freeCountBasicRate = freeCountBasicRate;
+//        }
+//    }
 
 }

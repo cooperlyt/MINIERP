@@ -12,6 +12,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -131,12 +132,16 @@ public class OrderChange extends OrderShipTaskHandle {
         } else {
             orderHome.getInstance().getNeedReses().remove(needResHome.getInstance());
         }
-        if (!orderHome.getInstance().isMoneyComplete())
-            orderHome.calcMoneys();
+        orderHome.calcMoneys();
+    }
+
+    private void reCreateOrderRebate() {
+        //for ()
     }
 
     @Override
     protected void initOrderTask() {
+        Logging.getLog(getClass()).debug("orderChange init is execute");
 
         overlyItems = orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.WAIT_PRICE));
 
@@ -178,11 +183,60 @@ public class OrderChange extends OrderShipTaskHandle {
         }
 
         initReSend();
+
+
+    }
+
+    private void addOrderItemsToRebate(Collection<OrderItem> orderItems){
+        for (OrderItem item : orderItems) {
+            boolean find = false;
+            for (ResSaleRebate resSaleRebate : orderHome.getResSaleRebates()) {
+                if (resSaleRebate.isSameItem(item)){
+                    find = true;
+                    resSaleRebate.setCount(resSaleRebate.getCount().add(item.getUseUnitCount()));
+                    break;
+                }
+            }
+            if (!find){
+                orderHome.getResSaleRebates().add(new ResSaleRebate(orderHome.getInstance(),
+                        item.getRes(),item.getUseUnit(),item.getUseUnitCount(),item.getMoney(),item.getRebate()));
+            }
+        }
+    }
+
+    public String toChangeOrderMoney() {
+        for (ResSaleRebate resSaleRebate : orderHome.getResSaleRebates()) {
+            resSaleRebate.setCount(BigDecimal.ZERO);
+        }
+
+
+        addOrderItemsToRebate(orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED)));
+
+
+        addOrderItemsToRebate(overlyItems);
+
+        if (reSend){
+            addOrderItemsToRebate(needResHome.getInstance().getOrderItems());
+        }
+
+        List<ResSaleRebate> removeItems = new ArrayList<ResSaleRebate>();
+        for (ResSaleRebate resSaleRebate : orderHome.getResSaleRebates()) {
+            if (resSaleRebate.getCount().compareTo(BigDecimal.ZERO) == 0){
+                removeItems.add(resSaleRebate);
+            }else{
+                resSaleRebate.calcMoney();
+            }
+        }
+
+        orderHome.getResSaleRebates().removeAll(removeItems);
+        orderHome.calcMoneys();
+
+        return "/business/taskOperator/erp/sale/OrderMoneyChange.xhtml";
     }
 
     @Override
     protected String completeOrderTask() {
-
+        Logging.getLog(getClass()).debug("orderChange complete is execute");
         if (!reSend || oweItems.isEmpty()) {
             orderHome.getInstance().setAllStoreOut(true);
             orderHome.getInstance().getNeedReses().remove(needResHome.getInstance());

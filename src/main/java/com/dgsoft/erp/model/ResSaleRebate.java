@@ -1,5 +1,6 @@
 package com.dgsoft.erp.model;
 
+import com.dgsoft.common.DataFormat;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "RES_SALE_REBATE", catalog = "MINI_ERP")
-public class ResSaleRebate implements Serializable{
+public class ResSaleRebate implements Serializable {
 
     private String id;
 
@@ -24,7 +25,6 @@ public class ResSaleRebate implements Serializable{
     private Res res;
     private ResUnit resUnit;
 
-    private BigDecimal price;
     private BigDecimal count;
     private BigDecimal money;
     private BigDecimal rebateBasicCount;
@@ -32,7 +32,19 @@ public class ResSaleRebate implements Serializable{
     private BigDecimal rebateCount;
     private BigDecimal rebateMoney;
     private String memo;
+    private BigDecimal itemRebate;
 
+    public ResSaleRebate() {
+    }
+
+    public ResSaleRebate(CustomerOrder customerOrder, Res res, ResUnit resUnit, BigDecimal count, BigDecimal money, BigDecimal itemRebate) {
+        this.customerOrder = customerOrder;
+        this.res = res;
+        this.resUnit = resUnit;
+        this.count = count;
+        this.money = money;
+        this.itemRebate = itemRebate;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -49,8 +61,8 @@ public class ResSaleRebate implements Serializable{
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(nullable = false,name = "CUSTOMER_ORDER")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(nullable = false, name = "CUSTOMER_ORDER")
     @NotNull
     public CustomerOrder getCustomerOrder() {
         return customerOrder;
@@ -60,8 +72,8 @@ public class ResSaleRebate implements Serializable{
         this.customerOrder = customerOrder;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "RES",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "RES", nullable = false)
     @NotNull
     public Res getRes() {
         return res;
@@ -71,8 +83,8 @@ public class ResSaleRebate implements Serializable{
         this.res = res;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "RES_UNIT",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "RES_UNIT", nullable = false)
     @NotNull
     public ResUnit getResUnit() {
         return resUnit;
@@ -82,17 +94,7 @@ public class ResSaleRebate implements Serializable{
         this.resUnit = resUnit;
     }
 
-    @Column(name = "PRICE",nullable = false,scale = 4)
-    @NotNull
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    @Column(name="COUNT",nullable = false,scale = 4)
+    @Column(name = "COUNT", nullable = false, scale = 4)
     @NotNull
     public BigDecimal getCount() {
         return count;
@@ -102,7 +104,7 @@ public class ResSaleRebate implements Serializable{
         this.count = count;
     }
 
-    @Column(name="MONEY",nullable = false,scale = 4)
+    @Column(name = "MONEY", nullable = false, scale = 4)
     @NotNull
     public BigDecimal getMoney() {
         return money;
@@ -112,7 +114,7 @@ public class ResSaleRebate implements Serializable{
         this.money = money;
     }
 
-    @Column(name="REBATE_BASIC_COUNT",nullable = false,scale = 4)
+    @Column(name = "REBATE_BASIC_COUNT", nullable = false, scale = 4)
     @NotNull
     public BigDecimal getRebateBasicCount() {
         return rebateBasicCount;
@@ -122,7 +124,7 @@ public class ResSaleRebate implements Serializable{
         this.rebateBasicCount = rebateBasicCount;
     }
 
-    @Column(name="REBATE_RATE_COUNT",nullable = false,scale = 4)
+    @Column(name = "REBATE_RATE_COUNT", nullable = false, scale = 4)
     @NotNull
     public BigDecimal getRebateRateCount() {
         return rebateRateCount;
@@ -132,7 +134,7 @@ public class ResSaleRebate implements Serializable{
         this.rebateRateCount = rebateRateCount;
     }
 
-    @Column(name="REBATE_COUNT",nullable = false,scale = 4)
+    @Column(name = "REBATE_COUNT", nullable = false, scale = 4)
     @NotNull
     public BigDecimal getRebateCount() {
         return rebateCount;
@@ -142,7 +144,7 @@ public class ResSaleRebate implements Serializable{
         this.rebateCount = rebateCount;
     }
 
-    @Column(name="REBATE_MONEY",nullable = false,scale = 4)
+    @Column(name = "REBATE_MONEY", nullable = false, scale = 4)
     @NotNull
     public BigDecimal getRebateMoney() {
         return rebateMoney;
@@ -152,7 +154,7 @@ public class ResSaleRebate implements Serializable{
         this.rebateMoney = rebateMoney;
     }
 
-    @Column(name="MEMO",nullable = true,length = 200)
+    @Column(name = "MEMO", nullable = true, length = 200)
     @Size(max = 200)
     public String getMemo() {
         return memo;
@@ -161,4 +163,49 @@ public class ResSaleRebate implements Serializable{
     public void setMemo(String memo) {
         this.memo = memo;
     }
+
+    @Column(name = "ITEM_REBATE", nullable = false, scale = 4)
+    @NotNull
+    public BigDecimal getItemRebate() {
+        return itemRebate;
+    }
+
+    public void setItemRebate(BigDecimal itemRebate) {
+        this.itemRebate = itemRebate;
+    }
+
+    @Transient
+    public boolean isSameItem(OrderItem other) {
+        return getRes().equals(other.getRes()) && getResUnit().getId().equals(other.getResUnit().getId())
+                && (other.getMoney().compareTo(getMoney()) == 0) &&
+                (other.getRebate().compareTo(getItemRebate()) == 0);
+    }
+
+    @Transient
+    public void add(OrderItem other) {
+        if (!isSameItem(other))
+            throw new IllegalArgumentException("not same");
+        setCount(getCount().add(other.getUseUnitCount()));
+    }
+
+    @Transient
+    public boolean isCanRebate() {
+        return (getMoney().compareTo(BigDecimal.ZERO) > 0);
+    }
+
+    @Transient
+    public void calcMoney() {
+        if (DataFormat.isEmpty(getRebateBasicCount()) || DataFormat.isEmpty(getRebateRateCount())) {
+            setRebateCount(BigDecimal.ZERO);
+            setRebateMoney(BigDecimal.ZERO);
+            return;
+        }
+        setRebateCount(getCount().divide(getRebateBasicCount(), 0, BigDecimal.ROUND_DOWN).multiply(getRebateRateCount()));
+        setRebateMoney(DataFormat.halfUpCurrency(
+                getMoney().multiply(getItemRebate().
+                        divide(new BigDecimal("100"), 20, BigDecimal.ROUND_HALF_UP)).multiply(getRebateCount())));
+
+    }
+
+
 }

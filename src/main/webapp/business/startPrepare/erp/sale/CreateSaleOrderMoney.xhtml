@@ -15,260 +15,259 @@
 
 
 <h:form>
-    <rich:toolbar>
+<rich:toolbar>
 
-        <rich:toolbarGroup>
+    <rich:toolbarGroup>
 
-            <a:outputPanel ajaxRendered="true">
-                <h:panelGroup id="orderTotalPrice" columns="20">
-                    #{messages.orderPrice}:
-                    <h:outputText value="#{orderCreate.instance.resMoney}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                    #{' '}
+        <a:outputPanel ajaxRendered="true">
+            <h:panelGroup id="orderTotalPrice" columns="20">
+                #{messages.orderPrice}:
+                <h:outputText value="#{orderCreate.instance.resMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+                #{' '}
 
-                    <h:selectOneMenu id="orderRebateCalcTypeField" value="#{orderCreate.useScaleRebate}">
-                        <f:selectItem itemValue="#{false}" itemLabel="-"/>
-                        <f:selectItem itemValue="#{true}" itemLabel="%"/>
-                        <a:ajax event="valueChange" execute="@this"/>
-                    </h:selectOneMenu>
+                <h:selectOneMenu id="orderRebateCalcTypeField" value="#{orderCreate.useScaleRebate}">
+                    <f:selectItem itemValue="#{false}" itemLabel="-"/>
+                    <f:selectItem itemValue="#{true}" itemLabel="%"/>
+                    <a:ajax event="valueChange" execute="@this"/>
+                </h:selectOneMenu>
 
 
-                    <a:outputPanel id="orderTotalRebateField">
-                        <h:inputText id="scaleRebateInput" rendered="#{orderCreate.useScaleRebate}"
-                                     value="#{orderCreate.orderRebate}"
-                                     required="true" size="5" label="#{messages.orderRebate}">
-                            <f:convertNumber pattern="#0.##" groupingUsed="false"/>
-                            <a:ajax event="blur" execute="@this"
-                                    render="orderTotalPrice">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                            <rich:validator/>
-                            <f:validateDoubleRange minimum="0" maximum="100"/>
-                            <rich:placeholder value="#{messages.orderRebate}"/>
-                        </h:inputText>
-
-                        <h:inputText id="moneyRebateInput" rendered="#{not orderCreate.useScaleRebate}"
-                                     value="#{orderCreate.orderRebate}"
-                                     required="true" size="10" label="#{messages.orderRebate}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"
-                                             groupingUsed="false" currencySymbol=""/>
-                            <a:ajax event="blur" execute="@this"
-                                    render="orderTotalPrice">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                            <rich:validator/>
-
-                            <rich:placeholder value="#{messages.orderRebate}"/>
-                        </h:inputText>
-                    </a:outputPanel>
-                    <rich:message for="moneyRebateInput" styleClass="message-icon"
-                                  rendered="#{not orderCreate.useScaleRebate}"
-                                  showDetail="true" showSummary="true" tooltip="true"/>
-
-                    <rich:message for="scaleRebateInput" styleClass="message-icon"
-                                  rendered="#{orderCreate.useScaleRebate}"
-                                  showDetail="true" showSummary="true" tooltip="true"/>
-
-                    =
-                    <h:inputText id="orderMoneyField" value="#{orderCreate.inputOrderMoney}"
-                                 label="#{messages.orderItemPrice}" required="true" size="9">
-                        <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                         type="currency" groupingUsed="false"/>
-                        <a:ajax event="blur" execute="@this" immediate="true"
+                <a:outputPanel id="orderTotalRebateField">
+                    <h:inputText id="scaleRebateInput" rendered="#{orderCreate.useScaleRebate}"
+                                 value="#{orderCreate.orderRebate}" disabled="true"
+                                 required="true" size="5" label="#{messages.orderRebate}">
+                        <f:convertNumber pattern="#0.##" groupingUsed="false"/>
+                        <a:ajax event="blur" execute="@this"
                                 render="orderTotalPrice">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                         <rich:validator/>
-                        <rich:placeholder value="#{messages.orderItemPrice}"/>
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                        <rich:placeholder value="#{messages.orderRebate}"/>
                     </h:inputText>
-                    <rich:message for="orderMoneyField" styleClass="message-icon"
-                                  showDetail="true" showSummary="true" tooltip="true"/>
 
-                    <a:outputPanel rendered="#{orderCreate.instance.earnestFirst}">
-                        #{messages.order_field_earnest}%
-                        <h:inputText id="orderEarnestScaleField" value="#{orderCreate.earnestScale}" rendered="true"
-                                     size="5" label="#{messages.earnestScale}">
-                            <f:convertNumber pattern="#0.##" groupingUsed="false"/>
-                            <a:ajax event="blur" execute="@this"
-                                    render="orderTotalPrice">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:ajax>
-                            <rich:placeholder value="#{messages.earnestScale}"/>
-                            <f:validateDoubleRange minimum="0" maximum="100"/>
-                            <rich:validator/>
-                        </h:inputText>
+                    <h:inputText id="moneyRebateInput" rendered="#{not orderCreate.useScaleRebate}"
+                                 value="#{orderCreate.orderRebate}" disabled="true"
+                                 required="true" size="10" label="#{messages.orderRebate}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"
+                                         groupingUsed="false" currencySymbol=""/>
+                        <a:ajax event="blur" execute="@this"
+                                render="orderTotalPrice">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                        <rich:validator/>
 
-                        <rich:message for="orderEarnestScaleField" styleClass="message-icon"
-                                      showDetail="true" showSummary="true" tooltip="true"/>
-                        <h:outputText value="#{orderCreate.instance.earnest}" style="font-weight: bold">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                        </h:outputText>
-
-
-                    </a:outputPanel>
-
-                </h:panelGroup>
-            </a:outputPanel>
-        </rich:toolbarGroup>
-
-
-        <rich:toolbarGroup location="right">
-
-            <a:outputPanel ajaxRendered="true">
-                <h:inputText required="true"
-                             maxlength="32"
-                             id="businessKeyInput"
-                             styleClass="barOrderNumber"
-                             label="#{messages.OrderCode}"
-                             valueChangeListener="#{orderCreate.verifyIdAvailable}"
-                             value="#{orderCreate.instance.id}">
-                    <rich:placeholder value="#{messages.OrderCode}"/>
-                    <a:ajax event="blur" execute="@this"/>
-                </h:inputText>
-
-                <rich:message for="businessKeyInput" styleClass="message-icon"
+                        <rich:placeholder value="#{messages.orderRebate}"/>
+                    </h:inputText>
+                </a:outputPanel>
+                <rich:message for="moneyRebateInput" styleClass="message-icon"
+                              rendered="#{not orderCreate.useScaleRebate}"
                               showDetail="true" showSummary="true" tooltip="true"/>
 
-                <h:panelGroup>
+                <rich:message for="scaleRebateInput" styleClass="message-icon"
+                              rendered="#{orderCreate.useScaleRebate}"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+
+                =
+                <h:inputText id="orderMoneyField" value="#{orderCreate.inputOrderMoney}"
+                             disabled="true"
+                             label="#{messages.orderItemPrice}" required="true" size="9">
+                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                     type="currency" groupingUsed="false"/>
+                    <a:ajax event="blur" execute="@this" immediate="true"
+                            render="orderTotalPrice">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                    <rich:validator/>
+                    <rich:placeholder value="#{messages.orderItemPrice}"/>
+                </h:inputText>
+                <rich:message for="orderMoneyField" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+
+                <a:outputPanel rendered="#{orderCreate.instance.earnestFirst}">
+                    #{messages.order_field_earnest}%
+                    <h:inputText id="orderEarnestScaleField" value="#{orderCreate.earnestScale}" rendered="true"
+                                 size="5" label="#{messages.earnestScale}">
+                        <f:convertNumber pattern="#0.##" groupingUsed="false"/>
+                        <a:ajax event="blur" execute="@this"
+                                render="orderTotalPrice">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                        <rich:placeholder value="#{messages.earnestScale}"/>
+                        <f:validateDoubleRange minimum="0" maximum="100"/>
+                        <rich:validator/>
+                    </h:inputText>
+
+                    <rich:message for="orderEarnestScaleField" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+                    <h:outputText value="#{orderCreate.instance.earnest}" style="font-weight: bold">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
 
 
-                    <s:button value="#{messages.cancel}" propagation="end" includePageParams="false"
-                              view="#{empty from ? '/func/erp/sale/CustomerOrder.xhtml' : from}"/>
+                </a:outputPanel>
 
-                    <s:button value="#{messages.Previous}"
-                              view="/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml">
-                        <f:param name="from" value="#{from}"/>
-                    </s:button>
+            </h:panelGroup>
+        </a:outputPanel>
+    </rich:toolbarGroup>
 
-                    <h:commandButton styleClass="toolBarBtn"
-                                     action="#{orderCreate.saveOrderItem}" value="#{messages.orderDispatch}">
-                        <f:param name="from" value="#{from}"/>
 
-                    </h:commandButton>
+    <rich:toolbarGroup location="right">
 
-                    <s:button value="#{messages.complete}"
-                              view="/business/startPrepare/erp/sale/CreateSaleOrderConfirm.xhtml">
-                        <f:param name="from" value="#{from}"/>
-                    </s:button>
+        <a:outputPanel ajaxRendered="true">
+            <h:inputText required="true"
+                         maxlength="32"
+                         id="businessKeyInput"
+                         styleClass="barOrderNumber"
+                         label="#{messages.OrderCode}"
+                         valueChangeListener="#{orderCreate.verifyIdAvailable}"
+                         value="#{orderCreate.instance.id}">
+                <rich:placeholder value="#{messages.OrderCode}"/>
+                <a:ajax event="blur" execute="@this"/>
+            </h:inputText>
 
-                </h:panelGroup>
-            </a:outputPanel>
+            <rich:message for="businessKeyInput" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
 
-        </rich:toolbarGroup>
-    </rich:toolbar>
-</h:form>
+            <h:panelGroup>
+
+
+                <s:button value="#{messages.cancel}" propagation="end" includePageParams="false"
+                          view="#{empty from ? '/func/erp/sale/CustomerOrder.xhtml' : from}"/>
+
+                <s:button value="#{messages.Previous}"
+                          view="/business/startPrepare/erp/sale/CreateSaleOrderItem.xhtml">
+                    <f:param name="from" value="#{from}"/>
+                </s:button>
+
+                <h:commandButton styleClass="toolBarBtn"
+                                 action="#{orderCreate.saveOrderItem}" value="#{messages.orderDispatch}">
+                    <f:param name="from" value="#{from}"/>
+
+                </h:commandButton>
+
+                <s:button value="#{messages.complete}"
+                          view="/business/startPrepare/erp/sale/CreateSaleOrderConfirm.xhtml">
+                    <f:param name="from" value="#{from}"/>
+                </s:button>
+
+            </h:panelGroup>
+        </a:outputPanel>
+
+    </rich:toolbarGroup>
+</rich:toolbar>
+
 <rich:messages ajaxRendered="true" globalOnly="false"/>
 
 <br/>
 
 
-<h:form>
-    <a:outputPanel ajaxRendered="true">
-        <rich:dataTable style="width: 100%" value="#{orderCreate.resItemList}" var="_resItem">
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.res}
-                </f:facet>
-                #{_resItem.res.name}
-            </rich:column>
+<a:outputPanel ajaxRendered="true">
+    <rich:dataTable style="width: 100%" value="#{orderCreate.resSaleRebates}" var="_resItem">
+        <rich:column>
+            <f:facet name="header">
+                #{messages.res}
+            </f:facet>
+            #{_resItem.res.name}
+        </rich:column>
 
 
-            <rich:column style="text-align: right">
-                <f:facet name="header">
-                    #{messages.orderItemUnitPrice}
-                </f:facet>
-                <h:outputText value="#{_resItem.money}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </rich:column>
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.Res_Unit}
-                </f:facet>
-                <h:outputText value="#{_resItem.resUnit.name}"/>
-            </rich:column>
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.orderItemUnitPrice}
+            </f:facet>
+            <h:outputText value="#{_resItem.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.rebate}(%)
+            </f:facet>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.count}
-                </f:facet>
-                <h:outputText value="#{_resItem.count}">
-                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
-                </h:outputText>
-            </rich:column>
+            <h:outputText value="#{_resItem.itemRebate}">
+                <f:convertNumber pattern="#0.####"/>
+            </h:outputText>
+        </rich:column>
 
+        <rich:column>
+            <f:facet name="header">
+                #{messages.Res_Unit}
+            </f:facet>
+            <h:outputText value="#{_resItem.resUnit.name}"/>
+        </rich:column>
 
-            <rich:column style="text-align: right">
-                <f:facet name="header">
-                    #{messages.orderItemTotalPrice}
-                </f:facet>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.count}
+            </f:facet>
+            <h:outputText value="#{_resItem.count}">
+                <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+            </h:outputText>
+        </rich:column>
 
-                <h:outputText value="#{_resItem.totalPrice}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderItemFreeCountBasicRate}
+            </f:facet>
+            <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput value="#{_resItem.rebateBasicCount}" style="width: 95%"
+                                   label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
+                    <f:validateDoubleRange minimum="0"/>
+                    <a:ajax execute="@this" listener="#{orderCreate.calcOrderFreeMoney}" event="blur"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.orderItemFreeCountBasicRate}
-                </f:facet>
-                <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
-                    <rich:inplaceInput value="#{_resItem.freeCountBasicRate}" style="width: 95%"
-                                       label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
-                        <f:validateDoubleRange minimum="0"/>
-                        <a:ajax execute="@this" event="blur"/>
-                    </rich:inplaceInput>
-                </s:decorate>
-            </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderItemFreeCountRate}
+            </f:facet>
+            <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput value="#{_resItem.rebateRateCount}" style="width: 95%"
+                                   label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
+                    <f:validateDoubleRange minimum="0"/>
+                    <a:ajax execute="@this" listener="#{orderCreate.calcOrderFreeMoney}" event="blur"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.orderItemFreeCountRate}
-                </f:facet>
-                <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
-                    <rich:inplaceInput value="#{_resItem.freeCountRate}" style="width: 95%"
-                                       label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
-                        <f:validateDoubleRange minimum="0"/>
-                        <a:ajax execute="@this" event="blur"/>
-                    </rich:inplaceInput>
-                </s:decorate>
-            </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.orderItemFreeCount}
+            </f:facet>
+            <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.rebateCount}">
+                <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+            </h:outputText>
+        </rich:column>
 
-            <rich:column>
-                <f:facet name="header">
-                    #{messages.orderItemFreeCount}
-                </f:facet>
-                <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.freeCount}">
-                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
-                </h:outputText>
-            </rich:column>
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.orderItemFreeMoney}
+            </f:facet>
+            <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.rebateMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
 
-            <rich:column style="text-align: right">
-                <f:facet name="header">
-                    #{messages.orderItemFreeMoney}
-                </f:facet>
-                <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.freeMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-                <f:facet name="footer">
-                    <h:outputText value="#{orderCreate.totalResFreeMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </f:facet>
-            </rich:column>
+        <rich:column>
+            <f:facet name="header">
+                #{messages.field_memo}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput value="#{_resItem.memo}" style="width: 95%"
+                                   label="#{messages.field_memo}">
+                    <a:ajax execute="@this" event="blur"/>
+                </rich:inplaceInput>
+            </s:decorate>
+        </rich:column>
 
-        </rich:dataTable>
+    </rich:dataTable>
 
-        <h:panelGrid style="width: 100%; text-align: right" columns="1">
-            <a:commandButton value="#{messages.setFreeMoneyToOrderRebate}" execute="@this" immediate="true"
-                             action="#{orderCreate.setResItemFreeMoneyToOrder}"
-                             render="orderRebateCalcTypeField,orderTotalRebateField,orderTotalPrice">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-        </h:panelGrid>
-    </a:outputPanel>
+</a:outputPanel>
 </h:form>
 
 

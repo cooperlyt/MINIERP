@@ -62,8 +62,7 @@
             <f:param name="from" value="#{from}"/>
         </s:button>
 
-        <s:button value="#{messages.Next}"
-                  view="/business/startPrepare/erp/sale/CreateSaleOrderMoney.xhtml">
+        <s:button value="#{messages.Next}" action="#{orderCreate.toOrderMoneyCalc}">
             <f:param name="from" value="#{from}"/>
         </s:button>
 
