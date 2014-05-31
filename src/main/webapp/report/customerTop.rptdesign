@@ -480,7 +480,7 @@ return false;
     <body>
         <table id="111">
             <property name="fontFamily">"SimSun"</property>
-            <property name="width">11.135416666666666in</property>
+            <property name="width">11.126315789473685in</property>
             <property name="dataSet">DataSet</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -581,22 +581,13 @@ return false;
                 </structure>
             </list-property>
             <column id="195">
-                <property name="width">0.6979166666666666in</property>
-            </column>
-            <column id="196">
-                <property name="width">0.6979166666666666in</property>
+                <property name="width">2.031578947368421in</property>
             </column>
             <column id="197">
-                <property name="width">0.6979166666666666in</property>
-            </column>
-            <column id="198">
-                <property name="width">0.6979166666666666in</property>
-            </column>
-            <column id="199">
-                <property name="width">0.6979166666666666in</property>
+                <property name="width">0.631578947368421in</property>
             </column>
             <column id="200">
-                <property name="width">1.15625in</property>
+                <property name="width">1.4in</property>
             </column>
             <column id="201">
                 <property name="width">0.4791666666666667in</property>
@@ -646,22 +637,6 @@ return false;
                             <text-property name="text">名称</text-property>
                         </label>
                     </cell>
-                    <cell id="219">
-                        <property name="colSpan">1</property>
-                        <property name="rowSpan">2</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <label id="20">
-                            <text-property name="text">类型</text-property>
-                        </label>
-                    </cell>
                     <cell id="220">
                         <property name="colSpan">1</property>
                         <property name="rowSpan">2</property>
@@ -675,39 +650,7 @@ return false;
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <label id="212">
-                            <text-property name="text">销售区域</text-property>
-                        </label>
-                    </cell>
-                    <cell id="221">
-                        <property name="colSpan">1</property>
-                        <property name="rowSpan">2</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <label id="213">
-                            <text-property name="text">级别</text-property>
-                        </label>
-                    </cell>
-                    <cell id="222">
-                        <property name="colSpan">1</property>
-                        <property name="rowSpan">2</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <label id="215">
-                            <text-property name="text">地区</text-property>
+                            <text-property name="text">区域</text-property>
                         </label>
                     </cell>
                     <cell id="223">
@@ -950,19 +893,6 @@ return false;
                             <property name="resultSetColumn">Name</property>
                         </data>
                     </cell>
-                    <cell id="148">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="149">
-                            <property name="resultSetColumn">Type</property>
-                        </data>
-                    </cell>
                     <cell id="150">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -974,32 +904,6 @@ return false;
                         <property name="borderTopWidth">thin</property>
                         <data id="151">
                             <property name="resultSetColumn">Area</property>
-                        </data>
-                    </cell>
-                    <cell id="152">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="153">
-                            <property name="resultSetColumn">Level</property>
-                        </data>
-                    </cell>
-                    <cell id="154">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <data id="155">
-                            <property name="resultSetColumn">City</property>
                         </data>
                     </cell>
                     <cell id="156">
@@ -1195,37 +1099,7 @@ return false;
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                     </cell>
-                    <cell id="180">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
                     <cell id="181">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="182">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="183">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>

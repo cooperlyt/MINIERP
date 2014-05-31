@@ -67,29 +67,45 @@
 
 
                 <a:outputPanel rendered="#{not orderFinanceReveiveAction.moneyComplete}">
-                    <ui:include src="/layout/erp/biz/CustomerMoneySave.xhtml"/>
 
-                    <div style="clear:both">
-                        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-                    </div>
-                    <h:panelGrid columns="1" style="width: 100%; text-align: center">
-                        <s:div styleClass="actionButtons">
+                    <s:decorate template="/layout/seam-display.xhtml" rendered="#{not runParam.getBooleanParamValue('erp.finance.useAdvance')}">
+                        <ui:define name="label">#{messages.moneyOutsideComplete}</ui:define>
+                        <h:selectBooleanCheckbox value="#{orderFinanceReveiveAction.completeInOutSide}">
+                            <a:ajax render="moneyReceiveArea" event="click"/>
+                        </h:selectBooleanCheckbox>
+                    </s:decorate>
 
-                            <a:commandButton immediate="true" value="#{messages.reset}"
-                                             action="#{orderFinanceReveiveAction.reset}"
-                                             execute="@this" render="receiveDetails">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:commandButton>
-                            <a:commandButton value="#{messages.receviceMoney}" execute="@form"
-                                             action="#{orderFinanceReveiveAction.receiveMoney}"
-                                             render="receiveDetails">
-                                <a:attachQueue requestDelay="0"/>
+                    <div style="clear: both;"/>
 
-                            </a:commandButton>
+                    <a:outputPanel id="moneyReceiveArea">
 
-                        </s:div>
+                        <a:outputPanel rendered="#{not orderFinanceReveiveAction.completeInOutSide}">
 
-                    </h:panelGrid>
+                            <ui:include src="/layout/erp/biz/CustomerMoneySave.xhtml"/>
+
+                            <div style="clear:both">
+                                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                            </div>
+                            <h:panelGrid columns="1" style="width: 100%; text-align: center">
+                                <s:div styleClass="actionButtons">
+
+                                    <a:commandButton immediate="true" value="#{messages.reset}"
+                                                     action="#{orderFinanceReveiveAction.reset}"
+                                                     execute="@this" render="receiveDetails">
+                                        <a:attachQueue requestDelay="0"/>
+                                    </a:commandButton>
+                                    <a:commandButton value="#{messages.receviceMoney}" execute="@form"
+                                                     action="#{orderFinanceReveiveAction.receiveMoney}"
+                                                     render="receiveDetails">
+                                        <a:attachQueue requestDelay="0"/>
+
+                                    </a:commandButton>
+
+                                </s:div>
+
+                            </h:panelGrid>
+                        </a:outputPanel>
+                    </a:outputPanel>
                 </a:outputPanel>
             </rich:panel>
 

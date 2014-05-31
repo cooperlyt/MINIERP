@@ -38,6 +38,14 @@
                     view="/report/customerTop.xhtml"/>
         </rich:toolbarGroup>
 
+
+
+        <rich:toolbarGroup rendered="#{s:hasRole('erp.sale.saler')}">
+            <h:graphicImage value="/img/ranking.png"/>
+            <s:link value="#{messages.customerTopReport}" target="_blank"
+                    view="/report/customerMoneyTop.xhtml"/>
+        </rich:toolbarGroup>
+
     </rich:toolbar>
 </ui:define>
 

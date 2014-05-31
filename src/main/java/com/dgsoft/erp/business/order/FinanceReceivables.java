@@ -1,18 +1,12 @@
 package com.dgsoft.erp.business.order;
 
 
-import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.MoneySaveHome;
 import com.dgsoft.erp.action.NeedResHome;
 import com.dgsoft.erp.business.CustomerAccountOper;
 import com.dgsoft.erp.model.AccountOper;
-import com.dgsoft.erp.model.Customer;
-import com.dgsoft.erp.model.CustomerOrder;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -36,6 +30,8 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
     @In(create = true)
     private NeedResHome needResHome;
 
+    private boolean completeInOutSide = false;
+
     public abstract BigDecimal getNeedMoney();
 
     public BigDecimal getShortageMoney() {
@@ -52,10 +48,25 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
         return getShortageMoney().compareTo(BigDecimal.ZERO) <= 0;
     }
 
+    public boolean isCompleteInOutSide() {
+        return completeInOutSide;
+    }
+
+    public void setCompleteInOutSide(boolean completeInOutSide) {
+        this.completeInOutSide = completeInOutSide;
+    }
 
     @Override
     protected String completeOrderTask() {
-        if (!isMoneyComplete()) {
+        if (isMoneyComplete() || isCompleteInOutSide()) {
+            orderHome.getInstance().setAdvanceMoney(getNeedMoney());
+            if ("updated".equals(orderHome.update())) {
+                needResHome.setId(orderHome.getMasterNeedRes().getId());
+                return "taskComplete";
+            } else {
+                return null;
+            }
+        }else{
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
                     "order_earnest_not_enough",
                     DecimalFormat.getCurrencyInstance(Locale.CHINA).format(getShortageMoney()));
@@ -63,13 +74,7 @@ public abstract class FinanceReceivables extends OrderTaskHandle {
             return null;
         }
 
-        orderHome.getInstance().setAdvanceMoney(getNeedMoney());
-        if ("updated".equals(orderHome.update())) {
-            needResHome.setId(orderHome.getMasterNeedRes().getId());
-            return "taskComplete";
-        } else {
-            return null;
-        }
+
     }
 
     public void receiveMoney(){
