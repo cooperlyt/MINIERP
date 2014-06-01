@@ -44,6 +44,8 @@ public class ResSaleRebate implements Serializable {
         this.count = count;
         this.money = money;
         this.itemRebate = itemRebate;
+        rebateBasicCount = BigDecimal.ZERO;
+        rebateRateCount = BigDecimal.ZERO;
     }
 
     @Id
@@ -186,11 +188,6 @@ public class ResSaleRebate implements Serializable {
         if (!isSameItem(other))
             throw new IllegalArgumentException("not same");
         setCount(getCount().add(other.getUseUnitCount()));
-    }
-
-    @Transient
-    public boolean isCanRebate() {
-        return (getMoney().compareTo(BigDecimal.ZERO) > 0);
     }
 
     @Transient

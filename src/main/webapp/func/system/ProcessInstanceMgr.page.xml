@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page xmlns="http://jboss.org/schema/seam/pages"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      login-required="true"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <restrict>#{s:hasRole('erp.sale.saler') or s:hasRole('erp.sale.manager') or s:hasRole('system.manager')}</restrict>
 
     <param name="processDefineName" value="#{processInstanceHome.processDefineName}"/>
 

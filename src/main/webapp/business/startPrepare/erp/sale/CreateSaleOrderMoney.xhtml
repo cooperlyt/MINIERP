@@ -213,7 +213,7 @@
             <f:facet name="header">
                 #{messages.orderItemFreeCountBasicRate}
             </f:facet>
-            <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
                 <rich:inplaceInput value="#{_resItem.rebateBasicCount}" style="width: 95%"
                                    label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
                     <f:validateDoubleRange minimum="0"/>
@@ -226,7 +226,7 @@
             <f:facet name="header">
                 #{messages.orderItemFreeCountRate}
             </f:facet>
-            <s:decorate rendered="#{_resItem.canRebate}" template="/layout/grid-inside-edit.xhtml">
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
                 <rich:inplaceInput value="#{_resItem.rebateRateCount}" style="width: 95%"
                                    label="#{messages.orderItemFreeCountRate}" converter="javax.faces.BigDecimal">
                     <f:validateDoubleRange minimum="0"/>
@@ -239,7 +239,7 @@
             <f:facet name="header">
                 #{messages.orderItemFreeCount}
             </f:facet>
-            <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.rebateCount}">
+            <h:outputText value="#{_resItem.rebateCount}">
                 <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
             </h:outputText>
         </rich:column>
@@ -248,7 +248,7 @@
             <f:facet name="header">
                 #{messages.orderItemFreeMoney}
             </f:facet>
-            <h:outputText rendered="#{_resItem.canRebate}" value="#{_resItem.rebateMoney}">
+            <h:outputText value="#{_resItem.rebateMoney}">
                 <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
             </h:outputText>
         </rich:column>

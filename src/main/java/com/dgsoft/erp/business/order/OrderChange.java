@@ -237,6 +237,16 @@ public class OrderChange extends OrderShipTaskHandle {
     @Override
     protected String completeOrderTask() {
         Logging.getLog(getClass()).debug("orderChange complete is execute");
+
+        List<ResSaleRebate> removeItems = new ArrayList<ResSaleRebate>();
+        for (ResSaleRebate resSaleRebate : orderHome.getResSaleRebates()) {
+            if (resSaleRebate.getRebateMoney().compareTo(BigDecimal.ZERO) == 0){
+                removeItems.add(resSaleRebate);
+            }
+        }
+        orderHome.getResSaleRebates().removeAll(removeItems);
+
+
         if (!reSend || oweItems.isEmpty()) {
             orderHome.getInstance().setAllStoreOut(true);
             orderHome.getInstance().getNeedReses().remove(needResHome.getInstance());

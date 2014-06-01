@@ -28,6 +28,7 @@
 
                         <a:commandLink value="#{messages.jbpm_process_suspend}"
                                        action="#{processInstanceHome.suspend}"
+                                       disabled="#{not s:hasRole('system.manager')}"
                                        execute="@form" render="suspendAction,processInstanceDetails"
                                        rendered="#{(not empty processInstanceHome.instance) and (not processInstanceHome.instance.suspended)}">
                             <a:attachQueue requestDelay="0"/>

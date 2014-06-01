@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page xmlns="http://jboss.org/schema/seam/pages"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      login-required="true"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+
+    <restrict>#{s:hasRole('erp.finance.cashier') or s:hasRole('erp.finance.accountancy')}</restrict>
 
     <param name="year" value="#{detailsAccount.year}"/>
     <param name="month" value="#{detailsAccount.month}"/>

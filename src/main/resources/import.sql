@@ -133,7 +133,7 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.role','角色管理','system.config','','/func/system/config/RoleMgr.seam','','4','角色管理和角色分配启动业务');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.word','字典管理','system.manager','','/func/system/manager/WordMgr.seam','','5','字典管理');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.jbpmProcessDeployment','流程部署','system.config','','/func/system/jbpm/ProcessDefinition.seam','',7,'部署JBPM PAR 流程');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.processInstanceMgr', '流程管理', 'system.manager', '', '/func/system/jbpm/ProcessInstanceMgr.seam', '', '6', '');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('system.processInstanceMgr', '流程管理', 'system.manager', '', '/func/system/ProcessInstanceMgr.seam', '', '6', '');
 
 
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.data.res','物资管理','erp.res.mgr','','/func/erp/res/ResMgr.seam','','10','物资和物资种类设置');
@@ -176,7 +176,7 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('finance.config.accounting','科目设置','finance.config','','/func/erp/finance/accountancy/AccountingMgr.seam','','1','');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('finance.config.bank','银行帐户','finance.config','','/func/erp/finance/BankAccountMgr.seam','','2','');
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('finance.prepareAccount','记账','finance.config','','/func/erp/finance/cashier/MakeAccount.seam','','3','');
-INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('finance.account','结账','finance.config','','/func/erp/finance/accountancy/Accounting.seam','','4','');
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('finance.account','结账','finance.config','','/func/erp/finance/Accounting.seam','','4','');
 
 
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES ('erp.transport.carMgr','车辆管理','erp.transport','','/func/erp/transport/CarsMgr.seam','','1','');
@@ -267,6 +267,7 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', '
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.search.sallInOutDayReoper');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.search.customerMoneyReport');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.sale.customerOper');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'system.processInstanceMgr');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager','erp.sale.customerArea');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager','erp.sale.customerLevel');
@@ -299,6 +300,7 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.cashie
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.cashier', 'erp.sale.customerOper');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.cashier', 'erp.cashier.moneySave');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.cashier', 'finance.prepareAccount');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.finance.cashier', 'finance.account');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.transport.manager','erp.transport.carMgr');
 

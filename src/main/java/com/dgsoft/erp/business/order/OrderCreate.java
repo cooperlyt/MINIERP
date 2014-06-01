@@ -208,7 +208,7 @@ public class OrderCreate extends OrderHome {
                     find = true;
                 }
             }
-            if (!find) {
+            if (!find && (item.getMoney().compareTo(BigDecimal.ZERO) > 0)) {
                 resSaleRebates.add(new ResSaleRebate(getInstance(), item.getRes(), item.getUseUnit(), item.getUseUnitCount(), item.getMoney(), item.getRebate()));
             }
 
@@ -278,8 +278,12 @@ public class OrderCreate extends OrderHome {
             for (OrderItem orderItem : orderHome.getMasterNeedRes().getOrderItems()) {
 
                 needResHome.getOrderNeedItems().add(new OrderItem(needResHome.getInstance(),
-                        orderItem.getStoreRes(), orderItem.getResUnit(), orderItem.getCount(),
-                        orderItem.getMoney(), orderItem.getRebate(), orderItem.isPresentation(),
+                        orderItem.getStoreRes(),
+                        (orderItem.getResUnit() == null) ? orderItem.getStoreRes().getRes().getResUnitByOutDefault() : orderItem.getResUnit(),
+                        orderItem.getCount(),
+                        (orderItem.getMoney() == null) ? BigDecimal.ZERO : orderItem.getMoney(),
+                        (orderItem.getRebate() == null) ? new BigDecimal("100"):orderItem.getRebate(),
+                        orderItem.isPresentation(),
                         orderItem.getMemo(), orderItem.getNeedConvertRate()));
             }
 
@@ -344,6 +348,15 @@ public class OrderCreate extends OrderHome {
                 return false;
             }
         }
+
+
+        List<ResSaleRebate> removeRebates = new ArrayList<ResSaleRebate>();
+        for (ResSaleRebate resSaleRebate: resSaleRebates){
+            if (resSaleRebate.getRebateMoney().compareTo(BigDecimal.ZERO) == 0){
+                removeRebates.add(resSaleRebate);
+            }
+        }
+        resSaleRebates.removeAll(removeRebates);
 
         //getInstance().getNeedReses().clear();
         //getInstance().getNeedReses().add(needResHome.getReadyInstance());

@@ -30,13 +30,13 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     protected SetLinkList<ResSaleRebate> resSaleRebates;
 
-    public void reCreateResSaleBebates(){
+    public void reCreateResSaleBebates() {
         resSaleRebates.clear();
     }
 
 
     @Override
-    protected void initInstance(){
+    protected void initInstance() {
         super.initInstance();
         resSaleRebates = new SetLinkList<ResSaleRebate>(getInstance().getResSaleRebates());
     }
@@ -295,7 +295,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-
     public BigDecimal getEarnestScale() {
         if (getInstance().getEarnest() == null) {
             return BigDecimal.ZERO;
@@ -308,10 +307,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         setUseScaleRebate(false);
         BigDecimal result = BigDecimal.ZERO;
         for (ResSaleRebate item : resSaleRebates) {
-            if (item.isCanRebate()){
-                item.calcMoney();
-                result = result.add(item.getRebateMoney());
-            }
+            item.calcMoney();
+            result = result.add(item.getRebateMoney());
         }
         getInstance().setTotalRebateMoney(result);
 
@@ -484,7 +481,6 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
         return null;
     }
-
 
 
 //    public  getFirstPrice(StoreRes storeRes){
