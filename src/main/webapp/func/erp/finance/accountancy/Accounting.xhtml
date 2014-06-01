@@ -40,6 +40,12 @@
 
             <rich:toolbarGroup location="right">
                 <h:form id="closeActions">
+                    <a:commandButton value="#{messages.initCustomerAccount}"
+                                     action="#{saleAccountClose.initCustomerAccount}" status="processWaiting"
+                                     rendered="#{accountDateHelper.first}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
                     <a:commandButton value="#{messages.UnCloseAccount} #{accountDateHelper.beginMonth}"
                                      action="#{closingAccount.unclosing}" status="processWaiting"
                                      render="closeActions,timeSearchFields,accountDataTable"

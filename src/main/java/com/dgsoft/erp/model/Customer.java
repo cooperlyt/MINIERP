@@ -30,6 +30,10 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     private BigDecimal accountMoney;// ACCOUNT_MONEY;
     private BigDecimal proxyAccountMoney; // PROXY_ACCOUNT_MONEY;
 
+    private BigDecimal initAD;
+    private BigDecimal initAC;
+    private BigDecimal initPAC;
+
     private String fax;
     private String memo;
     private String mail;
@@ -297,6 +301,34 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
     public void setProxyAccountMoney(BigDecimal proxyAccountMoney) {
         this.proxyAccountMoney = proxyAccountMoney;
+    }
+
+
+    @Column(name="INIT_AD",nullable = true, scale = 4)
+    public BigDecimal getInitAD() {
+        return initAD;
+    }
+
+    public void setInitAD(BigDecimal initAD) {
+        this.initAD = initAD;
+    }
+
+    @Column(name="INIT_AC", nullable = true, scale = 4)
+    public BigDecimal getInitAC() {
+        return initAC;
+    }
+
+    public void setInitAC(BigDecimal initAC) {
+        this.initAC = initAC;
+    }
+
+    @Column(name="INIT_PAC",nullable = true,scale = 4)
+    public BigDecimal getInitPAC() {
+        return initPAC;
+    }
+
+    public void setInitPAC(BigDecimal initPAC) {
+        this.initPAC = initPAC;
     }
 
     @Transient

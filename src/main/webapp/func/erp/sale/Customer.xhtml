@@ -42,7 +42,7 @@
 
         <rich:toolbarGroup rendered="#{s:hasRole('erp.sale.saler')}">
             <h:graphicImage value="/img/ranking.png"/>
-            <s:link value="#{messages.customerTopReport}" target="_blank"
+            <s:link value="#{messages.customerMoneyTopReport}" target="_blank"
                     view="/report/customerMoneyTop.xhtml"/>
         </rich:toolbarGroup>
 
@@ -294,7 +294,7 @@
     <ui:param name="width" value="800"/>
     <ui:param name="panelTitle" value="#{customerHome.managed ? messages.edit : messages.add}#{messages.Customer}"/>
 
-    <h:panelGrid columns="2">
+    <h:panelGrid columns="4">
         <s:decorate template="/layout/edit.xhtml">
             <ui:define name="label">#{messages.CustomerArea}</ui:define>
             <h:selectOneMenu value="#{customerHome.instance.customerArea}" required="true"
@@ -307,10 +307,29 @@
             </h:selectOneMenu>
         </s:decorate>
 
-        <s:decorate rendered="#{runParam.getBooleanParamValue('erp.customer.balanceInput')}"
+        <s:decorate rendered="#{accountDateHelper.first and s:hasRole('erp.finance.cashier') and runParam.getBooleanParamValue('erp.finance.useAdvance')}"
                     template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.customer_field_balance}</ui:define>
-            <h:inputText required="true" value="#{customerHome.instance.balance}" converter="javax.faces.BigDecimal">
+            <ui:define name="label">#{messages.customer_field_initAD}</ui:define>
+            <h:inputText value="#{customerHome.instance.initAD}" converter="javax.faces.BigDecimal" size="12">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate rendered="#{accountDateHelper.first and s:hasRole('erp.finance.cashier')}"
+                    template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_initAC}</ui:define>
+            <h:inputText value="#{customerHome.instance.initAC}" converter="javax.faces.BigDecimal" size="12">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
+        </s:decorate>
+
+
+        <s:decorate rendered="#{accountDateHelper.first and s:hasRole('erp.finance.cashier')}"
+                    template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_initPAC}</ui:define>
+            <h:inputText value="#{customerHome.instance.initPAC}" converter="javax.faces.BigDecimal" size="12">
                 <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                  type="currency" groupingUsed="false"/>
             </h:inputText>

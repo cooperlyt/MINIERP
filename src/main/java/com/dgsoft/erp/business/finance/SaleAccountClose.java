@@ -6,6 +6,7 @@ import com.dgsoft.common.utils.finance.SampleLeafAccount;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
@@ -29,6 +30,26 @@ public class SaleAccountClose {
 
     @In
     private FacesMessages facesMessages;
+
+
+    @Transactional
+    public String initCustomerAccount(){
+        calcCustomerAccount();
+        erpEntityManager.flush();
+        return "inited";
+    }
+
+
+    private void calcCustomerAccount() {
+        for (Customer customer : erpEntityManager.createQuery("select customer from Customer customer", Customer.class).getResultList()) {
+            customer.setAdvanceMoney((customer.getInitAD() == null) ? BigDecimal.ZERO:customer.getInitAD());
+            customer.setAccountMoney((customer.getInitAC() == null) ? BigDecimal.ZERO:customer.getInitAC());
+            customer.setProxyAccountMoney((customer.getInitPAC() == null) ? BigDecimal.ZERO: customer.getInitPAC());
+            for(AccountOper oper: customer.getAccountOperList()){
+                oper.calcCustomerMoney();
+            }
+        }
+    }
 
     private BigDecimal calcCustomerAdvanceMoney(String customerId, Date beginDate) {
         BigDecimal result = erpEntityManager.createQuery("select COALESCE(sum(accountOper.advanceReceivable),0) from AccountOper accountOper " +
@@ -84,26 +105,21 @@ public class SaleAccountClose {
         return result;
     }
 
+
     private BigDecimal calcFirstBeginMoneyByCode(String code) {
         String customerId;
-        BigDecimal calcMoney;
-        BigDecimal customerMoney;
         if (code.startsWith(RunParam.instance().getStringParamValue("erp.finance.customerAccount"))) {
             customerId = code.substring(RunParam.instance().getStringParamValue("erp.finance.customerAccount").length());
-            calcMoney = calcCustomerAccountMoney(customerId, accountDateHelper.getNextBeginDate());
-            customerMoney = erpEntityManager.find(Customer.class, customerId).getAccountMoney();
+            return erpEntityManager.find(Customer.class, customerId).getInitAC();
         } else if (code.startsWith(RunParam.instance().getStringParamValue("erp.finance.proxyAccount"))) {
             customerId = code.substring(RunParam.instance().getStringParamValue("erp.finance.proxyAccount").length());
-            calcMoney = calcCustomerProxyAccountMoney(customerId, accountDateHelper.getNextBeginDate());
-            customerMoney = erpEntityManager.find(Customer.class, customerId).getProxyAccountMoney();
+            return erpEntityManager.find(Customer.class, customerId).getInitPAC();
         } else if (code.startsWith(RunParam.instance().getStringParamValue("erp.finance.advance"))) {
             customerId = code.substring(RunParam.instance().getStringParamValue("erp.finance.advance").length());
-            calcMoney = calcCustomerAdvanceMoney(customerId, accountDateHelper.getNextBeginDate());
-            customerMoney = erpEntityManager.find(Customer.class, customerId).getAdvanceMoney();
+            return erpEntityManager.find(Customer.class, customerId).getInitAD();
         } else
-           return BigDecimal.ZERO;
+            return BigDecimal.ZERO;
 
-        return customerMoney.subtract(calcMoney);
     }
 
     public boolean canClose(Checkout checkout) {
@@ -114,42 +130,42 @@ public class SaleAccountClose {
 
         if (!result) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "NotMakeAccountError");
-        }else if (!accountDateHelper.isFirst()){
+        } else if (!accountDateHelper.isFirst()) {
             Map<String, AccountCheckout> checkoutMap = checkout.getAccountCheckOutMap();
 
             List<Customer> customers = erpEntityManager.createQuery("select customer from Customer customer ", Customer.class).getResultList();
-            for (Customer customer: customers){
+            for (Customer customer : customers) {
 
                 AccountCheckout cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.customerAccount") + customer.getId());
                 BigDecimal money = BigDecimal.ZERO;
-                if ( cc != null){
+                if (cc != null) {
                     money = money.add(cc.getBeginningBalance());
                 }
                 Logging.getLog(getClass()).debug(checkout.getBeginDate());
-                money = money.add(calcCustomerAccountMoney(customer.getId(),checkout.getBeginDate()));
-                if (money.compareTo(customer.getAccountMoney()) != 0){
-                    throw new IllegalArgumentException("customer Account balance error:" + customer.getId() + "m:" +  money + "cm:" + customer.getAccountMoney());
+                money = money.add(calcCustomerAccountMoney(customer.getId(), checkout.getBeginDate()));
+                if (money.compareTo(customer.getAccountMoney()) != 0) {
+                    throw new IllegalArgumentException("customer Account balance error:" + customer.getId() + "m:" + money + "cm:" + customer.getAccountMoney());
                 }
 
                 //--------------------------
                 cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + customer.getId());
                 money = BigDecimal.ZERO;
-                if ( cc != null){
+                if (cc != null) {
                     money = money.add(cc.getBeginningBalance());
                 }
-                money = money.add(calcCustomerProxyAccountMoney(customer.getId(),checkout.getBeginDate()));
-                if (money.compareTo(customer.getProxyAccountMoney()) != 0){
+                money = money.add(calcCustomerProxyAccountMoney(customer.getId(), checkout.getBeginDate()));
+                if (money.compareTo(customer.getProxyAccountMoney()) != 0) {
                     throw new IllegalArgumentException("customer ProxyAccount balance error:" + customer.getId());
                 }
 
                 //--------------------------
                 cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.advance") + customer.getId());
                 money = BigDecimal.ZERO;
-                if ( cc != null){
+                if (cc != null) {
                     money = money.add(cc.getBeginningBalance());
                 }
-                money = money.add(calcCustomerAdvanceMoney(customer.getId(),checkout.getBeginDate()));
-                if (money.compareTo(customer.getAdvanceMoney()) != 0){
+                money = money.add(calcCustomerAdvanceMoney(customer.getId(), checkout.getBeginDate()));
+                if (money.compareTo(customer.getAdvanceMoney()) != 0) {
                     throw new IllegalArgumentException("customer advance balance error:" + customer.getId());
                 }
 
@@ -159,6 +175,10 @@ public class SaleAccountClose {
     }
 
     public void doClose(Checkout checkout) {
+
+
+
+
         List<SaleCertificate> certificates = erpEntityManager.createQuery("select saleCertificate from SaleCertificate saleCertificate " +
                 "where date >= :beginDate order by saleCertificate.code", SaleCertificate.class).setParameter("beginDate", accountDateHelper.getNextBeginDate()).getResultList();
 
@@ -187,22 +207,24 @@ public class SaleAccountClose {
             }
         }
 
-        if (accountDateHelper.isFirst()){
+        if (accountDateHelper.isFirst()) {
+
+            initCustomerAccount();
+
             List<Customer> customers = erpEntityManager.createQuery("select customer from Customer customer ", Customer.class).getResultList();
-            for (Customer customer: customers){
+            for (Customer customer : customers) {
                 if ((customer.getProxyAccountMoney().compareTo(BigDecimal.ZERO) != 0) ||
                         (customer.getAccountMoney().compareTo(BigDecimal.ZERO) != 0) ||
-                        (customer.getAdvanceMoney().compareTo(BigDecimal.ZERO) != 0) || !customer.getAccountOpers().isEmpty()){
+                        (customer.getAdvanceMoney().compareTo(BigDecimal.ZERO) != 0) || !customer.getAccountOpers().isEmpty()) {
 
 
-
-                    initNoOperCustomerAccount(checkout,checkoutMap,
+                    initNoOperCustomerAccount(checkout, checkoutMap,
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + customer.getId(),
                             calcFirstBeginMoneyByCode(RunParam.instance().getStringParamValue("erp.finance.customerAccount") + customer.getId()));
-                    initNoOperCustomerAccount(checkout,checkoutMap,
+                    initNoOperCustomerAccount(checkout, checkoutMap,
                             RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + customer.getId(),
                             calcFirstBeginMoneyByCode(RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + customer.getId()));
-                    initNoOperCustomerAccount(checkout,checkoutMap,
+                    initNoOperCustomerAccount(checkout, checkoutMap,
                             RunParam.instance().getStringParamValue("erp.finance.advance") + customer.getId(),
                             calcFirstBeginMoneyByCode(RunParam.instance().getStringParamValue("erp.finance.advance") + customer.getId()));
 
@@ -214,8 +236,8 @@ public class SaleAccountClose {
 
     }
 
-    private void initNoOperCustomerAccount(Checkout checkout,Map<String, AccountCheckout> checkoutMap,String code, BigDecimal money){
-        if (checkoutMap.get(code) == null){
+    private void initNoOperCustomerAccount(Checkout checkout, Map<String, AccountCheckout> checkoutMap, String code, BigDecimal money) {
+        if (checkoutMap.get(code) == null) {
             AccountCheckout accountCheckout = new AccountCheckout(code, checkout, money, BigDecimal.ZERO);
             checkoutMap.put(accountCheckout.getAccountCode(), accountCheckout);
             checkout.getAccountCheckouts().add(accountCheckout);
