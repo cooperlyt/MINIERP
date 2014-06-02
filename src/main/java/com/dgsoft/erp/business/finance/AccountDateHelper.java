@@ -1,14 +1,11 @@
 package com.dgsoft.erp.business.finance;
 
-import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.RunParam;
-import com.dgsoft.erp.model.AccountCheckout;
 import com.dgsoft.erp.model.Checkout;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;

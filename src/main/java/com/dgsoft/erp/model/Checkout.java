@@ -33,6 +33,8 @@ public class Checkout implements java.io.Serializable {
 
     private Set<AccountCheckout> accountCheckouts = new HashSet<AccountCheckout>(0);
 
+    private Set<StockAccount> stockAccounts = new HashSet<StockAccount>(0);
+
     public Checkout() {
     }
 
@@ -118,6 +120,15 @@ public class Checkout implements java.io.Serializable {
         this.version = version;
     }
 
+    @OneToMany(orphanRemoval = true ,fetch = FetchType.LAZY,mappedBy = "checkout",cascade = {CascadeType.ALL})
+    public Set<StockAccount> getStockAccounts() {
+        return stockAccounts;
+    }
+
+    public void setStockAccounts(Set<StockAccount> stockAccounts) {
+        this.stockAccounts = stockAccounts;
+    }
+
     @Transient
     public Map<String,AccountCheckout> getAccountCheckOutMap(){
         Map<String,AccountCheckout> accountCheckouts = new HashMap<String, AccountCheckout>();
@@ -125,6 +136,15 @@ public class Checkout implements java.io.Serializable {
             accountCheckouts.put(accountCheckout.getAccountCode(),accountCheckout);
         }
         return accountCheckouts;
+    }
+
+    @Transient
+    public Map<String,StockAccount> getStockAccountMap(){
+        Map<String,StockAccount> result = new HashMap<String, StockAccount>();
+        for (StockAccount sa: getStockAccounts()){
+            result.put(sa.getStock().getId(),sa);
+        }
+        return result;
     }
 
 }
