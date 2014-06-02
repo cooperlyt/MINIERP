@@ -47,7 +47,6 @@ public class StockList extends ErpEntityQuery<Stock> {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
-        setMaxResults(25);
     }
 
     @Logger

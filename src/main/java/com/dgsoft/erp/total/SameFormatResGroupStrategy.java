@@ -19,7 +19,7 @@ import java.util.Collection;
  * Date: 14/04/14
  * Time: 16:42
  */
-public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implements TotalGroupStrategy<SameFormatResGroupStrategy.StoreResFormatKey,E> {
+public class SameFormatResGroupStrategy<E extends StoreResCountEntity> implements TotalGroupStrategy<SameFormatResGroupStrategy.StoreResFormatKey, E> {
 
     @Override
     public StoreResFormatKey getKey(E e) {
@@ -36,7 +36,7 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
     }
 
 
-    public static class StoreResFormatKey implements Comparable<StoreResFormatKey>{
+    public static class StoreResFormatKey implements Comparable<StoreResFormatKey> {
 
         private StoreRes storeRes;
 
@@ -55,29 +55,33 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
 
             StoreResFormatKey that = (StoreResFormatKey) o;
 
-            if (storeRes.equals(that.getStoreRes())){
+            if (storeRes.equals(that.getStoreRes())) {
                 return true;
             }
 
-            if (ResHelper.instance().sameFormat(ResFormatCache.instance().getFormats(storeRes),ResFormatCache.instance().getFormats(that.getStoreRes()))){
+            if (ResHelper.instance().sameFormat(ResFormatCache.instance().getFormats(storeRes), ResFormatCache.instance().getFormats(that.getStoreRes()))) {
                 return true;
             }
 
             return false;
         }
 
-        public Res getRes(){
+        public Res getRes() {
             return storeRes.getRes();
         }
 
-        public String getFormatTitle(){
-           return ResHelper.instance().getFormatsTitle(ResFormatCache.instance().getFormats(storeRes),false);
+        public String getFormatTitle() {
+            String result = ResHelper.instance().getFormatsTitle(ResFormatCache.instance().getFormats(storeRes), false);
+            if ((result == null) || "".equals(result)) {
+                return getRes().getName();
+            }
+            return result;
         }
 
         @Override
         public int hashCode() {
             String formatId = storeRes.getRes().getId();
-            for (Format format: ResFormatCache.instance().getFormats(storeRes))
+            for (Format format : ResFormatCache.instance().getFormats(storeRes))
                 formatId = formatId + "-" + format.getFormatDefine().getId() + ":" + format.getFormatValue();
             return formatId.hashCode();
         }
@@ -88,8 +92,8 @@ public class SameFormatResGroupStrategy <E extends StoreResCountEntity> implemen
         }
 
         @Override
-        public String toString(){
-            return storeRes.getRes().getName() + ResHelper.instance().getFormatsTitle(ResFormatCache.instance().getFormats(storeRes),false);
+        public String toString() {
+            return storeRes.getRes().getName() + ResHelper.instance().getFormatsTitle(ResFormatCache.instance().getFormats(storeRes), false);
         }
     }
 }

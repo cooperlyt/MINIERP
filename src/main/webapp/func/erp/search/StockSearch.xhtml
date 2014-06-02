@@ -7,361 +7,171 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
-<ui:define name="body">
+    <ui:define name="body">
 
 
-<h:outputStylesheet>
-    .leftColumn {
-        vertical-align: top;
-        width: 200px;
-    }
+        <h:outputStylesheet>
+            .leftColumn {
+                vertical-align: top;
+                width: 200px;
+            }
 
-    .rightColumn {
-        vertical-align: top;
-    }
-</h:outputStylesheet>
-
-
-<h:panelGrid width="100%" columns="2" columnClasses="leftColumn,rightColumn">
-<rich:panel>
-
-    <h:form>
-
-        <a:outputPanel
-                rendered="#{s:hasRole('erp.storage.manager') or s:hasRole('erp.finance.cashier') or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}">
-            <h:selectOneMenu style="width: 100%" value="#{stockList.storeId}">
-                <s:selectItems value="#{allStoreList.resultList}" var="_store"
-                               itemValue="#{_store.id}" label="#{_store.name}"
-                               noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                <a:ajax event="valueChange" render="dataListResult"/>
-            </h:selectOneMenu>
-        </a:outputPanel>
-
-        <a:outputPanel
-                rendered="#{ (not s:hasRole('erp.storage.manager')) and (not s:hasRole('erp.finance.cashier')) and (not s:hasRole('erp.sale.manager')) and (not s:hasRole('erp.sale.saler'))}">
+            .rightColumn {
+                vertical-align: top;
+            }
+        </h:outputStylesheet>
 
 
-            <h:selectOneMenu style="width: 100%" value="#{stockList.storeId}">
-                <s:selectItems value="#{myStores}" var="_store"
-                               itemValue="#{_store.id}" label="#{_store.name}"/>
-                <a:ajax event="valueChange" render="dataListResult"/>
-            </h:selectOneMenu>
-        </a:outputPanel>
+        <rich:panel>
+            <h:form id="condition">
+                <s:decorate template="/layout/seam-edit.xhtml" rendered="#{not s:hasRole('erp.sale.manager') and not s:hasRole('erp.sale.saler')}">
+                    <ui:define name="label">#{messages.Store}</ui:define>
+                    <h:selectOneMenu value="#{stockSearchList.storeId}" required="true" label="#{messages.Store}">
+                        <s:selectItems value="#{myStores}" var="_store" label="#{_store.name}" itemValue="#{_store.id}"
+                                       noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                    </h:selectOneMenu>
+                </s:decorate>
 
-    </h:form>
-    <br/>
-    <h:form>
-
-        <rich:tree
-                var="_node"
-                value="#{allStoreResTree}"
-                nodeType="#{_node.nodeType}"
-                selectionChangeListener="#{stockList.treeSectionChanged}"
-                onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
-                render="dataListResult"
-                toggleType="client"
-                selectionType="ajax">
-            <rich:treeNode type="category">
-                #{_node.data.name}
-            </rich:treeNode>
-            <rich:treeNode type="res" iconLeaf="/img/res.png" iconCollapsed="/img/res.png"
-                           iconExpanded="/img/res.png">
-                #{_node.data.name}(#{_node.data.code})
-            </rich:treeNode>
-            <rich:treeNode type="property">
-
-                #{_node.formatDefine.name}
-
-                <h:outputText value="#{messages.formatNotSet}" rendered="#{empty _node.data}"/>
-
-                <a:outputPanel rendered="#{not empty _node.data}">
+                <s:decorate template="/layout/seam-edit.xhtml" rendered="#{s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}">
+                    <ui:define name="label">#{messages.Store}</ui:define>
+                    <h:selectOneMenu value="#{stockSearchList.storeId}" label="#{messages.Store}">
+                        <s:selectItems value="#{allStoreList}" var="_store" label="#{_store.name}" itemValue="#{_store.id}"
+                                       noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                    </h:selectOneMenu>
+                </s:decorate>
 
 
-                    <h:outputText value="#{dictionary.getWordValue(_node.data.formatValue)}"
-                                  rendered="#{_node.data.formatDefine.dataType.name() eq 'WORD'}"/>
-                    <h:outputText value="#{_node.data.formatValue}"
-                                  rendered="#{not (_node.data.formatDefine.dataType.name() eq 'WORD')}"/>
-                </a:outputPanel>
+                <ui:include src="/layout/erp/res/StoreResCondition.xhtml"/>
 
-            </rich:treeNode>
-            <rich:treeNode type="storeRes" iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
-                           iconCollapsed="/img/store_res.png">
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_node.data}"/>
-                    <ui:param name="showResName" value="false"/>
-                </ui:include>
-            </rich:treeNode>
-        </rich:tree>
-    </h:form>
+                <div style="clear: both;"/>
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                    <a:outputPanel>
+                        <div class="actionButtons">
 
-</rich:panel>
+                            <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
 
-
-<h:panelGroup>
-
-<a:outputPanel id="dataListResult" >
-
-<rich:dataTable style="width: 100%" value="#{stockList.resultList}" var="_stock"
-                noDataLabel="#{messages.emptyResult}" rendered="#{not empty stockList.maxResults}">
-
-    <f:facet name="header">
-        <h:outputText value="#{stockList.selectedTitle}"
-                      rendered="#{empty stockList.selectedStoreRes}"/>
-        <a:outputPanel rendered="#{not empty stockList.selectedStoreRes}">
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{stockList.selectedStoreRes}"/>
-            </ui:include>
-        </a:outputPanel>
-    </f:facet>
-
-    <f:facet name="footer">
-        <a:outputPanel rendered="#{not empty stockList.resultList}">
-            <ui:include src="/layout/pageA4jNavigation.xhtml">
-                <ui:param name="entityList" value="#{stockList}"/>
-            </ui:include>
-        </a:outputPanel>
-
-    </f:facet>
-
-    <rich:column>
-        <f:facet name="header">
-
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{stockList}"/>
-                <ui:param name="propertyLabel" value="#{messages.Store}"/>
-                <ui:param name="propertyPath" value="stock.store.id"/>
-            </ui:include>
-
-
-        </f:facet>
-        #{_stock.store.name}(#{_stock.store.id})
-        <f:facet name="footer">
-            #{messages.recordTotal}#{stockList.resultCount}#{messages.item}
-        </f:facet>
-    </rich:column>
-
-    <rich:column>
-        <f:facet name="header">
-
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{stockList}"/>
-                <ui:param name="propertyLabel" value="#{messages.StoreRes}"/>
-                <ui:param name="propertyPath" value="stock.storeRes.id"/>
-            </ui:include>
-        </f:facet>
-
-
-        <ui:include src="/layout/erp/StoreResTitle.xhtml">
-            <ui:param name="storeRes" value="#{_stock.storeRes}"/>
-        </ui:include>
-
-
-    </rich:column>
-
-    <rich:column>
-        <f:facet name="header">
-            <ui:include src="/layout/a4jSort.xhtml">
-                <ui:param name="entityList" value="#{stockList}"/>
-                <ui:param name="propertyLabel" value="#{messages.MasterUnitCount}"/>
-                <ui:param name="propertyPath" value="stock.count"/>
-            </ui:include>
-        </f:facet>
-        #{_stock.displayMasterCount}
-        <f:facet name="footer">
-            <h:outputText value="#{stockList.getResultTotalSum('stock.count')}">
-                <f:convertNumber pattern="#0.#####"
-                                 groupingUsed="false"/>
-            </h:outputText>
-
-        </f:facet>
-    </rich:column>
-
-    <rich:column>
-        <f:facet name="header">
-            #{messages.AuxUnitCount}
-        </f:facet>
-        #{_stock.displayAuxCount}
-
-        <f:facet name="footer">
-            <h:outputText value="#{stockList.totalAuxCount}">
-                <f:convertNumber pattern="#0.#####"
-                                 groupingUsed="false"/>
-            </h:outputText>
-
-        </f:facet>
-
-    </rich:column>
-
-</rich:dataTable>
-
-
-<rich:dataTable rendered="#{empty stockList.maxResults}" style="width: 100%"
-                value="#{stockList.storeGroupResult.childGroup}" var="_citem">
-    <f:facet name="header">
-        <rich:columnGroup>
-
-            <rich:column colspan="3" rowspan="2" breakRowBefore="true">
-                #{messages.StoreRes}
-            </rich:column>
-            <rich:column colspan="2">
-                #{messages.count}
-            </rich:column>
-            <rich:column breakRowBefore="true">
-                #{messages.MasterUnitCount}
-            </rich:column>
-            <rich:column>
-                #{messages.AuxUnitCount}
-            </rich:column>
-        </rich:columnGroup>
-
-    </f:facet>
-
-    <rich:column colspan="5">
-        <rich:collapsibleSubTableToggler for="storeResSbtb"/>
-        #{_citem.key.name} - #{_citem.key.id}
-    </rich:column>
-
-    <rich:collapsibleSubTable value="#{_citem.childGroup}" var="_sritem" id="storeResSbtb" expandMode="client">
-
-        <rich:column/>
-
-        <rich:column colspan="4">
-            <rich:collapsibleSubTableToggler for="resSbtb"/>
-            #{_sritem.key.name} (#{_sritem.key.code})
-        </rich:column>
-
-
-        <rich:collapsibleSubTable value="#{_sritem.values}" var="_ritem" id="resSbtb" expandMode="client">
-
-            <rich:column/>
-            <rich:column/>
-
-            <rich:column>
-
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_ritem.storeRes}"/>
-                </ui:include>
-
-            </rich:column>
-
-            <rich:column>
-                #{_ritem.displayMasterCount}
-
-                <f:facet name="footer">
-                    <h:outputText value="#{_sritem.totalData.masterUnitCount}">
-                        <f:convertNumber pattern="#{_sritem.key.unitGroup.masterUnit.countFormate}"/>
-                    </h:outputText>
-                    #{_sritem.key.unitGroup.masterUnit.name}
-                </f:facet>
-            </rich:column>
-
-            <rich:column>
-                #{_ritem.displayAuxCount}
-
-                <f:facet name="footer">
-                    <a:outputPanel rendered="#{_sritem.key.unitGroup.type eq 'FLOAT_CONVERT'}">
-                        <h:outputText value="#{_sritem.totalData.auxUnitCount}">
-                            <f:convertNumber pattern="#{_sritem.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
-                        </h:outputText>
-
-                        #{_sritem.key.unitGroup.floatAuxiliaryUnit.name}
+                            <a:outputPanel id="searchButton">
+                                <a:commandButton value="#{messages.search}"
+                                                 execute="@form" render="condition,searchResult">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandButton>
+                            </a:outputPanel>
+                        </div>
                     </a:outputPanel>
+                </h:panelGrid>
 
-                </f:facet>
-            </rich:column>
+            </h:form>
+        </rich:panel>
+        <h:form>
+            <br/>
 
-        </rich:collapsibleSubTable>
+            <a:outputPanel id="searchResult">
+                <rich:dataTable style="width: 100%" rendered="#{(not empty stockSearchList.storeId) or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}"
+                                value="#{stockSearchList.totalResult.getFormatGroup()}" var="_res">
 
+                    <f:facet name="header">
+                        <rich:columnGroup>
+                            <rich:column colspan="3" rowspan="2">
+                                #{messages.StoreRes}
+                            </rich:column>
 
-    </rich:collapsibleSubTable>
+                            <rich:column colspan="2">
+                                #{messages.count}
+                            </rich:column>
 
+                            <rich:column breakRowBefore="true">
+                                #{messages.MasterUnitCount}
+                            </rich:column>
 
-</rich:dataTable>
+                            <rich:column>
+                                #{messages.AuxUnitCount}
+                            </rich:column>
 
-<br/>
+                        </rich:columnGroup>
+                    </f:facet>
 
-
-<a:outputPanel
-        rendered="#{s:hasRole('erp.storage.manager') or s:hasRole('erp.finance.cashier') or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}">
-
-
-    <rich:dataTable rendered="#{empty stockList.maxResults}" style="width: 100%"
-                    value="#{stockList.resGroupResult.childGroup}" var="_sritem">
-        <f:facet name="header">
-            <rich:columnGroup>
-
-                <rich:column colspan="2" rowspan="2" breakRowBefore="true">
-                    #{messages.StoreRes}
-                </rich:column>
-                <rich:column colspan="2">
-                    #{messages.count}
-                </rich:column>
-                <rich:column breakRowBefore="true">
-                    #{messages.MasterUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.AuxUnitCount}
-                </rich:column>
-            </rich:columnGroup>
-
-        </f:facet>
+                    <rich:column colspan="5">
+                        <rich:collapsibleSubTableToggler for="sbtb_format"/>
+                        #{_res.key.name}(#{_res.key.code})
+                    </rich:column>
 
 
-        <rich:column colspan="4">
-            <rich:collapsibleSubTableToggler for="allResSbtb"/>
-            #{_sritem.key.name} (#{_sritem.key.code})
-        </rich:column>
+                    <rich:collapsibleSubTable id="sbtb_format" value="#{_res.childGroup}" var="_format">
+
+                        <rich:column style="width: 1px;background: #{a4jSkin.tableSubHeaderBackgroundColor}" />
+
+                        <rich:column colspan="2" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                            <rich:collapsibleSubTableToggler event="none" for="sbtb_storeRes"/>
+                            #{_format.key.formatTitle}
+
+                        </rich:column>
+
+                        <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                            <h:outputText value="#{_format.totalData.masterUnitCount}" style="font-weight: bold;">
+                                <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+                            </h:outputText>
+                            #{_res.key.unitGroup.masterUnit.name}
+
+                            <f:facet name="footer">
+                                <h:outputText value="#{_res.totalData.masterUnitCount}" style="font-weight: bold;">
+                                    <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+                                </h:outputText>
+                                #{_res.key.unitGroup.masterUnit.name}
+                            </f:facet>
+                        </rich:column>
+
+                        <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                            <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}" >
+                                <h:outputText value="#{_format.totalData.auxUnitCount}" style="font-weight: bold;">
+                                    <f:convertNumber
+                                            pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                                </h:outputText>
+                                #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                            </a:outputPanel>
+                            <f:facet name="footer">
+                                <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                                    <h:outputText value="#{_res.totalData.auxUnitCount}" style="font-weight: bold;">
+                                        <f:convertNumber
+                                                pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                                    </h:outputText>
+                                    #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                                </a:outputPanel>
+                            </f:facet>
+                        </rich:column>
+
+                        <rich:collapsibleSubTable id="sbtb_storeRes" value="#{_format.values}" var="_item">
+
+                            <rich:column/>
+                            <rich:column style="width: 1px"/>
+
+                            <rich:column>
+                                <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                                              value="#{_item.storeRes.floatConversionRate}">
+                                    <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+                                </h:outputText>
+                                <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
+                                              rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                            </rich:column>
 
 
-        <rich:collapsibleSubTable value="#{_sritem.values}" var="_ritem" id="allResSbtb" expandMode="client">
+                            <rich:column>
+                                #{_item.displayMasterCount}
+                            </rich:column>
 
-            <rich:column/>
+                            <rich:column>
+                                #{_item.displayAuxCount}
+                            </rich:column>
 
-            <rich:column>
-
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_ritem.storeRes}"/>
-                </ui:include>
-
-            </rich:column>
-
-            <rich:column>
-                #{_ritem.displayMasterCount}
-
-                <f:facet name="footer">
-                    <h:outputText value="#{_sritem.totalData.masterUnitCount}">
-                        <f:convertNumber pattern="#{_sritem.key.unitGroup.masterUnit.countFormate}"/>
-                    </h:outputText>
-                    #{_sritem.key.unitGroup.masterUnit.name}
-                </f:facet>
-            </rich:column>
-
-            <rich:column>
-                #{_ritem.displayAuxCount}
-
-                <f:facet name="footer">
-                    <a:outputPanel rendered="#{_sritem.key.unitGroup.type eq 'FLOAT_CONVERT'}">
-                        <h:outputText value="#{_sritem.totalData.auxUnitCount}">
-                            <f:convertNumber pattern="#{_sritem.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
-                        </h:outputText>
-
-                        #{_sritem.key.unitGroup.floatAuxiliaryUnit.name}
-                    </a:outputPanel>
-
-                </f:facet>
-            </rich:column>
-
-        </rich:collapsibleSubTable>
-
-    </rich:dataTable>
-
-</a:outputPanel>
+                        </rich:collapsibleSubTable>
 
 
-</a:outputPanel>
-</h:panelGroup>
-</h:panelGrid>
+                    </rich:collapsibleSubTable>
 
-</ui:define>
+                </rich:dataTable>
+
+            </a:outputPanel>
+        </h:form>
+    </ui:define>
 
 </ui:composition>
