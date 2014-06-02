@@ -26,71 +26,81 @@
 
 
 <ui:define name="navigation">
+    <h:form>
+        <rich:panel style="min-height: 460px;">
+            <rich:tree
+                    var="_node"
+                    value="#{allStoreResManagerTree}"
+                    nodeType="#{_node.nodeType}"
+                    onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                    toggleType="client"
+                    selectionType="client">
+                <rich:treeNode type="category" expanded="#{_node.expanded}">
+                    <h:outputText value="#{_node.data.name}" rendered="#{_node.data.enable}"/>
+                    <h:outputText style="text-decoration:line-through; color: red;"
+                                  value="#{_node.data.name}" rendered="#{not _node.data.enable}"/>
+                </rich:treeNode>
 
-    <rich:panel style="min-height: 460px;">
-        <rich:tree
-                var="_node"
-                value="#{allStoreResManagerTree}"
-                nodeType="#{_node.nodeType}"
-                onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
-                toggleType="client" selectionChangeListener="#{storeResHome.selectionChanged}"
-                selectionType="ajax" render="details">
-            <rich:treeNode type="category" expanded="#{_node.expanded}">
-                <h:outputText value="#{_node.data.name}" rendered="#{_node.data.enable}"/>
-                <h:outputText style="text-decoration:line-through; color: red;"
-                              value="#{_node.data.name}" rendered="#{not _node.data.enable}"/>
-            </rich:treeNode>
+                <rich:treeNode type="res" expanded="#{_node.expanded}" iconLeaf="/img/res.png"
+                               iconCollapsed="/img/res.png"
+                               iconExpanded="/img/res.png">
+                    <h:outputText style="text-decoration:line-through; color: red;"
+                                  value="#{_node.data.name}(#{_node.data.code})"
+                                  rendered="#{not _node.data.enable}"/>
 
-            <rich:treeNode type="res" expanded="#{_node.expanded}" iconLeaf="/img/res.png"
-                           iconCollapsed="/img/res.png"
-                           iconExpanded="/img/res.png">
-                <h:outputText style="text-decoration:line-through; color: red;"
-                              value="#{_node.data.name}(#{_node.data.code})"
-                              rendered="#{not _node.data.enable}"/>
+                    <h:outputText value="#{_node.data.name}(#{_node.data.code})"
+                                  rendered="#{_node.data.enable}"/>
 
-                <h:outputText value="#{_node.data.name}(#{_node.data.code})"
-                              rendered="#{_node.data.enable}"/>
-
-            </rich:treeNode>
-
-
-            <rich:treeNode type="property">
-
-                #{_node.formatDefine.name}
-
-                <h:outputText value="#{messages.formatNotSet}" rendered="#{empty _node.data}"/>
-
-                <a:outputPanel rendered="#{not empty _node.data}">
+                </rich:treeNode>
 
 
-                    <h:outputText value="#{dictionary.getWordValue(_node.data.formatValue)}"
-                                  rendered="#{_node.data.formatDefine.dataType.name() eq 'WORD'}"/>
-                    <h:outputText value="#{_node.data.formatValue}"
-                                  rendered="#{not (_node.data.formatDefine.dataType.name() eq 'WORD')}"/>
-                </a:outputPanel>
+                <rich:treeNode type="property">
 
-            </rich:treeNode>
+                    #{_node.formatDefine.name}
 
-            <rich:treeNode expanded="#{_node.expanded}" type="storeRes"
-                           iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
-                           iconCollapsed="/img/store_res.png">
+                    <h:outputText value="#{messages.formatNotSet}" rendered="#{empty _node.data}"/>
 
-                <h:outputText value="#{_node.data.code}#{' '}#{(not empty _node.title) ? _node.title : ''}"
-                              style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
-                              rendered="#{not empty _node.title}"/>
+                    <a:outputPanel rendered="#{not empty _node.data}">
 
-                <a:outputPanel rendered="#{empty _node.title}">
-                    <s:span style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}">
-                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                            <ui:param name="storeRes" value="#{_node.data}"/>
-                            <ui:param name="showResName" value="false"/>
-                        </ui:include>
-                    </s:span>
-                </a:outputPanel>
-            </rich:treeNode>
-        </rich:tree>
-    </rich:panel>
 
+                        <h:outputText value="#{dictionary.getWordValue(_node.data.formatValue)}"
+                                      rendered="#{_node.data.formatDefine.dataType.name() eq 'WORD'}"/>
+                        <h:outputText value="#{_node.data.formatValue}"
+                                      rendered="#{not (_node.data.formatDefine.dataType.name() eq 'WORD')}"/>
+                    </a:outputPanel>
+
+                </rich:treeNode>
+
+                <rich:treeNode expanded="#{_node.expanded}" type="storeRes"
+                               iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
+                               iconCollapsed="/img/store_res.png">
+
+
+                    <h:outputLink value="#" onclick="storeResSelect('#{_node.data.id}');return false;">
+
+                        <h:outputText value="#{_node.data.code}#{' '}#{(not empty _node.title) ? _node.title : ''}"
+                                      style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                                      rendered="#{not empty _node.title}"/>
+
+                        <a:outputPanel rendered="#{empty _node.title}">
+                            <s:span style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}">
+                                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                                    <ui:param name="storeRes" value="#{_node.data}"/>
+                                    <ui:param name="showResName" value="false"/>
+                                </ui:include>
+                            </s:span>
+                        </a:outputPanel>
+                    </h:outputLink>
+                </rich:treeNode>
+            </rich:tree>
+        </rich:panel>
+    </h:form>
+
+    <h:form>
+        <a:jsFunction name="storeResSelect" render="details">
+            <a:param name="selectId" assignTo="#{storeResHome.id}"/>
+        </a:jsFunction>
+    </h:form>
 </ui:define>
 
 <ui:define name="editFields">
@@ -145,8 +155,6 @@
 
     <a:region id="storesFormatsRegion">
         <a:outputPanel id="storesFormats">
-
-
 
 
             <a:outputPanel id="itemFormats">
