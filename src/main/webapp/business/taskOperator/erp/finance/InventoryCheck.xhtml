@@ -54,7 +54,7 @@
                             defaultTime="#{currentTime}"
                             defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
                             label="#{messages.inventory_field_chedkedDate}"
-                            value="#{inventoryHome.instance.checkedDate}">
+                            value="#{inventoryHome.instance.checkedDate}" validator="operDateValidator">
 
                     </rich:calendar>
                 </s:decorate>
