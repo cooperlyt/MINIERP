@@ -5,6 +5,7 @@ import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.action.BusinessDefineHome;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.business.finance.AccountDateHelper;
 import com.dgsoft.erp.model.Allocation;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
@@ -52,14 +53,14 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
     private FacesMessages facesMessages;
 
 
-    private void revertStockChange(StockChange stockChange){
-        if (stockChange == null){
+    private void revertStockChange(StockChange stockChange) {
+        if (stockChange == null) {
             return;
         }
-        for (StockChangeItem item: stockChange.getStockChangeItems()){
-            if (stockChange.getOperType().isOut()){
+        for (StockChangeItem item : stockChange.getStockChangeItems()) {
+            if (stockChange.getOperType().isOut()) {
                 item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
-            }else{
+            } else {
                 item.getStock().setCount(item.getStock().getCount().subtract(item.getCount()));
             }
         }
@@ -69,14 +70,25 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
     private ProcessInstanceHome processInstanceHome;
 
     @Override
-    public String remove(){
+    public String remove() {
+        if (getInstance().getStockChangeByStoreOut() != null) {
+            if (((getInstance().getStockChangeByStoreOut() != null) &&
+                    (getInstance().getStockChangeByStoreOut().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0)) ||
+                    ( (getInstance().getStockChangeByStoreIn() != null) &&
+                            (getInstance().getStockChangeByStoreIn().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0))){
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsClose");
+                return null;
+            }
+        }
+
+
         revertStockChange(getInstance().getStockChangeByStoreIn());
         revertStockChange(getInstance().getStockChangeByStoreOut());
         processInstanceHome.setProcessDefineName("stockAllocation");
         processInstanceHome.setProcessKey(getInstance().getId());
         processInstanceHome.stop();
         String result = super.remove();
-        if ("removed".equals(result)){
+        if ("removed".equals(result)) {
             processInstanceHome.stop();
         }
         return result;
@@ -89,7 +101,6 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "AllocationStoreSameError");
             return null;
         }
-
 
 
         getInstance().setId("D" + numberBuilder.getSampleNumber("Allocation"));

@@ -51,7 +51,7 @@ public class OtherStockOut extends StoreOutAction {
         otherStoreChangeHome.getInstance().setStockChange(stockChangeHome.getReadyInstance());
 
         if ("persisted".equals(otherStoreChangeHome.persist())) {
-            return "OtherStockChangeComplete";
+            return "stockChangeComplete";
         } else {
             return null;
         }

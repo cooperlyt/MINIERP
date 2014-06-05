@@ -4,6 +4,7 @@ import com.dgsoft.common.SetLinkList;
 
 import com.dgsoft.common.jbpm.ProcessInstanceHome;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.business.finance.AccountDateHelper;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.*;
@@ -85,6 +86,14 @@ public class OrderBackHome extends ErpEntityHome<OrderBack> {
                 }
             }
         }
+        if (getInstance().isAnyOneStoreIn()){
+            for(BackDispatch d: getInstance().getBackDispatchs()){
+                if (d.isStoreOut() && (d.getStockChange().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0)){
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 

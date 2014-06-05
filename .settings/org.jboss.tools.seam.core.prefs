@@ -1,0 +1,13 @@
+action.package=org.domain.minierp.session
+action.sources=/MINIERP/src/main/java
+eclipse.preferences.version=1
+model.package=org.domain.minierp.entity
+model.sources=/MINIERP/src/main/java
+seam.project.connection.profile=BIRT Classic Models Sample Database
+seam.project.deployment.type=war
+seam.project.settings.version=1.1
+seam.project.web.root.folder=/MINIERP/WebContent
+seam.test.creating=false
+seam.test.project=MINIERP
+test.package=org.domain.minierp.test
+test.sources=/MINIERP/src/main/java

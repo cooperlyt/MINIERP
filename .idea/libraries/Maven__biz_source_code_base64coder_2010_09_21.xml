@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: biz.source_code:base64coder:2010-09-21">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/biz/source_code/base64coder/2010-09-21/base64coder-2010-09-21.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/biz/source_code/base64coder/2010-09-21/base64coder-2010-09-21-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/biz/source_code/base64coder/2010-09-21/base64coder-2010-09-21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

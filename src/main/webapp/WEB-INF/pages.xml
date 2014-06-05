@@ -154,10 +154,7 @@
                 <begin-conversation join="true"/>
                 <redirect view-id="/func/erp/store/storeChange/ProduceStoreIn.xhtml"/>
             </rule>
-            <rule if-outcome="ProcduceStoreInComplete">
-                <end-conversation/>
-                <redirect view-id="/func/erp/store/storeChange/ProduceIn.xhtml"/>
-            </rule>
+
             <rule if-outcome="ProcduceStoreInCancel">
 
                 <end-conversation/>
@@ -174,9 +171,9 @@
                 <redirect view-id="/func/erp/store/storeChange/OtherStoreOut.xhtml"/>
             </rule>
 
-            <rule if-outcome="OtherStockChangeComplete">
+            <rule if-outcome="stockChangeComplete">
                 <end-conversation/>
-                <redirect view-id="/func/erp/store/storeChange/OtherStockChange.xhtml"/>
+                <redirect view-id="/func/erp/store/storeChange/StockChangeComplete.xhtml"/>
             </rule>
 
             <rule if-outcome="OtherStockChangeCancel">

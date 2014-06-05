@@ -67,7 +67,7 @@ public class ProduceStoreInHome extends ErpEntityHome<ProductStoreIn> {
         getInstance().setStockChange(stockChangeHome.getReadyInstance());
 
         if ("persisted".equals(persist())) {
-            return "ProcduceStoreInComplete";
+            return "stockChangeComplete";
         } else {
             return null;
         }

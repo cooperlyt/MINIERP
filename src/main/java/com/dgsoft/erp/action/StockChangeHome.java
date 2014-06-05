@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.business.finance.AccountDateHelper;
 import com.dgsoft.erp.model.Batch;
 import com.dgsoft.erp.model.Stock;
 import com.dgsoft.erp.model.StockChange;
@@ -9,6 +10,8 @@ import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
@@ -27,6 +30,9 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
 
     @In
     private org.jboss.seam.security.Credentials credentials;
+
+    @In
+    private FacesMessages facesMessages;
 
     @Override
     protected StockChange createInstance(){
@@ -88,6 +94,11 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
     @Override
     public String remove(){
                                 //TODO implemete can delete type
+        if (getInstance().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsClose");
+            return null;
+        }
+
         boolean accept = false;
         switch (getInstance().getOperType()){
             case MATERIAL_IN:

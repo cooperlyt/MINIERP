@@ -5,6 +5,7 @@ import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityHome;
+import com.dgsoft.erp.business.finance.AccountDateHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.total.SameFormatResGroupStrategy;
@@ -524,6 +525,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                 }
             }
         }
+
+        if (isAnyOneStoreOut()){
+            for(NeedRes n : getInstance().getNeedReses()){
+                for(Dispatch d: n.getDispatches()){
+                    if (d.isStoreOut() && (d.getStockChange().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0)){
+                        return true;
+                    }
+                }
+            }
+        }
+
         return false;
     }
 }
