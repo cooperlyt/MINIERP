@@ -221,7 +221,7 @@ public class OrderStoreOut extends OrderTaskHandle {
         if (dispatchHome.update().equals("updated")) {
             return "taskComplete";
         } else {
-            return "updateFail";
+            return null;
         }
     }
 

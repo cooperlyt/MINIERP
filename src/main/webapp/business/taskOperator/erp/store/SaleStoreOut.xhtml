@@ -63,14 +63,6 @@
 
 <h:form>
     <rich:toolbar>
-        <rich:toolbarGroup>
-            <h:graphicImage value="/img/print.png"/>
-            <s:link target="_blank" value="#{messages.orderStoreOutPrint}"
-                    view="/report/saleStoreOutPaper.xhtml">
-                <f:param value="inCon" name="orderId"/>
-                <f:param value="inCon" name="storeId"/>
-            </s:link>
-        </rich:toolbarGroup>
 
         <rich:toolbarGroup rendered="#{orderHome.instance.payType eq 'EXPRESS_PROXY'}">
             <h:panelGrid columns="2">
