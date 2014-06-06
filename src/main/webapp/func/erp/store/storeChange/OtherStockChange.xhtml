@@ -5,6 +5,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
                 template="/layout/template.xhtml">
 
 
@@ -14,7 +15,7 @@
             <rich:toolbar height="26">
                 <rich:toolbarGroup location="right">
                     <h:commandButton styleClass="toolBarBtn" value="#{messages.ok}" action="#{otherStoreChangeHome.begin}">
-
+                        <f:param name="from" value="/func/erp/store/storeChange/OtherStockChange.xhtml"/>
                     </h:commandButton>
                 </rich:toolbarGroup>
             </rich:toolbar>

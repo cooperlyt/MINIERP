@@ -23,11 +23,11 @@
 
                     <h:panelGrid columns="2">
 
-                        <h:panelGrid columns="2">
+                        <h:panelGrid columns="2" rendered="#{allocationHome.instance.type eq 'ALLOCATION'}">
                             <h:graphicImage value="/img/print.png"/>
                             <s:link target="_blank" view="/report/StoreChangePaper.xhtml"
                                     value="#{messages.print_store_out_paper}">
-                                <f:param value="#{stockChangeHome.instance.id}" name="stockChangeId"/>
+                                <f:param value="#{allocationHome.instance.stockChangeByStoreOut.id}" name="stockChangeId"/>
                             </s:link>
                         </h:panelGrid>
 
@@ -35,7 +35,7 @@
                         <h:panelGrid columns="2">
                             <h:graphicImage value="/img/reset_btn.png"/>
                             <s:link value="#{messages.return}" propagation="end" includePageParams="false"
-                                    view="/func/erp/store/StoreAllocation.xhtml"/>
+                                    view="#{from}"/>
                         </h:panelGrid>
 
 

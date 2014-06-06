@@ -9,53 +9,20 @@ importPackage(Packages.com.dgsoft.erp.model);
 importPackage(Packages.com.dgsoft.common); 
 dictionary = Component.getInstance("dictionary", false);
 
-dispatchHome = Component.getInstance("dispatchHome", false)
-if ((dispatchHome != null) &amp;&amp; dispatchHome.isIdDefined()){
 
-	orderHome = Component.getInstance("orderHome",true);
-	order = dispatchHome.getInstance().getNeedRes().getCustomerOrder();
-	//dispatchItems = dispatchHome.getInstance().getDispatchItemList();
-	outDate = new Date();
-	store = dispatchHome.getInstance().getStore().getName() + "(" + dispatchHome.getInstance().getStore().getId() + ")";
-	shipAddres = dispatchHome.getInstance().getNeedRes().getAddress() +  "    " + dispatchHome.getInstance().getNeedRes().getPostCode();
-	if (order.payType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
-		proxyMoney = orderHome.getShortageMoney(); 
-	}else{
-		proxyMoney = 0;
-	}	
-	dispatchItems = Component.getInstance("orderStoreOutItems",true);
-	
-}else{
+
 	stockChangeHome = Component.getInstance("stockChangeHome",true);
 	stockChangeHome.setId(params['stockChangeId'].value);
-	orderHome = Component.getInstance("orderHome",true);
-	orderHome.setId(stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getCustomerOrder().getId());
-	order = stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getCustomerOrder();
+
 	
 	outDate = stockChangeHome.getInstance().getOperDate();
 	store = stockChangeHome.getInstance().getStore().getName() + "("  + stockChangeHome.getInstance().getStore().getId() + ")";
-	
-	shipAddres = stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getAddress() +  "    " + stockChangeHome.getInstance().getOrderDispatch().getNeedRes().getPostCode();
-	
-	if (order.payType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
-		proxyMoney = orderHome.getShortageMoney(); 
-	}else{
-		proxyMoney = 0;
-	}	
-	
+
+
 	dispatchItems = stockChangeHome.getInstance().getStockChangeItems();
 	
-}
-
-
-
-
-	salerName = dictionary.getEmpNameById(order.getOrderEmp());
-	saleDate = order.getCreateDate();
-	orderNumber = order.getId();
-	customerName = order.getCustomer().getName();
-	shipContact = order.getContact();
-	shipContactTel = order.getTel();
+	messages = Component.getInstance("org.jboss.seam.international.messages", false);
+	
 ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -246,19 +213,49 @@ it=dispatchItems.iterator();]]></method>
     </page-setup>
     <body>
         <grid id="185">
+            <property name="fontFamily">"SimSun"</property>
             <property name="width">1.8854166666666667in</property>
-            <column id="186">
-                <property name="width">0.7291666666666666in</property>
-            </column>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">stockChangeHome.getInstance().getId()</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <expression name="expression" type="javascript">messages.get(stockChangeHome.getInstance().getOperType().name())</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
             <column id="187">
                 <property name="width">1.15625in</property>
             </column>
             <row id="188">
                 <cell id="189">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <text id="8">
                         <property name="fontFamily">"SimHei"</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">stockChangeHome.getInstance().getOperType().isOut()</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<CENTER><H2>入库单</H2>(仓库联)</CENTER>
+]]></text-property>
+                    </text>
+                    <text id="414">
+                        <property name="fontFamily">"SimHei"</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">! stockChangeHome.getInstance().getOperType().isOut()</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<CENTER><H2>出库单</H2>(仓库联)</CENTER>
 ]]></text-property>
@@ -266,46 +263,35 @@ it=dispatchItems.iterator();]]></method>
                 </cell>
             </row>
             <row id="190">
-                <cell id="191">
-                    <label id="192">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">订单号</text-property>
-                    </label>
-                </cell>
                 <cell id="160">
-                    <text id="193">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>orderNumber</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="416">
+                        <property name="textAlign">center</property>
+                        <property name="resultSetColumn">Column Binding</property>
+                    </data>
                 </cell>
             </row>
-            <row id="314">
-                <cell id="315">
-                    <label id="164">
+            <row id="409">
+                <cell id="411">
+                    <text id="413">
                         <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">发货仓库</text-property>
-                    </label>
-                </cell>
-                <cell id="316">
-                    <text id="177">
-                        <property name="fontFamily">"SimHei"</property>
+                        <property name="textAlign">center</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>store</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
-            <row id="194">
-                <cell id="195">
-                    <label id="196">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">发货时间</text-property>
-                    </label>
+            <row id="418">
+                <cell id="420">
+                    <data id="421">
+                        <property name="textAlign">center</property>
+                        <property name="resultSetColumn">Column Binding_1</property>
+                    </data>
                 </cell>
+            </row>
+            <row id="194">
                 <cell id="197">
+                    <property name="fontFamily">"SimSun"</property>
+                    <property name="textAlign">center</property>
                     <text id="176">
                         <property name="fontFamily">"SimHei"</property>
                         <property name="contentType">html</property>
@@ -444,132 +430,6 @@ it=dispatchItems.iterator();]]></method>
                 </row>
             </footer>
         </table>
-        <text id="77">
-            <property name="fontFamily">"SimHei"</property>
-            <property name="contentType">html</property>
-            <text-property name="content"><![CDATA[<CENTER>
-<H4>
-<B>订单信息</B>
-</H4>
-</CENTER>]]></text-property>
-        </text>
-        <grid id="40">
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">Column Binding</property>
-                    <expression name="expression" type="javascript">proxyMoney</expression>
-                    <property name="dataType">decimal</property>
-                    <property name="allowExport">true</property>
-                </structure>
-            </list-property>
-            <column id="41"/>
-            <column id="42"/>
-            <row id="46">
-                <cell id="47">
-                    <label id="64">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">销售员</text-property>
-                    </label>
-                </cell>
-                <cell id="48">
-                    <text id="103">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>salerName</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="58">
-                <cell id="59">
-                    <label id="69">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">客户</text-property>
-                    </label>
-                </cell>
-                <cell id="60">
-                    <text id="148">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>customerName</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="317">
-                <cell id="318">
-                    <label id="320">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">代收货款</text-property>
-                    </label>
-                </cell>
-                <cell id="319">
-                    <property name="textAlign">right</property>
-                    <data id="404">
-                        <property name="fontFamily">"SimHei"</property>
-                        <structure name="numberFormat">
-                            <property name="category">Currency</property>
-                            <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
-                        </structure>
-                        <property name="resultSetColumn">Column Binding</property>
-                    </data>
-                </cell>
-            </row>
-            <row id="167">
-                <cell id="168">
-                    <label id="170">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">收货人</text-property>
-                    </label>
-                </cell>
-                <cell id="169">
-                    <text id="179">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>shipContact</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="180">
-                <cell id="181">
-                    <label id="183">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">联系电话</text-property>
-                    </label>
-                </cell>
-                <cell id="182">
-                    <text id="184">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>shipContactTel</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="155">
-                <cell id="156">
-                    <label id="165">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">发货地址:</text-property>
-                    </label>
-                </cell>
-                <cell id="157"/>
-            </row>
-            <row id="158">
-                <cell id="159">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <text id="178">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>shipAddres</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-        </grid>
         <text id="313">
             <property name="fontFamily">"SimHei"</property>
             <property name="contentType">html</property>
@@ -582,66 +442,90 @@ it=dispatchItems.iterator();]]></method>
 <br/>]]></text-property>
         </text>
         <grid id="322">
+            <property name="fontFamily">"SimSun"</property>
             <property name="width">1.8854166666666667in</property>
-            <column id="323">
-                <property name="width">0.7291666666666666in</property>
-            </column>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">messages.get(stockChangeHome.getInstance().getOperType().name())</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <expression name="expression" type="javascript">stockChangeHome.getInstance().getId()</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_2</property>
+                    <expression name="expression" type="javascript">messages.get(stockChangeHome.getInstance().getOperType().name())</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
             <column id="324">
                 <property name="width">1.15625in</property>
             </column>
             <row id="325">
                 <cell id="326">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <text id="327">
                         <property name="fontFamily">"SimHei"</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">stockChangeHome.getInstance().getOperType().isOut()</expression>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<CENTER><H2>出库单</H2>(发货联)</CENTER>
+                        <text-property name="content"><![CDATA[<CENTER><H2>入库单</H2>(存根)</CENTER>
+]]></text-property>
+                    </text>
+                    <text id="415">
+                        <property name="fontFamily">"SimHei"</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">! stockChangeHome.getInstance().getOperType().isOut()</expression>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<CENTER><H2>出库单</H2>(存根)</CENTER>
 ]]></text-property>
                     </text>
                 </cell>
             </row>
             <row id="328">
-                <cell id="329">
-                    <label id="330">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">订单号</text-property>
-                    </label>
-                </cell>
                 <cell id="331">
-                    <text id="332">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>orderNumber</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="427">
+                        <property name="textAlign">center</property>
+                        <property name="resultSetColumn">Column Binding_1</property>
+                    </data>
                 </cell>
             </row>
             <row id="333">
-                <cell id="334">
-                    <label id="335">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">发货仓库</text-property>
-                    </label>
-                </cell>
                 <cell id="336">
                     <text id="337">
                         <property name="fontFamily">"SimHei"</property>
+                        <property name="textAlign">center</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>store</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
-            <row id="338">
-                <cell id="339">
-                    <label id="340">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">发货时间</text-property>
-                    </label>
+            <row id="422">
+                <cell id="423">
+                    <property name="textAlign">center</property>
+                    <data id="428">
+                        <property name="resultSetColumn">Column Binding_2</property>
+                    </data>
                 </cell>
+            </row>
+            <row id="338">
                 <cell id="341">
+                    <property name="textAlign">center</property>
                     <text id="342">
                         <property name="fontFamily">"SimHei"</property>
                         <property name="contentType">html</property>
@@ -780,131 +664,5 @@ it=dispatchItems.iterator();]]></method>
                 </row>
             </footer>
         </table>
-        <text id="368">
-            <property name="fontFamily">"SimHei"</property>
-            <property name="contentType">html</property>
-            <text-property name="content"><![CDATA[<CENTER>
-<H4>
-<B>订单信息</B>
-</H4>
-</CENTER>]]></text-property>
-        </text>
-        <grid id="369">
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">Column Binding</property>
-                    <expression name="expression" type="javascript">proxyMoney</expression>
-                    <property name="dataType">decimal</property>
-                    <property name="allowExport">true</property>
-                </structure>
-            </list-property>
-            <column id="370"/>
-            <column id="371"/>
-            <row id="372">
-                <cell id="373">
-                    <label id="374">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">销售员</text-property>
-                    </label>
-                </cell>
-                <cell id="375">
-                    <text id="376">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>salerName</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="377">
-                <cell id="378">
-                    <label id="379">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">客户</text-property>
-                    </label>
-                </cell>
-                <cell id="380">
-                    <text id="381">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>customerName</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="382">
-                <cell id="383">
-                    <label id="384">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">代收货款</text-property>
-                    </label>
-                </cell>
-                <cell id="385">
-                    <data id="386">
-                        <property name="fontFamily">"SimHei"</property>
-                        <structure name="numberFormat">
-                            <property name="category">Currency</property>
-                            <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
-                        </structure>
-                        <property name="textAlign">right</property>
-                        <property name="resultSetColumn">Column Binding</property>
-                    </data>
-                </cell>
-            </row>
-            <row id="387">
-                <cell id="388">
-                    <label id="389">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">收货人</text-property>
-                    </label>
-                </cell>
-                <cell id="390">
-                    <text id="391">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>shipContact</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="392">
-                <cell id="393">
-                    <label id="394">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">联系电话</text-property>
-                    </label>
-                </cell>
-                <cell id="395">
-                    <text id="396">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>shipContactTel</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="397">
-                <cell id="398">
-                    <label id="399">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">发货地址:</text-property>
-                    </label>
-                </cell>
-                <cell id="400"/>
-            </row>
-            <row id="401">
-                <cell id="402">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <text id="403">
-                        <property name="fontFamily">"SimHei"</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>shipAddres</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-        </grid>
     </body>
 </report>
