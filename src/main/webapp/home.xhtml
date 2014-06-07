@@ -19,19 +19,29 @@
             <s:div styleClass="info">
 
                 <p>
-                    <strong>MINIERP 2.2.7 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.2.8 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                    <li>[财务] 修改结账</li>
-                    <li>[财务] 客户增加期初余额，并可在结账功能中根据期初余额计算当前客户余额（仅初始化结账前）</li>
-                    <li>[销售] 修正重下订单，和订单反点错误</li>
-                    <li>[仓库] 修改库存查询样式</li>
-                    <li>[仓库] 仓库结账，与销售结账同时结,仓库账下一版本加入</li>
-                    <li>[货品] 优化货品管理</li>
 
+                   <li>[仓库] 修改订单出库，退货入库流程</li>
+                    <li>[仓库] 所有出库都可打印或补打出库/入库单</li>
+                    <li>[仓库] 订单出库增加分组合计汇总</li>
+                    <li>[仓库] 所有出入库和删除增加结账判断</li>
                 </ul>
 
                 <strong>历史更新</strong>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.2.7" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[财务] 修改结账</li>
+                        <li>[财务] 客户增加期初余额，并可在结账功能中根据期初余额计算当前客户余额（仅初始化结账前）</li>
+                        <li>[销售] 修正重下订单，和订单反点错误</li>
+                        <li>[仓库] 修改库存查询样式</li>
+                        <li>[仓库] 仓库结账，与销售结账同时结,仓库账下一版本加入</li>
+                        <li>[货品] 优化货品管理</li>
+                    </ul>
+                </s:decorate>
 
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.2.6" name="openLabel"/>
