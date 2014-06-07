@@ -1,8 +1,12 @@
 package com.dgsoft.erp.business.allocation;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.action.AllocationHome;
 import com.dgsoft.erp.action.store.StoreOutAction;
+import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StockChangeItem;
+import com.dgsoft.erp.total.SameFormatResGroupStrategy;
+import com.dgsoft.erp.total.StoreResGroupStrategy;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.bpm.CreateProcess;
@@ -16,16 +20,21 @@ import java.util.List;
  */
 @Name("allocationCreateStoreOut")
 @Scope(ScopeType.CONVERSATION)
-public class AllocationCreateStoreOut extends StoreOutAction{
+public class AllocationCreateStoreOut extends StoreOutAction {
 
     @In
     private AllocationHome allocationHome;
 
 
     @DataModel(value = "allocationCreateStockOutItems")
-    public List<StockChangeItem> getStoreOutItems(){
+    public List<StockChangeItem> getStoreOutItems() {
         return storeOutItems;
     }
+
+    public List<TotalDataGroup<Res, StockChangeItem>> getStockOutGroup() {
+        return TotalDataGroup.groupBy(getStoreOutItems(), new StoreResGroupStrategy<StockChangeItem>(), new SameFormatResGroupStrategy<StockChangeItem>());
+    }
+
 
     @DataModelSelection
     private StockChangeItem stockChangeItem;
@@ -35,19 +44,19 @@ public class AllocationCreateStoreOut extends StoreOutAction{
         return stockChangeItem;
     }
 
-
-    @CreateProcess(definition = "stockAllocation" , processKey = "#{allocationHome.instance.id}")
+    @End
+    @CreateProcess(definition = "stockAllocation", processKey = "#{allocationHome.instance.id}")
     @Transactional
-    public String create(){
+    public String create() {
         super.storeChange(true);
 
         stockChangeHome.getInstance().setVerify(true);
         stockChangeHome.getInstance().setAllocationForStoreOut(allocationHome.getInstance());
         allocationHome.getInstance().setCreateDate(stockChangeHome.getInstance().getOperDate());
         allocationHome.getInstance().setStockChangeByStoreOut(stockChangeHome.getReadyInstance());
-        if ("persisted".equals(allocationHome.persist())){
-            return "businessCreated";
-        }else{
+        if ("persisted".equals(allocationHome.persist())) {
+            return "/business/startPrepare/erp/store/AllocationComplete.xhtml";
+        } else {
             return null;
         }
 

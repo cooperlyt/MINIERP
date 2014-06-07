@@ -100,7 +100,7 @@
 
     <properties>
         <seam.version>2.3.1.Final</seam.version>
-        <richfaces.version>4.3.6.Final</richfaces.version>
+        <richfaces.version>4.3.7.Final</richfaces.version>
         <version.org.hibernate.search>4.2.0.Final</version.org.hibernate.search>
 
         <!-- Excluded TestNG groups (ex: slow annotated tests won't run during

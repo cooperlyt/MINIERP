@@ -21,7 +21,7 @@
         <div style="clear: both;"/>
 
         <br/>
-        <a:outputPanel rendered="#{not empty allocationHome.instance.type eq 'ALLOCATION_APPLY'}">
+        <a:outputPanel rendered="#{not (allocationHome.instance.type eq 'ALLOCATION_APPLY')}">
 
 
             <rich:dataTable style="width: 100%"

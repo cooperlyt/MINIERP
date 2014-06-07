@@ -58,8 +58,7 @@
                           value="#{messages.cancel}"
                           view="#{(empty from) ? '/func/system/business/start.xhtml' : from}"/>
 
-                <s:button styleClass="toolBarBtn" value="#{messages.applyAllocation}"
-                          action="#{allocationCreateApply.complete}"/>
+                <s:button styleClass="toolBarBtn" value="#{messages.Next}" view="/business/startPrepare/erp/store/AllocationConfirm.xhtml"/>
             </rich:toolbarGroup>
         </rich:toolbar>
     </ui:define>

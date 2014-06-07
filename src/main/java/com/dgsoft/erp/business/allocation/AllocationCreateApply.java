@@ -1,11 +1,14 @@
 package com.dgsoft.erp.business.allocation;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.erp.action.AllocationHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.ResHome;
 import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.total.SameFormatResGroupStrategy;
+import com.dgsoft.erp.total.StoreResGroupStrategy;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -42,6 +45,13 @@ public class AllocationCreateApply {
 
     @DataModel("allocationCreateApplyItems")
     private List<AllocationRes> applyItems = new ArrayList<AllocationRes>();
+
+
+    public List<TotalDataGroup<Res, AllocationRes>> getApplyGroup() {
+        return TotalDataGroup.groupBy(applyItems, new StoreResGroupStrategy<AllocationRes>(), new SameFormatResGroupStrategy<AllocationRes>());
+    }
+
+
 
     @DataModelSelection
     private AllocationRes selectApplyItems;
