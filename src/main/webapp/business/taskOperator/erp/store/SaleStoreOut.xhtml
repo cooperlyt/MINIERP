@@ -12,6 +12,14 @@
 
 <ui:define name="func-body">
 
+<h:outputStylesheet>
+    .lastSubTableFooter {
+        width: 1px;
+        background: #{a4jSkin.tableBackgroundColor};
+}
+</h:outputStylesheet>
+
+
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="overlayEditPanel"/>
     <ui:param name="panelTitle" value="#{messages.dispatch_overly_items}"/>
@@ -98,8 +106,6 @@
                     label="#{messages.storeOut_field_dateTime}"
                     value="#{orderStoreOut.storeOutDate}" validator="operDateValidator"/>
         </s:decorate>
-
-
 
 
         <s:decorate template="/layout/seam-edit.xhtml"
@@ -412,6 +418,135 @@
 
     </rich:dataTable>
 </h:form>
+<br/>
+
+<a:outputPanel ajaxRendered="true">
+    <rich:dataTable style="width: 100%"
+                    value="#{orderStoreOut.outItemGroup}"
+                    var="_res">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column rowspan="2" colspan="3">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="3" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+            <rich:collapsibleSubTableToggler for="sbtbl_n_format_2"/>
+            #{_res.key.name}(#{_res.key.code})
+        </rich:column>
+
+        <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+            <h:outputText value="#{_res.totalData.masterUnitCount}">
+                <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            #{_res.key.unitGroup.masterUnit.name}
+        </rich:column>
+
+        <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+            <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <h:outputText value="#{_res.totalData.auxUnitCount}">
+                    <f:convertNumber
+                            pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+                #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:collapsibleSubTable expandMode="client" value="#{_res.childGroup}" var="_format"
+                                  id="sbtbl_n_format_2">
+            <rich:column style="width: 1px"/>
+            <rich:column colspan="4">
+                <rich:collapsibleSubTableToggler event="none" for="sbtbl_n_item"/>
+                #{_format.key.formatTitle}
+            </rich:column>
+
+            <rich:collapsibleSubTable expandMode="client" value="#{_format.values}" var="_item" id="sbtbl_n_item">
+                <rich:column style="width: 1px" footerClass="lastSubTableFooter"/>
+                <rich:column style="width: 1px"/>
+                <rich:column>
+                    <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                                  value="#{_item.storeRes.floatConversionRate}">
+                        <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+                    </h:outputText>
+                    <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
+                                  rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+
+
+                    <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
+                                    title="#{messages.order_item_full}:#{_item.stock.displayMasterCount}(#{_item.displayAuxCount}) "
+                                    value="/img/full_tip.png"
+                                    rendered="#{_item.enough}"/>
+
+                    <a:outputPanel style="float:right" rendered="#{not _item.enough}">
+                        <h:graphicImage alt="#{messages.order_item_not_full}"
+                                        value="/img/not_full_tip.png"/>
+                        <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                                      layout="block">
+                        <span style="white-space: nowrap;color: #FF0000;">
+                                    #{messages.order_item_not_full}
+                                </span> <br/>
+
+                            <span style="white-space: nowrap;">
+                           #{messages.InventoryCount}:
+                                #{_item.stock.displayMasterCount}
+                                (#{_item.stock.displayAuxCount})  </span> <br/>
+                        <span style="white-space: nowrap;color: #FF0000;">
+                                #{messages.stockDisparity}:
+                            #{_item.disparity.displayMasterCount}
+                            (#{_item.disparity.displayAuxCount})
+                               </span>
+                        </rich:tooltip>
+                    </a:outputPanel>
+
+                </rich:column>
+
+
+                <rich:column>
+                    <h:outputText value="#{_item.displayMasterCount}" style="#{(_item.enough) ? '' : 'color: red;'}" />
+
+
+
+
+
+                    <f:facet name="footer">
+                        <h:outputText value="#{_format.totalData.masterUnitCount}">
+                            <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+                        </h:outputText>
+                        #{_res.key.unitGroup.masterUnit.name}
+                    </f:facet>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_item.displayAuxCount}" style="#{(_item.enough) ? '' : 'color: red;'}" />
+
+                    <f:facet name="footer">
+                        <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                            <h:outputText value="#{_format.totalData.auxUnitCount}">
+                                <f:convertNumber
+                                        pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                            </h:outputText>
+                            #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                        </a:outputPanel>
+                    </f:facet>
+                </rich:column>
+
+
+            </rich:collapsibleSubTable>
+
+        </rich:collapsibleSubTable>
+
+    </rich:dataTable>
+</a:outputPanel>
 <br/>
 <rich:collapsiblePanel switchType="client" header="#{messages.order_ship_info}">
 

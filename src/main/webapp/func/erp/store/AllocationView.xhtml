@@ -10,6 +10,13 @@
     <ui:param value="functionTitle" name="#{messages.AllocationInfo}"/>
 
     <ui:define name="body">
+        <h:outputStylesheet>
+            .lastSubTableFooter {
+                width: 1px;
+                background: #{a4jSkin.tableBackgroundColor};
+        }
+        </h:outputStylesheet>
+
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">
                 #{messages.Allocation_field_state}

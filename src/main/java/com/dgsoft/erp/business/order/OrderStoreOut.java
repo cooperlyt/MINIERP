@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.jbpm.TaskDescription;
@@ -8,6 +9,9 @@ import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.model.api.StoreResCountGroup;
+import com.dgsoft.erp.total.SameFormatResGroupStrategy;
+import com.dgsoft.erp.total.StoreResGroupStrategy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -46,6 +50,11 @@ public class OrderStoreOut extends OrderTaskHandle {
 
     @DataModel("orderStoreOutItems")
     private List<OrderStoreOutItem> orderStoreOutItems;
+
+    public List<TotalDataGroup<Res, OrderStoreOutItem>> getOutItemGroup() {
+        return TotalDataGroup.groupBy(orderStoreOutItems, new StoreResGroupStrategy<OrderStoreOutItem>(), new SameFormatResGroupStrategy<OrderStoreOutItem>());
+    }
+
 
     @DataModelSelection
     private OrderStoreOutItem selectOutItem;
