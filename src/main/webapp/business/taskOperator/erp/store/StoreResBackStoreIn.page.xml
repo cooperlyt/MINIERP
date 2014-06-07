@@ -4,12 +4,7 @@
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
 
-    <param name="from"/>
-    <param name="cancelAllocation" value="#{allocationStoreOutTask.cancelOrder}"/>
-
-
-
-    <navigation from-action="#{allocationStoreOutTask.complete}">
+    <navigation from-action="#{storeResBackStoreIn.complete}">
 
 
         <rule if-outcome="taskComplete">
