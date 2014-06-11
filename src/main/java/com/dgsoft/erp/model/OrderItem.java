@@ -5,6 +5,7 @@ import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import org.hibernate.annotations.GenericGenerator;
+import org.jboss.seam.log.Logging;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -182,7 +183,10 @@ public class OrderItem extends StoreResPriceEntity
     public void calcMoney() {
         if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) &&
                 (getNeedConvertRate() == null) && !getUseUnit().isMasterUnit()) {
-            throw new IllegalArgumentException("param not enough can't calc");
+
+            Logging.getLog(getClass()).warn("param not enough can't calc");
+            setTotalMoney(BigDecimal.ZERO);
+            return;
         }
         super.calcMoney();
     }

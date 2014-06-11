@@ -2,8 +2,10 @@ package com.dgsoft.erp.model;
 // Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.NamedEntity;
+import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.model.api.BatchOperEntity;
 import org.hibernate.annotations.GenericGenerator;
+import org.jboss.seam.international.StatusMessage;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,6 +18,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "CUSTOMER", catalog = "MINI_ERP")
+@UniqueVerify(name = "name", severity = StatusMessage.Severity.ERROR, field = {"name"})
 public class Customer implements Comparable<Customer>, java.io.Serializable, NamedEntity {
 
     private String id;

@@ -289,6 +289,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         BigDecimal result = BigDecimal.ZERO;
         for (OrderItem item : getOrderItemByStatus(
                 EnumSet.allOf(OrderItem.OrderItemStatus.class))) {
+            item.calcMoney();
             if (item.getTotalMoney() != null)
                 result = result.add(item.getTotalMoney());
         }

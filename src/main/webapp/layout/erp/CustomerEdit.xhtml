@@ -55,6 +55,8 @@
                      required="true"
                      size="35"
                      maxlength="50"
+                     valueChangeListener="#{customerHome.verifyUniqueAvailable}"
+                     unique="name"
                      value="#{customerHome.instance.name}">
             <a:ajax event="blur" render="customerNameField"/>
         </h:inputText>

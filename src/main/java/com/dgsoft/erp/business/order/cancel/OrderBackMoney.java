@@ -64,12 +64,12 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
     protected String completeOrderTask() {
 
         if (customerOper.getOperDate().compareTo(DataFormat.getTodayLastTime()) > 0) {
-            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(customerOper.getOperDate()));
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(customerOper.getOperDate()));
             return null;
         }
 
         if (customerOper.getOperDate().compareTo(DataFormat.halfTime(orderBackHome.getInstance().getCreateDate())) < 0){
-            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture",
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture",
                     DateFormat.getDateInstance(DateFormat.MEDIUM).format(customerOper.getOperDate()),
                     DateFormat.getDateInstance(DateFormat.MEDIUM).format(orderBackHome.getInstance().getCreateDate()));
             return null;

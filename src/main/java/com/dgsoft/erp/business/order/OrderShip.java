@@ -88,12 +88,12 @@ public class OrderShip extends OrderShipTaskHandle {
     @Override
     protected String completeOrderTask() {
         if (dispatchHome.getInstance().getSendTime().compareTo(DataFormat.getTodayLastTime()) > 0) {
-            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(dispatchHome.getInstance().getSendTime()) );
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(dispatchHome.getInstance().getSendTime()) );
             return null;
         }
 
         if (dispatchHome.getInstance().getSendTime().compareTo(DataFormat.halfTime(orderHome.getInstance().getCreateDate())) < 0){
-            facesMessages.add(StatusMessage.Severity.ERROR, "DateIsFuture",
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture",
                     DateFormat.getDateInstance(DateFormat.MEDIUM).format(dispatchHome.getInstance().getSendTime()),
                     DateFormat.getDateInstance(DateFormat.MEDIUM).format(orderHome.getInstance().getCreateDate()));
             return null;
