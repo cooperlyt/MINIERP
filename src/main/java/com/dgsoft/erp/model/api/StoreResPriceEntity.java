@@ -4,6 +4,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.*;
+import org.jboss.seam.log.Logging;
 
 import javax.persistence.Transient;
 import java.math.BigDecimal;
@@ -111,7 +112,10 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
 
     public void calcMoney(){
         if (getCount() == null || getResUnit() == null || getMoney() == null || getRebateUnitPrice() == null){
-            throw new IllegalArgumentException("param not enough can't calc");
+            Logging.getLog(getClass()).warn("param not enough can't calc");
+            setTotalMoney(BigDecimal.ZERO);
+            return;
+            //throw new IllegalArgumentException("param not enough can't calc");
         }
         calcTotalMoney();
     }

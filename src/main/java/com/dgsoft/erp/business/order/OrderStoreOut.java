@@ -190,7 +190,7 @@ public class OrderStoreOut extends OrderTaskHandle {
                     .add(stockChangeItem);
             stock.setCount(stock.getCount().subtract(item.getMasterCount()));
 
-
+            item.calcMoney();
             if (item.isOverlyOut()) {
                 item.setStatus(OrderItem.OrderItemStatus.WAIT_PRICE);
             } else {
