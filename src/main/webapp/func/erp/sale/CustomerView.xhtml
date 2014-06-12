@@ -24,7 +24,7 @@
             <ui:define name="label">#{messages.CustomerArea}</ui:define>
             <h:selectOneMenu value="#{customerHome.instance.customerArea}" required="true"
                              label="#{messages.CustomerArea}">
-                <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
                                noSelectionLabel="#{messages.noSelectLabel}"
                                label="#{_customerArea.name}"/>
 
@@ -268,7 +268,7 @@
                 <rich:select value="#{customerAreaHome.id}"
                              label="#{messages.CustomerArea}"
                              styleClass="saleAreaSelect" listWidth="132px">
-                    <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                    <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
                                    noSelectionLabel="#{messages.searchNoSelectLabel}"
                                    label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
                     <a:ajax event="selectitem" execute="@this"

@@ -78,7 +78,7 @@
             <ui:define name="label">#{messages.CustomerArea}</ui:define>
 
             <h:selectOneMenu value="#{orderList.customerAreaId}">
-                <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
                                noSelectionLabel="#{messages.searchNoSelectLabel}"
                                label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
             </h:selectOneMenu>
@@ -168,7 +168,7 @@
             <a:commandButton image="/img/cancel.png" title="#{messages.CancelOrder}" immediate="true" execute="@this"
                              render="cancelOrderIdTitle,cancelOrderOperAction"
                              oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
-                             rendered="#{(not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+                             rendered="#{(not _order.canceled)}">
 
                 <a:param value="#{_order.id}" assignTo="#{orderHome.id}"/>
                 <a:attachQueue requestDelay="0"/>
@@ -176,7 +176,7 @@
 
 
             <s:link action="#{orderCreate.createCloneOrder}" propagation="begin" includePageParams="true"
-                    rendered="#{_order.canceled and (s:hasRole('erp.sale.manager') or s:hasRole(_order.customer.customerArea.role))}">
+                    rendered="#{_order.canceled}">
                 <s:graphicImage value="/img/undo.png" title="#{messages.reCreateOrder}"/>
                 <f:param name="cloneOrderId" value="#{_order.id}"/>
                 <f:param name="cloneCustomerAreaId" value="#{_order.customer.customerArea.id}"/>

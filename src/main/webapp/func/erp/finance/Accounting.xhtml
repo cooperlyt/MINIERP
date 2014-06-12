@@ -49,6 +49,7 @@
                     <a:commandButton value="#{messages.UnCloseAccount} #{accountDateHelper.beginMonth}"
                                      action="#{closingAccount.unclosing}" status="processWaiting"
                                      render="closeActions,timeSearchFields,accountDataTable"
+                                     disabled="#{not s:hasRole('erp.finance.accountancy')}"
                                      rendered="#{not accountDateHelper.first}">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>

@@ -13,7 +13,7 @@
         <ui:define name="label">#{messages.CustomerArea}</ui:define>
 
         <h:selectOneMenu value="#{customerSearchCondition.customerAreaId}">
-            <s:selectItems value="#{mySaleArea}" var="_customerArea"
+            <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
                            noSelectionLabel="#{messages.searchNoSelectLabel}"
                            label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
         </h:selectOneMenu>

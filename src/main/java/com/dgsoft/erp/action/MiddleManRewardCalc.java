@@ -31,7 +31,6 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
             "customerOrder.canceled = #{middleManRewardCalc.canceled}",
             "customerOrder.allStoreOut = #{middleManRewardCalc.allStoreOut}",
             "customerOrder.resReceived = #{middleManRewardCalc.customerConfirm}",
-            "customerOrder.moneyComplete = #{middleManRewardCalc.moneyComplete}",
             "customerOrder.middlePayed = #{middleManRewardCalc.containPayed}"};
 
 
@@ -48,8 +47,6 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
     private Boolean canceled = false;
 
     private Boolean allStoreOut;
-
-    private Boolean moneyComplete = true;
 
     private Boolean customerConfirm;
 
@@ -86,14 +83,6 @@ public class MiddleManRewardCalc extends ErpEntityQuery<CustomerOrder> {
 
     public void setCanceled(Boolean canceled) {
         this.canceled = canceled;
-    }
-
-    public Boolean getMoneyComplete() {
-        return moneyComplete;
-    }
-
-    public void setMoneyComplete(Boolean moneyComplete) {
-        this.moneyComplete = moneyComplete;
     }
 
     public Boolean getCustomerConfirm() {

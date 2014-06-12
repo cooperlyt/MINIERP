@@ -51,12 +51,6 @@
                     <f:selectItem itemLabel="#{messages.order_search_canceled_null}" noSelectionOption="true"/>
                 </h:selectOneMenu>
 
-                <h:selectOneMenu value="#{middleManRewardCalc.moneyComplete}">
-                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_true}" itemValue="#{true}"/>
-                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_false}" itemValue="#{false}"/>
-                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_null}" noSelectionOption="true"/>
-                </h:selectOneMenu>
-
 
                 <h:selectOneMenu value="#{middleManRewardCalc.allStoreOut}">
                     <f:selectItem itemLabel="#{messages.order_search_allStoreOut_true}" itemValue="#{true}"/>
@@ -125,7 +119,7 @@
 
                     <a:outputPanel id="searchButton">
                         <a:commandButton value="#{messages.search}"
-                                         execute="@form"
+                                         execute="@form"  render="constainCustomers"
                                          action="#{middleManRewardCalc.refresh}">
                             <a:attachQueue requestDelay="0"/>
                         </a:commandButton>

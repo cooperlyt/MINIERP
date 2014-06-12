@@ -10,17 +10,6 @@
 
 
     <ui:define name="body">
-        <h:form>
-            <h:panelGrid columns="2">
-                <h:graphicImage value="/img/create.gif"/>
-                <s:link value="#{messages.createMiddleMan}" view="/func/erp/sale/mgr/MiddleManEdit.xhtml"
-                        propagation="begin">
-                    <f:param name="middleManId" value=""/>
-                </s:link>
-
-
-            </h:panelGrid>
-        </h:form>
 
 
         <h:form styleClass="edit">
@@ -147,10 +136,39 @@
                 </rich:column>
 
                 <rich:column style="text-align: center;">
+                    <f:facet name="header">
 
-                    <s:link view="/func/erp/sale/mgr/MiddleReward.xhtml" propagation="begin">
+                        <a:commandButton image="/img/create.gif" title="#{messages.edit}" immediate="true"
+                                         execute="@this" oncomplete="#{rich:component('editPanel')}.show();" render="editPanel_form">
+                            <s:conversationPropagation type="begin"/>
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="" assignTo="#{middleManHome.id}"/>
+                        </a:commandButton>
+
+                    </f:facet>
+
+                    #{' '}
+                    <a:commandButton image="/img/edit.png" title="#{messages.edit}" immediate="true"
+                            execute="@this" oncomplete="#{rich:component('editPanel')}.show();" render="editPanel_form">
+                        <s:conversationPropagation type="begin"/>
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_middleMan.id}" assignTo="#{middleManHome.id}"/>
+                    </a:commandButton>
+
+                    #{' '}
+
+                    <a:commandButton image="/img/delete.png" action="#{middleManHome.remove}" render="dataListResult"
+                                     onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                                     immediate="true" execute="@this" title="#{messages.delete}">
+                           <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_middleMan.id}" assignTo="#{middleManHome.id}"/>
+                    </a:commandButton>
+
+                    #{' '}
+                    <s:link view="/func/erp/sale/mgr/MiddleReward.xhtml" rendered="#{s:hasRole('erp.sale.manager')}"
+                            propagation="begin">
                         <s:graphicImage value="/img/calc.png" title="#{messages.middleMan_reward_calc}"/>
-                        <f:param name="middleManId" value="#{_middleMan.id}"/>
+                        <f:param name="middleManName" value="#{_middleMan.name}"/>
                     </s:link>
 
 
@@ -158,5 +176,45 @@
 
             </rich:dataTable>
         </h:form>
+
+
+
+
+        <s:decorate template="/layout/edit-modalpanel.xhtml">
+            <ui:param name="panelId" value="editPanel"/>
+            <ui:define name="panelTitle">
+                <h:outputText
+                        value="#{middleManHome.managed ? messages['edit'] : messages['add']} #{messages.MiddleMan}"/>
+            </ui:define>
+
+            <ui:include src="/layout/erp/MiddleManEdit.xhtml"/>
+
+
+            <ui:define name="actionButtons">
+                <a:commandButton execute="@form"
+                                 render="editPanel_inputs,dataListResult"
+                                 value="#{messages.save}" action="#{middleManHome.persistEnd}"
+                                 rendered="#{!middleManHome.managed}"
+                                 data="#{middleManHome.lastState}"
+                                 oncomplete="if (event.data == 'persisted'){#{rich:component('editPanel')}.hide();}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+                <a:commandButton execute="@form" render="editPanel_inputs,dataListResult"
+                                 value="#{messages.update}" action="#{middleManHome.updateEnd}"
+                                 rendered="#{middleManHome.managed}" data="#{middleManHome.lastState}"
+                                 oncomplete="if (event.data == 'updated')#{rich:component('editPanel')}.hide();">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+                <a:commandButton immediate="true" execute="@this" action="#{middleManHome.refresh}"
+                                 value="#{messages.cancel}" render="dataListResult"
+                                 oncomplete="#{rich:component('editPanel')}.hide();">
+                    <s:conversationPropagation type="end"/>
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </ui:define>
+
+        </s:decorate>
+
+
     </ui:define>
 </ui:composition>

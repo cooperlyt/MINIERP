@@ -24,15 +24,8 @@
             </h:form>
         </rich:toolbarGroup>
 
-        <rich:toolbarGroup rendered="#{s:hasRole('erp.sale.saler')}">
-            <h:graphicImage value="/img/price.png"/>
-            <s:link value="#{messages.createQuoted}" propagation="begin"
-                    view="/func/erp/sale/QuotedCreateCustomer.xhtml">
-                <f:param name="from" value="/func/erp/sale/Customer.xhtml"/>
-            </s:link>
-        </rich:toolbarGroup>
 
-        <rich:toolbarGroup rendered="#{s:hasRole('erp.sale.saler')}">
+        <rich:toolbarGroup >
             <h:graphicImage value="/img/ranking.png"/>
             <s:link value="#{messages.customerTopReport}" target="_blank"
                     view="/report/customerTop.xhtml"/>
@@ -40,7 +33,7 @@
 
 
 
-        <rich:toolbarGroup rendered="#{s:hasRole('erp.sale.saler')}">
+        <rich:toolbarGroup >
             <h:graphicImage value="/img/ranking.png"/>
             <s:link value="#{messages.customerMoneyTopReport}" target="_blank"
                     view="/report/customerMoneyTop.xhtml"/>
@@ -299,7 +292,7 @@
             <ui:define name="label">#{messages.CustomerArea}</ui:define>
             <h:selectOneMenu value="#{customerHome.instance.customerArea}" required="true"
                              label="#{messages.CustomerArea}">
-                <s:selectItems value="#{mySaleArea}" var="_customerArea"
+                <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
                                noSelectionLabel="#{messages.noSelectLabel}"
                                label="#{_customerArea.name}"/>
 

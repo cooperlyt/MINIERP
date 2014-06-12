@@ -116,7 +116,7 @@
     </page>
 
     <page view-id="/func/erp/store/StoreMgr.xhtml" login-required="true">
-        <restrict>#{s:hasRole('erp.storage.store')}</restrict>
+        <restrict>#{s:hasRole('erp.storage.manager')}</restrict>
     </page>
 
     <page view-id="/func/erp/sale/*" login-required="true">
@@ -140,7 +140,7 @@
     </page>
 
     <page view-id="/func/erp/total/*" login-required="true">
-        <restrict>#{s:hasRole('erp.sale.manager')}</restrict>
+        <restrict>#{s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler') }</restrict>
     </page>
 
     <page view-id="/func/erp/store/storeChange/*" login-required="true">

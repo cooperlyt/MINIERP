@@ -138,4 +138,8 @@
         <action execute="#{customerMoneyOperList.refresh}"/>
     </event>
 
+    <event type="org.jboss.seam.afterTransactionSuccess.MiddleMan">
+        <action execute="#{middleManList.refresh}"/>
+    </event>
+
 </components>

@@ -24,7 +24,7 @@
 
         <rich:panel>
             <h:form id="condition">
-                <s:decorate template="/layout/seam-edit.xhtml" rendered="#{not s:hasRole('erp.sale.manager') and not s:hasRole('erp.sale.saler')}">
+                <s:decorate template="/layout/seam-edit.xhtml" rendered="#{not s:hasRole('erp.storage.dispatch') and not s:hasRole('erp.storage.manager')}">
                     <ui:define name="label">#{messages.Store}</ui:define>
                     <h:selectOneMenu value="#{stockSearchList.storeId}" required="true" label="#{messages.Store}">
                         <s:selectItems value="#{myStores}" var="_store" label="#{_store.name}" itemValue="#{_store.id}"
@@ -32,7 +32,7 @@
                     </h:selectOneMenu>
                 </s:decorate>
 
-                <s:decorate template="/layout/seam-edit.xhtml" rendered="#{s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}">
+                <s:decorate template="/layout/seam-edit.xhtml" rendered="#{s:hasRole('erp.storage.dispatch') or s:hasRole('erp.storage.manager')}">
                     <ui:define name="label">#{messages.Store}</ui:define>
                     <h:selectOneMenu value="#{stockSearchList.storeId}" label="#{messages.Store}">
                         <s:selectItems value="#{allStoreList}" var="_store" label="#{_store.name}" itemValue="#{_store.id}"
