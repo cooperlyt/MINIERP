@@ -55,20 +55,24 @@
 
         <rich:column>
             <f:facet name="header">
-                #{messages.orderItemCount}
+                #{messages.MasterUnitCount}
             </f:facet>
-            <h:outputText value="#{_item.useUnitCount}">
+            <h:outputText value="#{_item.displayMasterCount}">
                 <f:convertNumber pattern="#0.####"/>
             </h:outputText>
-
-
         </rich:column>
-        <rich:column style="text-align: center">
+
+
+        <rich:column>
             <f:facet name="header">
-                #{messages.Res_Unit}
+                #{messages.AuxUnitCount}
             </f:facet>
-            #{_item.resUnit.name}
+            <h:outputText value="#{_item.displayAuxCount}">
+                <f:convertNumber pattern="#0.####"/>
+            </h:outputText>
         </rich:column>
+
+
 
         <rich:column>
             <f:facet name="header">
@@ -93,6 +97,14 @@
 
             <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
 
+        </rich:column>
+
+
+        <rich:column style="text-align: center">
+            <f:facet name="header">
+                #{messages.Res_Unit}
+            </f:facet>
+            #{_item.resUnit.name}
         </rich:column>
         <rich:column>
             <f:facet name="header">

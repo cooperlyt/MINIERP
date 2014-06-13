@@ -251,6 +251,11 @@
             <h:outputText value="#{_resItem.rebateMoney}">
                 <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
             </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{orderCreate.instance.totalResRebateMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
         </rich:column>
 
         <rich:column>

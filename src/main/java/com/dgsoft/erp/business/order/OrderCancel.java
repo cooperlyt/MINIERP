@@ -50,10 +50,57 @@ public class OrderCancel {
         processInstanceHome.setProcessKey(orderHome.getInstance().getId());
     }
 
+    private CustomerOrder.OrderPayType changeToPayType;
+
+    public CustomerOrder.OrderPayType getChangeToPayType() {
+        return changeToPayType;
+    }
+
+    public void setChangeToPayType(CustomerOrder.OrderPayType changeToPayType) {
+        this.changeToPayType = changeToPayType;
+    }
+
+    public void changeShipDate() {
+
+    }
+
+    public void changePayType() {
+        if (orderHome.isMoneyInAccount()) {
+            throw new IllegalArgumentException("order money is in Account!");
+        }
+        if (!orderHome.getInstance().getPayType().equals(changeToPayType)) {
+           if ((orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
+                   || changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) &&
+                   (orderHome.getInstance().getAccountOpers() != null)){
+               for(AccountOper accountOper: orderHome.getInstance().getAccountOpers()){
+                   accountOper.revertCustomerMoney();
+
+                   // accountOper.setAdvanceReceivable();
+                   if (changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
+                       accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
+                       accountOper.setAccountsReceivable(BigDecimal.ZERO);
+                   }else{
+                       accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
+                       accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+                   }
+                   accountOper.calcCustomerMoney();
+               }
+
+           }
+            orderHome.getInstance().setPayType(changeToPayType);
+
+            orderHome.update();
+        }
+
+    }
+
+    public void changeOrderPrice() {
+
+    }
 
     @Transactional
     public void removeOrder() {
-        if (orderHome.isInAccount()){
+        if (orderHome.isInAccount()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "isInAccount");
             return;
         }

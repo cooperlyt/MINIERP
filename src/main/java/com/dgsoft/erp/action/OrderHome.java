@@ -518,7 +518,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-    public boolean isInAccount() {
+    public boolean isMoneyInAccount(){
         if (getInstance().isAllStoreOut()) {
             for (AccountOper ao : getInstance().getAccountOpers()) {
                 if (ao.getSaleCertificate() != null) {
@@ -526,7 +526,10 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                 }
             }
         }
+        return false;
+    }
 
+    public boolean isStoreInAccount(){
         if (isAnyOneStoreOut()){
             for(NeedRes n : getInstance().getNeedReses()){
                 for(Dispatch d: n.getDispatches()){
@@ -535,6 +538,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    public boolean isInAccount() {
+        if (isMoneyInAccount()){
+            return true;
+        }
+
+        if (isStoreInAccount()){
+            return true;
         }
 
         return false;

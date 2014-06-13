@@ -25,7 +25,7 @@
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.payType}</ui:define>
+        <ui:define name="label">#{messages.order_field_payType}</ui:define>
         #{messages[orderHome.instance.payType.name()]}
     </s:decorate>
 
@@ -34,21 +34,6 @@
         <h:outputText value="#{orderHome.instance.createDate}">
             <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
         </h:outputText>
-    </s:decorate>
-
-    <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.order_field_resReceived}</ui:define>
-        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.resReceived}"/>
-    </s:decorate>
-
-    <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.order_field_moneyComplete}</ui:define>
-        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.moneyComplete}"/>
-    </s:decorate>
-
-    <s:decorate template="/layout/seam-display.xhtml">
-        <ui:define name="label">#{messages.order_field_allStoreOut}</ui:define>
-        <h:selectBooleanCheckbox disabled="true" value="#{orderHome.instance.allStoreOut}"/>
     </s:decorate>
 
     <s:decorate template="/layout/seam-display.xhtml">

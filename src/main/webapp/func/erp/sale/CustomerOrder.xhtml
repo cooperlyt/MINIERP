@@ -349,31 +349,40 @@
 
 
             <rich:panel
-                    rendered="#{orderHome.idDefined and (not _order.canceled) and (s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role))}">
+                    rendered="#{orderHome.idDefined and (not _order.canceled) }">
 
                 <h:panelGrid columns="2">
                     <s:graphicImage value="/img/res_back.png" title="#{messages.ORDER_RES_BACK}"/>
-                    <s:link disabled="#{not orderHome.anyOneStoreOut}"
+                    <s:link
                             value="#{messages.ORDER_RES_BACK}"
+                            onclick=" if ( #{not orderHome.anyOneStoreOut} ) {alert('#{messages.NoOutCantBack}'); return false;}"
                             view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
                         <f:param name="customerOrderId" value="#{orderHome.instance.id}"/>
                         <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-
+                        <f:param name="customerId" value="#{orderHome.instance.customer.id}"/>
+                        <f:param name="customerAreaId" value="#{orderHome.instance.customer.customerArea.id}"/>
                     </s:link>
 
+                    <h:graphicImage value="/img/edit.png"/>
+                    <s:link value="#{messages.orderChange}" propagation="begin" view="/func/erp/sale/OrderEdit.xhtml">
+                        <f:param name="orderId" value="#{orderHome.instance.id}"/>
+                    </s:link>
 
                     <h:graphicImage value="/img/delete.png"/>
                     <a:commandLink  value="#{messages.DELETE_ORDER}"
-                                     oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
-                                     render="dataListResult"
-                                     action="#{orderCancel.removeOrder}"
-                                     disabled="#{(orderHome.anyOneStoreOut and (not s:hasRole('erp.sale.manager')))}">
+                                    oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
+                                    render="dataListResult"
+                                    action="#{orderCancel.removeOrder}"
+                                    onclick="if ( #{(orderHome.anyOneStoreOut and (not s:hasRole('erp.sale.manager')))} ) {alert('#{messages.HaveStoreOutNeedHightRole}'); return false;}" >
                         <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
                     </a:commandLink>
+
+
 
                 </h:panelGrid>
 
             </rich:panel>
+
         </a:outputPanel>
     </h:form>
 </rich:popupPanel>

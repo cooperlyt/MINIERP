@@ -1,0 +1,157 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j" xmlns:p="http://www.eclipse.org/birt/taglibs/birt.tld"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.orderChange}-#{orderHome.instance.id}"/>
+
+    <ui:define name="toolbar">
+        <rich:toolbar>
+
+
+            <rich:toolbarGroup location="right">
+                <s:button styleClass="toolBarBtn" view="/func/erp/sale/CustomerOrder.xhtml" value="#{messages.return}"/>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+        <a:outputPanel id="orderInfo">
+            <ui:include src="/layout/erp/publicOrderInfo.xhtml"/>
+
+
+            <s:decorate template="/layout/view-details.xhtml">
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{orderHome.instance.customer}"/>
+                </ui:include>
+                <ui:param name="labelValue" value="#{orderHome.instance.customer.name}"/>
+                <ui:param name="openLabel" value="#{messages.Customer}"/>
+                <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+            </s:decorate>
+        </a:outputPanel>
+
+        <div style="clear: both;"/>
+
+        <br/>
+
+        <rich:panel>
+
+
+            <h:panelGrid columns="3">
+                <s:decorate id="oldPayTypeField" template="/layout/seam-display.xhtml">
+                    <ui:define name="label">
+                        #{messages.order_field_payType}
+                    </ui:define>
+                    #{messages[orderHome.instance.payType.name()]}
+                </s:decorate>
+
+                <div style="clear: both;"/>
+                <h:outputText value="#{messages.CustomerMoneyInAccount}" rendered="#{orderHome.moneyInAccount}"/>
+            </h:panelGrid>
+            <a:outputPanel rendered="#{not orderHome.moneyInAccount}">
+                <h:form>
+                    <h:panelGrid columns="3">
+                        <s:decorate template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">
+                                #{messages.ChangeTo}
+                            </ui:define>
+
+                            <h:selectOneMenu value="#{orderCancel.changeToPayType}"
+                                             label="#{messages.order_field_payType}"
+                                             required="true">
+                                <s:selectItems value="#{orderPayTypes}" var="_payType"
+                                               noSelectionLabel="#{messages.noSelectLabel}"
+                                               label="#{messages[_payType.name()]}"/>
+                                <s:convertEnum/>
+                            </h:selectOneMenu>
+                        </s:decorate>
+
+                        <div style="clear: both;"/>
+
+                        <a:commandButton render="orderInfo,oldPayTypeField" execute="@form"
+                                         action="#{orderCancel.changePayType}" value="#{messages.Change}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+
+                    </h:panelGrid>
+                </h:form>
+
+            </a:outputPanel>
+        </rich:panel>
+
+        <br/>
+
+        <rich:panel>
+            #{messages.dispatch_field_shipDate}
+
+            <h:form>
+                <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
+
+                    <a:outputPanel rendered="#{_needRes.status eq 'OUTED'}">
+                        #{messages[_needRes.type.name()]}:
+
+                        <a:repeat value="#{_needRes.dispatchList}" var="_dispatch">
+                            <s:decorate rendered="#{_dispatch.storeOut}" template="/layout/seam-edit.xhtml">
+                                <ui:define name="label">
+                                    #{_dispatch.store.name}
+                                </ui:define>
+
+                                <rich:calendar
+                                        enableManualInput="true"
+                                        inputSize="10"
+                                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                        datePattern="#{messages.datetimepattern}"
+                                        required="true"
+                                        label="#{messages.dispatch_field_shipDate}"
+                                        value="#{_dispatch.sendTime}">
+                                </rich:calendar>
+
+                            </s:decorate>
+
+
+                        </a:repeat>
+                    </a:outputPanel>
+                </a:repeat>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.order_field_createDate}
+                    </ui:define>
+
+
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datetimepattern}"
+                            required="true"
+                            label="#{messages.order_field_createDate}"
+                            value="#{orderHome.instance.createDate}">
+                    </rich:calendar>
+                </s:decorate>
+
+                <div style="clear: both"/>
+            </h:form>
+        </rich:panel>
+
+        <br/>
+
+        <rich:panel>
+
+
+        </rich:panel>
+
+    </ui:define>
+
+</ui:composition>

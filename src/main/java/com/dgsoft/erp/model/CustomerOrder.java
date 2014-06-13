@@ -345,6 +345,18 @@ public class CustomerOrder implements java.io.Serializable {
         this.resSaleRebates = resSaleRebates;
     }
 
+    @Transient
+    public List<ResSaleRebate> getResSaleRebateList() {
+        List<ResSaleRebate> result = new ArrayList<ResSaleRebate>(getResSaleRebates());
+        Collections.sort(result, new Comparator<ResSaleRebate>() {
+            @Override
+            public int compare(ResSaleRebate o1, ResSaleRebate o2) {
+                return o1.getRes().compareTo(o2.getRes());
+            }
+        });
+        return result;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOrder", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<OrderFee> getOrderFees() {
         return orderFees;
@@ -518,5 +530,16 @@ public class CustomerOrder implements java.io.Serializable {
             return this.toString().hashCode();
         }
 
+    }
+
+
+    @Transient
+    public BigDecimal getTotalResRebateMoney() {
+        BigDecimal result = BigDecimal.ZERO;
+        for (ResSaleRebate rebate : getResSaleRebates()) {
+            if (rebate.getRebateMoney() != null)
+                result = result.add(rebate.getRebateMoney());
+        }
+        return result;
     }
 }

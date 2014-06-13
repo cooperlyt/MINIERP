@@ -1770,8 +1770,8 @@
       <column name="BEGIN_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="QkVHSU5fQ09VTlQ="/>
       <column name="CLOSE_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="Q0xPU0VfQ09VTlQ="/>
       <primary-key name="PRIMARY" columns="ID"/>
-      <foreign-key name="STOCK_ACCOUNT_ibfk_2" columns="CHECKOUT" ref-table="CHECK_OUT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="STOCK_ACCOUNT_ibfk_1" columns="STOCK" ref-table="STOCK" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="STOCK_ACCOUNT_ibfk_2" columns="CHECKOUT" ref-table="CHECK_OUT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="STOCK_CHANGE" schema="" catalog="MINI_ERP" type="TABLE">
       <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>
