@@ -91,58 +91,68 @@
         <br/>
 
         <rich:panel>
-            #{messages.dispatch_field_shipDate}
+            <h:outputText value="#{messages.CustomerMoneyInAccount}" rendered="#{orderHome.moneyInAccount}"/>
+            <a:outputPanel rendered="#{not orderHome.moneyInAccount}">
+                <h:form>
+                    <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
 
-            <h:form>
-                <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
+                        <a:outputPanel rendered="#{_needRes.status eq 'OUTED'}">
+                            #{messages[_needRes.type.name()]}:
 
-                    <a:outputPanel rendered="#{_needRes.status eq 'OUTED'}">
-                        #{messages[_needRes.type.name()]}:
+                            <a:repeat value="#{_needRes.dispatchList}" var="_dispatch">
+                                <s:decorate rendered="#{_dispatch.storeOut}" template="/layout/seam-edit.xhtml">
+                                    <ui:define name="label">
+                                        #{_dispatch.store.name}#{messages.dispatch_field_shipDate}
+                                    </ui:define>
 
-                        <a:repeat value="#{_needRes.dispatchList}" var="_dispatch">
-                            <s:decorate rendered="#{_dispatch.storeOut}" template="/layout/seam-edit.xhtml">
-                                <ui:define name="label">
-                                    #{_dispatch.store.name}
-                                </ui:define>
+                                    <rich:calendar
+                                            enableManualInput="true"
+                                            inputSize="10"
+                                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                            datePattern="#{messages.datetimepattern}"
+                                            required="true" validator="operDateValidator"
+                                            label="#{messages.dispatch_field_shipDate}"
+                                            value="#{_dispatch.sendTime}">
+                                    </rich:calendar>
 
-                                <rich:calendar
-                                        enableManualInput="true"
-                                        inputSize="10"
-                                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                                        datePattern="#{messages.datetimepattern}"
-                                        required="true"
-                                        label="#{messages.dispatch_field_shipDate}"
-                                        value="#{_dispatch.sendTime}">
-                                </rich:calendar>
-
-                            </s:decorate>
-
-
-                        </a:repeat>
-                    </a:outputPanel>
-                </a:repeat>
-
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">
-                        #{messages.order_field_createDate}
-                    </ui:define>
+                                </s:decorate>
 
 
-                    <rich:calendar
-                            enableManualInput="true"
-                            inputSize="10"
-                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                            datePattern="#{messages.datetimepattern}"
-                            required="true"
-                            label="#{messages.order_field_createDate}"
-                            value="#{orderHome.instance.createDate}">
-                    </rich:calendar>
-                </s:decorate>
+                            </a:repeat>
+                        </a:outputPanel>
+                    </a:repeat>
 
-                <div style="clear: both"/>
-            </h:form>
+                    <div style="clear: both"/>
+                    <h:panelGrid columns="2">
+
+                        <s:decorate template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">
+                                #{messages.order_field_createDate}
+                            </ui:define>
+
+
+                            <rich:calendar
+                                    enableManualInput="true"
+                                    inputSize="10"
+                                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                    datePattern="#{messages.datetimepattern}"
+                                    required="true" validator="operDateValidator"
+                                    label="#{messages.order_field_createDate}"
+                                    value="#{orderHome.instance.createDate}">
+                            </rich:calendar>
+                        </s:decorate>
+
+                        <a:commandButton render="orderInfo" execute="@form"
+                                         action="#{orderCancel.changeShipDate}" value="#{messages.Change}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </h:panelGrid>
+
+                    <div style="clear: both"/>
+                </h:form>
+            </a:outputPanel>
         </rich:panel>
 
         <br/>

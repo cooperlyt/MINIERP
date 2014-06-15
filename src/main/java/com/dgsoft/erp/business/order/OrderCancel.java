@@ -61,6 +61,16 @@ public class OrderCancel {
     }
 
     public void changeShipDate() {
+        if (orderHome.isMoneyInAccount()) {
+            throw new IllegalArgumentException("order money is in Account!");
+        }
+
+        if (!orderHome.getInstance().getAccountOpers().isEmpty()){
+            for (AccountOper oper: orderHome.getInstance().getAccountOpers()){
+                oper.setOperDate(orderHome.getLastShipDate());
+            }
+        }
+        orderHome.update();
 
     }
 
@@ -69,24 +79,24 @@ public class OrderCancel {
             throw new IllegalArgumentException("order money is in Account!");
         }
         if (!orderHome.getInstance().getPayType().equals(changeToPayType)) {
-           if ((orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
-                   || changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) &&
-                   (orderHome.getInstance().getAccountOpers() != null)){
-               for(AccountOper accountOper: orderHome.getInstance().getAccountOpers()){
-                   accountOper.revertCustomerMoney();
+            if ((orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
+                    || changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) &&
+                    (orderHome.getInstance().getAccountOpers() != null)) {
+                for (AccountOper accountOper : orderHome.getInstance().getAccountOpers()) {
+                    accountOper.revertCustomerMoney();
 
-                   // accountOper.setAdvanceReceivable();
-                   if (changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
-                       accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
-                       accountOper.setAccountsReceivable(BigDecimal.ZERO);
-                   }else{
-                       accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
-                       accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
-                   }
-                   accountOper.calcCustomerMoney();
-               }
+                    // accountOper.setAdvanceReceivable();
+                    if (changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                        accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
+                        accountOper.setAccountsReceivable(BigDecimal.ZERO);
+                    } else {
+                        accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
+                        accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+                    }
+                    accountOper.calcCustomerMoney();
+                }
 
-           }
+            }
             orderHome.getInstance().setPayType(changeToPayType);
 
             orderHome.update();
