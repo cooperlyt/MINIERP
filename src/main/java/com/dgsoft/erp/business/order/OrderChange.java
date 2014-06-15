@@ -205,10 +205,8 @@ public class OrderChange extends OrderShipTaskHandle {
     }
 
     public String toChangeOrderMoney() {
-        for (ResSaleRebate resSaleRebate : orderHome.getResSaleRebates()) {
-            resSaleRebate.setCount(BigDecimal.ZERO);
-        }
 
+        orderHome.refreshSaleRebate();
 
         addOrderItemsToRebate(orderHome.getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.COMPLETED)));
 

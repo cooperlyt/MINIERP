@@ -29,21 +29,53 @@ import java.util.*;
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
-    protected SetLinkList<ResSaleRebate> resSaleRebates;
+    private SetLinkList<ResSaleRebate> resSaleRebates;
 
     public void reCreateResSaleBebates() {
         resSaleRebates.clear();
     }
 
 
-    @Override
-    protected void initInstance() {
-        super.initInstance();
-        resSaleRebates = new SetLinkList<ResSaleRebate>(getInstance().getResSaleRebates());
+    public void refreshSaleRebate(){
+        resSaleRebates = null;
     }
 
     public SetLinkList<ResSaleRebate> getResSaleRebates() {
+        initSaleRebates();
         return resSaleRebates;
+    }
+
+
+    protected void initSaleRebates(){
+        if (resSaleRebates == null){
+            resSaleRebates = new SetLinkList<ResSaleRebate>(getInstance().getResSaleRebates());
+            for (OrderItem item : getAllOrderItem()) {
+                boolean find = false;
+                for (ResSaleRebate tr : resSaleRebates) {
+                    if (tr.isSameItem(item)) {
+                        tr.add(item);
+                        find = true;
+                    }
+                }
+                if (!find && (item.getMoney() != null) && (item.getMoney().compareTo(BigDecimal.ZERO) > 0)) {
+                    resSaleRebates.add(new ResSaleRebate(getInstance(), item.getRes(), item.getUseUnit(), item.getUseUnitCount(), item.getMoney(), item.getRebate()));
+                }
+            }
+        }
+    }
+
+
+    @Override
+    protected boolean wire(){
+
+        List<ResSaleRebate> removeRebates = new ArrayList<ResSaleRebate>();
+        for (ResSaleRebate resSaleRebate: getResSaleRebates()){
+            if ((resSaleRebate.getRebateMoney() == null) || (resSaleRebate.getRebateMoney().compareTo(BigDecimal.ZERO) == 0)){
+                removeRebates.add(resSaleRebate);
+            }
+        }
+        resSaleRebates.removeAll(removeRebates);
+        return true;
     }
 
     @In(create = true)
@@ -308,7 +340,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         setUseScaleRebate(false);
         BigDecimal result = BigDecimal.ZERO;
-        for (ResSaleRebate item : resSaleRebates) {
+        for (ResSaleRebate item : getResSaleRebates()) {
             item.calcMoney();
             result = result.add(item.getRebateMoney());
         }

@@ -197,22 +197,9 @@ public class OrderCreate extends OrderHome {
     }
 
     public String toOrderMoneyCalc() {
-        resSaleRebates.clear();
+        refreshSaleRebate();
 
 
-        for (OrderItem item : needResHome.getOrderNeedItems()) {
-            boolean find = false;
-            for (ResSaleRebate tr : resSaleRebates) {
-                if (tr.isSameItem(item)) {
-                    tr.add(item);
-                    find = true;
-                }
-            }
-            if (!find && (item.getMoney().compareTo(BigDecimal.ZERO) > 0)) {
-                resSaleRebates.add(new ResSaleRebate(getInstance(), item.getRes(), item.getUseUnit(), item.getUseUnitCount(), item.getMoney(), item.getRebate()));
-            }
-
-        }
         return "/business/startPrepare/erp/sale/CreateSaleOrderMoney.xhtml";
 
     }
@@ -331,6 +318,7 @@ public class OrderCreate extends OrderHome {
 
     protected boolean wireOrder() {
 
+
         //TODO cost calc for  BOM table
         getInstance().setTotalCost(new BigDecimal(0));
 
@@ -350,13 +338,7 @@ public class OrderCreate extends OrderHome {
         }
 
 
-        List<ResSaleRebate> removeRebates = new ArrayList<ResSaleRebate>();
-        for (ResSaleRebate resSaleRebate: resSaleRebates){
-            if (resSaleRebate.getRebateMoney().compareTo(BigDecimal.ZERO) == 0){
-                removeRebates.add(resSaleRebate);
-            }
-        }
-        resSaleRebates.removeAll(removeRebates);
+
 
         //getInstance().getNeedReses().clear();
         //getInstance().getNeedReses().add(needResHome.getReadyInstance());

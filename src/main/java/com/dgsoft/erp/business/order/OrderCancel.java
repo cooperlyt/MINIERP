@@ -10,6 +10,7 @@ import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.EnumSet;
@@ -65,8 +66,8 @@ public class OrderCancel {
             throw new IllegalArgumentException("order money is in Account!");
         }
 
-        if (!orderHome.getInstance().getAccountOpers().isEmpty()){
-            for (AccountOper oper: orderHome.getInstance().getAccountOpers()){
+        if (!orderHome.getInstance().getAccountOpers().isEmpty()) {
+            for (AccountOper oper : orderHome.getInstance().getAccountOpers()) {
                 oper.setOperDate(orderHome.getLastShipDate());
             }
         }
@@ -104,7 +105,35 @@ public class OrderCancel {
 
     }
 
-    public void changeOrderPrice() {
+    public String toEditMoneyRebate(){
+        orderHome.refreshSaleRebate();
+        return "/func/erp/sale/OrderEditMoney.xhtml";
+    }
+
+    public String changeOrderPrice() {
+        if (orderHome.isMoneyInAccount()) {
+            throw new IllegalArgumentException("order money is in Account!");
+        }
+
+        orderHome.calcMoneys();
+
+        for (AccountOper accountOper : orderHome.getInstance().getAccountOpers()) {
+            accountOper.revertCustomerMoney();
+
+            // accountOper.setAdvanceReceivable();
+            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
+                accountOper.setAccountsReceivable(BigDecimal.ZERO);
+            } else {
+                accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
+                accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+            }
+            accountOper.calcCustomerMoney();
+        }
+
+
+
+        return orderHome.update();
 
     }
 
@@ -119,6 +148,7 @@ public class OrderCancel {
             orderHome.getEntityManager().remove(ao);
         }
 
+        Logging.getLog(getClass()).debug("begin remove order:" + orderHome.getInstance().getId());
         orderHome.getInstance().getAccountOpers().clear();
         for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
             for (Dispatch dispatch : needRes.getDispatches()) {
@@ -138,6 +168,7 @@ public class OrderCancel {
             orderItem.setStatus(OrderItem.OrderItemStatus.REMOVED);
             orderItem.setDispatch(null);
         }
+        orderHome.getResSaleRebates().clear();
 
         orderHome.getInstance().setResReceived(false);
         orderHome.getInstance().setAllStoreOut(false);

@@ -165,7 +165,7 @@
         <rich:column style="text-align: center;" width="30px">
 
 
-            <a:commandButton image="/img/cancel.png" title="#{messages.CancelOrder}" immediate="true" execute="@this"
+            <a:commandButton image="/img/edit.png" title="#{messages.CancelOrder}" immediate="true" execute="@this"
                              render="cancelOrderIdTitle,cancelOrderOperAction"
                              oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
                              rendered="#{(not _order.canceled)}">
@@ -329,32 +329,29 @@
 
     </rich:extendedDataTable>
 </h:form>
-<rich:popupPanel id="cancelOrderOperSelectPanel" modal="true" autosized="true"
+<rich:popupPanel id="cancelOrderOperSelectPanel" modal="true" width="600" height="500"
                  moveable="true" resizeable="false">
-    <f:facet name="header">
-        <h:panelGroup> <h:outputText value="#{messages.CancelOrderType}"/>
-            #{' '}                          <h:outputText id="cancelOrderIdTitle" value="#{orderHome.id}"/>
+<f:facet name="header">
+    <h:panelGroup> <h:outputText value="#{messages.CancelOrderType}"/>
+        #{' '}                          <h:outputText id="cancelOrderIdTitle" value="#{orderHome.id}"/>
 
-        </h:panelGroup>
-    </f:facet>
-    <f:facet name="controls">
-        <a:commandButton immediate="true"
-                         execute="@this" image="/img/close.png"
-                         onclick="#{rich:component('cancelOrderOperSelectPanel')}.hide(); return false;">
-        </a:commandButton>
-    </f:facet>
+    </h:panelGroup>
+</f:facet>
+<f:facet name="controls">
+    <a:commandButton immediate="true"
+                     execute="@this" image="/img/close.png"
+                     onclick="#{rich:component('cancelOrderOperSelectPanel')}.hide(); return false;">
+    </a:commandButton>
+</f:facet>
+<h:form>
+    <a:outputPanel id="cancelOrderOperAction">
 
-    <h:form id="cancelOrderOperAction">
-        <a:outputPanel>
+        <a:outputPanel rendered="#{orderHome.idDefined and (not _order.canceled) }">
 
-
-            <rich:panel
-                    rendered="#{orderHome.idDefined and (not _order.canceled) }">
-
-                <h:panelGrid columns="2">
+            <rich:toolbar itemSeparator="line" height="34">
+                <rich:toolbarGroup>
                     <s:graphicImage value="/img/res_back.png" title="#{messages.ORDER_RES_BACK}"/>
-                    <s:link
-                            value="#{messages.ORDER_RES_BACK}"
+                    <s:link value="#{messages.ORDER_RES_BACK}"
                             onclick=" if ( #{not orderHome.anyOneStoreOut} ) {alert('#{messages.NoOutCantBack}'); return false;}"
                             view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
                         <f:param name="customerOrderId" value="#{orderHome.instance.id}"/>
@@ -362,29 +359,181 @@
                         <f:param name="customerId" value="#{orderHome.instance.customer.id}"/>
                         <f:param name="customerAreaId" value="#{orderHome.instance.customer.customerArea.id}"/>
                     </s:link>
+                </rich:toolbarGroup>
 
-                    <h:graphicImage value="/img/edit.png"/>
-                    <s:link value="#{messages.orderChange}" propagation="begin" view="/func/erp/sale/OrderEdit.xhtml">
-                        <f:param name="orderId" value="#{orderHome.instance.id}"/>
-                    </s:link>
+                <rich:toolbarGroup>
 
                     <h:graphicImage value="/img/delete.png"/>
-                    <a:commandLink  value="#{messages.DELETE_ORDER}"
-                                    oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
-                                    render="dataListResult"
-                                    action="#{orderCancel.removeOrder}"
-                                    onclick="if ( #{(orderHome.anyOneStoreOut and (not s:hasRole('erp.sale.manager')))} ) {alert('#{messages.HaveStoreOutNeedHightRole}'); return false;}" >
+
+                    <a:commandLink value="#{messages.DELETE_ORDER}"
+                                   oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.hide();"
+                                   render="dataListResult" immediate="true" execute="@this"
+                                   disabled="#{orderHome.inAccount or (not s:hasRole(orderHome.instance.customer.customerArea.role) and not s:hasRole('erp.sale.manager'))}"
+                                   action="#{orderCancel.removeOrder}"
+                                   onclick="if(confirm('#{messages.deleteConfirm}')){}else{return false;}  if ( #{orderHome.anyOneStoreOut and (not s:hasRole('erp.sale.manager'))} ) {alert('#{messages.HaveStoreOutNeedHightRole}'); return false;}">
                         <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
                     </a:commandLink>
 
+                </rich:toolbarGroup>
+
+                <rich:toolbarGroup>
 
 
+                    <h:graphicImage value="/img/edit.png"/>
+                    <s:link value="#{messages.orderMoneyChange}" propagation="begin" view="/func/erp/sale/OrderEdit.xhtml"
+                            disabled="#{orderHome.moneyInAccount or (not s:hasRole(orderHome.instance.customer.customerArea.role) and not s:hasRole('erp.sale.manager'))}">
+                        <f:param name="orderId" value="#{orderHome.instance.id}"/>
+                    </s:link>
+
+
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <rich:panel>
+
+                <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+                <h:panelGrid columns="1">
+                    <h:outputText value="#{messages.OrderStoreInAccount}" style="color: red;"
+                                  rendered="#{orderHome.storeInAccount}"/>
+                    <h:outputText value="#{messages.OrderMoneyInAccount}" style="color: red;"
+                                  rendered="#{orderHome.moneyInAccount}"/>
+                    <h:outputText value="#{messages.NOSaleAresRole}" style="color: red;"
+                                  rendered="#{not s:hasRole(orderHome.instance.customer.customerArea.role)}"/>
                 </h:panelGrid>
+                <a:outputPanel
+                        rendered="#{(not orderHome.moneyInAccount) and (s:hasRole(orderHome.instance.customer.customerArea.role) or s:hasRole('erp.sale.manager'))}">
 
+                    <rich:panel>
+
+
+                        <h:panelGrid columns="3">
+                            <s:decorate id="oldPayTypeField" template="/layout/seam-display.xhtml">
+                                <ui:define name="label">
+                                    #{messages.order_field_payType}
+                                </ui:define>
+                                #{messages[orderHome.instance.payType.name()]}
+                            </s:decorate>
+
+                            <div style="clear: both;"/>
+                            <h:outputText value="#{messages.CustomerMoneyInAccount}"
+                                          rendered="#{orderHome.moneyInAccount}"/>
+                        </h:panelGrid>
+                        <a:outputPanel rendered="#{not orderHome.moneyInAccount}">
+                            <a:region>
+                                <h:panelGrid columns="3">
+                                    <s:decorate template="/layout/seam-edit.xhtml">
+                                        <ui:define name="label">
+                                            #{messages.ChangeTo}
+                                        </ui:define>
+
+                                        <h:selectOneMenu value="#{orderCancel.changeToPayType}"
+                                                         label="#{messages.order_field_payType}"
+                                                         required="true">
+                                            <s:selectItems value="#{orderPayTypes}" var="_payType"
+                                                           noSelectionLabel="#{messages.noSelectLabel}"
+                                                           label="#{messages[_payType.name()]}"/>
+                                            <s:convertEnum/>
+                                        </h:selectOneMenu>
+                                    </s:decorate>
+
+                                    <div style="clear: both;"/>
+
+                                    <a:commandButton render="dataListResult,oldPayTypeField" execute="@region"
+                                                     action="#{orderCancel.changePayType}" value="#{messages.Change}">
+                                        <a:attachQueue requestDelay="0"/>
+                                        <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
+                                    </a:commandButton>
+
+                                </h:panelGrid>
+                            </a:region>
+                        </a:outputPanel>
+                    </rich:panel>
+
+
+                    <br/>
+
+
+                    <a:region>
+                        <rich:panel>
+                            <h:outputText value="#{messages.CustomerMoneyInAccount}"
+                                          rendered="#{orderHome.moneyInAccount}"/>
+                            <a:outputPanel rendered="#{not orderHome.moneyInAccount}">
+
+                                    <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
+
+                                        <a:outputPanel rendered="#{_needRes.status eq 'OUTED'}">
+                                            #{messages[_needRes.type.name()]}:
+
+                                            <a:repeat value="#{_needRes.dispatchList}" var="_dispatch">
+                                                <s:decorate rendered="#{_dispatch.storeOut}"
+                                                            template="/layout/seam-edit.xhtml">
+                                                    <ui:define name="label">
+                                                        #{_dispatch.store.name}#{messages.dispatch_field_shipDate}
+                                                    </ui:define>
+
+                                                    <rich:calendar
+                                                            enableManualInput="true"
+                                                            inputSize="10"
+                                                            timeZone="#{calendarBean.timeZone}"
+                                                            locale="#{calendarBean.locale}"
+                                                            showApplyButton="#{calendarBean.showApply}"
+                                                            popup="#{calendarBean.popup}"
+                                                            datePattern="#{messages.datetimepattern}"
+                                                            required="true" validator="operDateValidator"
+                                                            label="#{messages.dispatch_field_shipDate}"
+                                                            value="#{_dispatch.sendTime}">
+                                                    </rich:calendar>
+
+                                                </s:decorate>
+
+
+                                            </a:repeat>
+                                        </a:outputPanel>
+                                    </a:repeat>
+
+                                    <div style="clear: both"/>
+                                    <h:panelGrid columns="2">
+
+                                        <s:decorate template="/layout/seam-edit.xhtml">
+                                            <ui:define name="label">
+                                                #{messages.order_field_createDate}
+                                            </ui:define>
+
+
+                                            <rich:calendar
+                                                    enableManualInput="true"
+                                                    inputSize="10"
+                                                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                                    showApplyButton="#{calendarBean.showApply}"
+                                                    popup="#{calendarBean.popup}"
+                                                    datePattern="#{messages.datetimepattern}"
+                                                    required="true" validator="operDateValidator"
+                                                    label="#{messages.order_field_createDate}"
+                                                    value="#{orderHome.instance.createDate}">
+                                            </rich:calendar>
+                                        </s:decorate>
+
+                                        <a:commandButton render="dataListResult" execute="@region"
+                                                         action="#{orderCancel.changeShipDate}"
+                                                         value="#{messages.Change}">
+                                            <a:attachQueue requestDelay="0"/>
+                                            <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
+                                        </a:commandButton>
+                                    </h:panelGrid>
+
+                                    <div style="clear: both"/>
+
+                            </a:outputPanel>
+                        </rich:panel>
+                    </a:region>
+                </a:outputPanel>
             </rich:panel>
 
         </a:outputPanel>
-    </h:form>
+
+    </a:outputPanel>
+</h:form>
 </rich:popupPanel>
 
 

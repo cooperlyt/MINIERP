@@ -1,0 +1,153 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j" xmlns:p="http://www.eclipse.org/birt/taglibs/birt.tld"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.orderChange}-#{orderHome.instance.id}"/>
+
+
+    <ui:define name="func-body">
+
+        <h:form>
+
+            <rich:toolbar>
+                <rich:toolbarGroup location="right">
+                    <s:button styleClass="toolBarBtn" propagation="end" view="/func/erp/sale/CustomerOrder.xhtml"
+                              value="#{messages.cancel}"/>
+
+                    <s:button value="#{messages.Previous}" view="/func/erp/sale/OrderEdit.xhtml"/>
+
+                    <h:commandButton value="#{messages.complete}" action="#{orderCancel.changeOrderPrice}"/>
+                </rich:toolbarGroup>
+
+
+            </rich:toolbar>
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+            <br/>
+            <a:outputPanel ajaxRendered="true">
+                <ui:include src="/layout/erp/biz/OrderMoneyInfo.xhtml">
+                    <ui:param name="order" value="#{orderHome.instance}"/>
+                </ui:include>
+
+
+
+            <rich:dataTable style="width: 100%" value="#{orderHome.resSaleRebates}" var="_resItem">
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.res}
+                    </f:facet>
+                    #{_resItem.res.name}
+                </rich:column>
+
+
+                <rich:column style="text-align: right">
+                    <f:facet name="header">
+                        #{messages.orderItemUnitPrice}
+                    </f:facet>
+                    <h:outputText value="#{_resItem.money}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.rebate}(%)
+                    </f:facet>
+
+                    <h:outputText value="#{_resItem.itemRebate}">
+                        <f:convertNumber pattern="#0.####"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.Res_Unit}
+                    </f:facet>
+                    <h:outputText value="#{_resItem.resUnit.name}"/>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.count}
+                    </f:facet>
+                    <h:outputText value="#{_resItem.count}">
+                        <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.orderItemFreeCountBasicRate}
+                    </f:facet>
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:inplaceInput value="#{_resItem.rebateBasicCount}" style="width: 95%"
+                                           label="#{messages.orderItemFreeCountRate}"
+                                           converter="javax.faces.BigDecimal">
+                            <f:validateDoubleRange minimum="0"/>
+                            <f:convertNumber pattern="#0.####"/>
+                            <a:ajax execute="@this" listener="#{orderHome.calcMoneys}" event="blur"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.orderItemFreeCountRate}
+                    </f:facet>
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:inplaceInput value="#{_resItem.rebateRateCount}" style="width: 95%"
+                                           label="#{messages.orderItemFreeCountRate}"
+                                           converter="javax.faces.BigDecimal">
+                            <f:validateDoubleRange minimum="0"/>
+                            <f:convertNumber pattern="#0.####"/>
+                            <a:ajax execute="@this" listener="#{orderHome.calcMoneys}" event="blur"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.orderItemFreeCount}
+                    </f:facet>
+                    <h:outputText value="#{_resItem.rebateCount}">
+                        <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column style="text-align: right">
+                    <f:facet name="header">
+                        #{messages.orderItemFreeMoney}
+                    </f:facet>
+                    <h:outputText value="#{_resItem.rebateMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.field_memo}
+                    </f:facet>
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:inplaceInput value="#{_resItem.memo}" style="width: 95%"
+                                           label="#{messages.field_memo}">
+                            <a:ajax execute="@this" event="blur"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                </rich:column>
+
+            </rich:dataTable>
+            </a:outputPanel>
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
