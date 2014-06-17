@@ -1,0 +1,190 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:b="http://jboss.com/products/seam/birt"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="func-body">
+        <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
+            <h:form>
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.ShipDate}</ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.ShipDate}"
+                            value="#{searchDateArea.dateFrom}">
+                    </rich:calendar>
+
+                    --
+
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.storeOut_field_dateTime}"
+                            value="#{searchDateArea.dateTo}">
+                    </rich:calendar>
+                </s:decorate>
+
+
+                <ui:include src="/layout/erp/res/StoreResCondition.xhtml"/>
+
+                <div style="clear: both;"/>
+
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                    <a:outputPanel>
+                        <div class="actionButtons">
+
+                            <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                            <a:outputPanel id="searchButton">
+                                <a:commandButton value="#{messages.search}"
+                                                 execute="@form" render="totalResultDatas,resRebateDataTable"
+                                                 action="#{storeResSaleTotal.refresh}">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandButton>
+                            </a:outputPanel>
+                        </div>
+                    </a:outputPanel>
+                </h:panelGrid>
+
+
+            </h:form>
+
+
+        </rich:collapsiblePanel>
+
+        <br/>
+
+        <rich:dataTable id="totalResultDatas" style="width: 100%" value="#{storeResSaleTotal.totalResult}" var="_item">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res}
+                </f:facet>
+                #{_item.res.name} #{' '} #{_item.formatTitle}
+
+                <f:facet name="footer">
+                    #{storeResSaleTotal.totalItemCount}#{' '}
+                    #{messages.StoreResSaleTotalCount}
+                </f:facet>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.Res_Unit}
+                </f:facet>
+                #{_item.resUnit.name}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.SaleCount}
+                </f:facet>
+                <h:outputText value="#{_item.count}">
+                    <f:convertNumber pattern="#0.##"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.SaleMoney}
+                </f:facet>
+                <h:outputText value="#{_item.saleMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{storeResSaleTotal.totalSaleMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.AVGSaleMoney}
+                </f:facet>
+                <h:outputText value="#{_item.avgPrice}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.NeedCount}
+                </f:facet>
+                <h:outputText value="#{_item.needCount}" rendered="#{_item.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+                    <f:convertNumber pattern="#0.##"/>
+                </h:outputText>
+
+            </rich:column>
+
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.NeedMoeny}
+                </f:facet>
+                <h:outputText value="#{_item.needMoney}" rendered="#{_item.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{storeResSaleTotal.totalNeedMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+
+            </rich:column>
+
+
+        </rich:dataTable>
+
+        <br/>
+
+        <rich:dataTable style="width: 100%"  id="resRebateDataTable" value="#{storeResSaleTotal.totalResRebate}" var="_rebateItem">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res}
+                </f:facet>
+                #{_rebateItem.res.name}
+                <f:facet name="footer">
+                    #{storeResSaleTotal.totalRebateCount}#{' '}
+                    #{messages.StoreResSaleTotalCount}
+                </f:facet>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.orderItemFreeMoney}
+                </f:facet>
+
+                <h:outputText value="#{_rebateItem.rebateMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{storeResSaleTotal.totalRebateMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+        </rich:dataTable>
+
+    </ui:define>
+
+
+</ui:composition>

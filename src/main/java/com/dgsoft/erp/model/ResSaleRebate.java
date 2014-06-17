@@ -37,6 +37,11 @@ public class ResSaleRebate implements Serializable {
     public ResSaleRebate() {
     }
 
+    public ResSaleRebate(Res res, BigDecimal rebateMoney) {
+        this.res = res;
+        this.rebateMoney = rebateMoney;
+    }
+
     public ResSaleRebate(CustomerOrder customerOrder, Res res, ResUnit resUnit, BigDecimal count, BigDecimal money, BigDecimal itemRebate) {
         this.customerOrder = customerOrder;
         this.res = res;
