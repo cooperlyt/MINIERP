@@ -19,16 +19,23 @@
             <s:div styleClass="info">
 
                 <p>
-                    <strong>MINIERP 2.2.10 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.2.11 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
 
-                    <li>[系统] 权限调整</li>
-                    <li>[销售] 修正关系人错误</li>
+                    <li>[销售] 加入订单修改</li>
 
                 </ul>
 
                 <strong>历史更新</strong>
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.2.10" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[系统] 权限调整</li>
+                        <li>[销售] 修正关系人错误</li>
+                    </ul>
+                </s:decorate>
 
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.2.8" name="openLabel"/>

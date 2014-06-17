@@ -40,7 +40,18 @@
             </rich:calendar>
         </s:decorate>
 
-        <s:decorate template="/layout/seam-display.xhtml">
+        <s:decorate template="/layout/seam-display.xhtml" rendered="#{s:hasRole('erp.storage.manager')}">
+            <ui:define name="label">
+                #{messages.Store}
+            </ui:define>
+            <h:selectOneMenu value="#{stockChangeList.storeId}">
+                <s:selectItems value="#{allStoreList}" var="_store"
+                               itemValue="#{_store.id}" label="#{_store.name}"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml" rendered="#{not s:hasRole('erp.storage.manager')}">
             <ui:define name="label">
                 #{messages.Store}
             </ui:define>
@@ -50,7 +61,7 @@
             </h:selectOneMenu>
         </s:decorate>
 
-        <s:decorate template="/layout/seam-display.xhtml">
+        <s:decorate template="/layout/seam-display.xhtml" >
             <ui:define name="label">
                 #{messages.storeChangeDirection}
             </ui:define>

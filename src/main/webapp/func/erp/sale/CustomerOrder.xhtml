@@ -231,7 +231,7 @@
             </f:facet>
             #{_order.customer.name}
         </rich:column>
-        <rich:column rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}" width="70px">
+        <rich:column width="70px">
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
                     <ui:param name="entityList" value="#{orderList}"/>
@@ -252,8 +252,7 @@
         </rich:column>
 
 
-        <rich:column style="text-align: right" footerClass="moneyTableFooter"
-                     rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
+        <rich:column style="text-align: right" footerClass="moneyTableFooter" >
 
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
@@ -278,8 +277,7 @@
         </rich:column>
 
 
-        <rich:column style="text-align: right" footerClass="moneyTableFooter"
-                     rendered="#{s:hasRole('erp.sale.manager') or (orderList.onlyMyOrder)}">
+        <rich:column style="text-align: right" footerClass="moneyTableFooter">
 
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">

@@ -26,10 +26,18 @@
                 </h:selectOneMenu>
 
             </s:decorate>
-            <s:decorate template="/layout/seam-display.xhtml">
+            <s:decorate template="/layout/seam-display.xhtml" rendered="#{not s:hasRole('erp.storage.manager')}">
                 <ui:define name="label">#{messages.Store}</ui:define>
                 <h:selectOneMenu value="#{stockChangeTypeCondition.storeId}">
                     <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store.id}"
+                                   label="#{_store.name}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                </h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate template="/layout/seam-display.xhtml" rendered="#{s:hasRole('erp.storage.manager')}">
+                <ui:define name="label">#{messages.Store}</ui:define>
+                <h:selectOneMenu value="#{stockChangeTypeCondition.storeId}">
+                    <s:selectItems value="#{allStoreList.resultList}" var="_store" itemValue="#{_store.id}"
                                    label="#{_store.name}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
                 </h:selectOneMenu>
             </s:decorate>

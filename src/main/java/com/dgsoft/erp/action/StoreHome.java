@@ -126,7 +126,7 @@ public class StoreHome extends ErpEntityHome<Store> {
         List<Store> result = new ArrayList<Store>();
 
         for (Store store : getEntityManager().createQuery("select store from Store store where store.enable = true", Store.class).getResultList()) {
-            if (identity.hasRole("erp.storage.manager") || identity.hasRole(store.getRole())) {
+            if (identity.hasRole(store.getRole())) {
                 result.add(store);
             }
         }

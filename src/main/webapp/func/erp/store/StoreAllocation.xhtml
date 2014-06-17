@@ -238,7 +238,7 @@
             <f:facet name="header"/>
             <a:commandButton image="/img/delete.png" title="#{messages.delete}" immediate="true" execute="@this"
                              action="#{allocationHome.remove}" render="dataListResult"
-                             rendered="#{(s:hasRole('erp.storage.manager')) or ((_item.state eq 'WAITING_OUT') and (s:hasRole(_item.inStore.store.role))) or ((_item.state eq 'WAITING_IN') and (s:hasRole(_item.outStore.store.role)))  }"
+                             rendered="#{(s:hasRole('erp.storage.manager')) or ((_item.state eq 'WAITING_OUT') and (s:hasRole(_item.inStore.role))) or ((_item.state eq 'WAITING_IN') and (s:hasRole(_item.outStore.role)))  }"
                              onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}">
                 <a:attachQueue requestDelay="0"/>
                 <a:param value="#{_item.id}" assignTo="#{allocationHome.id}"/>
