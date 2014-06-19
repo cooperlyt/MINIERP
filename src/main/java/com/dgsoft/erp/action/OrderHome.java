@@ -38,6 +38,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public void refreshSaleRebate(){
         resSaleRebates = null;
+        getInstance().getResSaleRebates().clear();
     }
 
     public SetLinkList<ResSaleRebate> getResSaleRebates() {
