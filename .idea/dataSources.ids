@@ -1290,6 +1290,7 @@
       <exported-key name="MIDDLE_MONEY_PAY_ibfk_2" table="MIDDLE_MONEY_PAY" schema="" catalog="MINI_ERP" columns="CUSTOMER_ORDER"/>
       <exported-key name="NEED_RES_ibfk_1" table="NEED_RES" schema="" catalog="MINI_ERP" columns="CUSTOMER_ORDER"/>
       <exported-key name="ORDER_FEE_ibfk_3" table="ORDER_FEE" schema="" catalog="MINI_ERP" columns="CUSTOMER_ORDER"/>
+      <exported-key name="ORDER_REDUCE_ibfk_1" table="ORDER_REDUCE" schema="" catalog="MINI_ERP" columns="CUSTOMER_ORDER"/>
       <exported-key name="RES_SALE_REBATE_ibfk_2" table="RES_SALE_REBATE" schema="" catalog="MINI_ERP" columns="CUSTOMER_ORDER"/>
     </table>
     <table name="DISPATCH" schema="" catalog="MINI_ERP" type="TABLE">
@@ -1556,6 +1557,14 @@
       <foreign-key name="ORDER_ITEM_REBATE_ibfk_3" columns="PROGRAM" ref-table="REBATE_PROGRAM" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="STORE_RES_REBATE_ibfk_3" table="STORE_RES_REBATE" schema="" catalog="MINI_ERP" columns="ORDER_ITEM_REBATE"/>
       <index name="UNIQUE_PROGRAM_RES" unique="true" columns="PROGRAM,RES"/>
+    </table>
+    <table name="ORDER_REDUCE" schema="" catalog="MINI_ERP" type="TABLE">
+      <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>
+      <column name="DESCRIPTION" sqlType="VARCHAR" precision="200" scale="0" nullable="true" jdbcType="12" remarks="5o+P6L+w"/>
+      <column name="MONEY" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="6YeR6aKd"/>
+      <column name="CUSTOMER_ORDER" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="6K6i5Y2V"/>
+      <primary-key name="PRIMARY" columns="ID"/>
+      <foreign-key name="ORDER_REDUCE_ibfk_1" columns="CUSTOMER_ORDER" ref-table="CUSTOMER_ORDER" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="OWE_OUT" schema="" catalog="MINI_ERP" type="TABLE">
       <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>

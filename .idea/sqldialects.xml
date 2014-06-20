@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/design/database/CUSTOM_ERP.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/SystemDBER.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/SystemUpdate1_1.sql" dialect="TSQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update1_2.sql" dialect="MySQL" />
@@ -13,6 +14,7 @@
     <file url="file://$PROJECT_DIR$/design/database/Update2.1.7.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2.2.1.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2.2.10.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/design/database/Update2.2.13.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2.2.2.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2.2.3.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2.2.4.sql" dialect="MySQL" />

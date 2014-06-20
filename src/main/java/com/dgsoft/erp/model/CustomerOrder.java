@@ -63,7 +63,7 @@ public class CustomerOrder implements java.io.Serializable {
     private Set<NeedRes> needReses = new HashSet<NeedRes>(0);
     private Set<OrderFee> orderFees = new HashSet<OrderFee>(0);
     private Set<ResSaleRebate> resSaleRebates = new HashSet<ResSaleRebate>(0);
-
+    private Set<OrderReduce> orderReduces = new HashSet<OrderReduce>(0);
 
     public CustomerOrder() {
     }
@@ -450,6 +450,15 @@ public class CustomerOrder implements java.io.Serializable {
 
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,mappedBy = "customerOrder",cascade = {CascadeType.ALL})
+    public Set<OrderReduce> getOrderReduces() {
+        return orderReduces;
+    }
+
+    public void setOrderReduces(Set<OrderReduce> orderReduces) {
+        this.orderReduces = orderReduces;
     }
 
     @Transient

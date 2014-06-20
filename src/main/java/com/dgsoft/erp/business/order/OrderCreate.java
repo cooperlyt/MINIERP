@@ -348,6 +348,12 @@ public class OrderCreate extends OrderHome {
 
 
     private boolean verifyItem() {
+        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) < 0){
+            getStatusMessages().addFromResourceBundle(StatusMessage.Severity.ERROR, "createOrderMoneylessZero");
+
+            return false;
+        }
+
 
         if (needResHome.getOrderNeedItems().isEmpty()) {
             getStatusMessages().addFromResourceBundle(StatusMessage.Severity.ERROR, "createOrderItemIsEmptyError");

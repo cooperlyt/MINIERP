@@ -115,6 +115,7 @@
         <class>com.dgsoft.erp.model.SaleCertificateItem</class>
         <class>com.dgsoft.erp.model.ResSaleRebate</class>
         <class>com.dgsoft.erp.model.StockAccount</class>
+        <class>com.dgsoft.erp.model.OrderReduce</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>

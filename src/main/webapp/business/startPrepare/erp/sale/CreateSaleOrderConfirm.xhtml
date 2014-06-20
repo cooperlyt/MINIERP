@@ -133,6 +133,144 @@
         </a:outputPanel>
 
 
+        <rich:dataTable style="width: 100%" rendered="#{not empty orderCreate.instance.resSaleRebateList}" value="#{orderCreate.instance.resSaleRebateList}" var="_resItem">
+            <f:facet name="header">
+                #{messages.orderSaleRebate}
+            </f:facet>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res}
+                </f:facet>
+                #{_resItem.res.name}
+            </rich:column>
+
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemUnitPrice}
+                </f:facet>
+                <h:outputText value="#{_resItem.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.rebate}(%)
+                </f:facet>
+
+                <h:outputText value="#{_resItem.itemRebate}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.Res_Unit}
+                </f:facet>
+                <h:outputText value="#{_resItem.resUnit.name}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.count}
+                </f:facet>
+                <h:outputText value="#{_resItem.count}">
+                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCountBasicRate}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateBasicCount}">
+                    <f:convertNumber pattern="#0.#####"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCountRate}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateRateCount}">
+                    <f:convertNumber pattern="#0.#####"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCount}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateCount}">
+                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemFreeMoney}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{orderCreate.instance.totalResRebateMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.field_memo}
+                </f:facet>
+                <ui:include src="/layout/long-text-display.xhtml">
+                    <ui:param name="value" value="#{_resItem.memo}"/>
+                    <ui:param name="size" value="4"/>
+                </ui:include>
+
+            </rich:column>
+
+        </rich:dataTable>
+
+
+        <rich:dataTable value="#{orderCreate.orderReduces}" var="_reduce" style="width: 100%" rendered="#{not empty orderCreate.orderReduces}" >
+
+            <f:facet name="header">
+                #{messages.orderReduce}
+            </f:facet>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.description}
+                </f:facet>
+                #{_reduce.description}
+
+
+                <f:facet name="footer">
+                    #{messages.recordTotal} #{orderCreate.orderReduces.size} #{messages.item}
+                </f:facet>
+            </rich:column>
+
+            <rich:column style="width:20%; text-align: right;">
+                <f:facet name="header">
+                    #{messages.Money}
+                </f:facet>
+                <h:outputText value="#{_reduce.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{orderCreate.reduceMoneyTotal}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+
+            </rich:column>
+
+        </rich:dataTable>
+
     </ui:define>
 
 </ui:composition>

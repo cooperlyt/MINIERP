@@ -28,6 +28,7 @@ import java.util.*;
 @Name("orderHome")
 public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
+    private SetLinkList<OrderReduce> orderReduces;
 
     private SetLinkList<ResSaleRebate> resSaleRebates;
 
@@ -35,16 +36,58 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         resSaleRebates.clear();
     }
 
+    public void reduceMoneyChangeListener(){
+        removeZerpReduce();
+        calcMoneys();
+    }
+
+    private OrderReduce editingReduce = new OrderReduce();
+
+    public OrderReduce getEditingReduce() {
+        return editingReduce;
+    }
+
+    public void setEditingReduce(OrderReduce editingReduce) {
+        this.editingReduce = editingReduce;
+    }
+
+    public void addReduce(){
+        editingReduce.setCustomerOrder(getInstance());
+        getOrderReduces().add(editingReduce);
+        editingReduce = new OrderReduce();
+        calcMoneys();
+    }
+
+    public BigDecimal getReduceMoneyTotal(){
+        BigDecimal result = BigDecimal.ZERO;
+        for(OrderReduce reduce: getOrderReduces()){
+            result = result.add(reduce.getMoney());
+        }
+        return result;
+    }
+
+    protected void initOrderReduces(){
+        if (orderReduces == null){
+            orderReduces = new SetLinkList<OrderReduce>(getInstance().getOrderReduces());
+        }
+    }
+
+    public List<OrderReduce> getOrderReduces(){
+        initOrderReduces();
+        return orderReduces;
+    }
 
     public void refreshSaleRebate(){
         resSaleRebates = null;
         getInstance().getResSaleRebates().clear();
+        calcMoneys();
     }
 
     public SetLinkList<ResSaleRebate> getResSaleRebates() {
         initSaleRebates();
         return resSaleRebates;
     }
+
 
 
     protected void initSaleRebates(){
@@ -66,6 +109,17 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
+    protected void removeZerpReduce(){
+        List<OrderReduce> removeReduce = new ArrayList<OrderReduce>();
+        for(OrderReduce orderReduce: getOrderReduces()){
+            if (orderReduce.getMoney().compareTo(BigDecimal.ZERO) == 0){
+                removeReduce.add(orderReduce);
+            }
+        }
+        getOrderReduces().removeAll(removeReduce);
+
+    }
+
     @Override
     protected boolean wire(){
 
@@ -76,6 +130,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             }
         }
         resSaleRebates.removeAll(removeRebates);
+        removeZerpReduce();
+
+
         return true;
     }
 
@@ -345,6 +402,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             item.calcMoney();
             result = result.add(item.getRebateMoney());
         }
+        for(OrderReduce orderReduce: getOrderReduces()){
+            result = result.add(orderReduce.getMoney());
+        }
+
+
         getInstance().setTotalRebateMoney(result);
 
 

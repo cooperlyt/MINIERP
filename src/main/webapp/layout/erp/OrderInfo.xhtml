@@ -181,7 +181,43 @@
 
     </rich:dataTable>
     <br/>
+    <rich:dataTable value="#{orderHome.orderReduces}" var="_reduce" style="width: 100%" rendered="#{not empty orderHome.orderReduces}" >
 
+        <f:facet name="header">
+            #{messages.orderReduce}
+        </f:facet>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.description}
+            </f:facet>
+            #{_reduce.description}
+
+
+            <f:facet name="footer">
+                #{messages.recordTotal} #{orderHome.orderReduces.size} #{messages.item}
+            </f:facet>
+        </rich:column>
+
+        <rich:column style="width:20%; text-align: right;">
+            <f:facet name="header">
+                #{messages.Money}
+            </f:facet>
+            <h:outputText value="#{_reduce.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderHome.reduceMoneyTotal}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+
+        </rich:column>
+
+    </rich:dataTable>
+
+    <br/>
     <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
         <f:facet name="header">
             <rich:columnGroup>

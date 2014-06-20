@@ -272,7 +272,88 @@
 
     </rich:dataTable>
 
+
 </a:outputPanel>
+</h:form>
+
+
+<h:form>
+    <rich:panel>
+        <a:region>
+            <h:panelGrid columns="3">
+
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.description}
+                    </ui:define>
+                    <h:inputText value="#{orderCreate.editingReduce.description}" label="#{messages.description}"
+                                 maxlength="200" size="50" />
+
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.Money}
+                    </ui:define>
+                    <h:inputText value="#{orderCreate.editingReduce.money}" label="#{messages.Money}" required="true"
+                                 size="17">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" currencySymbol=""
+                                         groupingUsed="false"/>
+                        <f:validateDoubleRange minimum="0"/>
+                    </h:inputText>
+                </s:decorate>
+
+
+
+                <a:commandButton value="#{messages.add}" execute="@region" action="#{orderCreate.addReduce}" render="reducesTable">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+            </h:panelGrid>
+        </a:region>
+    </rich:panel>
+
+    <rich:dataTable id="reducesTable" value="#{orderCreate.orderReduces}" var="_reduce" style="width: 100%" noDataLabel="#{messages.noReduceItem}">
+
+        <f:facet name="header">
+            #{messages.orderReduce}
+        </f:facet>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.description}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput value="#{_reduce.description}" label="#{messages.description}" style="width: 95%">
+                    <a:ajax event="blur" execute="@this"/>
+                </rich:inplaceInput>
+            </s:decorate>
+            <f:facet name="footer">
+                #{messages.recordTotal} #{orderCreate.orderReduces.size} #{messages.item}
+            </f:facet>
+        </rich:column>
+
+        <rich:column style="width:20%; text-align: right;">
+            <f:facet name="header">
+                #{messages.Money}
+            </f:facet>
+            <s:decorate template="/layout/grid-inside-edit.xhtml">
+                <rich:inplaceInput value="#{_reduce.money}" label="{messages.Money}" required="true" style="width: 95%">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false" currencySymbol=""/>
+                    <f:validateDoubleRange minimum="0"/>
+                    <a:ajax event="blur" execute="@this" listener="#{orderCreate.reduceMoneyChangeListener}" render="reducesTable"/>
+                </rich:inplaceInput>
+            </s:decorate>
+            <f:facet name="footer">
+                <h:outputText value="#{orderCreate.reduceMoneyTotal}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+
+        </rich:column>
+
+    </rich:dataTable>
 </h:form>
 
 
