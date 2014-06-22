@@ -1,0 +1,17 @@
+<p:birt
+        xmlns:p="http://jboss.com/products/seam/birt"
+        designType="frameset"
+        designName="report/StoreChangeTotal.rptdesign"
+        showtitle="false"
+        format="pdf"
+        title="">
+    <p:param name="StoreId" value="#{storeChangeTotal.storeId}"/>
+    <p:param name="DateFrom" value="#{searchDateArea.dateFrom.time}"/>
+    <p:param name="DateTo" value="#{searchDateArea.dateTo.time}"/>
+
+    <p:param name="ResCategoryIds" value="#{storeResCondition.searchResCatesoryIdsStr}"/>
+    <p:param name="ResId" value="#{storeResCondition.searchResId}"/>
+    <p:param name="FloatConvertRate" value="#{storeResCondition.searchFloatConvertRate}"/>
+    <p:param name="StoreResIds" value="#{storeResCondition.matchStoreResIdsStr}"/>
+
+</p:birt>

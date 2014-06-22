@@ -5,104 +5,330 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
 
-    <ui:define name="func-body">
+<ui:define name="func-body">
+<h:form>
 
-        <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.Store}</ui:define>
-
-
-                <rich:select label="#{messages.Store}" value="#{storeChangeTotal.storeId}"
-                             rendered="#{not s:hasRole('erp.storage.manager')}">
-                    <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store.id}"
-                                   label="#{_store.name}"/>
-                </rich:select>
+    <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.Store}</ui:define>
 
 
-                <h:selectOneMenu value="#{storeChangeTotal.storeId}" label="#{messages.Store}"
-                                 rendered="#{s:hasRole('erp.storage.manager')}">
-                    <s:selectItems value="#{allStoreList}" var="_store" label="#{_store.name}" itemValue="#{_store.id}"/>
-                </h:selectOneMenu>
-
-            </s:decorate>
-
-
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.storeChangeDate}</ui:define>
-                <rich:calendar
-                        enableManualInput="true"
-                        inputSize="10"
-                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                        datePattern="#{messages.datePattern}"
-                        label="#{messages.storeChangeDate}"
-                        value="#{searchDateArea.dateFrom}">
-                </rich:calendar>
-
-                --
-
-                <rich:calendar
-                        enableManualInput="true"
-                        inputSize="10"
-                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                        datePattern="#{messages.datePattern}"
-                        label="#{messages.storeChangeDate}"
-                        value="#{searchDateArea.dateTo}">
-                </rich:calendar>
-            </s:decorate>
+            <h:selectOneMenu label="#{messages.Store}" value="#{storeChangeTotal.storeId}"
+                         rendered="#{not s:hasRole('erp.storage.manager')}">
+                <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store.id}"
+                               label="#{_store.name}"/>
+            </h:selectOneMenu>
 
 
-            <ui:include src="/layout/erp/res/StoreResCondition.xhtml"/>
+            <h:selectOneMenu value="#{storeChangeTotal.storeId}" label="#{messages.Store}"
+                             rendered="#{s:hasRole('erp.storage.manager')}">
+                <s:selectItems value="#{allStoreList}" var="_store" label="#{_store.name}"
+                               itemValue="#{_store.id}"/>
+            </h:selectOneMenu>
 
-            <div style="clear: both;"/>
-
-            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-            <h:panelGrid columns="1" style="width: 100%; text-align: right">
-                <a:outputPanel>
-                    <div class="actionButtons">
-
-                        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
-
-                        <a:outputPanel id="searchButton">
-                            <a:commandButton value="#{messages.search}"
-                                             execute="@form" render="totalResultDatas"
-                                             action="#{storeChangeTotal.refresh}">
-                                <a:attachQueue requestDelay="0"/>
-                            </a:commandButton>
-                        </a:outputPanel>
-                    </div>
-                </a:outputPanel>
-            </h:panelGrid>
-
-        </rich:collapsiblePanel>
-
-        <br/>
-
-        <rich:dataTable value="#{storeChangeTotal.totalResultGroup}" var="_format">
-            <f:facet name="header">
-                <rich:columnGroup>
-                    <rich:column rowspan="3">
-                        #{messages.StoreRes}
-                    </rich:column>
-                    <rich:column>
-
-                    </rich:column>
-                    <rich:column>
-
-                    </rich:column>
+        </s:decorate>
 
 
-                </rich:columnGroup>
-            </f:facet>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.storeChangeDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.storeChangeDate}"
+                    value="#{searchDateArea.dateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.storeChangeDate}"
+                    value="#{searchDateArea.dateTo}">
+            </rich:calendar>
+        </s:decorate>
 
 
-        </rich:dataTable>
+        <ui:include src="/layout/erp/res/StoreResCondition.xhtml"/>
 
-    </ui:define>
+        <div style="clear: both;"/>
+
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel>
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                    <h:commandLink target="_blank" value="#{messages.Print}" styleClass="rich-button-link" action="/report/StoreChangeTotal.xhtml"/>
+
+                    <a:commandButton value="#{messages.search}"
+                                     execute="@form" render="totalResultDatas"
+                                     action="#{storeChangeTotal.refresh}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+
+    </rich:collapsiblePanel>
+
+</h:form>
+<br/>
+
+<a:outputPanel ajaxRendered="true">
+    #{storeChangeTotal.totalResultGroup.size}
+</a:outputPanel>
+
+<rich:dataTable id="totalResultDatas" style="width: 100%" value="#{storeChangeTotal.totalResultGroup}" var="_format">
+
+<f:facet name="header">
+    <rich:columnGroup>
+        <rich:column rowspan="2" colspan="2">
+            #{messages.StoreRes}
+        </rich:column>
+        <rich:column rowspan="2" colspan="2" rendered="#{storeChangeTotal.accountModel}">
+            #{messages.SotckBeginCount}
+        </rich:column>
+        <rich:column colspan="18">
+            #{messages.storeIn}
+        </rich:column>
+        <rich:column colspan="#{14 + allStoreList.resultCount}">
+            #{messages.storeOut}   #{14 + allStoreList.resultCount}
+        </rich:column>
+        <rich:column rowspan="2" colspan="2" rendered="#{storeChangeTotal.accountModel}">
+            #{messages.StockCloseCount}
+        </rich:column>
+
+        <rich:column colspan="2" breakRowBefore="true">
+            #{messages.PRODUCE_IN}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.ALLOCATION_IN}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.SELL_BACK}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.STORE_CHANGE_IN}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.STORE_CHECK_ADD}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.ASSEMBLY_IN}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.MATERIAL_IN}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.MATERIAL_BACK_IN}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.GroupTotal}
+        </rich:column>
+
+        <rich:column colspan="2">
+            #{messages.SELL_OUT}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.ASSEMBLY_OUT}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.SCRAP_OUT}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.STORE_CHECK_LOSS}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.STORE_CHANGE_OUT}
+        </rich:column>
+        <rich:column colspan="2">
+            #{messages.MATERIAL_OUT}
+        </rich:column>
+
+
+        <c:forEach items="#{allStoreList.resultList}" var="_store">
+            <rich:column colspan="2">
+                #{messages.AllocationTo} #{_store.name}
+            </rich:column>
+        </c:forEach>
+
+        <rich:column colspan="2">
+            #{messages.GroupTotal}
+        </rich:column>
+
+
+    </rich:columnGroup>
+</f:facet>
+
+
+<rich:column
+        colspan="#{storeChangeTotal.accountModel ? (38 + allStoreList.resultCount) : (34 + allStoreList.resultCount) }">
+    <rich:collapsibleSubTableToggler for="sbtbl"/>
+    #{_format.key.formatTitle}   #{_format.childGroup.size}
+</rich:column>
+
+<rich:collapsibleSubTable expandMode="client" value="#{_format.values}" var="_item"
+                          id="sbtbl">
+    <rich:column/>
+    <rich:column>
+        <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                      value="#{_item.storeRes.floatConversionRate}">
+            <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+        </h:outputText>
+        <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
+                      rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+    </rich:column>
+    <rich:column rendered="#{storeChangeTotal.accountModel}">
+
+    </rich:column>
+    <rich:column rendered="#{storeChangeTotal.accountModel}">
+
+    </rich:column>
+
+    <rich:column>
+        #{messages.PRODUCE_IN}
+    </rich:column>
+    <rich:column>
+        #{messages.PRODUCE_IN}
+    </rich:column>
+
+    <rich:column>
+        #{messages.ALLOCATION_IN}
+    </rich:column>
+    <rich:column>
+        #{messages.ALLOCATION_IN}
+    </rich:column>
+
+    <rich:column>
+        #{messages.SELL_BACK}
+    </rich:column>
+    <rich:column>
+        #{messages.SELL_BACK}
+    </rich:column>
+
+    <rich:column>
+        #{messages.STORE_CHANGE_IN}
+    </rich:column>
+    <rich:column>
+        #{messages.STORE_CHANGE_IN}
+    </rich:column>
+
+    <rich:column>
+        #{messages.STORE_CHECK_ADD}
+    </rich:column>
+    <rich:column>
+        #{messages.STORE_CHECK_ADD}
+    </rich:column>
+
+    <rich:column>
+        #{messages.ASSEMBLY_IN}
+    </rich:column>
+    <rich:column>
+        #{messages.ASSEMBLY_IN}
+    </rich:column>
+
+    <rich:column>
+        #{messages.MATERIAL_IN}
+    </rich:column>
+    <rich:column>
+        #{messages.MATERIAL_IN}
+    </rich:column>
+
+    <rich:column>
+        #{messages.MATERIAL_BACK_IN}
+    </rich:column>
+    <rich:column>
+        #{messages.MATERIAL_BACK_IN}
+    </rich:column>
+
+    <rich:column>
+        #{messages.GroupTotal}
+    </rich:column>
+    <rich:column>
+        #{messages.GroupTotal}
+    </rich:column>
+
+    <rich:column>
+        #{messages.SELL_OUT}
+    </rich:column>
+    <rich:column>
+        #{messages.SELL_OUT}
+    </rich:column>
+
+    <rich:column>
+        #{messages.ASSEMBLY_OUT}
+    </rich:column>
+    <rich:column>
+        #{messages.ASSEMBLY_OUT}
+    </rich:column>
+
+    <rich:column>
+        #{messages.SCRAP_OUT}
+    </rich:column>
+    <rich:column>
+        #{messages.SCRAP_OUT}
+    </rich:column>
+
+    <rich:column>
+        #{messages.STORE_CHECK_LOSS}
+    </rich:column>
+    <rich:column>
+        #{messages.STORE_CHECK_LOSS}
+    </rich:column>
+
+    <rich:column>
+        #{messages.STORE_CHANGE_OUT}
+    </rich:column>
+    <rich:column>
+        #{messages.STORE_CHANGE_OUT}
+    </rich:column>
+
+    <rich:column>
+        #{messages.MATERIAL_OUT}
+    </rich:column>
+    <rich:column>
+        #{messages.MATERIAL_OUT}
+    </rich:column>
+
+    <c:forEach items="#{allStoreList.resultList}" var="_store">
+        <rich:column colspan="2">
+            #{_store.name}
+        </rich:column>
+    </c:forEach>
+
+    <rich:column>
+        #{messages.GroupTotal}
+    </rich:column>
+    <rich:column>
+        #{messages.GroupTotal}
+    </rich:column>
+
+    <rich:column rendered="#{storeChangeTotal.accountModel}">
+
+    </rich:column>
+    <rich:column rendered="#{storeChangeTotal.accountModel}">
+
+    </rich:column>
+
+
+</rich:collapsibleSubTable>
+
+</rich:dataTable>
+
+</ui:define>
 
 </ui:composition>

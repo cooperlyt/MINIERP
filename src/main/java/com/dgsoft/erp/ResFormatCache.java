@@ -46,7 +46,7 @@ public class ResFormatCache {
     }
 
     public List<Format> getFormats(String storeResId) {
-        if ((storeResId == null) || "".equals(storeResId)){
+        if ((storeResId == null) || "".equals(storeResId)) {
             return null;
         }
 
@@ -60,7 +60,7 @@ public class ResFormatCache {
     }
 
     public List<Format> getFormats(StoreRes storeRes) {
-        if ((storeRes.getId() == null) || "".equals(storeRes.getId())){
+        if ((storeRes.getId() == null) || "".equals(storeRes.getId())) {
             return storeRes.getFormatList();
         }
         return getFormats(storeRes.getId());
@@ -70,6 +70,27 @@ public class ResFormatCache {
         Map<FormatDefine, Format> result = new HashMap<FormatDefine, Format>();
         for (Format format : getFormats(storeResId)) {
             result.put(format.getFormatDefine(), format);
+        }
+        return result;
+    }
+
+    public Format getFormatByDefineName(String storeResId, String defineName) {
+        Map<FormatDefine, Format> formats = getFormatMap(storeResId);
+        for (FormatDefine key : formats.keySet()) {
+            if (key.getName().equals(defineName)) {
+                return formats.get(key);
+            }
+        }
+        return null;
+    }
+
+    public List<Format> getOtherFormats(String storeResId, String defineName) {
+        List<Format> result = getFormats(storeResId);
+        for(Format f: result){
+            if (f.getFormatDefine().getName().equals(defineName)){
+                result.remove(f);
+                break;
+            }
         }
         return result;
     }

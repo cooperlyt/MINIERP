@@ -14,8 +14,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,14 +32,21 @@ public class TestKnow {
     }
 
     public static void main(String[] args){
-        Calendar c = Calendar.getInstance(Locale.CHINA);
-        c.set(Calendar.YEAR,2014);
-        c.set(Calendar.MONTH,0);
-        c.set(Calendar.DATE,0);
 
+        List<String> value = new ArrayList<String>();
+        value.add("1");
+        value.add("2");
+        value.add("3");
+        value.add("4");
+        System.out.println(value.toString());
 
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd").format(c.getTime()));
-
+        String s1 = "[1, 2, 3, 4]";
+        String replace = s1.replace("[","");
+        System.out.println(replace);
+        String replace1 = replace.replace("]","");
+        System.out.println(replace1);
+        List<String> myList = new ArrayList<String>(Arrays.asList(replace1.split(",")));
+        System.out.println(myList.toString());
 
     }
 

@@ -3,13 +3,13 @@ package com.dgsoft.erp.total;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.model.StockChange;
-import com.dgsoft.erp.model.StockChangeItem;
-import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Logging;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -19,7 +19,8 @@ import java.util.*;
 public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
 
     private static final String EJBQL = "select item from StockChangeItem item  left join fetch item.storeRes storeRes "  +
-            "          left join fetch storeRes.res res left join fetch res.unitGroup unitGroup where item.stockChange.verify = true";
+            " left join fetch storeRes.res res left join fetch res.unitGroup unitGroup " +
+            " left join fetch item.stockChange storeChange left join fetch storeChange.allocationForStoreOuts where item.stockChange.verify = true";
 
 
     private static final String[] RESTRICTIONS = {
@@ -39,6 +40,8 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
         setRestrictionLogicOperator("and");
     }
 
+    private boolean accountModel = false;
+
     private String storeId;
 
     public String getStoreId() {
@@ -46,7 +49,16 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
     }
 
     public void setStoreId(String storeId) {
+        Logging.getLog(getClass()).debug("setStoreId:" + storeId);
         this.storeId = storeId;
+    }
+
+    public boolean isAccountModel() {
+        return accountModel;
+    }
+
+    public void setAccountModel(boolean accountModel) {
+        this.accountModel = accountModel;
     }
 
     private Map<String,TotalChangeDataItem> totalResult;
@@ -101,14 +113,9 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
 
             @Override
             public Object totalGroupData(Collection<TotalChangeDataItem> datas) {
-                TotalChangeData result = new TotalChangeData();
+                FormatGroupTotalData result = new FormatGroupTotalData(datas.iterator().next().getStoreRes().getRes());
                 for(TotalChangeDataItem item: datas){
-                    for(StockChange.StoreChangeType type: item.getChangeCount().keySet()){
-                        result.putChange(type, item.getChangeCount().get(type));
-                    }
-                    for(String storeId:item.getAllocationOutCount().keySet()){
-                        result.putChange(storeId,item.getAllocationOutCount().get(storeId));
-                    }
+                   result.add(item);
                 }
                 return result;
             }
@@ -122,7 +129,154 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
         totalResult = null;
     }
 
-    public static class TotalChangeData{
+
+    public static class FormatGroupTotalData{
+
+        private Res res;
+
+        private Map<StockChange.StoreChangeType,BigDecimal> masterCount;
+
+        private Map<StockChange.StoreChangeType,BigDecimal> auxCount;
+
+        private Map<String,BigDecimal> allocationMasterCount;
+
+        private Map<String,BigDecimal> allocationAuxCount;
+
+        public FormatGroupTotalData(Res res) {
+            this.res = res;
+            masterCount = new HashMap<StockChange.StoreChangeType, BigDecimal>();
+            allocationMasterCount = new HashMap<String, BigDecimal>();
+            if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                auxCount = new HashMap<StockChange.StoreChangeType, BigDecimal>();
+                allocationAuxCount = new HashMap<String, BigDecimal>();
+            }
+        }
+
+        public void add(TotalChangeDataItem item){
+
+            BigDecimal count;
+            for(StockChange.StoreChangeType type: item.getChangeCount().keySet()){
+
+                count = masterCount.get(type);
+
+                masterCount.put(type,item.getChangeCount().get(type).getMasterCount().add(count == null ? BigDecimal.ZERO : count));
+
+                if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                    count = auxCount.get(type);
+                    auxCount.put(type,item.getChangeCount().get(type).getAuxCount().add(count == null ? BigDecimal.ZERO : count));
+                }
+            }
+            for(String storeId:item.getAllocationOutCount().keySet()){
+                count = allocationMasterCount.get(storeId);
+
+                allocationMasterCount.put(storeId,item.getAllocationOutCount().get(storeId).getMasterCount().add(count == null ? BigDecimal.ZERO : count));
+
+                if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                    count = allocationAuxCount.get(storeId);
+                    allocationAuxCount.put(storeId,item.getAllocationOutCount().get(storeId).getAuxCount().add(count == null ? BigDecimal.ZERO : count));
+                }
+            }
+
+        }
+
+
+
+        public Res getRes() {
+            return res;
+        }
+
+        public Map<StockChange.StoreChangeType, BigDecimal> getMasterCount() {
+            return masterCount;
+        }
+
+        public Map<StockChange.StoreChangeType, BigDecimal> getAuxCount() {
+            return auxCount;
+        }
+
+        public Map<String, BigDecimal> getAllocationMasterCount() {
+            return allocationMasterCount;
+        }
+
+        public Map<String, BigDecimal> getAllocationAuxCount() {
+            return allocationAuxCount;
+        }
+
+        public BigDecimal getInMasterCountTotal(){
+            BigDecimal result = BigDecimal.ZERO;
+            for(StockChange.StoreChangeType type: masterCount.keySet()){
+                if (!type.isOut()){
+                    result = result.add(masterCount.get(type));
+                }
+            }
+            return result;
+        }
+
+
+        public BigDecimal getOutMasterCountTotal(){
+            BigDecimal result = BigDecimal.ZERO;
+            for(StockChange.StoreChangeType type: masterCount.keySet()){
+                if (type.isOut()){
+                    result = result.add(masterCount.get(type));
+                }
+            }
+            for(BigDecimal count: allocationMasterCount.values()){
+                result = result.add(count);
+            }
+
+            return result;
+        }
+
+        public BigDecimal getInAuxCountTotal(){
+            if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+               return null;
+            }
+
+            BigDecimal result = BigDecimal.ZERO;
+            for(StockChange.StoreChangeType type: auxCount.keySet()){
+                if (!type.isOut()){
+                    result = result.add(auxCount.get(type));
+                }
+            }
+            return result;
+        }
+
+
+        public BigDecimal getOutAuxCountTotal(){
+            if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                return null;
+            }
+            BigDecimal result = BigDecimal.ZERO;
+            for(StockChange.StoreChangeType type: auxCount.keySet()){
+                if (type.isOut()){
+                    result = result.add(auxCount.get(type));
+                }
+            }
+            for(BigDecimal count: allocationAuxCount.values()){
+                result = result.add(count);
+            }
+
+            return result;
+        }
+
+
+    }
+
+    public static class TotalChangeDataItem {
+
+
+        private StockAccount account;
+
+        private StoreRes storeRes;
+
+        public TotalChangeDataItem(StoreRes storeRes) {
+            super();
+            this.storeRes = storeRes;
+        }
+
+        public TotalChangeDataItem(StoreRes storeRes, StockAccount account) {
+            this.storeRes = storeRes;
+            this.account = account;
+        }
 
         private Map<StockChange.StoreChangeType, StoreResCount> changeCount = new HashMap<StockChange.StoreChangeType, StoreResCount>();
 
@@ -165,22 +319,6 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
             this.allocationOutCount = allocationOutCount;
         }
 
-
-
-
-    }
-
-
-    public static class TotalChangeDataItem extends TotalChangeData{
-
-        private StoreRes storeRes;
-
-        public TotalChangeDataItem(StoreRes storeRes) {
-            super();
-            this.storeRes = storeRes;
-        }
-
-
         public StoreRes getStoreRes() {
             return storeRes;
         }
@@ -189,7 +327,33 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
             this.storeRes = storeRes;
         }
 
+        public StockAccount getAccount() {
+            return account;
+        }
 
+        public StoreResCount getInTotal(){
+            StoreResCount result = new StoreResCount(storeRes,BigDecimal.ZERO);
+            for (StockChange.StoreChangeType type : changeCount.keySet()){
+                if (!type.isOut()){
+                    result.add(changeCount.get(type));
+                }
+            }
+            return result;
+        }
+
+        public StoreResCount getOuntTotal(){
+            StoreResCount result = new StoreResCount(storeRes,BigDecimal.ZERO);
+            for (StockChange.StoreChangeType type : changeCount.keySet()){
+                if (type.isOut()){
+                    result.add(changeCount.get(type));
+                }
+            }
+            for(StoreResCount allocationCount: allocationOutCount.values()){
+                result.add(allocationCount);
+            }
+
+            return result;
+        }
     }
 
 }

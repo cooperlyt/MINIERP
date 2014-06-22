@@ -16,6 +16,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Logging;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
  */
 @Name("storeResCondition")
 @Scope(ScopeType.CONVERSATION)
-public class StoreResCondition {
+public class StoreResCondition implements Serializable{
 
     @In(create=true)
     private ResHome resHome;
@@ -72,6 +73,15 @@ public class StoreResCondition {
         }
     }
 
+    public String getSearchResCatesoryIdsStr(){
+        List<String> ids = getSearchResCategoryIds();
+        if (ids == null){
+            return null;
+        }else{
+            return ids.toString();
+        }
+    }
+
     private boolean isCodeSearch(){
         return (resCode != null) && !"".equals(resCode.trim());
     }
@@ -109,6 +119,16 @@ public class StoreResCondition {
         }else{
             return null;
         }
+    }
+
+    public String getMatchStoreResIdsStr(){
+        List<String> ids = getMatchStoreResIds();
+        if (ids == null){
+            return null;
+        }else{
+            return ids.toString();
+        }
+
     }
 
     public List<String> getMatchStoreResIds() {

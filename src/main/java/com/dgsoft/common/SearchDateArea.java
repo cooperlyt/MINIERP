@@ -35,6 +35,14 @@ public class SearchDateArea {
         return new Date(dateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
     }
 
+    public long setDateToTime(){
+        return dateTo.getTime();
+    }
+
+    public void setDateToTime(long time){
+       setDateTo(new Date(time));
+    }
+
     public Date getDateTo() {
         return dateTo;
     }
@@ -47,8 +55,16 @@ public class SearchDateArea {
         return dateFrom;
     }
 
+    public long getDateFromTime(){
+        return dateFrom.getTime();
+    }
+
     public void setDateFrom(Date dateFrom) {
         this.dateFrom = DataFormat.halfTime(dateFrom);
+    }
+
+    public void setDateFromTime(long dateFrom){
+       setDateFrom(new Date(dateFrom));
     }
 
     public String genConditionSQL(String path, boolean addAnd){
