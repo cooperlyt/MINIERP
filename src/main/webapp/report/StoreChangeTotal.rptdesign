@@ -23,7 +23,7 @@
     <parameters>
         <scalar-parameter name="DateFrom" id="18">
             <property name="valueType">static</property>
-            <property name="dataType">integer</property>
+            <property name="dataType">float</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -34,7 +34,7 @@
         </scalar-parameter>
         <scalar-parameter name="DateTo" id="19">
             <property name="valueType">static</property>
-            <property name="dataType">integer</property>
+            <property name="dataType">float</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -262,29 +262,43 @@ resFormatCache = Component.getInstance("resFormatCache",false);
 resHelper = Component.getInstance("resHelper",true);
 messages = Component.getInstance("org.jboss.seam.international.messages", false);
 
+searchDateArea = Component.getInstance("searchDateArea",true);
+searchDateArea.setDateFromTime(params['DateFrom'].value);
+searchDateArea.setDateToTime(params['DateTo'].value);
+
 storeResFilter = Component.getInstance("storeResFilter",true);
-storeResFilter.setResCategoryIdsStr(params['ResCagegoryIds'].value);
+storeResFilter.setResCategoryIdsStr(params['ResCategoryIds'].value);
 storeResFilter.setStoreResIdsStr(params['StoreResIds'].value);
 storeResFilter.setResId(params['ResId'].value);
 storeResFilter.setFloatConvertRate(params['FloatConvertRate'].value);
 
 storeChangeTotalReport = Component.getInstance("storeChangeTotalReport", true);
+storeChangeTotalReport.setStoreId(params['StoreId'].value);
 it = storeChangeTotalReport.getResultList().iterator();
 
 ]]></method>
             <method name="fetch"><![CDATA[if (it.hasNext()){
 	item = it.next();
-	ROW['RES'] = item.getStoreRes().getRes().getName();
-	ROW['BRAND'] = dictionary.getWordValue(resFormatCache.getFormatByDefineName(item.getStoreRes().getId(),"品牌"));
+	row['RES'] = item.getStoreRes().getRes().getName();
+	brandFormat = resFormatCache.getFormatByDefineName(item.getStoreRes().getId(),"品牌");
+	if (brandFormat == null){
+		row['BRAND'] = "";
+	}else
+	row['BRAND'] = dictionary.getWordValue(brandFormat.getFormatValue());
 
-	ROW['FORMAT'] = resHelper.getFormatsTitle(resFormatCache.getOtherFormats(item.getStoreRes().getId(),"品牌"),false);
-	ROW['DIR'] = item.getStockChange().getOperType().isOut() ? "出库" : "入库";
-	ROW['TYPE'] = item.getStockChange().getOperType().equals(com.dgsoft.erp.model.StockChange.StoreChangeType.ALLOCATION_OUT) ? messages.get("ALLOCATION_OUT") + item.getStockChange().getAllocationForStoreOut().getInStore().getName() : messages.get(item.getStockChange().getOperType().name());
-	ROW['MASTER_COUNT'] = item.getMasterCount();
-	ROW['MASTER_UNIT'] = item.getStoreRes().getRes().getUnitGroup().getMasterUnit().getName();
+	row['FORMAT'] = resHelper.getFormatsTitle(resFormatCache.getOtherFormats(item.getStoreRes().getId(),"品牌"),false);
+	row['DIR'] = item.getStockChange().getOperType().isOut() ? "出库" : "入库";
+	row['TYPE'] = item.getStockChange().getOperType().equals(com.dgsoft.erp.model.StockChange.StoreChangeType.ALLOCATION_OUT) ? messages.get("ALLOCATION_OUT") + item.getStockChange().getAllocationForStoreOut().getInStore().getName() : messages.get(item.getStockChange().getOperType().name());
+	if (item.getMasterCount() == null){
+	row['MASTER_COUNT'] = 0;
+	}else
+	row['MASTER_COUNT'] = item.getMasterCount();
+	row['MASTER_UNIT'] = item.getStoreRes().getRes().getUnitGroup().getMasterUnit().getName();
 	if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-		ROW['AUX_COUNT'] = item.getAuxCount();
-		ROW['AUX_UNIT'] = item.getStoreRes().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
+		row['AUX_COUNT'] = item.getAuxCount();
+		row['AUX_UNIT'] = item.getStoreRes().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
+	}else{
+		row['AUX_COUNT'] = 0;
 	}
 return true;
 }
@@ -342,32 +356,35 @@ return false;]]></method>
                         </tabular-measure>
                     </property>
                 </tabular-measure-group>
-                <tabular-measure-group name="AUX_COUNT" id="61">
+                <tabular-measure-group name="MASTER_UNIT" id="517">
                     <property name="measures">
-                        <tabular-measure name="辅数量" id="62">
-                            <expression name="measureExpression" type="javascript">dataSetRow["辅数量"]</expression>
-                            <property name="dataType">decimal</property>
-                        </tabular-measure>
-                    </property>
-                </tabular-measure-group>
-                <tabular-measure-group name="MAST_UNIT" id="144">
-                    <property name="measures">
-                        <tabular-measure name="主单位" id="145">
-                            <property name="function">max</property>
+                        <tabular-measure name="主单位" id="518">
+                            <property name="function">first</property>
                             <property name="isCalculated">false</property>
                             <expression name="measureExpression" type="javascript">dataSetRow["主单位"]</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="isVisible">true</property>
                         </tabular-measure>
                     </property>
                 </tabular-measure-group>
-                <tabular-measure-group name="AUX_UNIT" id="146">
+                <tabular-measure-group name="AUX_COUNT" id="524">
                     <property name="measures">
-                        <tabular-measure name="辅单位" id="147">
-                            <property name="function">max</property>
+                        <tabular-measure name="辅数量" id="525">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["辅数量"]</expression>
+                            <property name="dataType">decimal</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+                <tabular-measure-group name="AUX_UNIT" id="536">
+                    <property name="measures">
+                        <tabular-measure name="辅单位" id="537">
+                            <property name="function">first</property>
                             <property name="isCalculated">false</property>
                             <expression name="measureExpression" type="javascript">dataSetRow["辅单位"]</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="isVisible">true</property>
                         </tabular-measure>
                     </property>
@@ -414,6 +431,7 @@ return false;]]></method>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
+            <property name="headerHeight">0.5in</property>
             <page-footer>
                 <text id="3">
                     <property name="contentType">html</property>
@@ -423,151 +441,268 @@ return false;]]></method>
         </simple-master-page>
     </page-setup>
     <body>
-        <grid id="7">
-            <column id="8"/>
-            <row id="9">
-                <cell id="10">
-                    <label id="11">
-                        <property name="fontSize">14pt</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">center</property>
-                        <text-property name="text">Cross Tab</text-property>
-                    </label>
+        <grid id="241">
+            <property name="width">11.042105263157895in</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">new Date(params['DateFrom'].value)</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <expression name="expression" type="javascript">new Date(params['DateTo'].value)</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="242">
+                <property name="width">4.863157894736842in</property>
+            </column>
+            <column id="243">
+                <property name="width">2.6in</property>
+            </column>
+            <column id="244">
+                <property name="width">1.694736842105263in</property>
+            </column>
+            <column id="245">
+                <property name="width">1.8736842105263158in</property>
+            </column>
+            <row id="246">
+                <cell id="247">
+                    <property name="colSpan">4</property>
+                    <property name="rowSpan">1</property>
+                    <text id="256">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<CENTER><H1><B>库存总帐</B></H1></CENTER>]]></text-property>
+                    </text>
                 </cell>
             </row>
+            <row id="251">
+                <cell id="252">
+                    <grid id="258">
+                        <property name="width">4.8in</property>
+                        <column id="259">
+                            <property name="width">0.6947368421052632in</property>
+                        </column>
+                        <column id="260">
+                            <property name="width">1.7052631578947368in</property>
+                        </column>
+                        <column id="261">
+                            <property name="width">0.29473684210526313in</property>
+                        </column>
+                        <column id="262">
+                            <property name="width">2.1052631578947367in</property>
+                        </column>
+                        <row id="263">
+                            <cell id="264">
+                                <label id="268">
+                                    <text-property name="text">日期:</text-property>
+                                </label>
+                            </cell>
+                            <cell id="265">
+                                <data id="269">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Long Date</property>
+                                        <property name="pattern">Long Date</property>
+                                        <property name="locale">zh_Hans_CN</property>
+                                    </structure>
+                                    <property name="resultSetColumn">Column Binding</property>
+                                </data>
+                            </cell>
+                            <cell id="266">
+                                <label id="270">
+                                    <text-property name="text">至</text-property>
+                                </label>
+                            </cell>
+                            <cell id="267">
+                                <data id="271">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Long Date</property>
+                                        <property name="pattern">Long Date</property>
+                                        <property name="locale">zh_Hans_CN</property>
+                                    </structure>
+                                    <property name="resultSetColumn">Column Binding_1</property>
+                                </data>
+                            </cell>
+                        </row>
+                    </grid>
+                </cell>
+                <cell id="253">
+                    <grid id="272">
+                        <column id="273"/>
+                        <column id="274"/>
+                        <row id="275">
+                            <cell id="276">
+                                <label id="278">
+                                    <text-property name="text">仓库:</text-property>
+                                </label>
+                            </cell>
+                            <cell id="277"/>
+                        </row>
+                    </grid>
+                </cell>
+                <cell id="254"/>
+                <cell id="255"/>
+            </row>
         </grid>
-        <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="148">
+        <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="467">
             <property name="cube">Data Cube</property>
             <property name="measures">
-                <extended-item extensionName="MeasureView" id="172">
+                <extended-item extensionName="MeasureView" id="491">
                     <property name="measure">主数量</property>
                     <property name="detail">
-                        <extended-item extensionName="AggregationCell" id="173">
+                        <extended-item extensionName="AggregationCell" id="492">
                             <property name="aggregationOnRow">RES/规格</property>
                             <property name="aggregationOnColumn">DIR/类型</property>
                             <property name="content">
-                                <data id="174">
+                                <data id="493">
                                     <property name="resultSetColumn">主数量_RES/规格_DIR/类型</property>
                                 </data>
                             </property>
                         </extended-item>
                     </property>
-                    <property name="header">
-                        <extended-item extensionName="CrosstabCell" id="175">
-                            <property name="content">
-                                <label id="176">
-                                    <text-property name="text">主数量</text-property>
-                                </label>
-                            </property>
-                        </extended-item>
-                    </property>
-                </extended-item>
-                <extended-item extensionName="MeasureView" id="177">
-                    <property name="measure">辅数量</property>
-                    <property name="detail">
-                        <extended-item extensionName="AggregationCell" id="178">
+                    <property name="aggregations">
+                        <extended-item extensionName="AggregationCell" id="562">
                             <property name="aggregationOnRow">RES/规格</property>
-                            <property name="aggregationOnColumn">DIR/类型</property>
+                            <property name="aggregationOnColumn">DIR/方向</property>
                             <property name="content">
-                                <data id="184">
-                                    <property name="resultSetColumn">辅数量_RES/规格_DIR/类型</property>
+                                <data id="563">
+                                    <property name="resultSetColumn">主数量_RES/规格_DIR/方向</property>
                                 </data>
                             </property>
                         </extended-item>
                     </property>
                     <property name="header">
-                        <extended-item extensionName="CrosstabCell" id="180">
-                            <property name="content">
-                                <label id="186">
-                                    <text-property name="text">主单位</text-property>
-                                </label>
-                            </property>
-                        </extended-item>
+                        <extended-item extensionName="CrosstabCell" id="494"/>
+                        <extended-item extensionName="CrosstabCell" id="570"/>
                     </property>
                 </extended-item>
-                <extended-item extensionName="MeasureView" id="182">
+                <extended-item extensionName="MeasureView" id="519">
                     <property name="measure">主单位</property>
                     <property name="detail">
-                        <extended-item extensionName="AggregationCell" id="183">
+                        <extended-item extensionName="AggregationCell" id="520">
                             <property name="aggregationOnRow">RES/规格</property>
                             <property name="aggregationOnColumn">DIR/类型</property>
                             <property name="content">
-                                <data id="179">
+                                <data id="521">
                                     <property name="resultSetColumn">主单位_RES/规格_DIR/类型</property>
                                 </data>
                             </property>
                         </extended-item>
                     </property>
-                    <property name="header">
-                        <extended-item extensionName="CrosstabCell" id="185">
-                            <property name="content">
-                                <label id="181">
-                                    <text-property name="text">辅数量</text-property>
-                                </label>
-                            </property>
-                        </extended-item>
-                    </property>
-                </extended-item>
-                <extended-item extensionName="MeasureView" id="187">
-                    <property name="measure">辅单位</property>
-                    <property name="detail">
-                        <extended-item extensionName="AggregationCell" id="188">
+                    <property name="aggregations">
+                        <extended-item extensionName="AggregationCell" id="564">
                             <property name="aggregationOnRow">RES/规格</property>
-                            <property name="aggregationOnColumn">DIR/类型</property>
+                            <property name="aggregationOnColumn">DIR/方向</property>
                             <property name="content">
-                                <data id="189">
-                                    <property name="resultSetColumn">辅单位_RES/规格_DIR/类型</property>
+                                <data id="565">
+                                    <property name="resultSetColumn">主单位_RES/规格_DIR/方向</property>
                                 </data>
                             </property>
                         </extended-item>
                     </property>
                     <property name="header">
-                        <extended-item extensionName="CrosstabCell" id="190">
+                        <extended-item extensionName="CrosstabCell" id="522"/>
+                        <extended-item extensionName="CrosstabCell" id="572"/>
+                    </property>
+                </extended-item>
+                <extended-item extensionName="MeasureView" id="531">
+                    <property name="measure">辅数量</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="532">
+                            <property name="aggregationOnRow">RES/规格</property>
+                            <property name="aggregationOnColumn">DIR/类型</property>
                             <property name="content">
-                                <label id="191">
-                                    <text-property name="text">辅单位</text-property>
-                                </label>
+                                <data id="533">
+                                    <property name="resultSetColumn">辅数量_RES/规格_DIR/类型</property>
+                                </data>
                             </property>
                         </extended-item>
+                    </property>
+                    <property name="aggregations">
+                        <extended-item extensionName="AggregationCell" id="566">
+                            <property name="aggregationOnRow">RES/规格</property>
+                            <property name="aggregationOnColumn">DIR/方向</property>
+                            <property name="content">
+                                <data id="567">
+                                    <property name="resultSetColumn">辅数量_RES/规格_DIR/方向</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="534"/>
+                        <extended-item extensionName="CrosstabCell" id="574"/>
+                    </property>
+                </extended-item>
+                <extended-item extensionName="MeasureView" id="538">
+                    <property name="measure">辅单位</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="539">
+                            <property name="aggregationOnRow">RES/规格</property>
+                            <property name="aggregationOnColumn">DIR/类型</property>
+                            <property name="content">
+                                <data id="540">
+                                    <property name="resultSetColumn">辅单位_RES/规格_DIR/类型</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="aggregations">
+                        <extended-item extensionName="AggregationCell" id="568">
+                            <property name="aggregationOnRow">RES/规格</property>
+                            <property name="aggregationOnColumn">DIR/方向</property>
+                            <property name="content">
+                                <data id="569">
+                                    <property name="resultSetColumn">辅单位_RES/规格_DIR/方向</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="541"/>
+                        <extended-item extensionName="CrosstabCell" id="576"/>
                     </property>
                 </extended-item>
             </property>
             <property name="rows">
-                <extended-item extensionName="CrosstabView" id="150">
+                <extended-item extensionName="CrosstabView" id="469">
                     <property name="views">
-                        <extended-item extensionName="DimensionView" id="151">
+                        <extended-item extensionName="DimensionView" id="470">
                             <property name="dimension">RES</property>
                             <property name="levels">
-                                <extended-item extensionName="LevelView" name="NewLevel View" id="152">
+                                <extended-item extensionName="LevelView" name="NewLevel View" id="471">
                                     <property name="level">RES/RES</property>
                                     <property name="member">
-                                        <extended-item extensionName="CrosstabCell" id="153">
+                                        <extended-item extensionName="CrosstabCell" id="472">
                                             <property name="content">
-                                                <data name="RES" id="154">
+                                                <data name="RES" id="473">
                                                     <property name="resultSetColumn">RES</property>
                                                 </data>
                                             </property>
                                         </extended-item>
                                     </property>
                                 </extended-item>
-                                <extended-item extensionName="LevelView" name="NewLevel View1" id="155">
+                                <extended-item extensionName="LevelView" name="NewLevel View1" id="474">
                                     <property name="level">RES/品牌</property>
                                     <property name="member">
-                                        <extended-item extensionName="CrosstabCell" id="156">
+                                        <extended-item extensionName="CrosstabCell" id="475">
                                             <property name="content">
-                                                <data name="品牌" id="158">
+                                                <data name="品牌" id="477">
                                                     <property name="resultSetColumn">品牌</property>
                                                 </data>
                                             </property>
                                         </extended-item>
                                     </property>
                                 </extended-item>
-                                <extended-item extensionName="LevelView" name="NewLevel View2" id="159">
+                                <extended-item extensionName="LevelView" name="NewLevel View2" id="478">
                                     <property name="level">RES/规格</property>
                                     <property name="member">
-                                        <extended-item extensionName="CrosstabCell" id="160">
+                                        <extended-item extensionName="CrosstabCell" id="479">
                                             <property name="content">
-                                                <data name="规格" id="162">
+                                                <data name="规格" id="481">
                                                     <property name="resultSetColumn">规格</property>
                                                 </data>
                                             </property>
@@ -577,32 +712,42 @@ return false;]]></method>
                             </property>
                         </extended-item>
                     </property>
+                    <property name="grandTotalLocation">after</property>
                 </extended-item>
             </property>
             <property name="columns">
-                <extended-item extensionName="CrosstabView" id="197">
+                <extended-item extensionName="CrosstabView" id="501">
                     <property name="views">
-                        <extended-item extensionName="DimensionView" id="198">
+                        <extended-item extensionName="DimensionView" id="502">
                             <property name="dimension">DIR</property>
                             <property name="levels">
-                                <extended-item extensionName="LevelView" name="NewLevel View3" id="199">
+                                <extended-item extensionName="LevelView" name="NewLevel View3" id="503">
                                     <property name="level">DIR/方向</property>
                                     <property name="member">
-                                        <extended-item extensionName="CrosstabCell" id="200">
+                                        <extended-item extensionName="CrosstabCell" id="504">
                                             <property name="content">
-                                                <data name="方向" id="204">
+                                                <data name="方向" id="508">
                                                     <property name="resultSetColumn">方向</property>
                                                 </data>
                                             </property>
                                         </extended-item>
                                     </property>
+                                    <property name="aggregationHeader">
+                                        <extended-item extensionName="CrosstabCell" id="561">
+                                            <property name="content">
+                                                <data name="方向_TOTAL" id="578">
+                                                    <property name="resultSetColumn">方向_TOTAL</property>
+                                                </data>
+                                            </property>
+                                        </extended-item>
+                                    </property>
                                 </extended-item>
-                                <extended-item extensionName="LevelView" name="NewLevel View4" id="206">
+                                <extended-item extensionName="LevelView" name="NewLevel View4" id="510">
                                     <property name="level">DIR/类型</property>
                                     <property name="member">
-                                        <extended-item extensionName="CrosstabCell" id="207">
+                                        <extended-item extensionName="CrosstabCell" id="511">
                                             <property name="content">
-                                                <data name="类型" id="211">
+                                                <data name="类型" id="515">
                                                     <property name="resultSetColumn">类型</property>
                                                 </data>
                                             </property>
@@ -612,44 +757,45 @@ return false;]]></method>
                             </property>
                         </extended-item>
                     </property>
+                    <property name="grandTotalLocation">after</property>
                 </extended-item>
             </property>
             <property name="header">
-                <extended-item extensionName="CrosstabCell" id="201"/>
-                <extended-item extensionName="CrosstabCell" id="202"/>
-                <extended-item extensionName="CrosstabCell" id="203">
+                <extended-item extensionName="CrosstabCell" id="505"/>
+                <extended-item extensionName="CrosstabCell" id="506"/>
+                <extended-item extensionName="CrosstabCell" id="507">
                     <property name="content">
-                        <label id="205">
+                        <label id="509">
                             <text-property name="text">方向</text-property>
                         </label>
                     </property>
                 </extended-item>
-                <extended-item extensionName="CrosstabCell" id="208"/>
-                <extended-item extensionName="CrosstabCell" id="209"/>
-                <extended-item extensionName="CrosstabCell" id="210">
+                <extended-item extensionName="CrosstabCell" id="512"/>
+                <extended-item extensionName="CrosstabCell" id="513"/>
+                <extended-item extensionName="CrosstabCell" id="514">
                     <property name="content">
-                        <label id="212">
+                        <label id="516">
                             <text-property name="text">类型</text-property>
                         </label>
                     </property>
                 </extended-item>
-                <extended-item extensionName="CrosstabCell" id="149">
+                <extended-item extensionName="CrosstabCell" id="468">
                     <property name="content">
-                        <label id="192">
+                        <label id="496">
                             <text-property name="text">RES</text-property>
                         </label>
                     </property>
                 </extended-item>
-                <extended-item extensionName="CrosstabCell" id="157">
+                <extended-item extensionName="CrosstabCell" id="476">
                     <property name="content">
-                        <label id="193">
+                        <label id="497">
                             <text-property name="text">品牌</text-property>
                         </label>
                     </property>
                 </extended-item>
-                <extended-item extensionName="CrosstabCell" id="161">
+                <extended-item extensionName="CrosstabCell" id="480">
                     <property name="content">
-                        <label id="194">
+                        <label id="498">
                             <text-property name="text">规格</text-property>
                         </label>
                     </property>
@@ -681,33 +827,6 @@ return false;]]></method>
                     <property name="aggregateFunction">SUM</property>
                 </structure>
                 <structure>
-                    <property name="name">辅数量_RES/规格</property>
-                    <expression name="expression">measure["辅数量"]</expression>
-                    <property name="dataType">decimal</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>RES/规格</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">SUM</property>
-                </structure>
-                <structure>
-                    <property name="name">主单位_RES/规格</property>
-                    <expression name="expression">measure["主单位"]</expression>
-                    <property name="dataType">integer</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>RES/规格</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">MAX</property>
-                </structure>
-                <structure>
-                    <property name="name">辅单位_RES/规格</property>
-                    <expression name="expression">measure["辅单位"]</expression>
-                    <property name="dataType">integer</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>RES/规格</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">MAX</property>
-                </structure>
-                <structure>
                     <property name="name">方向</property>
                     <expression name="expression">dimension["DIR"]["方向"]</expression>
                     <property name="dataType">string</property>
@@ -715,42 +834,12 @@ return false;]]></method>
                 <structure>
                     <property name="name">主数量_RES/规格_DIR/方向</property>
                     <expression name="expression">measure["主数量"]</expression>
-                    <property name="dataType">decimal</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>RES/规格</value>
-                        <value>DIR/方向</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">SUM</property>
-                </structure>
-                <structure>
-                    <property name="name">辅数量_RES/规格_DIR/方向</property>
-                    <expression name="expression">measure["辅数量"]</expression>
-                    <property name="dataType">decimal</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>RES/规格</value>
-                        <value>DIR/方向</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">MAX</property>
-                </structure>
-                <structure>
-                    <property name="name">主单位_RES/规格_DIR/方向</property>
-                    <expression name="expression">measure["主单位"]</expression>
                     <property name="dataType">float</property>
                     <simple-property-list name="aggregateOn">
                         <value>RES/规格</value>
                         <value>DIR/方向</value>
                     </simple-property-list>
                     <property name="aggregateFunction">SUM</property>
-                </structure>
-                <structure>
-                    <property name="name">辅单位_RES/规格_DIR/方向</property>
-                    <expression name="expression">measure["辅单位"]</expression>
-                    <property name="dataType">integer</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>RES/规格</value>
-                        <value>DIR/方向</value>
-                    </simple-property-list>
-                    <property name="aggregateFunction">MAX</property>
                 </structure>
                 <structure>
                     <property name="name">类型</property>
@@ -768,34 +857,74 @@ return false;]]></method>
                     <property name="aggregateFunction">SUM</property>
                 </structure>
                 <structure>
+                    <property name="name">主单位_RES/规格_DIR/类型</property>
+                    <expression name="expression">measure["主单位"]</expression>
+                    <property name="dataType">string</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>RES/规格</value>
+                        <value>DIR/类型</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">FIRST</property>
+                </structure>
+                <structure>
                     <property name="name">辅数量_RES/规格_DIR/类型</property>
-                    <expression name="expression">measure["辅数量"]</expression>
                     <property name="dataType">decimal</property>
                     <simple-property-list name="aggregateOn">
                         <value>RES/规格</value>
                         <value>DIR/类型</value>
                     </simple-property-list>
-                    <property name="aggregateFunction">MAX</property>
-                </structure>
-                <structure>
-                    <property name="name">主单位_RES/规格_DIR/类型</property>
-                    <expression name="expression">measure["主单位"]</expression>
-                    <property name="dataType">float</property>
-                    <simple-property-list name="aggregateOn">
-                        <value>RES/规格</value>
-                        <value>DIR/类型</value>
-                    </simple-property-list>
                     <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">measure["辅数量"]</expression>
+                        </structure>
+                    </list-property>
                 </structure>
                 <structure>
                     <property name="name">辅单位_RES/规格_DIR/类型</property>
                     <expression name="expression">measure["辅单位"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">string</property>
                     <simple-property-list name="aggregateOn">
                         <value>RES/规格</value>
                         <value>DIR/类型</value>
                     </simple-property-list>
-                    <property name="aggregateFunction">MAX</property>
+                    <property name="aggregateFunction">FIRST</property>
+                </structure>
+                <structure>
+                    <property name="name">主单位_RES/规格_DIR/方向</property>
+                    <expression name="expression">measure["主单位"]</expression>
+                    <property name="dataType">string</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>RES/规格</value>
+                        <value>DIR/方向</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">FIRST</property>
+                </structure>
+                <structure>
+                    <property name="name">辅数量_RES/规格_DIR/方向</property>
+                    <expression name="expression">measure["辅数量"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>RES/规格</value>
+                        <value>DIR/方向</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">辅单位_RES/规格_DIR/方向</property>
+                    <expression name="expression">measure["辅单位"]</expression>
+                    <property name="dataType">string</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>RES/规格</value>
+                        <value>DIR/方向</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">FIRST</property>
+                </structure>
+                <structure>
+                    <property name="name">方向_TOTAL</property>
+                    <expression name="expression">dimension["DIR"]["方向"]+" TOTAL"</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
         </extended-item>

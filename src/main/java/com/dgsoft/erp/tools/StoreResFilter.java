@@ -12,7 +12,7 @@ import java.util.List;
  * Created by cooper on 6/22/14.
  */
 @Name("storeResFilter")
-public class StoreResFilter implements Serializable{
+public class StoreResFilter implements Serializable {
 
     private List<String> resCategoryIds;
 
@@ -26,7 +26,7 @@ public class StoreResFilter implements Serializable{
         this.resCategoryIds = resCategoryIds;
     }
 
-    public void setResCategoryIdsStr(String str){
+    public void setResCategoryIdsStr(String str) {
         resCategoryIds = CollectionTools.instance().strToList(str);
     }
 
@@ -34,7 +34,7 @@ public class StoreResFilter implements Serializable{
         this.storeResIds = storeResIds;
     }
 
-    public void setStoreResIdsStr(String str){
+    public void setStoreResIdsStr(String str) {
         storeResIds = CollectionTools.instance().strToList(str);
     }
 
@@ -43,7 +43,10 @@ public class StoreResFilter implements Serializable{
     }
 
     public void setFloatConvertRate(BigDecimal floatConvertRate) {
-        this.floatConvertRate = floatConvertRate;
+        if (BigDecimal.ZERO.compareTo(floatConvertRate) == 0) {
+            this.floatConvertRate = null;
+        } else
+            this.floatConvertRate = floatConvertRate;
     }
 
     public List<String> getResCategoryIds() {

@@ -9,9 +9,11 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,17 +77,16 @@ public class ResFormatCache {
     }
 
     public Format getFormatByDefineName(String storeResId, String defineName) {
-        Map<FormatDefine, Format> formats = getFormatMap(storeResId);
-        for (FormatDefine key : formats.keySet()) {
-            if (key.getName().equals(defineName)) {
-                return formats.get(key);
+        for (Format f : getFormats(storeResId)) {
+            if (f.getFormatDefine().getName().equals(defineName)){
+                return f;
             }
         }
         return null;
     }
 
     public List<Format> getOtherFormats(String storeResId, String defineName) {
-        List<Format> result = getFormats(storeResId);
+        List<Format> result = new ArrayList<Format>(getFormats(storeResId));
         for(Format f: result){
             if (f.getFormatDefine().getName().equals(defineName)){
                 result.remove(f);

@@ -41,10 +41,14 @@ public class CollectionTools {
     }
 
     public List<String> strToList(String s){
-        if ((s == null) || s.trim().equals("")){
+        if (s == null){
             return null;
         }
         String replace = s.replace("[","").replace("]","");
+        if (replace.trim().equals("")){
+            return null;
+        }
+
         return new ArrayList<String>(Arrays.asList(replace.split(",")));
     }
 

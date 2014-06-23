@@ -7,4 +7,7 @@
 
     <restrict>#{s:hasRole('erp.storage.store') or s:hasRole('erp.storage.mgr')}</restrict>
 
+    <param name="storeId" value="#{storeChangeTotal.storeId}"/>
+    <param name="dateFrom" value="#{searchDateArea.dateFrom}"/>
+    <param name="dateTo" value="#{searchDateArea.dateTo}"/>
 </page>
