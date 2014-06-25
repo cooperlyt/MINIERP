@@ -65,4 +65,8 @@ public class OrderMoneySeries {
         NumberFormat currencyFormat = DecimalFormat.getCurrencyInstance(Locale.CHINA);
         return currencyFormat.format(money);
     }
+
+    public BigDecimal getMoneyScale(BigDecimal totalMoney){
+        return DataFormat.format(getMoney().divide(totalMoney,4,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")),"#0.##");
+    }
 }

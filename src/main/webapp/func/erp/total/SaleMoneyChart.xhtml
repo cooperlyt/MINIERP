@@ -82,7 +82,7 @@
                                 circular="true" is3D="true" plotForegroundAlpha="0.9">
 
                         <ui:repeat value="#{saleMoneyChartData.orderMoneyData}" var="_oms">
-                            <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_oms.key).name : dictionary.getCityName(_oms.key)}"
+                            <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_oms.key).name : dictionary.getCityName(_oms.key)} %#{_oms.getMoneyScale(saleMoneyChartData.orderMoneyTotal.money)}"
                                     value="#{_oms.money}"/>
                         </ui:repeat>
                     </p:piechart>
@@ -97,7 +97,7 @@
                                 circular="true" is3D="true" plotForegroundAlpha="0.9">
 
                         <ui:repeat value="#{saleMoneyChartData.backMoneyData}" var="_oms">
-                            <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_oms.key).name : dictionary.getCityName(_oms.key)}" value="#{_oms.money}"/>
+                            <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_oms.key).name : dictionary.getCityName(_oms.key)} %#{_oms.getMoneyScale(saleMoneyChartData.backMoneyDataTotal.money)}" value="#{_oms.money}"/>
                         </ui:repeat>
                     </p:piechart>
 
