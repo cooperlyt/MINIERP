@@ -7,7 +7,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
-                template="/layout/full-template.xhtml">
+                template="/layout/template.xhtml">
 
 
 <ui:define name="func-body">
@@ -19,7 +19,7 @@
 
 
             <h:selectOneMenu label="#{messages.Store}" value="#{storeChangeTotal.storeId}"
-                         rendered="#{not s:hasRole('erp.storage.manager')}">
+                             rendered="#{not s:hasRole('erp.storage.manager')}">
                 <s:selectItems value="#{myStores}" var="_store" itemValue="#{_store.id}"
                                label="#{_store.name}"/>
             </h:selectOneMenu>
@@ -71,7 +71,8 @@
 
                     <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
 
-                    <h:commandLink target="_blank" value="#{messages.Print}" styleClass="rich-button-link" action="/report/StoreChangeTotal.xhtml"/>
+                    <h:commandLink target="_blank" value="#{messages.Print}" styleClass="rich-button-link"
+                                   action="/report/StoreChangeTotal.xhtml"/>
 
                     <a:commandButton value="#{messages.search}"
                                      execute="@form" render="totalResultDatas"
@@ -88,244 +89,177 @@
 </h:form>
 <br/>
 
-<a:outputPanel ajaxRendered="true">
-    #{storeChangeTotal.totalResultGroup.size}
-</a:outputPanel>
+<rich:dataTable id="totalResultDatas" style="width: 100%" value="#{storeChangeTotal.totalResultGroup}"
+                var="_format">
 
-<rich:dataTable id="totalResultDatas" style="width: 100%" value="#{storeChangeTotal.totalResultGroup}" var="_format">
-
-<f:facet name="header">
-    <rich:columnGroup>
-        <rich:column rowspan="2" colspan="2">
-            #{messages.StoreRes}
-        </rich:column>
-        <rich:column rowspan="2" colspan="2" rendered="#{storeChangeTotal.accountModel}">
-            #{messages.SotckBeginCount}
-        </rich:column>
-        <rich:column colspan="18">
-            #{messages.storeIn}
-        </rich:column>
-        <rich:column colspan="#{14 + allStoreList.resultCount}">
-            #{messages.storeOut}   #{14 + allStoreList.resultCount}
-        </rich:column>
-        <rich:column rowspan="2" colspan="2" rendered="#{storeChangeTotal.accountModel}">
-            #{messages.StockCloseCount}
-        </rich:column>
-
-        <rich:column colspan="2" breakRowBefore="true">
-            #{messages.PRODUCE_IN}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.ALLOCATION_IN}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.SELL_BACK}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.STORE_CHANGE_IN}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.STORE_CHECK_ADD}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.ASSEMBLY_IN}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.MATERIAL_IN}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.MATERIAL_BACK_IN}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.GroupTotal}
-        </rich:column>
-
-        <rich:column colspan="2">
-            #{messages.SELL_OUT}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.ASSEMBLY_OUT}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.SCRAP_OUT}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.STORE_CHECK_LOSS}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.STORE_CHANGE_OUT}
-        </rich:column>
-        <rich:column colspan="2">
-            #{messages.MATERIAL_OUT}
-        </rich:column>
-
-
-        <c:forEach items="#{allStoreList.resultList}" var="_store">
-            <rich:column colspan="2">
-                #{messages.AllocationTo} #{_store.name}
+    <f:facet name="header">
+        <rich:columnGroup>
+            <rich:column rowspan="2" colspan="2">
+                #{messages.StoreRes}
             </rich:column>
-        </c:forEach>
+            <rich:column colspan="2" rendered="#{storeChangeTotal.accountModel}">
+                #{messages.SotckBeginCount}
+            </rich:column>
+            <rich:column colspan="2">
+                #{messages.storeIn}
+            </rich:column>
+            <rich:column colspan="2">
+                #{messages.storeOut}
+            </rich:column>
+            <rich:column colspan="2" rendered="#{storeChangeTotal.accountModel}">
+                #{messages.StockCloseCount}
+            </rich:column>
 
-        <rich:column colspan="2">
-            #{messages.GroupTotal}
-        </rich:column>
+            <rich:column rowspan="2">
+                <a:outputPanel >
+                    <h:outputLink value="#"
+                                  onclick="$('[id$=sbtbl]').each(function(n){this.rf.component.collapse();}); return false;">
+                        <h:graphicImage value="#{resource['org.richfaces:up_icon.gif']}"/>
+
+                    </h:outputLink>
+                    <h:outputLink value="#"
+                                  onclick="$('[id$=sbtbl]').each(function(n){this.rf.component.expand();}); return false;">
+                        <h:graphicImage value="#{resource['org.richfaces:down_icon.gif']}"/>
+
+                    </h:outputLink>
+
+                </a:outputPanel>
+            </rich:column>
+
+            <rich:column breakRowBefore="true">
+                #{messages.MasterUnitCount}
+            </rich:column>
+            <rich:column>
+                #{messages.AuxUnitCount}
+            </rich:column>
+            <rich:column>
+                #{messages.MasterUnitCount}
+            </rich:column>
+            <rich:column>
+                #{messages.AuxUnitCount}
+            </rich:column>
+            <rich:column rendered="#{storeChangeTotal.accountModel}">
+                #{messages.MasterUnitCount}
+            </rich:column>
+            <rich:column rendered="#{storeChangeTotal.accountModel}">
+                #{messages.AuxUnitCount}
+            </rich:column>
+            <rich:column rendered="#{storeChangeTotal.accountModel}">
+                #{messages.MasterUnitCount}
+            </rich:column>
+            <rich:column rendered="#{storeChangeTotal.accountModel}">
+                #{messages.AuxUnitCount}
+            </rich:column>
 
 
-    </rich:columnGroup>
-</f:facet>
+        </rich:columnGroup>
+    </f:facet>
 
 
-<rich:column
-        colspan="#{storeChangeTotal.accountModel ? (38 + allStoreList.resultCount) : (34 + allStoreList.resultCount) }">
-    <rich:collapsibleSubTableToggler for="sbtbl"/>
-    #{_format.key.formatTitle}   #{_format.childGroup.size}
-</rich:column>
+    <rich:column  style="background: #{a4jSkin.tableSubHeaderBackgroundColor}"
+            colspan="2">
+        <rich:collapsibleSubTableToggler for="sbtbl"/>
+        #{_format.key.res.name} #{_format.key.formatTitle}
+    </rich:column>
 
-<rich:collapsibleSubTable expandMode="client" value="#{_format.values}" var="_item"
-                          id="sbtbl">
-    <rich:column/>
-    <rich:column>
-        <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
-                      value="#{_item.storeRes.floatConversionRate}">
-            <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}" rendered="#{storeChangeTotal.accountModel}">
+
+    </rich:column>
+
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}" rendered="#{storeChangeTotal.accountModel}">
+
+    </rich:column>
+
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+        <h:outputText value="#{_format.totalData.inMasterCountTotal}">
+            <f:convertNumber pattern="#{_format.key.res.unitGroup.masterUnit.countFormate}"/>
         </h:outputText>
-        <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
-                      rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
-    </rich:column>
-    <rich:column rendered="#{storeChangeTotal.accountModel}">
-
-    </rich:column>
-    <rich:column rendered="#{storeChangeTotal.accountModel}">
-
+        #{_format.key.res.unitGroup.masterUnit.name}
     </rich:column>
 
-    <rich:column>
-        #{messages.PRODUCE_IN}
-    </rich:column>
-    <rich:column>
-        #{messages.PRODUCE_IN}
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+        <a:outputPanel rendered="#{_format.key.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+            <h:outputText value="#{_format.totalData.inAuxCountTotal}">
+                <f:convertNumber pattern="#{_format.key.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            #{_format.key.res.unitGroup.floatAuxiliaryUnit.name}
+        </a:outputPanel>
+
     </rich:column>
 
-    <rich:column>
-        #{messages.ALLOCATION_IN}
-    </rich:column>
-    <rich:column>
-        #{messages.ALLOCATION_IN}
-    </rich:column>
-
-    <rich:column>
-        #{messages.SELL_BACK}
-    </rich:column>
-    <rich:column>
-        #{messages.SELL_BACK}
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+        <h:outputText value="#{_format.totalData.outMasterCountTotal}">
+            <f:convertNumber pattern="#{_format.key.res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        #{_format.key.res.unitGroup.masterUnit.name}
     </rich:column>
 
-    <rich:column>
-        #{messages.STORE_CHANGE_IN}
-    </rich:column>
-    <rich:column>
-        #{messages.STORE_CHANGE_IN}
-    </rich:column>
-
-    <rich:column>
-        #{messages.STORE_CHECK_ADD}
-    </rich:column>
-    <rich:column>
-        #{messages.STORE_CHECK_ADD}
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+        <a:outputPanel rendered="#{_format.key.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+            <h:outputText value="#{_format.totalData.outAuxCountTotal}">
+                <f:convertNumber pattern="#{_format.key.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            #{_format.key.res.unitGroup.floatAuxiliaryUnit.name}
+        </a:outputPanel>
     </rich:column>
 
-    <rich:column>
-        #{messages.ASSEMBLY_IN}
-    </rich:column>
-    <rich:column>
-        #{messages.ASSEMBLY_IN}
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}" rendered="#{storeChangeTotal.accountModel}">
+
     </rich:column>
 
-    <rich:column>
-        #{messages.MATERIAL_IN}
-    </rich:column>
-    <rich:column>
-        #{messages.MATERIAL_IN}
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}" rendered="#{storeChangeTotal.accountModel}">
+
     </rich:column>
 
-    <rich:column>
-        #{messages.MATERIAL_BACK_IN}
-    </rich:column>
-    <rich:column>
-        #{messages.MATERIAL_BACK_IN}
+    <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+
     </rich:column>
 
-    <rich:column>
-        #{messages.GroupTotal}
-    </rich:column>
-    <rich:column>
-        #{messages.GroupTotal}
-    </rich:column>
-
-    <rich:column>
-        #{messages.SELL_OUT}
-    </rich:column>
-    <rich:column>
-        #{messages.SELL_OUT}
-    </rich:column>
-
-    <rich:column>
-        #{messages.ASSEMBLY_OUT}
-    </rich:column>
-    <rich:column>
-        #{messages.ASSEMBLY_OUT}
-    </rich:column>
-
-    <rich:column>
-        #{messages.SCRAP_OUT}
-    </rich:column>
-    <rich:column>
-        #{messages.SCRAP_OUT}
-    </rich:column>
-
-    <rich:column>
-        #{messages.STORE_CHECK_LOSS}
-    </rich:column>
-    <rich:column>
-        #{messages.STORE_CHECK_LOSS}
-    </rich:column>
-
-    <rich:column>
-        #{messages.STORE_CHANGE_OUT}
-    </rich:column>
-    <rich:column>
-        #{messages.STORE_CHANGE_OUT}
-    </rich:column>
-
-    <rich:column>
-        #{messages.MATERIAL_OUT}
-    </rich:column>
-    <rich:column>
-        #{messages.MATERIAL_OUT}
-    </rich:column>
-
-    <c:forEach items="#{allStoreList.resultList}" var="_store">
-        <rich:column colspan="2">
-            #{_store.name}
+    <rich:collapsibleSubTable expandMode="client" value="#{_format.values}" var="_item"
+                              id="sbtbl">
+        <rich:column style="width: 1px"/>
+        <rich:column>
+            <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                          value="#{_item.storeRes.floatConversionRate}">
+                <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+            </h:outputText>
+            <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
+                          rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
         </rich:column>
-    </c:forEach>
+        <rich:column rendered="#{storeChangeTotal.accountModel}">
 
-    <rich:column>
-        #{messages.GroupTotal}
-    </rich:column>
-    <rich:column>
-        #{messages.GroupTotal}
-    </rich:column>
+        </rich:column>
+        <rich:column rendered="#{storeChangeTotal.accountModel}">
 
-    <rich:column rendered="#{storeChangeTotal.accountModel}">
+        </rich:column>
 
-    </rich:column>
-    <rich:column rendered="#{storeChangeTotal.accountModel}">
+        <rich:column>
+            #{_item.inTotal.displayMasterCount}
+        </rich:column>
+        <rich:column>
+            #{_item.inTotal.displayAuxCount}
+        </rich:column>
 
-    </rich:column>
+        <rich:column>
+            #{_item.outTotal.displayMasterCount}
+        </rich:column>
+        <rich:column>
+            #{_item.outTotal.displayAuxCount}
+        </rich:column>
 
 
-</rich:collapsibleSubTable>
+        <rich:column rendered="#{storeChangeTotal.accountModel}">
+
+        </rich:column>
+        <rich:column rendered="#{storeChangeTotal.accountModel}">
+
+        </rich:column>
+
+        <rich:column>
+
+        </rich:column>
+
+    </rich:collapsibleSubTable>
 
 </rich:dataTable>
 

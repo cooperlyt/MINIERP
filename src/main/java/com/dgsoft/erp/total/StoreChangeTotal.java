@@ -341,7 +341,7 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
             return result;
         }
 
-        public StoreResCount getOuntTotal(){
+        public StoreResCount getOutTotal(){
             StoreResCount result = new StoreResCount(storeRes,BigDecimal.ZERO);
             for (StockChange.StoreChangeType type : changeCount.keySet()){
                 if (type.isOut()){
