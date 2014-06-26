@@ -117,7 +117,7 @@ public class OrderShip extends OrderShipTaskHandle {
         }
         //dispatchHome.getInstance().setState(Dispatch.DispatchState.ALL_COMPLETE);
 
-
+        dispatchHome.getInstance().setDelivered(true);
         calcStoreResCompleted(dispatchHome.getInstance().getSendTime());
         if (dispatchHome.update().equals("updated")) {
 
@@ -125,7 +125,32 @@ public class OrderShip extends OrderShipTaskHandle {
         } else {
             return null;
         }
+    }
 
+
+    private void calcStoreResCompleted(Date shipDate) {
+        for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
+            for (Dispatch dispatch: needRes.getDispatches()){
+                if (!dispatch.getId().equals(dispatchHome.getInstance().getId()) && !dispatch.isDelivered()){
+                    return;
+                }
+            }
+
+            for (OrderItem item : needRes.getOrderItems()) {
+                if (!item.getStatus().equals(OrderItem.OrderItemStatus.COMPLETED)) {
+                    orderHome.getInstance().setAllStoreOut(false);
+                    return;
+                }
+            }
+            for (Dispatch dispatch : needRes.getDispatches()) {
+                if (dispatch.isHaveNoOutOweItem()) {
+                    orderHome.getInstance().setAllStoreOut(false);
+                    return;
+                }
+            }
+
+        }
+        shipComplete(shipDate);
 
     }
 

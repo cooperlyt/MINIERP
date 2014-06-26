@@ -21,7 +21,7 @@ public class ResBackList extends ErpEntityQuery<OrderBack>{
 
     private static final String[] RESTRICTIONS = {
             "orderBack.applyEmp = #{resBackList.applyEmp}",
-            "orderBack.customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",
+            "orderBack.customer.customerArea.id in (#{customerSearchCondition.customerAreaId})",
             "orderBack.customer.customerLevel >= #{customerSearchCondition.levelFrom}",
             "orderBack.customer.customerLevel <=#{customerSearchCondition.levelTo}",
             "lower(orderBack.customer.name) like lower(concat(#{customerSearchCondition.name},'%'))",

@@ -5,6 +5,7 @@ import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.common.jbpm.TaskDescription;
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.StockChangeHome;
@@ -65,6 +66,9 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
     private BackItem editingItem;
 
     private BackDispatch dispatch;
+
+    @In
+    private NumberBuilder numberBuilder;
 
 
     public BackItem getEditingItem() {
@@ -189,7 +193,7 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
     @Override
     protected String completeOrderTask() {
 
-        stockChangeHome.getInstance().setId("RI-" + orderBackHome.getInstance().getId());
+        stockChangeHome.getInstance().setId(orderBackHome.getInstance().getId() + numberBuilder.getDateNumber("ResBack"));
         stockChangeHome.getInstance().setBackDispatch(dispatch);
 
         for (BackItem item : inItems) {

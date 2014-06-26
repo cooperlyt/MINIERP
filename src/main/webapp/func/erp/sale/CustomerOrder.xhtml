@@ -165,7 +165,7 @@
         <rich:column style="text-align: center;" width="30px">
 
 
-            <a:commandButton image="/img/edit.png" title="#{messages.CancelOrder}" immediate="true" execute="@this"
+            <a:commandButton image="/img/edit.png" title="#{messages.EditOrder}" immediate="true" execute="@this"
                              render="cancelOrderIdTitle,cancelOrderOperAction"
                              oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
                              rendered="#{(not _order.canceled)}">

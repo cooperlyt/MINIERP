@@ -12,25 +12,7 @@ import java.util.Date;
 public abstract class OrderShipTaskHandle extends OrderTaskHandle {
 
 
-    protected void calcStoreResCompleted(Date shipDate) {
-        for (NeedRes needRes : orderHome.getInstance().getNeedReses()) {
-            for (OrderItem item : needRes.getOrderItems()) {
-                if (!item.getStatus().equals(OrderItem.OrderItemStatus.COMPLETED)) {
-                    orderHome.getInstance().setAllStoreOut(false);
-                    return;
-                }
-            }
-            for (Dispatch dispatch : needRes.getDispatches()) {
-                if (dispatch.isHaveNoOutOweItem()) {
-                    orderHome.getInstance().setAllStoreOut(false);
-                    return;
-                }
-            }
 
-        }
-        shipComplete(shipDate);
-
-    }
 
     protected void shipComplete(Date shipDate) {
         orderHome.getInstance().setAllStoreOut(true);

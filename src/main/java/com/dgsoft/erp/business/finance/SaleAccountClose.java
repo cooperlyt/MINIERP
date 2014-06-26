@@ -74,8 +74,10 @@ public class SaleAccountClose {
     private BigDecimal calcCustomerAccountMoney(String customerId, Date beginDate) {
         BigDecimal result = erpEntityManager.createQuery("select COALESCE(sum(accountOper.accountsReceivable),0) from AccountOper accountOper " +
                 "where accountOper.customer.id = :customerId and accountOper.operDate >= :beginDate " +
-                "and operType = 'ORDER_PAY' and accountOper.accountsReceivable > 0 ", BigDecimal.class).
-                setParameter("customerId", customerId).setParameter("beginDate", beginDate).getSingleResult();
+                "and operType in (:types) and accountOper.accountsReceivable > 0 ", BigDecimal.class)
+                .setParameter("types", new ArrayList<AccountOper.AccountOperType>(EnumSet.of(AccountOper.AccountOperType.ORDER_PAY,
+                        AccountOper.AccountOperType.DEPOSIT_BACK)))
+                .setParameter("customerId", customerId).setParameter("beginDate", beginDate).getSingleResult();
 
         Logging.getLog(getClass()).debug(beginDate + "AA" + result);
 
@@ -130,47 +132,48 @@ public class SaleAccountClose {
 
         if (!result) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "NotMakeAccountError");
-        } else if (!accountDateHelper.isFirst()) {
-            Map<String, AccountCheckout> checkoutMap = checkout.getAccountCheckOutMap();
-
-            List<Customer> customers = erpEntityManager.createQuery("select customer from Customer customer ", Customer.class).getResultList();
-            for (Customer customer : customers) {
-
-                AccountCheckout cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.customerAccount") + customer.getId());
-                BigDecimal money = BigDecimal.ZERO;
-                if (cc != null) {
-                    money = money.add(cc.getBeginningBalance());
-                }
-                Logging.getLog(getClass()).debug(checkout.getBeginDate());
-                money = money.add(calcCustomerAccountMoney(customer.getId(), checkout.getBeginDate()));
-                if (money.compareTo(customer.getAccountMoney()) != 0) {
-                    throw new IllegalArgumentException("customer Account balance error:" + customer.getId() + "m:" + money + "cm:" + customer.getAccountMoney());
-                }
-
-                //--------------------------
-                cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + customer.getId());
-                money = BigDecimal.ZERO;
-                if (cc != null) {
-                    money = money.add(cc.getBeginningBalance());
-                }
-                money = money.add(calcCustomerProxyAccountMoney(customer.getId(), checkout.getBeginDate()));
-                if (money.compareTo(customer.getProxyAccountMoney()) != 0) {
-                    throw new IllegalArgumentException("customer ProxyAccount balance error:" + customer.getId());
-                }
-
-                //--------------------------
-                cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.advance") + customer.getId());
-                money = BigDecimal.ZERO;
-                if (cc != null) {
-                    money = money.add(cc.getBeginningBalance());
-                }
-                money = money.add(calcCustomerAdvanceMoney(customer.getId(), checkout.getBeginDate()));
-                if (money.compareTo(customer.getAdvanceMoney()) != 0) {
-                    throw new IllegalArgumentException("customer advance balance error:" + customer.getId());
-                }
-
-            }
         }
+//         else if (!accountDateHelper.isFirst()) {
+//            Map<String, AccountCheckout> checkoutMap = checkout.getAccountCheckOutMap();
+//
+//            List<Customer> customers = erpEntityManager.createQuery("select customer from Customer customer ", Customer.class).getResultList();
+//            for (Customer customer : customers) {
+//
+//                AccountCheckout cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.customerAccount") + customer.getId());
+//                BigDecimal money = BigDecimal.ZERO;
+//                if (cc != null) {
+//                    money = money.add(cc.getBeginningBalance());
+//                }
+//                Logging.getLog(getClass()).debug(checkout.getBeginDate());
+//                money = money.add(calcCustomerAccountMoney(customer.getId(), checkout.getBeginDate()));
+//                if (money.compareTo(customer.getAccountMoney()) != 0) {
+//                    throw new IllegalArgumentException("customer Account balance error:" + customer.getId() + "m:" + money + "cm:" + customer.getAccountMoney());
+//                }
+//
+//                //--------------------------
+//                cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + customer.getId());
+//                money = BigDecimal.ZERO;
+//                if (cc != null) {
+//                    money = money.add(cc.getBeginningBalance());
+//                }
+//                money = money.add(calcCustomerProxyAccountMoney(customer.getId(), checkout.getBeginDate()));
+//                if (money.compareTo(customer.getProxyAccountMoney()) != 0) {
+//                    throw new IllegalArgumentException("customer ProxyAccount balance error:" + customer.getId());
+//                }
+//
+//                //--------------------------
+//                cc = checkoutMap.get(RunParam.instance().getStringParamValue("erp.finance.advance") + customer.getId());
+//                money = BigDecimal.ZERO;
+//                if (cc != null) {
+//                    money = money.add(cc.getBeginningBalance());
+//                }
+//                money = money.add(calcCustomerAdvanceMoney(customer.getId(), checkout.getBeginDate()));
+//                if (money.compareTo(customer.getAdvanceMoney()) != 0) {
+//                    throw new IllegalArgumentException("customer advance balance error:" + customer.getId());
+//                }
+//
+//            }
+//        }
         return result;
     }
 

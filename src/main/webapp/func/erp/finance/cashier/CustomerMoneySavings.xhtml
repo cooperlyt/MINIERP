@@ -317,7 +317,7 @@
     <a:commandButton image="/img/delete.png"
                      onclick="JavaScript:if ( #{ not (empty _item.saleCertificate)} ){alert('#{messages.isInAccount}');return false;}  if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
                      rendered="#{not (_item.operType eq 'ORDER_PAY') and not (_item.operType eq 'ORDER_BACK') }"
-                     action="#{accountOperHome.remove}" render="dataListResult"
+                     action="#{accountOperHome.removeAndClear}" render="dataListResult"
                      title="#{messages.delete}" execute="@this">
         <f:param name="selectOperId" value="#{_item.id}"/>
         <a:attachQueue requestDelay="0"/>
@@ -339,6 +339,7 @@
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
     </ui:define>
+
 
     <rich:calendar rendered="#{accountOperHome.idDefined}"
                    enableManualInput="true"

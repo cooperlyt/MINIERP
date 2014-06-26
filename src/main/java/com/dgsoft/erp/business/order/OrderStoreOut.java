@@ -210,10 +210,6 @@ public class OrderStoreOut extends OrderTaskHandle {
         }
 
 
-        //if (allStoreOut) {
-        //orderHome.calcStoreResCompleted(); move to ship
-        //}
-
         boolean needResComplete = true;
         for (Dispatch dispatch : dispatchHome.getInstance().getNeedRes().getDispatches()) {
             if (!dispatch.isStoreOut()) {

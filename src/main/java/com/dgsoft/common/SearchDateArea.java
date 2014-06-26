@@ -35,12 +35,18 @@ public class SearchDateArea {
         return new Date(dateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
     }
 
-    public long setDateToTime(){
+    public Long getDateToTime() {
+        if (dateTo == null) {
+            return null;
+        }
         return dateTo.getTime();
     }
 
-    public void setDateToTime(long time){
-       setDateTo(new Date(time));
+    public void setDateToTime(Long time) {
+        if (time == null) {
+            setDateTo(null);
+        } else
+            setDateTo(new Date(time));
     }
 
     public Date getDateTo() {
@@ -48,52 +54,64 @@ public class SearchDateArea {
     }
 
     public void setDateTo(Date dateTo) {
-        this.dateTo = DataFormat.halfTime(dateTo);
+        if (dateTo == null) {
+            this.dateTo = null;
+        } else
+            this.dateTo = DataFormat.halfTime(dateTo);
     }
 
     public Date getDateFrom() {
         return dateFrom;
     }
 
-    public long getDateFromTime(){
+    public Long getDateFromTime() {
+        if (dateFrom == null) {
+            return null;
+        }
         return dateFrom.getTime();
     }
 
     public void setDateFrom(Date dateFrom) {
-        this.dateFrom = DataFormat.halfTime(dateFrom);
+        if (dateFrom == null) {
+            this.dateFrom = null;
+        } else
+            this.dateFrom = DataFormat.halfTime(dateFrom);
     }
 
-    public void setDateFromTime(long dateFrom){
-       setDateFrom(new Date(dateFrom));
+    public void setDateFromTime(Long dateFrom) {
+        if (dateFrom == null) {
+            setDateFrom(null);
+        } else
+            setDateFrom(new Date(dateFrom));
     }
 
-    public String genConditionSQL(String path, boolean addAnd){
+    public String genConditionSQL(String path, boolean addAnd) {
         String result = "";
-        if (dateFrom != null){
+        if (dateFrom != null) {
             result = path + " >= :dateFrom";
         }
-        if (dateTo != null){
-            if (!result.trim().equals("")){
+        if (dateTo != null) {
+            if (!result.trim().equals("")) {
                 result += " AND ";
             }
             result += path + " <= :dateTo";
         }
-        if (addAnd && !result.trim().equals("")){
+        if (addAnd && !result.trim().equals("")) {
             result = " AND " + result;
         }
         return result;
     }
 
-    public <X> TypedQuery<X> setQueryParam(TypedQuery<X> query){
-        setQueryParam((Query)query);
+    public <X> TypedQuery<X> setQueryParam(TypedQuery<X> query) {
+        setQueryParam((Query) query);
         return query;
     }
 
-    public Query setQueryParam(Query query){
-        if (dateFrom != null){
+    public Query setQueryParam(Query query) {
+        if (dateFrom != null) {
             query.setParameter("dateFrom", getDateFrom());
         }
-        if (dateTo != null){
+        if (dateTo != null) {
             query.setParameter("dateTo", getSearchDateTo());
         }
         return query;

@@ -57,6 +57,7 @@ public class Dispatch implements java.io.Serializable {
     private BigDecimal fare;
     private String sendEmp;
     private boolean storeOut;
+    private boolean delivered;
     private String outCustomer;
     private String memo;
 
@@ -240,6 +241,15 @@ public class Dispatch implements java.io.Serializable {
 
     public void setStoreOut(boolean storeOut) {
         this.storeOut = storeOut;
+    }
+
+    @Column(name ="DELIVERED",nullable = false)
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
     }
 
     @Column(name = "OUT_CUSTOMER", length = 50)

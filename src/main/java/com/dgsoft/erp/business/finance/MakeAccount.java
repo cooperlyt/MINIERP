@@ -79,6 +79,7 @@ public class MakeAccount implements Serializable {
             if ((accountOper.getMoneySave() != null) && (accountOper.getMoneySave().getSaleCertificate() != null)) {
                 accountOper.setSaleCertificate(accountOper.getMoneySave().getSaleCertificate());
                 accountOper.getMoneySave().getSaleCertificate().getAccountOpers().add(accountOper);
+                accountOper.getMoneySave().getSaleCertificate().writeItem();
             } else {
                 accountOper.setSaleCertificate(new SaleCertificate(RunParam.instance().getStringParamValue("erp.finance.c.wrod"),
                         code, accountOper.getOperDate(), credentials.getUsername()));
