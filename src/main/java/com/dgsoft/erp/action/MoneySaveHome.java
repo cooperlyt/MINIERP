@@ -129,6 +129,14 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
         return result;
     }
 
+    public BigDecimal getTotalReceiveAccountMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for (AccountOper accountOper : getAccountOperList()) {
+            result = result.add(accountOper.getAccountsReceivable());
+        }
+        return result;
+    }
+
 
     public void initAccountOper() {
         getInstance();
@@ -147,7 +155,7 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
     }
 
     public String checkProxyMoney() {
-        if (getTotalReceiveProxyMoney().compareTo(getOperMoney()) != 0) {
+        if (getTotalReceiveProxyMoney().add(getTotalReceiveAccountMoney()).compareTo(getOperMoney()) != 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "proxyMoneyNotBalance", getOperMoney(), getTotalReceiveProxyMoney());
             return null;
         }
@@ -162,9 +170,7 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
 
         if (!customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) &&
                 (getAccountOperList().size() != 1)) {
-            if (getAccountOperList().size() != 1) {
                 throw new IllegalArgumentException(customerAccountOper.getType() + "error accountOperList:" + getAccountOperList().size());
-            }
         }
 
 
@@ -174,10 +180,11 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
             accountOper.setOperDate(customerAccountOper.getOperDate());
             accountOper.setMoneySave(getInstance());
             accountOper.setAdvanceReceivable(BigDecimal.ZERO);
-            accountOper.setAccountsReceivable(BigDecimal.ZERO);
+
 
             if (!customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS)) {
                 accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+                accountOper.setAccountsReceivable(BigDecimal.ZERO);
                 accountOper.setCustomer(customerHome.getReadyInstance());
 
             }

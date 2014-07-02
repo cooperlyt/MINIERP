@@ -325,7 +325,7 @@ public class AccountOper implements java.io.Serializable {
                 return getAdvanceReceivable().add(getAccountsReceivable());
 
             case PROXY_SAVINGS:
-                return getProxcAccountsReceiveable();
+                return getProxcAccountsReceiveable().add(getAccountsReceivable());
             case CUSTOMER_SAVINGS:
                 return getAdvanceReceivable().add(getAccountsReceivable());
             case DEPOSIT_PAY:
@@ -373,6 +373,7 @@ public class AccountOper implements java.io.Serializable {
     public BigDecimal getCustomerAccountMoney(BigDecimal beginMoney) {
         switch (getOperType()) {
             case CUSTOMER_SAVINGS:
+            case PROXY_SAVINGS:
             case DEPOSIT_PAY:
             case MONEY_FREE:
                 return getAccountsReceivable().multiply(new BigDecimal("-1"));
@@ -391,6 +392,7 @@ public class AccountOper implements java.io.Serializable {
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
                 break;
             case PROXY_SAVINGS:
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
                 break;
             case CUSTOMER_SAVINGS:
@@ -433,6 +435,7 @@ public class AccountOper implements java.io.Serializable {
                 break;
             case PROXY_SAVINGS:
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
+                getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
                 break;
             case CUSTOMER_SAVINGS:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
@@ -494,7 +497,12 @@ public class AccountOper implements java.io.Serializable {
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.pac.PROXY_SAVINGS"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + getCustomer().getId(), BigDecimal.ZERO, getProxcAccountsReceiveable()));
                 }
-                if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) || (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0)) {
+                if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0){
+                    result.add(new SaleCertificateItem(getSaleCertificate(),
+                            String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.PROXY_SAVINGS"), getCustomer().getName()),
+                            RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), BigDecimal.ZERO, getAccountsReceivable()));
+                }
+                if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) {
                     throw new IllegalArgumentException(" PROXY_SAVINGS unSupport type");
                 }
                 break;

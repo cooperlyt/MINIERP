@@ -154,7 +154,7 @@
 
             <rich:column style="text-align: right;">
                 <f:facet name="header">
-                    #{messages.customerPayMoney}
+                    #{messages.proxy_receivePAC}
                 </f:facet>
                 <h:outputText value="#{_oper.proxcAccountsReceiveable}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
@@ -162,6 +162,21 @@
 
                 <f:facet name="footer">
                     <h:outputText value="#{moneySaveHome.totalReceiveProxyMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.Proxy_receiveAC}
+                </f:facet>
+                <h:outputText value="#{_oper.accountsReceivable}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{moneySaveHome.totalReceiveAccountMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                 </f:facet>

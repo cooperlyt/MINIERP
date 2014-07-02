@@ -53,6 +53,8 @@ VALUES ('erp.ADF.ad.CUSTOMER_SAVINGS', 'STRING', '%s 客户预存', '客户存�
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
 VALUES ('erp.ADF.ac.CUSTOMER_SAVINGS', 'STRING', '%s 客户支付', '客户存款 应收账款');
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
+VALUES ('erp.ADF.ac.PROXY_SAVINGS', 'STRING', '%s 代收欠款', '客户存款 应收账款');
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
 VALUES ('erp.ADF.o.CUSTOMER_SAVINGS', 'STRING', '%s 客户存入', '客户存款');
 
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)

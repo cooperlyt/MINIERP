@@ -219,11 +219,11 @@
 
                 <rich:column style="text-align: right;">
                     <f:facet name="header">
-                        #{messages.customerPayMoney}
+                        #{messages.proxy_receivePAC}
                     </f:facet>
                     <s:decorate template="/layout/grid-inside-edit.xhtml">
                         <rich:inplaceInput value="#{_oper.proxcAccountsReceiveable}" required="true"
-                                           label="#{messages.customerPayMoney}" style="width: 95%" >
+                                           label="#{messages.proxy_receivePAC}" style="width: 95%" >
                             <a:ajax event="blur" render="accountOperList" execute="@this"/>
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"
                                              currencySymbol="" groupingUsed="false"/>
@@ -231,6 +231,27 @@
                     </s:decorate>
                     <f:facet name="footer">
                         <h:outputText value="#{moneySaveHome.totalReceiveProxyMoney}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </rich:column>
+
+
+
+                <rich:column style="text-align: right;">
+                    <f:facet name="header">
+                        #{messages.Proxy_receiveAC}
+                    </f:facet>
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:inplaceInput value="#{_oper.accountsReceivable}" required="true"
+                                           label="#{messages.Proxy_receiveAC}" style="width: 95%" >
+                            <a:ajax event="blur" render="accountOperList" execute="@this"/>
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"
+                                             currencySymbol="" groupingUsed="false"/>
+                        </rich:inplaceInput>
+                    </s:decorate>
+                    <f:facet name="footer">
+                        <h:outputText value="#{moneySaveHome.totalReceiveAccountMoney}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                     </f:facet>
