@@ -19,17 +19,26 @@
             <s:div styleClass="info">
 
                 <p>
-                    <strong>MINIERP 2.2.15 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.2.16 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
-                    <li>[销售] 修正双倍扣款错误</li>
-                    <li>[销售] 修正退货列表销售非直管区域不显示错误</li>
-                    <li>[财务] 删除收款后续操作可能出错</li>
-                    <li>[财务] 修正结账，记账错误</li>
-                    <li>[仓库] 修正因入库编号问题引起的退货入库错误</li>
+
+                    <li>[财务] 可处理代收多收情况</li>
+
                 </ul>
 
                 <strong>历史更新</strong>
+                <div style="clear: both;"/>
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.2.15" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[销售] 修正双倍扣款错误</li>
+                        <li>[销售] 修正退货列表销售非直管区域不显示错误</li>
+                        <li>[财务] 删除收款后续操作可能出错</li>
+                        <li>[财务] 修正结账，记账错误</li>
+                        <li>[仓库] 修正因入库编号问题引起的退货入库错误</li>
+                    </ul>
+                </s:decorate>
                 <div style="clear: both;"/>
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.2.14" name="openLabel"/>
