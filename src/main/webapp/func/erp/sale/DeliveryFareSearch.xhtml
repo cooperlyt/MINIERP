@@ -1,0 +1,269 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="body">
+<h:form>
+    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.ShipDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.ShipDate}"
+                    value="#{searchDateArea.dateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.ShipDate}"
+                    value="#{searchDateArea.dateTo}">
+            </rich:calendar>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.CustomerArea}</ui:define>
+
+            <h:selectOneMenu value="#{deliveryFeeSearch.customerAreaId}">
+                <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"
+                               label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.orderCustomer}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.orderCustomer}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerNameList.resultList}"
+                               value="#{deliveryFeeSearch.customerName}"
+                               fetchValue="#{_customer}" var="_customer">
+
+                <h:outputText value="#{_customer}"/>
+
+            </rich:autocomplete>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_address}</ui:define>
+            <h:inputText value="#{deliveryFeeSearch.deliveryAddress}" label="#{messages.order_field_address}"/>
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="#{panelId}_buttons">
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="dataListResult" action="#{deliveryFeeSearch.first}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+
+    </rich:collapsiblePanel>
+</h:form>
+<br/>
+
+<h:form>
+    <rich:dataTable id="dataListResult" style="width: 100%" value="#{deliveryFeeSearch.resultList}" var="_item"
+                    noDataLabel="#{messages.emptyResult}" frozenColumns="5">
+        <f:facet name="footer">
+            <a:outputPanel rendered="#{not empty deliveryFeeSearch.resultList}">
+                <ui:include src="/layout/pageA4jNavigation.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                </ui:include>
+            </a:outputPanel>
+        </f:facet>
+
+
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                    <ui:param name="propertyLabel" value="#{messages.ShipDate}"/>
+                    <ui:param name="propertyPath" value="dispatch.sendTime"/>
+                </ui:include>
+            </f:facet>
+
+            <h:outputText value="#{_item.sendTime}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_field_address}"/>
+                    <ui:param name="propertyPath" value="dispatch.needRes.address"/>
+                </ui:include>
+            </f:facet>
+
+            <a:commandLink
+                           immediate="true" execute="@this"  render="dispatchDetails"
+                           oncomplete="#{rich:component('dispatchInfoPanel')}.show();">
+                <a:param value="#{_item.id}" assignTo="#{dispatchHome.id}"/>
+                <ui:include src="/layout/long-text-display.xhtml">
+                    <ui:param name="value" value="#{_item.needRes.address}"/>
+                    <ui:param name="size" value="12"/>
+                </ui:include>
+            </a:commandLink>
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                    <ui:param name="propertyLabel" value="#{messages.CustomerArea}"/>
+                    <ui:param name="propertyPath" value="dispatch.needRes.customerOrder.customer.customerArea.id"/>
+                </ui:include>
+            </f:facet>
+            #{_item.needRes.customerOrder.customer.customerArea.name}
+
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                    <ui:param name="propertyLabel" value="#{messages.Customer}"/>
+                    <ui:param name="propertyPath" value="dispatch.needRes.customerOrder.customer.id"/>
+                </ui:include>
+            </f:facet>
+            #{_item.needRes.customerOrder.customer.name}
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                    <ui:param name="propertyLabel" value="#{messages.transCorp}"/>
+                    <ui:param name="propertyPath" value="dispatch.transCorp.id"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_item.transCorp.name}" rendered="#{not empty _item.transCorp}"/>
+
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                    <ui:param name="propertyLabel" value="#{messages.dispatch_field_store}"/>
+                    <ui:param name="propertyPath" value="dispatch.store.id"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{_item.store.name}" rendered="#{not empty _item.store}"/>
+
+
+        </rich:column>
+
+
+        <rich:column style="text-align: right;">
+            <f:facet name="header">
+
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{deliveryFeeSearch}"/>
+                    <ui:param name="propertyLabel" value="#{messages.order_fare}"/>
+                    <ui:param name="propertyPath" value="dispatch.fare"/>
+                </ui:include>
+            </f:facet>
+
+            <h:outputText value="#{_item.fare}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+
+            <f:facet name="footer">
+                <h:outputText value="#{deliveryFeeSearch.totalFare}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+
+        </rich:column>
+
+
+    </rich:dataTable>
+</h:form>
+
+<rich:popupPanel id="dispatchInfoPanel" modal="true" autosized="true"
+                 moveable="true" resizeable="false">
+
+    <f:facet name="header">
+
+        <h:outputText value="#{messages.orderDispatch}"/>
+
+    </f:facet>
+    <f:facet name="controls">
+
+
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component('dispatchInfoPanel')}.hide(); return false;">
+        </a:commandButton>
+
+
+    </f:facet>
+
+    <a:outputPanel id="dispatchDetails">
+        <rich:panel rendered="#{dispatchHome.idDefined}">
+            <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
+                <ui:param name="dispatch" value="#{dispatchHome.instance}"/>
+            </ui:include>
+
+            <div style="clear:both"/>
+
+        </rich:panel>
+    </a:outputPanel>
+
+</rich:popupPanel>
+
+</ui:define>
+
+</ui:composition>
