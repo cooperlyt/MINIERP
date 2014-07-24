@@ -173,7 +173,7 @@
                 </f:facet>
                 <h:selectBooleanCheckbox value="#{_item.free}">
                     <a:ajax event="click" execute="@this" listener="#{orderHome.calcMoneys}"
-                            render="newOrderItemsTable"/>
+                            render="subOverlyOrderItem"/>
                 </h:selectBooleanCheckbox>
             </rich:column>
 
@@ -220,7 +220,7 @@
                         <s:selectItems value="#{_item.res.unitGroup.resUnitList}"
                                        var="_unit" label="#{_unit.name}"/>
                         <a:ajax event="selectitem" listener="#{orderHome.calcMoneys}"
-                                render="newOrderItemsTable" execute="@this"/>
+                                render="subOverlyOrderItem" execute="@this"/>
                         <f:converter converterId="erpEntityConverter"/>
                     </rich:inplaceSelect>
                 </s:decorate>
@@ -238,7 +238,7 @@
                                        style="width: 95%" required="true">
                         <f:convertNumber pattern="#0.##########"/>
                         <f:validateDoubleRange minimum="0"/>
-                        <a:ajax event="blur" execute="@this" render="newOrderItemsTable"/>
+                        <a:ajax event="blur" execute="@this" render="subOverlyOrderItem"/>
                     </rich:inplaceInput>
                 </s:decorate>
             </rich:column>
@@ -256,7 +256,7 @@
                                          groupingUsed="false" currencySymbol=""/>
                         <f:validateDoubleRange minimum="0"/>
                         <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
-                                render="newOrderItemsTable"/>
+                                render="subOverlyOrderItem"/>
                     </rich:inplaceInput>
                 </s:decorate>
 
@@ -275,25 +275,18 @@
                         <f:convertNumber pattern="#0.##"/>
                         <f:validateDoubleRange minimum="0"/>
                         <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
-                                render="newOrderItemsTable"/>
+                                render="subOverlyOrderItem"/>
                     </rich:inplaceInput>
                 </s:decorate>
             </rich:column>
 
-            <rich:column style="text-align: right">
+            <rich:column>
                 <f:facet name="header">
-                    #{messages.needItemTotalMoney}
+                    #{messages.NeedCount}
                 </f:facet>
-                <h:outputText value="#{_item.needMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
+                <h:outputText value="#{_item.needCount}">
+                    <f:convertNumber pattern="#0.##########"/>
                 </h:outputText>
-                <f:facet name="footer">
-                    <h:outputText value="#{needResHome.resNeedTotalMoney}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </f:facet>
             </rich:column>
 
             <rich:column style="text-align: right">
@@ -438,20 +431,13 @@
                 </s:decorate>
             </rich:column>
 
-            <rich:column style="text-align: right">
+            <rich:column>
                 <f:facet name="header">
-                    #{messages.needItemTotalMoney}
+                    #{messages.NeedCount}
                 </f:facet>
-                <h:outputText value="#{_item.needMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
+                <h:outputText value="#{_item.needCount}">
+                    <f:convertNumber pattern="#0.#########"/>
                 </h:outputText>
-                <f:facet name="footer">
-                    <h:outputText value="#{orderChange.overlyTotalNeedMoney}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </f:facet>
             </rich:column>
 
             <rich:column style="text-align: right">

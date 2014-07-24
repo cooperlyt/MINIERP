@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
@@ -48,13 +49,12 @@ public class OrderItem extends StoreResPriceEntity
     private BigDecimal needConvertRate;
     private BigDecimal totalMoney;
     private BigDecimal rebate;
-    private BigDecimal needMoney;
+    //private BigDecimal needMoney;
     private BigDecimal needCount;
 
     public OrderItem() {
 
     }
-
 
 
     public OrderItem(Res res) {
@@ -144,13 +144,12 @@ public class OrderItem extends StoreResPriceEntity
     }
 
 
-
     @Transient
-    public BigDecimal getNeedAddCount(){
-        if ((getCount() == null) || (getNeedCount() == null)){
+    public BigDecimal getNeedAddCount() {
+        if ((getCount() == null) || (getNeedCount() == null)) {
             return BigDecimal.ZERO;
         }
-        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             return getAuxCount().subtract(getNeedCount());
         }
         return null;
@@ -159,9 +158,6 @@ public class OrderItem extends StoreResPriceEntity
     @Override
     public void setFree(boolean free) {
         super.setFree(free);
-        if (free) {
-            setNeedMoney(BigDecimal.ZERO);
-        }
     }
 
     @Override
@@ -175,8 +171,14 @@ public class OrderItem extends StoreResPriceEntity
 
     @Override
     protected void calcTotalMoney() {
-        super.calcTotalMoney();
         calcNeedMoney();
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            if((getMoney() != null) && (getCount() != null) && (!getUseUnit().isMasterUnit()) && (getNeedConvertRate() != null)) {
+                setTotalMoney(getNeedCount().multiply(getRebateUnitPrice()));
+            }
+        }else{
+            super.calcTotalMoney();
+        }
     }
 
     @Override
@@ -193,17 +195,20 @@ public class OrderItem extends StoreResPriceEntity
 
     @Transient
     private void calcNeedMoney() {
-
         if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) &&
                 (getMoney() != null) && (getCount() != null) && (!getUseUnit().isMasterUnit())) {
-
-            setNeedMoney(calcAuxCount(getCount(), getNeedConvertRate(),
-                    getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()).multiply(getRebateUnitPrice()));
+            if (getNeedConvertRate() == null) {
+                setNeedCount(BigDecimal.ZERO);
+                return;
+            }
+//            setNeedMoney(calcAuxCount(getCount(), getNeedConvertRate(),
+//                    getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()).multiply(getRebateUnitPrice()));
 
             setNeedCount(calcAuxCount(getCount(), getNeedConvertRate(),
                     getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()));
+
         } else {
-            setNeedMoney(getTotalMoney());
+            //   setNeedMoney(getTotalMoney());
             setNeedCount(getUseUnitCount());
         }
 
@@ -212,7 +217,7 @@ public class OrderItem extends StoreResPriceEntity
     @Transient
     public void setInputNeedConvertRate(BigDecimal floatConvertRate) {
         setNeedConvertRate(floatConvertRate);
-        calcNeedMoney();
+        calcMoney();
     }
 
     @Transient
@@ -403,13 +408,10 @@ public class OrderItem extends StoreResPriceEntity
         this.rebate = rebate;
     }
 
-    @Column(name = "NEED_MONEY", nullable = true, scale = 3)
+    @Deprecated
+    @Transient
     public BigDecimal getNeedMoney() {
-        return needMoney;
-    }
-
-    public void setNeedMoney(BigDecimal needMoney) {
-        this.needMoney = needMoney;
+        return BigDecimal.ZERO;
     }
 
     @Column(name = "NEED_COUNT", nullable = true, scale = 4)

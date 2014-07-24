@@ -22,15 +22,20 @@
                 <ui:define name="label">#{messages.needConvertRate}</ui:define>
                 <h:inputText id="needConvertRateInput" value="#{inputValue.inputNeedConvertRate}"
                              size="10" converter="javax.faces.BigDecimal">
-                    <a:ajax event="blur" execute="@this"/>
+                    <a:ajax event="blur" execute="@this" render="itemTotalPriceInput"/>
                     <f:convertNumber pattern="#0.##########"/>
                     <f:validateDoubleRange minimum="0"/>
                 </h:inputText>
                 <rich:message for="needConvertRateInput" styleClass="message-icon"
                               showDetail="true" showSummary="true" tooltip="true"/>
-                <h:outputText value="#{inputValue.needMoney}" style="font-weight: bold">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+
+                #{' '}
+                <h:outputText value="#{inputValue.needCount}" style="font-weight: bold">
+                    <f:convertNumber pattern="#0.##########"/>
                 </h:outputText>
+
+                <h:outputText value="#{inputValue.useUnit.name}" style="font-weight: bold"/>
+
             </s:decorate>
 
 

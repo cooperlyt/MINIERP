@@ -44,7 +44,7 @@
                 </rich:column>
 
                 <rich:column>
-                    #{messages.needItemTotalMoney}
+                    #{messages.NeedCount}
                 </rich:column>
 
                 <rich:column>
@@ -140,10 +140,9 @@
 
             </rich:column>
 
-            <rich:column style="text-align: right">
-                <h:outputText value="#{_item.needMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
+            <rich:column>
+                <h:outputText value="#{_item.needCount}">
+                    <f:convertNumber pattern="#0.##########"/>
                 </h:outputText>
 
             </rich:column>

@@ -92,12 +92,12 @@ public class OrderShip extends OrderShipTaskHandle {
             return null;
         }
 
-        if (dispatchHome.getInstance().getSendTime().compareTo(DataFormat.halfTime(orderHome.getInstance().getCreateDate())) < 0){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture",
-                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(dispatchHome.getInstance().getSendTime()),
-                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(orderHome.getInstance().getCreateDate()));
-            return null;
-        }
+//        if (dispatchHome.getInstance().getSendTime().compareTo(DataFormat.halfTime(orderHome.getInstance().getCreateDate())) < 0){
+//            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture",
+//                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(dispatchHome.getInstance().getSendTime()),
+//                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(orderHome.getInstance().getCreateDate()));
+//            return null;
+//        }
 
         if (inputDetails) {
             switch (dispatchHome.getInstance().getDeliveryType()) {

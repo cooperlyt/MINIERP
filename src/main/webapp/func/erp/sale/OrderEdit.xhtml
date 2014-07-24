@@ -164,13 +164,12 @@
                         </s:decorate>
                     </rich:column>
 
-                    <rich:column style="text-align: right">
+                    <rich:column>
                         <f:facet name="header">
-                            #{messages.needItemTotalMoney}
+                            #{messages.NeedCount}
                         </f:facet>
-                        <h:outputText value="#{_item.needMoney}">
-                            <f:convertNumber locale="#{calendarBean.locale}"
-                                             type="currency" groupingUsed="true"/>
+                        <h:outputText value="#{_item.needCount}">
+                            <f:convertNumber pattern="#0.#########"/>
                         </h:outputText>
 
                     </rich:column>

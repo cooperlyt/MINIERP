@@ -134,18 +134,13 @@
             </rich:column>
 
 
-            <rich:column style="text-align: right">
+            <rich:column>
                 <f:facet name="header">
-                    #{messages.NeedMoeny}
+                    #{messages.NeedCount}
                 </f:facet>
-                <h:outputText value="#{_item.needMoney}" rendered="#{_item.res.unitGroup.type eq 'FLOAT_CONVERT'}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                <h:outputText value="#{_item.needCount}" rendered="#{_item.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+                    <f:convertNumber pattern="#0.#########"/>
                 </h:outputText>
-                <f:facet name="footer">
-                    <h:outputText value="#{storeResSaleTotal.totalNeedMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </f:facet>
 
             </rich:column>
 

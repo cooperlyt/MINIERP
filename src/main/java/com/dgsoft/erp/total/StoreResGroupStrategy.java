@@ -38,7 +38,7 @@ public class StoreResGroupStrategy<E extends StoreResCountEntity> implements Tot
 
         private BigDecimal needAddCount;
 
-        private BigDecimal needMoney;
+        //private BigDecimal needMoney;
 
         private BigDecimal money;
 
@@ -46,7 +46,7 @@ public class StoreResGroupStrategy<E extends StoreResCountEntity> implements Tot
             masterUnitCount = BigDecimal.ZERO;
             auxUnitCount = BigDecimal.ZERO;
             needAddCount = BigDecimal.ZERO;
-            needMoney = BigDecimal.ZERO;
+            //needMoney = BigDecimal.ZERO;
             money = BigDecimal.ZERO;
         }
 
@@ -58,7 +58,7 @@ public class StoreResGroupStrategy<E extends StoreResCountEntity> implements Tot
             if ((data instanceof OrderItem) && data.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
 
                 needAddCount = needAddCount.add(((OrderItem) data).getNeedAddCount());
-                needMoney = needMoney.add(((OrderItem) data).getNeedMoney());
+                //needMoney = needMoney.add(((OrderItem) data).getNeedMoney());
             }
             if (data instanceof StoreResPriceEntity){
                 money = money.add(((StoreResPriceEntity)data).getTotalMoney());
@@ -81,12 +81,14 @@ public class StoreResGroupStrategy<E extends StoreResCountEntity> implements Tot
             return needAddCount;
         }
 
+        @Deprecated
         public BigDecimal getNeedMoney() {
-            return needMoney;
+            return BigDecimal.ZERO;
         }
 
+        @Deprecated
         public BigDecimal getNeedAddMoney() {
-            return needMoney.subtract(money);
+            return BigDecimal.ZERO;
         }
     }
 }
