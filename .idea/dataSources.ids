@@ -1137,6 +1137,7 @@
       <column name="STATUS" sqlType="VARCHAR" precision="10" scale="0" nullable="false" jdbcType="12"/>
       <column name="TOTAL_MONEY" sqlType="DECIMAL" precision="19" scale="3" nullable="true" jdbcType="3"/>
       <column name="REBATE" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3"/>
+      <column name="SALE_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="true" jdbcType="3"/>
       <primary-key name="PRIMARY" columns="ID"/>
       <foreign-key name="BACK_ITEM_ibfk_1" columns="MONEY_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="BACK_ITEM_ibfk_2" columns="BACK_ORDER" ref-table="ORDER_BACK" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
@@ -1538,6 +1539,7 @@
       <column name="TOTAL_MONEY" sqlType="DECIMAL" precision="19" scale="3" nullable="true" jdbcType="3"/>
       <column name="NEED_MONEY" sqlType="DECIMAL" precision="19" scale="3" nullable="true" jdbcType="3"/>
       <column name="NEED_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="true" jdbcType="3"/>
+      <column name="SALE_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="true" jdbcType="3"/>
       <primary-key name="PRIMARY" columns="ID"/>
       <foreign-key name="ORDER_ITEM_ibfk_1" columns="MIDDLE_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="ORDER_ITEM_ibfk_2" columns="MONEY_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
@@ -1780,8 +1782,8 @@
       <column name="BEGIN_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="QkVHSU5fQ09VTlQ="/>
       <column name="CLOSE_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="Q0xPU0VfQ09VTlQ="/>
       <primary-key name="PRIMARY" columns="ID"/>
-      <foreign-key name="STOCK_ACCOUNT_ibfk_2" columns="CHECKOUT" ref-table="CHECK_OUT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="STOCK_ACCOUNT_ibfk_1" columns="STOCK" ref-table="STOCK" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="STOCK_ACCOUNT_ibfk_2" columns="CHECKOUT" ref-table="CHECK_OUT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="STOCK_CHANGE" schema="" catalog="MINI_ERP" type="TABLE">
       <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>

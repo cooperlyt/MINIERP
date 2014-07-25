@@ -126,4 +126,14 @@ public class StoreResPrice extends StoreResPriceEntity implements Serializable{
     public void setRebate(BigDecimal rebate) {
         this.rebate = rebate;
     }
+
+    @Override
+    public BigDecimal getSaleCount() {
+        return null;
+    }
+
+    @Override
+    public void setSaleCount(BigDecimal saleCount) {
+
+    }
 }

@@ -42,6 +42,8 @@ public class OrderItem extends StoreResPriceEntity
     private boolean presentation;
     private String memo;
 
+    private BigDecimal saleCount;
+
     private Dispatch dispatch;
     private OrderItemStatus status;
 
@@ -290,6 +292,16 @@ public class OrderItem extends StoreResPriceEntity
 
     public void setCount(BigDecimal count) {
         this.count = count;
+    }
+
+    @Column(name="SALE_COUNT", nullable = true, scale = 4)
+    @Override
+    public BigDecimal getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(BigDecimal saleCount) {
+        this.saleCount = saleCount;
     }
 
     @Column(name = "MONEY", nullable = true, scale = 3)

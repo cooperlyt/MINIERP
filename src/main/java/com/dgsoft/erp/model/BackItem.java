@@ -42,6 +42,8 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
     private BigDecimal rebate;
     private String memo;
 
+    private BigDecimal saleCount;
+
     public BackItem() {
     }
 
@@ -125,6 +127,15 @@ public class BackItem extends StoreResPriceEntity implements java.io.Serializabl
         this.id = id;
     }
 
+    @Column(name="SALE_COUNT", nullable = true, scale = 4)
+    @Override
+    public BigDecimal getSaleCount() {
+        return saleCount;
+    }
+
+    public void setSaleCount(BigDecimal saleCount) {
+        this.saleCount = saleCount;
+    }
 
     @Override
     @Column(name = "COUNT", nullable = false, scale = 4)

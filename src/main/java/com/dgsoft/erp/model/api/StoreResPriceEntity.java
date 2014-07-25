@@ -59,13 +59,17 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
         return isPresentation();
     }
 
+    public abstract BigDecimal getSaleCount();
+
+    public abstract void setSaleCount(BigDecimal saleCount);
+
     public void setFree(boolean free) {
         setPresentation(free);
         if (free) {
             setMoney(BigDecimal.ZERO);
             setTotalMoney(BigDecimal.ZERO);
             setRebate(new BigDecimal("100"));
-        }else{
+        } else {
             calcTotalMoney();
         }
     }
@@ -102,22 +106,28 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
         calcTotalMoney();
     }
 
+    protected void calcSaleCount() {
+        if (getUseUnit() != null)
+            setSaleCount(getUseUnitCount());
+    }
+
     protected void calcTotalMoney() {
-        if (!DataFormat.isEmpty(getCount()) && !DataFormat.isEmpty(getMoney())){
+        if (!DataFormat.isEmpty(getCount()) && !DataFormat.isEmpty(getMoney())) {
             setTotalMoney(getUseUnitCount().multiply(getRebateUnitPrice()));
-        }else{
+        } else {
             setTotalMoney(BigDecimal.ZERO);
         }
     }
 
-    public void calcMoney(){
-        if (getCount() == null || getResUnit() == null || getMoney() == null || getRebateUnitPrice() == null){
+    public void calcMoney() {
+        if (getCount() == null || getResUnit() == null || getMoney() == null || getRebateUnitPrice() == null) {
             Logging.getLog(getClass()).warn("param not enough can't calc");
             setTotalMoney(BigDecimal.ZERO);
             return;
             //throw new IllegalArgumentException("param not enough can't calc");
         }
         calcTotalMoney();
+        calcSaleCount();
     }
 
     public void setInputMoney(BigDecimal money) {
@@ -130,12 +140,12 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
     }
 
     public BigDecimal getRebateUnitPrice() {
-        if (getMoney() != null){
-            if (getMoney().compareTo(BigDecimal.ZERO) == 0){
+        if (getMoney() != null) {
+            if (getMoney().compareTo(BigDecimal.ZERO) == 0) {
                 return BigDecimal.ZERO;
             }
             return getMoney().multiply(getRebate().divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP));
-        }else
+        } else
             return null;
     }
 
@@ -151,11 +161,11 @@ public abstract class StoreResPriceEntity extends StoreResCountEntity {
 
         StoreResPriceEntity other = (StoreResPriceEntity) otherEntity;
 
-        if ((getMoney() == null) || (other.getMoney() == null)){
+        if ((getMoney() == null) || (other.getMoney() == null)) {
             return false;
         }
 
-        if ((getUseUnit() == null) || other.getUseUnit() == null){
+        if ((getUseUnit() == null) || other.getUseUnit() == null) {
             return false;
         }
 

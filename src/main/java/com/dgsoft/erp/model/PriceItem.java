@@ -179,4 +179,14 @@ public class PriceItem extends StoreResPriceEntity implements Serializable {
     public void setRebate(BigDecimal rebate) {
 
     }
+    @Transient
+    @Override
+    public BigDecimal getSaleCount() {
+        return null;
+    }
+    @Transient
+    @Override
+    public void setSaleCount(BigDecimal saleCount) {
+
+    }
 }

@@ -39,6 +39,17 @@ public class SaleMoneyChartData extends CustomerAreaChart {
         backMoneyData = null;
     }
 
+
+    private boolean onlyShip = true;
+
+    public boolean isOnlyShip() {
+        return onlyShip;
+    }
+
+    public void setOnlyShip(boolean onlyShip) {
+        this.onlyShip = onlyShip;
+    }
+
     //provinceMoneyData;
 
 
@@ -49,21 +60,31 @@ public class SaleMoneyChartData extends CustomerAreaChart {
         if (areaResMoneyData == null) {
 
             List<AreaResSaleGroupData> subList;
+
+            String condition = " and orderItem.status <> 'REMOVED' ";
+            if (onlyShip) {
+                condition += " and orderItem.needRes.customerOrder.allStoreOut = true " + searchDateArea.genConditionSQL("orderItem.needRes.customerOrder.allShipDate", true);
+
+            } else {
+                condition += searchDateArea.genConditionSQL("orderItem.needRes.customerOrder.createDate", true);
+
+            }
+
             if (isUseSaleArea()) {
 
                 subList = searchDateArea.setQueryParam(erpEntityManager.createQuery(
                         "select new com.dgsoft.erp.total.data.AreaResSaleGroupData(orderItem.needRes.customerOrder.customer.customerArea.id," +
                                 "orderItem.storeRes.res.id,max(orderItem.storeRes.res.name),sum(orderItem.totalMoney),sum(orderItem.count) ) from OrderItem orderItem " +
-                                "where orderItem.needRes.customerOrder.canceled = false and orderItem.needRes.customerOrder.allStoreOut = true and" +
-                                " orderItem.status = 'COMPLETED' and orderItem.storeRes.res.resCategory.type = 'PRODUCT' " + searchDateArea.genConditionSQL("orderItem.needRes.customerOrder.allShipDate", true) +
+                                "where orderItem.needRes.customerOrder.canceled = false and " +
+                                " orderItem.storeRes.res.resCategory.type = 'PRODUCT' " + condition +
                                 " group by orderItem.needRes.customerOrder.customer.customerArea.id,orderItem.storeRes.res.id", AreaResSaleGroupData.class
                 )).getResultList();
             } else {
                 subList = searchDateArea.setQueryParam(erpEntityManager.createQuery(
                         "select new com.dgsoft.erp.total.data.AreaResSaleGroupData(orderItem.needRes.customerOrder.customer.provinceCode," +
                                 "orderItem.storeRes.res.id,max(orderItem.storeRes.res.name),sum(orderItem.totalMoney),sum(orderItem.count) ) from OrderItem orderItem " +
-                                "where orderItem.needRes.customerOrder.canceled = false and orderItem.needRes.customerOrder.allStoreOut = true and" +
-                                " orderItem.status = 'COMPLETED' and orderItem.storeRes.res.resCategory.type = 'PRODUCT' " + searchDateArea.genConditionSQL("orderItem.needRes.customerOrder.allShipDate", true) +
+                                "where orderItem.needRes.customerOrder.canceled = false and" +
+                                "  orderItem.storeRes.res.resCategory.type = 'PRODUCT' " + condition +
                                 " group by orderItem.needRes.customerOrder.customer.provinceCode,orderItem.storeRes.res.id", AreaResSaleGroupData.class
                 )).getResultList();
             }
@@ -100,20 +121,28 @@ public class SaleMoneyChartData extends CustomerAreaChart {
     private void initOrderMoneyData() {
         if (orderMoneyData == null) {
 
+            String condition;
+            if (onlyShip) {
+                condition = " and customerOrder.allStoreOut = true " + searchDateArea.genConditionSQL("customerOrder.allShipDate", true);
+
+            } else {
+                condition = searchDateArea.genConditionSQL("customerOrder.createDate", true);
+
+            }
+
+
             if (isUseSaleArea()) {
                 orderMoneyData = searchDateArea.setQueryParam(erpEntityManager.
                         createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(customerOrder.customer.customerArea.id," +
                                 "sum(customerOrder.money), count(customerOrder.id)) from CustomerOrder customerOrder " +
-                                "where customerOrder.canceled = false and customerOrder.allStoreOut = true " +
-                                searchDateArea.genConditionSQL("customerOrder.allShipDate", true) +
+                                "where customerOrder.canceled = false " + condition +
                                 " group by customerOrder.customer.customerArea.id", OrderMoneySeries.class)).getResultList();
 
             }else{
                 orderMoneyData = searchDateArea.setQueryParam(erpEntityManager.
                         createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(customerOrder.customer.provinceCode," +
                                 "sum(customerOrder.money), count(customerOrder.id)) from CustomerOrder customerOrder " +
-                                "where customerOrder.canceled = false and customerOrder.allStoreOut = true " +
-                                searchDateArea.genConditionSQL("customerOrder.allShipDate", true) +
+                                "where customerOrder.canceled = false " + condition +
                                 " group by customerOrder.customer.provinceCode", OrderMoneySeries.class)).getResultList();
             }
             // fillAreaData(orderMoneyData);
@@ -147,19 +176,27 @@ public class SaleMoneyChartData extends CustomerAreaChart {
     private void initBackMoneyData() {
         if (backMoneyData == null) {
 
+            String backCondition;
+            if (onlyShip) {
+                backCondition = " orderBack.confirmed = true " + searchDateArea.genConditionSQL("orderBack.completeDate", true);
+
+            } else {
+                backCondition = searchDateArea.genConditionSQL("orderBack.createDate", false);
+
+            }
+
+
             if (isUseSaleArea()){
                 backMoneyData = searchDateArea.setQueryParam(erpEntityManager.
                         createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(orderBack.customer.customerArea.id," +
                                 "sum(orderBack.money), count(orderBack.id)) from  OrderBack orderBack " +
-                                " where orderBack.confirmed = true " +
-                                searchDateArea.genConditionSQL("orderBack.completeDate", true) +
+                                " where " + backCondition +
                                 " group by orderBack.customer.customerArea.id", OrderMoneySeries.class)).getResultList();
             } else{
                 backMoneyData = searchDateArea.setQueryParam(erpEntityManager.
                         createQuery("select new com.dgsoft.erp.total.OrderMoneySeries(orderBack.customer.provinceCode," +
                                 "sum(orderBack.money), count(orderBack.id)) from  OrderBack orderBack " +
-                                " where orderBack.confirmed = true " +
-                                searchDateArea.genConditionSQL("orderBack.completeDate", true) +
+                                " where " + backCondition +
                                 " group by orderBack.customer.provinceCode", OrderMoneySeries.class)).getResultList();
             }
 

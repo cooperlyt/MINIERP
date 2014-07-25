@@ -43,6 +43,13 @@
                     </h:selectOneMenu>
                 </rich:toolbarGroup>
 
+                <rich:toolbarGroup>
+                    <h:panelGroup>
+                        <h:selectBooleanCheckbox value="#{saleMoneyChartData.onlyShip}"/>
+                        #{messages.OnlyShip}
+                    </h:panelGroup>
+                </rich:toolbarGroup>
+
                 <rich:toolbarGroup location="right">
                     <a:commandButton value="#{messages.search}" styleClass="toolBarBtn" render="totalResult"
                                      execute="@form" action="#{saleMoneyChartData.totalData}">
@@ -102,23 +109,7 @@
                     </p:piechart>
 
 
-                    <p:barchart
-                            title="#{messages.SaleMoney_ResTotalMoney}"
-                            legend="true" borderVisible="false"
-                            borderBackgroundPaint="white"
-                            width="700"
-                            plotOutlinePaint="white" plotBackgroundAlpha="0.1"
-                            baseSectionPaint="white"
-                            circular="true" is3D="true" plotForegroundAlpha="0.9">
-                        
-                        <ui:repeat value="#{saleMoneyChartData.areaResMoneyDataList}" var="_entry">
-                            <p:series key="#{_entry.key}">
-                                <ui:repeat value="#{_entry.value}" var="_item">
-                                    <p:data key="#{saleMoneyChartData.useSaleArea ? saleMoneyChartData.areaMap.get(_item.areaId).name : dictionary.getCityName(_item.areaId)}" value="#{_item.money}"/>
-                                </ui:repeat>
-                            </p:series>
-                        </ui:repeat>
-                    </p:barchart>
+
             </h:panelGrid>
 
             <br/>

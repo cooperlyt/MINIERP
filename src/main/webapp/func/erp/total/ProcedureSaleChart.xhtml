@@ -1,0 +1,347 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://jboss.org/schema/seam/pdf"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+<ui:param name="functionTitle" value="#{messages.ProcedureSaleChart}"/>
+
+<ui:define name="func-body">
+<h:form>
+    <rich:toolbar>
+        <rich:toolbarGroup>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{searchDateArea.dateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.order_search_BETWEEN_createDate}"
+                    value="#{searchDateArea.dateTo}">
+            </rich:calendar>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
+            <h:selectOneMenu value="#{procedureSaleChart.useSaleArea}" required="true">
+                <f:selectItem itemValue="#{true}" itemLabel="#{messages.SaleArea}"/>
+                <f:selectItem itemValue="#{false}" itemLabel="#{messages.CustomerCity}"/>
+            </h:selectOneMenu>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
+            <h:panelGroup>
+                <h:selectBooleanCheckbox value="#{procedureSaleChart.onlyShip}"/>
+                #{messages.OnlyShip}
+            </h:panelGroup>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup location="right">
+
+            <s:button styleClass="toolBarBtn" value="#{messages.return}" view="/home.xhtml"/>
+
+            <a:commandButton value="#{messages.search}" styleClass="toolBarBtn" render="totalResult"
+                             execute="@form" action="#{procedureSaleChart.refresh}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </rich:toolbarGroup>
+    </rich:toolbar>
+
+</h:form>
+
+
+<br/>
+
+
+<a:outputPanel id="totalResult">
+
+<p:barchart
+        title="#{messages.ProcedureSaleMoneyChart}"
+        legend="true" borderVisible="false"
+        borderBackgroundPaint="white"
+        width="1000"
+        plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+        baseSectionPaint="white"
+        circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+    <ui:repeat value="#{procedureSaleChart.groupTotalData}" var="_entry">
+        <p:series key="#{_entry.resName}(#{_entry.unitName})">
+            <ui:repeat value="#{_entry.datas}" var="_item">
+                <p:data key="#{procedureSaleChart.useSaleArea ? _item.areaName : dictionary.getCityName(_item.areaName)}"
+                        value="#{_item.money}"/>
+            </ui:repeat>
+        </p:series>
+    </ui:repeat>
+</p:barchart>
+<br/>
+
+<p:barchart
+        title="#{messages.ProcedureSaleCountChart}"
+        legend="true" borderVisible="false"
+        borderBackgroundPaint="white"
+        width="1000"
+        plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+        baseSectionPaint="white"
+        circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+    <ui:repeat value="#{procedureSaleChart.groupTotalData}" var="_entry">
+        <p:series key="#{_entry.resName}(#{_entry.unitName})">
+            <ui:repeat value="#{_entry.datas}" var="_item">
+                <p:data key="#{procedureSaleChart.useSaleArea ? _item.areaName : dictionary.getCityName(_item.areaName)}"
+                        value="#{_item.count}"/>
+            </ui:repeat>
+        </p:series>
+    </ui:repeat>
+</p:barchart>
+
+<br/>
+
+<rich:dataTable style="width: 100%" var="_key" value="#{procedureSaleChart.groupTotalData}">
+<f:facet name="header">
+    <rich:columnGroup>
+
+        <rich:column colspan="11">
+            #{messages.ProcedureSaleChart}
+            <a:outputPanel style="float: left">
+                <h:outputLink value="#"
+                              onclick="$('[id$=sbtbl1]').each(function(n){this.rf.component.collapse();}); return false;">
+                    <h:graphicImage value="#{resource['org.richfaces:up_icon.gif']}"/>
+
+                </h:outputLink>
+                <h:outputLink value="#"
+                              onclick="$('[id$=sbtbl1]').each(function(n){this.rf.component.expand();}); return false;">
+                    <h:graphicImage value="#{resource['org.richfaces:down_icon.gif']}"/>
+
+                </h:outputLink>
+
+            </a:outputPanel>
+        </rich:column>
+
+
+        <rich:column breakRowBefore="true" colspan="2">
+            #{messages.res}
+
+        </rich:column>
+
+
+        <rich:column>
+            #{messages.SaleCount}
+        </rich:column>
+
+        <rich:column>
+            #{messages.SaleMoney}
+        </rich:column>
+
+        <rich:column>
+            #{messages.SaleRebateCount}
+        </rich:column>
+
+        <rich:column>
+            #{messages.SaleRebateMoney}
+        </rich:column>
+
+        <rich:column>
+            #{messages.RealSaleMoney}
+        </rich:column>
+
+
+        <rich:column>
+            #{messages.SaleBackCount}
+        </rich:column>
+
+        <rich:column>
+            #{messages.SaleBackMoney}
+        </rich:column>
+
+
+        <rich:column>
+            #{messages.SaleCountTotal}
+        </rich:column>
+
+        <rich:column>
+            #{messages.SaleMoneyTotal}
+        </rich:column>
+
+    </rich:columnGroup>
+</f:facet>
+
+<rich:column colspan="2" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+    <rich:collapsibleSubTableToggler for="sbtbl1"/>
+    #{_key.resName} (#{_key.unitName})
+
+    <f:facet name="footer">
+        #{messages.Total}
+    </f:facet>
+
+</rich:column>
+
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+    <h:outputText value="#{_key.totalData.saleCount}">
+        <f:convertNumber pattern="#0.#####"/>
+    </h:outputText>
+
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}; text-align: right;">
+    <h:outputText value="#{_key.totalData.salePrice}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+
+    <f:facet name="footer">
+        <h:outputText value="#{procedureSaleChart.totalData.salePrice}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </f:facet>
+
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+    <h:outputText value="#{_key.totalData.rebateCount}">
+        <f:convertNumber pattern="#0.#####"/>
+    </h:outputText>
+
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}; text-align: right;">
+    <h:outputText value="#{_key.totalData.rebateMoney}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+    <f:facet name="footer">
+        <h:outputText value="#{procedureSaleChart.totalData.rebateMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </f:facet>
+
+
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}; text-align: right;">
+    <h:outputText value="#{_key.totalData.saleMoney}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+    <f:facet name="footer">
+        <h:outputText value="#{procedureSaleChart.totalData.saleMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </f:facet>
+
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+    <h:outputText value="#{_key.totalData.backCount}">
+        <f:convertNumber pattern="#0.#####"/>
+    </h:outputText>
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}; text-align: right;">
+    <h:outputText value="#{_key.totalData.backMoney}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+    <f:facet name="footer">
+        <h:outputText value="#{procedureSaleChart.totalData.backMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </f:facet>
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+    <h:outputText value="#{_key.totalData.count}">
+        <f:convertNumber pattern="#0.#####"/>
+    </h:outputText>
+
+</rich:column>
+<rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}; text-align: right;">
+    <h:outputText value="#{_key.totalData.money}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+    </h:outputText>
+    <f:facet name="footer">
+        <h:outputText value="#{procedureSaleChart.totalData.money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </f:facet>
+</rich:column>
+
+
+<rich:collapsibleSubTable value="#{_key.datas}" var="_data" id="sbtbl1">
+    <rich:column style="width: 1px"/>
+
+    <rich:column>
+        <h:outputText value="#{_data.areaName}" rendered="#{procedureSaleChart.useSaleArea}"/>
+
+        <h:outputText value="#{dictionary.getCityName(_data.areaName)}"
+                      rendered="#{not procedureSaleChart.useSaleArea}"/>
+    </rich:column>
+
+    <rich:column>
+        <h:outputText value="#{_data.saleCount}">
+            <f:convertNumber pattern="#0.#####"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column style="text-align: right;">
+        <h:outputText value="#{_data.salePrice}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column>
+        <h:outputText value="#{_data.rebateCount}">
+            <f:convertNumber pattern="#0.#####"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column style="text-align: right;">
+        <h:outputText value="#{_data.rebateMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column style="text-align: right;">
+        <h:outputText value="#{_data.saleMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column>
+        <h:outputText value="#{_data.backCount}">
+            <f:convertNumber pattern="#0.#####"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column style="text-align: right;">
+        <h:outputText value="#{_data.backMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column>
+        <h:outputText value="#{_data.count}">
+            <f:convertNumber pattern="#0.#####"/>
+        </h:outputText>
+
+    </rich:column>
+    <rich:column style="text-align: right;">
+        <h:outputText value="#{_data.money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+
+    </rich:column>
+</rich:collapsibleSubTable>
+</rich:dataTable>
+
+
+</a:outputPanel>
+</ui:define>
+
+
+</ui:composition>
