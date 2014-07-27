@@ -9,6 +9,7 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 import javax.faces.event.ValueChangeEvent;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
@@ -53,6 +54,13 @@ public class CalendarBean implements java.io.Serializable {
         }
 
         return currencyFormat.format(money);
+    }
+
+    public String shortNumber(Number value){
+        DecimalFormat df = new DecimalFormat("#0.############");
+        df.setGroupingUsed(false);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.format(value);
     }
 
     public Locale getLocale() {

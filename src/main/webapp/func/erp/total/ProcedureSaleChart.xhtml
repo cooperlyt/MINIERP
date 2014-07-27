@@ -72,6 +72,9 @@
 
 <a:outputPanel id="totalResult">
 
+
+
+
 <p:barchart
         title="#{messages.ProcedureSaleMoneyChart}"
         legend="true" borderVisible="false"
@@ -111,7 +114,48 @@
     </ui:repeat>
 </p:barchart>
 
+
 <br/>
+
+
+<ui:repeat value="#{procedureSaleChart.groupTotalData}" var="_entry">
+
+    <h:panelGrid style="width: 100%" columns="2">
+        <p:piechart title="#{_entry.resName}(#{_entry.unitName}) #{messages.Money}"
+                    legend="false" borderVisible="false"
+                    borderBackgroundPaint="white"
+                    width="480"
+                    plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                    baseSectionPaint="white"
+                    circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+            <ui:repeat value="#{_entry.datas}" var="_item">
+                <p:data key="#{_entry.getMoneyScale(_item.money)}% #{procedureSaleChart.useSaleArea ? _item.areaName : dictionary.getCityName(_item.areaName)} #{calendarBean.convertCurrency(_item.money)}"
+                        value="#{_item.money}"/>
+            </ui:repeat>
+        </p:piechart>
+
+
+        <p:piechart title="#{_entry.resName}(#{_entry.unitName}) #{messages.count}"
+                    legend="false" borderVisible="false"
+                    borderBackgroundPaint="white"
+                    width="480"
+                    plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                    baseSectionPaint="white"
+                    circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+            <ui:repeat value="#{_entry.datas}" var="_item">
+                <p:data key="#{_entry.getCountScale(_item.count)}% #{procedureSaleChart.useSaleArea ? _item.areaName : dictionary.getCityName(_item.areaName)} #{calendarBean.shortNumber(_item.count)}"
+                        value="#{_item.count}"/>
+            </ui:repeat>
+        </p:piechart>
+
+
+    </h:panelGrid>
+
+    <br/>
+</ui:repeat>
+
 
 <rich:dataTable style="width: 100%" var="_key" value="#{procedureSaleChart.groupTotalData}">
 <f:facet name="header">

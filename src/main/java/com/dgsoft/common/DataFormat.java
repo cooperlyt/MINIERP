@@ -67,4 +67,9 @@ public class DataFormat {
         return (value == null) || (value.compareTo(BigDecimal.ZERO) == 0);
     }
 
+
+    public static BigDecimal calcScale(BigDecimal base, BigDecimal sub){
+        return format(sub.divide(base,2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")),"#0");
+    }
+
 }

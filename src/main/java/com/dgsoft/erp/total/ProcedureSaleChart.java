@@ -1,5 +1,6 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResUnit;
@@ -288,6 +289,14 @@ public class ProcedureSaleChart {
 
         public List<ProcedureSaleData> getDatas() {
             return datas;
+        }
+
+        public BigDecimal getCountScale(BigDecimal count){
+            return  DataFormat.calcScale(getTotalData().getCount(),count);
+        }
+
+        public BigDecimal getMoneyScale(BigDecimal money){
+           return DataFormat.calcScale(getTotalData().getMoney(), money);
         }
 
 
