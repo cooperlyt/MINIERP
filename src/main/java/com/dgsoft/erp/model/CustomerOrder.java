@@ -40,6 +40,8 @@ public class CustomerOrder implements java.io.Serializable {
     private boolean canceled;
     private boolean allStoreOut;
 
+    private boolean payTag;
+
     private BigDecimal earnest;
     private BigDecimal totalRebateMoney;
     private BigDecimal middleMoney;
@@ -80,6 +82,7 @@ public class CustomerOrder implements java.io.Serializable {
         includeMiddleMan = false;
         earnestFirst = false;
         advanceMoney = BigDecimal.ZERO;
+        payTag = false;
     }
 
     @Id
@@ -376,6 +379,15 @@ public class CustomerOrder implements java.io.Serializable {
             }
         });
         return result;
+    }
+
+    @Column(name="PAY_TAG", nullable = false)
+    public boolean isPayTag() {
+        return payTag;
+    }
+
+    public void setPayTag(boolean payTag) {
+        this.payTag = payTag;
     }
 
     @Column(name = "RES_RECEIVED", nullable = false)

@@ -1285,6 +1285,7 @@
       <column name="RES_MONEY" sqlType="DECIMAL" precision="19" scale="3" nullable="false" jdbcType="3"/>
       <column name="ALL_SHIP_DATE" sqlType="TIMESTAMP" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="ADVANCE_MONEY" sqlType="DECIMAL" precision="19" scale="3" nullable="false" jdbcType="3"/>
+      <column name="PAY_TAG" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7"/>
       <primary-key name="PRIMARY" columns="ID"/>
       <foreign-key name="CUSTOMER_ORDER_ibfk_1" columns="CUSTOMER_ID" ref-table="CUSTOMER" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="ACCOUNT_OPER_ibfk_6" table="ACCOUNT_OPER" schema="" catalog="MINI_ERP" columns="CUSTOMER_ORDER"/>
