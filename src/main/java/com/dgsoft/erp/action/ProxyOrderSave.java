@@ -160,7 +160,7 @@ public class ProxyOrderSave extends ErpEntityQuery<CustomerOrder> {
                 boolean find = false;
                 for (AccountOper oper : moneySaveHome.getAccountOperList()) {
                     if (oper.getCustomer().getId().equals(order.getData().getCustomer().getId())) {
-
+                        oper.setProxcAccountsReceiveable(oper.getProxcAccountsReceiveable().add(order.getData().getMoney()));
                         find = true;
                         break;
                     }
