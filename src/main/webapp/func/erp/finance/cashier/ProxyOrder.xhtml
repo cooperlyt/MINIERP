@@ -22,9 +22,16 @@
         </h:outputStylesheet>
 
         <rich:toolbar>
+            <rich:toolbarGroup>
+                <h:outputText id="selectOrderMoney" value="#{proxyOrderSave.selectOrderMoneys}" >
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+            </rich:toolbarGroup>
+
             <rich:toolbarGroup location="right">
                 <s:button styleClass="toolBarBtn" value="#{messages.cancel}" action="cancel"/>
-                <s:button styleClass="toolBarBtn" action="#{moneySaveHome.checkProxyMoney}"
+                <s:button styleClass="toolBarBtn" action="#{proxyOrderSave.saveMoney}"
                           value="#{messages.Next}"/>
 
             </rich:toolbarGroup>
@@ -100,6 +107,12 @@
                     <h:selectBooleanCheckbox value="#{proxyOrderSave.onlyNoPayed}"/>
                 </s:decorate>
 
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.onlyArrearsCustomer}</ui:define>
+                    <h:selectBooleanCheckbox value="#{proxyOrderSave.onlyArrears}"/>
+                </s:decorate>
+
+
                 <div style="clear:both"/>
                 <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
                 <h:panelGrid columns="1" style="width: 100%; text-align: right">
@@ -128,15 +141,18 @@
 
 
         <h:form>
-            <rich:dataTable id="dataListResult" style="width: 100%" value="#{proxyOrderSave.resultList}" var="_order">
+            <rich:dataTable id="dataListResult" style="width: 100%" value="#{proxyOrderSave.customerOrderList}" var="_order">
+                <rich:column style="text-align: center;">
+                    <h:selectBooleanCheckbox value="#{_order.selected}" >
+                        <a:ajax event="click" execute="@form" render="selectOrderMoney"/>
+                    </h:selectBooleanCheckbox>
+                </rich:column>
+
                 <rich:column>
                     <f:facet name="header">
                         #{messages.order_field_id}
                     </f:facet>
-                    <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.id}" target="_blank"
-                            style="#{_order.canceled ? 'text-decoration:line-through; color: red;' : ''}">
-                        <f:param name="orderId" value="#{_order.id}"/>
-                    </s:link>
+                    #{_order.data.id}
                 </rich:column>
 
 
@@ -144,7 +160,7 @@
                     <f:facet name="header">
                         #{messages.order_field_createDate}
                     </f:facet>
-                    <h:outputText value="#{_order.createDate}">
+                    <h:outputText value="#{_order.data.createDate}">
                         <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
                     </h:outputText>
                 </rich:column>
@@ -154,7 +170,7 @@
                     <f:facet name="header">
                         #{messages.CustomerArea}
                     </f:facet>
-                    #{_order.customer.customerArea.name}
+                    #{_order.data.customer.customerArea.name}
                 </rich:column>
 
                 <rich:column>
@@ -162,7 +178,7 @@
                         #{messages.orderCustomer}
                     </f:facet>
 
-                    #{_order.customer.name}
+                    #{_order.data.customer.name}
                 </rich:column>
 
 
@@ -170,7 +186,7 @@
                     <f:facet name="header">
                         #{messages.customer_field_pac}
                     </f:facet>
-                    <h:outputText value="#{_order.customer.proxyAccountMoney}">
+                    <h:outputText value="#{_order.data.customer.proxyAccountMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
 
@@ -182,7 +198,7 @@
                         #{messages.orderMoney}
                     </f:facet>
 
-                    <h:outputText value="#{_order.money}">
+                    <h:outputText value="#{_order.data.money}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>

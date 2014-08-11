@@ -86,13 +86,15 @@ public class CustomerAccountOper implements Serializable {
     public String doOper() {
         AccountOper accountOper = new AccountOper(getType(), credentials.getUsername());
         accountOper.setOperDate(getOperDate());
-        accountOper.setCustomer(customerHome.getReadyInstance());
+
         if (getType().equals(AccountOper.AccountOperType.DEPOSIT_PAY)) {
+            accountOper.setCustomer(customerHome.getReadyInstance());
             accountOper.setAdvanceReceivable(getOperMoney());
             accountOper.setAccountsReceivable(getOperMoney());
             accountOper.calcCustomerMoney();
 
         } else if (getType().equals(AccountOper.AccountOperType.MONEY_FREE)) {
+            accountOper.setCustomer(customerHome.getReadyInstance());
             accountOper.setAccountsReceivable(getOperMoney());
             accountOper.calcCustomerMoney();
         } else {

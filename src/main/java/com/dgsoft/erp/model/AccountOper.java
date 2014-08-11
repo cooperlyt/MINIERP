@@ -118,6 +118,19 @@ public class AccountOper implements java.io.Serializable {
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
     }
 
+
+    public AccountOper(MoneySave moneySave, AccountOperType operType, Customer customer, String operEmp, BigDecimal proxcAccountsReceiveable) {
+        this.operEmp = operEmp;
+        this.operType = operType;
+        this.customer = customer;
+        this.moneySave = moneySave;
+        this.advanceReceivable = BigDecimal.ZERO;
+        this.accountsReceivable = BigDecimal.ZERO;
+        this.proxcAccountsReceiveable = proxcAccountsReceiveable;
+    }
+
+
+
 //    public AccountOper(PreparePay preparePay, Customer customer, String operEmp) {
 //        this.operType = AccountOperType.PRE_DEPOSIT;
 //        this.preparePay = preparePay;
