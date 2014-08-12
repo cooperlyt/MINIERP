@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition  xmlns=""  name="allocationCancel">
+
+
+	<start-state name="start-state1">
+		<transition to="调拨撤消"></transition>
+	</start-state>
+
+
+	<task-node name="调拨撤消">
+		<transition to="end-state1"></transition>
+	</task-node>
+
+
+	<end-state name="end-state1"></end-state>
+
+
+</process-definition>
