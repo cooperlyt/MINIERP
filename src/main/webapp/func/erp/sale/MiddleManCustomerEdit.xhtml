@@ -1,0 +1,84 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{middleManHome.instance.name}-#{messages.Customer}"/>
+
+
+    <ui:define name="func-body">
+
+
+        <h:form>
+
+            <rich:toolbar>
+
+                <rich:toolbarGroup location="right">
+
+                </rich:toolbarGroup>
+            </rich:toolbar>
+
+            <br/>
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
+            <rich:dataTable style="width: 100%" value="#{middleManHome.customers}" var="_customer">
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.customer_field_name}
+
+                    </f:facet>
+
+
+                    #{_customer.name}
+                </rich:column>
+
+                <rich:column width="60px">
+                    <f:facet name="header">
+                        #{messages.customer_field_type}
+                    </f:facet>
+                    #{dictionary.getWordValue(_customer.type)}
+                </rich:column>
+
+                <rich:column width="60px">
+                    <f:facet name="header">
+                        #{messages.CustomerArea}
+                    </f:facet>
+
+                    #{_customer.customerArea.name}
+                </rich:column>
+
+                <rich:column width="60px">
+                    <f:facet name="header">
+                        #{messages.customer_field_level}
+
+                    </f:facet>
+                    #{_customer.customerLevel.name}(#{_customer.customerLevel.priority})
+                </rich:column>
+
+                <rich:column width="70px">
+                    <f:facet name="header">
+                        #{messages.customer_field_province}
+
+                    </f:facet>
+                    #{dictionary.getCityName(_customer.provinceCode)}
+                </rich:column>
+
+
+                <rich:column>
+
+                </rich:column>
+
+            </rich:dataTable>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

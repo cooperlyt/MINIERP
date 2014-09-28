@@ -116,7 +116,8 @@ public class MiddleMan implements java.io.Serializable, NamedEntity {
         this.tel = tel;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "middleMan")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "middleMan", orphanRemoval = false,
+            cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.DETACH,CascadeType.REFRESH})
     public Set<Customer> getCustomers() {
         return this.customers;
     }

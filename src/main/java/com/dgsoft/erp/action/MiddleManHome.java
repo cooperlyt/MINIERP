@@ -1,9 +1,12 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.SetLinkList;
 import com.dgsoft.erp.ErpSimpleEntityHome;
+import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.MiddleMan;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
@@ -20,6 +23,21 @@ public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
     @In
     private FacesMessages facesMessages;
 
+    private SetLinkList<Customer> customers;
+
+
+    public SetLinkList<Customer> getCustomers() {
+        if (customers == null){
+            customers = new SetLinkList<Customer>(getInstance().getCustomers());
+        }
+        return customers;
+    }
+
+    @Override
+    protected void initInstance(){
+        super.initInstance();
+        customers = null;
+    }
 
     @Override
     protected MiddleMan createInstance(){
