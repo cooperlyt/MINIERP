@@ -33,6 +33,7 @@ public class RebateProgram implements java.io.Serializable,NamedEntity {
     private boolean patchItem;
     private Set<OrderItemRebate> orderItemRebates = new HashSet<OrderItemRebate>(0);
     private Set<MiddleMan> middleMans = new HashSet<MiddleMan>(0);
+    private Set<Customer> customers = new HashSet<Customer>(0);
 
     public RebateProgram() {
     }
@@ -148,6 +149,15 @@ public class RebateProgram implements java.io.Serializable,NamedEntity {
 
     public void setPatchItem(boolean onlyMaster) {
         this.patchItem = onlyMaster;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rebateProgram")
+    public Set<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(Set<Customer> customers) {
+        this.customers = customers;
     }
 
     @Transient

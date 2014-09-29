@@ -37,6 +37,8 @@ public class ResUnit implements java.io.Serializable,OrderModel {
     private Set<StoreResRebate> storeResRebates = new HashSet<StoreResRebate>(0);
     private Set<PriceItem> priceItems = new HashSet<PriceItem>(0);
     private Set<ResSaleRebate> resSaleRebates = new HashSet<ResSaleRebate>(0);
+    private Set<SalerPrice> salerPrices = new HashSet<SalerPrice>(0);
+    private Set<SalerStoreResPrice> salerStoreResPrices = new HashSet<SalerStoreResPrice>(0);
 
 	public ResUnit() {
         this.conversionRate = new BigDecimal(0);
@@ -209,6 +211,24 @@ public class ResUnit implements java.io.Serializable,OrderModel {
 
     public void setResSaleRebates(Set<ResSaleRebate> resSaleRebates) {
         this.resSaleRebates = resSaleRebates;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "resUnit")
+    public Set<SalerPrice> getSalerPrices() {
+        return salerPrices;
+    }
+
+    public void setSalerPrices(Set<SalerPrice> salerPrices) {
+        this.salerPrices = salerPrices;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "resUnit")
+    public Set<SalerStoreResPrice> getSalerStoreResPrices() {
+        return salerStoreResPrices;
+    }
+
+    public void setSalerStoreResPrices(Set<SalerStoreResPrice> salerStoreResPrices) {
+        this.salerStoreResPrices = salerStoreResPrices;
     }
 
     @Transient
