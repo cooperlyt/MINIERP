@@ -56,6 +56,16 @@ public class CustomerData{
 
     private BigDecimal befroMonthMoney;
 
+
+    public CustomerData(String id, String name,  Long curMonthCount, BigDecimal curMonthMoney, Long beforYearCount, BigDecimal beforYearMoney) {
+        this.name = name;
+        this.id = id;
+        this.curMonthCount = curMonthCount;
+        this.curMonthMoney = curMonthMoney;
+        this.beforYearCount = beforYearCount;
+        this.beforYearMoney = beforYearMoney;
+    }
+
     public CustomerData(String id, String name, String type, String area,
                         String levelName, int level, int cityCode, Date createDate,
                         BigDecimal noProxyBalance, BigDecimal balance,  Long orderCount,
