@@ -93,40 +93,6 @@
 </s:decorate>
 
 
-<s:decorate template="/layout/edit-modalpanel.xhtml">
-    <ui:param name="panelId" value="middleManEditPanel"/>
-    <ui:param name="panelTitle" value="#{messages.MiddleMan}"/>
-
-    <s:span styleClass="name">
-        <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
-            <a:ajax event="click" render="middleManEditPanel_inputs"
-                    listener="#{customerHome.middleManPayChangeListener}"/>
-        </h:selectBooleanCheckbox>
-        #{messages.MiddleMan}
-    </s:span>
-
-    <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
-        <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
-        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-    </a:outputPanel>
-
-    <ui:define name="actionButtons">
-        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
-                         oncomplete="#{rich:component('middleManEditPanel')}.hide();">
-            <s:conversationPropagation type="end"/>
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-        <a:commandButton value="#{messages.ok}" execute="@form"
-                         action="#{customerHome.updateEnd}"
-
-                         data="#{customerHome.lastState}"
-                         oncomplete="if(event.data == 'updated'){#{rich:component('middleManEditPanel')}.hide(); return true;} else return false;"
-                         render="middleManEditPanel_inputs,dataListResult">
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-
-    </ui:define>
-</s:decorate>
 <ui:remove>
     <!--
     <rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="false" width="600" height="600"
@@ -183,20 +149,6 @@
                 </a:commandLink>
             </rich:toolbarGroup>
 
-
-            <rich:toolbarGroup>
-                <h:graphicImage value="/img/person_edit.png"/>
-
-                <a:commandLink value="#{messages.MiddleMan}"
-                               execute="@this,customerEditPanel_form"
-                               disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
-                               render="middleManEditPanel_form" immediate="true"
-                               oncomplete="#{rich:component('middleManEditPanel')}.show()">
-                    <s:conversationPropagation type="begin"/>
-                    <a:attachQueue requestDelay="0"/>
-                    <a:param value="#{customerHome.instance.id}" assignTo="#{customerHome.id}"/>
-                </a:commandLink>
-            </rich:toolbarGroup>
 
             <rich:toolbarGroup>
                 <h:graphicImage value="/img/order.png"/>
@@ -272,7 +224,7 @@
                                    noSelectionLabel="#{messages.searchNoSelectLabel}"
                                    label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
                     <a:ajax event="selectitem" execute="@this"
-                            listener="#{customerHome.clearCustomerAndMiddleMan}"
+                            listener="#{customerHome.clearInstance}"
                             render="customerSelectNameField,customerAreaField,customerDetails">
                         <a:attachQueue requestDelay="0"/>
                     </a:ajax>

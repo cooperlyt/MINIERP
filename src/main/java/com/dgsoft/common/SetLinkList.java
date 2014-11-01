@@ -17,13 +17,13 @@ public class SetLinkList<E> extends ArrayList<E> {
         linkSet = set;
     }
 
-    @Override
-    public E set(int index, E element) {
-        E result = super.set(index, element);
-        linkSet.remove(result);
-        linkSet.add(element);
-        return result;
-    }
+//    @Override
+//    public E set(int index, E element) {
+//        E result = super.set(index, element);
+//        linkSet.remove(result);
+//        linkSet.add(element);
+//        return result;
+//    }
 
     @Override
     public boolean add(E e) {

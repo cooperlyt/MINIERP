@@ -35,8 +35,6 @@ public class OrderCreate extends OrderHome {
     @In(create = true)
     private CustomerHome customerHome;
 
-    @In(create = true)
-    private MiddleManHome middleManHome;
 
     @In(required = false)
     private CustomerAreaHome customerAreaHome;
@@ -63,10 +61,9 @@ public class OrderCreate extends OrderHome {
         return CustomerOrder.class;
     }
 
+    @Deprecated
     public void clearCustomerAndMiddleMan() {
         customerHome.clearInstance();
-        customerHome.setHaveMiddleMan(false);
-        middleManHome.clearInstance();
     }
 
     @Override
@@ -180,7 +177,6 @@ public class OrderCreate extends OrderHome {
 
     public void clearCustomer() {
         customerHome.clearInstance();
-        middleManHome.clearInstance();
     }
 
     public String saveOrderCustomer() {
@@ -288,9 +284,7 @@ public class OrderCreate extends OrderHome {
             needResHome.getInstance().setLimitTime(orderHome.getMasterNeedRes().getLimitTime());
 
             getInstance().setIncludeMiddleMan(orderHome.getInstance().isIncludeMiddleMan());
-            if (getInstance().isIncludeMiddleMan()) {
-                middleManHome.setId(orderHome.getInstance().getCustomer().getMiddleMan().getId());
-            }
+
 
             getInstance().setTotalRebateMoney(orderHome.getInstance().getTotalRebateMoney());
             getInstance().setEarnestFirst(orderHome.getInstance().isEarnestFirst());

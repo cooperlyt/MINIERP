@@ -369,41 +369,6 @@
 </s:decorate>
 
 
-<s:decorate template="/layout/edit-modalpanel.xhtml">
-    <ui:param name="panelId" value="middleManEditPanel"/>
-    <ui:param name="panelTitle" value="#{messages.MiddleMan}"/>
-
-    <s:span styleClass="name">
-        <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
-            <a:ajax event="click" render="middleManEditPanel_inputs"
-                    listener="#{customerHome.middleManPayChangeListener}"/>
-        </h:selectBooleanCheckbox>
-        #{messages.MiddleMan}
-    </s:span>
-
-    <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
-        <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
-        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-    </a:outputPanel>
-
-    <ui:define name="actionButtons">
-        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
-                         oncomplete="#{rich:component('middleManEditPanel')}.hide();">
-            <s:conversationPropagation type="end"/>
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-        <a:commandButton value="#{messages.ok}" execute="@form"
-                         action="#{customerHome.updateEnd}"
-
-                         data="#{customerHome.lastState}"
-                         oncomplete="if(event.data == 'updated'){#{rich:component('middleManEditPanel')}.hide(); return true;} else return false;"
-                         render="middleManEditPanel_inputs,dataListResult">
-            <a:attachQueue requestDelay="0"/>
-        </a:commandButton>
-
-    </ui:define>
-</s:decorate>
-
 
 </ui:define>
 

@@ -5,6 +5,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich">
 
 
@@ -134,6 +135,7 @@
 
     <br/>
 
+    <a:outputPanel rendered="#{s:hasRole('erp.sale.manager')}">
     <h:outputText styleClass="auto_width_name" value="#{messages.customerNotHasMiddleMan}"
                   rendered="#{empty customer.middleMan}"/>
     <s:decorate rendered="#{not empty customer.middleMan}"
@@ -148,4 +150,5 @@
 
 
     <br/>
+    </a:outputPanel>
 </ui:composition>

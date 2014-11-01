@@ -21,6 +21,15 @@ public class SalerStoreResPrice {
     private StoreRes storeRes;
     private ResUnit resUnit;
 
+    public SalerStoreResPrice() {
+    }
+
+    public SalerStoreResPrice(BigDecimal price, SalerPrice salerPrice, StoreRes storeRes, ResUnit resUnit) {
+        this.price = price;
+        this.salerPrice = salerPrice;
+        this.storeRes = storeRes;
+        this.resUnit = resUnit;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)

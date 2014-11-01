@@ -26,8 +26,6 @@ import java.util.*;
 @Name("customerHome")
 public class CustomerHome extends ErpSimpleEntityHome<Customer> {
 
-    @In(create = true)
-    private MiddleManHome middleManHome;
 
     @In
     private FacesMessages facesMessages;
@@ -35,21 +33,12 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     @In
     private EntityManager systemEntityManager;
 
-    private boolean haveMiddleMan;
 
     @DataModel("editingCustomerContacts")
     private List<CustomerContact> customerContactList;
 
     @DataModelSelection
     private CustomerContact selectedContact;
-
-    public boolean isHaveMiddleMan() {
-        return haveMiddleMan;
-    }
-
-    public void setHaveMiddleMan(boolean haveMiddleMan) {
-        this.haveMiddleMan = haveMiddleMan;
-    }
 
     private List<String> cityList;
 
@@ -111,13 +100,11 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
     protected void initInstance() {
         super.initInstance();
         if (isIdDefined()) {
-            haveMiddleMan = getInstance().getMiddleMan() != null;
-            if (haveMiddleMan)
-                middleManHome.setId(getInstance().getMiddleMan().getId());
+
             customerContactList = new ArrayList<CustomerContact>(getInstance().getCustomerContacts());
 
         } else {
-            haveMiddleMan = false;
+
             customerContactList = new ArrayList<CustomerContact>();
             addContact();
         }
@@ -126,13 +113,6 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
 
     @Override
     public boolean wire() {
-        if (haveMiddleMan) {
-            //if ((isIdDefined() && middleManHome.isIdDefined()) || (!isIdDefined())) {
-            getInstance().setMiddleMan(middleManHome.getReadyInstance());
-            //}
-        } else {
-            getInstance().setMiddleMan(null);
-        }
 
         if (!isManaged()) {
             getInstance().setCreateDate(new Date());
@@ -156,18 +136,4 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
         }
     }
 
-    public void clearCustomerAndMiddleMan() {
-        clearInstance();
-        setHaveMiddleMan(false);
-        middleManHome.clearInstance();
-    }
-
-
-    public void middleManPayChangeListener() {
-        if (haveMiddleMan && isIdDefined() && (getInstance().getMiddleMan() != null)) {
-            middleManHome.setId(getInstance().getMiddleMan().getId());
-        } else {
-            middleManHome.clearInstance();
-        }
-    }
 }

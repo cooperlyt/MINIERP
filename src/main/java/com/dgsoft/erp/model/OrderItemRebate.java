@@ -25,7 +25,7 @@ public class OrderItemRebate implements Comparable<OrderItemRebate>, java.io.Ser
     }
 
     public enum ItemRebateModel {
-        NOT_CALC, BY_COUNT, BY_MONEY;
+        NOT_CALC, BY_COUNT, BY_MONEY, BY_SUB;
     }
 
     private String id;

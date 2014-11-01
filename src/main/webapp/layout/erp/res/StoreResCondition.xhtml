@@ -19,40 +19,42 @@
             width: 74px !important;
         }
     </h:outputStylesheet>
-    <a:region>
+    <a:outputPanel rendered="#{(empty fixRes) ? true : not fixRes}">
 
-        <s:decorate template="/layout/seam-display.xhtml">
-            <ui:define name="label">#{messages.resCategory}</ui:define>
-            <h:selectOneMenu value="#{resCategoryHome.id}" label="#{messages.resCategory}">
+        <a:region>
 
-                <s:selectItems value="#{resCategoryList.allResCategorys}" var="_category" label="#{_category.name}"
-                               itemValue="#{_category.id}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                <a:ajax event="valueChange" render="categoryNextStep,formatList"
-                        execute="@this">
-                    <a:attachQueue requestDelay="0"/>
-                </a:ajax>
-            </h:selectOneMenu>
-        </s:decorate>
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.resCategory}</ui:define>
+                <h:selectOneMenu value="#{resCategoryHome.id}" label="#{messages.resCategory}">
 
-        <a:outputPanel id="categoryNextStep">
-            <s:decorate rendered="#{resCategoryHome.idDefined}" template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.res}</ui:define>
-
-
-                <h:selectOneMenu value="#{resHome.id}"
-                                 label="#{messages.res}">
-                    <s:selectItems value="#{resCategoryHome.reses}" var="_res"
-                                   label="#{_res.name}" itemValue="#{_res.id}"
-                                   noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                    <a:ajax event="valueChange" listener="#{storeResCondition.resSelected}" execute="@this"
-                            render="formatList">
+                    <s:selectItems value="#{resCategoryList.allResCategorys}" var="_category" label="#{_category.name}"
+                                   itemValue="#{_category.id}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                    <a:ajax event="valueChange" render="categoryNextStep,formatList"
+                            execute="@this">
                         <a:attachQueue requestDelay="0"/>
                     </a:ajax>
                 </h:selectOneMenu>
             </s:decorate>
-        </a:outputPanel>
-    </a:region>
 
+            <a:outputPanel id="categoryNextStep">
+                <s:decorate rendered="#{resCategoryHome.idDefined}" template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.res}</ui:define>
+
+
+                    <h:selectOneMenu value="#{resHome.id}"
+                                     label="#{messages.res}">
+                        <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                       label="#{_res.name}" itemValue="#{_res.id}"
+                                       noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                        <a:ajax event="valueChange" listener="#{storeResCondition.resSelected}" execute="@this"
+                                render="formatList">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </h:selectOneMenu>
+                </s:decorate>
+            </a:outputPanel>
+        </a:region>
+    </a:outputPanel>
     <a:outputPanel id="formatList">
         <a:outputPanel rendered="#{not empty storeResCondition.storeResEntity}">
 
@@ -63,13 +65,14 @@
                 <ui:param name="formatTemplate" value="/layout/seam-display.xhtml"/>
                 <ui:param name="countLableStyleClass" value="name"/>
                 <ui:param name="showTitle" value="false"/>
+                <ui:param name="noSelectionLabel" value="#{messages.searchNoSelectLabel}"/>
             </ui:include>
 
             <div style="clear:both;"/>
 
             <s:decorate rendered="#{resHome.instance.unitGroup.type eq 'FLOAT_CONVERT'}"
                         template="/layout/seam-display.xhtml">
-                    <ui:define name="label">#{resHome.instance.unitGroup.name}</ui:define>
+                <ui:define name="label">#{resHome.instance.unitGroup.name}</ui:define>
 
                 <rich:autocomplete
                         inputClass="floatConvertRateWidth" mode="client"

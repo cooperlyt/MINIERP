@@ -87,7 +87,7 @@
                                            noSelectionLabel="#{messages.noSelectLabel}"
                                            label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
                             <a:ajax event="selectitem" execute="@this"
-                                    listener="#{customerHome.clearCustomerAndMiddleMan}"
+                                    listener="#{customerHome.clearInstance}"
                                     render="customerSelectNameField,customerInfo">
                                 <a:attachQueue requestDelay="0"/>
                             </a:ajax>
@@ -120,7 +120,7 @@
                         </rich:autocomplete>
                         <ui:define name="tail">
                             <a:commandButton immediate="true" image="/img/refresh.png"
-                                             action="#{customerHome.clearCustomerAndMiddleMan}"
+                                             action="#{customerHome.clearInstance}"
                                              execute="@this"
                                              render="customerInfo,customerSelectNameField">
                                 <a:attachQueue requestDelay="0"/>
@@ -152,23 +152,7 @@
 
                     </rich:panel>
 
-                    <br/>
-                    <a:outputPanel id="middleManSelectOrCreate" rendered="#{not customerHome.idDefined}">
-                        <s:span styleClass="name">
-                            <h:selectBooleanCheckbox value="#{customerHome.haveMiddleMan}">
-                                <a:ajax event="click" render="middleManSelectOrCreate"
-                                        listener="#{customerHome.middleManPayChangeListener}"/>
-                            </h:selectBooleanCheckbox>
-                            #{messages.MiddleMan}
-                        </s:span>
 
-                        <a:outputPanel rendered="#{customerHome.haveMiddleMan}">
-                            <ui:include src="/layout/erp/MiddleManSelectOrCreate.xhtml"/>
-                            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-                        </a:outputPanel>
-                    </a:outputPanel>
-
-                    <div style="clear: both"/>
                 </a:outputPanel>
             </a:outputPanel>
 

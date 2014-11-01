@@ -4,10 +4,7 @@ import com.dgsoft.erp.action.ResCategoryHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.ResHome;
 import com.dgsoft.erp.action.StoreResHome;
-import com.dgsoft.erp.model.Format;
-import com.dgsoft.erp.model.ResCategory;
-import com.dgsoft.erp.model.StoreRes;
-import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResEntity;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -57,6 +54,7 @@ public class StoreResCondition implements Serializable{
         Logging.getLog(StoreResCondition.class).debug("resSelect id is:" + resHome.getId());
         if (resHome.isIdDefined()) {
             storeResEntity = new StoreResEntity(resHome.getInstance());
+            storeResEntity.setFloatConvertRate(null);
         } else {
             storeResEntity = null;
         }
@@ -154,6 +152,29 @@ public class StoreResCondition implements Serializable{
             }
         }
         return result;
+    }
+
+
+    public List<StoreRes> getMatchStoreReses(){
+
+        List<StoreRes> result = new ArrayList<StoreRes>();
+
+        if (!isResSearch() && (storeResEntity != null)) {
+
+            for (StoreRes storeRes : resHome.getInstance().getStoreReses()) {
+
+                if (resHelper.matchFormat(storeResEntity.getFormats(), storeRes) &&
+                        (!storeResEntity.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ||
+                                (storeResEntity.getFloatConvertRate() == null) ||
+                                (storeResEntity.getFloatConvertRate().compareTo(storeRes.getFloatConversionRate()) == 0))) {
+                    result.add(storeRes);
+
+                }
+            }
+
+        }
+        return result;
+
     }
 
     public String getStoreResCode() {

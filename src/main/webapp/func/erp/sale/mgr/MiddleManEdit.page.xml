@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" login-required="true"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="middleManId" value="#{middleManHome.id}"/>
+
+    <navigation from-action="#{middleManHome.persist}">
+        <rule if-outcome="persisted">
+            <end-conversation/>
+            <redirect view-id="/func/erp/sale/mgr/MiddleManMgr.xhtml"/>
+        </rule>
+    </navigation>
+
+    <navigation from-action="#{middleManHome.update}">
+        <rule if-outcome="updated">
+            <end-conversation/>
+            <redirect view-id="/func/erp/sale/mgr/MiddleManMgr.xhtml"/>
+        </rule>
+    </navigation>
+
+</page>

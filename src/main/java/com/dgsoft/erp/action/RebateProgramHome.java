@@ -1,8 +1,10 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.helper.ActionExecuteState;
 import com.dgsoft.erp.ErpSimpleEntityHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.tools.ResTreeFilter;
+import com.dgsoft.erp.tools.StoreResCondition;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
@@ -11,6 +13,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -143,17 +146,63 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
         }
     }
 
-    public void storeResSelected() {
-        for (StoreResRebate resRebate : selectOrderItemRebate.getStoreResRebates()) {
-            if (resRebate.getStoreRes().getId().equals(selectStoreResId)) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "storeResRebateIsExists");
-                return;
+    @In(required = false)
+    private StoreResCondition storeResCondition;
+
+    private OrderItemRebate.ItemRebateModel batchCalcType;
+
+    private ResUnit batchResUnit;
+
+    private BigDecimal batchRebate;
+
+    public OrderItemRebate.ItemRebateModel getBatchCalcType() {
+        return batchCalcType;
+    }
+
+    public void setBatchCalcType(OrderItemRebate.ItemRebateModel batchCalcType) {
+        this.batchCalcType = batchCalcType;
+    }
+
+    public ResUnit getBatchResUnit() {
+        return batchResUnit;
+    }
+
+    public void setBatchResUnit(ResUnit batchResUnit) {
+        this.batchResUnit = batchResUnit;
+    }
+
+    public BigDecimal getBatchRebate() {
+        return batchRebate;
+    }
+
+    public void setBatchRebate(BigDecimal batchRebate) {
+        this.batchRebate = batchRebate;
+    }
+
+    @In
+    private ActionExecuteState actionExecuteState;
+
+    public void batchAddStoreRes() {
+
+        for (StoreRes storeRes : storeResCondition.getMatchStoreReses()) {
+            boolean exists = false;
+            for (StoreResRebate resRebate : selectOrderItemRebate.getStoreResRebates()) {
+                if (resRebate.getStoreRes().getId().equals(storeRes.getId())) {
+                    resRebate.setCalcUnit(batchResUnit);
+                    resRebate.setRebate(batchRebate);
+                    resRebate.setMode(batchCalcType);
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                selectOrderItemRebate.getStoreResRebates().add(
+                        new StoreResRebate(batchCalcType, storeRes, batchResUnit, batchRebate, selectOrderItemRebate));
             }
         }
-        selectOrderItemRebate.getStoreResRebates().add(
-                new StoreResRebate(OrderItemRebate.ItemRebateModel.NOT_CALC,
-                        getEntityManager().find(StoreRes.class, selectStoreResId), selectOrderItemRebate));
+        actionExecuteState.actionExecute();
     }
+
 
     @Override
     protected RebateProgram createInstance() {
@@ -178,25 +227,24 @@ public class RebateProgramHome extends ErpSimpleEntityHome<RebateProgram> {
 
     @Override
     protected boolean wire() {
-        if (getInstance().getOrderMode().equals(RebateProgram.OrderRebateMode.NOT_CALC)){
+        if (getInstance().getOrderMode().equals(RebateProgram.OrderRebateMode.NOT_CALC)) {
             getInstance().setRebate(null);
         }
         getInstance().getOrderItemRebates().clear();
         if (getInstance().isCalcItem()) {
 
             for (OrderItemRebate rebate : orderItemRebateList) {
-                if (!rebate.getMode().equals(OrderItemRebate.ItemRebateModel.NOT_CALC)) {
-                    for (StoreResRebate storeResRebate: rebate.getStoreResRebates()){
-                        if (storeResRebate.getMode().equals(OrderItemRebate.ItemRebateModel.NOT_CALC)){
-                            storeResRebate.setRebate(null);
-                            storeResRebate.setCalcUnit(null);
-                        }
+                for (StoreResRebate storeResRebate : rebate.getStoreResRebates()) {
+                    if (OrderItemRebate.ItemRebateModel.NOT_CALC.equals(storeResRebate.getMode()) ||
+                            OrderItemRebate.ItemRebateModel.BY_SUB.equals(storeResRebate.getMode())) {
+                        storeResRebate.setRebate(null);
+                        storeResRebate.setCalcUnit(null);
                     }
-                    getInstance().getOrderItemRebates().add(rebate);
                 }
+                getInstance().getOrderItemRebates().add(rebate);
             }
 
-        }else{
+        } else {
             getInstance().setZeroItem(false);
             getInstance().setPatchItem(false);
         }

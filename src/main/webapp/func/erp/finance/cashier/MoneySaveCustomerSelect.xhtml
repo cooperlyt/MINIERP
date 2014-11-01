@@ -79,7 +79,7 @@
                     </rich:autocomplete>
                     <ui:define name="tail">
                         <a:commandButton immediate="true" image="/img/refresh.png"
-                                         action="#{orderCreate.clearCustomerAndMiddleMan}"
+                                         action="#{customerHome.clearInstance}"
                                          execute="@this"
                                          render="customerInfo,customerSelectNameField,customerAreaField">
                             <a:attachQueue requestDelay="0"/>

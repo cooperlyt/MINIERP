@@ -6,8 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by cooper on 9/29/14.
@@ -23,6 +22,16 @@ public class SalerPrice {
     private Res res;
     private MiddleMan middleMan;
     private Set<SalerStoreResPrice> salerStoreResPrices = new HashSet<SalerStoreResPrice>(0);
+
+    public SalerPrice() {
+    }
+
+    public SalerPrice(BigDecimal price, ResUnit resUnit, Res res, MiddleMan middleMan) {
+        this.price = price;
+        this.resUnit = resUnit;
+        this.res = res;
+        this.middleMan = middleMan;
+    }
 
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
@@ -88,5 +97,17 @@ public class SalerPrice {
 
     public void setSalerStoreResPrices(Set<SalerStoreResPrice> salerStoreResPrices) {
         this.salerStoreResPrices = salerStoreResPrices;
+    }
+
+    @Transient
+    public List<SalerStoreResPrice> getSalerStoreResPriceList(){
+        List<SalerStoreResPrice> result = new ArrayList<SalerStoreResPrice>(getSalerStoreResPrices());
+        Collections.sort(result,new Comparator<SalerStoreResPrice>() {
+            @Override
+            public int compare(SalerStoreResPrice o1, SalerStoreResPrice o2) {
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            }
+        });
+        return result;
     }
 }

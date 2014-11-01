@@ -28,9 +28,11 @@ public class StoreResRebate implements Comparable<StoreResRebate>, java.io.Seria
     public StoreResRebate() {
     }
 
-    public StoreResRebate(OrderItemRebate.ItemRebateModel mode, StoreRes storeRes, OrderItemRebate orderItemRebate) {
+    public StoreResRebate(OrderItemRebate.ItemRebateModel mode, StoreRes storeRes, ResUnit calcUnit, BigDecimal rebate, OrderItemRebate orderItemRebate) {
         this.mode = mode;
         this.storeRes = storeRes;
+        this.calcUnit = calcUnit;
+        this.rebate = rebate;
         this.orderItemRebate = orderItemRebate;
     }
 
