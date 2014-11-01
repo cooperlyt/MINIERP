@@ -51,6 +51,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     private Set<CustomerContact> customerContacts = new HashSet<CustomerContact>(0);
     private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
     private Set<QuotedPrice> quotedPrices = new HashSet<QuotedPrice>(0);
+    private RebateProgram rebateProgram;
 
 
     public Customer() {
@@ -332,6 +333,16 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
     public void setInitPAC(BigDecimal initPAC) {
         this.initPAC = initPAC;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "REBATE_PROGRAM",nullable = true)
+    public RebateProgram getRebateProgram() {
+        return rebateProgram;
+    }
+
+    public void setRebateProgram(RebateProgram rebateProgram) {
+        this.rebateProgram = rebateProgram;
     }
 
     @Transient

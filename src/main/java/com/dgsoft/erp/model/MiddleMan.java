@@ -31,6 +31,7 @@ public class MiddleMan implements java.io.Serializable, NamedEntity {
 
     private Set<Customer> customers = new HashSet<Customer>(0);
     private Set<MiddleMoneyPay> middleMoneys = new HashSet<MiddleMoneyPay>(0);
+    private Set<SalerPrice> salerPrices = new HashSet<SalerPrice>(0);
 
     public MiddleMan() {
     }
@@ -172,5 +173,15 @@ public class MiddleMan implements java.io.Serializable, NamedEntity {
 
     public void setRebateProgram(RebateProgram rebateProgram) {
         this.rebateProgram = rebateProgram;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,
+            mappedBy = "middleMan",cascade = CascadeType.ALL)
+    public Set<SalerPrice> getSalerPrices() {
+        return salerPrices;
+    }
+
+    public void setSalerPrices(Set<SalerPrice> salerPrices) {
+        this.salerPrices = salerPrices;
     }
 }
