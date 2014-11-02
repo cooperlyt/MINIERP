@@ -10,12 +10,12 @@
                 template="/layout/full-template.xhtml">
 
 
-<ui:param name="functionTitle" value="#{messages.middleMan_reward_calc}"/>
+<ui:param name="functionTitle" value="#{messages.middleMan_reward_calc} > #{middleManHome.instance.name}"/>
 
 <ui:define name="toolbar">
     <rich:toolbar>
         <rich:toolbarGroup location="right">
-            <s:button styleClass="toolBarBtn" value="#{messages.return}" view="/home.xhtml"
+            <s:button styleClass="toolBarBtn" value="#{messages.return}" view="/func/erp/sale/mgr/MiddleManMgr.xhtml"
                       propagation="end"/>
         </rich:toolbarGroup>
     </rich:toolbar>
@@ -104,11 +104,6 @@
             <h:inputText value="#{middleManRewardCalc.customerName}"/>
         </s:decorate>
 
-        <s:decorate template="/layout/seam-display.xhtml">
-            <ui:define name="label">#{messages.middleMan_field_name}</ui:define>
-            <h:inputText value="#{middleManRewardCalc.middleManName}"/>
-        </s:decorate>
-
         <div style="clear:both"/>
         <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
         <h:panelGrid columns="1" style="width: 100%; text-align: right">
@@ -119,7 +114,7 @@
 
                     <a:outputPanel id="searchButton">
                         <a:commandButton value="#{messages.search}"
-                                         execute="@form"  render="constainCustomers"
+                                         execute="@form" render="constainCustomers"
                                          action="#{middleManRewardCalc.refresh}">
                             <a:attachQueue requestDelay="0"/>
                         </a:commandButton>
@@ -156,7 +151,7 @@
 <br/>
 <h:form>
 <a:outputPanel ajaxRendered="true">
-<rich:dataTable id="constainCustomers" value="#{middleManRewardCalc.containMiddleMan}" var="_middleMan"
+<rich:dataTable id="constainCustomers" value="#{middleManRewardCalc.containCustomer}" var="_customer"
                 noDataLabel="#{messages.middleMan_reward_customer_empty}" style="width: 100%">
 
 <f:facet name="header">
@@ -164,18 +159,18 @@
 
         <rich:column style="text-align: center; width: 15px" rowspan="2">
             <h:selectBooleanCheckbox id="allCustomerSelectedCheckbox"
-                                     value="#{middleManRewardCalc.allMiddleManSelected}">
+                                     value="#{middleManRewardCalc.allCustomerSelected}">
                 <a:ajax event="click"
                         render="constainCustomers,containOrders"/>
             </h:selectBooleanCheckbox>
         </rich:column>
-        <rich:column colspan="14">
-            #{messages.MiddleMan}#{' '}/#{' '}#{messages.Customer}#{' '}/#{' '}#{messages.CustomerOrder}
-        </rich:column>
         <rich:column colspan="10">
+            #{' '}#{messages.Customer}#{' '}/#{' '}#{messages.CustomerOrder}
+        </rich:column>
+        <rich:column colspan="8">
             #{messages.OrderItemRebate}
         </rich:column>
-        <rich:column colspan="5" breakRowBefore="true">
+        <rich:column colspan="3" breakRowBefore="true">
             #{messages.StoreRes}
         </rich:column>
 
@@ -195,7 +190,7 @@
             #{messages.orderItemPriceRebate}
         </rich:column>
 
-        <rich:column colspan="5">
+        <rich:column colspan="3">
             #{messages.orderItemTotalPrice}
         </rich:column>
 
@@ -207,109 +202,26 @@
             #{messages.order_middle_money_itemCalcType}
         </rich:column>
 
-        <rich:column>
-            #{messages.order_middle_money_unit}
-        </rich:column>
-
-        <rich:column>
-            #{messages.order_middle_money_count}
-        </rich:column>
-
-        <rich:column>
+        <rich:column colspan="3">
             #{messages.OrderItemRebate_field_rebate}
         </rich:column>
 
-        <rich:column colspan="5">
+        <rich:column colspan="3">
             #{messages.middleMan_reward}
         </rich:column>
     </rich:columnGroup>
 </f:facet>
-<rich:column>
-    <h:selectBooleanCheckbox value="#{_middleMan.selected}">
-        <a:ajax event="click"/>
-    </h:selectBooleanCheckbox>
-</rich:column>
 
-<rich:column colspan="9" style="font-size: 14px; font-weight: bold; color: darkorange;">
-    <rich:collapsibleSubTableToggler id="sbtbc1Toggler" for="sbtbc1"/>
-
-
-    <h:outputText value="#{_middleMan.data.name}"
-                  style="#{_middleMan.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
-                  rendered="#{not empty _middleMan.data}"/>
-
-    <h:outputText value="#{messages.noHaveMiddleManCustomer}" rendered="#{empty _middleMan.data}"/>
-
-    <h:outputText value=" -- #{_middleMan.data.contact}"
-                  rendered="#{not empty _middleMan.data}"/>
-
-    <h:outputText value=" (#{dictionary.getWordValue(_middleMan.data.type)})"
-                  rendered="#{not empty _middleMan.data}"/>
-
-    <f:facet name="footer">
-        <h:outputText value="#{messages.CustomerOrder}" style="font-weight: bold"/> :#{' '} #{middleManRewardCalc.orderCount}  #{' '}
-
-        <h:outputText value="#{messages.MiddleMan}" style="font-weight: bold"/> :#{' '}#{middleManRewardCalc.middleManCount}#{' '}
-
-        <h:outputText value="#{messages.Customer}" style="font-weight: bold"/>: #{' '}#{middleManRewardCalc.customerCount}
-    </f:facet>
-</rich:column>
-
-<rich:column colspan="5" style="text-align: right; font-size: 14px; font-weight: bold; color: darkorange;">
-    <h:outputText value="#{_middleMan.totalPrice}">
-        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-    </h:outputText>
-
-    <f:facet name="footer">
-        <h:outputText value="#{middleManRewardCalc.containOrderTotalPrice}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </f:facet>
-</rich:column>
-
-
-<rich:column>
-
-    <s:decorate rendered="#{_middleMan.selected}" template="/layout/grid-inside-edit.xhtml">
-        <rich:inplaceSelect value="#{_middleMan.rebateProgram}" style="width: 95%"
-                            label="#{messages.RebateProgram}">
-            <s:selectItems value="#{validRebateProgramList.resultList}" var="_program"
-                           label="#{_program.id}" noSelectionLabel="#{messages.noSelectLabel}"/>
-            <f:converter converterId="erpEntityConverter"/>
-            <a:ajax event="selectitem"/>
-        </rich:inplaceSelect>
-    </s:decorate>
-
-</rich:column>
-
-<rich:column colspan="4"/>
-
-<rich:column colspan="5" style="text-align: right; font-size: 14px; font-weight: bold;color: darkorange;">
-    <h:outputText rendered="#{_middleMan.selected}" value="#{_middleMan.rebate}">
-        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-    </h:outputText>
-
-    <f:facet name="footer">
-        <h:outputText value="#{middleManRewardCalc.totalRebateMoney}">
-            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-        </h:outputText>
-    </f:facet>
-</rich:column>
-
-
-<rich:collapsibleSubTable value="#{_middleMan.customers}" expanded="#{false}"
-                          var="_customer" id="sbtbc1" expandMode="client">
-<rich:column/>
-<rich:column>
+<rich:column style="background: #ecf4fe;">
     <h:selectBooleanCheckbox value="#{_customer.selected}">
         <a:ajax event="click"/>
     </h:selectBooleanCheckbox>
 </rich:column>
 
 
-<rich:column colspan="8" style="font-size: 14px;color: purple">
+<rich:column colspan="7" style="font-size: 14px;font-weight: bold;background: #ecf4fe;">
 
-    <rich:collapsibleSubTableToggler event="none" for="sbtbo1"/>
+    <rich:collapsibleSubTableToggler for="sbtbo1"/>
 
     #{_customer.data.customerArea.name} --
 
@@ -323,16 +235,19 @@
 
 
 </rich:column>
-<rich:column colspan="4" style="text-align: right;font-size: 14px;color: purple">
+<rich:column colspan="3" style="text-align: right;font-size: 14px;font-weight: bold;background: #ecf4fe;">
     <h:outputText value="#{_customer.totalPrice}">
         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
     </h:outputText>
+    <f:facet name="footer">
+        <h:outputText value="#{middleManRewardCalc.containOrderTotalPrice}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </f:facet>
 </rich:column>
 
-<rich:column/>
 
-
-<rich:column style="font-size: 14px;">
+<rich:column style="font-size: 14px;font-weight: bold;background: #ecf4fe;">
     <s:decorate rendered="#{_customer.selected}" template="/layout/grid-inside-edit.xhtml">
         <rich:inplaceSelect value="#{_customer.rebateProgram}" style="width: 95%"
                             label="#{messages.RebateProgram}">
@@ -344,30 +259,32 @@
     </s:decorate>
 </rich:column>
 
-<rich:column colspan="4"/>
+<rich:column colspan="4" style="background: #ecf4fe;"/>
 
-<rich:column colspan="4" style="text-align: right;font-size: 14px;color: purple">
+<rich:column colspan="3" style="text-align: right;font-size: 14px;font-weight: bold;background: #ecf4fe;">
     <h:outputText rendered="#{_customer.selected}" value="#{_customer.rebate}">
         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
     </h:outputText>
+    <f:facet name="footer">
+        <h:outputText value="#{middleManRewardCalc.totalRebateMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+        </h:outputText>
+    </f:facet>
 
 </rich:column>
-
-<rich:column/>
 
 
 <rich:collapsibleSubTable value="#{_customer.orders}"
                           var="_order" id="sbtbo1" expandMode="client">
-<rich:column/>
-<rich:column/>
-<rich:column>
+<rich:column style="background: #f5f5f5;"/>
+<rich:column style="background: #f5f5f5;">
     <h:selectBooleanCheckbox value="#{_order.selected}">
         <a:ajax event="click"/>
     </h:selectBooleanCheckbox>
 </rich:column>
 
 
-<rich:column colspan="7" style="font-size: 13px; font-weight: bold;">
+<rich:column colspan="6" style="font-size: 13px; font-weight: bold;background: #f5f5f5;">
     <rich:collapsibleSubTableToggler event="none" for="sbtbn1"/>
 
     <s:link style="text-decoration:line-through; color: red;font-size: 13px; font-weight: bold; "
@@ -382,9 +299,11 @@
         <f:param name="orderId" value="#{_order.data.id}"/>
         <f:param name="from" value=""/>
     </s:link>
-
-    (#{messages[_order.data.payType.name()]})
-
+    (
+    <h:outputText value="#{_order.data.createDate}">
+        <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+    </h:outputText>
+    )
     <a:outputPanel style="float: right; font-size: 11px">
         <ui:include src="/layout/erp/OrderStatus.xhtml">
             <ui:param name="order" value="#{_order.data}"/>
@@ -393,16 +312,16 @@
 
 </rich:column>
 
-<rich:column colspan="3" style="text-align: right;font-size: 13px; font-weight: bold;color: #4682b4">
+<rich:column colspan="2"
+             style="text-align: right;font-size: 13px; font-weight: bold;color: #4682b4;background: #f5f5f5;">
     <h:outputText value="#{_order.data.money}">
         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
     </h:outputText>
 </rich:column>
 
-<rich:column/>
-<rich:column/>
+<rich:column style="background: #f5f5f5;"/>
 
-<rich:column style="font-size: 13px;">
+<rich:column style="font-size: 13px;background: #f5f5f5;">
 
     <s:decorate rendered="#{_order.selected}" template="/layout/grid-inside-edit.xhtml">
         <rich:inplaceSelect value="#{_order.rebateProgram}" style="width: 95%"
@@ -416,9 +335,24 @@
 
 </rich:column>
 
-<rich:column colspan="3" style="font-size: 13px; font-weight: bold;">
+<rich:column style="background: #f5f5f5;">
+    <s:decorate template="/layout/grid-inside-edit.xhtml">
+        <rich:inplaceSelect value="#{_order.data.middleMoneyCalcType}"
+                            style="width: 95%"
+                            label="#{messages.order_middle_money_itemCalcType}"
+                            required="true">
+            <s:selectItems value="#{orderRebateCalcModes}" var="_type"
+                           label="#{messages[_type.name()]}"/>
+
+            <s:convertEnum/>
+            <a:ajax event="selectitem"/>
+        </rich:inplaceSelect>
+    </s:decorate>
+</rich:column>
+
+<rich:column colspan="2" style="font-size: 13px; font-weight: bold;background: #f5f5f5;">
     <h:panelGrid rendered="#{_order.selected}" style="width: 100%"
-                 columnClasses="zeroPaddin,zeroPaddin,zeroPaddin,zeroPaddin,zeroPaddin,zeroPaddin" columns="6">
+                 columnClasses="zeroPaddin,zeroPaddin,zeroPaddin,zeroPaddin,zeroPaddin,zeroPaddin" columns="4">
 
 
         <h:selectBooleanCheckbox value="#{_order.calcItem}">
@@ -427,30 +361,17 @@
         </h:selectBooleanCheckbox>
         <h:outputText value="#{messages.calcItem}"/>
 
-
-        <h:selectBooleanCheckbox value="#{_order.patchItem}">
+        <h:selectBooleanCheckbox value="#{_order.zeroItem}">
             <a:ajax event="click"/>
 
         </h:selectBooleanCheckbox>
-        <h:outputText value="#{messages.onlyMaster}"/>
+        #{messages.zeroItem}
 
-        <s:decorate template="/layout/grid-inside-edit.xhtml">
-            <rich:inplaceSelect value="#{_order.data.middleMoneyCalcType}"
-                                style="width: 95%"
-                                label="#{messages.order_middle_money_itemCalcType}"
-                                required="true">
-                <s:selectItems value="#{orderRebateCalcModes}" var="_type"
-                               label="#{messages[_type.name()]}"/>
-
-                <s:convertEnum/>
-                <a:ajax event="selectitem"/>
-            </rich:inplaceSelect>
-        </s:decorate>
 
     </h:panelGrid>
 </rich:column>
 
-<rich:column style="font-size: 13px;">
+<rich:column style="font-size: 13px;background: #f5f5f5;">
     <a:outputPanel rendered="#{_order.selected}">
         <s:decorate rendered="#{_order.data.middleMoneyCalcType eq 'TOTAL_MONEY_RATE'}"
                     template="/layout/grid-inside-edit.xhtml">
@@ -477,204 +398,145 @@
 </rich:column>
 
 
-<rich:column colspan="3" style="text-align: right;font-size: 13px; font-weight: bold;color: #4682b4">
+<rich:column colspan="2"
+             style="text-align: right;font-size: 13px; font-weight: bold;color: #4682b4;background: #f5f5f5;">
     <h:outputText rendered="#{_order.selected}" value="#{_order.rebate}">
         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
     </h:outputText>
 </rich:column>
 
-<rich:column/>
 
-<rich:column/>
+<rich:column style="background: #f5f5f5;"/>
 
-<rich:collapsibleSubTable value="#{_order.needReses}"
-                          var="_needres" id="sbtbn1" expandMode="client">
+
+<rich:collapsibleSubTable value="#{_order.orderItems}"
+                          var="_item" id="sbtboi1" expandMode="client">
+
     <rich:column/>
     <rich:column/>
-    <rich:column/>
-    <rich:column>
 
-        <h:selectBooleanCheckbox value="#{_needres.selected}">
-            <a:ajax event="click"/>
-        </h:selectBooleanCheckbox>
+    <rich:column colspan="2" style="font-size: 12px; font-weight: bold">
+        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+            <ui:param name="storeRes" value="#{_item.storeRes}"/>
+            <ui:param name="showCode" value="false"/>
+        </ui:include>
+
     </rich:column>
 
+    <rich:column style="font-size: 12px; font-weight: bold">
+        #{_item.useUnitCount}
+    </rich:column>
 
-    <rich:column colspan="6" style="font-size: 13px;color: darkgoldenrod">
-        <rich:collapsibleSubTableToggler event="none" for="sbtboi1"/>
-        #{messages[_needres.data.type.name()]}(
-        <h:outputText value="#{_needres.data.createDate}">
-            <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+    <rich:column style="font-size: 12px; font-weight: bold">
+        #{_item.useUnit.name}
+    </rich:column>
+
+    <rich:column style="text-align: right;font-size: 12px; font-weight: bold">
+        <h:outputText value="#{_item.money}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
         </h:outputText>
-        )
     </rich:column>
 
-    <rich:column colspan="2" style="text-align: right;font-size: 13px;color: darkgoldenrod">
-        <h:outputText value="#{_needres.totalPrice}">
+    <rich:column style="font-size: 12px; font-weight: bold">
+        <h:outputText value="#{_item.rebate}">
+            <f:convertNumber pattern="#0.####"/>
+        </h:outputText>
+
+    </rich:column>
+
+    <rich:column style="text-align: right;font-size: 12px; font-weight: bold">
+        <h:outputText value="#{_item.totalMoney}">
             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
         </h:outputText>
     </rich:column>
 
     <rich:column/>
-    <rich:column colspan="2"/>
 
-    <rich:column style="font-size: 13px">
-        <s:decorate rendered="#{_needres.selected}" template="/layout/grid-inside-edit.xhtml">
-            <rich:inplaceSelect value="#{_needres.rebateProgram}"
-                                label="#{messages.RebateProgram}" style="width: 95%">
-                <s:selectItems value="#{validRebateProgramList.resultList}" var="_program"
-                               label="#{_program.id}"
-                               noSelectionLabel="#{messages.noSelectLabel}"/>
+    <rich:column/>
+
+    <rich:column/>
+
+    <rich:column style="font-size: 12px">
+        <s:decorate template="/layout/grid-inside-edit.xhtml">
+            <rich:inplaceSelect value="#{_item.middleMoneyCalcType}"
+                                style="width: 95%; font-size: 12px; font-weight: bold"
+                                label="#{messages.order_middle_money_itemCalcType}"
+                                required="true">
+                <s:selectItems value="#{orderItemRebateCalcModes}" var="_type"
+                               label="#{messages[_type.name()]}"/>
+
+                <s:convertEnum/>
+                <a:ajax listener="#{_order.matchItemsSalerPrice}" event="selectitem"/>
+            </rich:inplaceSelect>
+        </s:decorate>
+    </rich:column>
+    <rich:column style="font-size: 12px; font-weight: bold">
+        <s:decorate rendered="#{(_item.middleMoneyCalcType eq 'BY_COUNT') or (_item.middleMoneyCalcType eq 'BY_SUB')}"
+                    template="/layout/grid-inside-edit.xhtml">
+            <rich:inplaceSelect value="#{_item.middleUnit}" required="true" style="width: 95%; font-size: 12px"
+                                label="#{messages.order_middle_money_unit}">
+                <s:selectItems value="#{_item.res.unitGroup.resUnitList}" var="_unit" label="#{_unit.name}"/>
                 <f:converter converterId="erpEntityConverter"/>
                 <a:ajax event="selectitem"/>
             </rich:inplaceSelect>
         </s:decorate>
-
     </rich:column>
-
-    <rich:column style="font-size: 13px">
-        <h:panelGrid style="width: 100%" rendered="#{_needres.selected}" columns="2"
-                     columnClasses="zeroPaddin,zeroPaddin">
-
-            <h:selectBooleanCheckbox value="#{_needres.zeroItem}">
-                <a:ajax event="click"/>
-
-            </h:selectBooleanCheckbox>
-            #{messages.zeroItem}
-        </h:panelGrid>
+    <rich:column style="font-size: 12px; font-weight: bold">
+        <h:outputText rendered="#{_item.middleMoneyCalcType eq 'BY_COUNT'}"
+                      value="#{_item.middleUnitCount}">
+            <f:convertNumber pattern="#{_item.middleUnit.countFormate}"/>
+        </h:outputText>
+        <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_SUB'}" template="/layout/grid-inside-edit.xhtml">
+            <ui:define name="label">#{calendarBean.currencySymbol}</ui:define>
+            <rich:inplaceInput value="#{_item.middleRate}" required="true" style="width: 95%; font-size: 12px"
+                               label="#{messages.OrderItemRebate_field_rebate}">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+                <a:ajax event="blur"/>
+            </rich:inplaceInput>
+        </s:decorate>
     </rich:column>
+    <rich:column style="font-size: 12px; font-weight: bold">
 
-    <rich:column colspan="3"/>
+        <a:outputPanel layout="block" style="width: 100%; text-align: right;">
+            <h:outputText value="#{_item.salerTotalMoney}" rendered="#{_item.middleMoneyCalcType eq 'BY_SUB'}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </a:outputPanel>
+        <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_COUNT'}" template="/layout/grid-inside-edit.xhtml">
+            <ui:define name="label">#{calendarBean.currencySymbol}</ui:define>
+            <rich:inplaceInput value="#{_item.middleRate}" required="true" style="width: 95%; font-size: 12px"
+                               label="#{messages.OrderItemRebate_field_rebate}">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+                <a:ajax event="blur"/>
+            </rich:inplaceInput>
+        </s:decorate>
 
-    <rich:column colspan="2" style="text-align: right;font-size: 13px;color: darkgoldenrod">
-        <h:outputText rendered="#{_needres.selected}" value="#{_needres.rebate}">
+        <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_MONEY'}" template="/layout/grid-inside-edit.xhtml">
+            <ui:define name="label">%</ui:define>
+            <rich:inplaceInput value="#{_item.middleRate}" required="true"
+                               style="width: 95%; font-size: 12px; font-weight: bold"
+                               label="#{messages.OrderItemRebate_field_rebate}" converter="javax.faces.BigDecimal">
+                <f:validateDoubleRange minimum="0" maximum="100"/>
+                <f:convertNumber pattern="#0.######"/>
+                <a:ajax event="blur"/>
+            </rich:inplaceInput>
+        </s:decorate>
+    </rich:column>
+    <rich:column style="text-align: right;font-size: 12px; font-weight: bold">
+        <h:outputText value="#{_item.calcMiddleMoney}">
             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
         </h:outputText>
     </rich:column>
-
     <rich:column/>
-    <rich:column colspan="2"/>
-
-    <rich:collapsibleSubTable value="#{_needres.orderItems}"
-                              var="_item" id="sbtboi1" expandMode="client">
-        <rich:column>
-
-        </rich:column>
-        <rich:column/>
-        <rich:column/>
-        <rich:column/>
-
-        <rich:column colspan="2" style="font-size: 12px; font-weight: bold">
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{_item.storeRes}"/>
-                <ui:param name="showCode" value="false"/>
-            </ui:include>
-
-        </rich:column>
-
-        <rich:column style="font-size: 12px; font-weight: bold">
-            #{_item.useUnitCount}
-        </rich:column>
-
-        <rich:column style="font-size: 12px; font-weight: bold">
-            #{_item.useUnit.name}
-        </rich:column>
-
-        <rich:column style="text-align: right;font-size: 12px; font-weight: bold">
-            <h:outputText value="#{_item.money}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </rich:column>
-
-        <rich:column style="font-size: 12px; font-weight: bold">
-            <h:outputText value="#{_item.rebate}">
-                <f:convertNumber pattern="#0.####"/>
-            </h:outputText>
-
-        </rich:column>
-
-        <rich:column style="text-align: right;font-size: 12px; font-weight: bold">
-            <h:outputText value="#{_item.totalMoney}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </rich:column>
-
-        <rich:column/>
-
-        <rich:column colspan="3"/>
-
-        <rich:column>
-
-        </rich:column>
-
-        <rich:column style="font-size: 12px">
-            <s:decorate template="/layout/grid-inside-edit.xhtml">
-                <rich:inplaceSelect value="#{_item.middleMoneyCalcType}"
-                                    style="width: 95%; font-size: 12px; font-weight: bold"
-                                    label="#{messages.order_middle_money_itemCalcType}"
-                                    required="true">
-                    <s:selectItems value="#{orderItemRebateCalcModes}" var="_type"
-                                   label="#{messages[_type.name()]}"/>
-
-                    <s:convertEnum/>
-                    <a:ajax event="selectitem"/>
-                </rich:inplaceSelect>
-            </s:decorate>
-        </rich:column>
-        <rich:column style="font-size: 12px; font-weight: bold">
-            <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_COUNT'}" template="/layout/grid-inside-edit.xhtml">
-                <rich:inplaceSelect value="#{_item.middleUnit}" required="true" style="width: 95%; font-size: 12px"
-                                    label="#{messages.order_middle_money_unit}">
-                    <s:selectItems value="#{_item.res.unitGroup.resUnitList}" var="_unit" label="#{_unit.name}"/>
-                    <f:converter converterId="erpEntityConverter"/>
-                    <a:ajax event="selectitem"/>
-                </rich:inplaceSelect>
-            </s:decorate>
-        </rich:column>
-        <rich:column style="font-size: 12px; font-weight: bold">
-            <h:outputText rendered="#{_item.middleMoneyCalcType eq 'BY_COUNT'}"
-                          value="#{_item.middleUnitCount}">
-                <f:convertNumber pattern="#{_item.middleUnit.countFormate}"/>
-            </h:outputText>
-        </rich:column>
-        <rich:column style="font-size: 12px; font-weight: bold">
-            <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_COUNT'}" template="/layout/grid-inside-edit.xhtml">
-                <ui:define name="label">#{calendarBean.currencySymbol}</ui:define>
-                <rich:inplaceInput value="#{_item.middleRate}" required="true" style="width: 95%; font-size: 12px"
-                                   label="#{messages.OrderItemRebate_field_rebate}">
-                    <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
-                                     type="currency" groupingUsed="false"/>
-                    <a:ajax event="blur"/>
-                </rich:inplaceInput>
-            </s:decorate>
-
-            <s:decorate rendered="#{_item.middleMoneyCalcType eq 'BY_MONEY'}" template="/layout/grid-inside-edit.xhtml">
-                <ui:define name="label">%</ui:define>
-                <rich:inplaceInput value="#{_item.middleRate}" required="true"
-                                   style="width: 95%; font-size: 12px; font-weight: bold"
-                                   label="#{messages.OrderItemRebate_field_rebate}" converter="javax.faces.BigDecimal">
-                    <f:validateDoubleRange minimum="0" maximum="100"/>
-                    <f:convertNumber pattern="#0.######"/>
-                    <a:ajax event="blur"/>
-                </rich:inplaceInput>
-            </s:decorate>
-        </rich:column>
-        <rich:column style="text-align: right;font-size: 12px; font-weight: bold">
-            <h:outputText value="#{_item.calcMiddleMoney}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-            </h:outputText>
-        </rich:column>
-        <rich:column/>
-        <rich:column colspan="3"/>
-    </rich:collapsibleSubTable>
-
-
-</rich:collapsibleSubTable>
-
+    <rich:column/>
 </rich:collapsibleSubTable>
 
 
 </rich:collapsibleSubTable>
+
+
 </rich:dataTable>
 </a:outputPanel>
 
@@ -683,6 +545,8 @@
 <h:panelGrid columns="1" style="width: 100%; text-align: right">
     <a:outputPanel id="#{panelId}_buttons">
         <div class="actionButtons">
+
+
 
 
             <a:commandButton value="#{messages.save}"

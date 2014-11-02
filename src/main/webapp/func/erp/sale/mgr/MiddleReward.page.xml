@@ -3,7 +3,5 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-    <param name="middleManName" value="#{middleManRewardCalc.middleManName}"/>
-    <begin-conversation join="true"/>
-
+    <param name="middleManId" value="#{middleManHome.id}"/>
 </page>

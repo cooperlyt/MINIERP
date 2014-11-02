@@ -93,3 +93,6 @@ REFERENCES MINI_ERP.RES_UNIT (ID)
 UPDATE DG_SYSTEM.FUNCTION SET LOCATION='/func/erp/sale/mgr/MiddleManMgr.seam' WHERE ID ='erp.saler.middleManMgr';
 DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE  ROL_ID = 'erp.sale.saler'  AND  FUN_ID = 'erp.saler.middleManMgr';
 
+DELETE FROM DG_SYSTEM.ROLE_FUNCTION WHERE FUN_ID = 'erp.sale.orderRebateCalc';
+DELETE FROM DG_SYSTEM.FUNCTION WHERE ID ='erp.sale.orderRebateCalc';
+

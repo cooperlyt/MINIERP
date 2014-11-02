@@ -142,11 +142,13 @@ public class RebateProgram implements java.io.Serializable,NamedEntity {
         this.zeroItem = zeroItem;
     }
 
+    @Deprecated
     @Column(name= "PATCH_ITEM", nullable = false)
     public boolean isPatchItem() {
         return patchItem;
     }
 
+    @Deprecated
     public void setPatchItem(boolean onlyMaster) {
         this.patchItem = onlyMaster;
     }

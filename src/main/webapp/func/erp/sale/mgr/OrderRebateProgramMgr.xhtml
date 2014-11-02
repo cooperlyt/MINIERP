@@ -142,13 +142,6 @@
     #{messages.RebateProgram_field_zeroItem}
 </s:decorate>
 
-<s:decorate rendered="#{rebateProgramHome.instance.calcItem}" template="/layout/seam-edit.xhtml">
-    <h:selectBooleanCheckbox disabled="#{not rebateProgramHome.editing}"
-                             value="#{rebateProgramHome.instance.patchItem}"/>
-    #{messages.RebateProgram_field_onlyMaster}
-</s:decorate>
-
-
 <div style="clear: both"/>
 <br/>
 

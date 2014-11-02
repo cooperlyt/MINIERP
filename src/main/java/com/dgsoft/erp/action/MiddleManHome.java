@@ -23,7 +23,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 @Name("middleManHome")
-public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
+public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan> {
 
     @In
     private FacesMessages facesMessages;
@@ -63,12 +63,12 @@ public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
     }
 
     public SetLinkList<SalerPrice> getSalerPrices() {
-        if (salerPrices == null){
+        if (salerPrices == null) {
             salerPrices = new SetLinkList<SalerPrice>(getInstance().getSalerPrices());
             List<Res> allRes = getEntityManager().createQuery("select res from Res res where res.enable = true and res.resCategory.type = :type", Res.class).setParameter("type", ResCategory.ResType.PRODUCT).getResultList();
             for (Res res : allRes) {
                 if (!containRes(res)) {
-                    salerPrices.add(new SalerPrice(BigDecimal.ZERO, res.getResUnitByOutDefault(),res,getInstance()));
+                    salerPrices.add(new SalerPrice(BigDecimal.ZERO, res.getResUnitByOutDefault(), res, getInstance()));
                 }
             }
             Collections.sort(salerPrices, new Comparator<SalerPrice>() {
@@ -145,7 +145,7 @@ public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
                 }
             }
             if (!exists) {
-                selectSalerPrice.getSalerStoreResPrices().add(new SalerStoreResPrice(batchPrice,selectSalerPrice,storeRes,batchResUnit));
+                selectSalerPrice.getSalerStoreResPrices().add(new SalerStoreResPrice(batchPrice, selectSalerPrice, storeRes, batchResUnit));
             }
         }
         actionExecuteState.actionExecute();
@@ -159,41 +159,44 @@ public class MiddleManHome extends ErpSimpleEntityHome<MiddleMan>{
     @DataModelSelection
     private Customer selectCustomer;
 
-    public void removeCustomer(){
-         getCustomers().remove(selectCustomer);
+    public void removeCustomer() {
+        getCustomers().remove(selectCustomer);
+        selectCustomer.setMiddleMan(null);
     }
 
     @In(required = false)
     public CustomerHome customerHome;
 
-    public void addCustomer(){
-        if (customerHome.getInstance().getMiddleMan() != null){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"customerHaveMiddleManError",customerHome.getInstance().getMiddleMan().getName());
+    public void addCustomer() {
+        if (customerHome.getInstance().getMiddleMan() != null) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "customerHaveMiddleManError", customerHome.getInstance().getMiddleMan().getName());
             return;
         }
+        customerHome.getInstance().setMiddleMan(getInstance());
         getCustomers().add(customerHome.getInstance());
     }
 
     @Override
-    protected void initInstance(){
+    protected void initInstance() {
         super.initInstance();
         customers = new SetLinkList<Customer>(getInstance().getCustomers());
         salerPrices = null;
     }
 
     @Override
-    protected MiddleMan createInstance(){
+    protected MiddleMan createInstance() {
         return new MiddleMan(true);
     }
 
     @Override
     protected boolean verifyRemoveAvailable() {
 
-        if ( getInstance().getCustomers().isEmpty() && getInstance().getMiddleMoneys().isEmpty()){
+        if (getInstance().getCustomers().isEmpty() && getInstance().getMiddleMoneys().isEmpty()) {
             return true;
         } else {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"usageCantDelete");
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "usageCantDelete");
             return false;
         }
     }
+
 }

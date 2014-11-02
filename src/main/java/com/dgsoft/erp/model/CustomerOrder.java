@@ -482,6 +482,36 @@ public class CustomerOrder implements java.io.Serializable {
         return result;
     }
 
+    @Transient
+    public List<OrderItem> getOrderItemList(){
+        List<OrderItem> result = new ArrayList<OrderItem>();
+        for (NeedRes needRes : getNeedResList()) {
+            result.addAll(needRes.getOrderItems());
+        }
+        Collections.sort(result,new Comparator<OrderItem>() {
+            @Override
+            public int compare(OrderItem o1, OrderItem o2) {
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            }
+        });
+        return result;
+    }
+
+    @Transient
+    public List<OrderItem> getNoZeroItemList(){
+        List<OrderItem> result = new ArrayList<OrderItem>();
+        for (NeedRes needRes : getNeedResList()) {
+            result.addAll(needRes.getNoZeroItemList());
+        }
+        Collections.sort(result,new Comparator<OrderItem>() {
+            @Override
+            public int compare(OrderItem o1, OrderItem o2) {
+                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            }
+        });
+        return result;
+    }
+
 //    @Transient
 //    public void calcOrderMiddleMoney() {
 //        switch (getMiddleMoneyCalcType()) {

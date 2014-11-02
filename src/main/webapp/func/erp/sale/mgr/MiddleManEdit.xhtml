@@ -10,7 +10,7 @@
                 template="/layout/full-template.xhtml">
 
 
-<ui:param name="functionTitle" value="#{middleManHome.instance.name}-#{messages.Customer}"/>
+<ui:param name="functionTitle" value="#{middleManHome.idDefined ? messages.edit : messages.create} #{messages.MiddleMan} "/>
 
 
 <ui:define name="func-body">

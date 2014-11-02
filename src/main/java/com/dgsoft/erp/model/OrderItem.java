@@ -443,6 +443,14 @@ public class OrderItem extends StoreResPriceEntity
         return null;
     }
 
+    @Transient
+    public BigDecimal getSalerTotalMoney(){
+        if (OrderItemRebate.ItemRebateModel.BY_SUB.equals(getMiddleMoneyCalcType()) && (getMiddleUnit() != null) && (getMiddleRate() != null)){
+            return getMiddleUnitCount().multiply(getMiddleRate());
+        }
+        return null;
+    }
+
 
     @Transient
     public BigDecimal getCalcMiddleMoney() {
@@ -450,16 +458,28 @@ public class OrderItem extends StoreResPriceEntity
             return BigDecimal.ZERO;
         }
         //BigDecimal totalMiddleMoney = BigDecimal.ZERO;
+
         if (getMiddleRate() != null) {
-            if (getMiddleMoneyCalcType().equals(OrderItemRebate.ItemRebateModel.BY_COUNT)) {
-                if (getMiddleUnit() != null)
-                    return getCountByResUnit(getMiddleUnit()).multiply(getMiddleRate());
-            } else {
-                return getTotalMoney().multiply(
-                        getMiddleRate().divide(
-                                new BigDecimal("100"), Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(), BigDecimal.ROUND_HALF_UP));
+            switch (getMiddleMoneyCalcType()) {
+                case BY_SUB:
+
+                    if (getMiddleUnit() != null){
+                        BigDecimal salerTotalMoney = getSalerTotalMoney();
+                        if (getTotalMoney().compareTo(salerTotalMoney) > 0)
+                         return getTotalMoney().subtract(salerTotalMoney);
+                    }
+                    break;
+                case BY_COUNT:
+                    if (getMiddleUnit() != null)
+                        return getCountByResUnit(getMiddleUnit()).multiply(getMiddleRate());
+                    break;
+                case BY_MONEY:
+                    return getTotalMoney().multiply(
+                            getMiddleRate().divide(
+                                    new BigDecimal("100"), Currency.getInstance(Locale.CHINA).getDefaultFractionDigits(), BigDecimal.ROUND_HALF_UP));
             }
         }
+
         return BigDecimal.ZERO;
     }
 
