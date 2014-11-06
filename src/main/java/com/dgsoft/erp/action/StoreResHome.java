@@ -85,6 +85,15 @@ public class StoreResHome extends ErpSimpleEntityHome<StoreRes> {
         return null;
     }
 
+    public Format getFormat(FormatDefine formatDefine){
+        for (Format format: getInstance().getFormats()){
+            if (format.getFormatDefine().equals(formatDefine)){
+                return format;
+            }
+        }
+        return null;
+    }
+
     @Observer(value = "erp.resLocateSelected", create = false)
     public void resSelected(Res res) {
         if (isEditing() && !isManaged()) {

@@ -130,9 +130,13 @@
                 <s:span styleClass="value">
                     <a:commandButton value="#{messages.addItem}" execute="@form"
                                      action="#{orderCreate.addOrderItem}"
-                                     render="orderItemListTable,orderItemDetails, orderTotalPrice">
+                                     data="#{needResHome.addOrderItemLastStatus}"
+                                     oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
+                                     render="orderItemListTable,orderItemDetails, orderTotalPrice,newStoreResCodeInputPanel_form">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
+
+
                 </s:span>
             </a:outputPanel>
         </a:outputPanel>
@@ -142,6 +146,41 @@
 
 
 </h:form>
+
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelTitle" value="#{messages.storeRes_field_code}"/>
+    <ui:param name="panelId" value="newStoreResCodeInputPanel"/>
+    <ui:define name="controls">
+    </ui:define>
+
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.storeRes_field_code}</ui:define>
+        <h:inputText label="#{messages.storeRes_field_code}"
+                     required="true" size="27" maxlength="50"
+                     value="#{orderItemCreate.editingItem.code}"/>
+    </s:decorate>
+
+    <ui:define name="actionButtons">
+        <a:commandButton immediate="true"
+                         execute="@this" value="#{messages.cancel}"
+                         oncomplete="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
+            <a:param value="" assignTo="#{orderItemCreate.editingItem.code}"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        <a:commandButton value="#{messages.addItem}" execute="@form"
+                         action="#{orderCreate.addOrderItem}" data="#{needResHome.addOrderItemLastStatus}"
+                         oncomplete="if (event.data == 'added')#{rich:component('newStoreResCodeInputPanel')}.hide();"
+                         render="orderItemListTable,orderItemDetails, orderTotalPrice">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+
+
+    </ui:define>
+
+</s:decorate>
 
 
 <h:form>

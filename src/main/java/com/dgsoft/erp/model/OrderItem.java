@@ -241,7 +241,7 @@ public class OrderItem extends StoreResPriceEntity
         this.id = id;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "STORE_RES", nullable = true)
     public StoreRes getStoreRes() {
         return this.storeRes;

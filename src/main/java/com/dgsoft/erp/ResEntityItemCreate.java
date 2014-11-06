@@ -103,7 +103,7 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
     }
 
     public void createNext() {
-        if (storeResHome.isIdDefined()){
+        if (storeResHome.isIdDefined() && storeResHome.isManaged()){
             storeResSelected();
             return;
         }
@@ -113,15 +113,21 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
             case RES_CATEGORY:
                 resCategorySelected();
                 break;
-            case RES:
-                resSelected();
-                break;
+            case RES :
             case STORE_RES:
-                storeResSelected();
+                resSelected();
+                editingItem.setFloatConvertRate(storeResHome.getInstance().getFloatConversionRate());
+                for(Format format: editingItem.getFormats()){
+                    Format srcFormat = storeResHome.getFormat(format.getFormatDefine());
+                    if (srcFormat != null){
+                        format.setFormatValue(srcFormat.getFormatValue());
+                    }
+                }
                 break;
         }
-
     }
+
+
 
 
     public enum CreateBy{
