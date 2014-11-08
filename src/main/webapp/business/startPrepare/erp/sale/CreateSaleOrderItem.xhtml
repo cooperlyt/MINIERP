@@ -159,20 +159,19 @@
         <ui:define name="label">#{messages.storeRes_field_code}</ui:define>
         <h:inputText label="#{messages.storeRes_field_code}"
                      required="true" size="27" maxlength="50"
-                     value="#{orderItemCreate.editingItem.code}"/>
+                     value="#{orderItemCreate.editingItem.storeRes.code}"/>
     </s:decorate>
 
     <ui:define name="actionButtons">
-        <a:commandButton immediate="true"
-                         execute="@this" value="#{messages.cancel}"
+        <a:commandButton immediate="true" action="#{needResHome.cancelNewStoreResItemAdd}"
+                         execute="@this" value="#{messages.cancel}" render="orderItemDetails"
                          oncomplete="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
-            <a:param value="" assignTo="#{orderItemCreate.editingItem.code}"/>
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
         <a:commandButton value="#{messages.addItem}" execute="@form"
                          action="#{orderCreate.addOrderItem}" data="#{needResHome.addOrderItemLastStatus}"
                          oncomplete="if (event.data == 'added')#{rich:component('newStoreResCodeInputPanel')}.hide();"
-                         render="orderItemListTable,orderItemDetails, orderTotalPrice">
+                         render="orderItemListTable,orderItemDetails, orderTotalPrice,newStoreResCodeInputPanel_form">
             <a:attachQueue requestDelay="0"/>
         </a:commandButton>
 

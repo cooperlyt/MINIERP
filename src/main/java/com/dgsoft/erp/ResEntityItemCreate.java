@@ -9,6 +9,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.log.Logging;
 
 import java.util.Collection;
 
@@ -86,7 +87,7 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
     public void resChange() {
         if ((editingItem == null) || (!editingItem.getRes().equals(resHome.getInstance()))) {
             editingItem = createInstance(resHome.getInstance());
-            createBy = CreateBy.RES_CATEGORY;
+            createBy = CreateBy.RES;
         }
     }
 
@@ -108,6 +109,7 @@ public abstract class ResEntityItemCreate<E extends StoreResEntity> {
             return;
         }
 
+        Logging.getLog(getClass()).debug("createNext by:" + createBy);
         switch (createBy){
 
             case RES_CATEGORY:

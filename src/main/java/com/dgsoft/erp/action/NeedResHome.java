@@ -9,7 +9,6 @@ import com.dgsoft.erp.business.order.OrderItemCreate;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
@@ -17,7 +16,6 @@ import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -83,6 +81,10 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
         this.addOrderItemLastStatus = addOrderItemLastStatus;
     }
 
+    public void cancelNewStoreResItemAdd() {
+        orderItemCreate.getEditingItem().setStoreRes(null);
+    }
+
     public void addOrderItem() {
         OrderItem editingItem = orderItemCreate.getEditingItem();
 
@@ -96,57 +98,63 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
         }
 
 
-        storeResHome.setRes(editingItem.getRes(), editingItem.getFormats(), editingItem.getFloatConvertRate());
-        if (storeResHome.isIdDefined()) {
+        if (editingItem.getStoreRes() == null) {
+            storeResHome.setRes(editingItem.getRes(), editingItem.getFormats(), editingItem.getFloatConvertRate());
             editingItem.setStoreRes(storeResHome.getInstance());
-        } else {
-            StoreRes itemNewStoreRes = findResInItems(editingItem);
-            if (itemNewStoreRes == null){
-                if (editingItem.getStoreRes() == null){
-                    editingItem.setStoreRes(storeResHome.getInstance());
-                }
-                if (DataFormat.isEmpty(editingItem.getStoreRes().getCode())) {
+            if (!storeResHome.isIdDefined()) {
+                StoreRes itemNewStoreRes = findResInItems(editingItem);
+                if (itemNewStoreRes == null) {
+
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
                             "newSotreResTypedCodePlase");
                     addOrderItemLastStatus = "code_not_set";
-                    editingItem.getStoreRes().setCode(ResHelper.instance().genStoreResCode(editingItem.getStoreRes()));
+                    if (DataFormat.isEmpty(editingItem.getStoreRes().getCode()))
+                        editingItem.getStoreRes().setCode(ResHelper.instance().genStoreResCode(editingItem.getStoreRes()));
+                    return;
+                } else {
+                    editingItem.setStoreRes(itemNewStoreRes);
+                    storeResHome.clearInstance();
+                    storeResHome.setInstance(itemNewStoreRes);
+                }
+            }
+        } else {
+
+            if (DataFormat.isEmpty(editingItem.getStoreRes().getCode())) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.INFO,
+                        "newSotreResCodeCantEmpty");
+                addOrderItemLastStatus = "code_not_set";
+                return;
+            }
+            if (!editingItem.getStoreRes().getCode().matches(runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME))) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                        "storeResCodeNotRule", editingItem.getStoreRes().getCode(),
+                        runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME));
+                addOrderItemLastStatus = "code_not_rule";
+                return;
+            }
+
+            for (OrderItem orderItem : orderNeedItems) {
+                if (editingItem.getStoreRes().getCode().equals(orderItem.getStoreRes().getCode())) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                            "storeResCodeExists", orderItem.getStoreRes().getCode());
+                    addOrderItemLastStatus = "code_exists";
                     return;
                 }
-                if (!editingItem.getStoreRes().getCode().matches(runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME))) {
-                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                            "storeResCodeNotRule", editingItem.getStoreRes().getCode(),
-                            runParam.getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME));
-                    addOrderItemLastStatus = "code_not_rule";
-                    return ;
-                }
-
-                for (OrderItem orderItem: orderNeedItems) {
-                    if (editingItem.getStoreRes().getCode().equals(orderItem.getStoreRes().getCode())) {
-                        facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                                "storeResCodeExists", orderItem.getStoreRes().getCode());
-                        addOrderItemLastStatus = "code_exists";
-                        return ;
-                    }
-                }
-                if (!getEntityManager().createQuery("select storeRes from StoreRes storeRes where code = :code")
-                        .setParameter("code", editingItem.getStoreRes().getCode()).getResultList().isEmpty()) {
-
-                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
-                            "storeResCodeExists", editingItem.getStoreRes().getCode());
-                    addOrderItemLastStatus = "code_exists";
-                    return ;
-                }
-
-                storeResHome.clearInstance();
-                storeResHome.setInstance(editingItem.getStoreRes());
-            }else{
-                editingItem.setStoreRes(itemNewStoreRes);
-                storeResHome.clearInstance();
-                storeResHome.setInstance(itemNewStoreRes);
             }
+            if (!getEntityManager().createQuery("select storeRes from StoreRes storeRes where code = :code")
+                    .setParameter("code", editingItem.getStoreRes().getCode()).getResultList().isEmpty()) {
+
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,
+                        "storeResCodeExists", editingItem.getStoreRes().getCode());
+                addOrderItemLastStatus = "code_exists";
+                return;
+            }
+
+            storeResHome.clearInstance();
+            storeResHome.setInstance(editingItem.getStoreRes());
+        }
 //            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderStoreResNotExists");
 //            return;
-        }
         editingItem.setStatus(OrderItem.OrderItemStatus.CREATED);
         editingItem.setOverlyOut(false);
         editingItem.setNeedRes(getInstance());
@@ -155,16 +163,16 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
         addOrderItemLastStatus = "added";
     }
 
-    private StoreRes findResInItems(OrderItem editingItem){
-        for(OrderItem orderItem: orderNeedItems){
-           if (editingItem.getRes().equals(orderItem.getRes()) &&
-                ResHelper.instance().sameFormat(orderItem.getStoreRes().getFormats(),editingItem.getFormats()) &&
-                   (!editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
-                   || (orderItem.getStoreRes().getFloatConversionRate().compareTo(editingItem.getFloatConvertRate()) == 0))){
-               storeResHome.clearInstance();
-               return orderItem.getStoreRes();
+    private StoreRes findResInItems(OrderItem editingItem) {
+        for (OrderItem orderItem : orderNeedItems) {
+            if (editingItem.getRes().equals(orderItem.getRes()) &&
+                    ResHelper.instance().sameFormat(orderItem.getStoreRes().getFormats(), editingItem.getFormats()) &&
+                    (!editingItem.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)
+                            || (orderItem.getStoreRes().getFloatConversionRate().compareTo(editingItem.getFloatConvertRate()) == 0))) {
+                storeResHome.clearInstance();
+                return orderItem.getStoreRes();
 
-           }
+            }
         }
         return null;
     }
