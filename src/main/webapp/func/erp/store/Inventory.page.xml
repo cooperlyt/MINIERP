@@ -10,7 +10,7 @@
 
     <param name="dateFrom" value="#{searchDateArea.dateFrom}"/>
     <param name="dateTo" value="#{searchDateArea.dateTo}"/>
-    <param name="stockChanged" value="#{inventoryList.stockChanged}"/>
+    <param name="status" value="#{inventoryList.status}"/>
     <param name="storeId" value="#{inventoryList.storeId}"/>
     <param name="type" value="#{inventoryList.type}"/>
 

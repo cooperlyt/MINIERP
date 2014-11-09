@@ -3148,11 +3148,10 @@
       <column name="TYPE" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="55uY54K557G75Z6L"/>
       <column name="STOCK_CHANGED" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7" remarks="5bqT5a2Y5bey5pS55Y+Y"/>
       <column name="APPLY_EMP" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="6LSf6LSj5Lq6"/>
-      <column name="CHECK_YEAR" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
-      <column name="CHECK_MONTH" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="CHECK_EMP" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12"/>
       <column name="LOSS_RES" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12"/>
       <column name="ADD_RES" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12"/>
+      <column name="STATUS" sqlType="VARCHAR" precision="20" scale="0" nullable="false" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="ID"/>
       <foreign-key name="INVENTORY_ibfk_1" columns="STORE" ref-table="STORE" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="INVENTORY_ITEM_ibfk_1" table="INVENTORY_ITEM" schema="" catalog="MINI_ERP" columns="INVENTORY"/>

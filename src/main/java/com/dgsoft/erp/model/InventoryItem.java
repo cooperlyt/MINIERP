@@ -13,46 +13,32 @@ import javax.validation.constraints.Size;
 @Table(name = "INVENTORY_ITEM", catalog = "MINI_ERP")
 public class InventoryItem implements java.io.Serializable {
 
+    public enum InventoryItemChangeType{
+        NO_CHANGE,INVENTORY_ADD,INVENTORY_LOSS;
+    }
+
 	private InventoryItemId id;
 	private Stock stock;
 	private StockChangeItem stockChangeItem;
 	private Inventory inventory;
 	private BigDecimal beforCount;
 	private BigDecimal lastCount;
-	private String changeType;
+	private InventoryItemChangeType changeType;
 	private BigDecimal changeCount;
 	private String memo;
 
 	public InventoryItem() {
 	}
 
-	public InventoryItem(InventoryItemId id, Stock stock, Inventory inventory,
-			BigDecimal beforCount, BigDecimal lastCount, String changeType,
-			BigDecimal changeCount) {
-		this.id = id;
-		this.stock = stock;
-		this.inventory = inventory;
-		this.beforCount = beforCount;
-		this.lastCount = lastCount;
-		this.changeType = changeType;
-		this.changeCount = changeCount;
-	}
-	public InventoryItem(InventoryItemId id, Stock stock,
-			StockChangeItem stockChangeItem, Inventory inventory,
-			BigDecimal beforCount, BigDecimal lastCount, String changeType,
-			BigDecimal changeCount, String memo) {
-		this.id = id;
-		this.stock = stock;
-		this.stockChangeItem = stockChangeItem;
-		this.inventory = inventory;
-		this.beforCount = beforCount;
-		this.lastCount = lastCount;
-		this.changeType = changeType;
-		this.changeCount = changeCount;
-		this.memo = memo;
-	}
+    public InventoryItem(BigDecimal beforCount,BigDecimal lastCount,Inventory inventory, Stock stock) {
+        this.lastCount = lastCount;
+        this.beforCount = beforCount;
+        this.inventory = inventory;
+        this.stock = stock;
+        this.changeType = InventoryItemChangeType.NO_CHANGE;
+    }
 
-	@EmbeddedId
+    @EmbeddedId
 	@AttributeOverrides({
 			@AttributeOverride(name = "inventory", column = @Column(name = "INVENTORY", nullable = false, length = 32)),
 			@AttributeOverride(name = "stock", column = @Column(name = "STOCK", nullable = false, length = 32))})
@@ -117,19 +103,18 @@ public class InventoryItem implements java.io.Serializable {
 		this.lastCount = lastCount;
 	}
 
+    @Enumerated(EnumType.STRING)
 	@Column(name = "CHANGE_TYPE", nullable = false, length = 20)
 	@NotNull
-	@Size(max = 20)
-	public String getChangeType() {
+	public InventoryItemChangeType getChangeType() {
 		return this.changeType;
 	}
 
-	public void setChangeType(String changeType) {
+	public void setChangeType(InventoryItemChangeType changeType) {
 		this.changeType = changeType;
 	}
 
-	@Column(name = "CHANGE_COUNT", nullable = false, scale = 4)
-	@NotNull
+	@Column(name = "CHANGE_COUNT", nullable = true, scale = 4)
 	public BigDecimal getChangeCount() {
 		return this.changeCount;
 	}

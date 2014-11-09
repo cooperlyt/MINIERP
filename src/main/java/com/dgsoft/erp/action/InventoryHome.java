@@ -1,20 +1,25 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.jbpm.ProcessInstanceHome;
+import com.dgsoft.common.system.NumberBuilder;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.action.store.StoreResCountInupt;
 import com.dgsoft.erp.action.store.StoreResFormatFilter;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
+import org.jboss.seam.annotations.bpm.CreateProcess;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
 
+import javax.persistence.NoResultException;
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,6 +36,124 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     public Inventory.InventoryType[] getInventoryTypes() {
         return Inventory.InventoryType.values();
     }
+
+    @Factory(value = "inventoryStatus", scope = ScopeType.CONVERSATION)
+    public Inventory.InvertoryStatus[] getInventoryStatus() {
+        return Inventory.InvertoryStatus.values();
+    }
+
+
+    @In(create = true)
+    private ProcessInstanceHome processInstanceHome;
+
+    public void removeInventory() {
+        if (getEntityManager().createQuery("select count(inventory.id) from Inventory inventory where (inventory.type = 'MONTH_INVENTORY' or  inventory.type ='YEAR_INVENTORY') and inventory.checkDate > :checkDate and inventory.store.id = :storeId", Long.class).
+                setParameter("checkDate", getInstance().getCheckDate()).
+                setParameter("storeId",getInstance().getStore().getId()).getSingleResult() > 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "cantDeleteInventoryError");
+            return;
+        }
+        if (getInstance().getStockChangeAdd() != null) {
+            for (StockChangeItem item : getInstance().getStockChangeAdd().getStockChangeItems()) {
+                item.getStock().setCount(item.getStock().getCount().subtract(item.getCount()));
+            }
+        }
+        if (getInstance().getStockChangeLoss() != null) {
+            for (StockChangeItem item : getInstance().getStockChangeLoss().getStockChangeItems()) {
+                item.getStock().setCount(item.getStock().getCount().add(item.getCount()));
+            }
+        }
+        processInstanceHome.setProcessDefineName("inventory");
+        processInstanceHome.setProcessKey(getInstance().getId());
+        if ("removed".equals(super.remove())) {
+            processInstanceHome.stop();
+        }
+    }
+
+    private static final String DATE_AREA_STOCK_CHANGE_SQL = "select sum(changeItem.count) from StockChangeItem changeItem where changeItem.stock.id = :stockId and changeItem.stockChange.operDate > :beginDate and changeItem.stockChange.operDate <= :toDate and  changeItem.stockChange.operType in (:types)";
+
+    @CreateProcess(definition = "inventory", processKey = "#{inventoryHome.instance.id}")
+    @Transactional
+    public String beginInventory() {
+        if (getEntityManager().createQuery("select count(inventory.id) from Inventory inventory where inventory.store.id = :storeId and inventory.status <> 'INVERTORY_COMPLETE'",Long.class).
+                setParameter("storeId",getInstance().getStore().getId()).getSingleResult() > 0){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"cantInventoryForHaveNoComplete");
+            return null;
+        }
+
+        if(getEntityManager().createQuery("select count(inventory.id) from Inventory inventory where inventory.store.id = :storeId and (inventory.type = 'YEAR_INVENTORY' and inventory.type = 'MONTH_INVENTORY') and inventory.checkDate >= :checkDate",Long.class).
+                setParameter("storeId",getInstance().getStore().getId()).
+                setParameter("checkDate",getInstance().getCheckDate()).getSingleResult() > 0){
+
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"cantInventoryForDate");
+            return null;
+        }
+
+
+        getInstance().setApplyEmp(credentials.getUsername());
+
+        Date beforDate;
+        try {
+            beforDate = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId", Date.class).
+                    setParameter("storeId", getInstance().getStore().getId()).getSingleResult();
+        }catch (NoResultException e){
+            beforDate = null;
+        }
+
+        Map<Stock,InventoryItem> beforStocks = null;
+        if (beforDate != null){
+            beforStocks = new HashMap<Stock, InventoryItem>();
+            for (InventoryItem item: getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock where item.inventory.checkDate =:checkDate and item.inventory.store.id = :storeId", InventoryItem.class).
+                    setParameter("storeId", getInstance().getStore().getId()).setParameter("checkDate",beforDate).getResultList()){
+                beforStocks.put(item.getStock(),item);
+            }
+        }
+
+        for(Stock stock: getEntityManager().createQuery("select stock from Stock stock left join fetch stock.storeRes where stock.store.id= :storeId",Stock.class).
+                setParameter("storeId", getInstance().getStore().getId()).getResultList()){
+
+            InventoryItem beforItem = (beforStocks == null) ? null : beforStocks.get(stock);
+
+            BigDecimal beforCount = (beforItem == null) ? BigDecimal.ZERO : beforItem.getLastCount();
+
+            BigDecimal inCount =  getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL,BigDecimal.class).
+                    setParameter("stockId",getInstance().getStore().getId()).
+                    setParameter("beginDate",(beforDate == null) ? new Date(0) : beforDate).
+                    setParameter("toDate",getInstance().getCheckDate()).
+                    setParameter("types", StockChange.StoreChangeType.getAllIn()).getSingleResult();
+
+            BigDecimal outCount =  getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL,BigDecimal.class).
+                    setParameter("stockId",getInstance().getStore().getId()).
+                    setParameter("beginDate",(beforDate == null) ? new Date(0) : beforDate).
+                    setParameter("toDate",getInstance().getCheckDate()).
+                    setParameter("types", StockChange.StoreChangeType.getAllOut()).getSingleResult();
+
+            BigDecimal afterCount = beforCount.add(inCount).subtract(outCount);
+
+            getInstance().getInventoryItems().add(new InventoryItem(beforCount,afterCount,getInstance(),stock));
+
+
+        }
+
+
+
+        if (!"persisted".equals(persist())) {
+            return null;
+        }
+        return "businessCreated";
+
+    }
+
+    @In
+    private NumberBuilder numberBuilder;
+
+
+    @Override
+    protected Inventory createInstance(){
+        return new Inventory("P" + numberBuilder.getSampleNumber("inventory"),credentials.getUsername());
+    }
+
+
 
     @In(create = true)
     protected StoreResFormatFilter storeResFormatFilter;
@@ -148,11 +271,6 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
             log.debug("id is define---" + addStockChange);
         }
-    }
-
-    @Override
-    public Inventory createInstance() {
-        return new Inventory(false);
     }
 
 

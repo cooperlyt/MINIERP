@@ -27,7 +27,7 @@
                                  maxlength="32"
                                  styleClass="barOrderNumber"
                                  label="#{messages.invertory_field_id}"
-                                 value="#{inventoryCreate.businessKey}">
+                                 value="#{inventoryHome.instance.id}">
                         <rich:placeholder value="#{messages.invertory_field_id}"/>
                     </h:inputText>
                     <rich:message for="businessKeyInput" styleClass="message-icon"
@@ -37,10 +37,14 @@
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
 
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.BeginInventory}" action="#{inventoryCreate.beginInventory}"/>
+                    <h:commandButton styleClass="toolBarBtn" value="#{messages.BeginInventory}" action="#{inventoryHome.beginInventory}"/>
 
                 </rich:toolbarGroup>
             </rich:toolbar>
+
+            <rich:messages ajaxRendered="true" globalOnly="true"/>
+            <br/>
+
 
             <s:decorate id="selectStoreField" template="/layout/seam-edit.xhtml">
                 <ui:define name="label">#{messages.Store}</ui:define>
@@ -49,16 +53,12 @@
                                    label="#{_store.name}"/>
                     <f:converter converterId="erpEntityConverter"/>
                 </rich:select>
-                <ui:define name="tail">
-                    <h:selectBooleanCheckbox value="#{inventoryCreate.lockStore}">
-                        #{messages.lockInventoryStore}
-                    </h:selectBooleanCheckbox>
-                </ui:define>
+
             </s:decorate>
 
 
             <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">
-                <ui:define name="label">#{messages.inventory_field_applyDate}</ui:define>
+                <ui:define name="label">#{messages.inventory_field_checkDate}</ui:define>
                 <rich:calendar
                         enableManualInput="true"
                         inputSize="20"
@@ -68,7 +68,7 @@
                         defaultLabel="#{currentDate}"
                         required="true"
                         label="#{messages.inventory_field_applyDate}"
-                        value="#{inventoryHome.instance.applyDate}"/>
+                        value="#{inventoryHome.instance.checkDate}"/>
             </s:decorate>
 
 

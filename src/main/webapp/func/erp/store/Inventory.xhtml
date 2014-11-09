@@ -6,68 +6,245 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
-    <ui:define name="toolbar">
-        <rich:toolbar>
+<ui:define name="toolbar">
+    <rich:toolbar>
 
-            <rich:toolbarGroup location="right">
-                <s:button value="#{messages.Inventory}" styleClass="toolBarBtn"
-                          view="/business/startPrepare/erp/store/Inventory.xthml" propagation="begin">
-                    <f:param name="from" value="/func/erp/store/Inventory.xhtml"/>
-                </s:button>
-            </rich:toolbarGroup>
-        </rich:toolbar>
-    </ui:define>
+        <rich:toolbarGroup location="right">
+            <s:button value="#{messages.Inventory}" styleClass="toolBarBtn"   action="#{inventoryHome.clearInstance}"
+                      view="/business/startPrepare/erp/store/Inventory.xthml" propagation="begin">
+                <f:param name="from" value="/func/erp/store/Inventory.xhtml"/>
+            </s:button>
+        </rich:toolbarGroup>
+    </rich:toolbar>
+</ui:define>
 
-    <ui:define name="body">
+<ui:define name="body">
 
-          <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
-              <h:form>
+<rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
+    <h:form>
 
-                  <s:decorate template="/layout/seam-display.xhtml">
-                      <ui:define name="label">#{messages.Allocation_field_createDate}</ui:define>
-                      <rich:calendar
-                              enableManualInput="true"
-                              inputSize="10"
-                              timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                              showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                              datePattern="#{messages.datePattern}"
-                              value="#{searchDateArea.dateFrom}">
-                      </rich:calendar>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.Allocation_field_createDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    value="#{inventoryList.searchDateArea.dateFrom}">
+            </rich:calendar>
 
-                      --
+            --
 
-                      <rich:calendar
-                              enableManualInput="true"
-                              inputSize="10"
-                              timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                              showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                              datePattern="#{messages.datePattern}"
-                              value="#{searchDateArea.dateTo}">
-                      </rich:calendar>
-                  </s:decorate>
-
-
-
-                  <s:decorate template="/layout/seam-display.xhtml">
-                      <ui:define name="label">
-                          #{messages.Store}
-                      </ui:define>
-                      <h:selectOneMenu value="#{allocationList.inStoreId}">
-                          <s:selectItems value="#{myStores}" var="_store"
-                                         label="#{_store.name}" itemValue="#{_store.id}"
-                                         noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                      </h:selectOneMenu>
-                  </s:decorate>
-
-              </h:form>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    value="#{inventoryList.searchDateArea.dateTo}">
+            </rich:calendar>
+        </s:decorate>
 
 
-          </rich:collapsiblePanel>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.Store}
+            </ui:define>
+            <h:selectOneMenu value="#{inventoryList.storeId}">
+                <s:selectItems value="#{myStores}" var="_store"
+                               label="#{_store.name}" itemValue="#{_store.id}"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+            </h:selectOneMenu>
+        </s:decorate>
 
 
-    </ui:define>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.invertory_field_status}
+            </ui:define>
+            <h:selectOneMenu value="#{inventoryList.type}">
+                <s:selectItems value="#{inventoryTypes}" var="_type" itemValue="#{_type}"
+                               label="#{messages[_type.name()]}"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                <s:convertEnum/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.invertory_field_status}
+            </ui:define>
+            <h:selectOneMenu value="#{inventoryList.status}">
+                <s:selectItems value="#{inventoryStatus}" var="_status" itemValue="#{_status}"
+                               label="#{messages[_status.name()]}"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"/>
+                <s:convertEnum/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="search_buttons">
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="dataListResult"
+                                         action="#{inventoryList.first}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </h:form>
+
+
+</rich:collapsiblePanel>
+<br/>
+
+<h:form>
+    <rich:dataTable style="width: 100%" value="#{inventoryList.resultList}" var="_item" id="dataListResult">
+
+        <f:facet name="footer">
+            <a:outputPanel rendered="#{not empty inventoryList.resultList}">
+                <ui:include src="/layout/pageA4jNavigation.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                </ui:include>
+            </a:outputPanel>
+        </f:facet>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.invertory_field_id}"/>
+                    <ui:param name="propertyPath" value="inventory.id"/>
+                </ui:include>
+            </f:facet>
+
+            <s:link value="#{_item.id}"
+                    target="_blank">
+                <f:param name="inventoryId" value="#{_item.id}"/>
+            </s:link>
+
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.Store}"/>
+                    <ui:param name="propertyPath" value="inventory.store.id"/>
+                </ui:include>
+            </f:facet>
+
+            #{_item.store.name}
+        </rich:column>
+
+
+        <rich:column>
+
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.inventory_field_checkDate}"/>
+                    <ui:param name="propertyPath" value="inventory.checkDate"/>
+                </ui:include>
+            </f:facet>
+
+            <h:outputText value="#{_item.checkDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+
+
+        <rich:column>
+
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.inventory_field_type}"/>
+                    <ui:param name="propertyPath" value="inventory.type"/>
+                </ui:include>
+            </f:facet>
+
+            #{messages[_item.type.name()]}
+        </rich:column>
+
+        <rich:column>
+
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.invertory_field_applyEmp}"/>
+                    <ui:param name="propertyPath" value="inventory.applyEmp"/>
+                </ui:include>
+            </f:facet>
+
+            #{dictionary.getEmpNameById(_item.applyEmp)}
+        </rich:column>
+
+        <rich:column>
+
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.invertory_field_checkedEmp}"/>
+                    <ui:param name="propertyPath" value="inventory.checkEmp"/>
+                </ui:include>
+            </f:facet>
+            <h:outputText value="#{dictionary.getEmpNameById(_item.checkEmp)}" rendered="#{not empty _item.checkEmp}"/>
+
+        </rich:column>
+
+
+        <rich:column>
+
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{inventoryList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.invertory_field_status}"/>
+                    <ui:param name="propertyPath" value="inventory.status"/>
+                </ui:include>
+            </f:facet>
+            #{messages[_item.status.name()]}
+        </rich:column>
+
+        <rich:column style="text-align: center;">
+            <f:facet name="header">
+
+            </f:facet>
+
+            <a:commandButton image="/img/delete.png" title="#{messages.delete}"
+                             action="#{inventoryHome.removeInventory}"
+                             onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                             execute="@this" immediate="true" render="dataListResult">
+                <a:param value="#{_item.id}" assignTo="#{inventoryHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+
+            </a:commandButton>
+        </rich:column>
+
+
+    </rich:dataTable>
+
+</h:form>
+
+
+</ui:define>
 
 
 </ui:composition>

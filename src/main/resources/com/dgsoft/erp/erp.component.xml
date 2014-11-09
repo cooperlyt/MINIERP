@@ -142,4 +142,10 @@
         <action execute="#{middleManList.refresh}"/>
     </event>
 
+
+    <event type="org.jboss.seam.afterTransactionSuccess.Inventory">
+        <action execute="#{inventoryList.refresh}"/>
+    </event>
+
+
 </components>

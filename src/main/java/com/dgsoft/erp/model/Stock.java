@@ -143,4 +143,33 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
     public void setInventoryItems(Set<InventoryItem> inventoryItems) {
         this.inventoryItems = inventoryItems;
     }
+
+    @Transient
+    public boolean equals(Object other) {
+        if ((this == other))
+            return true;
+        if ((other == null))
+            return false;
+        if (!(other instanceof Stock))
+            return false;
+        if (getId() == null){
+            return false;
+        }
+        Stock castOther = (Stock) other;
+
+
+        return ((this.getId() == castOther.getId()) || (this
+                .getId() != null
+                && castOther.getId() != null && this.getId()
+                .equals(castOther.getId())));
+    }
+
+    @Transient
+    public int hashCode() {
+        int result = 17;
+
+        result = 37 * result
+                + (getId() == null ? 0 : this.getId().hashCode());
+        return result;
+    }
 }

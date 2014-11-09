@@ -82,7 +82,7 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.storeRes = storeRes;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "STOCK", nullable = false)
     @NotNull
     public Stock getStock() {

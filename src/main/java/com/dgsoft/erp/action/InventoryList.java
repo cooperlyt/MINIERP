@@ -1,5 +1,6 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.Inventory;
 import com.dgsoft.erp.model.Store;
@@ -18,27 +19,39 @@ import java.util.List;
 public class InventoryList extends ErpEntityQuery<Inventory>{
 
 
-    private static final String EJBQL = "select inventory from Inventory inventory";
+    private static final String EJBQL = "select inventory from Inventory inventory left join fetch inventory.store";
 
     private static final String[] RESTRICTIONS = {
-            "inventory.checkedDate >= #{searchDateArea.dateFrom}",
-            "inventory.checkedDate <= #{searchDateArea.searchDateTo}",
-            "inventory.stockChanged = #{inventoryList.stockChanged}",
+            "inventory.checkDate >= #{inventoryList.searchDateArea.dateFrom}",
+            "inventory.checkDate <= #{inventoryList.searchDateArea.searchDateTo}",
+            "inventory.status = #{inventoryList.status}",
             "inventory.store.id in (#{inventoryList.searchStoreIds})",
             "inventory.type = #{inventoryList.type}"};
 
 
     private String storeId;
 
-    private Boolean stockChanged;
+    private Inventory.InvertoryStatus status;
 
     private Inventory.InventoryType type;
+
+    private SearchDateArea searchDateArea = new SearchDateArea(null,null);
 
     public InventoryList() {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
         setMaxResults(25);
+        setOrderColumn("inventory.applyDate");
+        setOrderDirection("desc");
+    }
+
+    public SearchDateArea getSearchDateArea() {
+        return searchDateArea;
+    }
+
+    public void setSearchDateArea(SearchDateArea searchDateArea) {
+        this.searchDateArea = searchDateArea;
     }
 
     public String getStoreId() {
@@ -49,12 +62,12 @@ public class InventoryList extends ErpEntityQuery<Inventory>{
         this.storeId = storeId;
     }
 
-    public Boolean getStockChanged() {
-        return stockChanged;
+    public Inventory.InvertoryStatus getStatus() {
+        return status;
     }
 
-    public void setStockChanged(Boolean stockChanged) {
-        this.stockChanged = stockChanged;
+    public void setStatus(Inventory.InvertoryStatus status) {
+        this.status = status;
     }
 
     public Inventory.InventoryType getType() {
@@ -73,7 +86,7 @@ public class InventoryList extends ErpEntityQuery<Inventory>{
             List<String> result = new ArrayList<String>();
 
             for (Store store : getEntityManager().createQuery("select store from Store store where store.enable = true", Store.class).getResultList()) {
-                if (identity.hasRole("erp.sale.manager") ||
+                if (identity.hasRole("erp.sale.manager") || identity.hasRole("erp.storage.manager") ||
                         identity.hasRole("erp.finance.accountancy") || identity.hasRole(store.getRole())) {
                     result.add(store.getId());
                 }

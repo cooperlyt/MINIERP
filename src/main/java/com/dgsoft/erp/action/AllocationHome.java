@@ -86,7 +86,7 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
         revertStockChange(getInstance().getStockChangeByStoreOut());
         processInstanceHome.setProcessDefineName("stockAllocation");
         processInstanceHome.setProcessKey(getInstance().getId());
-        processInstanceHome.stop();
+        //processInstanceHome.stop();
         String result = super.remove();
         if ("removed".equals(result)) {
             processInstanceHome.stop();
