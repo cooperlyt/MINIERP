@@ -128,7 +128,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
                     setParameter("toDate",getInstance().getCheckDate()).
                     setParameter("types", StockChange.StoreChangeType.getAllOut()).getSingleResult();
 
-            BigDecimal afterCount = beforCount.add(inCount).subtract(outCount);
+            BigDecimal afterCount = beforCount.add((inCount == null) ? BigDecimal.ZERO : inCount).subtract((outCount == null) ? BigDecimal.ZERO : outCount);
 
             getInstance().getInventoryItems().add(new InventoryItem(beforCount,afterCount,getInstance(),stock));
 
