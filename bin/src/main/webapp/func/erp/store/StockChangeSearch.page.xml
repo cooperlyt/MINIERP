@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="stockChangeId" value="#{stockChangeHome.id}"/>
+
+    <param name="firstResult" value="#{stockChangeList.firstResult}"/>
+    <param name="sort" value="#{stockChangeList.orderColumn}"/>
+    <param name="dir" value="#{stockChangeList.orderDirection}"/>
+
+
+    <param name="storeId" value="#{stockChangeList.storeId}"/>
+    <param name="out" value="#{stockChangeList.out}"/>
+
+    <param name="storeChangeType" value="#{stockChangeList.storeChangeType}"/>
+    <param name="dateFrom" value="#{stockChangeList.searchDateArea.dateFrom}"  converterId="searchDateConverter"/>
+    <param name="dateTo" value="#{stockChangeList.searchDateArea.dateTo}"  converterId="searchDateConverter"/>
+
+</page>

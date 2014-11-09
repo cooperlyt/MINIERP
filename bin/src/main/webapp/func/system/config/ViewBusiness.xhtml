@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+    <ui:define name="body">
+
+        <rich:panel>
+            <f:facet name="header">Business define Details</f:facet>
+
+            <s:decorate id="category" template="/layout/display.xhtml">
+                <ui:define name="label">category</ui:define>
+                <h:outputText value="#{businessDefineHome.instance.businessCategory.name}"/>
+            </s:decorate>
+
+            <s:decorate id="id" template="/layout/display.xhtml">
+                <ui:define name="label">Id</ui:define>
+                <h:outputText value="#{businessDefineHome.instance.id}"/>
+            </s:decorate>
+
+            <s:decorate id="memo" template="/layout/display.xhtml">
+                <ui:define name="label">Memo</ui:define>
+                <h:outputText value="#{businessDefineHome.instance.memo}"/>
+            </s:decorate>
+
+            <s:decorate id="name" template="/layout/display.xhtml">
+                <ui:define name="label">Name</ui:define>
+                <h:outputText value="#{businessDefineHome.instance.name}"/>
+            </s:decorate>
+
+            <s:decorate id="operPage" template="/layout/display.xhtml">
+                <ui:define name="label">Oper page</ui:define>
+                <h:outputText value="#{businessDefineHome.instance.startPage}"/>
+            </s:decorate>
+
+            <s:decorate id="startService" template="/layout/display.xhtml">
+                <ui:define name="label">Start service</ui:define>
+                <h:outputText value="#{businessDefineHome.instance.startDataValidator}"/>
+            </s:decorate>
+
+            <s:decorate id="wfName" template="/layout/display.xhtml">
+                <ui:define name="label">Wf name</ui:define>
+                <h:outputText value="#{businessDefineHome.instance.wfName}"/>
+            </s:decorate>
+
+            <div style="clear:both"/>
+        </rich:panel>
+
+
+        <a:outputPanel rendered="#{empty from}">
+            <s:button value="save" action="#{businessDefineHome.persist}" rendered="#{not businessDefineHome.managed}"/>
+            <s:button value="update" action="#{businessDefineHome.update}" rendered="#{businessDefineHome.managed}"/>
+            <s:button value="cancel" action="cancel"/>
+        </a:outputPanel>
+
+        <s:button rendered="#{not empty from}" value="ok" view="#{from}"/>
+
+    </ui:define>
+</ui:composition>

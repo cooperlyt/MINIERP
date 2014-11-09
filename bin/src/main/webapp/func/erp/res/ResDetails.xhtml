@@ -1,0 +1,370 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+<ui:param name="functionTitle" value="#{resHome.managed ? messages.edit : messages.add} #{messages.res} "/>
+
+<ui:define name="body">
+
+<h:form>
+
+    <rich:toolbar id="resEditPanel_buttons">
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/property.png"/>
+            <a:commandLink value="#{messages.formatDefineAdd}" immediate="true"
+                           action="#{actionExecuteState.clearState}"
+                           oncomplete="#{rich:component('addFormatDefinePanel')}.show();return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandLink>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/property.png"/>
+            <a:commandLink value="#{messages.resSupplierAdd}" disabled="true"/>
+        </rich:toolbarGroup>
+
+
+        <rich:toolbarGroup location="right">
+
+
+            <s:button styleClass="toolBarBtn" action="#{resHome.refresh}" view="/func/erp/res/ResMgr.xhtml"
+                      propagation="end" value="#{messages.cancel}"/>
+
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.save}" action="#{resHome.persist}"
+                             rendered="#{!resHome.managed}"/>
+
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.update}" action="#{resHome.update}"
+                             rendered="#{resHome.managed}"/>
+
+
+        </rich:toolbarGroup>
+    </rich:toolbar>
+
+    <rich:panel>
+        <div class="edit">
+            <a:outputPanel id="resFields">
+
+
+                <s:decorate id="resEnableField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.enable}</ui:define>
+                    <h:selectBooleanCheckbox
+                            required="true"
+                            label="#{messages.enable}"
+                            value="#{resHome.instance.enable}"/>
+                </s:decorate>
+
+                <s:decorate id="idField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res_field_code}</ui:define>
+                    <h:inputText id="id"
+                                 required="true"
+                                 size="27"
+                                 maxlength="32"
+                                 valueChangeListener="#{resHome.verifyCodeAvailable}"
+                                 label="#{messages.res_field_code}"
+                                 value="#{resHome.instance.code}">
+                        <a:ajax event="blur" render="idField"/>
+                    </h:inputText>
+                </s:decorate>
+
+
+                <s:decorate id="resNameField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res_field_name}</ui:define>
+                    <h:inputText
+                            required="true"
+                            size="27"
+                            maxlength="50"
+                            label="#{messages.res_field_name}"
+                            value="#{resHome.instance.name}">
+                        <a:ajax event="blur" render="resNameField"/>
+                    </h:inputText>
+                </s:decorate>
+
+
+                <s:decorate id="unitGroupField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.ResUnitGroup}</ui:define>
+                    <rich:select label="#{messages.ResUnitGroup}" value="#{resHome.instance.unitGroup}" required="true">
+                        <s:selectItems value="#{unitGroupList.resultList}" var="_unitGroup"
+                                       label="#{_unitGroup.name}(#{fn:substring(messages[_unitGroup.type.name()],0,1)})"
+                                       noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                        <a:ajax event="selectitem" execute="@this" listener="#{resHome.unitGroupSelectListener}"
+                                render="unitGroupField,masterResUnitField,storeInResUnitField,storeOutResUnitField"/>
+                    </rich:select>
+                </s:decorate>
+
+
+                <s:decorate id="masterResUnitField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res_field_masterUnit}</ui:define>
+                    <rich:select label="#{messages.res_field_masterUnit}" required="true"
+                                 value="#{resHome.instance.resUnitByMasterUnit}"
+                                 disabled="#{(empty resHome.instance.unitGroup) or (resHome.instance.unitGroup.type.name() == 'FLOAT_CONVERT') }">
+                        <s:selectItems rendered="#{not empty resHome.instance.unitGroup}"
+                                       value="#{resHome.instance.unitGroup.resUnitList}" var="_resUnit"
+                                       label="#{_resUnit.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                        <a:ajax event="selectitem" execute="@this" listener="#{resHome.masterUnitSelectListener}"
+                                render="storeInResUnitField,storeOutResUnitField"
+                                disabled="#{resHome.instance.unitGroup.type != 'NO_CONVERT'}"/>
+                    </rich:select>
+
+                </s:decorate>
+
+                <s:decorate id="storeInResUnitField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res_field_storeInUnit}</ui:define>
+                    <rich:select label="#{messages.res_field_storeInUnit}"
+                                 value="#{resHome.instance.resUnitByInDefault}"
+                                 required="true"
+                                 disabled="#{(empty resHome.instance.unitGroup) or (resHome.instance.unitGroup.type.name() == 'NO_CONVERT') }">
+                        <s:selectItems rendered="#{not empty resHome.instance.unitGroup}"
+                                       value="#{resHome.instance.unitGroup.resUnitList}" var="_resUnit"
+                                       label="#{_resUnit.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                    </rich:select>
+                </s:decorate>
+
+                <s:decorate id="storeOutResUnitField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res_field_storeOutUnit}</ui:define>
+                    <rich:select label="#{messages.res_field_storeOutUnit}" required="true"
+                                 value="#{resHome.instance.resUnitByOutDefault}"
+                                 disabled="#{(empty resHome.instance.unitGroup) or (resHome.instance.unitGroup.type.name() == 'NO_CONVERT')}">
+                        <s:selectItems rendered="#{not empty resHome.instance.unitGroup}"
+                                       value="#{resHome.instance.unitGroup.resUnitList}" var="_resUnit"
+                                       label="#{_resUnit.name}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <f:converter converterId="erpEntityConverter"/>
+                    </rich:select>
+                </s:decorate>
+
+
+                <s:decorate id="batchMgrField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.res_field_batchMgr}</ui:define>
+                    <h:selectBooleanCheckbox
+                            required="true"
+                            label="#{messages.res_field_batchMgr}"
+                            value="#{resHome.instance.batchMgr}"/>
+                </s:decorate>
+
+
+                <s:decorate id="descriptionField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.description}</ui:define>
+                    <h:inputTextarea id="description"
+                                     cols="55"
+                                     rows="2"
+                                     label="#{messages.description}"
+                                     value="#{resHome.instance.description}"/>
+                </s:decorate>
+
+            </a:outputPanel>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
+        </div>
+    </rich:panel>
+</h:form>
+
+<a:outputPanel id="resEditPanel_Content">
+
+    <s:decorate template="/layout/edit-modalpanel.xhtml">
+        <ui:param name="panelId" value="addFormatDefinePanel"/>
+        <ui:param name="panelTitle" value="#{messages.formatDefineAdd}"/>
+
+        <ui:define name="controls">
+            <a:commandButton immediate="true"
+                             execute="@this" image="/img/close.png"
+                             onclick="#{rich:component('addFormatDefinePanel')}.hide(); return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </ui:define>
+
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.formatDefine_field_name}</ui:define>
+            <h:inputText required="true" size="27" maxlength="50"
+                         label="#{messages.formatDefine_field_name}"
+                         value="#{resHome.newFormatDefine.name}">
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate id="formatDefineTypeField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.formatDefine_field_DataType}</ui:define>
+
+            <rich:select value="#{resHome.newFormatDefine.dataType}" styleClass="dataTypeSelectWidth"
+                         label="#{messages.formatDefine_field_DataType}" required="true">
+                <s:selectItems value="#{formatTypes}" var="_type"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{messages[_type.name()]}"/>
+                <s:convertEnum/>
+                <a:ajax execute="selectitem" event="selectitem"
+                        render="formatDefineWordCategoryField">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </rich:select>
+        </s:decorate>
+
+        <a:outputPanel id="formatDefineWordCategoryField">
+            <s:decorate rendered="#{resHome.newFormatDefine.dataType eq 'WORD'}" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.formatDafine_field_wordCategory}</ui:define>
+                <rich:select value="#{resHome.newFormatDefine.wordCategory}"
+                             styleClass="wordCategorySelectWidth"
+                             required="true"
+                             label="#{messages.formatDafine_field_wordCategory}">
+                    <s:selectItems value="#{userWordCategoryList.resultList}" var="_wc"
+                                   noSelectionLabel="#{messages.noSelectLabel}" label="#{_wc.name}"
+                                   itemValue="#{_wc.id}"/>
+                </rich:select>
+            </s:decorate>
+        </a:outputPanel>
+
+        <ui:define name="actionButtons">
+
+            <a:commandButton immediate="true"
+                             execute="@this" value="#{messages.cancel}"
+                             onclick="#{rich:component('addFormatDefinePanel')}.hide(); return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+            <a:commandButton value="#{messages.add}" execute="@form"
+                             action="#{resHome.addFormatDefine}"
+                             data="#{actionExecuteState.lastState}"
+                             oncomplete="if (event.data == 'success')#{rich:component('addFormatDefinePanel')}.hide();"
+                             render="addFormatDefinePanel_form,formatDefDataList">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </ui:define>
+
+
+    </s:decorate>
+
+    <h:outputStylesheet>
+        .formatDefDataColumn {
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .supplierColumn {
+            width: 50%;
+            vertical-align: top;
+        }
+    </h:outputStylesheet>
+
+    <h:panelGrid columns="2" width="100%" columnClasses="formatDefDataColumn,supplierColumn">
+
+        <h:form>
+            <rich:dataTable id="formatDefDataList" value="#{formatDefineList}" var="_formatDef"
+                            noDataLabel="#{messages.formatDefine_empty}" style="width: 100%">
+                <f:facet name="header">
+                    #{messages.formatDefine}
+                </f:facet>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.formatDefine_field_name}
+                    </f:facet>
+                    #{_formatDef.name}
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.formatDefine_field_DataType}
+                    </f:facet>
+                    <h:outputText value="#{messages[_formatDef.dataType.name()]}"/>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.formatDafine_field_wordCategory}
+                    </f:facet>
+                    <h:outputText value="#{dictionary.getWordCategory(_formatDef.wordCategory)}"
+                                  rendered="#{_formatDef.dataType eq 'WORD'}"/>
+                </rich:column>
+                <rich:column style="width: 60px; text-align: center;">
+                    <f:facet name="header">
+                        #{messages.action}
+                    </f:facet>
+                    <a:commandButton image="/img/delete.png" execute="@form" action="#{resHome.deleteFormatDefine}"
+                                     render="formatDefDataList" rendered="#{not resHome.managed}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    #{' '}
+                    <a:commandButton image="/img/up.png" execute="@form" action="#{resHome.upFormatDefine}"
+                                     render="formatDefDataList">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    #{' '}
+                    <a:commandButton image="/img/down.png" execute="@form" action="#{resHome.downFormatDefine}"
+                                     render="formatDefDataList">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    #{' '}
+
+                    <a:commandButton image="/img/edit.png" execute="@form" action="#{resHome.beginEditFormatDefine}"
+                                     oncomplete="#{rich:component('editFormatNamePanel')}.show()"
+                                     render="editFormatNamePanel_form">
+                       <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                </rich:column>
+            </rich:dataTable>
+        </h:form>
+
+        <rich:dataTable style="width: 100%">
+            <f:facet name="header">
+                #{messages.resSupplier}
+            </f:facet>
+        </rich:dataTable>
+
+    </h:panelGrid>
+</a:outputPanel>
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="editFormatNamePanel"/>
+    <ui:param name="panelTitle" value="#{messages.formatNameChange}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.formatDefine_field_name}</ui:define>
+        <h:inputText required="true" size="27" maxlength="50"
+                     label="#{messages.formatDefine_field_name}"
+                     value="#{resHome.editFormatDefine.name}">
+        </h:inputText>
+    </s:decorate>
+
+    <ui:define name="actionButtons">
+
+        <a:commandButton value="#{messages.cancel}" immediate="true"
+                         onclick="#{rich:component('editFormatNamePanel')}.hide();return false;"/>
+
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         data="#{actionExecuteState.lastState}"
+                         action="#{actionExecuteState.actionExecute}"
+                         oncomplete="if (event.data == 'success'){#{rich:component('editFormatNamePanel')}.hide(); return true;} else return false;"
+                         render="editFormatNamePanel_inputs,formatDefDataList">
+
+            <a:attachQueue requestDelay="0"/>
+
+        </a:commandButton>
+
+    </ui:define>
+
+</s:decorate>
+
+</ui:define>
+
+</ui:composition>

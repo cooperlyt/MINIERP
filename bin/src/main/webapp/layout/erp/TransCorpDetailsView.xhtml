@@ -1,0 +1,33 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+        >
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.TransCorpType}</ui:define>
+        #{messages[transCorp.transCorpType.name()]}
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.transCorp_field_name}</ui:define>
+        <h:outputText value="#{transCorp.name}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.Tel}</ui:define>
+        <h:outputText value="#{transCorp.tel}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.Contact}</ui:define>
+        <h:outputText value="#{transCorp.contact}"/>
+    </s:decorate>
+
+    <s:decorate template="/layout/seam-display.xhtml">
+        <ui:define name="label">#{messages.field_memo}</ui:define>
+        <h:outputText value="#{transCorp.memo}"/>
+    </s:decorate>
+</ui:composition>

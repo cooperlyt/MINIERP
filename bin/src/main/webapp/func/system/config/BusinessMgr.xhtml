@@ -1,0 +1,122 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="toolbar">
+        <s:button value="create" action="#{businessDefineConfig.addBusinessDefine}"/>
+    </ui:define>
+
+    <ui:define name="body">
+
+        <rich:dataTable id="businessDefineTable" noDataLabel="#{messages.businessDefine_empty}" style="width:100%"
+                        value="#{businessCategoryList.resultList}" var="_category">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column colspan="7">
+                        <h:outputText value="#{messages.businessCategory}"/>
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        <h:outputText value="#{messages.businessDefine_field_id}"/>
+                    </rich:column>
+                    <rich:column>
+                        <h:outputText value="#{messages.businessDefine_field_name}"/>
+
+                    </rich:column>
+
+                    <rich:column>
+                        #{messages.businessDefine_field_wfname}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.businessDefine_field_taskService}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.businessDefine_field_operpage}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.businessDefine_field_startDataValidator}
+                    </rich:column>
+                    <rich:column>
+                        <h:outputText value="#{messages.action}"/>
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+            <rich:column colspan="7">
+                <rich:collapsibleSubTableToggler for="subTable"/>
+                <h:outputText value="#{_category.name}"/>
+            </rich:column>
+            <rich:collapsibleSubTable value="#{_category.businessDefineList}" var="_bussinessDef" id="subTable"
+                                      expandMode="client" expanded="#{false}">
+                <rich:column>
+                    <h:outputText value="#{_bussinessDef.id}"/>
+                </rich:column>
+                <rich:column>
+                    <a:outputPanel>
+
+                        <h:outputText value="#{_bussinessDef.name}"/>
+                        <rich:tooltip followMouse="false" showDelay="1500" styleClass="tooltip-custom-body"
+                                      layout="block" rendered="#{not empty _bussinessDef.memo}">
+                            <span style="white-space: nowrap">#{_bussinessDef.memo}</span>
+                        </rich:tooltip>
+
+                    </a:outputPanel>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_bussinessDef.wfName}"/>
+                </rich:column>
+                <rich:column>
+                    #{_bussinessDef.taskService}
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_bussinessDef.startPage}"/>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_bussinessDef.startDataValidator}"/>
+                </rich:column>
+                <rich:column>
+                    <a:commandLink styleClass="no-decor" immediate="true" execute="@this"
+                                   render="deleteButton" oncomplete="#{rich:component('deleteConfirm')}.show()">
+                        <h:graphicImage value="/img/delete.png" alt="#{messages.delete}"/>
+                        <a:param name="id" value="#{_bussinessDef.id}" assignTo="#{businessDefineHome.id}"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandLink>
+
+                    #{' '}
+                    <s:link action="#{businessDefineConfig.editBusinessDefine}">
+                        <f:param name="businessDefineId" value="#{_bussinessDef.id}"/>
+                        <s:graphicImage value="/img/edit.png" title="#{messages.viewDetails}"/>
+                    </s:link>
+                    #{' '}
+                    <s:link view="/func/system/config/ViewBusiness.xhtml">
+                        <f:param name="ID" value="#{_bussinessDef.id}"/>
+                        <f:param name="from" value="/func/system/config/BusinessMgr.xhtml"/>
+                        <s:graphicImage value="/img/view.png" title="#{messages.viewDetails}"/>
+                    </s:link>
+                </rich:column>
+                <f:facet name="footer">
+                    <h:outputText value="#{_category.name}: #{_category.businessDefines.size}"/>
+                </f:facet>
+            </rich:collapsibleSubTable>
+
+
+        </rich:dataTable>
+
+
+        <s:decorate template="/layout/delete_confirm_dialog.xhtml">
+            <ui:param name="panelId" value="deleteConfirm"/>
+            <a:commandButton render="businessDefineTable" id="deleteButton" execute="@this" value="#{messages.remove}"
+                             action="#{businessDefineHome.remove}"
+                             oncomplete="#{rich:component('deleteConfirm')}.hide()">
+                <a:attachQueue requestDelay="0"/>
+                <a:param name="processDefinitionId" value="#{businessDefineHome.id}"
+                         assignTo="#{businessDefineHome.id}"/>
+            </a:commandButton>
+        </s:decorate>
+
+    </ui:define>
+</ui:composition>

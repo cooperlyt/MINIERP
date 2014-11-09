@@ -1,0 +1,120 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.MakeAccount}"/>
+
+    <ui:define name="toolbar">
+        <rich:toolbar>
+            <rich:toolbarGroup>
+                <h:outputText value="#{messages.MakeAccountBiginDate}"/>
+                <h:outputText value="#{accountDateHelper.nextBeginDate}">
+                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+                -
+                <h:outputText value="#{accountDateHelper.nextCloseDate}">
+                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+            </rich:toolbarGroup>
+
+
+            <rich:toolbarGroup location="right">
+                <h:form>
+                    <a:commandButton styleClass="toolBarBtn" render="dataListResult" action="#{makeAccount.make}"
+                                     value="#{messages.MakeAccount}" execute="@this"
+                                     status="processWaiting">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                    <a:commandButton style="toolBarBtn" render="dataListResult" action="#{makeAccount.deleteAll}"
+                                     value="#{messages.DeleteAccount}" execute="@this"
+                                     status="processWaiting">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+                </h:form>
+            </rich:toolbarGroup>
+
+        </rich:toolbar>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+        <h:form>
+
+            <rich:dataTable style="width: 100%" id="dataListResult" value="#{notCheckSaleCertificateList.resultList}"
+                            var="_item">
+                <f:facet name="footer">
+                    <a:outputPanel rendered="#{not empty notCheckSaleCertificateList.resultList}">
+                        <ui:include src="/layout/pageA4jNavigation.xhtml">
+                            <ui:param name="entityList" value="#{notCheckSaleCertificateList}"/>
+                        </ui:include>
+                    </a:outputPanel>
+                </f:facet>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificateCode}
+                    </f:facet>
+
+                    <a:commandLink value="#{_item.word}-#{_item.code}" execute="@this" render="certificateDetails,certificatePanel_title"
+                                   oncomplete="#{rich:component('certificatePanel')}.show();">
+                        <a:param value="#{_item.id}" assignTo="#{saleCertificateHome.id}"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandLink>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificateDate}
+                    </f:facet>
+
+                    <h:outputText value="#{_item.date}">
+                        <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column style="text-align: right">
+                    <f:facet name="header">
+                        #{messages.CertificateMoney}
+                    </f:facet>
+
+                    <h:outputText value="#{_item.money}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificateCashier}
+                    </f:facet>
+
+                    #{dictionary.getEmpNameById(_item.cashier)}
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CertificatePreparedEmp}
+                    </f:facet>
+
+                    #{dictionary.getEmpNameById(_item.preparedEmp)}
+                </rich:column>
+
+            </rich:dataTable>
+
+        </h:form>
+        <ui:include src="/layout/erp/biz/Certificate.xhtml">
+            <ui:param name="certificate" value="#{saleCertificateHome.instance}"/>
+            <ui:param name="rendered" value="#{saleCertificateHome.idDefined}"/>
+        </ui:include>
+    </ui:define>
+
+</ui:composition>

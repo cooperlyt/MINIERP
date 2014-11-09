@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <f:subview>
+        <s:decorate id="payTypeField"
+                    template="/layout/seam-edit.xhtml">
+            <ui:define name="label"> #{messages.accountOper_field_payType}</ui:define>
+            <h:selectOneMenu label="#{messages.accountOper_field_payType}"
+                             required="true"
+                             value="#{moneySave.payType}">
+
+                <s:selectItems value="#{accountPayTypes}" var="_payType"
+                               label="#{messages[_payType.name()]}"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                <s:convertEnum/>
+                <a:ajax event="valueChange" execute="@this"
+                        render="payTypeField">
+                    <a:attachQueue requestDelay="0"/>
+
+                </a:ajax>
+            </h:selectOneMenu>
+
+
+            <h:selectOneMenu value="#{moneySave.bankAccount}" required="true"
+                             rendered="#{moneySave.payType eq 'BANK_TRANSFER'}"
+                             label="#{messages.BankAccount}">
+                <s:selectItems value="#{validBankAccountList.resultList}" var="_bank"
+                               label="#{_bank.number}(#{dictionary.getWordValue(_bank.bank)})"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                <a:ajax event="valueChange" execute="@this"
+                        render="payTypeField"/>
+                <f:converter converterId="erpEntityConverter"/>
+            </h:selectOneMenu>
+            <ui:define name="tail">
+
+                <h:panelGrid columns="10">
+
+
+                    <h:selectBooleanCheckbox value="#{moneySave.useCheck}" rendered="#{not empty moneySave.payType}">
+
+                        <a:ajax execute="@this" event="click" render="checkNumberField"/>
+                    </h:selectBooleanCheckbox>
+                    <h:outputText
+                            value="#{(moneySave.payType eq 'BANK_TRANSFER') ? messages.BANK_CHECK : messages.CASH_CHECK}"
+                            rendered="#{not empty moneySave.payType}"/>
+                    <a:outputPanel id="checkNumberField">
+
+                        <h:inputText rendered="#{moneySave.useCheck}"
+                                     label="#{messages.accountOper_field_checkNumber}"
+                                     value="#{moneySave.checkNumber}">
+                        </h:inputText>
+                    </a:outputPanel>
+                </h:panelGrid>
+            </ui:define>
+        </s:decorate>
+    </f:subview>
+</ui:composition>

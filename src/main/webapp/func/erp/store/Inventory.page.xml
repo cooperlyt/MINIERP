@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" login-required="true"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="firstResult" value="#{inventoryList.firstResult}"/>
+    <param name="sort" value="#{inventoryList.orderColumn}"/>
+    <param name="dir" value="#{inventoryList.orderDirection}"/>
+
+
+    <param name="dateFrom" value="#{searchDateArea.dateFrom}"/>
+    <param name="dateTo" value="#{searchDateArea.dateTo}"/>
+    <param name="stockChanged" value="#{inventoryList.stockChanged}"/>
+    <param name="storeId" value="#{inventoryList.storeId}"/>
+    <param name="type" value="#{inventoryList.type}"/>
+
+</page>

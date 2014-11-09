@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="categoryId" value="#{resCategoryHome.id}"/>
+    <param name="resId" value="#{resHome.id}"/>
+
+    <navigation from-action="#{resHome.persist}">
+        <rule if-outcome="persisted">
+            <end-conversation/>
+            <redirect view-id="/func/erp/res/ResMgr.xhtml"/>
+        </rule>
+    </navigation>
+
+    <navigation from-action="#{resHome.update}">
+        <rule if-outcome="updated">
+            <end-conversation/>
+            <redirect view-id="/func/erp/res/ResMgr.xhtml"/>
+        </rule>
+    </navigation>
+
+</page>

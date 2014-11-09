@@ -1,0 +1,226 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="func-body">
+<rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+    <h:form>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.dateTime}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.dateTime}"
+                    value="#{inOutMoneyTotal.searchDateArea.dateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.dateTime}"
+                    value="#{inOutMoneyTotal.searchDateArea.dateTo}">
+            </rich:calendar>
+        </s:decorate>
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel>
+                <div class="actionButtons">
+
+
+                    <s:button styleClass="toolBarBtn" value="#{messages.reset}" includePageParams="false"/>
+
+
+                    <a:commandButton value="#{messages.total}" execute="@form" render="dataResult">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+
+
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+    </h:form>
+
+    <div style="clear:both"/>
+</rich:collapsiblePanel>
+
+
+<a:outputPanel id="dataResult">
+
+
+
+    <br/>
+    <br/>
+
+    <rich:dataTable style="width: 100%" value="#{inOutStoreResSellTotal.dayGroupResultList}" var="_dayItem">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="5">
+                    #{messages.customerStoreResSellDetails}
+                </rich:column>
+
+                <rich:column colspan="3" rowspan="2" breakRowBefore="true">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="5">
+            <rich:collapsibleSubTableToggler for="sbtb1"/>
+            <h:outputText value="#{_dayItem.key}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:collapsibleSubTable value="#{_dayItem.childGroup}" var="_changeItem" id="sbtb1">
+
+
+            <rich:column/>
+            <rich:column colspan="4">
+                <rich:collapsibleSubTableToggler for="sbtb2"/>
+
+                <h:outputText value="#{_changeItem.key.operDate}">
+                    <s:convertDateTime pattern="#{messages.displayTimePattern}"/>
+                </h:outputText>
+                -- #{messages.Customer}: #{_changeItem.key.orderDispatch.needRes.customerOrder.customer.name}
+                 #{' '} #{' '} #{messages.Store}: #{_changeItem.key.store.name}
+                #{' '} #{' '} #{messages.StockChange_field_operEMP}: #{dictionary.getEmpNameById(_changeItem.key.operEmp)}
+            </rich:column>
+
+
+            <rich:collapsibleSubTable value="#{_changeItem.values}" var="_item" id="sbtb2">
+                <rich:column/>
+                <rich:column/>
+                <rich:column>
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                    </ui:include>
+                </rich:column>
+                <rich:column>
+                    #{_item.displayMasterCount}
+                </rich:column>
+                <rich:column>
+                    #{_item.displayAuxCount}
+                </rich:column>
+
+            </rich:collapsibleSubTable>
+
+        </rich:collapsibleSubTable>
+
+    </rich:dataTable>
+
+    <br/>
+
+    <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
+        <ui:param name="value" value="#{inOutStoreResSellTotal.totalOutResultList}"  />
+        <ui:param name="tableHeader" value="#{messages.customerStoreResSellTotal}"/>
+    </ui:include>
+
+
+    <br/>
+    <br/>
+
+    <rich:dataTable style="width: 100%" value="#{inOutStoreResBackTotal.dayGroupResultList}" var="_dayItem">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="5">
+                    #{messages.customerStoreResBackDetails}
+                </rich:column>
+
+                <rich:column colspan="3" rowspan="2" breakRowBefore="true">
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column breakRowBefore="true">
+                    #{messages.MasterUnitCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.AuxUnitCount}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="5">
+            <rich:collapsibleSubTableToggler for="sbtbb1"/>
+            <h:outputText value="#{_dayItem.key}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:collapsibleSubTable value="#{_dayItem.childGroup}" var="_changeItem" id="sbtbb1">
+
+
+            <rich:column/>
+            <rich:column colspan="4">
+                <rich:collapsibleSubTableToggler for="sbtbb2"/>
+
+                <h:outputText value="#{_changeItem.key.operDate}">
+                    <s:convertDateTime pattern="#{messages.displayTimePattern}"/>
+                </h:outputText>
+                -- #{messages.Customer}: #{_changeItem.key.backDispatch.orderBack.customer.name}
+                #{' '} #{' '} #{messages.Store}: #{_changeItem.key.store.name}
+                #{' '} #{' '} #{messages.StockChange_field_operEMP}: #{dictionary.getEmpNameById(_changeItem.key.operEmp)}
+            </rich:column>
+
+
+            <rich:collapsibleSubTable value="#{_changeItem.values}" var="_item" id="sbtbb2">
+                <rich:column/>
+                <rich:column/>
+                <rich:column>
+                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                        <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                    </ui:include>
+                </rich:column>
+                <rich:column>
+                    #{_item.displayMasterCount}
+                </rich:column>
+                <rich:column>
+                    #{_item.displayAuxCount}
+                </rich:column>
+
+            </rich:collapsibleSubTable>
+
+        </rich:collapsibleSubTable>
+
+    </rich:dataTable>
+
+    <br/>
+
+    <ui:include src="/layout/erp/res/StockChangeTotalTable.xhtml">
+        <ui:param name="value" value="#{inOutStoreResBackTotal.totalInResultList}"  />
+        <ui:param name="tableHeader" value="#{messages.customerStoreResBackTotal}"/>
+    </ui:include>
+
+</a:outputPanel>
+</ui:define>
+
+
+</ui:composition>

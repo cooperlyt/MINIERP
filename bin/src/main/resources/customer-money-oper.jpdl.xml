@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow-definition xmlns="http://jboss.org/schema/seam/pageflow"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation=
+                             "http://jboss.org/schema/seam/pageflow http://jboss.org/schema/seam/pageflow-2.3.xsd"
+                     name="CustomerMoneyOper">
+    <start-state>
+        <transition to="decideOperType"/>
+    </start-state>
+
+    <decision name="decideOperType" expression="#{customerAccountOper.type eq 'PROXY_SAVINGS'}">
+        <transition name="true" to="proxyMoneySave"/>
+        <transition name="false" to="decideCustomerSelect"/>
+    </decision>
+    <decision name="decideCustomerSelect" expression="#{customerHome.idDefined}">
+        <transition name="true" to="singleCustomerSave"/>
+        <transition name="false" to="customerSelect"/>
+    </decision>
+
+    <page view-id="/func/erp/finance/cashier/MoneySaveCustomerSelect.xhtml" name="customerSelect"
+          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
+        <transition to="singleCustomerSave" name="next"/>
+        <transition to="done" name="cancel"/>
+    </page>
+
+    <page view-id="/func/erp/finance/cashier/ProxyMoneySave.xhtml" name="proxyMoneySave"
+          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
+        <transition to="proxyCustomer" name="customer"/>
+        <transition to="proxyOrder" name="order"/>
+        <transition to="done" name="cancel"/>
+    </page>
+
+    <page view-id="/func/erp/finance/cashier/ProxyCustomer.xhtml" name="proxyCustomer"
+          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
+        <transition to="confirm" name="next"/>
+        <transition to="done" name="cancel"/>
+    </page>
+
+
+    <page view-id="/func/erp/finance/cashier/ProxyOrder.xhtml" name="proxyOrder"
+          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
+        <transition to="confirm" name="next"/>
+        <transition to="done" name="cancel"/>
+    </page>
+
+
+
+    <page view-id="/func/erp/finance/cashier/SingleCustomerMoneySave.xhtml" name="singleCustomerSave"
+          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
+        <transition to="confirm" name="next"/>
+        <transition to="done" name="cancel"/>
+    </page>
+
+    <page view-id="/func/erp/finance/cashier/CustomerMoneySaveConfirm.xhtml" name="confirm"
+          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
+        <transition to="done" name="cancel"/>
+        <transition to="done" name="persisted"/>
+        <transition to="confirm"/>
+    </page>
+
+    <page view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" name="done" redirect="true">
+        <end-conversation before-redirect="true"/>
+    </page>
+
+</pageflow-definition>

@@ -1,0 +1,203 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.quotedCreateItem}"/>
+
+
+    <ui:define name="toolbar">
+
+        <ui:include src="/layout/erp/ResSelectTree.xhtml">
+            <ui:param name="render" value="itemCreateFields"/>
+            <ui:param name="treeValue" value="#{saleResTree}"/>
+        </ui:include>
+
+        <ui:include src="/layout/erp/StoreResSelectTree.xhtml">
+            <ui:param name="render" value="itemCreateFields"/>
+            <ui:param name="treeValue" value="#{saleStoreResTree}"/>
+        </ui:include>
+
+        <rich:toolbar>
+
+            <rich:toolbarGroup>
+                <h:form>
+
+                    <h:panelGrid columns="4">
+                        <h:inputText styleClass="barOrderNumber"
+                                     label="#{messages.res_field_code}"
+                                     id="resItemCode" value="#{resLocate.code}"
+                                     required="true">
+                            <rich:placeholder value="#{messages.res_field_code}"/>
+                        </h:inputText>
+
+                        <a:commandButton value="#{messages.search}" execute="@form"
+                                         render="itemCreateFields"
+                                         action="#{resLocate.locateByCode('SELL_OUT')}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+
+                        <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                         title="#{messages.resSelect}"
+                                         onclick="#{rich:component('resSelectPanel')}.show();return false;">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+
+                        <a:commandButton image="/img/onetomany.gif" execute="@this" immediate="true"
+                                         title="#{messages.storeResSelect}"
+                                         onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+
+                    </h:panelGrid>
+                </h:form>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+                <s:button value="#{messages.customerDetails}" view="/func/erp/sale/QuotedCreateCustomer.xhtml"/>
+                <s:button value="#{messages.cancel}" view="#{(empty from) ? '/func/erp/sale/QuotedPrice.xhtml' : from}" propagation="end"/>
+                <s:button value="#{messages.save}" action="#{quotedPriceHome.persist}"/>
+            </rich:toolbarGroup>
+
+        </rich:toolbar>
+
+    </ui:define>
+
+    <ui:define name="body">
+
+        <h:form>
+            <a:outputPanel id="itemCreateFields">
+                <rich:panel rendered="#{not empty quotedPriceHome.editingItem}">
+
+                    <ui:include src="/layout/erp/res/StoreResPriceInput.xhtml">
+                        <ui:param name="inputValue" value="#{quotedPriceHome.editingItem}"/>
+                        <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                        <ui:param name="countLableStyleClass" value="name"/>
+                    </ui:include>
+
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.field_memo}</ui:define>
+                        <h:inputTextarea value="#{quotedPriceHome.editingItem.memo}" cols="65"/>
+                    </s:decorate>
+
+
+                    <s:span styleClass="value">
+                        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                                         action="#{quotedPriceHome.cancelAdd}" render="itemCreateFields">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </s:span>
+                    <s:span styleClass="value">
+                        <a:commandButton value="#{messages.addItem}" execute="@form"
+                                         action="#{quotedPriceHome.addPriceItem}"
+                                         render="itemCreateFields">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </s:span>
+
+
+                    <div style="clear: both"/>
+                </rich:panel>
+            </a:outputPanel>
+        </h:form>
+                  <br/>
+        <h:form>
+
+            <a:outputPanel ajaxRendered="true">
+                <rich:dataTable style="width: 100%" value="#{quotedPriceItems}" var="_item"
+                                noDataLabel="#{messages.quotedItemDataEmpty}">
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.StoreRes}
+                        </f:facet>
+                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                            <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                        </ui:include>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.field_memo}
+                        </f:facet>
+                        <s:decorate template="/layout/grid-inside-edit.xhtml">
+                            <rich:inplaceInput style="width: 95%" value="#{_item.memo}"
+                                               label="#{messages.field_memo}">
+                                <a:ajax event="blur"/>
+                            </rich:inplaceInput>
+                        </s:decorate>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.Res_Unit}
+                        </f:facet>
+                        <s:decorate template="/layout/grid-inside-edit.xhtml">
+                            <rich:inplaceSelect style="width: 95%" label="#{messages.Res_Unit}"
+                                                value="#{_item.resUnit}" required="true">
+                                <s:selectItems value="#{_item.res.unitGroup.resUnitList}"
+                                               var="_unit" label="#{_unit.name}"/>
+                                <f:converter converterId="erpEntityConverter"/>
+                                <a:ajax event="selectitem"/>
+                            </rich:inplaceSelect>
+                        </s:decorate>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.quotedItemCount}
+                        </f:facet>
+                        <s:decorate template="/layout/grid-inside-edit.xhtml">
+                            <rich:inplaceInput style="width: 95%" value="#{_item.useUnitCount}"
+                                               label="#{messages.quotedItemCount}"
+                                               required="true">
+                                <a:ajax event="blur"/>
+                                <f:convertNumber pattern="#{_item.useUnit.countFormate}"/>
+                            </rich:inplaceInput>
+                        </s:decorate>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.orderItemUnitPrice}
+                        </f:facet>
+                        <s:decorate template="/layout/grid-inside-edit.xhtml">
+                            <rich:inplaceInput style="width: 95%" value="#{_item.money}" rendered="true"
+                                               lable="#{messages.orderItemUnitPrice}">
+                                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                                 type="currency" groupingUsed="false"/>
+                            </rich:inplaceInput>
+                        </s:decorate>
+                    </rich:column>
+
+                    <rich:column style="text-align: right">
+                        <f:facet name="header">
+                            #{messages.orderItemTotalPrice}
+                        </f:facet>
+                        <h:outputText value="#{_item.totalMoney}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </rich:column>
+                    <rich:column style="text-align: center">
+                        <f:facet name="header">
+
+                        </f:facet>
+                        <a:commandButton image="/img/delete.png" immediate="true" execute="@form"
+                                         action="#{quotedPriceHome.removePriceItme}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </rich:column>
+                </rich:dataTable>
+            </a:outputPanel>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

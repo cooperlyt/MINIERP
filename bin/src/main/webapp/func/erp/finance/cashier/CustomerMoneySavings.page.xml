@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="firstResult" value="#{customerMoneyOperList.firstResult}"/>
+    <param name="sort" value="#{customerMoneyOperList.orderColumn}"/>
+    <param name="dir" value="#{customerMoneyOperList.orderDirection}"/>
+
+
+    <param name="customerAreaId" value="#{customerSearchCondition.customerAreaId}"/>
+
+    <param name="customerName" value="#{customerSearchCondition.name}"/>
+
+    <param name="customerType" value="#{customerSearchCondition.type}"/>
+
+    <param name="customerLevelFrom" value="#{customerSearchCondition.levelFrom}" />
+    <param name="customerLevelTo" value="#{customerSearchCondition.levelTo}" />
+
+    <param name="provinceCode" value="#{customerSearchCondition.provinceCode}"/>
+
+    <param name="searchDateFrom" value="#{searchDateArea.dateFrom}"/>
+    <param name="searchDateTo" value="#{searchDateArea.dateTo}"/>
+
+
+
+    <param name="containDepositBack" value="#{customerMoneyCondition.containDepositBack}"/>
+
+    <param name="containProxySavings" value="#{customerMoneyCondition.containProxySavings}"/>
+    <param name="containCustomerSavings" value="#{customerMoneyCondition.containCustomerSavings}"/>
+    <param name="containDepositPay" value="#{customerMoneyCondition.containDepositPay}"/>
+    <param name="containMoneyFree" value="#{customerMoneyCondition.containMoneyFree}"/>
+
+    <param name="containOrderPay" value="#{customerMoneyCondition.containOrderPay}"/>
+    <param name="containOrderBack" value="#{customerMoneyCondition.containOrderBack}"/>
+
+
+    <param name="selectOperId" value="#{accountOperHome.id}"/>
+
+</page>

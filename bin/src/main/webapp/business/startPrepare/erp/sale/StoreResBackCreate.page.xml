@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="from"/>
+
+    <param name="stepFrom"/>
+
+    <param name="customerOrderId" value="#{orderHome.id}"/>
+    <param name="customerId" value="#{customerHome.id}"/>
+    <param name="customerAreaId" value="#{customerAreaHome.id}"/>
+
+    <navigation from-action="#{storeResBackCreate.createBack}">
+        <rule if-outcome="businessCreated" if="#{empty from}">
+            <end-conversation/>
+
+            <redirect include-page-params="true" view-id="/func/system/business/start.xhtml">
+
+            </redirect>
+        </rule>
+        <rule if-outcome="businessCreated" if="#{not empty from}">
+            <end-conversation/>
+
+            <redirect include-page-params="true" view-id="#{from}">
+
+            </redirect>
+        </rule>
+
+    </navigation>
+</page>

@@ -1,0 +1,50 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                template="/layout/simpleDataCURD.xhtml">
+
+    <h:outputStylesheet>
+        .leftColumn {
+            vertical-align: top;
+            width: 120px;
+        }
+
+        .rightColumn {
+            vertical-align: top;
+        }
+    </h:outputStylesheet>
+
+    <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
+    <ui:param name="dataList" value="#{customerLevelList.resultList}"/>
+    <ui:param name="dataListHeaderTitle" value="#{messages.CustomerLevel}"/>
+    <ui:param name="dataHome" value="#{customerLevelHome}"/>
+
+    <ui:define name="editFields">
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.customerLevel_field_name}</ui:define>
+            <h:inputText value="#{customerLevelHome.instance.name}"
+                         label="#{messages.customerLevel_field_name}"
+                         readonly="#{not customerLevelHome.editing}"
+                         required="true"
+                         size="27"
+                         maxlength="50"/>
+        </s:decorate>
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.customerLevel_field_priority}</ui:define>
+            <rich:inputNumberSpinner label="#{messages.customerLevel_field_priority}"
+                                     required="true" disabled="#{not customerLevelHome.editing}"
+                                     enableManualInput="true" minValue="0" maxValue="#{maxIntegerValue}"
+                                     value="#{customerLevelHome.instance.priority}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+            <h:inputTextarea label="#{messages.field_memo}" value="#{customerLevelHome.instance.memo}"
+                             cols="50" rows="3" readonly="#{not customerLevelHome.editing}" />
+        </s:decorate>
+    </ui:define>
+</ui:composition>

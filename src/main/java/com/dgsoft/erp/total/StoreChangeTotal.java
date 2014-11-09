@@ -264,7 +264,7 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
     public static class TotalChangeDataItem {
 
 
-        private StockAccount account;
+        //private StockAccount account;
 
         private StoreRes storeRes;
 
@@ -273,10 +273,10 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
             this.storeRes = storeRes;
         }
 
-        public TotalChangeDataItem(StoreRes storeRes, StockAccount account) {
-            this.storeRes = storeRes;
-            this.account = account;
-        }
+//        public TotalChangeDataItem(StoreRes storeRes, StockAccount account) {
+//            this.storeRes = storeRes;
+//            this.account = account;
+//        }
 
         private Map<StockChange.StoreChangeType, StoreResCount> changeCount = new HashMap<StockChange.StoreChangeType, StoreResCount>();
 
@@ -327,9 +327,9 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
             this.storeRes = storeRes;
         }
 
-        public StockAccount getAccount() {
-            return account;
-        }
+//        public StockAccount getAccount() {
+//            return account;
+//        }
 
         public StoreResCount getInTotal(){
             StoreResCount result = new StoreResCount(storeRes,BigDecimal.ZERO);

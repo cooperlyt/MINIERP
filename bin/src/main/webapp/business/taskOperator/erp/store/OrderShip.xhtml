@@ -1,0 +1,285 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+<ui:param name="functionTitle" value="#{orderShip.taskName}"/>
+
+<ui:define name="func-body">
+
+<h:outputStylesheet>
+    .overlyColumn {
+        vertical-align: top;
+        width: 50%;
+    }
+
+</h:outputStylesheet>
+
+
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="empSelectPanel"/>
+    <ui:param name="panelTitle" value="#{messages.plaseSelectToDoorDriver}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+
+    <ui:define name="formContent">
+        <rich:panel style="min-width: 300px;min-height: 360px">
+            <rich:tree
+                    var="_node"
+                    value="#{employeeHome.employeeTree}"
+                    nodeType="#{_node.type}"
+                    onbeforeselectionchange="if (arguments[2].newSelection[0].__canBeToggled()) { arguments[2].newSelection[0].toggle();return false;} "
+                    toggleType="client"
+                    selectionType="client">
+                <rich:treeNode type="org">
+                    #{_node.org.name}
+                </rich:treeNode>
+
+                <rich:treeNode type="emp">
+
+                    <a:commandLink value="#{_node.emp.person.name}(#{_node.emp.id})" execute="@this"
+                                   immediate="true"
+                                   render="shipSendEmpField"
+                                   oncomplete="#{rich:component('empSelectPanel')}.hide();">
+                        <a:param value="#{_node.emp.id}"
+                                 assignTo="#{dispatchHome.instance.sendEmp}"/>
+                        <a:attachQueue requestDelay="0"/>
+                        <s:conversationId/>
+                    </a:commandLink>
+
+                </rich:treeNode>
+            </rich:tree>
+        </rich:panel>
+    </ui:define>
+</s:decorate>
+
+
+<h:form>
+    <rich:toolbar>
+        <rich:toolbarGroup>
+            <h:panelGrid columns="2">
+                <h:outputText value="#{messages.EXPRESS_PROXY}:"
+                              rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}"/>
+
+                <h:outputText value="#{orderHome.instance.shortageMoney}"
+                              rendered="#{(orderHome.instance.payType eq 'EXPRESS_PROXY') and dispatchHome.instance.needRes.type eq 'ORDER_SEND'}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </h:panelGrid>
+
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup location="right">
+
+            <h:panelGroup id="orderDispatchTaskAction">
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                          view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+                <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+                                 action="#{orderShip.complete}"/>
+            </h:panelGroup>
+        </rich:toolbarGroup>
+    </rich:toolbar>
+    <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+    <rich:panel>
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.dispatch_field_shipDate}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="20"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datetimepattern}"
+                    required="true"  validator="operDateValidator"
+                    defaultTime="#{currentTime}"
+                    label="#{messages.dispatch_field_shipDate}"
+                    value="#{dispatchHome.instance.sendTime}"/>
+        </s:decorate>
+
+        <ui:remove>
+            <!--
+            defaultTime="#{currentTime}"
+            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"  -->
+        </ui:remove>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.dispatch_field_Fare}</ui:define>
+            <h:inputText value="#{dispatchHome.instance.fare}" required="true"
+                         disabled="#{(not dispatchHome.instance.deliveryType.haveFare) or dispatchHome.instance.needRes.fareByCustomer}"
+                         label="#{messages.dispatch_field_Fare}" size="20">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
+
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.order_dispatch_detail}</ui:define>
+            <h:selectBooleanCheckbox value="#{orderShip.inputDetails}">
+                <a:ajax event="click" render="shipDetails"/>
+            </h:selectBooleanCheckbox>
+        </s:decorate>
+
+
+        <a:outputPanel id="shipDetails">
+
+            <a:outputPanel rendered="#{orderShip.inputDetails}">
+
+                <s:decorate id="shipSendEmpField" template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.order_field_sendEmployee}</ui:define>
+
+
+                    <a:commandLink
+                            value="#{(empty dispatchHome.instance.sendEmp) ? messages.plaseSelectSendEmp : dictionary.getEmpNameById(dispatchHome.instance.sendEmp)}"
+                            immediate="true"
+                            onclick="#{rich:component('empSelectPanel')}.show();return false;"/>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-edit.xhtml"
+                            rendered="#{dispatchHome.instance.deliveryType eq 'CUSTOMER_SELF'}">
+                    <ui:define name="label">#{messages.dispatch_field_outCustomer}</ui:define>
+                    <h:inputText value="#{dispatchHome.instance.outCustomer}" maxlength="50" size="27"/>
+                </s:decorate>
+
+
+                <a:outputPanel
+                        rendered="#{(dispatchHome.instance.deliveryType eq 'FULL_CAR_SEND') or (dispatchHome.instance.deliveryType eq 'EXPRESS_SEND')}">
+                    <ui:include src="/layout/erp/TransCorpInput.xhtml"/>
+                </a:outputPanel>
+
+                <a:outputPanel rendered="#{dispatchHome.instance.deliveryType eq 'FULL_CAR_SEND'}">
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.dispatch_field_expressCarDriver}</ui:define>
+                        <h:inputText value="#{dispatchHome.instance.sendDriver}" maxlength="50" size="27"
+                                     label="#{messages.dispatch_field_expressCarDriver}"/>
+                    </s:decorate>
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.dispatch_field_expressCarTel}</ui:define>
+                        <h:inputText value="#{dispatchHome.instance.sendTel}" maxlength="50" size="27"
+                                     label="#{messages.dispatch_field_expressCarTel}"/>
+                    </s:decorate>
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
+                        <h:inputText value="#{dispatchHome.instance.sendCarCode}"
+                                     maxlength="20"
+                                     label="#{messages.dispatch_field_expressCarCode}" size="27"/>
+                    </s:decorate>
+
+                </a:outputPanel>
+
+
+                <s:decorate template="/layout/seam-edit.xhtml"
+                            rendered="#{dispatchHome.instance.deliveryType eq 'EXPRESS_SEND'}">
+                    <ui:define name="label">#{messages.dispatch_field_expressNumber}</ui:define>
+                    <h:inputText value="#{dispatchHome.instance.sendNumber}"
+                                 maxlength="100" size="27"/>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-edit.xhtml"
+                            rendered="#{dispatchHome.instance.deliveryType eq 'SEND_TO_DOOR'}">
+                    <ui:define name="label">#{messages.dispatch_field_expressCarCode}</ui:define>
+                    <ui:define name="label">#{messages.Cars}</ui:define>
+                    <rich:autocomplete id="carsInputField" mode="client" autofill="true"
+                                       required="true"
+                                       showButton="true"
+                                       selectFirst="true"
+                                       label="#{messages.Cars}"
+                                       clientFilterFunction="pinyinFilter"
+                                       autocompleteList="#{validCarsList.resultList}"
+                                       value="#{carsHome.searchId}"
+                                       fetchValue="#{_car.id}" var="_car">
+
+                        <h:outputText value="#{_car.id}(#{dictionary.getEmpNameById(_car.defaultDriver)})"/>
+                        <a:ajax event="selectitem"
+                                render="toDoorInfo" execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                        <a:ajax event="blur" execute="@this"
+                                render="toDoorInfo">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </rich:autocomplete>
+
+                </s:decorate>
+
+            </a:outputPanel>
+        </a:outputPanel>
+
+        <div style="clear:both">
+            <span class="required">*</span>
+            #{messages.requiredFields}
+        </div>
+    </rich:panel>
+</h:form>
+
+
+<br/>
+<rich:collapsiblePanel switchType="client" header="#{messages.order_ship_info}">
+
+    <ui:include src="/layout/erp/orderNeedResInfo.xhtml">
+        <ui:param name="needRes" value="#{dispatchHome.instance.needRes}"/>
+    </ui:include>
+
+    <ui:include src="/layout/erp/orderDispatchInfo.xhtml">
+        <ui:param name="dispatch" value="#{dispatchHome.instance}"/>
+    </ui:include>
+
+    <div style="clear: both"/>
+
+</rich:collapsiblePanel>
+
+<br/>
+<rich:collapsiblePanel switchType="client" header="#{messages.order_info}">
+
+
+
+    <s:decorate template="/layout/erp/publicOrderInfo.xhtml">
+        <div style="clear: both;"/>
+        <s:decorate template="/layout/view-details.xhtml">
+            <ui:include src="/layout/erp/CustomerView.xhtml">
+
+                <ui:param name="customer" value="#{orderHome.instance.customer}"/>
+
+            </ui:include>
+            <ui:param name="labelValue" value="#{orderHome.instance.customer.name}"/>
+            <ui:param name="openLabel" value="#{messages.Customer}"/>
+            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_contact}</ui:define>
+            <h:outputText value="#{orderHome.instance.contact}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_tel}</ui:define>
+            <h:outputText value="#{orderHome.instance.tel}"/>
+        </s:decorate>
+
+
+
+    </s:decorate>
+
+</rich:collapsiblePanel>
+
+</ui:define>
+
+</ui:composition>

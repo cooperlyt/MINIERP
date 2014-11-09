@@ -2979,7 +2979,6 @@
       <column name="CLOSE_DATE" sqlType="TIMESTAMP" precision="19" scale="0" nullable="false" jdbcType="93" def="JzAwMDAtMDAtMDAgMDA6MDA6MDAn"/>
       <primary-key name="PRIMARY" columns="ID"/>
       <exported-key name="ACCOUNT_CHECK_OUT_ibfk_1" table="ACCOUNT_CHECK_OUT" schema="" catalog="MINI_ERP" columns="CHECKOUT"/>
-      <exported-key name="STOCK_ACCOUNT_ibfk_2" table="STOCK_ACCOUNT" schema="" catalog="MINI_ERP" columns="CHECKOUT"/>
     </table>
     <table name="CUSTOMER" schema="" catalog="MINI_ERP" type="TABLE">
       <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>
@@ -3006,11 +3005,11 @@
       <column name="INIT_AD" sqlType="DECIMAL" precision="19" scale="4" nullable="true" jdbcType="3"/>
       <column name="REBATE_PROGRAM" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="ID"/>
-      <foreign-key name="CUSTOMER_ibfk_5" columns="REBATE_PROGRAM" ref-table="REBATE_PROGRAM" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="CUSTOMER_ibfk_1" columns="LEVEL" ref-table="CUSTOMER_LEVEL" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="CUSTOMER_ibfk_2" columns="MIDDLE_MAN" ref-table="MIDDLE_MAN" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="CUSTOMER_ibfk_3" columns="CUSTOMER_AREA" ref-table="CUSTOMER_AREA" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="CUSTOMER_ibfk_4" columns="REBATE_PROGRAM" ref-table="REBATE_PROGRAM" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="CUSTOMER_ibfk_5" columns="REBATE_PROGRAM" ref-table="REBATE_PROGRAM" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="ACCOUNT_OPER_ibfk_3" table="ACCOUNT_OPER" schema="" catalog="MINI_ERP" columns="CUSTOM"/>
       <exported-key name="CUSTOMER_CONTACT_ibfk_1" table="CUSTOMER_CONTACT" schema="" catalog="MINI_ERP" columns="CUSTOMER"/>
       <exported-key name="CUSTOMER_ORDER_ibfk_1" table="CUSTOMER_ORDER" schema="" catalog="MINI_ERP" columns="CUSTOMER_ID"/>
@@ -3146,15 +3145,31 @@
       <column name="CHECKED_DATE" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93" remarks="5a6h5qC45pel5pyfIDog5YWl5bqT5pel5pyf"/>
       <column name="MEMO" sqlType="VARCHAR" precision="200" scale="0" nullable="true" jdbcType="12" remarks="5aSH5rOo"/>
       <column name="STORE" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="U1RPUkU="/>
-      <column name="LOSS_RES" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12" remarks="55uY5LqP"/>
-      <column name="ADD_RES" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12" remarks="55uY55uI"/>
       <column name="TYPE" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="55uY54K557G75Z6L"/>
       <column name="STOCK_CHANGED" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7" remarks="5bqT5a2Y5bey5pS55Y+Y"/>
       <column name="APPLY_EMP" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="6LSf6LSj5Lq6"/>
+      <column name="CHECK_YEAR" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="CHECK_MONTH" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="CHECK_EMP" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12"/>
+      <column name="LOSS_RES" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12"/>
+      <column name="ADD_RES" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="ID"/>
       <foreign-key name="INVENTORY_ibfk_1" columns="STORE" ref-table="STORE" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="INVENTORY_ibfk_2" columns="ADD_RES" ref-table="STOCK_CHANGE" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="INVENTORY_ibfk_3" columns="LOSS_RES" ref-table="STOCK_CHANGE" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="INVENTORY_ITEM_ibfk_1" table="INVENTORY_ITEM" schema="" catalog="MINI_ERP" columns="INVENTORY"/>
+    </table>
+    <table name="INVENTORY_ITEM" schema="" catalog="MINI_ERP" type="TABLE">
+      <column name="INVENTORY" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SU5WRU5UT1JZ"/>
+      <column name="STOCK" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="U1RPQ0s="/>
+      <column name="BEFOR_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="5pyf5Yid5pWw6YeP"/>
+      <column name="LAST_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="5pyf5pyr5pWw6YeP"/>
+      <column name="CHANGE_ITEM" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12" remarks="55uY55uIL+ebmOS6j+mhuQ=="/>
+      <column name="CHANGE_TYPE" sqlType="VARCHAR" precision="20" scale="0" nullable="false" jdbcType="12" remarks="5pu05pS557G75Z6LIDog5bmzL+ebmOebiC/nm5jkuo8="/>
+      <column name="CHANGE_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="Q0hBTkdFX0NPVU5U"/>
+      <column name="MEMO" sqlType="VARCHAR" precision="200" scale="0" nullable="true" jdbcType="12" remarks="5aSH5rOo"/>
+      <primary-key name="PRIMARY" columns="INVENTORY,STOCK"/>
+      <foreign-key name="INVENTORY_ITEM_ibfk_3" columns="CHANGE_ITEM" ref-table="STOCK_CHANGE_ITEM" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="INVENTORY_ITEM_ibfk_1" columns="INVENTORY" ref-table="INVENTORY" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="INVENTORY_ITEM_ibfk_2" columns="STOCK" ref-table="STOCK" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="MATERIAL_BACK_STORE_IN" schema="" catalog="MINI_ERP" type="TABLE">
       <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>
@@ -3442,8 +3457,8 @@
       <column name="ZERO_ITEM" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7" remarks="WkVST19JVEVN"/>
       <column name="PATCH_ITEM" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7" remarks="UEFUQ0hfSVRFTQ=="/>
       <primary-key name="PRIMARY" columns="ID"/>
-      <exported-key name="CUSTOMER_ibfk_5" table="CUSTOMER" schema="" catalog="MINI_ERP" columns="REBATE_PROGRAM"/>
       <exported-key name="CUSTOMER_ibfk_4" table="CUSTOMER" schema="" catalog="MINI_ERP" columns="REBATE_PROGRAM"/>
+      <exported-key name="CUSTOMER_ibfk_5" table="CUSTOMER" schema="" catalog="MINI_ERP" columns="REBATE_PROGRAM"/>
       <exported-key name="MIDDLE_MAN_ibfk_1" table="MIDDLE_MAN" schema="" catalog="MINI_ERP" columns="REBATE_PROGRAM"/>
       <exported-key name="ORDER_ITEM_REBATE_ibfk_3" table="ORDER_ITEM_REBATE" schema="" catalog="MINI_ERP" columns="PROGRAM"/>
     </table>
@@ -3526,8 +3541,8 @@
       <exported-key name="RES_ibfk_3" table="RES" schema="" catalog="MINI_ERP" columns="MASTER_UNIT"/>
       <exported-key name="RES_ibfk_4" table="RES" schema="" catalog="MINI_ERP" columns="IN_DEFAULT"/>
       <exported-key name="SALER_PRICE_ibfk_4" table="SALER_PRICE" schema="" catalog="MINI_ERP" columns="RES_UNIT"/>
-      <exported-key name="SALER_STORE_RES_PRICE_ibfk_4" table="SALER_STORE_RES_PRICE" schema="" catalog="MINI_ERP" columns="RES_UNIT"/>
       <exported-key name="SALER_STORE_RES_PRICE_ibfk_1" table="SALER_STORE_RES_PRICE" schema="" catalog="MINI_ERP" columns="RES_UNIT"/>
+      <exported-key name="SALER_STORE_RES_PRICE_ibfk_4" table="SALER_STORE_RES_PRICE" schema="" catalog="MINI_ERP" columns="RES_UNIT"/>
       <exported-key name="STORE_RES_REBATE_ibfk_1" table="STORE_RES_REBATE" schema="" catalog="MINI_ERP" columns="CALC_UNIT"/>
     </table>
     <table name="SALER_PRICE" schema="" catalog="MINI_ERP" type="TABLE">
@@ -3537,10 +3552,10 @@
       <column name="PRICE" sqlType="DECIMAL" precision="19" scale="3" nullable="false" jdbcType="3" remarks="UFJJQ0U="/>
       <column name="MIDDLE_MAN" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="TUlERExFX01BTg=="/>
       <primary-key name="PRIMARY" columns="ID"/>
-      <foreign-key name="SALER_PRICE_ibfk_4" columns="RES_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="SALER_PRICE_ibfk_1" columns="RES" ref-table="RES" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="SALER_PRICE_ibfk_2" columns="MIDDLE_MAN" ref-table="MIDDLE_MAN" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="SALER_PRICE_ibfk_3" columns="RES" ref-table="RES" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="SALER_PRICE_ibfk_4" columns="RES_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="SALER_STORE_RES_PRICE_ibfk_2" table="SALER_STORE_RES_PRICE" schema="" catalog="MINI_ERP" columns="RES_PRICE"/>
     </table>
     <table name="SALER_STORE_RES_PRICE" schema="" catalog="MINI_ERP" type="TABLE">
@@ -3550,10 +3565,10 @@
       <column name="RES_UNIT" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="UkVTX1VOSVQ="/>
       <column name="PRICE" sqlType="DECIMAL" precision="19" scale="3" nullable="false" jdbcType="3" remarks="UFJJQ0U="/>
       <primary-key name="PRIMARY" columns="ID"/>
-      <foreign-key name="SALER_STORE_RES_PRICE_ibfk_4" columns="RES_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="SALER_STORE_RES_PRICE_ibfk_1" columns="RES_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="SALER_STORE_RES_PRICE_ibfk_2" columns="RES_PRICE" ref-table="SALER_PRICE" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="SALER_STORE_RES_PRICE_ibfk_3" columns="STORE_RES" ref-table="STORE_RES" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="SALER_STORE_RES_PRICE_ibfk_4" columns="RES_UNIT" ref-table="RES_UNIT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="SALE_PREPARED" schema="" catalog="MINI_ERP" type="TABLE">
       <column name="_WORD" sqlType="VARCHAR" precision="10" scale="0" nullable="false" jdbcType="12" remarks="5Yet6K+B5a2X"/>
@@ -3589,20 +3604,10 @@
       <primary-key name="PRIMARY" columns="ID"/>
       <foreign-key name="STOCK_ibfk_1" columns="STORE" ref-table="STORE" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="STOCK_ibfk_2" columns="RES" ref-table="STORE_RES" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="INVENTORY_ITEM_ibfk_2" table="INVENTORY_ITEM" schema="" catalog="MINI_ERP" columns="STOCK"/>
       <exported-key name="NO_CONVERT_COUNT_ibfk_2" table="NO_CONVERT_COUNT" schema="" catalog="MINI_ERP" columns="STOCK"/>
-      <exported-key name="STOCK_ACCOUNT_ibfk_1" table="STOCK_ACCOUNT" schema="" catalog="MINI_ERP" columns="STOCK"/>
       <exported-key name="STOCK_CHANGE_ITEM_ibfk_1" table="STOCK_CHANGE_ITEM" schema="" catalog="MINI_ERP" columns="STOCK"/>
       <index name="STOCE_STORE_RES_UNIQUE" unique="true" columns="RES,STORE"/>
-    </table>
-    <table name="STOCK_ACCOUNT" schema="" catalog="MINI_ERP" type="TABLE">
-      <column name="CHECKOUT" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" remarks="Q0hFQ0tPVVQ="/>
-      <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>
-      <column name="STOCK" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="U1RPQ0s="/>
-      <column name="BEGIN_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="QkVHSU5fQ09VTlQ="/>
-      <column name="CLOSE_COUNT" sqlType="DECIMAL" precision="19" scale="4" nullable="false" jdbcType="3" remarks="Q0xPU0VfQ09VTlQ="/>
-      <primary-key name="PRIMARY" columns="ID"/>
-      <foreign-key name="STOCK_ACCOUNT_ibfk_1" columns="STOCK" ref-table="STOCK" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="STOCK_ACCOUNT_ibfk_2" columns="CHECKOUT" ref-table="CHECK_OUT" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="STOCK_CHANGE" schema="" catalog="MINI_ERP" type="TABLE">
       <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>
@@ -3621,8 +3626,6 @@
       <exported-key name="ASSEMBLY_ibfk_3" table="ASSEMBLY" schema="" catalog="MINI_ERP" columns="LOSE_OUT"/>
       <exported-key name="BACK_DISPATCH_ibfk_2" table="BACK_DISPATCH" schema="" catalog="MINI_ERP" columns="STOCK_CNAHGE"/>
       <exported-key name="DISPATCH_ibfk_4" table="DISPATCH" schema="" catalog="MINI_ERP" columns="STOCK_CHANGE"/>
-      <exported-key name="INVENTORY_ibfk_2" table="INVENTORY" schema="" catalog="MINI_ERP" columns="ADD_RES"/>
-      <exported-key name="INVENTORY_ibfk_3" table="INVENTORY" schema="" catalog="MINI_ERP" columns="LOSS_RES"/>
       <exported-key name="MATERIAL_BACK_STORE_IN_ibfk_1" table="MATERIAL_BACK_STORE_IN" schema="" catalog="MINI_ERP" columns="STORE_CHANGE"/>
       <exported-key name="MATERIAL_STORE_IN_ibfk_1" table="MATERIAL_STORE_IN" schema="" catalog="MINI_ERP" columns="STORE_CHANGE"/>
       <exported-key name="MATERIAL_STORE_OUT_ibfk_1" table="MATERIAL_STORE_OUT" schema="" catalog="MINI_ERP" columns="STORE_CHANGE"/>
@@ -3643,6 +3646,7 @@
       <foreign-key name="STOCK_CHANGE_ITEM_ibfk_1" columns="STOCK" ref-table="STOCK" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="STOCK_CHANGE_ITEM_ibfk_2" columns="STORE_CHANGE" ref-table="STOCK_CHANGE" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="STOCK_CHANGE_ITEM_ibfk_3" columns="STORE_RES" ref-table="STORE_RES" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="INVENTORY_ITEM_ibfk_3" table="INVENTORY_ITEM" schema="" catalog="MINI_ERP" columns="CHANGE_ITEM"/>
       <exported-key name="NO_CONVERT_COUNT_ibfk_4" table="NO_CONVERT_COUNT" schema="" catalog="MINI_ERP" columns="STOCK_CHANGE"/>
     </table>
     <table name="STORE" schema="" catalog="MINI_ERP" type="TABLE">

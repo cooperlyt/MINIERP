@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+
+    <s:span styleClass="value">
+        <h:panelGrid columns="2">
+            <rich:autocomplete id="pinyinSearchMiddleMan" mode="client" minChars="1"
+                               autofill="false" showButton="true"
+                               selectFirst="true"
+                               label="#{messages.MiddleMan}"
+                               clientFilterFunction="pinyinFilter"
+                               autocompleteList="#{validMiddleManList.resultList}"
+                               value="#{middleManHome.pinyinSearchName}"
+                               fetchValue="[#{_middleMan.name}][id:#{_middleMan.id}]"
+                               var="_middleMan">
+
+                <h:outputText value="#{_middleMan.name}"/>
+                <a:ajax event="selectitem"
+                        render="pinyinSearchMiddleMan,middleManDeatilsFields" execute="@this">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+                <a:ajax event="blur" execute="@this"
+                        render="middleManDetails">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </rich:autocomplete>
+            <a:commandButton image="/img/refresh.png" action="#{middleManHome.clearInstance}"
+                             execute="@this"
+                             render="pinyinSearchMiddleMan,middleManDeatilsFields">
+                <a:attachQueue requestdelay="0"/>
+            </a:commandButton>
+        </h:panelGrid>
+
+
+    </s:span>
+
+    <div style="clear:both"/>
+    <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+    <a:outputPanel id="middleManDeatilsFields">
+        <a:outputPanel rendered="#{not middleManHome.idDefined}">
+            <ui:include src="/layout/erp/MiddleManEdit.xhtml">
+            </ui:include>
+
+
+        </a:outputPanel>
+        <a:outputPanel rendered="#{middleManHome.idDefined}">
+            <ui:include src="/layout/erp/MiddleManView.xhtml">
+                <ui:param name="middleMan" value="#{middleManHome.instance}"/>
+            </ui:include>
+        </a:outputPanel>
+    </a:outputPanel>
+
+
+    <div style="clear:both"/>
+
+</ui:composition>

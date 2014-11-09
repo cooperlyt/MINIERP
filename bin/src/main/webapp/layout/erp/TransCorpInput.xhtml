@@ -1,0 +1,57 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+
+    <h:panelGrid style="clear: left; " columns="1">
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.transCorp}</ui:define>
+            <rich:autocomplete id="transCorpPySearch" mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.transCorp}"
+                               clientFilterFunction="pinyinFilter"
+                               autocompleteList="#{validTransCorpList.resultList}"
+                               value="#{transCorpHome.pinyinSearchName}"
+                               fetchValue="[#{_transCopr.name}][id:#{_transCopr.id}]" var="_transCopr">
+
+                <h:outputText value="#{_transCopr.name}"/>
+                <a:ajax event="selectitem"
+                        render="transCorpPySearch,transCorpDetails,#{render}" execute="@this">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+                <a:ajax event="blur" execute="@this"
+                        render="transCorpPySearch">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </rich:autocomplete>
+            <ui:define name="tail">
+                <a:commandButton immediate="true" image="/img/refresh.png"
+                                 action="#{transCorpHome.clearInstance}"
+                                 execute="@this"
+                                 render="transCorpPySearch,transCorpDetails">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </ui:define>
+        </s:decorate>
+        <rich:panel id="transCorpDetails">
+            <h:panelGrid columns="1" rendered="#{transCorpHome.managed}">
+                <ui:include src="/layout/erp/TransCorpDetailsView.xhtml">
+                    <ui:param name="transCorp" value="#{transCorpHome.instance}"/>
+                </ui:include>
+            </h:panelGrid>
+
+            <h:panelGrid columns="1" rendered="#{not transCorpHome.managed}">
+                <ui:include src="/layout/erp/TransCorpDetailsEdit.xhtml"/>
+            </h:panelGrid>
+        </rich:panel>
+    </h:panelGrid>
+</ui:composition>

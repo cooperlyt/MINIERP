@@ -1,0 +1,153 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+    <ui:param name="functionTitle" value="Business Mgr"/>
+
+    <ui:define name="body">
+
+        <h:form id="businessDefine" styleClass="edit">
+
+            <s:decorate id="idField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_field_id}</ui:define>
+                <a:outputPanel id="idInputPanel">
+                    <h:inputText id="id"
+                                 name="#{messages.businessDefine_field_id}"
+                                 disabled="#{businessDefineHome.managed}"
+                                 required="true"
+                                 size="20"
+                                 maxlength="32"
+                                 valueChangeListener="#{businessDefineHome.verifyIdAvailable}"
+                                 value="#{businessDefineHome.instance.id}">
+
+                        <s:validate/>
+                        <a:ajax event="blur" bypassUpdates="true" execute="@this" render="idInputPanel"/>
+                    </h:inputText>
+
+                </a:outputPanel>
+                <ui:define name="tail">
+                    <rich:message for="id"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+                </ui:define>
+            </s:decorate>
+
+            <s:decorate id="wfnameField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_field_wfname}</ui:define>
+                <rich:select id="wfName" value="#{businessDefineHome.instance.wfName}"
+                                 label="#{messages.businessDefine_field_wfname}" required="true"
+                                 style="width:150px;" disabled="#{businessDefineHome.managed}">
+                    <s:selectItems value="#{jpdlNameList}" var="_jpdlName" label="#{_jpdlName}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <rich:validator event="change"/>
+                    <a:ajax event="change" render="wfnameField" />
+                </rich:select>
+
+            </s:decorate>
+
+
+            <s:decorate id="categoryField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_category}</ui:define>
+                <rich:select style="width:150px;" id="category"
+                                 value="#{businessDefineHome.instance.businessCategory}"
+                                 label="#{messages.businessDefine_category}" required="true">
+                    <s:selectItems value="#{businessCategoryList.resultList}" var="_category"
+                                   noSelectionLabel="#{messages.noSelectLabel}" label="#{_category.name}"/>
+                    <a:ajax event="change" render="categoryField" />
+                    <f:converter converterId="systemEntityConverter"/>
+                </rich:select>
+            </s:decorate>
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_field_name}</ui:define>
+                <h:inputText id="name"
+                             name="#{messages.businessDefine_field_name}"
+                             required="true"
+                             size="27"
+                             maxlength="50"
+                             value="#{businessDefineHome.instance.name}">
+                    <rich:validator event="blur"/>
+                </h:inputText>
+                <ui:define name="tail">
+                    <rich:message for="name"
+                                  showDetail="true" showSummary="false" tooltip="true"/>
+                </ui:define>
+            </s:decorate>
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_field_taskService}</ui:define>
+                <h:inputText id="taskService"
+                             name="#{messages.businessDefine_field_taskService}"
+                             size="27"
+                             required="true"
+                             maxlength="100"
+                             value="#{businessDefineHome.instance.taskService}">
+                    <rich:validator event="blur"/>
+
+                </h:inputText>
+                <ui:define name="tail">
+                    <rich:message for="taskService"
+                                  showDetail="true" showSummary="false" tooltip="true"/>
+                </ui:define>
+            </s:decorate>
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_field_startDataValidator}</ui:define>
+                <h:inputText id="startService"
+                             name="#{messages.businessDefine_field_startDataValidator}"
+                             size="27"
+                             maxlength="100"
+                             value="#{businessDefineHome.instance.startDataValidator}">
+                    <rich:validator event="blur"/>
+
+                </h:inputText>
+                <ui:define name="tail">
+                    <rich:message for="startService"
+                                  showDetail="true" showSummary="false" tooltip="true"/>
+                </ui:define>
+            </s:decorate>
+
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_field_operpage}</ui:define>
+                <h:inputText id="operPage"
+                             name="#{messages.businessDefine_field_operpage}"
+                             size="50"
+                             maxlength="200"
+                             value="#{businessDefineHome.instance.startPage}">
+                    <rich:validator event="blur"/>
+                </h:inputText>
+                <ui:define name="tail">
+                    <rich:message for="operPage"
+                                  showDetail="true" showSummary="false" tooltip="true"/>
+                </ui:define>
+            </s:decorate>
+
+            <s:decorate template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.businessDefine_field_memo}</ui:define>
+                <h:inputTextarea value="#{businessDefineHome.instance.memo}" id="memo" cols="49"
+                                 name="#{messages.businessDefine_field_memo}">
+                    <rich:validator event="blur"/>
+                </h:inputTextarea>
+                <ui:define name="tail">
+                    <rich:message for="memo"
+                                  showDetail="true" showSummary="false" tooltip="true"/>
+                </ui:define>
+            </s:decorate>
+
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields}
+            </div>
+            <h:commandButton value="next" action="next"/>
+            <s:button value="cancel" action="cancel"/>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

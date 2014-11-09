@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <a:outputPanel rendered="#{identity.loggedIn}">
+
+        <h:form styleClass="menuContainerTop">
+            <h:selectOneMenu value="#{authInfo.currRoleCategoryId}" style="width: 100%">
+                <s:selectItems value="#{authInfo.functionRoleList}" var="_roleCategory"
+                               noSelectionLabel="#{messages.roleFilter}"
+                               label="#{_roleCategory.name}" itemValue="#{_roleCategory.id}"/>
+
+                <a:ajax execute="@form" listener="#{authInfo.generateFuncCategorys}"
+                        event="valueChange" render="navigationMenuForm"/>
+
+            </h:selectOneMenu>
+        </h:form>
+
+    </a:outputPanel>
+    <a:outputPanel rendered="#{not identity.loggedIn}">
+        <h2>#{messages.PleaseLoginHere}</h2>
+        <rich:panel>
+
+
+
+            <h:form id="loginForm">
+
+                    <h:panelGrid columns="1" rowClasses="prop" >
+
+                        <h:inputText id="username"  style="width: 100%"
+                                     value="#{credentials.username}">
+                            <rich:placeholder value="#{messages.login_userName}"/>
+                        </h:inputText>
+                        <h:inputSecret id="password" style="width: 100%"
+                                       value="#{credentials.password}">
+                            <rich:placeholder value="#{messages.login_password}"/>
+                        </h:inputSecret>
+
+                    </h:panelGrid>
+
+                <div class="actionButtons">
+                    <h:commandButton id="submit" value="#{messages.login}" action="#{identity.login}"/>
+                </div>
+            </h:form>
+        </rich:panel>
+    </a:outputPanel>
+
+
+    <f:subview id="navigation">
+        <h:form id="navigationMenuForm">
+            <rich:panelMenu activeItem="#{currentFunction.id}" rendered="#{identity.loggedIn}"
+                            groupExpandedLeftIcon="triangleUp" groupCollapsedLeftIcon="triangleDown"
+                            topGroupExpandedRightIcon="chevronUp" topGroupCollapsedRightIcon="chevronDown"
+                            itemLeftIcon="disc">
+
+                <a:repeat value="#{authInfo.authenticationFuncCategorys}" var="_category">
+                    <rich:panelMenuGroup label="#{_category.name}"
+                                         expanded="#{currentFunction.funcCategory.id eq _category.id}">
+                        <a:repeat value="#{_category.functionList}" var="_function">
+                            <rich:panelMenuItem execute="@this" label="#{_function.name}"
+                                                action="#{navigation.navigationTo}"
+                                                mode="server" name="#{_function.id}">
+                                <f:param name="functionId" value="#{_function.id}"/>
+                                <a:attachQueue requestDelay="0"/>
+                            </rich:panelMenuItem>
+                        </a:repeat>
+                    </rich:panelMenuGroup>
+                </a:repeat>
+            </rich:panelMenu>
+        </h:form>
+    </f:subview>
+</ui:composition>

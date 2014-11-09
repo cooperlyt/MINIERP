@@ -1,0 +1,299 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="toolbar">
+    <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+        <h:form>
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">#{messages.order_field_createDate}</ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        label="#{messages.order_field_createDate}"
+                        value="#{searchDateArea.dateFrom}">
+                </rich:calendar>
+
+                --
+
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="10"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datePattern}"
+                        label="#{messages.order_field_createDate}"
+                        value="#{searchDateArea.dateTo}">
+                </rich:calendar>
+            </s:decorate>
+
+            <ui:include src="/layout/erp/biz/CustomerSearchCondition.xhtml"/>
+
+
+            <div style="clear:both"/>
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+            <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                <a:outputPanel id="search_buttons">
+                    <div class="actionButtons">
+
+                        <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                        <a:outputPanel id="searchButton">
+                            <a:commandButton value="#{messages.search}"
+                                             execute="@form" render="dataListResult">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </a:outputPanel>
+                    </div>
+                </a:outputPanel>
+            </h:panelGrid>
+        </h:form>
+    </rich:collapsiblePanel>
+</ui:define>
+
+<ui:define name="body">
+<br/>
+<h:form>
+    <rich:dataTable style="width: 100%" value="#{backPrepareMoneyList.resultList}" id="dataListResult" var="_item"
+                    noDataLabel="#{messages.emptyResult}">
+        <f:facet name="footer">
+            <a:outputPanel rendered="#{not empty backPrepareMoneyList.resultList}">
+                <ui:include src="/layout/pageA4jNavigation.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                </ui:include>
+            </a:outputPanel>
+        </f:facet>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.accountOper_field_operDate}"/>
+                    <ui:param name="propertyPath" value="backPrepareMoney.accountOper.operDate"/>
+                </ui:include>
+
+            </f:facet>
+            <a:outputPanel>
+                <h:outputText value="#{_item.accountOper.operDate}">
+                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+                <rich:tooltip styleClass="tooltip-custom-body"
+                              layout="block" mode="client">
+                    <span style="white-space: nowrap"> <h:outputText value="#{_item.accountOper.operDate}">
+                        <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+                    </h:outputText></span>
+
+                </rich:tooltip>
+            </a:outputPanel>
+            <f:facet name="footer">
+                #{messages.recordTotal} #{backPrepareMoneyList.resultCount} #{messages.item}
+            </f:facet>
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.Customer}"/>
+                    <ui:param name="propertyPath" value="backPrepareMoney.accountOper.customer.name"/>
+                </ui:include>
+
+            </f:facet>
+            <ui:include src="/layout/long-text-display.xhtml">
+                <ui:param name="value" value="#{_item.accountOper.customer.name}"/>
+                <ui:param name="size" value="4"/>
+            </ui:include>
+
+
+        </rich:column>
+
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.accountOper_field_operMoney}"/>
+                    <ui:param name="propertyPath" value="backPrepareMoney.accountOper.operMoney"/>
+                </ui:include>
+
+            </f:facet>
+            <h:outputText value="#{_item.accountOper.operMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{backPrepareMoneyList.totalOperMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.accountOper_field_fee}"/>
+                    <ui:param name="propertyPath" value="backPrepareMoney.accountOper.remitFee"/>
+                </ui:include>
+
+            </f:facet>
+
+            <h:outputText value="#{_item.accountOper.remitFee}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{backPrepareMoneyList.totalRemitFee}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+        <rich:column style="text-align: right">
+            <f:facet name="header">
+                #{messages.accountOper_field_realReceiveMoney}
+            </f:facet>
+
+            <h:outputText value="#{_item.accountOper.realMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+            <f:facet name="footer">
+                <h:outputText value="#{backPrepareMoneyList.totalRealMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.accountOper_field_payType}"/>
+                    <ui:param name="propertyPath" value="backPrepareMoney.accountOper.payType"/>
+                </ui:include>
+
+            </f:facet>
+
+            #{messages[_item.accountOper.payType.name()]}
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.accountOper_field_checkNumber}"/>
+                    <ui:param name="propertyPath" value="backPrepareMoney.accountOper.checkNumber"/>
+                </ui:include>
+
+            </f:facet>
+
+            <ui:include src="/layout/long-text-display.xhtml">
+                <ui:param name="value" value="#{_item.accountOper.checkNumber}"/>
+                <ui:param name="size" value="5"/>
+            </ui:include>
+
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{backPrepareMoneyList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.BankAccount}"/>
+                    <ui:param name="propertyPath" value="backPrepareMoney.accountOper.bankAccount.bank"/>
+                </ui:include>
+
+            </f:facet>
+
+            <a:outputPanel rendered="#{not empty _item.accountOper.bankAccount}">
+                <ui:include src="/layout/long-text-display.xhtml">
+                    <ui:param name="value"
+                              value="#{dictionary.getWordValue(_item.accountOper.bankAccount.bank)} - #{_item.accountOper.bankAccount.number}"/>
+                    <ui:param name="size" value="5"/>
+                </ui:include>
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.description}
+
+            </f:facet>
+
+            <ui:include src="/layout/long-text-display.xhtml">
+                <ui:param name="value" value="#{_item.accountOper.description}"/>
+                <ui:param name="size" value="5"/>
+            </ui:include>
+
+        </rich:column>
+
+        <rich:column style="text-align: center;" rendered="#{s:hasRole('erp.finance.accountancy')}">
+            <a:commandButton image="/img/edit.png" action="#{actionExecuteState.clearState}"
+                             render="dateChangeInputPanel_form" title="#{messages.accountOperChangeDate}"
+                             oncomplete="#{rich:component('dateChangeInputPanel')}.show(); return false;">
+                <a:param value="#{_item.id}" assignTo="#{backPrepareMoneyHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+            #{' '}
+            <a:commandButton image="/img/delete.png" action="#{backPrepareMoneyHome.remove}" immediate="true"
+                             render="dataListResult" execute="@this"
+                             onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}">
+                <a:param value="#{_item.id}" assignTo="#{backPrepareMoneyHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </rich:column>
+
+    </rich:dataTable>
+</h:form>
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="dateChangeInputPanel"/>
+    <ui:param name="panelTitle" value="#{messages.accountOperChangeDate}" />
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+    <rich:calendar
+            enableManualInput="true"
+            inputSize="15"
+            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+            datePattern="#{messages.datetimepattern}"
+            label="#{messages.order_field_createDate}"
+            value="#{backPrepareMoneyHome.changeToDate}">
+    </rich:calendar>
+
+    <ui:define name="actionButtons">
+        <a:commandButton immediate="true"
+                         execute="@this" value="#{messages.cancel}"
+                         onclick="#{rich:component(panelId)}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+
+        <a:commandButton value="#{messages.ok}" action="#{backPrepareMoneyHome.changeDate}"
+                         execute="@form" render="dataListResult"
+                oncomplete="#{rich:component(panelId)}.hide();">
+            <a:attachQueue requestDelay="0"/>
+            <a:param value="#{backPrepareMoneyHome.instance.id}" assignTo="#{backPrepareMoneyHome.id}"/>
+        </a:commandButton>
+    </ui:define>
+
+</s:decorate>
+</ui:define>
+
+</ui:composition>
+

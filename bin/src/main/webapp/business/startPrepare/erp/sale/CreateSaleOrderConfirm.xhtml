@@ -1,0 +1,276 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.createOrder}-#{messages.orderConfirm}"/>
+
+    <ui:define name="func-body">
+
+
+        <rich:toolbar>
+
+
+            <rich:toolbarGroup>
+                <h:outputText value="#{orderCreate.instance.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+            </rich:toolbarGroup>
+
+
+            <rich:toolbarGroup location="right">
+                <a:outputPanel ajaxRendered="true">
+
+
+                    <h:panelGroup>
+
+
+                        <s:button value="#{messages.Previous}"
+                                  view="/business/startPrepare/erp/sale/CreateSaleOrderMoney.xhtml">
+                            <f:param name="from" value="#{from}"/>
+                        </s:button>
+
+                        <s:button value="#{messages.cancel}" propagation="end" includePageParams="false"
+                                  view="#{empty from ? '/func/erp/sale/CustomerOrder.xhtml' : from}"/>
+
+
+                        <s:button styleClass="toolBarBtn" value="#{messages.createOrder}"
+                                  action="#{orderCreate.createOrder}">
+                            <f:param name="from" value="#{from}"/>
+                        </s:button>
+
+                    </h:panelGroup>
+
+                </a:outputPanel>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+        <rich:messages ajaxRendered="true" globalOnly="false"/>
+
+        <br/>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_id}</ui:define>
+            <h:outputText value="#{orderCreate.instance.id}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.payType}</ui:define>
+            #{messages[orderCreate.instance.payType.name()]}
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_createDate}</ui:define>
+            <h:outputText value="#{orderCreate.instance.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+            <h:outputText value="#{orderCreate.instance.memo}"/>
+        </s:decorate>
+
+
+        <div style="clear: both"/>
+        <s:decorate template="/layout/view-details.xhtml">
+            <ui:include src="/layout/erp/CustomerView.xhtml">
+
+                <ui:param name="customer" value="#{orderCreate.instance.customer}"/>
+
+            </ui:include>
+            <ui:param name="labelValue" value="#{orderCreate.instance.customer.name}"/>
+            <ui:param name="openLabel" value="#{messages.Customer}"/>
+            <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+        </s:decorate>
+
+        <div style="clear: both"/>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
+            <h:outputText value="#{orderCreate.masterNeedRes.receivePerson}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
+            <h:outputText value="#{orderCreate.masterNeedRes.receiveTel}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_address}</ui:define>
+            <h:outputText value="#{orderCreate.masterNeedRes.address}"/>
+        </s:decorate>
+
+        <div style="clear: both"/>
+        <ui:include src="/layout/erp/biz/OrderMoneyInfo.xhtml">
+            <ui:param name="order" value="#{orderCreate.instance}"/>
+        </ui:include>
+
+        <div style="clear: both"/>
+
+        <a:outputPanel rendered="#{not orderCreate.dispatched}">
+            <ui:include src="/layout/erp/OrderItemTable.xhtml">
+                <ui:param name="orderItems" value="#{orderCreate.allOrderItem}"/>
+                <ui:param name="showState" value="false"/>
+                <ui:param name="totalItemMoney" value="#{orderCreate.instance.resMoney}"/>
+
+            </ui:include>
+        </a:outputPanel>
+
+        <a:outputPanel rendered="#{orderCreate.dispatched}">
+            <ui:include src="/layout/erp/biz/OrderItemDispatchTable.xhtml">
+                <ui:param name="dispatchList" value="#{orderDispatch.dispatchList}"/>
+                <ui:param name="showState" value="false"/>
+                <ui:param name="totalItemMoney" value="#{orderCreate.instance.resMoney}"/>
+            </ui:include>
+        </a:outputPanel>
+
+
+        <rich:dataTable style="width: 100%" rendered="#{not empty orderCreate.instance.resSaleRebateList}" value="#{orderCreate.instance.resSaleRebateList}" var="_resItem">
+            <f:facet name="header">
+                #{messages.orderSaleRebate}
+            </f:facet>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res}
+                </f:facet>
+                #{_resItem.res.name}
+            </rich:column>
+
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemUnitPrice}
+                </f:facet>
+                <h:outputText value="#{_resItem.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.rebate}(%)
+                </f:facet>
+
+                <h:outputText value="#{_resItem.itemRebate}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.Res_Unit}
+                </f:facet>
+                <h:outputText value="#{_resItem.resUnit.name}"/>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.count}
+                </f:facet>
+                <h:outputText value="#{_resItem.count}">
+                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCountBasicRate}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateBasicCount}">
+                    <f:convertNumber pattern="#0.#####"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCountRate}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateRateCount}">
+                    <f:convertNumber pattern="#0.#####"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.orderItemFreeCount}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateCount}">
+                    <f:convertNumber pattern="#{_resItem.resUnit.countFormate}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <f:facet name="header">
+                    #{messages.orderItemFreeMoney}
+                </f:facet>
+                <h:outputText value="#{_resItem.rebateMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{orderCreate.instance.totalResRebateMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.field_memo}
+                </f:facet>
+                <ui:include src="/layout/long-text-display.xhtml">
+                    <ui:param name="value" value="#{_resItem.memo}"/>
+                    <ui:param name="size" value="4"/>
+                </ui:include>
+
+            </rich:column>
+
+        </rich:dataTable>
+
+
+        <rich:dataTable value="#{orderCreate.orderReduces}" var="_reduce" style="width: 100%" rendered="#{not empty orderCreate.orderReduces}" >
+
+            <f:facet name="header">
+                #{messages.orderReduce}
+            </f:facet>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.description}
+                </f:facet>
+                #{_reduce.description}
+
+
+                <f:facet name="footer">
+                    #{messages.recordTotal} #{orderCreate.orderReduces.size} #{messages.item}
+                </f:facet>
+            </rich:column>
+
+            <rich:column style="width:20%; text-align: right;">
+                <f:facet name="header">
+                    #{messages.Money}
+                </f:facet>
+                <h:outputText value="#{_reduce.money}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{orderCreate.reduceMoneyTotal}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+
+            </rich:column>
+
+        </rich:dataTable>
+
+    </ui:define>
+
+</ui:composition>

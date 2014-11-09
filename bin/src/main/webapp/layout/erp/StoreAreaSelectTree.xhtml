@@ -1,0 +1,40 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <s:decorate template="/layout/edit-modalpanel.xhtml">
+        <ui:param name="panelId" value="storeAreaSelectPanel"/>
+        <ui:param name="panelTitle" value="#{messages.pleaseSelectStoreArea}"/>
+        <ui:define name="controls">
+            <a:commandButton immediate="true"
+                             execute="@this" image="/img/close.png"
+                             onclick="#{rich:component('storeAreaSelectPanel')}.hide(); return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </ui:define>
+
+        <ui:define name="formContent">
+            <rich:panel>
+                <rich:tree value="#{store}"
+                           var="_node" toggleType="client"
+                           selectionType="client">
+                    <rich:treeNode>
+                        <a:commandLink value="#{_node.name}" execute="@this" immediate="true"
+                                       render="#{render}"
+                                       oncomplete="#{rich:component('storeAreaSelectPanel')}.hide();">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{_node.id}" assignTo="#{storeAreaHome.id}"/>
+
+                        </a:commandLink>
+
+                    </rich:treeNode>
+                </rich:tree>
+            </rich:panel>
+        </ui:define>
+    </s:decorate>
+
+</ui:composition>

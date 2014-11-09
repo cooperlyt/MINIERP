@@ -1,0 +1,117 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="body">
+        <h:outputStylesheet>
+            .leftColumn {
+                vertical-align: top;
+                width: 150px;
+            }
+
+            .rightColumn {
+                vertical-align: top;
+            }
+        </h:outputStylesheet>
+        <h:panelGrid columns="2" columnClasses="leftColumn,rightColumn" style="width: 100%">
+
+
+            <h:form>
+                <rich:tree id="storeAreaTree" render="details"
+                           var="_node" execute="@region"
+                           selectionChangeListener="#{storeAreaMgr.treeSectionChanged}"
+                           value="#{myStoreAreaTree}"
+                           nodeType="#{_node.type}"
+                           onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                           toggleType="client"
+                           selectionType="ajax">
+                    <rich:treeNode type="store">
+                        #{_node.store.name}
+                    </rich:treeNode>
+                    <rich:treeNode type="area">
+                        #{_node.area.name}
+                    </rich:treeNode>
+                </rich:tree>
+            </h:form>
+
+
+            <h:form id="details">
+                <rich:toolbar id="actions" height="34" itemSeparator="line">
+                    <rich:toolbarGroup rendered="#{not storeAreaMgr.editing}">
+                        <h:graphicImage value="/img/add.png"/>
+                        <a:commandLink value="#{messages.add}" immediate="true"
+                                       execute="@this"
+                                       action="#{storeAreaMgr.createStoreArea}" render="details">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandLink>
+                    </rich:toolbarGroup>
+                    <rich:toolbarGroup rendered="#{not storeAreaMgr.editing}">
+                        <h:graphicImage value="/img/edit.png"/>
+                        <a:commandLink value="#{messages.edit}" immediate="true"
+                                       execute="@this"
+                                       action="#{storeAreaMgr.editStoreArea}" render="details"
+                                       onclick="if (#{not storeAreaMgr.storeAreaSelected}) {alert('#{messages.pleaseSelectStoreArea}'); return false;}">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandLink>
+                    </rich:toolbarGroup>
+
+                    <rich:toolbarGroup location="#{storeAreaMgr.editing?'left':'right'}">
+                        #{storeAreaMgr.selectTitle}
+                    </rich:toolbarGroup>
+
+                    <rich:toolbarGroup rendered="#{storeAreaMgr.editing}" location="right">
+                        <a:commandButton value="#{messages.cancel}" render="details"
+                                         action="#{storeAreaMgr.cancel}" immediate="true" execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                        <a:commandButton value="#{messages.save}"
+                                         action="#{storeAreaMgr.save}"
+                                         execute="@form" render="details,storeAreaTree">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </rich:toolbarGroup>
+                </rich:toolbar>
+                <rich:panel>
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.enable}</ui:define>
+                        <h:selectBooleanCheckbox required="true" value="#{storeAreaHome.instance.enable}"
+                                                 label="#{messages.enable}" disabled="#{not storeAreaMgr.editing}"/>
+                    </s:decorate>
+
+                    <s:decorate id="nameField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.name}</ui:define>
+                        <h:inputText id="name"
+                                     required="true"
+                                     size="50"
+                                     maxlength="50"
+                                     label="#{messages.name}"
+                                     readonly="#{not storeAreaMgr.editing}"
+                                     value="#{storeAreaHome.instance.name}">
+                            <a:ajax event="blur" render="nameField" disabled="#{not storeAreaMgr.editing}"/>
+                        </h:inputText>
+                    </s:decorate>
+
+                    <s:decorate id="descriptionField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.description}</ui:define>
+                        <h:inputTextarea id="description"
+                                         cols="55"
+                                         rows="2"
+                                         readonly="#{not storeAreaMgr.editing}"
+                                         label="#{messages.description}"
+                                         value="#{storeAreaHome.instance.description}"/>
+                    </s:decorate>
+                    <div style="clear:both">
+                        <span class="required">*</span>
+                        #{messages.requiredFields}
+                    </div>
+                </rich:panel>
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+
+</ui:composition>

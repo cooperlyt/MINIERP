@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="firstResult" value="#{customerContactList.firstResult}"/>
+    <param name="sort" value="#{customerContactList.orderColumn}"/>
+    <param name="dir" value="#{customerContactList.orderDirection}"/>
+
+
+    <param name="customerName" value="#{customerContactList.customerName}"/>
+    <param name="contactName" value="#{customerContactList.customerContact.name}"/>
+    <param name="tel" value="#{customerContactList.customerContact.tel}"/>
+    <param name="type" value="#{customerContactList.type}" />
+
+</page>

@@ -1,0 +1,248 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="func-body">
+<h:outputStylesheet>
+    .customerTypeSelectWidth input[type="text"] {
+        width: 100px;
+    }
+
+    .customerLevelSelectWidth input[type="text"] {
+        width: 100px;
+    }
+
+    .provinceSelectWidth input[type="text"] {
+        width: 85px;
+    }
+
+    .citySelectWidth input[type="text"] {
+        width: 95px;
+    }
+</h:outputStylesheet>
+
+
+<rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+    <h:form>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.dateTime}</ui:define>
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.dateTime}"
+                    value="#{searchDateArea.dateFrom}">
+            </rich:calendar>
+
+            --
+
+            <rich:calendar
+                    enableManualInput="true"
+                    inputSize="10"
+                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                    datePattern="#{messages.datePattern}"
+                    label="#{messages.dateTime}"
+                    value="#{searchDateArea.dateTo}">
+            </rich:calendar>
+        </s:decorate>
+
+
+        <ui:include src="/layout/erp/biz/CustomerSearchCondition.xhtml"/>
+
+        <s:decorate
+                template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.customerResContactsTypes}</ui:define>
+            <h:selectBooleanCheckbox value="#{customerResCondition.containStoreOut}">
+                #{messages.SELL_OUT}
+            </h:selectBooleanCheckbox>
+
+            <h:selectBooleanCheckbox value="#{customerResCondition.containResBack}">
+                #{messages.SELL_BACK}
+            </h:selectBooleanCheckbox>
+
+            <h:selectBooleanCheckbox value="#{customerResCondition.containFreeRes}">
+                #{messages.containFreeRes}
+            </h:selectBooleanCheckbox>
+
+        </s:decorate>
+
+
+        <div style="clear:both"/>
+        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        <h:panelGrid columns="1" style="width: 100%; text-align: right">
+            <a:outputPanel id="search_buttons">
+                <div class="actionButtons">
+
+                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                    <a:outputPanel id="searchButton">
+                        <a:commandButton value="#{messages.search}"
+                                         execute="@form" render="dataResult">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{false}" assignTo="#{customerResContactsTotal.onlyModel}"/>
+                        </a:commandButton>
+                    </a:outputPanel>
+                </div>
+            </a:outputPanel>
+        </h:panelGrid>
+
+    </h:form>
+
+
+</rich:collapsiblePanel>
+<br/>
+
+<h:form>
+<a:outputPanel id="dataResult">
+
+
+    <rich:extendedDataTable frozenColumns="3" value="#{customerResContactsTotal.resultList}" var="_item"
+                            style="width: 100%; height: 450px">
+
+        <rich:column width="110px">
+            <f:facet name="header">
+                #{messages.StoreChangeDate}
+            </f:facet>
+            <h:outputText value="#{_item.dispatch.stockChange.operDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </rich:column>
+        <rich:column width="90px">
+            <f:facet name="header">
+                #{messages.Customer}
+            </f:facet>
+
+
+            <h:outputText value="#{_item.needRes.customerOrder.customer.name}"
+                          rendered="#{_item.type eq 'sale'}"/>
+            <h:outputText value="#{_item.orderBack.customer.name}"
+                          rendered="#{_item.type eq 'back'}"/>
+        </rich:column>
+        <rich:column width="230px">
+            <f:facet name="header">
+                #{messages.StoreRes}
+            </f:facet>
+            <a:outputPanel>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="showPropertyLabel" value="false"/>
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                    <ui:param name="showCode" value="false"/>
+                </ui:include>
+
+                <rich:tooltip styleClass="tooltip-custom-body"
+                              layout="block" mode="client">
+                    <span style="white-space: nowrap"> #{_item.storeRes.code}</span>
+
+                </rich:tooltip>
+            </a:outputPanel>
+
+
+        </rich:column>
+        <rich:column width="60px">
+            <f:facet name="header">
+                #{messages.count}
+            </f:facet>
+            <a:outputPanel>
+                <h:outputText value="#{_item.useUnitCount}" style="#{(_item.type eq 'back') ? 'color: red;' : ''}"/>
+                <rich:tooltip styleClass="tooltip-custom-body"
+                              layout="block" mode="client">
+                    <h:panelGrid columns="1">
+                        <span style="white-space: nowrap"> #{messages.MasterUnitCount}: #{_item.displayMasterCount}</span>
+                        <span style="white-space: nowrap"> #{messages.AuxUnitCount}: #{_item.displayAuxCount}</span>
+                    </h:panelGrid>
+                </rich:tooltip>
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column width="30px">
+            <f:facet name="header">
+
+            </f:facet>
+            #{_item.resUnit.name}
+
+        </rich:column>
+
+        <rich:column style="text-align: right" width="70px">
+            <f:facet name="header">
+                #{messages.orderItemUnitPrice}
+            </f:facet>
+            <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
+            <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column width="50px">
+            <f:facet name="header" width="35px">
+                #{messages.rebate}
+            </f:facet>
+            <h:outputText value="#{_item.rebate}" rendered="#{not _item.presentation}">
+                <f:convertNumber pattern="#0.####"/>
+            </h:outputText>
+        </rich:column>
+
+        <rich:column width="90px" style="text-align: right">
+            <f:facet name="header">
+                #{messages.orderItemPrice}
+            </f:facet>
+            <h:outputText value="#{_item.totalMoney}" rendered="#{not _item.presentation}"
+                          style="#{(_item.type eq 'back') ? 'color: red;' : ''}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.needConvertRate}
+            </f:facet>
+            <h:outputText value="#{_item.needConvertRate}"
+                          rendered="#{(_item.type eq 'sale') and not _item.presentation}">
+                <f:convertNumber pattern="#0.#######"/>
+            </h:outputText>
+        </rich:column>
+
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.needItemAdd}
+            </f:facet>
+            <h:outputText value="#{_item.needAddCount}"
+                          rendered="#{(_item.type eq 'sale') and not _item.presentation}">
+                <f:convertNumber pattern="#0.####"/>
+            </h:outputText>
+
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+                #{messages.field_memo}
+            </f:facet>
+            <a:outputPanel>
+                #{_item.memo}
+                <rich:tooltip styleClass="tooltip-custom-body"
+                              layout="block" mode="client">
+                    <span style="white-space: nowrap"> #{_item.memo}</span>
+
+                </rich:tooltip>
+            </a:outputPanel>
+
+        </rich:column>
+
+    </rich:extendedDataTable>
+
+
+</a:outputPanel>
+</h:form>
+</ui:define>
+</ui:composition>

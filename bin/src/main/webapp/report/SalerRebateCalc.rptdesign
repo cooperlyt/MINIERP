@@ -1,0 +1,1064 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
+    <list-property name="userProperties">
+        <structure>
+            <property name="name">Data Cube.Data Set.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.Data Set.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.GROUPDATASET.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.GROUPDATASET.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.Group1.NewTabularHierarchy1.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.Group1.NewTabularHierarchy1.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.GROUPDATASET.width</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.GROUPDATASET.height</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+    </list-property>
+    <property name="Data Cube.Data Set.x">135</property>
+    <property name="Data Cube.Data Set.y">80</property>
+    <property name="Data Cube.GROUPDATASET.x">271</property>
+    <property name="Data Cube.GROUPDATASET.y">25</property>
+    <property name="Data Cube.Group1.NewTabularHierarchy1.x">29</property>
+    <property name="Data Cube.Group1.NewTabularHierarchy1.y">56</property>
+    <property name="Data Cube.GROUPDATASET.width">150</property>
+    <property name="Data Cube.GROUPDATASET.height">200</property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/crosstab.gif</property>
+    <property name="cheatSheet">org.eclipse.birt.report.designer.ui.cheatsheet.crosstab</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="HIDLE_NO_MONEY_ITEM" id="22">
+            <text-property name="helpText">隐藏无提成项</text-property>
+            <text-property name="promptText">隐藏无提成项</text-property>
+            <property name="valueType">static</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">true</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <script-data-source name="Data Source" id="21"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="Data Set" id="24">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">CUSTOMER_ID</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">CUSTOMER_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">ORDER_ID</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">ORDER_DATE</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">RES_ID</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">RES_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">STORE_RES_ID</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">STORE_RES_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">SALE_COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">SALE_UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">SALE_UNIT_MONEY</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">SALE_MONEY</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">SALE_REBATE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">CALC_TYPE</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">REBATE_UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">REBATE_COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">REBATE_MONEY</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">REBATE_UNIT_MONEY</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">ORDER_REBATE_MONEY</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">REBATE_SCALE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">REBATE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">ORDER_CALC_TYPE</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">ORDER_REBATE_SCALE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">ORDER_REBATE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">REBATE_SALER_MONEY</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">CUSTOMER_ID</property>
+                </structure>
+                <structure>
+                    <property name="columnName">CUSTOMER_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">ORDER_ID</property>
+                </structure>
+                <structure>
+                    <property name="columnName">ORDER_DATE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">RES_ID</property>
+                </structure>
+                <structure>
+                    <property name="columnName">RES_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">STORE_RES_ID</property>
+                </structure>
+                <structure>
+                    <property name="columnName">STORE_RES_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">SALE_COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">SALE_UNIT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">SALE_UNIT_MONEY</property>
+                </structure>
+                <structure>
+                    <property name="columnName">SALE_MONEY</property>
+                </structure>
+                <structure>
+                    <property name="columnName">SALE_REBATE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">CALC_TYPE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE_UNIT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE_COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE_MONEY</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE_UNIT_MONEY</property>
+                </structure>
+                <structure>
+                    <property name="columnName">ORDER_REBATE_MONEY</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE_SCALE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">ORDER_CALC_TYPE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">ORDER_REBATE_SCALE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">ORDER_REBATE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE_SALER_MONEY</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">CUSTOMER_ID</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">CUSTOMER_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">ORDER_ID</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">ORDER_DATE</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">RES_ID</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">RES_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">STORE_RES_ID</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">STORE_RES_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">SALE_COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">SALE_UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">SALE_UNIT_MONEY</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">SALE_MONEY</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">SALE_REBATE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">CALC_TYPE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">REBATE_UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">REBATE_COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">REBATE_MONEY</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">REBATE_UNIT_MONEY</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">ORDER_REBATE_MONEY</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">REBATE_SCALE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">REBATE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">ORDER_CALC_TYPE</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">ORDER_REBATE_SCALE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">ORDER_REBATE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">REBATE_SALER_MONEY</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[importPackage(Packages.java.lang);
+importPackage(Packages.java.util);
+importPackage(Packages.org.jboss.seam);  
+importPackage(Packages.com.dgsoft.erp.model); 
+importPackage(Packages.com.dgsoft.common); 
+dictionary = Component.getInstance("dictionary", false);
+resFormatCache = Component.getInstance("resFormatCache",false);
+resHelper = Component.getInstance("resHelper",true);
+messages = Component.getInstance("org.jboss.seam.international.messages", false);
+
+totalData = Component.getInstance("middleManRewardCalc",false).getContainCustomer();
+
+cit = totalData.iterator();
+oit = null;
+it = null;
+
+
+]]></method>
+            <method name="fetch"><![CDATA[if(it == null){
+	if (oit == null){
+		while (cit.hasNext()){
+			citem = cit.next();
+			if (citem.isSelected){
+			
+				break;
+			}
+		}
+		
+	}else{
+	
+	}	
+}
+
+]]></method>
+        </script-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="orientation">landscape</property>
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="7">
+            <column id="8"/>
+            <row id="9">
+                <cell id="10">
+                    <label id="11">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <text-property name="text">Cross Tab</text-property>
+                    </label>
+                </cell>
+            </row>
+        </grid>
+        <table id="465">
+            <property name="width">11.147368421052631in</property>
+            <property name="dataSet">Data Set</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">CUSTOMER_ID</property>
+                    <text-property name="displayName">CUSTOMER_ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CUSTOMER_ID"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">CUSTOMER_NAME</property>
+                    <text-property name="displayName">CUSTOMER_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CUSTOMER_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ORDER_ID</property>
+                    <text-property name="displayName">ORDER_ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ORDER_ID"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ORDER_DATE</property>
+                    <text-property name="displayName">ORDER_DATE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ORDER_DATE"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">RES_ID</property>
+                    <text-property name="displayName">RES_ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["RES_ID"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">RES_NAME</property>
+                    <text-property name="displayName">RES_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["RES_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">STORE_RES_ID</property>
+                    <text-property name="displayName">STORE_RES_ID</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["STORE_RES_ID"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">STORE_RES_NAME</property>
+                    <text-property name="displayName">STORE_RES_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["STORE_RES_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">SALE_COUNT</property>
+                    <text-property name="displayName">SALE_COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["SALE_COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">SALE_UNIT</property>
+                    <text-property name="displayName">SALE_UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["SALE_UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">SALE_UNIT_MONEY</property>
+                    <text-property name="displayName">SALE_UNIT_MONEY</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["SALE_UNIT_MONEY"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">SALE_MONEY</property>
+                    <text-property name="displayName">SALE_MONEY</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["SALE_MONEY"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">SALE_REBATE</property>
+                    <text-property name="displayName">SALE_REBATE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["SALE_REBATE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">CALC_TYPE</property>
+                    <text-property name="displayName">CALC_TYPE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CALC_TYPE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE_UNIT</property>
+                    <text-property name="displayName">REBATE_UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE_UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE_COUNT</property>
+                    <text-property name="displayName">REBATE_COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE_COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE_UNIT_MONEY</property>
+                    <text-property name="displayName">REBATE_UNIT_MONEY</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE_UNIT_MONEY"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE_SCALE</property>
+                    <text-property name="displayName">REBATE_SCALE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE_SCALE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE_MONEY</property>
+                    <text-property name="displayName">REBATE_MONEY</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE_MONEY"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE</property>
+                    <text-property name="displayName">REBATE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">ORDER_CALC_TYPE</property>
+                    <text-property name="displayName">ORDER_CALC_TYPE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ORDER_CALC_TYPE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ORDER_REBATE_MONEY</property>
+                    <text-property name="displayName">ORDER_REBATE_MONEY</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ORDER_REBATE_MONEY"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">ORDER_REBATE_SCALE</property>
+                    <text-property name="displayName">ORDER_REBATE_SCALE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ORDER_REBATE_SCALE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">ORDER_REBATE</property>
+                    <text-property name="displayName">ORDER_REBATE_TOTAL</text-property>
+                    <expression name="expression" type="javascript">row["项合计"] + dataSetRow["ORDER_REBATE"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE_SALER_MONEY</property>
+                    <text-property name="displayName">REBATE_SALER_MONEY</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE_SALER_MONEY"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">售价合计</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>OrderGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["SALE_MONEY"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">客户售价合计</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>CustomerGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["SALE_MONEY"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">项合计</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>OrderGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["REBATE"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>CustomerGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">AVE</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["项合计"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">订单合计</property>
+                    <text-property name="displayName">订单合计</text-property>
+                    <expression name="expression" type="javascript">row["项合计"] + dataSetRow["ORDER_REBATE"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>CustomerGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["订单合计"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="589">
+                <property name="width">0.2in</property>
+            </column>
+            <column id="593">
+                <property name="width">0.15789473684210525in</property>
+            </column>
+            <column id="596">
+                <property name="width">1.8842105263157896in</property>
+            </column>
+            <column id="597">
+                <property name="width">0.7473684210526316in</property>
+            </column>
+            <column id="598">
+                <property name="width">0.7473684210526316in</property>
+            </column>
+            <column id="599">
+                <property name="width">0.7473684210526316in</property>
+            </column>
+            <column id="600">
+                <property name="width">0.6105263157894737in</property>
+            </column>
+            <column id="601">
+                <property name="width">1.1157894736842104in</property>
+            </column>
+            <column id="602">
+                <property name="width">0.7473684210526316in</property>
+            </column>
+            <column id="603">
+                <property name="width">0.7368421052631579in</property>
+            </column>
+            <column id="604">
+                <property name="width">0.7368421052631579in</property>
+            </column>
+            <column id="605">
+                <property name="width">0.7368421052631579in</property>
+            </column>
+            <column id="608">
+                <property name="width">0.7368421052631579in</property>
+            </column>
+            <header>
+                <row id="466">
+                    <cell id="467">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">1</property>
+                        <label id="482">
+                            <text-property name="text">STORE_RES_NAME</text-property>
+                        </label>
+                    </cell>
+                    <cell id="483">
+                        <label id="484">
+                            <text-property name="text">SALE_COUNT</text-property>
+                        </label>
+                    </cell>
+                    <cell id="485">
+                        <label id="486">
+                            <text-property name="text">SALE_UNIT</text-property>
+                        </label>
+                    </cell>
+                    <cell id="487">
+                        <label id="488">
+                            <text-property name="text">SALE_UNIT_MONEY</text-property>
+                        </label>
+                    </cell>
+                    <cell id="489"/>
+                    <cell id="491"/>
+                    <cell id="493">
+                        <label id="494">
+                            <text-property name="text">CALC_TYPE</text-property>
+                        </label>
+                    </cell>
+                    <cell id="495">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">1</property>
+                        <label id="927">
+                            <text-property name="text">ORDER_REBATE_MONEY</text-property>
+                        </label>
+                    </cell>
+                    <cell id="505">
+                        <label id="506">
+                            <text-property name="text">REBATE</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <group id="613">
+                <property name="groupName">CustomerGroup</property>
+                <expression name="keyExpr" type="javascript">row["CUSTOMER_ID"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["CUSTOMER_ID"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="614">
+                        <cell id="615">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                            <data id="917">
+                                <property name="resultSetColumn">CUSTOMER_NAME</property>
+                            </data>
+                        </cell>
+                        <cell id="623"/>
+                        <cell id="624"/>
+                        <cell id="625"/>
+                        <cell id="626"/>
+                        <cell id="627">
+                            <data id="922">
+                                <property name="resultSetColumn">客户售价合计</property>
+                            </data>
+                        </cell>
+                        <cell id="628"/>
+                        <cell id="629">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                        </cell>
+                        <cell id="634">
+                            <data id="935">
+                                <property name="resultSetColumn">Aggregation_1</property>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+                <footer>
+                    <row id="639">
+                        <cell id="640"/>
+                        <cell id="644"/>
+                        <cell id="647"/>
+                        <cell id="648"/>
+                        <cell id="649"/>
+                        <cell id="650"/>
+                        <cell id="651"/>
+                        <cell id="652"/>
+                        <cell id="653"/>
+                        <cell id="654">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                        </cell>
+                        <cell id="659"/>
+                    </row>
+                </footer>
+            </group>
+            <group id="665">
+                <property name="groupName">OrderGroup</property>
+                <expression name="keyExpr" type="javascript">row["ORDER_ID"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["ORDER_ID"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="666">
+                        <cell id="667"/>
+                        <cell id="671">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <data id="768">
+                                <property name="resultSetColumn">ORDER_ID</property>
+                            </data>
+                        </cell>
+                        <cell id="675"/>
+                        <cell id="676"/>
+                        <cell id="677"/>
+                        <cell id="678"/>
+                        <cell id="679">
+                            <data id="921">
+                                <property name="resultSetColumn">售价合计</property>
+                            </data>
+                        </cell>
+                        <cell id="680">
+                            <data id="925">
+                                <property name="resultSetColumn">ORDER_CALC_TYPE</property>
+                            </data>
+                        </cell>
+                        <cell id="681">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">1</property>
+                            <data id="928">
+                                <property name="resultSetColumn">ORDER_REBATE_MONEY</property>
+                            </data>
+                            <data id="926">
+                                <property name="resultSetColumn">ORDER_REBATE_SCALE</property>
+                            </data>
+                        </cell>
+                        <cell id="923">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <data id="929">
+                                <property name="resultSetColumn">ORDER_REBATE</property>
+                            </data>
+                        </cell>
+                        <cell id="686">
+                            <data id="932">
+                                <property name="resultSetColumn">订单合计</property>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+                <footer>
+                    <row id="691">
+                        <cell id="692"/>
+                        <cell id="696"/>
+                        <cell id="699"/>
+                        <cell id="700"/>
+                        <cell id="701"/>
+                        <cell id="702"/>
+                        <cell id="703"/>
+                        <cell id="704"/>
+                        <cell id="705"/>
+                        <cell id="706">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                        </cell>
+                        <cell id="711">
+                            <data id="930">
+                                <property name="resultSetColumn">项合计</property>
+                            </data>
+                        </cell>
+                    </row>
+                </footer>
+            </group>
+            <detail>
+                <row id="515">
+                    <cell id="516"/>
+                    <cell id="524"/>
+                    <cell id="530">
+                        <data id="531">
+                            <property name="resultSetColumn">STORE_RES_NAME</property>
+                        </data>
+                    </cell>
+                    <cell id="532">
+                        <data id="533">
+                            <property name="resultSetColumn">SALE_COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="534">
+                        <data id="535">
+                            <property name="resultSetColumn">SALE_UNIT</property>
+                        </data>
+                    </cell>
+                    <cell id="536">
+                        <data id="537">
+                            <property name="resultSetColumn">SALE_UNIT_MONEY</property>
+                        </data>
+                    </cell>
+                    <cell id="538">
+                        <data id="541">
+                            <property name="resultSetColumn">SALE_REBATE</property>
+                        </data>
+                    </cell>
+                    <cell id="540">
+                        <data id="539">
+                            <property name="resultSetColumn">SALE_MONEY</property>
+                        </data>
+                    </cell>
+                    <cell id="542">
+                        <data id="543">
+                            <property name="resultSetColumn">CALC_TYPE</property>
+                        </data>
+                    </cell>
+                    <cell id="544">
+                        <property name="colSpan">1</property>
+                        <property name="rowSpan">1</property>
+                        <data id="545">
+                            <property name="resultSetColumn">REBATE_UNIT</property>
+                        </data>
+                    </cell>
+                    <cell id="918">
+                        <data id="547">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">true</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">REBATE_COUNT</property>
+                        </data>
+                        <data id="549">
+                            <property name="resultSetColumn">REBATE_UNIT_MONEY</property>
+                        </data>
+                    </cell>
+                    <cell id="919">
+                        <data id="551">
+                            <property name="resultSetColumn">REBATE_SCALE</property>
+                        </data>
+                        <data id="553">
+                            <property name="resultSetColumn">REBATE_MONEY</property>
+                        </data>
+                        <data id="920">
+                            <property name="resultSetColumn">REBATE_SALER_MONEY</property>
+                        </data>
+                    </cell>
+                    <cell id="554">
+                        <data id="555">
+                            <property name="resultSetColumn">REBATE</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="564">
+                    <cell id="565"/>
+                    <cell id="569"/>
+                    <cell id="572"/>
+                    <cell id="573"/>
+                    <cell id="574"/>
+                    <cell id="575"/>
+                    <cell id="576"/>
+                    <cell id="577"/>
+                    <cell id="578"/>
+                    <cell id="579">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">1</property>
+                    </cell>
+                    <cell id="584"/>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="firstResult" value="#{backPrepareMoneyList.firstResult}"/>
+    <param name="sort" value="#{backPrepareMoneyList.orderColumn}"/>
+    <param name="dir" value="#{backPrepareMoneyList.orderDirection}"/>
+
+
+    <param name="customerAreaId" value="#{customerSearchCondition.customerAreaId}"/>
+
+    <param name="customerName" value="#{customerSearchCondition.name}"/>
+
+    <param name="customerType" value="#{customerSearchCondition.type}"/>
+
+    <param name="customerLevelFrom" value="#{customerSearchCondition.levelFrom}" />
+    <param name="customerLevelTo" value="#{customerSearchCondition.levelTo}" />
+
+    <param name="provinceCode" value="#{customerSearchCondition.provinceCode}"/>
+
+    <param name="searchDateFrom" value="#{searchDateArea.dateFrom}"/>
+    <param name="searchDateTo" value="#{searchDateArea.dateTo}"/>
+
+</page>

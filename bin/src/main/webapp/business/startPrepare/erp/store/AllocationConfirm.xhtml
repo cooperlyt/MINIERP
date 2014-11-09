@@ -1,0 +1,290 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages[allocationHome.instance.type.name()]}"/>
+
+
+    <ui:define name="toolbar">
+
+        <h:outputStylesheet>
+            .lastSubTableFooter {
+                width: 1px;
+                background: #{a4jSkin.tableBackgroundColor};
+        }
+        </h:outputStylesheet>
+
+        <rich:toolbar>
+
+
+            <rich:toolbarGroup location="right">
+                <s:button style="toolBarBtn" value="#{messages.Previous}"
+                          view="#{(allocationHome.instance.type eq 'ALLOCATION') ? '/business/startPrepare/erp/store/AllocationStoreOut.xhtml' : '/business/startPrepare/erp/store/AllocationApply.xhtml' }" />
+
+                <s:button styleClass="toolBarBtn" value="#{messages.createAllocation}" rendered="#{allocationHome.instance.type eq 'ALLOCATION_APPLY'}"
+                          action="#{allocationCreateApply.complete}"/>
+
+
+                <s:button styleClass="toolBarBtn" value="#{messages.createAllocation}" rendered="#{allocationHome.instance.type eq 'ALLOCATION'}"
+                          action="#{allocationCreateStoreOut.create}"/>
+            </rich:toolbarGroup>
+
+        </rich:toolbar>
+    </ui:define>
+
+    <ui:define name="body">
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.Allocation_field_reason}
+            </ui:define>
+            #{dictionary.getWordValue(allocationHome.instance.reason)}
+
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml" rendered="#{allocationHome.instance.type eq 'ALLOCATION_APPLY'}">
+            <ui:define name="label">
+                #{messages.Allocation_field_createDate}
+            </ui:define>
+            <h:outputText value="#{allocationHome.instance.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml" rendered="#{allocationHome.instance.type eq 'ALLOCATION'}">
+            <ui:define name="label">
+                #{messages.Allocation_field_storeOutDate}
+            </ui:define>
+            <h:outputText value="#{stockChangeHome.instance.operDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+
+        </s:decorate>
+
+
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.Allocation_field_outStore}</ui:define>
+
+            #{allocationHome.instance.outStore.name} (#{allocationHome.instance.outStore.id})
+
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.Allocation_field_inStore}</ui:define>
+            #{allocationHome.instance.inStore.name} (#{allocationHome.instance.inStore.id})
+        </s:decorate>
+
+
+        <div style="clear: both"/>
+
+        <br/>
+
+        <a:outputPanel rendered="#{allocationHome.instance.type eq 'ALLOCATION'}">
+
+
+            <rich:dataTable style="width: 100%"
+                            value="#{allocationCreateStoreOut.stockOutGroup}"
+                            var="_res">
+                <f:facet name="header">
+                    <rich:columnGroup>
+                        <rich:column rowspan="2" colspan="3">
+                            #{messages.StoreRes}
+                        </rich:column>
+                        <rich:column colspan="2">
+                            #{messages.count}
+                        </rich:column>
+                        <rich:column breakRowBefore="true">
+                            #{messages.MasterUnitCount}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.AuxUnitCount}
+                        </rich:column>
+                    </rich:columnGroup>
+                </f:facet>
+
+                <rich:column colspan="3" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                    <rich:collapsibleSubTableToggler for="sbtbl_n_format"/>
+                    #{_res.key.name}(#{_res.key.code})
+                </rich:column>
+
+                <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                    <h:outputText value="#{_res.totalData.masterUnitCount}">
+                        <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+                    </h:outputText>
+                    #{_res.key.unitGroup.masterUnit.name}
+                </rich:column>
+
+                <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                    <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                        <h:outputText value="#{_res.totalData.auxUnitCount}">
+                            <f:convertNumber
+                                    pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                        </h:outputText>
+                        #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                    </a:outputPanel>
+                </rich:column>
+
+                <rich:collapsibleSubTable expandMode="client" value="#{_res.childGroup}" var="_format"
+                                          id="sbtbl_n_format">
+                    <rich:column style="width: 1px"/>
+                    <rich:column colspan="4">
+                        <rich:collapsibleSubTableToggler event="none" for="sbtbl_n_item"/>
+                        #{_format.key.formatTitle}
+                    </rich:column>
+
+                    <rich:collapsibleSubTable expandMode="client" value="#{_format.values}" var="_item" id="sbtbl_n_item">
+                        <rich:column style="width: 1px" footerClass="lastSubTableFooter"/>
+                        <rich:column style="width: 1px"/>
+                        <rich:column>
+                            <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                                          value="#{_item.storeRes.floatConversionRate}">
+                                <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+                            </h:outputText>
+                            <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
+                                          rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                        </rich:column>
+
+
+                        <rich:column>
+                            #{_item.displayMasterCount}
+                            <f:facet name="footer">
+                                <h:outputText value="#{_format.totalData.masterUnitCount}">
+                                    <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+                                </h:outputText>
+                                #{_res.key.unitGroup.masterUnit.name}
+                            </f:facet>
+                        </rich:column>
+                        <rich:column>
+                            #{_item.displayAuxCount}
+                            <f:facet name="footer">
+                                <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                                    <h:outputText value="#{_format.totalData.auxUnitCount}">
+                                        <f:convertNumber
+                                                pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                                    </h:outputText>
+                                    #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                                </a:outputPanel>
+                            </f:facet>
+                        </rich:column>
+
+
+                    </rich:collapsibleSubTable>
+
+                </rich:collapsibleSubTable>
+
+            </rich:dataTable>
+
+
+        </a:outputPanel>
+
+
+        <rich:dataTable rendered="#{allocationHome.instance.type eq 'ALLOCATION_APPLY'}" style="width: 100%"
+                        value="#{allocationCreateApply.applyGroup}"
+                        var="_res">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column rowspan="2" colspan="3">
+                        #{messages.StoreRes}
+                    </rich:column>
+                    <rich:column colspan="2">
+                        #{messages.count}
+                    </rich:column>
+                    <rich:column breakRowBefore="true">
+                        #{messages.MasterUnitCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.AuxUnitCount}
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+
+            <rich:column colspan="3" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                <rich:collapsibleSubTableToggler for="sbtbl_n_format_2"/>
+                #{_res.key.name}(#{_res.key.code})
+            </rich:column>
+
+            <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                <h:outputText value="#{_res.totalData.masterUnitCount}">
+                    <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+                </h:outputText>
+                #{_res.key.unitGroup.masterUnit.name}
+            </rich:column>
+
+            <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
+                <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                    <h:outputText value="#{_res.totalData.auxUnitCount}">
+                        <f:convertNumber
+                                pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                    </h:outputText>
+                    #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                </a:outputPanel>
+            </rich:column>
+
+            <rich:collapsibleSubTable expandMode="client" value="#{_res.childGroup}" var="_format"
+                                      id="sbtbl_n_format_2">
+                <rich:column style="width: 1px"/>
+                <rich:column colspan="4">
+                    <rich:collapsibleSubTableToggler event="none" for="sbtbl_n_item"/>
+                    #{_format.key.formatTitle}
+                </rich:column>
+
+                <rich:collapsibleSubTable expandMode="client" value="#{_format.values}" var="_item" id="sbtbl_n_item">
+                    <rich:column style="width: 1px" footerClass="lastSubTableFooter"/>
+                    <rich:column style="width: 1px"/>
+                    <rich:column>
+                        <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                                      value="#{_item.storeRes.floatConversionRate}">
+                            <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+                        </h:outputText>
+                        <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
+                                      rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                    </rich:column>
+
+
+                    <rich:column>
+                        #{_item.displayMasterCount}
+                        <f:facet name="footer">
+                            <h:outputText value="#{_format.totalData.masterUnitCount}">
+                                <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
+                            </h:outputText>
+                            #{_res.key.unitGroup.masterUnit.name}
+                        </f:facet>
+                    </rich:column>
+                    <rich:column>
+                        #{_item.displayAuxCount}
+                        <f:facet name="footer">
+                            <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
+                                <h:outputText value="#{_format.totalData.auxUnitCount}">
+                                    <f:convertNumber
+                                            pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                                </h:outputText>
+                                #{_res.key.unitGroup.floatAuxiliaryUnit.name}
+                            </a:outputPanel>
+                        </f:facet>
+                    </rich:column>
+
+
+                </rich:collapsibleSubTable>
+
+            </rich:collapsibleSubTable>
+
+        </rich:dataTable>
+
+    </ui:define>
+
+</ui:composition>

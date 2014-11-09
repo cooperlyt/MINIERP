@@ -1,0 +1,104 @@
+<components xmlns="http://jboss.org/schema/seam/components"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation=
+                    "http://jboss.org/schema/seam/components http://jboss.org/schema/seam/components-2.3.xsd">
+
+    <component name="systemEntityConverter" scope="conversation" precedence="20"
+               class="org.jboss.seam.ui.EntityConverter">
+        <property name="entityLoader">#{systemEntityLoader}</property>
+    </component>
+
+    <component name="provinceList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select province from Province province order by province.priority</property>
+    </component>
+
+
+
+    <component name="systemParamList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select systemParam from SystemParam systemParam</property>
+    </component>
+
+    <component name="businessCategoryList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select bc from BusinessCategory bc</property>
+    </component>
+
+    <component name="wordCategoryList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select wc from WordCategory wc</property>
+    </component>
+
+    <component name="userWordCategoryList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select wc from WordCategory wc where wc.system = false</property>
+    </component>
+
+    <component name="funcCategoryListInfo" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select funcCategory from FuncCategory funcCategory order by funcCategory.priority desc</property>
+    </component>
+
+    <component name="funcList" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
+        <property name="ejbql">select function from Function function where function.funcCategory.id = &apos;#{funcCategoryHome.instance.id}&apos; order by function.priority desc</property>
+    </component>
+
+    <component name="funcCategoryListCount" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
+        <property name="ejbql">select count(funcCategory.id) from FuncCategory funcCategory</property>
+    </component>
+
+    <component name="funcListCount" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
+        <property name="ejbql">select count(function.id) from Function function where function.funcCategory.id = &apos;#{funcCategoryHome.instance.id}&apos;</property>
+    </component>
+
+    <component name="rootOrganizationList" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
+        <property name="ejbql">select org from Organization org where root = true</property>
+    </component>
+
+    <component name="allOrganizationList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select org from Organization org</property>
+    </component>
+
+    <component name="wordCategoryList" class="com.dgsoft.common.system.SystemEntityQuery" scope="conversation">
+        <property name="ejbql">select wordCategory from WordCategory wordCategory</property>
+    </component>
+
+   <component name="selectBusinessDefineList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
+        <property name="ejbql">select businessDefine from BusinessDefine businessDefine order by businessDefine.name</property>
+   </component>
+
+    <component name="allRoleCategoryList" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
+        <property name="ejbql">select roleCategory from RoleCategory roleCategory order by roleCategory.priority</property>
+    </component>
+
+    <component name="roleList" class="com.dgsoft.common.system.SystemEntityQuery" scope="event">
+        <property name="ejbql">select role from Role role order by role.name</property>
+    </component>
+
+    <component name="assignFuncList" class="com.dgsoft.common.system.SystemEntityQuery" scope="page">
+        <property name="ejbql">select function from Function function order by function.name</property>
+    </component>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.SystemParam">
+        <action execute="#{systemParamList.refresh}"/>
+        <action execute="#{runParam.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.Person">
+        <action execute="#{personList.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.Function">
+        <action execute="#{funcList.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.FuncCategory">
+        <action execute="#{funcCategoryListInfo.refresh}"/>
+    </event>
+    <event type="org.jboss.seam.afterTransactionSuccess.Function">
+        <action execute="#{funcCategoryHome.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.WordCategory">
+        <action execute="#{wordCategoryList.refresh}"/>
+    </event>
+
+    <event type="org.jboss.seam.afterTransactionSuccess.BusinessDefine">
+        <action execute="#{businessCategoryList.refresh}"/>
+    </event>
+</components>

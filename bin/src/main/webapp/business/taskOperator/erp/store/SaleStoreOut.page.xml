@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+
+    <navigation from-action="#{orderStoreOut.complete}">
+
+
+        <rule if-outcome="taskComplete">
+            <end-task/>
+            <redirect include-page-params="true"
+                      view-id="/business/taskOperator/erp/store/SaleStoreOutComplete.xhtml">
+                <message severity="INFO">
+                    #{messages.taskCompleted}
+                </message>
+                <param name="dispatchId" value="#{dispatchHome.instance.id}"/>
+
+            </redirect>
+        </rule>
+
+    </navigation>
+
+</page>

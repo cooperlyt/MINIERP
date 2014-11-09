@@ -1,0 +1,83 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+    <s:decorate template="/layout/seam-edit.xhtml">
+        <ui:define name="label">
+            #{messages.accountOper_field_operDate}
+        </ui:define>
+        <rich:calendar
+                enableManualInput="true"
+                inputSize="20"
+                timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                datePattern="#{messages.datetimepattern}"
+                required="true"
+                defaultTime="#{currentTime}"
+                label="#{messages.accountOper_field_operDate}"
+                value="#{customerAccountOper.operDate}" validator="operDateValidator">
+
+        </rich:calendar>
+    </s:decorate>
+
+
+    <a:outputPanel
+            rendered="#{(customerAccountOper.type eq 'CUSTOMER_SAVINGS') or (customerAccountOper.type eq 'DEPOSIT_BACK')}">
+
+        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+            <ui:param name="moneySave" value="#{moneySaveHome.instance}"/>
+        </ui:include>
+    </a:outputPanel>
+    <a:region id="moneyRegion">
+
+        <a:outputPanel id="operMoneyInput">
+            <s:decorate id="operMoneyField1" rendered="#{not (customerAccountOper.type eq 'DEPOSIT_PAY')}" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
+                <h:inputText value="#{customerAccountOper.operMoney}"
+                             label="#{messages.accountOper_field_operMoney}"
+                             converter="javax.faces.BigDecimal" required="true">
+                    <f:validateDoubleRange minimum="0.01"/>
+                    <a:ajax event="blur" execute="@this" render="operMoneyField1,#{render}"/>
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                     currencySymbol=""/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="operMoneyField" rendered="#{(customerAccountOper.type eq 'DEPOSIT_PAY')}" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.accountOper_field_operMoney}</ui:define>
+                <h:inputText value="#{customerAccountOper.operMoney}"
+                             label="#{messages.accountOper_field_operMoney}"
+                             converter="javax.faces.BigDecimal" required="true">
+                    <f:validateDoubleRange minimum="0.01" maximum="#{customerHome.canUseAdvanceMoney}"/>
+                    <a:ajax event="blur" execute="@this" render="operMoneyField,#{render}"/>
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                     currencySymbol=""/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="remitFeeField"
+                        rendered="#{(customerAccountOper.type eq 'CUSTOMER_SAVINGS') or (customerAccountOper.type eq 'DEPOSIT_BACK')}"
+                        template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.accountOper_field_fee}</ui:define>
+                <h:inputText value="#{moneySaveHome.instance.remitFee}"
+                             label="#{messages.accountOper_field_fee}"
+                             required="true"
+                             converter="javax.faces.BigDecimal">
+                    <f:validateDoubleRange minimum="0"/>
+                    <a:ajax event="blur" execute="@this" render="remitFeeField,#{render}"/>
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                     currencySymbol=""/>
+                </h:inputText>
+            </s:decorate>
+        </a:outputPanel>
+    </a:region>
+
+
+</ui:composition>

@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:a="http://richfaces.org/a4j">
+
+    <!-- param: value ,size , readOnly-->
+
+    <a:outputPanel rendered="#{not empty value}">
+
+        <h:outputText value="#{fn:substring(value, 0, size)}"/>
+        <h:outputText value="..." rendered="#{fn:length(value) gt size}"/>
+        <rich:tooltip styleClass="tooltip-custom-body"
+                      layout="block" mode="client"
+                      rendered="#{fn:length(value) gt size}">
+            <span style="white-space: nowrap"> #{value}</span>
+
+        </rich:tooltip>
+    </a:outputPanel>
+
+</ui:composition>

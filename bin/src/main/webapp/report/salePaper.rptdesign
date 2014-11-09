@@ -1,0 +1,1290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
+    <property name="units">in</property>
+    <method name="initialize"><![CDATA[
+importPackage(Packages.java.lang);
+importPackage(Packages.org.jboss.seam);  
+importPackage(Packages.com.dgsoft.erp.model); 
+importPackage(Packages.com.dgsoft.common);
+importPackage(Packages.java.math); 
+dictionary = Component.getInstance("dictionary", false);
+messages = Component.getInstance("org.jboss.seam.international.messages", false);
+	orderHome = Component.getInstance("orderHome",false);
+	if (orderHome == null){
+		orderHome = Component.getInstance("orderHome",true);
+		orderHome.setId(params["orderId"].value);
+	}
+	orderItems = Component.getInstance("orderHome",false).getInstance().getAllOrderItemList();
+	salerName = dictionary.getEmpNameById(orderHome.getInstance().getOrderEmp());
+	saleDate = orderHome.getInstance().getCreateDate();
+	orderNumber = orderHome.getInstance().getId();
+	saleAreaName = orderHome.getInstance().getCustomer().getCustomerArea().getName();
+	customerName = orderHome.getInstance().getCustomer().getName();
+	orderRebate = orderHome.getInstance().getTotalRebate();
+	orderMoney= orderHome.getInstance().getMoney();
+	orderRebateMoney = orderHome.getInstance().getResMoney().subtract(orderHome.getInstance().getTotalRebateMoney())
+	
+	
+	if (orderHome.getInstance().isMoneyComplete()){
+		orderState = messages.get("order_field_moneyComplete_true"); 
+	}else{
+		orderState = messages.get("order_field_moneyComplete_false");
+	}
+	orderState += " / ";
+	if (orderHome.getInstance().isAllStoreOut()){
+		orderState +=  messages.get("order_field_allStoreOut_true");
+	}else{
+		orderState +=  messages.get("order_field_allStoreOut_false");
+	}
+
+	orderState += " / ";
+	if (orderHome.getInstance().isResReceived()){
+	 	orderState += messages.get("order_field_resReceived_true"); 
+	}else{ 
+		orderState += messages.get("order_field_resReceived_false");
+	}
+	
+	
+	orderPayType = messages.get(orderHome.getInstance().getPayType().name());
+	
+]]></method>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="orderId" id="152">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="first" id="153">
+            <property name="valueType">static</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">False</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <script-data-source name="Data Source" id="9">
+            <method name="open"><![CDATA[
+
+]]></method>
+        </script-data-source>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="Data Set" id="10">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">COUNT</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">UNIT</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">PRICE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">TOTAL_PRICE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">ITEM_INFO</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">REBATE</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">COUNT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">UNIT</property>
+                </structure>
+                <structure>
+                    <property name="columnName">PRICE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">TOTAL_PRICE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">ITEM_INFO</property>
+                </structure>
+                <structure>
+                    <property name="columnName">REBATE</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">COUNT</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">UNIT</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">PRICE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">TOTAL_PRICE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">ITEM_INFO</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">REBATE</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[
+
+it=orderItems.iterator();
+]]></method>
+            <method name="fetch"><![CDATA[if (it.hasNext()){
+	item = it.next();
+
+	itemTitle = item.getStoreRes().getRes().getName() + " ";
+	
+	
+
+		storeRes = item.getStoreRes();
+		formats = storeRes.getFormatList(); 
+		for(i=0;i++;i<formats.size() -1){
+			format = formats.get(i);
+			itemTitle += format.getFormatDefine().getName() + ":";
+			if (format.getFormatDefine().getDataType().equals(FormatDefine.FormatType.WORD)){
+				itemTitle += dictionary.getWordValue(format.getFormatValue());
+			}else{
+				itemTitle += format.getFormatValue();
+			}						
+		}
+		if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+			
+			itemTitle +=  DataFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat());
+			itemTitle += item.getStoreRes().getRes().getUnitGroup().getName();
+		}
+		
+	
+	
+	row['NAME'] = itemTitle;
+    
+
+
+   	row['UNIT'] = item.getResUnit().getName();
+    row['COUNT'] = DataFormat.format(item.getUseUnitCount(),item.getResUnit().getCountFormate());
+    row['TOTAL_PRICE'] = item.getTotalMoney();
+    row['PRICE'] = item.getMoney();
+    row['REBATE'] = item.getRebate();
+  
+    
+    
+    
+    row['ITEM_INFO'] = itemTitle + "  " + row['COUNT']  + "  " + row['UNIT'];
+
+	return true;
+}else{
+
+
+	return false;
+}]]></method>
+        </script-data-set>
+        <script-data-set name="PayDataSet" id="208">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">date</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">payType</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">fee</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">emp</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">itemInfo</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">money</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">date</property>
+                    <text-property name="displayName">日期</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">payType</property>
+                    <text-property name="displayName">支付方式</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fee</property>
+                    <text-property name="displayName">手续费</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">emp</property>
+                    <text-property name="displayName">收款人</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">itemInfo</property>
+                </structure>
+                <structure>
+                    <property name="columnName">money</property>
+                    <text-property name="displayName">金额</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">date</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">payType</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">fee</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">emp</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">itemInfo</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">money</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[pit = payItems.iterator();]]></method>
+            <method name="fetch"><![CDATA[if (pit.hasNext()){
+	item = pit.next();
+	
+	row['date'] = item.getOperDate();
+	row['payType'] = messages.get(item.getPayType().name());
+	row['fee'] = item.getRemitFee();
+	row['money'] = item.getOperMoney();
+	row['emp'] = dictionary.getEmpNameById(item.getOperEmp());
+	
+	row['ITEM_INFO'] = row['emp'] + "  " + row['payType'] ; 
+	return true;
+}else{
+	return false;
+}]]></method>
+        </script-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="销售单" id="2">
+            <property name="type">custom</property>
+            <property name="orientation">portrait</property>
+            <property name="topMargin">0.25in</property>
+            <property name="leftMargin">0.5cm</property>
+            <property name="bottomMargin">0in</property>
+            <property name="rightMargin">0.5cm</property>
+            <property name="height">29.7cm</property>
+            <property name="width">58mm</property>
+            <property name="showHeaderOnFirst">true</property>
+            <property name="showFooterOnLast">false</property>
+            <property name="headerHeight">0.2cm</property>
+            <property name="footerHeight">0in</property>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="154">
+            <property name="width">1.8854166666666667in</property>
+            <column id="155">
+                <property name="width">0.7291666666666666in</property>
+            </column>
+            <column id="156">
+                <property name="width">1.15625in</property>
+            </column>
+            <row id="173">
+                <cell id="174">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="8">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<CENTER><H2>销售单</H2>(财务联)</CENTER>
+]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="162">
+                <cell id="163">
+                    <label id="172">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="fontWeight">bold</property>
+                        <text-property name="text">销售时间</text-property>
+                    </label>
+                </cell>
+                <cell id="164">
+                    <text id="144">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Long Date">saleDate</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+        <table id="11">
+            <property name="width">1.8541666666666667in</property>
+            <property name="dataSet">Data Set</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">NAME</property>
+                    <text-property name="displayName">NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">COUNT</property>
+                    <text-property name="displayName">COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">UNIT</property>
+                    <text-property name="displayName">UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">TOTAL_PRICE</property>
+                    <text-property name="displayName">TOTAL_PRICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["TOTAL_PRICE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <text-property name="displayName">金额</text-property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["TOTAL_PRICE"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">PRICE</property>
+                    <text-property name="displayName">PRICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PRICE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">ITEM_INFO</property>
+                    <text-property name="displayName">ITEM_INFO</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ITEM_INFO"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <text-property name="displayName">项数</text-property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["ITEM_INFO"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE</property>
+                    <text-property name="displayName">REBATE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">orderRebate</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <expression name="expression" type="javascript">orderMoney</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_2</property>
+                    <expression name="expression" type="javascript">orderRebateMoney</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="35">
+                <property name="width">0.052083333333333336in</property>
+            </column>
+            <column id="36">
+                <property name="width">0.5729166666666666in</property>
+            </column>
+            <column id="91">
+                <property name="width">0.010416666666666666in</property>
+            </column>
+            <column id="190">
+                <property name="width">0.2916666666666667in</property>
+            </column>
+            <column id="37">
+                <property name="width">0.625in</property>
+            </column>
+            <column id="38">
+                <property name="width">0.3020833333333333in</property>
+            </column>
+            <header>
+                <row id="402">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
+                    <cell id="403">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <label id="415">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">订单项</text-property>
+                        </label>
+                    </cell>
+                </row>
+                <row id="521">
+                    <cell id="522">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <grid id="542">
+                            <column id="543"/>
+                            <column id="544"/>
+                            <column id="545"/>
+                            <column id="546"/>
+                            <column id="547"/>
+                            <column id="548"/>
+                            <row id="549">
+                                <cell id="550">
+                                    <label id="14">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">品名</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="551">
+                                    <label id="18">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">数量</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="552">
+                                    <label id="16">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">单位</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="553">
+                                    <label id="92">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">单价</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="554">
+                                    <label id="191">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">折扣</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="555">
+                                    <label id="20">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">金额</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                        </grid>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="21">
+                    <cell id="22">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <data id="93">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="resultSetColumn">ITEM_INFO</property>
+                        </data>
+                    </cell>
+                </row>
+                <row id="79">
+                    <cell id="80"/>
+                    <cell id="81">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="94">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">PRICE</property>
+                        </data>
+                    </cell>
+                    <cell id="188">
+                        <data id="251">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="resultSetColumn">REBATE</property>
+                        </data>
+                    </cell>
+                    <cell id="82">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="86">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">TOTAL_PRICE</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="30">
+                    <property name="borderTopStyle">dashed</property>
+                    <property name="borderTopWidth">thin</property>
+                    <cell id="31">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">1</property>
+                        <grid id="563">
+                            <property name="width">0.5625in</property>
+                            <column id="564"/>
+                            <column id="565"/>
+                            <column id="566"/>
+                            <row id="567">
+                                <cell id="568">
+                                    <label id="556">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <text-property name="text">共</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="569">
+                                    <data id="95">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="resultSetColumn">Aggregation_1</property>
+                                    </data>
+                                </cell>
+                                <cell id="570">
+                                    <label id="571">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <text-property name="text">项</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                        </grid>
+                    </cell>
+                    <cell id="189"/>
+                    <cell id="33">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="74">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">Aggregation</property>
+                        </data>
+                    </cell>
+                </row>
+                <row id="268">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <cell id="269"/>
+                    <cell id="270">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <label id="275">
+                            <property name="fontFamily">"SimHei"</property>
+                            <text-property name="text">折扣(%)</text-property>
+                        </label>
+                    </cell>
+                    <cell id="272">
+                        <data id="334">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="resultSetColumn">Column Binding</property>
+                        </data>
+                    </cell>
+                    <cell id="273">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="337">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">Column Binding_2</property>
+                        </data>
+                    </cell>
+                </row>
+                <row id="276">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <cell id="277"/>
+                    <cell id="278"/>
+                    <cell id="279">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <label id="283">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="fontSize">9pt</property>
+                            <text-property name="text">应收</text-property>
+                        </label>
+                    </cell>
+                    <cell id="281">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="336">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">Column Binding_1</property>
+                        </data>
+                    </cell>
+                </row>
+            </footer>
+        </table>
+        <grid id="40">
+            <property name="width">1.8854166666666667in</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">orderState</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <expression name="expression" type="javascript">orderPayType</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="41">
+                <property name="width">0.7235772357723578in</property>
+            </column>
+            <column id="42">
+                <property name="width">1.1666666666666667in</property>
+            </column>
+            <row id="58">
+                <cell id="59">
+                    <label id="69">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="fontWeight">bold</property>
+                        <text-property name="text">客户</text-property>
+                    </label>
+                </cell>
+                <cell id="60">
+                    <text id="148">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>customerName</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+        <text id="313">
+            <property name="fontFamily">"SimHei"</property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<br/>
+<br/>
+<br/>
+<hr style="border:1px"/>
+<br/>
+<br/>
+<br/>]]></text-property>
+        </text>
+        <grid id="600">
+            <property name="width">1.8854166666666667in</property>
+            <column id="601">
+                <property name="width">0.7291666666666666in</property>
+            </column>
+            <column id="602">
+                <property name="width">1.15625in</property>
+            </column>
+            <row id="603">
+                <cell id="604">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="605">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<CENTER><H2>销售单</H2>(销售联)</CENTER>
+]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="611">
+                <cell id="612">
+                    <label id="613">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="fontWeight">bold</property>
+                        <text-property name="text">销售时间</text-property>
+                    </label>
+                </cell>
+                <cell id="614">
+                    <text id="615">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Long Date">saleDate</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+        <table id="616">
+            <property name="width">1.8541666666666667in</property>
+            <property name="dataSet">Data Set</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">NAME</property>
+                    <text-property name="displayName">NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">COUNT</property>
+                    <text-property name="displayName">COUNT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["COUNT"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">UNIT</property>
+                    <text-property name="displayName">UNIT</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["UNIT"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">TOTAL_PRICE</property>
+                    <text-property name="displayName">TOTAL_PRICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["TOTAL_PRICE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <text-property name="displayName">金额</text-property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["TOTAL_PRICE"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">PRICE</property>
+                    <text-property name="displayName">PRICE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PRICE"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">ITEM_INFO</property>
+                    <text-property name="displayName">ITEM_INFO</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ITEM_INFO"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation_1</property>
+                    <text-property name="displayName">项数</text-property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["ITEM_INFO"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">REBATE</property>
+                    <text-property name="displayName">REBATE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["REBATE"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">orderRebate</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <expression name="expression" type="javascript">orderMoney</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_2</property>
+                    <expression name="expression" type="javascript">orderRebateMoney</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="684">
+                <property name="width">0.052083333333333336in</property>
+            </column>
+            <column id="685">
+                <property name="width">0.5729166666666666in</property>
+            </column>
+            <column id="686">
+                <property name="width">0.010416666666666666in</property>
+            </column>
+            <column id="687">
+                <property name="width">0.2916666666666667in</property>
+            </column>
+            <column id="688">
+                <property name="width">0.625in</property>
+            </column>
+            <column id="689">
+                <property name="width">0.3020833333333333in</property>
+            </column>
+            <header>
+                <row id="617">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
+                    <cell id="618">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <label id="619">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="fontSize">11pt</property>
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">订单项</text-property>
+                        </label>
+                    </cell>
+                </row>
+                <row id="620">
+                    <cell id="621">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <grid id="622">
+                            <column id="623"/>
+                            <column id="624"/>
+                            <column id="625"/>
+                            <column id="626"/>
+                            <column id="627"/>
+                            <column id="628"/>
+                            <row id="629">
+                                <cell id="630">
+                                    <label id="631">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">品名</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="632">
+                                    <label id="633">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">数量</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="634">
+                                    <label id="635">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">单位</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="636">
+                                    <label id="637">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">单价</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="638">
+                                    <label id="639">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">折扣</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="640">
+                                    <label id="641">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="fontSize">9pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <text-property name="text">金额</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                        </grid>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="642">
+                    <cell id="643">
+                        <property name="colSpan">6</property>
+                        <property name="rowSpan">1</property>
+                        <data id="644">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="resultSetColumn">ITEM_INFO</property>
+                        </data>
+                    </cell>
+                </row>
+                <row id="645">
+                    <cell id="646"/>
+                    <cell id="647">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="648">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">PRICE</property>
+                        </data>
+                    </cell>
+                    <cell id="649">
+                        <data id="650">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="resultSetColumn">REBATE</property>
+                        </data>
+                    </cell>
+                    <cell id="651">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="652">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">TOTAL_PRICE</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="653">
+                    <property name="borderTopStyle">dashed</property>
+                    <property name="borderTopWidth">thin</property>
+                    <cell id="654">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">1</property>
+                        <grid id="655">
+                            <property name="width">0.5625in</property>
+                            <column id="656"/>
+                            <column id="657"/>
+                            <column id="658"/>
+                            <row id="659">
+                                <cell id="660">
+                                    <label id="661">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <text-property name="text">共</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="662">
+                                    <data id="663">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <property name="resultSetColumn">Aggregation_1</property>
+                                    </data>
+                                </cell>
+                                <cell id="664">
+                                    <label id="665">
+                                        <property name="fontFamily">"SimHei"</property>
+                                        <text-property name="text">项</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                        </grid>
+                    </cell>
+                    <cell id="666"/>
+                    <cell id="667">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="668">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">Aggregation</property>
+                        </data>
+                    </cell>
+                </row>
+                <row id="669">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <cell id="670"/>
+                    <cell id="671">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <label id="672">
+                            <property name="fontFamily">"SimHei"</property>
+                            <text-property name="text">折扣(%)</text-property>
+                        </label>
+                    </cell>
+                    <cell id="673">
+                        <data id="674">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="resultSetColumn">Column Binding</property>
+                        </data>
+                    </cell>
+                    <cell id="675">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="676">
+                            <property name="fontFamily">"SimHei"</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">Column Binding_2</property>
+                        </data>
+                    </cell>
+                </row>
+                <row id="677">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <cell id="678"/>
+                    <cell id="679"/>
+                    <cell id="680">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <label id="681">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="fontSize">9pt</property>
+                            <text-property name="text">应收</text-property>
+                        </label>
+                    </cell>
+                    <cell id="682">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="683">
+                            <property name="fontFamily">"SimHei"</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">Column Binding_1</property>
+                        </data>
+                    </cell>
+                </row>
+            </footer>
+        </table>
+        <grid id="739">
+            <property name="width">1.8854166666666667in</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">orderState</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <expression name="expression" type="javascript">orderPayType</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="740">
+                <property name="width">0.7235772357723578in</property>
+            </column>
+            <column id="741">
+                <property name="width">1.1666666666666667in</property>
+            </column>
+            <row id="755">
+                <cell id="756">
+                    <label id="757">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="fontWeight">bold</property>
+                        <text-property name="text">客户</text-property>
+                    </label>
+                </cell>
+                <cell id="758">
+                    <text id="759">
+                        <property name="fontFamily">"SimHei"</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>customerName</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+    </body>
+</report>

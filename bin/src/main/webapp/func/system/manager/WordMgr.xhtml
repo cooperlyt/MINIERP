@@ -1,0 +1,300 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j" template="/layout/template.xhtml">
+
+
+<ui:define name="toolbar">
+    <a:outputPanel id="controlWordFunc">
+        <rich:toolbar id="wordFuncToolBar" height="30" itemSeparator="grid" styleClass="">
+            <rich:toolbarGroup>
+
+                <a:outputPanel id="wordCategory_panel_name">
+                    <h:outputText value="#{wordCategoryHome.instance.name}" rendered="#{wordCategoryHome.idDefined}"/>
+                    <h:outputText value="#{messages.please_select_wordCategory}" rendered="#{not wordCategoryHome.idDefined}"/>
+                </a:outputPanel>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+
+                <h:graphicImage value="/img/create.gif"/>
+                <a:commandLink id="create_wordCategory"
+                               value="#{messages.wordCategory_add}"
+                               immediate="true" styleClass="ltool" execute="@this"
+                               render="wrodCategoryEditPanel_inputs,wrodCategoryEditPanel_buttons,wrodCategoryEditPanelTitle,wrodCategoryEditPanelClose,wordCategory_panel_name"
+                               oncomplete="#{rich:component('wrodCategoryEditPanel')}.show()">
+
+                    <a:param name="wordCategoryHome_id" value="" assignTo="#{wordCategoryHome.id}"/>
+                    <s:conversationPropagation type="join"/>
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/edit.png"/>
+                <a:commandLink id="update_wordCategory" value="#{messages.wordCategory_update}"
+                               immediate="true" styleClass="no-decor" execute="@this"
+                               render="wrodCategoryEditPanel_inputs,wrodCategoryEditPanel_buttons,wrodCategoryEditPanelTitle,wrodCategoryEditPanelClose,wordCategory_panel_name"
+                               oncomplete="if (#{wordCategoryHome.managed}) {#{rich:component('wrodCategoryEditPanel')}.show()}">
+                    <s:conversationPropagation type="join"/>
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+
+                <a:commandButton id="add_word" value="#{messages.word_add}"
+                               immediate="true" styleClass="no-decor" execute="@this"
+                               action="#{wordCategoryHome.createWord}"
+                               render="wordEditPanel_inputs,wordEditPanel_buttons,wordEditPanelTitle,wordEditPanelClose"
+                               oncomplete="#{rich:component('wordEditPanel')}.show()"
+                               disabled="#{not wordCategoryHome.idDefined}">
+
+
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+            </rich:toolbarGroup>
+
+        </rich:toolbar>
+    </a:outputPanel>
+</ui:define>
+
+<ui:define name="body">
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:define name="panelTitle">
+        <h:outputText id="wrodCategoryEditPanelTitle"
+                      value="#{wordCategoryHome.managed ? messages['edit'] : messages['add']}"/>
+    </ui:define>
+    <ui:param name="panelId" value="wrodCategoryEditPanel"/>
+    <ui:define name="controls">
+        <a:commandLink id="wrodCategoryEditPanelClose" immediate="true"
+                       execute="@this" value="X"
+                       oncomplete="#{rich:component('wrodCategoryEditPanel')}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandLink>
+    </ui:define>
+
+    <s:decorate id="Fieldname" template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.name}</ui:define>
+        <a:outputPanel id="nameInputPanel">
+            <h:inputText id="name" name="#{messages.name}"
+                         size="27"
+                         maxlength="50"
+                         required="true"
+                         valueChangeListener="#{wordCategoryHome.verifyIdAvailableaa}"
+                         value="#{wordCategoryHome.instance.name}">
+
+                <a:ajax event="blur" execute="@this" render="Fieldname"/>
+            </h:inputText>
+        </a:outputPanel>
+    </s:decorate>
+
+
+    <s:decorate template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.field_memo}</ui:define>
+        <h:inputTextarea name="#{messages.field_memo}" id="memo" cols="27"
+                         value="#{wordCategoryHome.instance.memo}">
+            <rich:validator event="blur"/>
+        </h:inputTextarea>
+    </s:decorate>
+
+    <ui:define name="actionButtons">
+        <a:outputPanel id="operButtons">
+            <a:commandButton execute="@form" render="wordCategorys,wrodCategoryEditPanel_inputs"
+                             value="#{messages.save}" action="#{wordCategoryHome.persist}"
+                             rendered="#{!wordCategoryHome.managed}"
+                             data="#{wordCategoryHome.lastState}"
+                             oncomplete="if (event.data == 'persisted'){#{rich:component('wrodCategoryEditPanel')}.hide();}">
+
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+
+            <a:commandButton
+                    value="#{messages.update}" execute="@form"
+                    render="wordCategorys,wordCategory_panel_name,wrodCategoryEditPanel_inputs"
+                    action="#{wordCategoryHome.update}"
+                    rendered="#{wordCategoryHome.managed}"
+                    data="#{wordCategoryHome.lastState}"
+                    oncomplete="if(event.data == 'updated'){#{rich:component('wrodCategoryEditPanel')}.hide(); return true;} else return false;">
+                <a:param id="id" value="#{wordCategoryHome.id}" assignTo="#{wordCategoryHome.id}"/>
+
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </a:outputPanel>
+        <a:commandButton immediate="true" execute="@this"
+                         value="#{messages.cancel}"
+                         oncomplete="#{rich:component('wrodCategoryEditPanel')}.hide();return false;">
+            <s:conversationPropagation type="join"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+</s:decorate>
+
+
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:define name="panelTitle">
+        <h:outputText id="wrodEditPanelTitle"
+                      value="#{wordCategoryHome.flag ? messages['edit'] : messages['add']}"/>
+    </ui:define>
+    <ui:param name="panelId" value="wordEditPanel"/>
+    <ui:define name="controls">
+        <a:commandLink id="wordEditPanelClose" immediate="true"
+                       execute="@this" value="X"
+                       oncomplete="#{rich:component('wordEditPanel')}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandLink>
+    </ui:define>
+
+    <s:decorate id="Field_word_name" template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.name}</ui:define>
+        <h:inputText id="word_name" name="#{messages.name}"
+                     size="27"
+                     maxlength="50"
+                     required="true"
+                     valueChangeListener="#{wordHome.verifyIdAvailableaa}"
+                     value="#{wordCategoryHome.selectedWord.value}">
+
+            <a:ajax event="blur" execute="@this" render="Field_word_name"/>
+        </h:inputText>
+    </s:decorate>
+
+    <s:decorate id="Word_keyField" template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.word_key}</ui:define>
+        <h:inputText id="Word_key" name="Word_key" required="true" size="27"
+                     label="#{messages.word_key}"
+                     maxlength="100" value="#{wordCategoryHome.selectedWord.key}">
+            <a:ajax event="blur" execute="@this" render="Word_keyField"/>
+        </h:inputText>
+    </s:decorate>
+
+    <s:decorate id="enableField" template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.enable}</ui:define>
+        <h:selectBooleanCheckbox id="word_enable" value="#{wordCategoryHome.selectedWord.enable}">
+        </h:selectBooleanCheckbox>
+
+    </s:decorate>
+
+    <s:decorate id="memoField" template="/layout/seam-edit.xhtml">
+        <ui:define name="label">#{messages.field_memo}</ui:define>
+        <h:inputTextarea name="#{messages.field_memo}" id="memo" cols="27"
+                         value="#{wordCategoryHome.selectedWord.description}">
+
+        </h:inputTextarea>
+    </s:decorate>
+
+    <ui:define name="actionButtons">
+        <a:outputPanel id="operButtons">
+
+            <a:commandButton execute="@form" render="word_dataTable_outputPanel,wordCategory_panel,wordEditPanel_inputs"
+                             value="#{messages.save}" action="#{wordCategoryHome.joinNewWord}"
+                             rendered="#{wordCategoryHome.flag}"
+                             data="#{wordCategoryHome.lastState}"
+                             oncomplete="if (event.data == 'updated'){#{rich:component('wordEditPanel')}.hide();}">
+                <s:conversationPropagation type="join"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+
+            <a:commandButton
+                    value="#{messages.update}" execute="@form" render="word_dataTable_outputPanel,wordEditPanel_inputs"
+                    action="#{wordCategoryHome.update}"
+                    rendered="#{!wordCategoryHome.flag}"
+                    data="#{wordCategoryHome.lastState}"
+                    oncomplete="if(event.data == 'updated'){#{rich:component('wordEditPanel')}.hide(); return true;} else return false;">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </a:outputPanel>
+        <a:commandButton immediate="true" execute="@this"
+                         value="#{messages.cancel}"
+                         oncomplete="#{rich:component('wordEditPanel')}.hide();return false;">
+
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+</s:decorate>
+
+<h:panelGrid width="100%" columns="2" columnClasses="gridFunctionCategory,gridFunctionCategory">
+
+    <a:outputPanel id="wordCategory_panel">
+        <rich:extendedDataTable id="wordCategorys"
+                                var="_wordCategory"
+                                value="#{wordCategoryList.resultList}"
+                                filterVar="_filterName"
+                                style="width:100px;"
+                                selectionMode="none">
+            <rich:column width="98px" filterValue="#{wordCategoryHome.filterName}"
+                         filterExpression="#{empty _filterName or _wordCategory.name eq _filterName}">
+                <f:facet name="header">
+                    <h:outputText value="#{messages.wordCategory_name}"/>
+                </f:facet>
+                <a:commandLink id="link"
+                               value="#{_wordCategory.name}"
+                               render="word_dataTable_outputPanel,wordCategory_panel_name,add_word"
+                               execute="@this" action="#{wordCategoryHome.wordCategorySelected}">
+                    <a:param name="wordCategory_id" value="#{_wordCategory.id}"
+                             assignTo="#{wordCategoryHome.id}"/>
+                    <s:conversationPropagation type="join"/>
+                </a:commandLink>
+            </rich:column>
+
+        </rich:extendedDataTable>
+    </a:outputPanel>
+    <a:outputPanel id="word_dataTable_outputPanel">
+
+        <rich:extendedDataTable id="word_dataTable" var="_wrods" value="#{wordsDataModel}"
+                                rendered="#{wordCategoryHome.idDefined}" filterVar="_filterValue"
+                                selectionMode="none" style="width:625px">
+            <rich:column width="60px">
+                <f:facet name="header"><h:outputText value="#{messages.word_id}"/></f:facet>
+                <h:outputText value="#{_wrods.priority}"/>
+            </rich:column>
+            <rich:column filterValue="#{wordCategoryHome.wordValueFilter}" width="150px"
+                         filterExpression="#{empty _filterValue or _wrods.value eq _filterValue}">
+                <f:facet name="header"><h:outputText value="#{messages.businessCategory_field_name}"/></f:facet>
+                <h:outputText value="#{_wrods.value}"/>
+            </rich:column>
+            <rich:column width="120px">
+                <f:facet name="header"><h:outputText value="#{messages.word_key}"/></f:facet>
+                <h:outputText value="#{_wrods.key}"/>
+            </rich:column>
+            <rich:column width="120px">
+                <f:facet name="header"><h:outputText value="#{messages.field_memo}"/></f:facet>
+                <h:outputText value="#{_wrods.description}"/>
+            </rich:column>
+            <rich:column width="170px">
+                <f:facet name="header"><h:outputText value="#{messages.action}"/></f:facet>
+                <a:commandLink id="update_word" value="#{messages.update}" immediate="true" styleClass="no-decor"
+                               execute="@this" action="#{wordCategoryHome.updateFlag}"
+                               render="wordEditPanel_inputs,wordEditPanel_buttons,wordEditPanelTitle,wordEditPanelClose"
+                               oncomplete="#{rich:component('wordEditPanel')}.show()">
+                    <s:conversationPropagation type="join"/>
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+
+                <a:commandLink id="up_word" value="#{messages.up}" immediate="true" styleClass="no-decor"
+                               execute="@this" render="word_dataTable_outputPanel"
+                               action="#{wordCategoryHome.upWord}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+
+                <a:commandLink id="down_word" value="#{messages.down}" immediate="true" styleClass="no-decor"
+                               execute="@this" render="word_dataTable_outputPanel"
+                               action="#{wordCategoryHome.downWord}">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+            </rich:column>
+        </rich:extendedDataTable>
+    </a:outputPanel>
+
+</h:panelGrid>
+
+</ui:define>
+</ui:composition>

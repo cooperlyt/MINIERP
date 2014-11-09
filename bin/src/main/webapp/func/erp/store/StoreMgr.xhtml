@@ -1,0 +1,179 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="body">
+        <h:outputStylesheet>
+            .leftColumn {
+                vertical-align: top;
+                width: 150px;
+            }
+
+            .rightColumn {
+                vertical-align: top;
+            }
+        </h:outputStylesheet>
+
+
+        <h:panelGrid columns="2" columnClasses="leftColumn,rightColumn" style="width: 100%">
+            <h:form>
+                <rich:dataTable style="width: 100%" id="storeDataList" noDataLabel="#{messages.emptyResult}"
+                                value="#{allStoreList.resultList}" var="_store">
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.Store}
+                        </f:facet>
+                        <a:commandLink value="#{_store.name}" title="#{_store.description}" immediate="true"
+                                       execute="@this" render="storeDetails">
+                            <a:param value="#{_store.id}" assignTo="#{storeHome.id}"/>
+                            <a:attachQueue requestDelay="0"/>
+                            <s:conversationPropagation type="end"/>
+                        </a:commandLink>
+                    </rich:column>
+                </rich:dataTable>
+            </h:form>
+            <h:form id="storeDetails">
+                <rich:toolbar id="actions" height="34" itemSeparator="line">
+
+
+                    <rich:toolbarGroup rendered="#{not storeHome.editing}">
+                        <h:graphicImage value="/img/add.png"/>
+                        <a:commandLink value="#{messages.add}" immediate="true"
+                                       execute="@this"
+                                       action="#{storeHome.edit}" render="storeDetails">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="" assignTo="#{storeHome.id}"/>
+                        </a:commandLink>
+                    </rich:toolbarGroup>
+
+                    <rich:toolbarGroup rendered="#{not storeHome.editing}">
+                        <h:graphicImage value="/img/edit.png"/>
+                        <a:commandLink value="#{messages.edit}" immediate="true"
+                                       execute="@this"
+                                       action="#{storeHome.edit}" render="storeDetails"
+                                       onclick="if (#{not storeHome.idDefined}) {alert('#{messages.plase_select_store_first}'); return false;}">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param value="#{storeHome.instance.id}" assignTo="#{storeHome.id}"/>
+                        </a:commandLink>
+                    </rich:toolbarGroup>
+
+
+                    <rich:toolbarGroup rendered="#{storeHome.editing}" location="right">
+                        <a:commandButton value="#{messages.cancel}" render="storeDetails"
+                                         action="#{storeHome.cancel}" immediate="true" execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                        <a:commandButton value="#{messages.save}"
+                                         action="#{storeHome.save}"
+                                         execute="@form" render="storeDetails,storeDataList">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </rich:toolbarGroup>
+                </rich:toolbar>
+
+                <rich:panel>
+                    <s:decorate id="enableField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.enable}</ui:define>
+                        <h:selectBooleanCheckbox id="enable"
+                                                 disabled="#{not storeHome.editing}"
+                                                 required="true"
+                                                 label="#{messages.enable}"
+                                                 value="#{storeHome.instance.enable}"/>
+                    </s:decorate>
+
+                    <s:decorate id="storeIdField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.store_field_id}</ui:define>
+                        <h:inputText required="true" label="#{messages.store_field_id}"
+                                     size="25" maxlength="32"
+                                     valueChangeListener="#{storeHome.verifyIdAvailable}"
+                                     readonly="#{storeHome.managed || (not storeHome.editing)}"
+                                     value="#{storeHome.instance.id}">
+                            <a:ajax event="blur" render="storeIdField"
+                                    disabled="#{storeHome.managed || (not storeHome.editing)}"/>
+                        </h:inputText>
+                    </s:decorate>
+
+                    <s:decorate id="nameField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.name}</ui:define>
+                        <h:inputText id="name"
+                                     required="true"
+                                     size="25"
+                                     maxlength="50"
+
+                                     readonly="#{not storeHome.editing}"
+                                     label="#{messages.name}"
+                                     value="#{storeHome.instance.name}">
+                            <a:ajax event="blur" render="nameField" disabled="#{not storeHome.editing}"/>
+                        </h:inputText>
+                    </s:decorate>
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.store_field_role}</ui:define>
+                        <h:selectOneMenu value="#{storeHome.instance.role}" required="true"
+                                         disabled="#{not storeHome.editing}"
+                                         label="#{messages.store_field_role}" style="width: 185px;">
+                            <s:selectItems value="#{roleList.resultList}" var="_role"
+                                           noSelectionLabel="#{messages.noSelectLabel}"
+                                           label="#{_role.name}(#{_role.id})" itemValue="#{_role.id}"/>
+                        </h:selectOneMenu>
+                    </s:decorate>
+
+                    <s:decorate template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.store_field_shipRole}</ui:define>
+                        <h:selectOneMenu value="#{storeHome.instance.shipRole}" required="true"
+                                         disabled="#{not storeHome.editing}"
+                                         label="#{messages.store_field_shipRole}" style="width: 185px;">
+                            <s:selectItems value="#{roleList.resultList}" var="_role"
+                                           noSelectionLabel="#{messages.noSelectLabel}"
+                                           label="#{_role.name}(#{_role.id})" itemValue="#{_role.id}"/>
+                        </h:selectOneMenu>
+                    </s:decorate>
+
+                    <s:decorate id="telField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.Tel}</ui:define>
+                        <h:inputText id="tel"
+                                     size="25"
+                                     maxlength="50"
+                                     readonly="#{not storeHome.editing}"
+                                     label="#{messages.Tel}"
+                                     value="#{storeHome.instance.tel}">
+                            <a:ajax event="blur" render="telField" disabled="#{not storeHome.editing}"/>
+                        </h:inputText>
+                    </s:decorate>
+
+                    <s:decorate id="addressField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.address}</ui:define>
+                        <h:inputTextarea id="address"
+                                         label="#{messages.address}"
+                                         cols="50"
+                                         rows="2"
+                                         readonly="#{not storeHome.editing}"
+                                         value="#{storeHome.instance.address}"/>
+                    </s:decorate>
+
+                    <s:decorate id="descriptionField" template="/layout/seam-edit.xhtml">
+                        <ui:define name="label">#{messages.description}</ui:define>
+                        <h:inputTextarea id="description"
+                                         label="#{messages.description}"
+                                         cols="50"
+                                         rows="2"
+                                         readonly="#{not storeHome.editing}"
+                                         value="#{storeHome.instance.description}"/>
+                    </s:decorate>
+
+                    <div style="clear:both">
+                        <span class="required">*</span>
+                        #{messages.requiredFields}
+                    </div>
+
+                </rich:panel>
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

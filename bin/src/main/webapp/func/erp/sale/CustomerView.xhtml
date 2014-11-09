@@ -1,0 +1,413 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j" xmlns:p="http://www.eclipse.org/birt/taglibs/birt.tld"
+                template="/layout/full-template.xhtml">
+
+
+<ui:param name="functionTitle" value="#{messages.customerDetails}"/>
+
+<ui:define name="toolbar">
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="customerEditPanel"/>
+    <ui:param name="width" value="800"/>
+    <ui:param name="panelTitle" value="#{customerHome.managed ? messages.edit : messages.add}#{messages.Customer}"/>
+
+    <h:panelGrid columns="4">
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.CustomerArea}</ui:define>
+            <h:selectOneMenu value="#{customerHome.instance.customerArea}" required="true"
+                             label="#{messages.CustomerArea}">
+                <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{_customerArea.name}"/>
+
+                <f:converter converterId="erpEntityConverter"/>
+            </h:selectOneMenu>
+        </s:decorate>
+
+        <s:decorate rendered="#{accountDateHelper.first and s:hasRole('erp.finance.cashier') and runParam.getBooleanParamValue('erp.finance.useAdvance')}"
+                    template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_initAD}</ui:define>
+            <h:inputText value="#{customerHome.instance.initAD}" converter="javax.faces.BigDecimal" size="12">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate rendered="#{accountDateHelper.first and s:hasRole('erp.finance.cashier')}"
+                    template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_initAC}</ui:define>
+            <h:inputText value="#{customerHome.instance.initAC}" converter="javax.faces.BigDecimal" size="12">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
+        </s:decorate>
+
+
+        <s:decorate rendered="#{accountDateHelper.first and s:hasRole('erp.finance.cashier')}"
+                    template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.customer_field_initPAC}</ui:define>
+            <h:inputText value="#{customerHome.instance.initPAC}" converter="javax.faces.BigDecimal" size="12">
+                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                 type="currency" groupingUsed="false"/>
+            </h:inputText>
+        </s:decorate>
+
+    </h:panelGrid>
+
+    <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
+
+    <ui:define name="actionButtons">
+        <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                         oncomplete="#{rich:component('customerEditPanel')}.hide();">
+            <s:conversationPropagation type="end"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.updateEnd}"
+                         rendered="#{customerHome.managed}"
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'updated'){#{rich:component('customerEditPanel')}.hide(); return true;} else return false;"
+                         render="customerEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+        <a:commandButton value="#{messages.ok}" execute="@form"
+                         action="#{customerHome.persistEnd}"
+                         rendered="#{not customerHome.managed}"
+                         data="#{customerHome.lastState}"
+                         oncomplete="if(event.data == 'persisted'){#{rich:component('customerEditPanel')}.hide(); return true;} else return false;"
+                         render="customerEditPanel_inputs,dataListResult">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+    </ui:define>
+
+</s:decorate>
+
+
+<ui:remove>
+    <!--
+    <rich:popupPanel id="quotedDetailsPanel" modal="true" autosized="false" width="600" height="600"
+                     moveable="true" resizeable="false">
+        <f:facet name="header">
+            #{messages.QuotedPrice}
+        </f:facet>
+        <f:facet name="controls">
+            <a:commandButton immediate="true"
+                             execute="@this" image="/img/close.png"
+                             onclick="#{rich:component('quotedDetailsPanel')}.hide(); return false;">
+            </a:commandButton>
+        </f:facet>
+        <a:outputPanel id="quotedDetails">
+            <a:outputPanel rendered="#{quotedPriceHome.idDefined}">
+                <ui:include src="QuotedDetails.xhtml"/>
+
+            </a:outputPanel>
+
+            <a:outputPanel rendered="#{not quotedPriceHome.idDefined}">
+                #{messages.customerNotHaveQuote}
+            </a:outputPanel>
+            <br/>
+        </a:outputPanel>
+    </rich:popupPanel>
+       -->
+
+
+    <!--
+    <rich:toolbarGroup>
+    <h:graphicImage value="/img/price.png"/>
+    <a:commandLink render="quotedDetails" execute="@this" immediate="true"
+                   value="#{messages.QuotedPrice}"
+                   disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.saler'))}"
+                   oncomplete="#{rich:component('quotedDetailsPanel')}.show()">
+        <a:attachQueue requestDelay="0"/>
+        <a:param value="#{customerHome.instance.id}" assignTo="#{quotedPriceHome.customerId}"/>
+    </a:commandLink>
+    </rich:toolbarGroup>
+    -->
+</ui:remove>
+<h:form>
+    <a:outputPanel ajaxRendered="true">
+        <rich:toolbar height="34" itemSeparator="line">
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/edit.png"/>
+                <a:commandLink value="#{messages.edit}" immediate="true"
+                               disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                               render="customerEditPanel_form,customerEditPanel_title"
+                               oncomplete="#{rich:component('customerEditPanel')}.show()">
+                    <s:conversationPropagation type="begin"/>
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{customerHome.instance.id}" assignTo="#{customerHome.id}"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/order.png"/>
+                <s:link value="#{messages.newOrder}"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                        action="#{orderCreate.beginCreateOrder}" propagation="begin">
+                    <f:param name="from" value="/func/erp/sale/CustomerView.xhtml"/>
+                    <f:param name="orderId" value=""/>
+                    <f:param name="businessDefineId" value="erp.business.order"/>
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                    <f:param name="customerAreaId" value="#{customerHome.instance.customerArea.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/res_back.png"/>
+                <s:link value="#{messages.OrderBackRes}"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                        view="/business/startPrepare/erp/sale/StoreResBackCreate.xhtml" propagation="begin">
+                    <f:param name="from" value="/func/erp/sale/CustomerView.xhtml"/>
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                    <f:param name="customerAreaId" value="#{customerHome.instance.customerArea.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/match_price.png"/>
+                <s:link target="_blank" view="/report/customerConfirm.xhtml"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole('erp.finance.cashier') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                        value="#{messages.customerConfirmPager}">
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
+
+            <rich:toolbarGroup>
+                <h:graphicImage value="/img/match_price.png"/>
+                <s:link target="_blank" view="/report/customerAccountConfirm.xhtml"
+                        disabled="#{not customerHome.idDefined or  (not s:hasRole('erp.sale.manager') and not s:hasRole('erp.finance.cashier') and not s:hasRole(customerHome.instance.customerArea.role))}"
+                        value="#{messages.customerAccountConfirmPager}">
+                    <f:param name="customerId" value="#{customerHome.instance.id}"/>
+                </s:link>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+                <s:button styleClass="toolBarBtn" value="#{messages.return}"
+                          view="#{empty from ? '/home.xhtml' : from}"/>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+    </a:outputPanel>
+</h:form>
+</ui:define>
+
+<ui:define name="body">
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+<h:outputStylesheet>
+
+    .saleAreaSelect input[type="text"] {
+        width: 115px;
+    }
+</h:outputStylesheet>
+
+<rich:panel>
+    <h:form>
+        <h:panelGrid columns="2">
+            <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.CustomerArea}</ui:define>
+                <rich:select value="#{customerAreaHome.id}"
+                             label="#{messages.CustomerArea}"
+                             styleClass="saleAreaSelect" listWidth="132px">
+                    <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"
+                                   label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                    <a:ajax event="selectitem" execute="@this"
+                            listener="#{customerHome.clearInstance}"
+                            render="customerSelectNameField,customerAreaField,customerDetails">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </rich:select>
+            </s:decorate>
+
+
+            <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.Customer}</ui:define>
+                <rich:autocomplete id="pinyinSearchCustomer"
+                                   mode="client" minChars="1" autofill="false"
+                                   showButton="true"
+                                   selectFirst="true"
+                                   label="#{messages.Customer}"
+                                   clientFilterFunction="pinyinFilter"
+                                   autocompleteList="#{customerSelectList.resultList}"
+                                   value="#{customerHome.pinyinSearchName}"
+                                   fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
+
+                    <h:outputText value="#{_customer.name}"/>
+                    <a:ajax event="selectitem" render="customerSelectNameField,customerDetails" execute="@this">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                    <a:ajax event="blur" execute="@this" render="customerSelectNameField,customerDetails">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </rich:autocomplete>
+            </s:decorate>
+        </h:panelGrid>
+    </h:form>
+</rich:panel>
+
+<br/>
+<h:form>
+    <a:outputPanel id="customerDetails">
+        <a:outputPanel rendered="#{customerHome.idDefined}">
+            <ui:include src="/layout/erp/CustomerView.xhtml">
+                <ui:param name="customer" value="#{customerHome.instance}"/>
+            </ui:include>
+
+            <br/>
+
+
+            <rich:collapsiblePanel header="#{messages.customer_account_oper_details}" switchType="client">
+
+                <a:region>
+                    <h:panelGrid columns="10">
+                        <rich:calendar
+                                enableManualInput="true"
+                                inputSize="10"
+                                timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                datePattern="#{messages.datePattern}"
+                                label="#{messages.order_field_createDate}"
+                                value="#{searchDateArea.dateFrom}">
+                        </rich:calendar>
+
+                        --
+
+                        <rich:calendar
+                                enableManualInput="true"
+                                inputSize="10"
+                                timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                datePattern="#{messages.datePattern}"
+                                label="#{messages.order_field_createDate}"
+                                value="#{searchDateArea.dateTo}">
+                        </rich:calendar>
+
+                        <a:commandButton value="#{messages.search}" execute="@region"
+                                         render="dataResult">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:commandButton>
+                    </h:panelGrid>
+                </a:region>
+
+
+                <rich:dataTable id="dataResult" style="width: 100%" noDataLabel="#{messages.emptyResult}"
+                                 value="#{accountOperList.resultList}" var="_item">
+
+                    <f:facet name="footer">
+                        <a:outputPanel rendered="#{not empty accountOperList.resultList}">
+                            <ui:include src="/layout/pageA4jNavigation.xhtml">
+                                <ui:param name="entityList" value="#{accountOperList}"/>
+                            </ui:include>
+                        </a:outputPanel>
+                    </f:facet>
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operDate}
+                        </f:facet>
+                        <h:outputText value="#{_item.operDate}">
+                            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                        </h:outputText>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operType}
+                        </f:facet>
+                        #{messages[_item.operType.name()]}
+                    </rich:column>
+                    <rich:column style="text-align: right">
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operMoney}
+                        </f:facet>
+                        <a:outputPanel>
+                            <h:outputText value="#{_item.customerOperMoney}">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                            </h:outputText>
+                            <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                                          layout="block">
+                                    <span style="white-space: nowrap">
+                                        #{messages.customer_field_ad}
+                                        <h:outputText value="#{_item.advanceReceivable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>  #{messages.customer_field_ac}
+                                        <h:outputText value="#{_item.accountsReceivable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>   #{messages.customer_field_pac}
+                                        <h:outputText value="#{_item.proxcAccountsReceiveable}">
+                                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                        </h:outputText>   <br/>
+                                    </span>
+
+                            </rich:tooltip>
+                        </a:outputPanel>
+                    </rich:column>
+
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_payType}
+                        </f:facet>
+                        <h:outputText value="#{messages[_item.moneySave.payType.name()]}"
+                                      rendered="#{not empty _item.moneySave}"/>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_checkNumber}
+                        </f:facet>
+                        <a:outputPanel rendered="#{(not empty _item.moneySave) and (_item.moneySave.useCheck)}">
+                            <ui:include src="/layout/long-text-display.xhtml">
+                                <ui:param name="value" value="#{_item.moneySave.checkNumber}"/>
+                                <ui:param name="size" value="5"/>
+                            </ui:include>
+                        </a:outputPanel>
+
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.BankAccount}
+                        </f:facet>
+                        <a:outputPanel rendered="#{(not empty _item.moneySave) and (not empty _item.moneySave.bankAccount) }">
+                            <ui:include src="/layout/long-text-display.xhtml">
+                                <ui:param name="value"
+                                          value="#{dictionary.getWordValue(_item.moneySave.bankAccount.bank)} (#{_item.moneySave.bankAccount.number})"/>
+                                <ui:param name="size" value="5"/>
+                            </ui:include>
+                        </a:outputPanel>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.accountOper_field_operEmp}
+                        </f:facet>
+                        <h:outputText value="#{dictionary.getEmpNameById(_item.operEmp)}" rendered="#{not (_item.operType eq 'ORDER_PAY')}"/>
+
+                    </rich:column>
+
+                </rich:dataTable>
+
+
+            </rich:collapsiblePanel>
+
+        </a:outputPanel>
+
+    </a:outputPanel>
+</h:form>
+
+<div style="clear: both"/>
+
+
+</ui:define>
+</ui:composition>

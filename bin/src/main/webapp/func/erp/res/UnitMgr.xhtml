@@ -1,0 +1,303 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="body">
+
+<h:outputStylesheet>
+    .leftColumn {
+        vertical-align: top;
+        width: 200px;
+    }
+
+    .rightColumn {
+        vertical-align: top;
+    }
+</h:outputStylesheet>
+
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="panelId" value="resUnitEditPanel"/>
+    <ui:param name="panelTitle" value="#{messages.ResUnit}"/>
+    <ui:define name="controls">
+        <a:commandButton immediate="true"
+                         execute="@this" image="/img/close.png"
+                         onclick="#{rich:component('resUnitEditPanel')}.hide(); return false;">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+    <s:decorate id="resUnitNameField" template="/layout/edit.xhtml">
+        <ui:define name="label">
+            #{messages.ResUnit_field_name}
+        </ui:define>
+        <h:inputText required="true"
+                     size="27"
+                     label="#{messages.ResUnit_field_name}"
+                     maxlength="50"
+                     value="#{unitGroupHome.selectResUnit.name}">
+            <a:ajax event="blur" render="resUnitNameField" disabled="#{unitGroupHome.editResUnit}"/>
+        </h:inputText>
+    </s:decorate>
+
+
+    <s:decorate id="conversionRateField" template="/layout/edit.xhtml">
+        <ui:define name="label">
+            #{unitGroupHome.instance.type == 'FLOAT_CONVERT'? messages.ResUnit_field_Default_ConversionRate : messages.ResUnit_field_ConversionRate}
+        </ui:define>
+        <h:inputText id="conversionRate" disabled="#{unitGroupHome.instance.type == 'NO_CONVERT'}" required="true"
+                     label="#{messages.ResUnit_field_name}"
+                     value="#{unitGroupHome.selectResUnit.conversionRate}"
+                     size="26">
+            <f:convertNumber pattern="#0.##########"/>
+            <a:ajax event="blur" render="conversionRateField" disabled="#{unitGroupHome.editResUnit}"/>
+        </h:inputText>
+    </s:decorate>
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.ResUnit_field_InputFormat}</ui:define>
+        <h:inputText required="true" label="#{messages.ResUnit_field_InputFormat}" maxlength="20"
+                     size="26" value="#{unitGroupHome.selectResUnit.countFormate}"/>
+    </s:decorate>
+
+
+    <ui:define name="actionButtons">
+        <a:commandButton immediate="true" execute="@this" value="#{messages.cancel}"
+                         onclick="#{rich:component('resUnitEditPanel')}.hide(); return false;"/>
+        <a:commandButton execute="@form" value="#{messages.addItem}"
+                         action="#{unitGroupHome.saveResUnit}" data="#{actionExecuteState.lastState}"
+                         render="resUnitEditPanel_inputs,resUnitListTable"
+                         rendered="#{not unitGroupHome.editResUnit}"
+                         oncomplete="if (event.data == 'success') #{rich:component('resUnitEditPanel')}.hide();">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+        <a:commandButton execute="@form" value="#{messages.ok}" data="#{actionExecuteState.lastState}"
+                         render="resUnitEditPanel_inputs,resUnitListTable"
+                         rendered="#{unitGroupHome.editResUnit}" action="#{unitGroupHome.saveResUnit}"
+                         oncomplete="if (event.data == 'success') #{rich:component('resUnitEditPanel')}.hide();">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+    </ui:define>
+
+</s:decorate>
+
+<h:panelGrid columns="2" columnClasses="leftColumn,rightColumn" width="100%">
+<h:form>
+    <rich:dataTable style="width: 100%" id="unitGroupListTable" value="#{unitGroupList.resultList}"
+                    var="_unitGroup">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="2">
+                    <h:outputText value="#{messages.ResUnitGroup}"/>
+                </rich:column>
+                <rich:column breakRowBefore="true">
+                    <h:outputText value="#{messages.ResUnit_field_name}"/>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{messages.ResUnit_field_ConversionRate}"/>
+                </rich:column>
+
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="2">
+            <rich:collapsibleSubTableToggler for="sbtbl"/>
+
+            <a:commandLink value="#{_unitGroup.name}(#{fn:substring(messages[_unitGroup.type.name()],0,1)})"
+                           immediate="true"
+                           execute="@this" image="/img/edit.png"
+                           render="details,resUnitListTable">
+                <a:param value="#{_unitGroup.id}" assignTo="#{unitGroupHome.id}"/>
+                <s:conversationPropagation type="end"/>
+            </a:commandLink>
+        </rich:column>
+
+
+        <rich:collapsibleSubTable expanded="#{false}" value="#{_unitGroup.resUnitList}" var="_item" id="sbtbl"
+                                  expandMode="client">
+            <rich:column>
+                <h:outputText value="#{_item.name}"/>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_item.conversionRate}">
+                    <f:convertNumber pattern="#0.##########"/>
+                </h:outputText>
+            </rich:column>
+
+        </rich:collapsibleSubTable>
+    </rich:dataTable>
+</h:form>
+<h:panelGroup>
+    <h:form id="details">
+        <rich:toolbar id="actions" height="34" itemSeparator="line">
+
+
+            <rich:toolbarGroup rendered="#{not unitGroupHome.editing}">
+                <h:graphicImage value="/img/add.png"/>
+                <a:commandLink value="#{messages.add}" immediate="true"
+                               execute="@this"
+                               action="#{unitGroupHome.beginUnitGroupCU}" render="details,resUnitListTable">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+            <rich:toolbarGroup rendered="#{not unitGroupHome.editing}">
+                <h:graphicImage value="/img/edit.png"/>
+                <a:commandLink value="#{messages.edit}" immediate="true"
+                               execute="@this"
+                               action="#{unitGroupHome.beginUnitGroupCU}" render="details,resUnitListTable"
+                               onclick="if (#{not unitGroupHome.idDefined}) {alert('#{messages.plaseSelectUnitGroupFirst}'); return false;}">
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{unitGroupHome.instance.id}" assignTo="#{unitGroupHome.id}"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup rendered="#{not unitGroupHome.editing}">
+                <h:graphicImage value="/img/delete.png"/>
+                <a:commandLink value="#{messages.delete}" immediate="true" execute="@this"
+                               action="#{unitGroupHome.removeAndClear}"
+                               render="details,resUnitListTable,unitGroupListTable">
+                    <a:attachQueue requestDelay="0"/>
+                    <a:param value="#{unitGroupHome.instance.id}" assignTo="#{unitGroupHome.id}"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="#{unitGroupHome.editing?'left':'right'}">
+                #{unitGroupHome.instance.name}
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup rendered="#{unitGroupHome.editing}">
+                <h:graphicImage value="/img/onetomany.gif"/>
+                <a:commandLink value="#{messages.addResUnit}" immediate="true" execute="@this"
+                               action="#{unitGroupHome.beginCreateResUnit}" render="resUnitEditPanel_form"
+                               oncomplete="#{rich:component('resUnitEditPanel')}.show();">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup rendered="#{unitGroupHome.editing}" location="right">
+                <a:commandButton value="#{messages.cancel}" render="details,resUnitListTable,unitGroupListTable"
+                                 action="#{unitGroupHome.cancel}" immediate="true" execute="@this">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+                <a:commandButton value="#{messages.save}"
+                                 action="#{unitGroupHome.save}"
+                                 execute="@form" render="details,unitGroupListTable,resUnitListTable">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+
+        <rich:panel>
+            <s:decorate id="nameField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.ResUnitGroup_field_name}</ui:define>
+                <h:inputText label="#{messages.ResUnitGroup_field_name}" readonly="#{not unitGroupHome.editing}"
+                             required="true"
+                             size="27"
+                             maxlength="50"
+                             value="#{unitGroupHome.instance.name}">
+                    <a:ajax event="blur" render="nameField"/>
+                </h:inputText>
+            </s:decorate>
+
+
+            <s:decorate id="typeField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.ResUnitGroup_field_type}</ui:define>
+                <rich:select value="#{unitGroupHome.instance.type}" required="true"
+                             disabled="#{(not unitGroupHome.editing) or unitGroupHome.managed}"
+                             label="#{messages.ResUnitGroup_field_type}">
+                    <s:selectItems value="#{unitGroupTypes}" var="_unitGroupType"
+                                   label="#{messages[_unitGroupType.name()]}"
+                                   noSelectionLabel="#{messages.noSelectLabel}"/>
+                    <s:convertEnum/>
+                    <a:ajax event="selectitem"
+                            disabled="#{(not unitGroupHome.editing) or unitGroupHome.managed}"
+                            listener="#{unitGroupHome.typeChangeListener}"
+                            render="typeField,resUnitListTable,RateFormatField">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </rich:select>
+            </s:decorate>
+            <a:outputPanel id="RateFormatField">
+                <s:decorate rendered="#{unitGroupHome.instance.type == 'FLOAT_CONVERT'}" template="/layout/edit.xhtml">
+                    <ui:define name="label">#{messages.ResUnitGroup_field_floatInputFormat}</ui:define>
+                    <h:inputText value="#{unitGroupHome.instance.floatConvertRateFormat}"
+                                 label="#{messages.ResUnitGroup_field_floatInputFormat}"
+                                 size="27" maxlength="20" required="true"
+                                 readonly="#{not unitGroupHome.editing}"/>
+
+                </s:decorate>
+            </a:outputPanel>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                #{messages.requiredFields} #{messages.ConvertRateMemo}
+            </div>
+        </rich:panel>
+    </h:form>
+
+    <h:form>
+        <rich:dataTable style="width:100%" id="resUnitListTable" value="#{resUnitLists}" var="_resUnit">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.ResUnit_field_name}
+                </f:facet>
+                #{_resUnit.name}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{unitGroupHome.instance.type == 'FLOAT_CONVERT' ? messages.ResUnit_field_Default_ConversionRate : messages.ResUnit_field_ConversionRate}
+                </f:facet>
+                <h:outputText value="#{_resUnit.conversionRate}">
+                    <f:convertNumber pattern="#0.##########"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.ResUnit_field_InputFormat}
+                </f:facet>
+                #{_resUnit.countFormate}
+            </rich:column>
+            <rich:column style="width: 80px" rendered="#{unitGroupHome.editing}">
+                <f:facet name="header">
+                    #{messages.action}
+                </f:facet>
+                <a:commandButton image="/img/up.png" immediate="true" execute="@form"
+                                 action="#{unitGroupHome.upResUnit}" render="resUnitListTable">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+                <a:commandButton image="/img/down.png" immediate="true" execute="@form"
+                                 action="#{unitGroupHome.downResUnit}" render="resUnitListTable">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+                <a:commandButton image="/img/delete.png" immediate="true" execute="@form"
+                                 action="#{unitGroupHome.removeResUnit}" render="resUnitListTable">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+                <a:commandButton image="/img/edit.png" immediate="true" execute="@form"
+                                 render="resUnitEditPanel_form"
+                                 action="#{unitGroupHome.beginEditResUnit}"
+                                 oncomplete="#{rich:component('resUnitEditPanel')}.show();">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+            </rich:column>
+
+        </rich:dataTable>
+    </h:form>
+</h:panelGroup>
+
+</h:panelGrid>
+</ui:define>
+
+</ui:composition>

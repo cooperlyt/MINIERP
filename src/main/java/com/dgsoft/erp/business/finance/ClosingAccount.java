@@ -60,15 +60,11 @@ public class ClosingAccount {
             for (AccountCheckout aco : erpEntityManager.find(Checkout.class, maxId).getAccountCheckouts()) {
                 checkout.getAccountCheckouts().add(new AccountCheckout(aco.getAccountCode(), checkout, aco.getClosingBalance(), aco.getClosingCount()));
             }
-            for (StockAccount sa : erpEntityManager.find(Checkout.class, maxId).getStockAccounts()) {
-                checkout.getStockAccounts().add(new StockAccount(sa.getCloseCount(), checkout, sa.getStock()));
-            }
 
         }
-        if (!saleAccountClose.canClose(checkout) || !validStockCount()) {
+        if (!saleAccountClose.canClose(checkout)) {
             return;
         }
-        closeStockAccount(checkout);
 
         saleAccountClose.doClose(checkout);
 
@@ -91,85 +87,5 @@ public class ClosingAccount {
 
         Events.instance().raiseTransactionSuccessEvent("erp.closingAccount");
     }
-
-
-    private static final String ALL_STOCK_CHANGE_EJBQL = "select COALESCE(sum(stockChangeItem.count),0) from StockChangeItem stockChangeItem " +
-            "where stockChangeItem.stock.id = :stockId " +
-            "and stockChangeItem.stockChange.verify = true and stockChangeItem.stockChange.operType in (:types)";
-
-    private static final String STOCK_CHANGE_EJBQL = ALL_STOCK_CHANGE_EJBQL + " and stockChangeItem.stockChange.operDate >= :beginDate " +
-            "and stockChangeItem.stockChange.operDate <= :closeDate";
-
-    private boolean validStockCount() {
-
-        if (!accountDateHelper.isFirst()) {
-
-            for (Stock stock : erpEntityManager.createQuery("select stock from Stock stock", Stock.class).getResultList()) {
-                BigDecimal currentCount = erpEntityManager.createQuery(ALL_STOCK_CHANGE_EJBQL, BigDecimal.class)
-                        .setParameter("stockId", stock.getId()).setParameter("types",
-                                new ArrayList<StockChange.StoreChangeType>(StockChange.StoreChangeType.getAllIn())).getSingleResult();
-
-                currentCount = currentCount.subtract(erpEntityManager.createQuery(ALL_STOCK_CHANGE_EJBQL, BigDecimal.class)
-                        .setParameter("stockId", stock.getId()).setParameter("types",
-                                new ArrayList<StockChange.StoreChangeType>(StockChange.StoreChangeType.getAllOut())).getSingleResult());
-
-                if (stock.getCount().compareTo(currentCount) != 0) {
-                    throw new IllegalArgumentException("stock count not equals stockID:" + stock.getId() + "|count:" + stock.getCount() + "|calcCount:" + currentCount);
-                }
-
-            }
-        }
-        return true;
-    }
-
-    private void closeStockAccount(Checkout checkout) {
-
-        Map<String, StockAccount> saMap = checkout.getStockAccountMap();
-
-
-        if (accountDateHelper.isFirst()) {
-
-            for (Stock stock : erpEntityManager.createQuery("select stock from Stock stock", Stock.class).getResultList()) {
-                BigDecimal currentCount = erpEntityManager.createQuery(ALL_STOCK_CHANGE_EJBQL, BigDecimal.class)
-                        .setParameter("stockId", stock.getId()).setParameter("types",
-                                new ArrayList<StockChange.StoreChangeType>(StockChange.StoreChangeType.getAllIn())).getSingleResult();
-
-                currentCount = currentCount.subtract(erpEntityManager.createQuery(ALL_STOCK_CHANGE_EJBQL, BigDecimal.class)
-                        .setParameter("stockId", stock.getId()).setParameter("types",
-                                new ArrayList<StockChange.StoreChangeType>(StockChange.StoreChangeType.getAllOut())).getSingleResult());
-
-                if (stock.getCount().compareTo(currentCount) != 0) {
-                    stock.setCount(currentCount);
-                    Logging.getLog(getClass()).warn("change stock change :"+ stock.getId() + "|count:" + stock.getCount() + "|calcCount:" + currentCount);
-                }
-
-            }
-        }
-
-        for (Stock stock : erpEntityManager.createQuery("select stock from Stock stock", Stock.class).getResultList()) {
-            StockAccount sa = saMap.get(stock.getId());
-            if (sa == null) {
-                sa = new StockAccount(BigDecimal.ZERO, checkout, stock);
-                saMap.put(sa.getId(), sa);
-                checkout.getStockAccounts().add(sa);
-            }
-
-            BigDecimal closeCount = erpEntityManager.createQuery(STOCK_CHANGE_EJBQL, BigDecimal.class)
-                    .setParameter("stockId", stock.getId())
-                    .setParameter("types", new ArrayList<StockChange.StoreChangeType>(StockChange.StoreChangeType.getAllIn()))
-                    .setParameter("beginDate", checkout.getBeginDate())
-                    .setParameter("closeDate", checkout.getCloseDate()).getSingleResult();
-
-            closeCount = closeCount.subtract(erpEntityManager.createQuery(STOCK_CHANGE_EJBQL, BigDecimal.class)
-                    .setParameter("stockId", stock.getId())
-                    .setParameter("types", new ArrayList<StockChange.StoreChangeType>(StockChange.StoreChangeType.getAllOut()))
-                    .setParameter("beginDate", checkout.getBeginDate())
-                    .setParameter("closeDate", checkout.getCloseDate()).getSingleResult());
-
-            sa.setCloseCount(closeCount);
-        }
-
-    }
-
 
 }

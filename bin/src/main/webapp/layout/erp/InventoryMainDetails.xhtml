@@ -1,0 +1,49 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+        >
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.invertory_field_id}</ui:define>
+            <h:outputText value="#{inventory.id}"/>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.Store}</ui:define>
+            <h:outputText value="#{inventory.store.name}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.inventory_field_checkDate}</ui:define>
+
+            <h:outputText value="#{inventory.checkDate}">
+                <s:convertDateTime
+                        pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.inventory_field_type}</ui:define>
+            <h:outputText value="#{messages[inventory.type.name()]}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.invertory_field_applyEmp}</ui:define>
+            <h:outputText value="#{dictionary.getEmpNameById(inventory.applyEmp)}"/>
+        </s:decorate>
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+
+            <h:outputText value="#{inventory.memo}"/>
+        </s:decorate>
+
+
+
+</ui:composition>

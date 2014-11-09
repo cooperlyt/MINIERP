@@ -1,0 +1,198 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j" xmlns:p="http://www.eclipse.org/birt/taglibs/birt.tld"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.orderChange}-#{orderHome.instance.id}"/>
+
+    <ui:define name="func-body">
+
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup location="right">
+                    <s:button styleClass="toolBarBtn" propagation="end" view="/func/erp/sale/CustomerOrder.xhtml"
+                              value="#{messages.cancel}"/>
+
+
+                    <h:commandButton value="#{messages.Next}" action="#{orderCancel.toEditMoneyRebate}"/>
+                </rich:toolbarGroup>
+
+
+            </rich:toolbar>
+
+
+            <a:outputPanel id="orderInfo">
+                <ui:include src="/layout/erp/publicOrderInfo.xhtml"/>
+
+
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:include src="/layout/erp/CustomerView.xhtml">
+                        <ui:param name="customer" value="#{orderHome.instance.customer}"/>
+                    </ui:include>
+                    <ui:param name="labelValue" value="#{orderHome.instance.customer.name}"/>
+                    <ui:param name="openLabel" value="#{messages.Customer}"/>
+                    <ui:param name="hideLabel" value="#{messages.detailsHide}#{' '}#{messages.Customer}"/>
+                </s:decorate>
+            </a:outputPanel>
+
+            <div style="clear: both;"/>
+
+
+            <ui:include src="/layout/erp/biz/OrderMoneyInfo.xhtml">
+                <ui:param name="order" value="#{orderHome.instance}"/>
+            </ui:include>
+
+            <div style="clear: both"/>
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+
+            <a:outputPanel>
+
+                <rich:dataTable id="changePriceTable" style="width: 100%" value="#{orderHome.allOrderItem}" var="_item">
+
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.orderItems}
+                        </f:facet>
+
+                        #{messages.StoreRes}:
+                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                            <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                        </ui:include>
+
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.field_memo}
+                        </f:facet>
+                        <rich:inplaceInput value="#{_item.memo}" style="width: 95%"/>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.MasterUnitCount}
+                        </f:facet>
+                        <h:outputText value="#{_item.displayMasterCount}">
+                        </h:outputText>
+                    </rich:column>
+
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.AuxUnitCount}
+                        </f:facet>
+                        <h:outputText value="#{_item.displayAuxCount}">
+                        </h:outputText>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.Res_Unit}
+                        </f:facet>
+                        <s:decorate template="/layout/grid-inside-edit.xhtml">
+                            <rich:inplaceSelect value="#{_item.useUnit}" style="width: 95%" required="true"
+                                                label="#{messages.Res_Unit}">
+                                <s:selectItems value="#{_item.res.unitGroup.resUnitList}"
+                                               var="_unit" label="#{_unit.name}"/>
+                                <a:ajax event="selectitem" listener="#{orderHome.calcMoneys}"
+                                        render="changePriceTable,changeMoney" execute="@this"/>
+                                <f:converter converterId="erpEntityConverter"/>
+                            </rich:inplaceSelect>
+                        </s:decorate>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.needConvertRate}
+                        </f:facet>
+                        <s:decorate
+                                rendered="#{(_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT') and (not _item.presentation)}"
+                                template="/layout/grid-inside-edit.xhtml">
+                            <rich:inplaceInput value="#{_item.inputNeedConvertRate}"
+                                               label="#{messages.needConvertRate}"
+                                               style="width: 95%" required="true">
+                                <f:convertNumber pattern="#0.##########"/>
+                                <f:validateDoubleRange minimum="0"/>
+                                <a:ajax event="blur" execute="@this" listener="#{orderHome.calcMoneys}"
+                                        render="changePriceTable,changeMoney"/>
+                            </rich:inplaceInput>
+                        </s:decorate>
+                    </rich:column>
+
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.orderItemUnitPrice}
+                        </f:facet>
+
+                        <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
+                            <rich:inplaceInput value="#{_item.inputMoney}" required="true"
+                                               label="#{messages.orderItemUnitPrice}" style="width: 95%">
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"
+                                                 groupingUsed="false" currencySymbol=""/>
+                                <f:validateDoubleRange minimum="0"/>
+                                <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
+                                        render="changePriceTable,changeMoney"/>
+                            </rich:inplaceInput>
+                        </s:decorate>
+
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.orderItemPriceRebate}
+                        </f:facet>
+
+                        <s:decorate rendered="#{not _item.presentation}" template="/layout/grid-inside-edit.xhtml">
+                            <ui:define name="label">%</ui:define>
+                            <rich:inplaceInput value="#{_item.inputRebate}" required="true"
+                                               label="#{messages.orderItemPriceRebate}"
+                                               style="width: 95%">
+                                <f:convertNumber pattern="#0.##"/>
+                                <f:validateDoubleRange minimum="0"/>
+                                <a:ajax event="blur" listener="#{orderHome.calcMoneys}" execute="@this"
+                                        render="changePriceTable,changeMoney"/>
+                            </rich:inplaceInput>
+                        </s:decorate>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header">
+                            #{messages.NeedCount}
+                        </f:facet>
+                        <h:outputText value="#{_item.needCount}">
+                            <f:convertNumber pattern="#0.#########"/>
+                        </h:outputText>
+
+                    </rich:column>
+
+                    <rich:column style="text-align: right">
+                        <f:facet name="header">
+                            #{messages.orderItemTotalPrice}
+                        </f:facet>
+
+                        <h:outputText value="#{_item.totalMoney}">
+                            <f:convertNumber locale="#{calendarBean.locale}"
+                                             type="currency" groupingUsed="true"/>
+                        </h:outputText>
+
+                    </rich:column>
+                </rich:dataTable>
+
+
+            </a:outputPanel>
+        </h:form>
+
+        <div style="clear: both"/>
+
+    </ui:define>
+
+</ui:composition>

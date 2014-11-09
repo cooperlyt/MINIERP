@@ -1,0 +1,218 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages[customerAccountOper.type.name()]}"/>
+
+    <ui:define name="func-body">
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+        <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+        <h:outputStylesheet>
+
+            .saleAreaSelect input[type="text"] {
+                width: 115px;
+            }
+        </h:outputStylesheet>
+
+        <rich:toolbar>
+            <rich:toolbarGroup>
+                <h:outputText id="selectOrderMoney" value="#{proxyOrderSave.selectOrderMoneys}" >
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+            </rich:toolbarGroup>
+
+            <rich:toolbarGroup location="right">
+                <s:button styleClass="toolBarBtn" value="#{messages.cancel}" action="cancel"/>
+                <s:button styleClass="toolBarBtn" action="#{proxyOrderSave.saveMoney}"
+                          value="#{messages.Next}"/>
+
+            </rich:toolbarGroup>
+        </rich:toolbar>
+
+        <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+
+        <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+            <h:form>
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.order_field_id}</ui:define>
+                    <h:inputText value="#{proxyOrderSave.orderId}" size="15"/>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.CustomerArea}</ui:define>
+
+                    <h:selectOneMenu value="#{proxyOrderSave.customerAreaId}">
+                        <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                                       noSelectionLabel="#{messages.searchNoSelectLabel}"
+                                       label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                    </h:selectOneMenu>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.orderCustomer}</ui:define>
+
+                    <rich:autocomplete mode="client" minChars="1" autofill="false"
+                                       showButton="true"
+                                       selectFirst="true"
+                                       label="#{messages.orderCustomer}"
+                                       clientFilterFunction="pinyinNameFilter"
+                                       autocompleteList="#{customerNameList.resultList}"
+                                       value="#{proxyOrderSave.customerName}"
+                                       fetchValue="#{_customer}" var="_customer">
+
+                        <h:outputText value="#{_customer}"/>
+
+                    </rich:autocomplete>
+                </s:decorate>
+
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.order_field_createDate}</ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_field_createDate}"
+                            value="#{searchDateArea.dateFrom}">
+                    </rich:calendar>
+
+                    --
+
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="10"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datePattern}"
+                            label="#{messages.order_field_createDate}"
+                            value="#{searchDateArea.dateTo}">
+                    </rich:calendar>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.onlypayed}</ui:define>
+                    <h:selectBooleanCheckbox value="#{proxyOrderSave.onlyNoPayed}"/>
+                </s:decorate>
+
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.onlyArrearsCustomer}</ui:define>
+                    <h:selectBooleanCheckbox value="#{proxyOrderSave.onlyArrears}"/>
+                </s:decorate>
+
+
+                <div style="clear:both"/>
+                <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+                <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                    <a:outputPanel id="#{panelId}_buttons">
+                        <div class="actionButtons">
+
+                            <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+
+                            <a:outputPanel id="searchButton">
+                                <a:commandButton value="#{messages.search}"
+                                                 execute="@form" render="dataListResult"
+                                                 action="#{proxyOrderSave.first}">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:commandButton>
+                            </a:outputPanel>
+                        </div>
+                    </a:outputPanel>
+                </h:panelGrid>
+
+            </h:form>
+
+        </rich:collapsiblePanel>
+
+
+        <br/>
+
+
+        <h:form>
+            <rich:dataTable id="dataListResult" style="width: 100%" value="#{proxyOrderSave.customerOrderList}" var="_order">
+                <rich:column style="text-align: center;">
+                    <h:selectBooleanCheckbox value="#{_order.selected}" >
+                        <a:ajax event="click" execute="@form" render="selectOrderMoney"/>
+                    </h:selectBooleanCheckbox>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.order_field_id}
+                    </f:facet>
+                    #{_order.data.id}
+                </rich:column>
+
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.order_field_createDate}
+                    </f:facet>
+                    <h:outputText value="#{_order.data.createDate}">
+                        <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                    </h:outputText>
+                </rich:column>
+
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.CustomerArea}
+                    </f:facet>
+                    #{_order.data.customer.customerArea.name}
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.orderCustomer}
+                    </f:facet>
+
+                    #{_order.data.customer.name}
+                </rich:column>
+
+
+                <rich:column style="text-align: right;">
+                    <f:facet name="header">
+                        #{messages.customer_field_pac}
+                    </f:facet>
+                    <h:outputText value="#{_order.data.customer.proxyAccountMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+
+                </rich:column>
+
+
+                <rich:column style="text-align: right;">
+                    <f:facet name="header">
+                        #{messages.orderMoney}
+                    </f:facet>
+
+                    <h:outputText value="#{_order.data.money}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                </rich:column>
+
+
+
+
+            </rich:dataTable>
+
+        </h:form>
+
+
+    </ui:define>
+
+
+</ui:composition>

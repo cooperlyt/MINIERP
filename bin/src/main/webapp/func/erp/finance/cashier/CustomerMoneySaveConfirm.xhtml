@@ -1,0 +1,207 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages[customerAccountOper.type.name()]}"/>
+
+    <ui:define name="body">
+
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.accountOper_field_operType}
+            </ui:define>
+            #{messages[customerAccountOper.type.name()]}
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.accountOper_field_operDate}
+            </ui:define>
+            <h:outputText value="#{customerAccountOper.operDate}">
+                <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate
+                rendered="#{not (customerAccountOper.type eq 'DEPOSIT_PAY') and not (customerAccountOper.type eq 'MONEY_FREE')}"
+                template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.payType}
+            </ui:define>
+
+            <h:outputText value="#{moneySaveHome.instance.useCheck ? messages.CASH_CHECK : messages.CASH}"
+                          rendered="#{moneySaveHome.instance.payType eq 'CASH'}"/>
+
+            <h:outputText value="#{moneySaveHome.instance.useCheck ? messages.BANK_CHECK : messages.BANK_TRANSFER}"
+                          rendered="#{moneySaveHome.instance.payType eq 'BANK_TRANSFER'}"/>
+
+            #{' '}
+            <h:outputText value="#{moneySaveHome.instance.checkNumber}" rendered="#{moneySaveHome.instance.useCheck}"/>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.accountOper_field_operMoney}
+            </ui:define>
+            <h:outputText value="#{customerAccountOper.operMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </s:decorate>
+
+
+        <s:decorate
+                rendered="#{not (customerAccountOper.type eq 'DEPOSIT_PAY') and not (customerAccountOper.type eq 'MONEY_FREE')}"
+                template="/layout/seam-display.xhtml">
+            <ui:define name="label">
+                #{messages.accountOper_field_fee}
+            </ui:define>
+            <h:outputText value="#{moneySaveHome.instance.remitFee}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </s:decorate>
+
+        <div style="clear: both"/>
+
+        <a:outputPanel rendered="#{not (customerAccountOper.type eq 'PROXY_SAVINGS')}">
+
+            <s:decorate
+                    template="/layout/view-details.xhtml">
+                <ui:param name="openLabel" value="#{messages.Customer}"/>
+                <ui:param name="labelValue" value="#{customerHome.instance.name}"/>
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{customerHome.instance}"/>
+                </ui:include>
+            </s:decorate>
+
+        </a:outputPanel>
+
+
+        <rich:dataTable id="accountOperList" style="width: 100%" value="#{moneySaveHome.accountOperList}"
+                        var="_oper" rendered="#{(customerAccountOper.type eq 'PROXY_SAVINGS')}">
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.Customer}
+                </f:facet>
+                #{_oper.customer.name}
+
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.CustomerArea}
+                </f:facet>
+                #{_oper.customer.customerArea.name}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.customer_field_type}
+                </f:facet>
+                #{dictionary.getWordValue(_oper.customer.type)}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.customer_field_level}
+                </f:facet>
+                #{_oper.customer.customerLevel.name}(#{_oper.customer.customerLevel.priority})
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.customer_field_province}
+                </f:facet>
+                #{dictionary.getCityName(_oper.customer.provinceCode)}
+            </rich:column>
+
+            <rich:column style="text-align: right;" rendered="#{runParam.getBooleanParamValue('erp.finance.useAdvance')}">
+                <f:facet name="header">
+                    #{messages.customer_field_ad}
+                </f:facet>
+                <h:outputText value="#{_oper.customer.advanceMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.customer_field_ac}
+                </f:facet>
+                <h:outputText value="#{_oper.customer.accountMoney}" style="#{(_customer.accountMoney gt 0) ? 'color: red;' : ''}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.customer_field_pac}
+                </f:facet>
+                <h:outputText value="#{_oper.customer.proxyAccountMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+                <f:facet name="footer">
+                    <h:outputText value="#{moneySaveHome.totalCustomerPorxyMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.proxy_receivePAC}
+                </f:facet>
+                <h:outputText value="#{_oper.proxcAccountsReceiveable}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{moneySaveHome.totalReceiveProxyMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+            <rich:column style="text-align: right;">
+                <f:facet name="header">
+                    #{messages.Proxy_receiveAC}
+                </f:facet>
+                <h:outputText value="#{_oper.accountsReceivable}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+
+                <f:facet name="footer">
+                    <h:outputText value="#{moneySaveHome.totalReceiveAccountMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </f:facet>
+            </rich:column>
+
+        </rich:dataTable>
+
+
+        <br/>
+        <br/>
+
+        <div style="clear:both">
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+        </div>
+        <h:panelGrid columns="1" style="width: 100%; text-align: center">
+            <s:div styleClass="actionButtons">
+
+                <s:button value="#{messages.cancel}" action="cancel"/>
+                <s:button value="#{messages.complete}" action="#{customerAccountOper.doOper}"/>
+
+
+            </s:div>
+
+        </h:panelGrid>
+
+
+    </ui:define>
+</ui:composition>

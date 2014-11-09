@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:a="http://richfaces.org/a4j">
+
+    <h:outputStylesheet>
+        .noWidthColumns {
+            width: 1px;
+            padding: 0px;
+        }
+        .valueColumns{
+            padding: 0px;
+        }
+    </h:outputStylesheet>
+
+    <h:panelGrid columns="3" columnClasses="noWidthColumns,valueColumns,noWidthColumns" style="width: 100%">
+
+        <h:panelGroup>
+
+            <s:span styleClass="required" rendered="#{required}">*</s:span>
+            <ui:insert name="label"/>
+        </h:panelGroup>
+        <s:span class="small_value #{invalid?'errors':''}">
+            <s:validateAll>
+                <ui:insert/>
+            </s:validateAll>
+        </s:span>
+
+        <a:outputPanel rendered="#{invalid}">
+            <h:graphicImage value="/img/error.gif" rendered="#{invalid}" styleClass="errors">
+            </h:graphicImage>
+            <rich:tooltip layout="block" followMouse="false" mode="client">
+                <s:message styleClass="errors"/>
+            </rich:tooltip>
+        </a:outputPanel>
+    </h:panelGrid>
+</ui:composition>

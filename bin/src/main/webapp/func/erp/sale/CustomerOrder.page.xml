@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.org/schema/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+    <param name="firstResult" value="#{orderList.firstResult}"/>
+    <param name="sort" value="#{orderList.orderColumn}"/>
+    <param name="dir" value="#{orderList.orderDirection}"/>
+
+
+    <param name="orderEmp" value="#{orderList.customerOrder.orderEmp}"/>
+    <param name="customerAreaId" value="#{orderList.customerAreaId}"/>
+
+    <param name="customerName" value="#{orderList.customerName}"/>
+    <param name="createDateFrom" value="#{orderList.createDateFrom}"  converterId="searchDateConverter"/>
+    <param name="createDateTo" value="#{orderList.createDateTo}"  converterId="searchDateConverter"/>
+    <param name="orderId" value="#{orderList.orderId}"/>
+
+    <param name="canceled" value="#{orderList.canceled}"/>
+    <param name="allStoreOut" value="#{orderList.allStoreOut}"/>
+    <param name="moneyComplete" value="#{orderList.moneyComplete}"/>
+    <param name="customerConfirm" value="#{orderList.customerConfirm}"/>
+    <param name="onlyMyOrder" value="#{orderList.onlyMyOrder}"/>
+
+    <param name="customerOrderId" value="#{orderHome.id}"/>
+
+    <param name="cloneOrderId" value="#{orderHome.id}"/>
+    <param name="cloneCustomerAreaId" value="#{customerAreaHome.id}"/>
+
+
+</page>

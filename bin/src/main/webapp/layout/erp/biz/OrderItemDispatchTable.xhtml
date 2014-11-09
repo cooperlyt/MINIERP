@@ -1,0 +1,168 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <!-- param: dispatchList-->
+
+    <rich:dataTable style="width: 100%" value="#{dispatchList}" var="_dispatch"
+                    noDataLabel="#{messages.emptyResult}">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column>
+                    #{messages.Presentation}
+                </rich:column>
+                <rich:column>
+                    #{messages.orderItem}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.field_memo}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.orderItemCount}
+                </rich:column>
+                <rich:column>
+                    #{messages.Res_Unit}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.needConvertRate}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.orderItemUnitPrice}
+                </rich:column>
+                <rich:column>
+                    #{messages.orderItemPriceRebate}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.NeedCount}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.orderItemTotalPrice}
+                </rich:column>
+
+                <rich:column rendered="#{(empty showState) ? false : showState}">
+                    #{messages.orderItem_field_status}
+                </rich:column>
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column colspan="8">
+            <rich:collapsibleSubTableToggler for="sbtblDispatchItem"/>
+            #{_dispatch.store.name}(#{_dispatch.store.id})
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="footer">
+                <h:outputText value="#{totalNeedMoney}" rendered="#{not empty totalNeedMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="footer">
+                <h:outputText value="#{totalItemMoney}" rendered="#{not empty totalItemMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+            </f:facet>
+        </rich:column>
+
+        <rich:column rendered="#{(empty showState) ? false : showState}"/>
+
+        <rich:collapsibleSubTable id="sbtblDispatchItem" value="#{_dispatch.orderItemList}"
+                                  var="_item">
+            <rich:column style="text-align: center">
+                <h:selectBooleanCheckbox disabled="true" value="#{_item.presentation}"/>
+            </rich:column>
+
+
+            <rich:column>
+
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                </ui:include>
+
+            </rich:column>
+
+            <rich:column>
+
+                <ui:include src="/layout/long-text-display.xhtml">
+                    <ui:param name="value" value="#{_item.memo}"/>
+                    <ui:param name="size" value="4"/>
+                </ui:include>
+
+            </rich:column>
+
+            <rich:column>
+                <h:outputText value="#{_item.useUnitCount}">
+                    <f:convertNumber pattern="#0.####"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column style="text-align: center">
+                #{_item.resUnit.name}
+            </rich:column>
+
+            <rich:column>
+                <h:outputText
+                        rendered="#{(_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT') and (not _item.presentation)}"
+                        value="#{_item.needConvertRate}">
+                    <f:convertNumber pattern="#0.##########"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+
+                <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
+
+            </rich:column>
+            <rich:column>
+                #{'%'}
+                <h:outputText value="#{_item.rebate}">
+                    <f:convertNumber pattern="#0.##"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:column>
+                <h:outputText value="#{_item.needCount}">
+                    <f:convertNumber pattern="#0.##########"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:column style="text-align: right">
+                <h:outputText value="#{_item.totalMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+
+            </rich:column>
+
+            <rich:column rendered="#{(empty showState) ? false : showState}">
+                <f:facet name="header">
+                    #{messages.orderItem_field_status}
+                </f:facet>
+                #{messages[_item.status.name()]}
+            </rich:column>
+
+        </rich:collapsibleSubTable>
+    </rich:dataTable>
+
+</ui:composition>

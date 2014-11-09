@@ -1,0 +1,175 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/layout/simpleDataCURD.xhtml">
+
+    <h:outputStylesheet>
+        .leftColumn {
+            vertical-align: top;
+            width: 200px;
+        }
+
+        .rightColumn {
+            vertical-align: top;
+        }
+    </h:outputStylesheet>
+
+    <ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
+    <ui:param name="dataListHeaderTitle" value="#{messages.ProductGroup}"/>
+    <ui:param name="dataHome" value="#{productGroupHome}"/>
+    <ui:param name="detailsRender" value="productResDataTable"/>
+    <ui:param name="editOperRender" value="resSelectPanel_form"/>
+
+    <ui:define name="selectedTitle">
+
+        <a:outputPanel id="selectedTitle">
+            <a:outputPanel rendered="#{empty productGroupHome.selectFactory}">
+                <h:outputText value="#{productGroupHome.instance.title}" rendered="#{productGroupHome.idDefined}"/>
+                <h:outputText value="#{productGroupHome.parent.title}" rendered="#{not productGroupHome.idDefined}"/>
+            </a:outputPanel>
+            <h:outputText value="#{productGroupHome.selectFactory.name}"
+                          rendered="#{not empty productGroupHome.selectFactory}"/>
+        </a:outputPanel>
+    </ui:define>
+
+    <ui:define name="addLink">
+        <a:commandLink value="#{messages.add}" immediate="true"
+                       execute="@this"
+                       action="#{productGroupHome.createNew}"
+                       onclick="if (#{(not productGroupHome.idDefined) and (empty productGroupHome.selectFactory) }) {alert('#{messages.plaseSelectOperDataFirst}'); return false;}"
+                       render="productResDataTable,details,resSelectPanel_form">
+            <a:attachQueue requestDelay="0"/>
+            <a:param value="#{productGroupHome.instance.id}" assignTo="#{productGroupHome.id}"
+                     rendered="#{productGroupHome.idDefined}"/>
+            <a:param value="#{productGroupHome.selectFactoryId}" assignTo="#{productGroupHome.selectFactoryId}"
+                     rendered="#{not empty productGroupHome.selectFactory}"/>
+        </a:commandLink>
+    </ui:define>
+
+    <ui:define name="navigation">
+
+            <rich:panel style="min-height: 460px;">
+                <rich:tree value="#{myFactory}" var="_group" nodeType="#{_group.type}"
+                           onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                           toggleType="client" selectionChangeListener="#{productGroupHome.selectionChanged}"
+                           selectionType="ajax" render="details,selectedTitle,productResDataTable">
+                    <rich:treeNode expanded="#{true}" type="factory" iconLeaf="/img/factory.png" iconCollapsed="/img/factory.png"
+                                   iconExpanded="/img/factory.png">
+                        <h:outputText value="#{_group.name}"/>
+                    </rich:treeNode>
+                    <rich:treeNode expanded="#{true}" type="group" iconLeaf="/img/group.png" iconCollapsed="/img/group.png"
+                                   iconExpanded="/img/group.png">
+                        <h:outputText value="#{_group.name}"/>
+                    </rich:treeNode>
+                </rich:tree>
+            </rich:panel>
+
+    </ui:define>
+
+    <ui:define name="actionToolbar">
+        <rich:toolbarGroup rendered="#{productGroupHome.editing}" location="left">
+            <h:graphicImage value="/img/onetomany.gif"/>
+            <a:commandLink value="#{messages.addGroupProduct}"
+                           onclick="#{rich:component('resSelectPanel')}.show();return false;"/>
+
+        </rich:toolbarGroup>
+    </ui:define>
+
+
+    <ui:define name="editFields">
+
+        <s:decorate id="idField" template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.productGroup_field_id}</ui:define>
+            <h:inputText required="true" label="#{messages.productGroup_field_id}"
+                         readonly="#{not productGroupHome.editing }"
+                         disabled="#{productGroupHome.managed}"
+                         valueChangeListener="#{productGroupHome.verifyIdAvailable}"
+                         value="#{productGroupHome.instance.id}" size="20" maxlength="20">
+                <a:ajax event="blur" render="idField"/>
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-edit.xhtml">
+            <ui:define name="label">#{messages.productGroup_field_name}</ui:define>
+            <h:inputText value="#{productGroupHome.instance.name}"
+                         label="#{messages.productGroup_field_name}"
+                         readonly="#{not productGroupHome.editing}"
+                         required="true"
+                         size="27"
+                         maxlength="50"/>
+        </s:decorate>
+
+    </ui:define>
+
+    <ui:define name="detailsAnnex">
+        <br/>
+
+        <rich:dataTable style="width: 100%" id="productResDataTable"
+                        value="#{productGroupHome.instance.productList}" var="_res"
+                        noDataLabel="#{messages.groupProductEmpty}">
+            <f:facet name="header">
+                #{messages.groupProduct}
+            </f:facet>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res_field_code}
+                </f:facet>
+                #{_res.code}
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.res_field_name}
+                </f:facet>
+                #{_res.name}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.rescategory_field_type}
+                </f:facet>
+                #{messages[_res.resCategory.type.name()]}
+            </rich:column>
+
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.resCategory}
+                </f:facet>
+                #{_res.resCategory.name}
+            </rich:column>
+
+            <rich:column rendered="#{productGroupHome.editing}" style="text-align: center">
+                <f:facet name="header">
+
+                </f:facet>
+
+                <a:commandButton image="/img/delete.png" title="#{messages.delete}" immediate="true"
+                                 onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){removeRes('#{_res.id}')}else{return false;}">
+                </a:commandButton>
+            </rich:column>
+        </rich:dataTable>
+
+    </ui:define>
+
+    <h:form>
+        <a:outputPanel ajaxRendered="true">
+            <a:jsFunction name="removeRes" action="#{productGroupHome.deleteProductRes}" render="productResDataTable">
+                <a:param name="resId" assignTo="#{productGroupHome.selectProductResId}"/>
+                <a:attachQueue requestDelay="0"/>
+                <s:conversationId/>
+            </a:jsFunction>
+        </a:outputPanel>
+    </h:form>
+
+    <ui:include src="/layout/erp/ResSelectTree.xhtml">
+        <ui:param name="render" value="productResDataTable"/>
+        <ui:param name="treeValue" value="#{produceInResTree}"/>
+
+    </ui:include>
+
+</ui:composition>

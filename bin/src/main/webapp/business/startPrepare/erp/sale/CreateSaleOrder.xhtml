@@ -1,0 +1,322 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+<ui:param name="functionTitle" value="#{messages.createOrder}-#{messages.orderCustomer}"/>
+
+<ui:define name="func-body">
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
+<h:outputStylesheet>
+
+    .priceUnitSelectWidth input[type="text"] {
+        width: 70px;
+    }
+
+    .payTypeSelectWidth input[type="text"] {
+        width: 80px;
+    }
+
+    .saleAreaSelect input[type="text"] {
+        width: 115px;
+    }
+</h:outputStylesheet>
+
+<h:form>
+<rich:toolbar>
+
+    <rich:toolbarGroup>
+
+        <h:panelGrid columns="20">
+            <rich:calendar id="orderCreateDateField"
+                           enableManualInput="true"
+                           inputSize="10"
+                           timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                           showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                           datePattern="#{messages.datetimepattern}"
+                           required="true"
+                           defaultTime="#{currentTime}"
+                           defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                           label="#{messages.order_field_createDate}"
+                           value="#{orderCreate.instance.createDate}">
+                <rich:validator event="change"/>
+                <rich:placeholder value="#{messages.order_field_createDate}"/>
+            </rich:calendar>
+            <rich:message for="orderCreateDateField" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+
+            <rich:select value="#{orderCreate.instance.payType}"
+                         styleClass="payTypeSelectWidth" listWidth="93px"
+                         label="#{messages.order_field_payType}"
+                         required="true" id="payTypeField">
+                <s:selectItems value="#{orderPayTypes}" var="_payType"
+                               noSelectionLabel="#{messages.noSelectLabel}"
+                               label="#{messages[_payType.name()]}"/>
+                <s:convertEnum/>
+                <rich:validator/>
+                <rich:placeholder value="#{messages.order_field_payType}"/>
+                <a:ajax event="selectitem" render="earnestFirstField"/>
+            </rich:select>
+            <rich:message for="payTypeField" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+            <rich:calendar id="orderSendLimitDateField"
+                           enableManualInput="true"
+                           inputSize="10"
+                           timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                           showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                           datePattern="#{messages.datePattern}"
+                           required="true"
+                           label="#{messages.storeOutLimitDate}"
+                           value="#{needResHome.instance.limitTime}">
+                <rich:validator event="change"/>
+                <rich:placeholder value="#{messages.storeOutLimitDate}"/>
+            </rich:calendar>
+            <rich:message for="orderSendLimitDateField" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/>
+
+            <h:selectBooleanCheckbox value="#{needResHome.instance.fareByCustomer}">
+                #{messages.order_fare_by_customer}
+            </h:selectBooleanCheckbox>
+
+            <a:outputPanel id="earnestFirstField">
+                <h:selectBooleanCheckbox value="#{orderCreate.instance.earnestFirst}"
+                                         rendered="#{(not empty orderCreate.instance.payType) and (not (orderCreate.instance.payType eq 'PAY_FIRST'))}">
+                    #{messages.order_field_earnestFirst}
+                </h:selectBooleanCheckbox>
+
+            </a:outputPanel>
+
+        </h:panelGrid>
+    </rich:toolbarGroup>
+
+
+    <rich:toolbarGroup location="right">
+        <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
+                  includePageParams="false"
+                  view="#{empty from ? '/func/erp/sale/CustomerOrder.xhtml' : from}"/>
+        <h:commandButton styleClass="toolBarBtn" value="#{messages.Next}"
+                         action="#{orderCreate.saveOrderCustomer}">
+            <f:param name="from" value="#{from}"/>
+        </h:commandButton>
+    </rich:toolbarGroup>
+</rich:toolbar>
+<rich:messages ajaxRendered="true" globalOnly="true"/>
+
+<h:panelGrid columns="2">
+
+    <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.CustomerArea}</ui:define>
+        <rich:select value="#{customerAreaHome.id}" required="true"
+                     label="#{messages.CustomerArea}"
+                     styleClass="saleAreaSelect" listWidth="132px">
+            <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                           noSelectionLabel="#{messages.noSelectLabel}"
+                           label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+            <a:ajax event="selectitem" execute="@this"
+                    listener="#{orderCreate.clearCustomer}"
+                    render="customerSelectNameField,customerInfo,orderContactFields">
+                <a:attachQueue requestDelay="0"/>
+            </a:ajax>
+        </rich:select>
+    </s:decorate>
+
+
+    <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
+        <ui:define name="label">#{messages.Customer}</ui:define>
+        <rich:autocomplete id="pinyinSearchCustomer"
+                           mode="client" minChars="1" autofill="false"
+                           showButton="true"
+                           disabled="#{not customerAreaHome.idDefined}"
+                           selectFirst="true"
+                           label="#{messages.Customer}"
+                           clientFilterFunction="pinyinFilter"
+                           autocompleteList="#{customerSelectList.resultList}"
+                           value="#{customerHome.pinyinSearchName}"
+                           fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
+
+            <h:outputText value="#{_customer.name}"/>
+            <a:ajax event="selectitem" listener="#{needResHome.customerChangeListener}"
+                    render="pinyinSearchCustomer,orderContactFields,customerInfo" execute="@this">
+                <a:attachQueue requestDelay="0"/>
+            </a:ajax>
+            <a:ajax event="blur" execute="@this"
+                    render="pinyinSearchCustomer,orderContactFields,customerInfo">
+                <a:attachQueue requestDelay="0"/>
+            </a:ajax>
+        </rich:autocomplete>
+        <ui:define name="tail">
+            <a:commandButton immediate="true" image="/img/refresh.png"
+                             action="#{customerHome.clearInstance}"
+                             execute="@this"
+                             render="customerInfo,customerSelectNameField,orderContactFields">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </ui:define>
+    </s:decorate>
+</h:panelGrid>
+
+
+<div style="clear:both"/>
+
+<a:outputPanel id="customerInfo">
+    <a:outputPanel rendered="#{customerAreaHome.idDefined}">
+        <rich:panel>
+
+            <f:facet name="header">
+                #{customerHome.idDefined ? messages.customerDetails : messages.createNewCustomer}
+            </f:facet>
+
+            <a:outputPanel rendered="#{customerHome.idDefined}">
+                <ui:include src="/layout/erp/CustomerView.xhtml">
+                    <ui:param name="customer" value="#{customerHome.instance}"/>
+                </ui:include>
+            </a:outputPanel>
+
+            <a:outputPanel rendered="#{not customerHome.idDefined}">
+                <ui:include src="/layout/erp/CustomerEdit.xhtml"/>
+            </a:outputPanel>
+
+            <div style="clear:both"/>
+
+        </rich:panel>
+
+    </a:outputPanel>
+</a:outputPanel>
+
+
+<a:outputPanel ajaxRendered="true" id="orderContactFields">
+    <h:panelGrid columns="3">
+
+
+        <s:decorate id="orderTelField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_tel}</ui:define>
+
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.order_field_tel}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allTelList}"
+                               value="#{orderCreate.instance.tel}"
+                               fetchValue="#{_tel}" var="_tel">
+
+                <h:outputText value="#{_tel}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderTelChanged}"
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderTelChanged}"
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
+            </rich:autocomplete>
+        </s:decorate>
+
+        <s:decorate id="contactField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_contact}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               label="#{messages.order_field_contact}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allContactList}"
+                               value="#{orderCreate.instance.contact}"
+                               fetchValue="#{_contact}" var="_contact">
+
+                <h:outputText value="#{_contact}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderContactChanged}"
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderContactChanged}"
+                        render="orderTelField,contactField,receiveContactField,receiveTelField"/>
+            </rich:autocomplete>
+
+        </s:decorate>
+
+        <s:decorate id="orderPostCodeField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_postCode}</ui:define>
+            <h:inputText value="#{needResHome.instance.postCode}" label="#{messages.order_field_postCode}"
+                         size="10" maxlength="10">
+                <a:ajax event="blur" render="orderPostCodeField" />
+            </h:inputText>
+        </s:decorate>
+
+        <s:decorate id="receiveTelField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveTel}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               required="true"
+                               label="#{messages.order_field_reveiveTel}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allTelList}"
+                               value="#{needResHome.instance.receiveTel}"
+                               fetchValue="#{_tel}" var="_tel">
+
+                <h:outputText value="#{_tel}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderReceivceTelChanged}"
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceTelChanged}"
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
+            </rich:autocomplete>
+
+        </s:decorate>
+
+        <s:decorate id="receiveContactField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_reveiveContact}</ui:define>
+
+            <rich:autocomplete mode="client" minChars="1" autofill="false"
+                               showButton="true"
+                               selectFirst="true"
+                               required="true"
+                               label="#{messages.order_field_reveiveContact}"
+                               clientFilterFunction="pinyinNameFilter"
+                               autocompleteList="#{customerHome.allContactList}"
+                               value="#{needResHome.instance.receivePerson}"
+                               fetchValue="#{_contact}" var="_contact">
+
+                <h:outputText value="#{_contact}"/>
+                <a:ajax event="blur" listener="#{orderCreate.orderReceivceContactChanged}"
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
+                <a:ajax event="selectitem" listener="#{orderCreate.orderReceivceContactChanged}"
+                        render="receiveContactField,receiveTelField,orderTelField,contactField"/>
+            </rich:autocomplete>
+
+        </s:decorate>
+
+    </h:panelGrid>
+
+    <h:panelGrid columns="2">
+
+
+        <s:decorate id="receiveAddressField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.order_field_address}</ui:define>
+            <h:inputText value="#{needResHome.instance.address}" label="#{messages.order_field_address}"
+                         required="true" size="81" maxlength="200">
+                <a:ajax event="blur" render="receiveAddressField"/>
+            </h:inputText>
+        </s:decorate>
+    </h:panelGrid>
+</a:outputPanel>
+
+
+<s:decorate template="/layout/edit.xhtml">
+    <ui:define name="label">#{messages.field_memo}</ui:define>
+    <h:inputTextarea label="#{messages.field_memo}"
+                     value="#{orderCreate.instance.memo}"
+                     cols="81" rows="2"/>
+</s:decorate>
+
+<div style="clear:both">
+    <span class="required">*</span>
+    #{messages.requiredFields}
+</div>
+</h:form>
+
+</ui:define>
+
+</ui:composition>

@@ -1,0 +1,134 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="body">
+        <h:panelGrid width="100%" columns="2" columnClasses="gridFunctionCategory">
+
+
+            <rich:dataTable style="width:300px" id="allProcessDef" value="#{processDefinitionListForName}" var="_processDefGroup">
+                <f:facet name="header">
+                    <rich:columnGroup>
+                        <rich:column colspan="4">
+                            #{messages.deployedJpdl}
+                        </rich:column>
+                        <rich:column breakRowBefore="true">
+                            #{messages.name}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.description}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.version}
+                        </rich:column>
+                        <rich:column>
+                            #{messages.action}
+                        </rich:column>
+                    </rich:columnGroup>
+                </f:facet>
+                <rich:column colspan="4">
+                    <rich:collapsibleSubTableToggler for="processDefinitionTable"/>
+                    <h:outputText value="#{_processDefGroup.name} - #{_processDefGroup.description}"/>
+                </rich:column>
+                <rich:collapsibleSubTable expandMode="client"
+                                          value="#{_processDefGroup.processDefinitions}" var="_processDefinition"
+                                          id="processDefinitionTable">
+                    <rich:column>
+                        <h:outputText value="#{_processDefinition.name}"/>
+                    </rich:column>
+                    <rich:column>
+                        <h:outputText value="#{_processDefinition.description}"/>
+                    </rich:column>
+                    <rich:column>
+                        <h:outputText value="#{_processDefinition.version}"/>
+                    </rich:column>
+                    <rich:column>
+                        <a:commandLink value="#{messages.viewProcessImg}" execute="@this"
+                                       immediate="true"
+                                       oncomplete="#{rich:component('imagePanel')}.show();"
+                                       render="processDefImg">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param name="processDefinitionId" value="#{_processDefinition.id}"
+                                     assignTo="#{processDefinitionHome.id}"/>
+                        </a:commandLink>
+                        #{' '}
+                        <a:commandLink value="#{messages.remove}"
+                                       execute="@this" immediate="true"
+                                       render="deleteButton" oncomplete="#{rich:component('deleteConfirm')}.show()">
+                            <a:attachQueue requestDelay="0"/>
+                            <a:param name="processDefinitionId" value="#{_processDefinition.id}"
+                                     assignTo="#{processDefinitionHome.id}"/>
+                        </a:commandLink>
+                    </rich:column>
+                </rich:collapsibleSubTable>
+            </rich:dataTable>
+
+
+            <h:form enctype="multipart/form-data">
+                <rich:fileUpload maxFilesQuantity="5" title="#{messages.deployJpdlPar}"
+                                 serverErrorLabel="#{messages.fileUpload_serverErrorLabel}"
+                                 deleteLabel="#{messages.fileUpload_deleteLabel}"
+                                 doneLabel="#{messages.fileUpload_doneLabel}"
+                                 cancelEntryControlLabel="#{messages.fileUpload_cancelEntryControlLabel}"
+                                 addLabel="#{messages.fileUpload_addControlLabel}"
+                                 progressLabel="#{messages.fileUpload_progressLabel}"
+                                 sizeExceededLabel="#{messages.fileUpload_sizeErrorLabel}"
+                                 uploadLabel="#{messages.fileUpload_uploadControlLabel}"
+                                 transferErrorLabel="#{messages.fileUpload_transferErrorLabel}"
+                                 clearAllLabel="#{messages.fileUpload_clearAllControlLabel}"
+                                 clearLabel="#{messages.fileUpload_clearControlLabel}"
+                                 stopControlLabel="#{messages.fileUpload_stopControlLabel}"
+                                 fileUploadListener="#{processDefinitionHome.jpdlUploadListener}"
+                                 ontyperejected="alert('#{messages.unsupportedProcessDefFile}');"
+                                 acceptedTypes="par">
+
+                    <a:ajax event="uploadcomplete" execute="@none" render="allProcessDef"/>
+                </rich:fileUpload>
+            </h:form>
+        </h:panelGrid>
+
+        <s:decorate template="/layout/delete_confirm_dialog.xhtml">
+            <ui:param name="panelId" value="deleteConfirm"/>
+            <a:commandButton render="allProcessDef" id="deleteButton" execute="@this" value="#{messages.remove}"
+                             action="#{processDefinitionHome.removeDeploy}"
+                             oncomplete="#{rich:component('deleteConfirm')}.hide()">
+                <a:attachQueue requestDelay="0"/>
+                <a:param name="processDefinitionId" value="#{processDefinitionHome.id}"
+                         assignTo="#{processDefinitionHome.id}"/>
+            </a:commandButton>
+        </s:decorate>
+
+
+        <rich:popupPanel id="imagePanel" modal="false" autosized="true"
+                         moveable="true" resizeable="false">
+
+            <f:facet name="header">
+                <h:panelGroup>
+                    <h:outputText value="#{messages.viewProcessImg}"/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="controls">
+                <h:panelGroup>
+                    <ui:insert name="controls"/>
+                    <a:commandButton immediate="true" execute="@this" image="/img/close.png"
+                                     onclick="#{rich:component('imagePanel')}.hide();return false;">
+                    </a:commandButton>
+                </h:panelGroup>
+            </f:facet>
+            <a:outputPanel ajaxRendered="false" id="processDefImg">
+                <a:mediaOutput id="img" element="img" cacheable="false" session="true"
+                               createContent="#{processDefinitionHome.processDefinitionImg}"
+                               value="#{processDefinitionHome.id}"
+                               rendered="#{processDefinitionHome.define}"
+                               mimeType="image/png"/>
+            </a:outputPanel>
+
+        </rich:popupPanel>
+    </ui:define>
+</ui:composition>

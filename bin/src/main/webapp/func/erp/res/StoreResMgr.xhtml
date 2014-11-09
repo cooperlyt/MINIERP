@@ -1,0 +1,219 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/layout/simpleDataCURD.xhtml">
+
+<h:outputStylesheet>
+    .leftColumn {
+        vertical-align: top;
+        width: 190px;
+    }
+
+    .rightColumn {
+        vertical-align: top;
+    }
+</h:outputStylesheet>
+
+<ui:param name="bodyColumnClasses" value="leftColumn,rightColumn"/>
+
+<ui:param name="dataHome" value="#{storeResHome}"/>
+
+
+<ui:define name="navigation">
+    <h:form>
+        <rich:panel style="min-height: 460px;">
+            <rich:tree
+                    var="_node"
+                    value="#{allStoreResManagerTree}"
+                    nodeType="#{_node.nodeType}"
+                    onbeforeselectionchange=" if (arguments[2].newSelection[0].isSelected()) return false;"
+                    toggleType="client"
+                    selectionType="client">
+                <rich:treeNode type="category" expanded="#{_node.expanded}">
+                    <h:outputText value="#{_node.data.name}" rendered="#{_node.data.enable}"/>
+                    <h:outputText style="text-decoration:line-through; color: red;"
+                                  value="#{_node.data.name}" rendered="#{not _node.data.enable}"/>
+                </rich:treeNode>
+
+                <rich:treeNode type="res" expanded="#{_node.expanded}" iconLeaf="/img/res.png"
+                               iconCollapsed="/img/res.png"
+                               iconExpanded="/img/res.png">
+                    <h:outputText style="text-decoration:line-through; color: red;"
+                                  value="#{_node.data.name}(#{_node.data.code})"
+                                  rendered="#{not _node.data.enable}"/>
+
+                    <h:outputText value="#{_node.data.name}(#{_node.data.code})"
+                                  rendered="#{_node.data.enable}"/>
+
+                </rich:treeNode>
+
+
+                <rich:treeNode type="property">
+
+                    #{_node.formatDefine.name}
+
+                    <h:outputText value="#{messages.formatNotSet}" rendered="#{empty _node.data}"/>
+
+                    <a:outputPanel rendered="#{not empty _node.data}">
+
+
+                        <h:outputText value="#{dictionary.getWordValue(_node.data.formatValue)}"
+                                      rendered="#{_node.data.formatDefine.dataType.name() eq 'WORD'}"/>
+                        <h:outputText value="#{_node.data.formatValue}"
+                                      rendered="#{not (_node.data.formatDefine.dataType.name() eq 'WORD')}"/>
+                    </a:outputPanel>
+
+                </rich:treeNode>
+
+                <rich:treeNode expanded="#{_node.expanded}" type="storeRes"
+                               iconExpanded="/img/store_res.png" iconLeaf="/img/store_res.png"
+                               iconCollapsed="/img/store_res.png">
+
+
+                    <h:outputLink value="#" onclick="storeResSelect('#{_node.data.id}');return false;">
+
+                        <h:outputText value="#{_node.data.code}#{' '}#{(not empty _node.title) ? _node.title : ''}"
+                                      style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}"
+                                      rendered="#{not empty _node.title}"/>
+
+                        <a:outputPanel rendered="#{empty _node.title}">
+                            <s:span style="#{_node.data.enable ? '' : 'text-decoration:line-through; color: red;'}">
+                                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                                    <ui:param name="storeRes" value="#{_node.data}"/>
+                                    <ui:param name="showResName" value="false"/>
+                                </ui:include>
+                            </s:span>
+                        </a:outputPanel>
+                    </h:outputLink>
+                </rich:treeNode>
+            </rich:tree>
+        </rich:panel>
+    </h:form>
+
+    <h:form>
+        <a:jsFunction name="storeResSelect" render="details">
+            <a:param name="selectId" assignTo="#{storeResHome.id}"/>
+        </a:jsFunction>
+    </h:form>
+</ui:define>
+
+<ui:define name="editFields">
+
+    <s:decorate template="/layout/edit.xhtml">
+        <ui:define name="label">
+            #{messages.field_enable}
+        </ui:define>
+        <h:selectBooleanCheckbox value="#{storeResHome.instance.enable}"
+                                 label="#{messages.field_enable}"
+                                 disabled="#{not storeResHome.editing}"/>
+    </s:decorate>
+
+
+    <s:decorate id="resField" template="/layout/display.xhtml">
+        <ui:define name="label">
+            #{messages.res}
+        </ui:define>
+        <h:outputText value="#{storeResHome.instance.res.name}(#{storeResHome.instance.res.code})"
+                      rendered="#{(not empty storeResHome.instance.res) and ((not storeResHome.editing) or storeResHome.managed)}"/>
+
+        <a:commandLink immediate="true" rendered="#{storeResHome.editing and (not storeResHome.managed)}"
+                       onclick="#{rich:component('resSelectPanel')}.show(); return false;"
+                       value="#{empty storeResHome.instance.res ? messages.plase_select_res : storeResHome.instance.res.name} #{(empty storeResHome.instance.res ? '' : storeResHome.instance.res.code)}">
+
+        </a:commandLink>
+    </s:decorate>
+
+    <s:decorate id="codeField" template="/layout/edit.xhtml">
+        <ui:define name="label">
+            #{messages.storeRes_field_code}
+        </ui:define>
+        <h:inputText value="#{storeResHome.instance.code}"
+                     unique="code"
+                     valueChangeListener="#{storeResHome.verifyUniqueAvailable}"
+                     readonly="#{not storeResHome.editing}"
+                     required="true" maxlength="50" size="20">
+            <f:validateRegex pattern="#{runParam.getStringParamValue('erp.storeResRegRule')}"/>
+            <rich:validator/>
+            <a:ajax event="blur" render="codeField" disabled="#{not storeResHome.editing}"/>
+        </h:inputText>
+
+        <ui:define name="tail">
+            <a:commandButton image="/img/code.png" execute="storesFormatsRegion" action="#{storeResHome.genCode}"
+                             render="codeField,storesFormats"
+                             rendered="#{storeResHome.editing}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+        </ui:define>
+    </s:decorate>
+
+    <a:region id="storesFormatsRegion">
+        <a:outputPanel id="storesFormats">
+
+
+            <a:outputPanel id="itemFormats">
+                <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
+                    <s:decorate rendered="#{storeResHome.editing}" id="#{_format.formatDefine.id}Field"
+                                template="/layout/edit.xhtml">
+                        <ui:define name="label">#{_format.formatDefine.name}</ui:define>
+                        <ui:include src="/layout/erp/ResFormatVarInput.xhtml">
+                            <ui:param name="format" value="#{_format}"/>
+                            <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
+
+                        </ui:include>
+                    </s:decorate>
+
+                    <s:decorate rendered="#{not storeResHome.editing}" template="/layout/display.xhtml">
+                        <ui:define name="label">
+                            #{_format.formatDefine.name}
+                        </ui:define>
+                        <h:outputText value="#{dictionary.getWordValue(_format.formatValue)}"
+                                      rendered="#{_format.formatDefine.dataType eq 'WORD'}"/>
+                        <h:outputText value="#{_format.intValue}" converter="javax.faces.Integer"
+                                      rendered="#{_format.formatDefine.dataType eq 'INTEGER'}"/>
+                        <h:outputText value="#{_format.floatValue}" converter="javax.faces.BigDecimal"
+                                      rendered="#{_format.formatDefine.dataType eq 'FLOAT'}"/>
+                    </s:decorate>
+                </a:repeat>
+            </a:outputPanel>
+
+            <a:outputPanel rendered="#{not empty storeResHome.instance.res}">
+                <s:decorate rendered="#{storeResHome.instance.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                            template="/layout/edit.xhtml">
+                    <ui:define name="label">
+                        #{storeResHome.instance.res.unitGroup.name}
+                    </ui:define>
+                    <rich:autocomplete id="storeFloatRateInput" mode="client"
+                                       value="#{storeResHome.instance.floatConversionRate}"
+                                       layout="div"
+                                       disabled="#{not storeResHome.editing}"
+                                       label="#{storeResHome.instance.res.unitGroup.name}"
+                                       required="true"
+                                       var="_value"
+                                       selectFirst="false"
+                                       fetchValue="#{_value}"
+                                       autocompleteList="#{storeResFormatFilter.floatConvertHistoryRateList}"
+                                       showButton="true">
+                        <f:convertNumber pattern="#{storeResHome.instance.res.unitGroup.floatConvertRateFormat}"/>
+                        <b>#{_value}</b>
+                    </rich:autocomplete>
+                </s:decorate>
+            </a:outputPanel>
+
+        </a:outputPanel>
+    </a:region>
+</ui:define>
+
+
+<ui:include src="/layout/erp/ResSelectTree.xhtml">
+    <ui:param name="render" value="resField,storesFormats,codeField"/>
+    <ui:param name="treeValue" value="#{allResTree}"/>
+</ui:include>
+
+</ui:composition>

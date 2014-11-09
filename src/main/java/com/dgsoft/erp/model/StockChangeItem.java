@@ -29,6 +29,7 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
     //private boolean storeOut;
     private BigDecimal count;
     private String memo;
+    private Set<InventoryItem> inventoryItems = new HashSet<InventoryItem>(0);
 
     private Set<NoConvertCount> noConvertCounts = new HashSet<NoConvertCount>(0);
 
@@ -137,4 +138,12 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.memo = memo;
     }
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "stockChangeItem")
+    public Set<InventoryItem> getInventoryItems() {
+        return inventoryItems;
+    }
+
+    public void setInventoryItems(Set<InventoryItem> inventoryItems) {
+        this.inventoryItems = inventoryItems;
+    }
 }

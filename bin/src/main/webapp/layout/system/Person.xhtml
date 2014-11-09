@@ -1,0 +1,84 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <rich:panel>
+        <f:facet name="header">#{messages.person}</f:facet>
+
+        <s:decorate id="id" template="layout/display.xhtml">
+            <ui:define name="label">Id</ui:define>
+            <h:outputText value="#{personHome.instance.id}"/>
+        </s:decorate>
+
+        <s:decorate id="address" template="layout/display.xhtml">
+            <ui:define name="label">Address</ui:define>
+            <h:outputText value="#{personHome.instance.address}"/>
+        </s:decorate>
+
+        <s:decorate id="city" template="layout/display.xhtml">
+            <ui:define name="label">City</ui:define>
+            <h:outputText value="#{personHome.instance.city}"/>
+        </s:decorate>
+
+        <s:decorate id="credentialsNumber" template="layout/display.xhtml">
+            <ui:define name="label">Credentials number</ui:define>
+            <h:outputText value="#{personHome.instance.credentialsNumber}"/>
+        </s:decorate>
+
+        <s:decorate id="credentialsOrgan" template="layout/display.xhtml">
+            <ui:define name="label">Credentials organ</ui:define>
+            <h:outputText value="#{personHome.instance.credentialsOrgan}"/>
+        </s:decorate>
+
+        <s:decorate id="credentialsType" template="layout/display.xhtml">
+            <ui:define name="label">Credentials type</ui:define>
+            <h:outputText value="#{personHome.instance.credentialsType}"/>
+        </s:decorate>
+
+        <s:decorate id="dateOfBirth" template="layout/display.xhtml">
+            <ui:define name="label">Date of birth</ui:define>
+            <h:outputText value="#{personHome.instance.dateOfBirth}">
+                <f:convertDateTime type="both" dateStyle="short"/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate id="ethnic" template="layout/display.xhtml">
+            <ui:define name="label">Ethnic</ui:define>
+            <h:outputText value="#{personHome.instance.ethnic}"/>
+        </s:decorate>
+
+        <s:decorate id="name" template="layout/display.xhtml">
+            <ui:define name="label">Name</ui:define>
+            <h:outputText value="#{personHome.instance.name}"/>
+        </s:decorate>
+
+        <s:decorate id="nationality" template="layout/display.xhtml">
+            <ui:define name="label">Nationality</ui:define>
+            <h:outputText value="#{personHome.instance.nationality}"/>
+        </s:decorate>
+
+        <s:decorate id="nowAddress" template="layout/display.xhtml">
+            <ui:define name="label">Now address</ui:define>
+            <h:outputText value="#{personHome.instance.nowAddress}"/>
+        </s:decorate>
+
+        <s:decorate id="phone" template="layout/display.xhtml">
+            <ui:define name="label">Phone</ui:define>
+            <h:outputText value="#{personHome.instance.phone}"/>
+        </s:decorate>
+
+        <s:decorate id="sex" template="layout/display.xhtml">
+            <ui:define name="label">Sex</ui:define>
+            <h:outputText value="#{personHome.instance.sex}"/>
+        </s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+</ui:composition>

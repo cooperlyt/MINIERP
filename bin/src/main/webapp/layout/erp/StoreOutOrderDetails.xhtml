@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+
+
+
+    <h:form id="storeOutItems">
+        <rich:dataTable rendered="#{(not empty storeOutAction.selectStore)}" value="#{storeOutAction.storeOutItemGroups}"
+                        var="_outGroup">
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column>
+                        #{messages.res}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.StoreArea}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.InventoryCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.storeOutCount}
+                    </rich:column>
+                    <rich:column>
+                        #{messages.action}
+                    </rich:column>
+                </rich:columnGroup>
+            </f:facet>
+            <rich:column colspan="5">
+                <rich:collapsibleSubTableToggler for="storeOutItems"/>
+                <h:outputText value="#{_outGroup.title} #{_outGroup.totalCount}"/>
+            </rich:column>
+
+            <rich:collapsibleSubTable value="#{_outGroup.items}" var="_item" id="storeOutItems">
+                <rich:column>
+                    #{_item.stock.storeRes.title}
+                </rich:column>
+                <rich:column>
+                    #{_item.stock.storeArea.getTitle(false)}
+                </rich:column>
+                <rich:column>
+                    #{_item.stock.count}
+                </rich:column>
+                <rich:column>
+                    #{_item.count}
+                </rich:column>
+                <rich:column>
+                    <a:commandButton render="storeOutItems" action="#{storeOutAction.removeItem}" title="#{messages.remove}"
+                                     immediate="true" image="/img/delete.png" execute="@this">
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_item.id}" assignTo="#{storeOutAction.selectInventoryId}"/>
+                    </a:commandButton>
+                </rich:column>
+            </rich:collapsibleSubTable>
+        </rich:dataTable>
+    </h:form>
+
+</ui:composition>

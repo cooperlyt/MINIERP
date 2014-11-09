@@ -1,0 +1,205 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+<ui:define name="body">
+
+    <s:decorate template="/layout/edit-modalpanel.xhtml">
+        <ui:define name="panelTitle">
+            <h:outputText id="systemParamEditPanelTitle"
+                          value="#{systemParamHome.managed ? messages['edit'] : messages['add']} #{messages.systemParam}"/>
+        </ui:define>
+        <ui:param name="panelId" value="systemParamEditPanel"/>
+
+        <ui:define name="controls">
+            <a:commandLink id="systemParamEditPanelClose" immediate="true" execute="@this" value="X"
+                           oncomplete="#{rich:component('systemParamEditPanel')}.hide(); return false;">
+                <s:conversationPropagation type="end"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandLink>
+        </ui:define>
+        <s:decorate id="idField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.systemParam_field_id}</ui:define>
+            <a:outputPanel id="idInputPanel">
+                <h:inputText id="id"
+                             label="#{messages.systemParam_field_id}"
+                             disabled="#{systemParamHome.managed}"
+                             required="true"
+                             size="27"
+                             maxlength="32"
+                             valueChangeListener="#{systemParamHome.verifyIdAvailable}"
+                             value="#{systemParamHome.instance.id}">
+
+                    <s:validate/>
+                    <a:ajax event="blur" bypassUpdates="true" execute="@this" render="idInputPanel"/>
+                </h:inputText>
+                <rich:message for="id" styleClass="message-icon"
+                              showDetail="true" showSummary="true" tooltip="true"/>
+            </a:outputPanel>
+        </s:decorate>
+
+        <s:decorate template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.systemParam_field_value}</ui:define>
+            <h:inputText id="value"
+                         label="#{messages.systemParam_field_value}"
+                         required="true"
+                         size="27"
+                         maxlength="100"
+                         value="#{systemParamHome.instance.value}">
+                <rich:validator event="blur"/>
+            </h:inputText>
+            <rich:message for="value" styleClass="message-icon"
+                          showDetail="true" showSummary="false" tooltip="true"/>
+        </s:decorate>
+
+
+        <s:decorate id="typeField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.systemParam_field_type}</ui:define>
+            <rich:select id="type" label="#{messages.systemParam_field_type}"
+                         required="true"
+                         value="#{systemParamHome.instance.type}">
+                <s:selectItems var="_paramType" value="#{paramTypes}" label="#{messages[_paramType.name()]}"
+                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                <s:convertEnum/>
+                <a:ajax event="selectitem" render="typeField" execute="@this"/>
+            </rich:select>
+
+            <!--rich:message for="type" styleClass="message-icon"
+                          showDetail="true" showSummary="true" tooltip="true"/-->
+        </s:decorate>
+
+
+        <s:decorate id="memoField" template="/layout/edit.xhtml">
+            <ui:define name="label">#{messages.field_memo}</ui:define>
+            <h:inputTextarea label="#{messages.field_memo}" id="memo" cols="27"
+                             value="#{systemParamHome.instance.memo}">
+                <rich:validator event="blur"/>
+            </h:inputTextarea>
+            <rich:message for="memo" styleClass="message-icon"
+                          showDetail="true" showSummary="false" tooltip="true"/>
+        </s:decorate>
+
+        <ui:define name="actionButtons">
+            <a:outputPanel id="operButtons">
+                <a:commandButton render="systemParamListPanel" execute="@form" value="#{messages.save}"
+                                 action="#{systemParamHome.persistEnd}"
+                                 rendered="#{!systemParamHome.managed}"
+                                 data="#{systemParamHome.lastState}"
+                                 oncomplete="if (event.data == 'persisted'){#{rich:component('systemParamEditPanel')}.hide(); return true;} else return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+
+
+                <a:commandButton render="systemParamListPanel" value="#{messages.update}" execute="@form"
+                                 action="#{systemParamHome.updateEnd}"
+                                 rendered="#{systemParamHome.managed}"
+                                 data="#{systemParamHome.lastState}"
+                                 oncomplete="if(event.data == 'updated'){#{rich:component('systemParamEditPanel')}.hide(); return true;} else return false;">
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandButton>
+            </a:outputPanel>
+            <a:commandButton id="cancelButton" immediate="true" execute="@this" value="#{messages.cancel}"
+                             oncomplete="#{rich:component('systemParamEditPanel')}.hide();return false;">
+                <s:conversationPropagation type="end"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
+        </ui:define>
+    </s:decorate>
+
+
+    <rich:panel id="systemParamListPanel">
+        <f:facet
+                name="header">#{messages.systemParam} #{messages.resultsCount} (#{empty systemParamList.resultList ? 0 : (systemParamList.paginated ? systemParamList.resultCount : systemParamList.resultList.size)})</f:facet>
+
+        <div class="results">
+
+            <h:outputText value="#{messages.systemParam} #{messages.emptyResult}"
+                          rendered="#{empty systemParamList.resultList}"/>
+
+            <rich:extendedDataTable id="systemParamList"
+
+                             clientRows="0"
+                             style="width: 100%;" selectionMode="none"
+                             var="_systemParam"
+                            value="#{systemParamList.resultList}">
+
+
+                <rich:column width="32">
+                    <f:facet name="header">
+                        #{messages.systemParam_field_id}
+                    </f:facet>
+                    <h:outputText value="#{_systemParam.id}"/>
+                </rich:column>
+
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.systemParam_field_value}
+                    </f:facet>
+                    <h:outputText value="#{_systemParam.value}"/>
+                </rich:column>
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.systemParam_field_type}
+                    </f:facet>
+                    <h:outputText value="#{messages[_systemParam.type.name()]}"/>
+                </rich:column>
+
+
+                <rich:column >
+                    <f:facet name="header">
+                        #{messages.field_memo}
+                    </f:facet>
+                    <h:outputText value="#{_systemParam.memo}"/>
+                </rich:column>
+                <rich:column >
+                    <f:facet name="header">#{messages.action}</f:facet>
+
+                    <a:commandLink styleClass="no-decor" immediate="true" execute="@this"
+                                   render="systemParamListPanel"
+                                   action="#{systemParamHome.remove}"
+                                   onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}">
+                        <h:graphicImage value="/img/delete.png" alt="#{messages.delete}"/>
+                        <a:param name="id" value="#{_systemParam.id}" assignTo="#{systemParamHome.id}"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandLink>
+
+
+                    <a:commandLink id="systemParamEdit" immediate="true" execute="@this" styleClass="no-decor"
+                                   render="systemParamEditPanel_inputs,systemParamEditPanel_buttons,systemParamEditPanelTitle,systemParamEditPanelClose"
+                                   oncomplete="#{rich:component('systemParamEditPanel')}.show()">
+                        <h:graphicImage value="/img/edit.png" alt="#{messages.edit}"/>
+                        <a:param name="id" value="#{_systemParam.id}" assignTo="#{systemParamHome.id}"/>
+                        <s:conversationPropagation type="begin"/>
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandLink>
+
+                </rich:column>
+            </rich:extendedDataTable>
+
+        </div>
+    </rich:panel>
+
+
+    <s:div styleClass="actionButtons">
+
+        <a:commandButton immediate="true"
+                         render="systemParamEditPanel_inputs,systemParamEditPanel_buttons,systemParamEditPanelTitle,systemParamEditPanelClose"
+                         value="#{messages.create} #{messages.systemParam}" id="createButton" execute="@this"
+                         oncomplete="#{rich:component('systemParamEditPanel')}.show()">
+            <a:param name="id" value="" assignTo="#{systemParamHome.id}"/>
+            <s:conversationPropagation type="begin"/>
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+
+    </s:div>
+</ui:define>
+</ui:composition>

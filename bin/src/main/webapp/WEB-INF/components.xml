@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns="http://jboss.org/schema/seam/components"
+            xmlns:core="http://jboss.org/schema/seam/core"
+            xmlns:persistence="http://jboss.org/schema/seam/persistence"
+            xmlns:bpm="http://jboss.org/schema/seam/bpm"
+            xmlns:security="http://jboss.org/schema/seam/security"
+            xmlns:mail="http://jboss.org/schema/seam/mail"
+            xmlns:web="http://jboss.org/schema/seam/web"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation=
+                    "http://jboss.org/schema/seam/core http://jboss.org/schema/seam/core-2.3.xsd
+                 http://jboss.org/schema/seam/persistence http://jboss.org/schema/seam/persistence-2.3.xsd
+
+                 http://jboss.org/schema/seam/bpm http://jboss.org/schema/seam/bpm-2.3.xsd
+                 http://jboss.org/schema/seam/security http://jboss.org/schema/seam/security-2.3.xsd
+                 http://jboss.org/schema/seam/mail http://jboss.org/schema/seam/mail-2.3.xsd
+                 http://jboss.org/schema/seam/web http://jboss.org/schema/seam/web-2.3.xsd
+                 http://jboss.org/schema/seam/components http://jboss.org/schema/seam/components-2.3.xsd">
+    <core:init debug="true" jndi-pattern="@jndiPattern@"/>
+
+
+    <core:manager concurrent-request-timeout="60000"
+                  conversation-timeout="120000"
+                  conversation-id-parameter="cid"
+                  parent-conversation-id-parameter="pid"
+                  default-flush-mode="MANUAL"/>
+
+    <!-- Make sure this URL pattern is the same as that used by the Faces Servlet -->
+    <web:hot-deploy-filter url-pattern="*.seam"/>
+
+    <web:character-encoding-filter encoding="UTF-8"
+                                   override-client="true"
+                                   url-pattern="*.seam" />
+
+    <!--maxRequestSize attribute defines max size in bytes of the uploaded files (1000000 for this example).-->
+    <!-- createTempFiles boolean attribute which defines whether the uploaded files are stored in temporary files or available in the listener directly as byte[] data (false for this example). -->
+    <web:multipart-filter create-temp-files="true" max-request-size="1000000" disabled="true" url-pattern="*.seam"/>
+
+    <web:ajax4jsf-filter force-parser="true" enable-cache="false" url-pattern="*.seam"/>
+
+    <web:context-filter regex-url-pattern="/frameset.*|/document.*|/download.*|/parameter.*|/extract.*|/run.*|/preview.*|/output.*|/embed.*"/>
+    <!-- If you are still using JBoss 4, uncomment this to have your PU started -->
+    <!-- <persistence:entity-manager-factory name="entityManagerFactory"
+persistence-unit-name="house_owner"
+    installed="@seamBootstrapsPu@"/>-->
+
+
+    <persistence:managed-persistence-context name="systemEntityManager" auto-create="true"
+                                             persistence-unit-jndi-name="java:/systemEntityManagerFactory"/>
+
+    <!--    other
+ <persistence:managed-persistence-context name="entityManager" auto-create="true"
+                                          entity-manager-factory="@seamEmfRef@"
+                                          persistence-unit-jndi-name="@puJndiName@"/>
+    -->
+
+    <!--
+
+    <drools:rule-base name="securityRules">
+        <drools:rule-files>
+            <value>/security.drl</value>
+        </drools:rule-files>
+    </drools:rule-base>
+
+    <security:rule-based-permission-resolver security-rules="#{securityRules}"/>
+          -->
+
+
+    <security:identity
+            authenticate-method="#{authenticationManager.authenticate}"/>
+
+    <event type="org.jboss.seam.security.notLoggedIn">
+        <action execute="#{redirect.captureCurrentView}"/>
+    </event>
+    <event type="org.jboss.seam.security.loginSuccessful">
+        <action execute="#{redirect.returnToCapturedView}"/>
+    </event>
+
+    <mail:mail-session host="localhost" port="25"/>
+
+    <!-- For use with jBPM pageflow or process management -->
+
+    <bpm:jbpm>
+
+        <bpm:process-definitions>
+
+        </bpm:process-definitions>
+        <bpm:pageflow-definitions>
+            <value>business-config.jpdl.xml</value>
+            <value>customer-money-oper.jpdl.xml</value>
+        </bpm:pageflow-definitions>
+
+    </bpm:jbpm>
+
+
+
+    <!--
+    <component name="persistenceContextValidator">
+        <property name="entityManager">#{systemEntityManager}</property>
+    </component>
+          -->
+</components>
