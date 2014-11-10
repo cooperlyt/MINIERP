@@ -1,0 +1,42 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://jboss.org/schema/seam/pdf"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/template.xhtml">
+
+    <ui:define name="func-body">
+        <h:form>
+            <rich:toolbar>
+                <rich:toolbarGroup>
+
+                    <h:selectOneMenu value="#{yearSaleResChartData.totalYear}">
+                        <s:selectItems value="#{saleSearchYears}" var="_year" itemValue="#{_year}"
+                                       label="#{_year}"/>
+                    </h:selectOneMenu>
+
+                </rich:toolbarGroup>
+
+            </rich:toolbar>
+
+        </h:form>
+
+        <p:linechart title="#{messages.ProcedureSaleMoneyChart}"
+                     legend="true" borderVisible="false"
+                     borderBackgroundPaint="white"
+                     width="1000"
+                     plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                     baseSectionPaint="white"
+                     circular="true" is3D="true" plotForegroundAlpha="0.9">
+
+
+        </p:linechart>
+
+    </ui:define>
+
+
+</ui:composition>
