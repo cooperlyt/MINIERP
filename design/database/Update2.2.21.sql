@@ -51,3 +51,10 @@ ALTER TABLE MINI_ERP.INVENTORY ADD STATUS VARCHAR(20) NOT NULL;
 UPDATE MINI_ERP.INVENTORY SET STATUS = 'STORE_INVERTORY';
 
 
+
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO)
+VALUES ('erp.total.resYearChart', '产品年销售趋势', 'erp.total', '', '/func/erp/total/YearResSaleChart.seam', '', '140', '');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.total.resYearChart');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.total.resYearChart');
+
+

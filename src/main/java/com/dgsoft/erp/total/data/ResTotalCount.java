@@ -11,11 +11,20 @@ import java.math.BigDecimal;
  */
 public class ResTotalCount {
 
+    public static ResTotalCount ZERO(Res res){
+         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+             return new ResTotalCount(res,BigDecimal.ZERO,BigDecimal.ZERO);
+         }else{
+             return new ResTotalCount(res,BigDecimal.ZERO);
+         }
+    }
+
     private Res res;
 
     private BigDecimal masterCount;
 
     private BigDecimal auxCount;
+
 
     public ResTotalCount(StoreResCount storeResCount){
         this.res = storeResCount.getRes();

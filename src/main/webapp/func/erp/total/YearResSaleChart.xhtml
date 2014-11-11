@@ -7,36 +7,463 @@
                 xmlns:p="http://jboss.org/schema/seam/pdf"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
-                template="/layout/template.xhtml">
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/layout/full-template.xhtml">
 
-    <ui:define name="func-body">
+<ui:param name="functionTitle" value="#{messages.StoreResYearSaleChart}"/>
+
+<ui:define name="func-body">
+
+<rich:toolbar>
+    <rich:toolbarGroup>
         <h:form>
-            <rich:toolbar>
-                <rich:toolbarGroup>
+            <h:selectOneMenu value="#{yearSaleResChartData.totalYear}">
+                <s:selectItems value="#{saleSearchYears}" var="_year" itemValue="#{_year}"
+                               label="#{_year}"/>
+                <a:ajax event="valueChange" render="dataResults" execute="@form">
+                    <a:attachQueue requestDelay="0"/>
+                </a:ajax>
+            </h:selectOneMenu>
 
-                    <h:selectOneMenu value="#{yearSaleResChartData.totalYear}">
-                        <s:selectItems value="#{saleSearchYears}" var="_year" itemValue="#{_year}"
-                                       label="#{_year}"/>
-                    </h:selectOneMenu>
-
-                </rich:toolbarGroup>
-
-            </rich:toolbar>
 
         </h:form>
+    </rich:toolbarGroup>
 
-        <p:linechart title="#{messages.ProcedureSaleMoneyChart}"
-                     legend="true" borderVisible="false"
-                     borderBackgroundPaint="white"
-                     width="1000"
-                     plotOutlinePaint="white" plotBackgroundAlpha="0.1"
-                     baseSectionPaint="white"
-                     circular="true" is3D="true" plotForegroundAlpha="0.9">
+    <rich:toolbarGroup location="right">
+        <s:button styleClass="toolBarBtn" value="#{messages.return}" view="/home.xhtml"/>
+    </rich:toolbarGroup>
+
+</rich:toolbar>
+
+<br/>
+
+<a:outputPanel id="dataResults">
+    <p:linechart title="#{messages.ProcedureSaleMoneyChart}" borderVisible="false"
+                 legend="true" plotOutlinePaint="white" plotBackgroundAlpha="0.1"
+                 width="1000">
+
+        <ui:repeat value="#{collectionTools.mapToList(yearSaleResChartData.totalStoreResSaleData)}"
+                   var="_entry">
+            <p:series key="#{_entry.key.name}(#{_entry.key.code})">
+                <ui:repeat value="#{collectionTools.mapToList(_entry.value)}" var="_data">
+                    <p:data key="#{_data.key}#{messages.Month}"
+                            value="#{_data.value.money}"/>
+                </ui:repeat>
+
+            </p:series>
+        </ui:repeat>
 
 
-        </p:linechart>
+    </p:linechart>
 
-    </ui:define>
+
+    <br/>
+
+    <div style="width: 100%; overflow-x:scroll;">
+
+    <rich:dataTable value="#{yearSaleResChartData.resYearTotalData}" style="width: 3500px"
+                    var="_entry">
+
+        <f:facet name="header">
+            <rich:columnGroup>
+
+                <rich:column rowspan="3">
+                    #{messages.res}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    1#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    2#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    3#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    4#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    5#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    6#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    7#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    8#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    9#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    10#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    11#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="3">
+                    12#{messages.Month}
+                </rich:column>
+
+                <rich:column colspan="2" breakRowBefore="true">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column>
+                    #{messages.Money}
+                </rich:column>
+
+            </rich:columnGroup>
+        </f:facet>
+
+        <rich:column>
+
+            #{_entry.obj.name}(#{_entry.obj.code})
+
+        </rich:column>
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month1.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+
+        </rich:column>
+        <rich:column>
+            <h:outputText  value="#{_entry.month1.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month1.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month2.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month2.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month2.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month3.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month3.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month3.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month4.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month4.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month4.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month5.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month5.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month5.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month6.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month6.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month6.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month7.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>                   <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month7.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month7.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month8.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>                 <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month8.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month8.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month9.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>  <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month9.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month9.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month10.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>   <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month10.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month10.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month11.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>      <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month11.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month11.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+
+        <rich:column>
+            <h:outputText value="#{_entry.month12.totalCount.masterCount}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>      <h:outputText style="float: right;" value="#{_entry.obj.unitGroup.masterUnit.name}"/>
+        </rich:column>
+        <rich:column>
+            <h:outputText value="#{_entry.month12.totalCount.auxCount}" rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}">
+                <f:convertNumber pattern="#{_entry.obj.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{_entry.obj.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_entry.obj.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+        </rich:column>
+        <rich:column style="text-align: right;">
+            <h:outputText value="#{_entry.month12.money}" >
+                <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </rich:column>
+
+
+    </rich:dataTable>
+    </div>
+
+</a:outputPanel>
+</ui:define>
 
 
 </ui:composition>
