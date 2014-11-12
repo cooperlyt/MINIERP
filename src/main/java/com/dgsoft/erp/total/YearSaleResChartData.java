@@ -93,6 +93,59 @@ public class YearSaleResChartData {
         return result;
     }
 
+
+    public List<MonthTotalData<ResSaleTotalData>> getResMonthTotalData(){
+        initTotalStoreResSaleData();
+        Map<Integer,MonthTotalData<ResSaleTotalData>> result = new HashMap<Integer, MonthTotalData<ResSaleTotalData>>();
+
+        for (Map.Entry<Res, Map<Integer, ResSaleTotalData>> entry : totalStoreResSaleData.entrySet()) {
+            for(int i = 1 ; i<=12 ;i++){
+                MonthTotalData<ResSaleTotalData> data = result.get(i);
+                if (data == null){
+                    data = new MonthTotalData<ResSaleTotalData>(i);
+                    result.put(i,data);
+                }
+                data.getData().add(entry.getValue().get(i));
+            }
+        }
+        List<MonthTotalData<ResSaleTotalData>> listResult = new ArrayList<MonthTotalData<ResSaleTotalData>>(result.values());
+        Collections.sort(listResult,new Comparator<MonthTotalData<ResSaleTotalData>>() {
+            @Override
+            public int compare(MonthTotalData<ResSaleTotalData> o1, MonthTotalData<ResSaleTotalData> o2) {
+                return o1.getMonth().compareTo(o2.getMonth());
+            }
+        });
+        return listResult;
+
+    }
+
+    public static class MonthTotalData<E>{
+
+        private Integer month;
+
+        private List<E> data = new ArrayList<E>();
+
+        public MonthTotalData(Integer month) {
+            this.month = month;
+        }
+
+        public Integer getMonth() {
+            return month;
+        }
+
+        public void setMonth(Integer month) {
+            this.month = month;
+        }
+
+        public List<E> getData() {
+            return data;
+        }
+
+        public void setData(List<E> data) {
+            this.data = data;
+        }
+    }
+
     public static class YearTotalData<T,E>{
 
         private T obj;

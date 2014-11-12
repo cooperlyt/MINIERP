@@ -160,88 +160,11 @@
 </h:form>
 <br/>
 <h:form>
-    <rich:dataTable id="inventoryTable" style="width: 100%" value="#{inventoryFirst.inventoryItems}" var="_item">
-        <f:facet name="header">
-            <rich:columnGroup>
-                <rich:column rowspan="2">
-                    #{messages.StoreRes}
-                </rich:column>
-                <rich:column colspan="2">
-                    #{messages.Stock}
-                </rich:column>
-                <rich:column colspan="2">
-                    #{messages.STORE_CHECK_ADD}
-                </rich:column>
-                <rich:column colspan="2">
-                    #{messages.STORE_CHECK_LOSS}
-                </rich:column>
-                <rich:column rowspan="2">
-                    <s:link target="_blank" view="/report/inventory.xhtml">
-                        <s:graphicImage value="/img/print.png" title="#{messages.print_inventory_paper}"/>
-                        <f:param name="inventoryComponentName" value="inventoryFirst"/>
-                    </s:link>
-                </rich:column>
-                <rich:column breakRowBefore="true">
-                    #{messages.MasterUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.AuxUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.MasterUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.AuxUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.MasterUnitCount}
-                </rich:column>
-                <rich:column>
-                    #{messages.AuxUnitCount}
-                </rich:column>
-            </rich:columnGroup>
-        </f:facet>
 
-        <rich:column>
 
-            <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                <ui:param name="storeRes" value="#{_item.storeRes}"/>
-            </ui:include>
-        </rich:column>
-        <rich:column>
-            <h:outputText value="#{_item.stock.displayMasterCount}" rendered="#{not empty _item.stock}"/>
-        </rich:column>
-        <rich:column>
-            <h:outputText value="#{_item.stock.displayAuxCount}" rendered="#{not empty _item.stock}"/>
-        </rich:column>
-        <rich:column>
-            <h:outputText value="#{_item.addCount.displayMasterCount}"
-                          rendered="#{not empty _item.addCount}"/>
-        </rich:column>
-        <rich:column>
-            <h:outputText value="#{_item.addCount.displayAuxCount}"
-                          rendered="#{not empty _item.addCount}"/>
-        </rich:column>
-        <rich:column>
-            <h:outputText value="#{_item.loseCount.displayMasterCount}"
-                          rendered="#{not empty _item.loseCount}"/>
-        </rich:column>
-        <rich:column>
-            <h:outputText value="#{_item.loseCount.displayAuxCount}"
-                          rendered="#{not empty _item.loseCount}"/>
-        </rich:column>
-        <rich:column style="text-align: center">
 
-            <a:commandButton image="/img/edit.png" title="#{messages.STORE_CHECK_ADD}"
-                             oncomplete="#{rich:component('checkItemChangePanel')}.show()"
-                             immediate="true" execute="@this"
-                             render="checkItemChangePanel_inputs,checkItemChangePanel_title"
-                             action="#{inventoryHome.beginCheckItem}">
-                <a:param value="#{_item.storeRes.id}" assignTo="#{storeResHome.id}"/>
-            </a:commandButton>
 
-        </rich:column>
-    </rich:dataTable>
+
 </h:form>
 <br/>
 <rich:panel>

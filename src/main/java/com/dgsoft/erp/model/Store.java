@@ -297,4 +297,32 @@ public class Store implements Serializable, TreeNode, Comparable<Store> {
     public int compareTo(Store o) {
         return getId().compareTo(o.getId());
     }
+
+    @Transient
+    public boolean equals(Object other) {
+        if ((this == other))
+            return true;
+        if ((other == null))
+            return false;
+        if (!(other instanceof Store))
+            return false;
+
+        Store castOther = (Store) other;
+
+        if ((this.getId() == null) || (castOther.getId() == null) ||
+                this.getId().trim().equals("") || castOther.getId().trim().equals("")){
+            return false;
+        }
+
+        return this.getId().equals(castOther.getId());
+    }
+
+    @Transient
+    public int hashCode() {
+        if ((getId() == null) || (getId().trim().equals(""))){
+            return super.hashCode();
+        }else{
+            return 37 * 17 + getId().hashCode();
+        }
+    }
 }

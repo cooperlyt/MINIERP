@@ -31,11 +31,13 @@ public class InventoryItem implements java.io.Serializable {
 	}
 
     public InventoryItem(BigDecimal beforCount,BigDecimal lastCount,Inventory inventory, Stock stock) {
+        setId(new InventoryItemId(inventory.getId(),stock.getId()));
         this.lastCount = lastCount;
         this.beforCount = beforCount;
         this.inventory = inventory;
         this.stock = stock;
         this.changeType = InventoryItemChangeType.NO_CHANGE;
+        changeCount = BigDecimal.ZERO;
     }
 
     @EmbeddedId
@@ -132,5 +134,6 @@ public class InventoryItem implements java.io.Serializable {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+
 
 }
