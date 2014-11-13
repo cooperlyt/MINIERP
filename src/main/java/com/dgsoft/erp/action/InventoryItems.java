@@ -74,15 +74,6 @@ public class InventoryItems {
             public Object totalGroupData(Collection<SeasonStockChangeData> datas) {
 
 
-                    for(SeasonStockChangeData data: datas){
-                        if (UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(data.getStoreRes().getRes().getUnitGroup().getType())){
-                             if (result == null){
-                                 result = new ResTotalCount(data.getStoreRes().getRes(),data)
-                             }
-                        }
-                        result = result.add(new ResTotalCount(data.getStoreRes().getRes(),))
-                    }
-                return null;
             }
         });
     }
@@ -134,7 +125,61 @@ public class InventoryItems {
         }
     }
 
-    public static class SeasonStockChangeData {
+
+    public static abstract class SeasonStockChangeDataBase{
+
+        public abstract ResTotalCount getBeginCount();
+
+        public abstract ResTotalCount getAddCount();
+
+        public abstract ResTotalCount getLossCount();
+
+        public abstract Map<StockChange.StoreChangeType, StoreResCount> getChangeCount();
+
+        public abstract Map<Store, StoreResCount> getAllocationOutCounts();
+    }
+
+
+    public static class SeasonStockChangeTotalData extends SeasonStockChangeDataBase{
+
+        private ResTotalCount beginCount;
+
+        private ResTotalCount addCount;
+
+        private ResTotalCount lossCount;
+
+        private Map<StockChange.StoreChangeType, StoreResCount> changeCount = new HashMap<StockChange.StoreChangeType, StoreResCount>();
+
+        private Map<Store,StoreResCount> allocationOutCounts = new HashMap<Store, StoreResCount>();
+
+        @Override
+        public ResTotalCount getBeginCount() {
+            return beginCount;
+        }
+
+        @Override
+        public ResTotalCount getAddCount() {
+            return addCount;
+        }
+
+        @Override
+        public ResTotalCount getLossCount() {
+            return lossCount;
+        }
+
+        @Override
+        public Map<StockChange.StoreChangeType, StoreResCount> getChangeCount() {
+            return changeCount;
+        }
+
+        @Override
+        public Map<Store, StoreResCount> getAllocationOutCounts() {
+            return allocationOutCounts;
+        }
+
+    }
+
+    public static class SeasonStockChangeData extends SeasonStockChangeDataBase{
 
 
         //private StoreRes storeRes;
