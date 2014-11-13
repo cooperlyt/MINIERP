@@ -5,6 +5,7 @@ import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import com.dgsoft.erp.total.SameFormatResGroupStrategy;
 import com.dgsoft.erp.total.StoreResGroupStrategy;
+import org.apache.xmlbeans.impl.xb.xsdschema.All;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -75,6 +76,10 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
     private StoreChangeType operType;
     private String memo;
     private boolean verify;
+
+    private Inventory inventory;
+    private Allocation allocation;
+    private Assembly assembly;
 
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
@@ -240,63 +245,14 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
         return result;
     }
 
-
-    private Set<Inventory> inventoryAdds = new HashSet<Inventory>(0);
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeAdd")
-    public Set<Inventory> getInventoryAdds() {
-        return inventoryAdds;
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "ASSEMBLY",nullable = true)
+    public Assembly getAssembly() {
+        return assembly;
     }
 
-    public void setInventoryAdds(Set<Inventory> inventoryAdds) {
-        this.inventoryAdds = inventoryAdds;
-    }
-
-
-    private Set<Inventory> inventoryLosses = new HashSet<Inventory>(0);
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeLoss")
-    public Set<Inventory> getInventoryLosses() {
-        return inventoryLosses;
-    }
-
-    public void setInventoryLosses(Set<Inventory> inventoryLosses) {
-        this.inventoryLosses = inventoryLosses;
-    }
-
-
-    private Set<Assembly> assemblyForStoreOuts = new HashSet<Assembly>(0);
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
-    public Set<Assembly> getAssemblyForStoreOuts() {
-        return assemblyForStoreOuts;
-    }
-
-    public void setAssemblyForStoreOuts(Set<Assembly> assemblyForStoreOuts) {
-        this.assemblyForStoreOuts = assemblyForStoreOuts;
-    }
-
-
-    private Set<Assembly> assemblyForStoreIns = new HashSet<Assembly>(0);
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
-    public Set<Assembly> getAssemblyForStoreIns() {
-        return assemblyForStoreIns;
-    }
-
-    public void setAssemblyForStoreIns(Set<Assembly> assemblyForStoreIns) {
-        this.assemblyForStoreIns = assemblyForStoreIns;
-    }
-
-    private Set<Assembly> assemblyForLoseOuts = new HashSet<Assembly>(0);
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByLoseOut")
-    public Set<Assembly> getAssemblyForLoseOuts() {
-        return assemblyForLoseOuts;
-    }
-
-    public void setAssemblyForLoseOuts(Set<Assembly> assemblyForLoseOuts) {
-        this.assemblyForLoseOuts = assemblyForLoseOuts;
+    public void setAssembly(Assembly assembly) {
+        this.assembly = assembly;
     }
 
     private Set<ProductStoreIn> productStoreIns = new HashSet<ProductStoreIn>(0);
@@ -323,17 +279,6 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
     }
 
 
-    private Set<Allocation> allocationForStoreOuts = new HashSet<Allocation>(0);
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreOut")
-    public Set<Allocation> getAllocationForStoreOuts() {
-        return allocationForStoreOuts;
-    }
-
-    public void setAllocationForStoreOuts(Set<Allocation> allocationForStoreOuts) {
-        this.allocationForStoreOuts = allocationForStoreOuts;
-    }
-
 
     private Set<MaterialStoreIn> materialStoreIns = new HashSet<MaterialStoreIn>(0);
 
@@ -344,18 +289,6 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
 
     public void setMaterialStoreIns(Set<MaterialStoreIn> materialStoreIns) {
         this.materialStoreIns = materialStoreIns;
-    }
-
-
-    private Set<Allocation> allocationForStoreIns = new HashSet<Allocation>(0);
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stockChangeByStoreIn")
-    public Set<Allocation> getAllocationForStoreIns() {
-        return allocationForStoreIns;
-    }
-
-    public void setAllocationForStoreIns(Set<Allocation> allocationForStoreIns) {
-        this.allocationForStoreIns = allocationForStoreIns;
     }
 
 
@@ -416,37 +349,6 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
     }
 
     @Transient
-    public Assembly getAssemblyForStoreOut() {
-        return getAssemblyForStoreOuts().isEmpty() ? null : getAssemblyForStoreOuts().iterator().next();
-    }
-
-    public void setAssemblyForStoreOut(Assembly assemblyForStoreOut) {
-        getAssemblyForStoreOuts().clear();
-        getAssemblyForStoreOuts().add(assemblyForStoreOut);
-    }
-
-
-    @Transient
-    public Assembly getAssemblyForStoreIn() {
-        return (getAssemblyForStoreIns().isEmpty() ? null : getAssemblyForStoreIns().iterator().next());
-    }
-
-    public void setAssemblyForStoreIn(Assembly assemblyForStoreIn) {
-        getAssemblyForStoreIns().clear();
-        getAssemblyForStoreIns().add(assemblyForStoreIn);
-    }
-
-    @Transient
-    public Assembly getAssemblyForLoseOut() {
-        return getAssemblyForLoseOuts().isEmpty() ? null : getAssemblyForLoseOuts().iterator().next();
-    }
-
-    public void setAssemblyForLoseOut(Assembly assemblyForLoseOut) {
-        getAssemblyForLoseOuts().clear();
-        getAssemblyForLoseOuts().add(assemblyForLoseOut);
-    }
-
-    @Transient
     public ProductStoreIn getProductStoreIn() {
         return getProductStoreIns().isEmpty() ? null : getProductStoreIns().iterator().next();
     }
@@ -466,14 +368,14 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
         getMaterialStoreOuts().add(materialStoreOut);
     }
 
-    @Transient
-    public Allocation getAllocationForStoreOut() {
-        return getAllocationForStoreOuts().isEmpty() ? null : getAllocationForStoreOuts().iterator().next();
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "ALLOCATION",nullable = true)
+    public Allocation getAllocation() {
+        return allocation;
     }
 
-    public void setAllocationForStoreOut(Allocation allocationForStoreOut) {
-        getAllocationForStoreOuts().clear();
-        getAllocationForStoreOuts().add(allocationForStoreOut);
+    public void setAllocation(Allocation allocation) {
+        this.allocation = allocation;
     }
 
     @Transient
@@ -486,35 +388,14 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
         getMaterialStoreIns().add(materialStoreIn);
     }
 
-    @Transient
-    public Allocation getAllocationForStoreIn() {
-        return getAllocationForStoreIns().isEmpty() ? null : getAllocationForStoreIns().iterator().next();
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
+    @JoinColumn(name = "INVENTORY",nullable = true)
+    public Inventory getInventory() {
+        return this.inventory;
     }
 
-    public void setAllocationForStoreIn(Allocation allocationsForStoreIn) {
-        getAllocationForStoreIns().clear();
-        getAllocationForStoreIns().add(allocationsForStoreIn);
-    }
-
-
-    @Transient
-    public Inventory getInventoryAdd() {
-        return getInventoryAdds().isEmpty() ? null : getInventoryAdds().iterator().next();
-    }
-
-    public void setInventoryAdd(Inventory inventoryAdd) {
-        getInventoryAdds().clear();
-        getInventoryAdds().add(inventoryAdd);
-    }
-
-    @Transient
-    public Inventory getInventoryLoss() {
-        return getInventoryLosses().isEmpty() ? null : getInventoryLosses().iterator().next();
-    }
-
-    public void setInventoryLoss(Inventory inventoryLoss) {
-        getInventoryLosses().clear();
-        getInventoryLosses().add(inventoryLoss);
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 
     @Transient

@@ -1,23 +1,21 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityLoader;
-import com.dgsoft.erp.model.InventoryItem;
-import com.dgsoft.erp.model.StockChange;
-import com.dgsoft.erp.model.Store;
-import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.AllocationOutGroup;
 import com.dgsoft.erp.model.api.StockChangeGroup;
 import com.dgsoft.erp.model.api.StoreResCount;
+import com.dgsoft.erp.total.SameFormatResGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
 import java.math.BigDecimal;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cooper on 11/12/14.
@@ -49,12 +47,53 @@ public class InventoryItems {
         return items;
     }
 
+    protected Map<StoreRes,SeasonStockChangeData> getSeasonStockChangeDatas(){
+        initSeasonStockChangeDatas();
+        return seasonStockChangeDatas;
+    }
+
+
+    public List<TotalDataGroup<Res, SeasonStockChangeData>> getResultGroup(){
+        return TotalDataGroup.groupBy(getSeasonStockChangeDatas().values(), new TotalGroupStrategy<Res, SeasonStockChangeData>() {
+            @Override
+            public Res getKey(SeasonStockChangeData seasonStockChangeData) {
+                return seasonStockChangeData.getStoreRes().getRes();
+            }
+
+            @Override
+            public Object totalGroupData(Collection<SeasonStockChangeData> datas) {
+                return null;
+            }
+        }, new TotalGroupStrategy<SameFormatResGroupStrategy.StoreResFormatKey, SeasonStockChangeData>() {
+            @Override
+            public SameFormatResGroupStrategy.StoreResFormatKey getKey(SeasonStockChangeData seasonStockChangeData) {
+                return new SameFormatResGroupStrategy.StoreResFormatKey(seasonStockChangeData.getStoreRes());
+            }
+
+            @Override
+            public Object totalGroupData(Collection<SeasonStockChangeData> datas) {
+
+
+                    for(SeasonStockChangeData data: datas){
+                        if (UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(data.getStoreRes().getRes().getUnitGroup().getType())){
+                             if (result == null){
+                                 result = new ResTotalCount(data.getStoreRes().getRes(),data)
+                             }
+                        }
+                        result = result.add(new ResTotalCount(data.getStoreRes().getRes(),))
+                    }
+                return null;
+            }
+        });
+    }
+
 
     private void initSeasonStockChangeDatas(){
         if (seasonStockChangeDatas == null){
 
-            List<StockChangeGroup> datas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockChangeGroup(item.storeRes,item.stockChange.operType,sum(item.count)) from StockChangeItem item where item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.store.id = :storeId group by item.storeRes,item.stockChange.operType",StockChangeGroup.class).
-                    setParameter("beginDate",inventoryHome.getBeforInventoryDate()).setParameter("endDate",inventoryHome.getInstance().getCheckDate()).setParameter("storeId",inventoryHome.getInstance().getStore().getId()).getResultList();
+            List<StockChangeGroup> datas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockChangeGroup(item.storeRes,item.stockChange.operType,sum(item.count)) from StockChangeItem item where item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.store.id = :storeId and ( ((item.stockChange.operType <> 'STORE_CHECK_ADD') and (item.stockChange.operType <> 'STORE_CHECK_LOSS')) or (item.stockChange.inventory.id <> :thisInventoryId) ) group by item.storeRes,item.stockChange.operType",StockChangeGroup.class).
+                    setParameter("beginDate",inventoryHome.getBeforInventoryDate()).setParameter("endDate",inventoryHome.getInstance().getCheckDate()).
+                    setParameter("storeId",inventoryHome.getInstance().getStore().getId()).setParameter("thisInventoryId",inventoryHome.getInstance().getId()).getResultList();
             Map<StoreRes,Map<StockChange.StoreChangeType,BigDecimal>> dataMap = new HashMap<StoreRes, Map<StockChange.StoreChangeType, BigDecimal>>();
 
             for(StockChangeGroup data: datas){
@@ -66,10 +105,17 @@ public class InventoryItems {
             }
 
 
-            List<AllocationOutGroup> aoDatas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.AllocationOutGroup(item.storeRes,item.stockChange.) from StockChangeItem item")
+            List<AllocationOutGroup> aoDatas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.AllocationOutGroup(item.storeRes,item.stockChange.allocation.inStore,sum(item.count)) from StockChangeItem item where item.stockChange.operType = 'ALLOCATION_OUT' and item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.allocation.outStore.id = :storeId group by item.storeRes,item.stockChange.allocation.inStore",AllocationOutGroup.class).
+                    setParameter("beginDate",inventoryHome.getBeforInventoryDate()).setParameter("endDate",inventoryHome.getInstance().getCheckDate()).setParameter("storeId",inventoryHome.getInstance().getStore().getId()).getResultList();
+            Map<StoreRes,AllocationOutGroup> aoDataMap = new HashMap<StoreRes, AllocationOutGroup>();
+            for(AllocationOutGroup ao: aoDatas){
+                aoDataMap.put(ao.getStoreRes(),ao);
+            }
+
+
 
             seasonStockChangeDatas = new HashMap<StoreRes, SeasonStockChangeData>();
-            for(InventoryItem item: items){
+            for(InventoryItem item: getItems()){
                 SeasonStockChangeData newGroupData = new SeasonStockChangeData(item);
                 seasonStockChangeDatas.put(item.getStock().getStoreRes(),newGroupData);
                 Map<StockChange.StoreChangeType,BigDecimal> data = dataMap.get(newGroupData.getStoreRes());
@@ -78,16 +124,15 @@ public class InventoryItems {
                         newGroupData.putChange(entry.getKey(),entry.getValue());
                     }
                 }
+                AllocationOutGroup aoGroup = aoDataMap.get(newGroupData.getStoreRes());
+                if (aoGroup != null){
+                    newGroupData.putAllocationOutChange(aoGroup.getStore(),aoGroup.getMastCount());
+                }
             }
 
 
         }
     }
-
-
-
-
-
 
     public static class SeasonStockChangeData {
 
@@ -141,14 +186,14 @@ public class InventoryItems {
 
         public void putChange(StockChange.StoreChangeType type, BigDecimal masterCount){
             StoreResCount addCount = new StoreResCount(getStoreRes(),masterCount);
-            if (!inventoryItem.getChangeType().equals(InventoryItem.InventoryItemChangeType.NO_CHANGE) && (inventoryItem.getStockChangeItem() != null)){
-                if ((StockChange.StoreChangeType.STORE_CHECK_ADD.equals(type) &&
-                        inventoryItem.getChangeType().equals(InventoryItem.InventoryItemChangeType.INVENTORY_ADD)) ||
-                        (StockChange.StoreChangeType.STORE_CHECK_LOSS.equals(type) &&
-                                inventoryItem.getChangeType().equals(InventoryItem.InventoryItemChangeType.INVENTORY_LOSS))){
-                    addCount.subtract(getDiffCount());
-                }
-            }
+//            if (!inventoryItem.getChangeType().equals(InventoryItem.InventoryItemChangeType.NO_CHANGE) && (inventoryItem.getStockChangeItem() != null)){
+//                if ((StockChange.StoreChangeType.STORE_CHECK_ADD.equals(type) &&
+//                        inventoryItem.getChangeType().equals(InventoryItem.InventoryItemChangeType.INVENTORY_ADD)) ||
+//                        (StockChange.StoreChangeType.STORE_CHECK_LOSS.equals(type) &&
+//                                inventoryItem.getChangeType().equals(InventoryItem.InventoryItemChangeType.INVENTORY_LOSS))){
+//                    addCount.subtract(getDiffCount());
+//                }
+//            }
 
             StoreResCount count = changeCount.get(type);
             if (count == null){

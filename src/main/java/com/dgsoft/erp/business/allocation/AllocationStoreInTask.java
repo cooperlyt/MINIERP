@@ -45,7 +45,7 @@ public class AllocationStoreInTask extends AllocationTaskHandle {
         }
 
         stockChangeHome.getInstance().setStore(allocationHome.getInstance().getInStore());
-        stockChangeHome.getInstance().setAllocationForStoreIn(allocationHome.getInstance());
+        stockChangeHome.getInstance().setAllocation(allocationHome.getInstance());
         stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.ALLOCATION_IN);
 
         inItemGroup = new StoreResCountGroup<StockChangeItem>();

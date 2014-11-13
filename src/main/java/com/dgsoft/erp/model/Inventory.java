@@ -25,8 +25,7 @@ public class Inventory implements java.io.Serializable {
 
 	private String id;
 	private Store store;
-	private StockChange stockChangeLoss;
-	private StockChange stockChangeAdd;
+
 	private Date checkDate;
     private Date checkedDate;
     private Date applyDate;
@@ -37,6 +36,7 @@ public class Inventory implements java.io.Serializable {
     private String checkEmp;
     private InvertoryStatus status;
     private Set<InventoryItem> inventoryItems = new HashSet<InventoryItem>(0);
+    private Set<StockChange> stockChanges;
 
 	public Inventory() {
 	}
@@ -77,25 +77,59 @@ public class Inventory implements java.io.Serializable {
 		this.store = store;
 	}
 
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL,mappedBy = "inventory")
+    public Set<StockChange> getStockChanges() {
+        return stockChanges;
+    }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "LOSS_RES", unique = true, nullable = true, updatable = true)
+    public void setStockChanges(Set<StockChange> stockChanges) {
+        this.stockChanges = stockChanges;
+    }
+
+    @Transient
 	public StockChange getStockChangeLoss() {
-		return this.stockChangeLoss;
+        for (StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.STORE_CHECK_LOSS)){
+                return change;
+            }
+        }
+		return null;
 	}
 
 	public void setStockChangeLoss(StockChange stockChangeByLossRes) {
-		this.stockChangeLoss = stockChangeByLossRes;
+        if (!StockChange.StoreChangeType.STORE_CHECK_LOSS.equals(stockChangeByLossRes.getOperType())){
+            throw new IllegalArgumentException("type must be STORE_CHECK_LOSS");
+        }
+        for (StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.STORE_CHECK_LOSS)){
+                getStockChanges().remove(change);
+                break;
+            }
+        }
+        getStockChanges().add(stockChangeByLossRes);
 	}
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ADD_RES", unique = true, nullable = true, updatable = true)
+    @Transient
 	public StockChange getStockChangeAdd() {
-		return this.stockChangeAdd;
+        for (StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.STORE_CHECK_ADD)){
+                return change;
+            }
+        }
+        return null;
 	}
 
 	public void setStockChangeAdd(StockChange stockChangeByAddRes) {
-		this.stockChangeAdd = stockChangeByAddRes;
+        if (!StockChange.StoreChangeType.STORE_CHECK_ADD.equals(stockChangeByAddRes.getOperType())){
+            throw new IllegalArgumentException("type must be STORE_CHECK_ADD");
+        }
+        for (StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.STORE_CHECK_ADD)){
+                getStockChanges().remove(change);
+                break;
+            }
+        }
+        getStockChanges().add(stockChangeByAddRes);
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

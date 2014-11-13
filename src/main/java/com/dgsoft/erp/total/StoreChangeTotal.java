@@ -75,7 +75,7 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
                 }
 
                 if (item.getStockChange().getOperType().equals(StockChange.StoreChangeType.ALLOCATION_OUT)){
-                    data.putChange(item.getStockChange().getAllocationForStoreOut().getInStore().getId(),item);
+                    data.putChange(item.getStockChange().getAllocation().getInStore().getId(),item);
                 }else{
                     data.putChange(item.getStockChange().getOperType(),item);
                 }

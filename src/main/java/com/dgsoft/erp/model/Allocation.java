@@ -27,9 +27,7 @@ public class Allocation implements java.io.Serializable {
 
     private String id;
     private Store inStore;
-    private StockChange stockChangeByStoreIn;
     private Store outStore;
-    private StockChange stockChangeByStoreOut;
     private String applyEmp;
     private String reason;
     private String memo;
@@ -37,7 +35,7 @@ public class Allocation implements java.io.Serializable {
     private AllocationType type;
     private Date createDate;
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
-
+    private Set<StockChange> stockChanges;
     public Allocation() {
     }
 
@@ -77,14 +75,59 @@ public class Allocation implements java.io.Serializable {
         this.inStore = storeByTargetStore;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
-    @JoinColumn(name = "STORE_IN", nullable = true)
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "allocation", orphanRemoval = true,cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+    public Set<StockChange> getStockChanges() {
+        return stockChanges;
+    }
+
+    public void setStockChanges(Set<StockChange> stockChanges) {
+        this.stockChanges = stockChanges;
+    }
+
+    @Transient
     public StockChange getStockChangeByStoreIn() {
-        return this.stockChangeByStoreIn;
+        for(StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.ALLOCATION_IN)){
+                return change;
+            }
+        }
+        return null;
     }
 
     public void setStockChangeByStoreIn(StockChange stockChangeByStoreIn) {
-        this.stockChangeByStoreIn = stockChangeByStoreIn;
+
+        if (!StockChange.StoreChangeType.ALLOCATION_IN.equals(stockChangeByStoreIn.getOperType())){
+            throw new IllegalArgumentException("type must be ALLOCATION_IN");
+        }
+        for(StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.ALLOCATION_IN)){
+                getStockChanges().remove(change);
+            }
+        }
+        getStockChanges().add(stockChangeByStoreIn);
+    }
+
+    @Transient
+    public StockChange getStockChangeByStoreOut() {
+        for(StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.ALLOCATION_OUT)){
+                return change;
+            }
+        }
+        return null;
+    }
+
+    public void setStockChangeByStoreOut(StockChange stockChangeByStoreOut) {
+        if (!StockChange.StoreChangeType.ALLOCATION_OUT.equals(stockChangeByStoreOut.getOperType())){
+            throw new IllegalArgumentException("type must be ALLOCATION_IN");
+        }
+        for(StockChange change: getStockChanges()){
+            if (change.getOperType().equals(StockChange.StoreChangeType.ALLOCATION_OUT)){
+                getStockChanges().remove(change);
+            }
+        }
+        getStockChanges().add(stockChangeByStoreOut);
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -98,15 +141,7 @@ public class Allocation implements java.io.Serializable {
         this.outStore = storeByApplyStore;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
-    @JoinColumn(name = "STORE_OUT", nullable = true)
-    public StockChange getStockChangeByStoreOut() {
-        return this.stockChangeByStoreOut;
-    }
 
-    public void setStockChangeByStoreOut(StockChange stockChangeByStoreOut) {
-        this.stockChangeByStoreOut = stockChangeByStoreOut;
-    }
 
     @Column(name = "APPLY_EMP", nullable = false, length = 32)
     @NotNull

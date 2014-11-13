@@ -117,7 +117,7 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
         }
 
         stockChangeHome.getInstance().setStore(allocationHome.getInstance().getOutStore());
-        stockChangeHome.getInstance().setAllocationForStoreOut(allocationHome.getInstance());
+        stockChangeHome.getInstance().setAllocation(allocationHome.getInstance());
         stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.ALLOCATION_OUT);
 
         for (AllocationRes allocationRes : allocationHome.getInstance().getAllocationReses()) {

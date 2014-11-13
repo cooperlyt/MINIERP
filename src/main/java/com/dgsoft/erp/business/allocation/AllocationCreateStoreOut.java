@@ -51,7 +51,7 @@ public class AllocationCreateStoreOut extends StoreOutAction {
         super.storeChange(true);
 
         stockChangeHome.getInstance().setVerify(true);
-        stockChangeHome.getInstance().setAllocationForStoreOut(allocationHome.getInstance());
+        stockChangeHome.getInstance().setAllocation(allocationHome.getInstance());
         allocationHome.getInstance().setCreateDate(stockChangeHome.getInstance().getOperDate());
         allocationHome.getInstance().setStockChangeByStoreOut(stockChangeHome.getReadyInstance());
         if ("persisted".equals(allocationHome.persist())) {
