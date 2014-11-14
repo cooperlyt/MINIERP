@@ -307,7 +307,7 @@ public class ResCount implements java.io.Serializable {
 
     public void subtract(ResCount otherCount){
         if (!canMerger(otherCount)){
-            throw new IllegalArgumentException("not seam unit cant subtract");
+            throw new IllegalArgumentException("not seam unit cant subtractCount");
         }
 
 

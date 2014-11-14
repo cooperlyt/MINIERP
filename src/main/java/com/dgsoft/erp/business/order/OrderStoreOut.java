@@ -9,9 +9,8 @@ import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountGroup;
-import com.dgsoft.erp.total.SameFormatResGroupStrategy;
-import com.dgsoft.erp.total.StoreResGroupStrategy;
+import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -52,7 +51,7 @@ public class OrderStoreOut extends OrderTaskHandle {
     private List<OrderStoreOutItem> orderStoreOutItems;
 
     public List<TotalDataGroup<Res, OrderStoreOutItem>> getOutItemGroup() {
-        return TotalDataGroup.groupBy(orderStoreOutItems, new StoreResGroupStrategy<OrderStoreOutItem>(), new SameFormatResGroupStrategy<OrderStoreOutItem>());
+        return TotalDataGroup.groupBy(orderStoreOutItems, new ResTotalCount.ResCountGroupStrategy<OrderStoreOutItem>(), new ResTotalCount.FormatCountGroupStrategy<OrderStoreOutItem>());
     }
 
 

@@ -50,7 +50,6 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     private Set<AccountOper> accountOpers = new HashSet<AccountOper>(0);
     private Set<CustomerContact> customerContacts = new HashSet<CustomerContact>(0);
     private Set<OrderBack> orderBacks = new HashSet<OrderBack>(0);
-    private Set<QuotedPrice> quotedPrices = new HashSet<QuotedPrice>(0);
     private RebateProgram rebateProgram;
 
 
@@ -265,15 +264,6 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
     public void setOrderBacks(Set<OrderBack> orderBacks) {
         this.orderBacks = orderBacks;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "customer")
-    public Set<QuotedPrice> getQuotedPrices() {
-        return quotedPrices;
-    }
-
-    public void setQuotedPrices(Set<QuotedPrice> quotedPrices) {
-        this.quotedPrices = quotedPrices;
     }
 
 

@@ -4,18 +4,16 @@ import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.tools.StoreResPropertyTreeNode;
 import com.dgsoft.erp.total.StoreResCountUnionStrategy;
-import com.dgsoft.erp.total.StoreResGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.richfaces.component.UITree;
 import org.richfaces.event.TreeSelectionChangeEvent;
@@ -191,7 +189,7 @@ public class StockList extends ErpEntityQuery<Stock> {
 
     private void initStoreGroupResult(){
         if (storeGroupResult == null){
-            storeGroupResult = TotalDataGroup.allGroupBy(getResultList(),new TotalGroupStrategy<Store, Stock>() {
+            storeGroupResult = TotalDataGroup.allGroupBy(getResultList(),new TotalGroupStrategy<Store, Stock,Object>() {
                 @Override
                 public Store getKey(Stock stock) {
                     return stock.getStore();
@@ -201,7 +199,7 @@ public class StockList extends ErpEntityQuery<Stock> {
                 public Object totalGroupData(Collection<Stock> datas) {
                     return null;
                 }
-            },new StoreResGroupStrategy<Stock>());
+            },new ResTotalCount.ResCountGroupStrategy<Stock>());
 
             TotalDataGroup.sort(storeGroupResult, new Comparator<Stock>() {
                 @Override
@@ -225,7 +223,7 @@ public class StockList extends ErpEntityQuery<Stock> {
 
     private void initResGroupResult(){
         if (resGroupResult == null){
-            resGroupResult = TotalDataGroup.allGroupBy(getResultList(),new StoreResGroupStrategy<Stock>());
+            resGroupResult = TotalDataGroup.allGroupBy(getResultList(),new ResTotalCount.ResCountGroupStrategy<Stock>());
             TotalDataGroup.unionData(resGroupResult, new StoreResCountUnionStrategy<Stock>());
             TotalDataGroup.sort(resGroupResult,new Comparator<StoreResCountEntity>() {
                 @Override

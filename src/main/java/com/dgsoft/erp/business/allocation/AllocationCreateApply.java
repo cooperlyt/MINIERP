@@ -1,14 +1,12 @@
 package com.dgsoft.erp.business.allocation;
 
 import com.dgsoft.common.TotalDataGroup;
-import com.dgsoft.common.system.business.BusinessCreate;
 import com.dgsoft.erp.action.AllocationHome;
-import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.ResHome;
 import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.total.SameFormatResGroupStrategy;
-import com.dgsoft.erp.total.StoreResGroupStrategy;
+import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -48,7 +46,7 @@ public class AllocationCreateApply {
 
 
     public List<TotalDataGroup<Res, AllocationRes>> getApplyGroup() {
-        return TotalDataGroup.groupBy(applyItems, new StoreResGroupStrategy<AllocationRes>(), new SameFormatResGroupStrategy<AllocationRes>());
+        return TotalDataGroup.groupBy(applyItems, new ResTotalCount.ResCountGroupStrategy<AllocationRes>(), new ResTotalCount.FormatCountGroupStrategy<AllocationRes>());
     }
 
 
@@ -107,7 +105,7 @@ public class AllocationCreateApply {
             for (AllocationRes item : applyItems) {
                 if (item.getStoreRes().equals(editingApplyItems.getStoreRes())) {
                     find = true;
-                    item.add(editingApplyItems);
+                    item.addCount(editingApplyItems);
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"allocation_applyItemExists");
                     break;
                 }

@@ -3,11 +3,9 @@ package com.dgsoft.erp.model.api;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
-import com.dgsoft.erp.total.SameFormatResGroupStrategy;
-import com.dgsoft.erp.total.StoreResGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -45,7 +43,7 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
         if (result == null) {
             return super.put(v.getStoreRes(), v);
         } else {
-            result.add(v);
+            result.addCount(v);
             return result;
         }
     }
@@ -101,7 +99,7 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
 
     protected void initFormatGroup() {
         if (formatGroup == null) {
-            formatGroup = TotalDataGroup.groupBy(values(), new StoreResGroupStrategy<E>(), new SameFormatResGroupStrategy<E>());
+            formatGroup = TotalDataGroup.groupBy(values(), new ResTotalCount.ResCountGroupStrategy<E>(), new ResTotalCount.FormatCountGroupStrategy<E>());
         }
     }
 

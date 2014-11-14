@@ -1,7 +1,5 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.erp.model.StoreRes;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,7 +53,7 @@ public class StoreResPriceGroup extends ArrayList<StoreResPrice> {
     public <E extends StoreResPriceEntity> boolean put(E e) {
         for (StoreResPrice re : this) {
             if (re.isSameItem(e)) {
-                re.add(e);
+                re.addCount(e);
                 return true;
             }
         }

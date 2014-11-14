@@ -7,12 +7,12 @@ import java.math.BigDecimal;
  */
 public class ResSaleTotalData {
 
-    private ResTotalCount totalCount;
+    private ResCount totalCount;
 
     private BigDecimal money;
 
 
-    public ResSaleTotalData(ResTotalCount totalCount, BigDecimal money) {
+    public ResSaleTotalData(ResCount totalCount, BigDecimal money) {
         this.totalCount = totalCount;
         this.money = money;
     }
@@ -21,7 +21,7 @@ public class ResSaleTotalData {
           return new ResSaleTotalData(this.totalCount.add(other.getTotalCount()),this.money.add(other.getMoney()));
     }
 
-    public ResTotalCount getTotalCount() {
+    public ResCount getTotalCount() {
         return totalCount;
     }
 

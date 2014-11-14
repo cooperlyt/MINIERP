@@ -3,9 +3,8 @@ package com.dgsoft.erp.model;
 
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
-import com.dgsoft.erp.total.SameFormatResGroupStrategy;
-import com.dgsoft.erp.total.StoreResGroupStrategy;
-import org.apache.xmlbeans.impl.xb.xsdschema.All;
+import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -212,7 +211,8 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
 
     @Transient
     public List<TotalDataGroup<Res,StockChangeItem>> getStockChangeGroup(){
-        return TotalDataGroup.groupBy(getStockChangeItems(),new StoreResGroupStrategy<StockChangeItem>(), new SameFormatResGroupStrategy<StockChangeItem>());
+        return TotalDataGroup.groupBy(getStockChangeItems(),new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(),
+                new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
     @Transient

@@ -2,8 +2,8 @@ package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.TotalDataGroup;
-import com.dgsoft.erp.total.SameFormatResGroupStrategy;
-import com.dgsoft.erp.total.StoreResGroupStrategy;
+import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -208,7 +208,7 @@ public class Allocation implements java.io.Serializable {
 
     @Transient
     public List<TotalDataGroup<Res,AllocationRes>> getAllocationResGroup(){
-        return TotalDataGroup.groupBy(getAllocationReses(),new StoreResGroupStrategy<AllocationRes>(), new SameFormatResGroupStrategy<AllocationRes>());
+        return TotalDataGroup.groupBy(getAllocationReses(),new ResTotalCount.ResCountGroupStrategy<AllocationRes>(), new ResTotalCount.FormatCountGroupStrategy<AllocationRes>());
     }
 
     @Enumerated(EnumType.STRING)

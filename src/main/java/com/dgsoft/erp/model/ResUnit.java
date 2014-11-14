@@ -35,7 +35,6 @@ public class ResUnit implements java.io.Serializable,OrderModel {
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
     private Set<OrderItemRebate> orderItemRebates = new HashSet<OrderItemRebate>(0);
     private Set<StoreResRebate> storeResRebates = new HashSet<StoreResRebate>(0);
-    private Set<PriceItem> priceItems = new HashSet<PriceItem>(0);
     private Set<ResSaleRebate> resSaleRebates = new HashSet<ResSaleRebate>(0);
     private Set<SalerPrice> salerPrices = new HashSet<SalerPrice>(0);
     private Set<SalerStoreResPrice> salerStoreResPrices = new HashSet<SalerStoreResPrice>(0);
@@ -195,15 +194,6 @@ public class ResUnit implements java.io.Serializable,OrderModel {
         this.storeResRebates = storeResRebates;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resUnit")
-    public Set<PriceItem> getPriceItems() {
-        return priceItems;
-    }
-
-    public void setPriceItems(Set<PriceItem> priceItems) {
-        this.priceItems = priceItems;
-    }
-
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "resUnit")
     public Set<ResSaleRebate> getResSaleRebates() {
         return resSaleRebates;
@@ -234,5 +224,26 @@ public class ResUnit implements java.io.Serializable,OrderModel {
     @Transient
     public boolean isMasterUnit(){
         return getConversionRate().compareTo(new BigDecimal("1")) == 0;
+    }
+
+    @Transient
+    public boolean equals(Object other) {
+        if ((this == other))
+            return true;
+        if ((other == null))
+            return false;
+        if (!(other instanceof ResUnit))
+            return false;
+
+        ResUnit castOther = (ResUnit) other;
+        if ((this.getId() == null) || (this.getId().equals("")) || (castOther.getId() == null) || (castOther.getId().equals("")) ){
+            return false;
+        }
+        return getId().equals(castOther.getId());
+    }
+
+    @Transient
+    public int hashCode() {
+        return 37 * 17 + (getId() == null ? super.hashCode() : getId().hashCode());
     }
 }

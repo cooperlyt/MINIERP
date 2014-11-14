@@ -245,9 +245,9 @@ public abstract class StoreResCountEntity extends StoreResEntity{
         }
     }
 
-    public void subtract(StoreResCountEntity otherCount) {
+    public void subtractCount(StoreResCountEntity otherCount) {
         if (!isSameItem(otherCount)) {
-            throw new IllegalArgumentException("not seam unit cant subtract");
+            throw new IllegalArgumentException("not seam unit cant subtractCount");
         }
         if (otherCount.getMasterCount() == null) {
             return;
@@ -264,7 +264,7 @@ public abstract class StoreResCountEntity extends StoreResEntity{
         setMasterCount(thisMasterCount.subtract(otherCount.getMasterCount()));
     }
 
-    public void add(StoreResCountEntity otherCount) {
+    public void addCount(StoreResCountEntity otherCount) {
         if (!isSameItem(otherCount)) {
             throw new IllegalArgumentException("not seam unit cant add");
         }
@@ -282,5 +282,9 @@ public abstract class StoreResCountEntity extends StoreResEntity{
 
     }
 
+
+    public StoreResCount getStoreResCount(){
+        return new StoreResCount(getStoreRes(),getMasterCount());
+    }
 
 }

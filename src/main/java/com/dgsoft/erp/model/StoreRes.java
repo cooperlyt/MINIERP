@@ -46,7 +46,6 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     private Set<Batch> batches = new HashSet<Batch>(0);
     private Set<BackItem> backItems = new HashSet<BackItem>(0);
     private Set<StoreResRebate> storeResRebates = new HashSet<StoreResRebate>(0);
-    private Set<PriceItem> priceItems = new HashSet<PriceItem>(0);
     private Set<SalerStoreResPrice> salerStoreResPrices = new HashSet<SalerStoreResPrice>(0);
     private boolean enable;
 
@@ -230,15 +229,6 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
-    public Set<PriceItem> getPriceItems() {
-        return priceItems;
-    }
-
-    public void setPriceItems(Set<PriceItem> priceItems) {
-        this.priceItems = priceItems;
-    }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "storeRes")
     public Set<SalerStoreResPrice> getSalerStoreResPrices() {
         return salerStoreResPrices;
     }
@@ -279,7 +269,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     public StoreResCount getTotalCount() {
         StoreResCount resCount = new StoreResCount(this, BigDecimal.ZERO);
         for (Stock stock : getVaildStockList()) {
-            resCount.add(stock);
+            resCount.addCount(stock);
 
         }
         return resCount;

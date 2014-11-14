@@ -6,10 +6,9 @@ import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
-import com.dgsoft.erp.model.api.StoreResPriceEntity;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.annotations.Name;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -62,7 +61,7 @@ public class StockChangeItemTotal extends ErpEntityQuery<StockChangeItem> {
     }
 
     public TotalDataGroup<?, StockChangeItem> getDayResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Date, StockChangeItem>() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Date, StockChangeItem,Object>() {
             @Override
             public Date getKey(StockChangeItem stockChangeItem) {
                 return DataFormat.halfTime(stockChangeItem.getStockChange().getOperDate());
@@ -72,16 +71,16 @@ public class StockChangeItemTotal extends ErpEntityQuery<StockChangeItem> {
             public Object totalGroupData(Collection<StockChangeItem> datas) {
                 return null;
             }
-        }, new StoreResGroupStrategy<StockChangeItem>(), new SameFormatResGroupStrategy<StockChangeItem>());
+        }, new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
     public TotalDataGroup<?, StockChangeItem> getResultGroup() {
         return TotalDataGroup.allGroupBy(getResultList(),
-                new StoreResGroupStrategy<StockChangeItem>(), new SameFormatResGroupStrategy<StockChangeItem>());
+                new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
     public TotalDataGroup<?, StockChangeItem> getChangeResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<StockChange, StockChangeItem>() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<StockChange, StockChangeItem,Object>() {
             @Override
             public StockChange getKey(StockChangeItem stockChangeItem) {
                 return stockChangeItem.getStockChange();
@@ -91,7 +90,7 @@ public class StockChangeItemTotal extends ErpEntityQuery<StockChangeItem> {
             public Object totalGroupData(Collection<StockChangeItem> datas) {
                 return null;
             }
-        },new StoreResGroupStrategy<StockChangeItem>(), new SameFormatResGroupStrategy<StockChangeItem>());
+        },new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
 

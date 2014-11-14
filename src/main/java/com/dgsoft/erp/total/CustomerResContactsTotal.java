@@ -8,6 +8,7 @@ import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerOrder;
 import com.dgsoft.erp.model.OrderItem;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
+import com.dgsoft.erp.total.data.ResPriceTotal;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
@@ -99,12 +100,12 @@ public class CustomerResContactsTotal {
 
     public TotalDataGroup<?, StoreResPriceEntity> getCustomerResultGroup() {
         return TotalDataGroup.allGroupBy(getResultList(), new CustomerGroupStrategy(),
-                new StoreResGroupStrategy<StoreResPriceEntity>(),
-                new SameFormatResGroupStrategy<StoreResPriceEntity>());
+                new ResPriceTotal.ResMoneyGroupStrategy<StoreResPriceEntity>(),
+                new ResPriceTotal.FormatMoneyGroupStrategy<StoreResPriceEntity>());
     }
 
     public TotalDataGroup<?, StoreResPriceEntity> getDayResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Date, StoreResPriceEntity>() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Date, StoreResPriceEntity,RebateMoney>() {
             @Override
             public Date getKey(StoreResPriceEntity storeResPriceEntity) {
                 if (storeResPriceEntity instanceof OrderItem) {
@@ -116,14 +117,14 @@ public class CustomerResContactsTotal {
             }
 
             @Override
-            public Object totalGroupData(Collection<StoreResPriceEntity> datas) {
+            public RebateMoney totalGroupData(Collection<StoreResPriceEntity> datas) {
                 return genRebateMoney(datas);
             }
-        }, new CustomerGroupStrategy(), new StoreResGroupStrategy<StoreResPriceEntity>(), new SameFormatResGroupStrategy<StoreResPriceEntity>());
+        }, new CustomerGroupStrategy(), new ResPriceTotal.ResMoneyGroupStrategy<StoreResPriceEntity>(), new ResPriceTotal.FormatMoneyGroupStrategy<StoreResPriceEntity>());
     }
 
 
-    private static class CustomerGroupStrategy implements TotalGroupStrategy<Customer, StoreResPriceEntity> {
+    private static class CustomerGroupStrategy implements TotalGroupStrategy<Customer, StoreResPriceEntity,RebateMoney> {
         @Override
         public Customer getKey(StoreResPriceEntity storeResPriceEntity) {
             if (storeResPriceEntity instanceof OrderItem) {
@@ -135,7 +136,7 @@ public class CustomerResContactsTotal {
         }
 
         @Override
-        public Object totalGroupData(Collection<StoreResPriceEntity> datas) {
+        public RebateMoney totalGroupData(Collection<StoreResPriceEntity> datas) {
             return genRebateMoney(datas);
         }
     }

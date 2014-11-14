@@ -6,6 +6,7 @@ import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.total.data.ResTotalCount;
 
 import java.util.*;
 
@@ -26,7 +27,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
 
     private void initCustomerGroupResultList() {
         if (customerResultGroup == null) {
-            customerResultGroup = TotalDataGroup.allGroupBy(new ArrayList<StoreResCountEntity>(getResultList()), new TotalGroupStrategy<Customer, StoreResCountEntity>() {
+            customerResultGroup = TotalDataGroup.allGroupBy(new ArrayList<StoreResCountEntity>(getResultList()), new TotalGroupStrategy<Customer, StoreResCountEntity,Object>() {
                 @Override
                 public Customer getKey(StoreResCountEntity stockChangeItem) {
                     if (((StockChangeItem) stockChangeItem).getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {
@@ -41,7 +42,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                 public Object totalGroupData(Collection<StoreResCountEntity> datas) {
                     return null;
                 }
-            }, new StoreResGroupStrategy<StoreResCountEntity>());
+            }, new ResTotalCount.ResCountGroupStrategy<StoreResCountEntity>());
 
             TotalDataGroup.unionData(customerResultGroup,new StoreResCountUnionStrategy<StoreResCountEntity>());
 
@@ -67,7 +68,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
 
     private void initCustomerDetailsResultGroup() {
         if (customerDetailsResultGroup == null) {
-            customerDetailsResultGroup = TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Customer, StockChangeItem>() {
+            customerDetailsResultGroup = TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Customer, StockChangeItem,Object>() {
                 @Override
                 public Customer getKey(StockChangeItem stockChangeItem) {
                     if (stockChangeItem.getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {

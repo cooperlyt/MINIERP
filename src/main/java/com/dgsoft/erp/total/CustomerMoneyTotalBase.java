@@ -41,14 +41,14 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
     private void initCustomerGroupResultList() {
         if (customerGroupResultList == null) {
-            customerGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<Customer, AccountOper>() {
+            customerGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<Customer, AccountOper,CustomerMoneyTotalData>() {
                 @Override
                 public Customer getKey(AccountOper accountOper) {
                     return accountOper.getCustomer();
                 }
 
                 @Override
-                public Object totalGroupData(Collection<AccountOper> datas) {
+                public CustomerMoneyTotalData totalGroupData(Collection<AccountOper> datas) {
                     return totalData(datas);
                 }
             });
@@ -67,14 +67,14 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
 
     private void initDayGroupResultList() {
         if (dayGroupResultList == null) {
-            dayGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<Date, AccountOper>() {
+            dayGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<Date, AccountOper,CustomerMoneyTotalData>() {
                 @Override
                 public Date getKey(AccountOper accountOper) {
                     return DataFormat.halfTime(accountOper.getOperDate());
                 }
 
                 @Override
-                public Object totalGroupData(Collection<AccountOper> datas) {
+                public CustomerMoneyTotalData totalGroupData(Collection<AccountOper> datas) {
                     return totalData(datas);
                 }
 

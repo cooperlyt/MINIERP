@@ -8,12 +8,11 @@ import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.business.finance.AccountDateHelper;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.total.SameFormatResGroupStrategy;
+import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.OrderItemTotal;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -308,8 +307,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         //List<OrderItem> createdItems = ;
 
 
-        List<TotalDataGroup<SameFormatResGroupStrategy.StoreResFormatKey, OrderItem>> createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
-                new SameFormatResGroupStrategy<OrderItem>());
+        List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, OrderItem>> createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
+                new OrderItemTotal.FormatOrderItemGroupStrategy());
         if (!createdItems.isEmpty()) {
             result.append("\n" + messages.get("no_dispatch_order_items"));
         }
@@ -361,7 +360,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
         return TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.DISPATCHED)),
-                new TotalGroupStrategy<Store, OrderItem>() {
+                new TotalGroupStrategy<Store, OrderItem,Object>() {
                     @Override
                     public Store getKey(OrderItem orderItem) {
                         return orderItem.getDispatch().getStore();
@@ -371,7 +370,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                     public Object totalGroupData(Collection<OrderItem> datas) {
                         return null;
                     }
-                }, new SameFormatResGroupStrategy<OrderItem>()
+                }, new OrderItemTotal.FormatOrderItemGroupStrategy()
         );
     }
 

@@ -540,7 +540,7 @@ public class CustomerOrder implements java.io.Serializable {
                         if (count == null) {
                             result.put(sci.getStoreRes(), new StoreResCount(sci.getStoreRes(), sci.getMasterCount()));
                         } else {
-                            count.add(sci);
+                            count.addCount(sci);
                         }
                     }
             }

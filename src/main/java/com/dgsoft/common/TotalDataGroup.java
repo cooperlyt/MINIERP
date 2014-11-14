@@ -19,10 +19,10 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
 
     private List<V> values = new ArrayList<V>();
 
-    public Map<Object,List<V>> getChildMap(){
-        Map<Object,List<V>> result = new HashMap<Object, List<V>>();
-        for (TotalDataGroup<? extends Comparable<?>, V> cg: childGroup){
-            result.put(cg.getKey(),cg.values);
+    public Map<Object, List<V>> getChildMap() {
+        Map<Object, List<V>> result = new HashMap<Object, List<V>>();
+        for (TotalDataGroup<? extends Comparable<?>, V> cg : childGroup) {
+            result.put(cg.getKey(), cg.values);
         }
         return result;
     }
@@ -47,25 +47,25 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
 
     //public static        Object... params
 
-    public static <V> TotalDataGroup<?, V> allGroupBy(Collection<? extends V> values,TotalGroupStrategy<?, V>... groupStrategys){
+    public static <V> TotalDataGroup<?, V> allGroupBy(Collection<? extends V> values, TotalGroupStrategy<?, V, ?>... groupStrategys) {
 
-        TotalDataGroup<?, V> result =  new TotalDataGroup<Comparable, V>(null);
+        TotalDataGroup<?, V> result = new TotalDataGroup<Comparable, V>(null);
         result.values = new ArrayList<V>(values);
         //result.childGroup =  groupBy(values,groupStrategy,groupStrategys);
-        for (TotalGroupStrategy<?, V> stragegy : groupStrategys) {
-            groupChildBy(result,stragegy);
+        for (TotalGroupStrategy<?, V, ?> stragegy : groupStrategys) {
+            groupChildBy(result, stragegy);
         }
 
         return result;
     }
 
     public static <K extends Comparable<? super K>, V> List<TotalDataGroup<K, V>> groupBy(Collection<V> values,
-                                                                                          TotalGroupStrategy<K, V> groupStrategy,
-                                                                                          TotalGroupStrategy<?, V>... groupStrategys) {
+                                                                                          TotalGroupStrategy<K, V,?> groupStrategy,
+                                                                                          TotalGroupStrategy<?, V,?>... groupStrategys) {
         List<TotalDataGroup<K, V>> result = groupCollection(values, groupStrategy);
 
 
-        for (TotalGroupStrategy<?, V> stragegy : groupStrategys) {
+        for (TotalGroupStrategy<?, V, ?> stragegy : groupStrategys) {
             for (TotalDataGroup<K, V> l : result) {
                 groupChildBy(l, stragegy);
             }
@@ -74,7 +74,7 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
     }
 
     private static <K extends Comparable<? super K>, V> List<TotalDataGroup<K, V>> groupCollection(Collection<V> values,
-                                                                                                   TotalGroupStrategy<K, V> groupStrategy) {
+                                                                                                   TotalGroupStrategy<K, V,?> groupStrategy) {
         Map<K, TotalDataGroup<K, V>> result = new HashMap<K, TotalDataGroup<K, V>>();
         for (V value : values) {
             K valueKey = groupStrategy.getKey(value);
@@ -96,7 +96,7 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
         return listResult;
     }
 
-    private static <K extends Comparable<? super K>, V> void groupChildBy(TotalDataGroup<?, V> values, TotalGroupStrategy<K, V> groupStrategy) {
+    private static <K extends Comparable<? super K>, V> void groupChildBy(TotalDataGroup<?, V> values, TotalGroupStrategy<K, V,?> groupStrategy) {
         if (values.isLeaf()) {
             values.childGroup = new ArrayList<TotalDataGroup<? extends Comparable<?>, V>>();
             for (TotalDataGroup<K, V> c : groupCollection(values.getValues(), groupStrategy)) {
@@ -109,15 +109,15 @@ public class TotalDataGroup<K extends Comparable, V> implements Comparable<Total
         }
     }
 
-    public static <K,V> Collection<V> unionData(Collection<? extends V> data, TotalDataUnionStrategy<K, V> unionStrategy){
+    public static <K, V> Collection<V> unionData(Collection<? extends V> data, TotalDataUnionStrategy<K, V> unionStrategy) {
         Map<K, V> result = new HashMap<K, V>();
-        for (V v: data){
+        for (V v : data) {
             K k = unionStrategy.getKey(v);
             V oldV = result.get(k);
-            if (oldV == null){
-               result.put(k,v);
-            }else{
-                result.put(k,unionStrategy.unionData(v,oldV));
+            if (oldV == null) {
+                result.put(k, v);
+            } else {
+                result.put(k, unionStrategy.unionData(v, oldV));
             }
         }
         return result.values();
