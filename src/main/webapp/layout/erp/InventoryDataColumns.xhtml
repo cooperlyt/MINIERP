@@ -1,0 +1,199 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j">
+
+
+    <rich:column style="#{columnStyle}">
+        <h:outputText value="#{data.beginCount.masterCount}">
+            <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+    </rich:column>
+
+
+    <rich:column style="#{columnStyle}">
+        <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
+            <h:outputText value="#{data.beginCount.auxCount}">
+                <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+
+    <c:forEach items="#{inventoryItems.storeInTypes}" var="_type">
+        <rich:column style="#{columnStyle}">
+            <a:outputPanel rendered="#{not empty data.getChangeCountByType(_type)}">
+                <h:outputText value="#{data.getChangeCountByType(_type).masterCount}">
+                    <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+                </h:outputText>
+                <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column style="#{columnStyle}">
+            <a:outputPanel
+                    rendered="#{(res.unitGroup.type eq 'FLOAT_CONVERT') and (not empty data.getChangeCountByType(_type))}">
+                <h:outputText value="#{data.getChangeCountByType(_type).auxCount}">
+                    <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+                <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+            </a:outputPanel>
+        </rich:column>
+    </c:forEach>
+
+    <rich:column style="#{columnStyle}" rendered="#{not empty inventoryItems.storeInTypes}">
+        <h:outputText value="#{data.inCount.masterCount}">
+            <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}" rendered="#{not empty inventoryItems.storeInTypes}">
+        <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
+            <h:outputText value="#{data.inCount.auxCount}">
+                <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+
+    <c:forEach items="#{inventoryItems.storeOutTypes}" var="_type">
+        <rich:column style="#{columnStyle}">
+            <a:outputPanel rendered="#{not empty data.getChangeCountByType(_type)}">
+                <h:outputText value="#{data.getChangeCountByType(_type).masterCount}">
+                    <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+                </h:outputText>
+                <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column style="#{columnStyle}">
+            <a:outputPanel
+                    rendered="#{(res.unitGroup.type eq 'FLOAT_CONVERT') and (not empty data.getChangeCountByType(_type))}">
+                <h:outputText value="#{data.getChangeCountByType(_type).auxCount}">
+                    <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+                <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+            </a:outputPanel>
+        </rich:column>
+    </c:forEach>
+
+    <c:forEach items="#{inventoryItems.allocationOutStores}" var="_store">
+        <rich:column style="#{columnStyle}">
+            <a:outputPanel rendered="#{not empty data.getAllocationOutCountByStoreId(_store.id)}">
+                <h:outputText value="#{data.getAllocationOutCountByStoreId(_store.id).masterCount}">
+                    <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+                </h:outputText>
+                <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+            </a:outputPanel>
+        </rich:column>
+
+        <rich:column style="#{columnStyle}">
+            <a:outputPanel
+                    rendered="#{(res.unitGroup.type eq 'FLOAT_CONVERT') and (not empty data.getAllocationOutCountByStoreId(_store.id))}">
+                <h:outputText value="#{data.getAllocationOutCountByStoreId(_store.id).auxCount}">
+                    <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+                <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+            </a:outputPanel>
+        </rich:column>
+    </c:forEach>
+
+
+    <rich:column style="#{columnStyle}" 
+            rendered="#{(not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores)}">
+        <h:outputText value="#{data.outCount.masterCount}">
+            <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}"
+            rendered="#{(not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores)}">
+        <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
+            <h:outputText value="#{data.outCount.auxCount}">
+                <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}">
+        <h:outputText value="#{data.lastCount.masterCount}">
+            <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}">
+        <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
+            <h:outputText value="#{data.lastCount.auxCount}">
+                <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+
+    <rich:column style="#{columnStyle}">
+        <a:outputPanel rendered="#{data.addCount.masterCount gt 0}">
+            <h:outputText value="#{data.addCount.masterCount}">
+                <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}">
+        <a:outputPanel rendered="#{(res.unitGroup.type eq 'FLOAT_CONVERT') and (data.addCount.masterCount gt 0)}">
+            <h:outputText value="#{data.addCount.auxCount}">
+                <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}">
+        <a:outputPanel rendered="#{data.lossCount.masterCount gt 0}">
+            <h:outputText value="#{data.lossCount.masterCount}">
+                <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}">
+        <a:outputPanel rendered="#{(res.unitGroup.type eq 'FLOAT_CONVERT') and (data.lossCount.masterCount gt 0)}">
+            <h:outputText value="#{data.lossCount.auxCount}">
+                <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}">
+        <h:outputText value="#{data.resultCount.masterCount}">
+            <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
+    </rich:column>
+
+    <rich:column style="#{columnStyle}">
+        <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
+            <h:outputText value="#{data.resultCount.auxCount}">
+                <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
+        </a:outputPanel>
+    </rich:column>
+
+
+</ui:composition>

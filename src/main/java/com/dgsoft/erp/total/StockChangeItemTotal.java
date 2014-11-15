@@ -60,34 +60,34 @@ public class StockChangeItemTotal extends ErpEntityQuery<StockChangeItem> {
         this.resultGroupBy = resultGroupBy;
     }
 
-    public TotalDataGroup<?, StockChangeItem> getDayResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Date, StockChangeItem,Object>() {
+    public TotalDataGroup<?, StockChangeItem,?> getDayResultGroup() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<TotalDataGroup.DateKey, StockChangeItem,TotalDataGroup.GroupTotalData>() {
             @Override
-            public Date getKey(StockChangeItem stockChangeItem) {
-                return DataFormat.halfTime(stockChangeItem.getStockChange().getOperDate());
+            public TotalDataGroup.DateKey getKey(StockChangeItem stockChangeItem) {
+                return new TotalDataGroup.DateKey(DataFormat.halfTime(stockChangeItem.getStockChange().getOperDate()));
             }
 
             @Override
-            public Object totalGroupData(Collection<StockChangeItem> datas) {
+            public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
                 return null;
             }
         }, new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
-    public TotalDataGroup<?, StockChangeItem> getResultGroup() {
+    public TotalDataGroup<?, StockChangeItem,?> getResultGroup() {
         return TotalDataGroup.allGroupBy(getResultList(),
                 new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
-    public TotalDataGroup<?, StockChangeItem> getChangeResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<StockChange, StockChangeItem,Object>() {
+    public TotalDataGroup<?, StockChangeItem,?> getChangeResultGroup() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<StockChange, StockChangeItem,TotalDataGroup.GroupTotalData>() {
             @Override
             public StockChange getKey(StockChangeItem stockChangeItem) {
                 return stockChangeItem.getStockChange();
             }
 
             @Override
-            public Object totalGroupData(Collection<StockChangeItem> datas) {
+            public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
                 return null;
             }
         },new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());

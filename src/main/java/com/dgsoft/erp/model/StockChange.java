@@ -4,6 +4,7 @@ package com.dgsoft.erp.model;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResCount;
 import com.dgsoft.erp.total.data.ResTotalCount;
 
 import javax.persistence.*;
@@ -16,12 +17,18 @@ import java.util.*;
  */
 @Entity
 @Table(name = "STOCK_CHANGE", catalog = "MINI_ERP")
-public class StockChange implements Comparable<StockChange>, java.io.Serializable {
+public class StockChange implements Comparable<StockChange>, java.io.Serializable, TotalDataGroup.GroupKey {
 
     @Override
     @Transient
     public int compareTo(StockChange o) {
         return getOperDate().compareTo(o.getOperDate());
+    }
+
+    @Override
+    @Transient
+    public Comparable getKeyData() {
+        return this;
     }
 
     public enum StoreChangeType {
@@ -210,7 +217,7 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
     }
 
     @Transient
-    public List<TotalDataGroup<Res,StockChangeItem>> getStockChangeGroup(){
+    public List<TotalDataGroup<Res,StockChangeItem,ResCount>> getStockChangeGroup(){
         return TotalDataGroup.groupBy(getStockChangeItems(),new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(),
                 new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }

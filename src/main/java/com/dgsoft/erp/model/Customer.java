@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Oct 24, 2013 3:27:02 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.NamedEntity;
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.model.api.BatchOperEntity;
 import org.hibernate.annotations.GenericGenerator;
@@ -19,7 +20,7 @@ import java.util.*;
 @Entity
 @Table(name = "CUSTOMER", catalog = "MINI_ERP")
 @UniqueVerify(name = "name", severity = StatusMessage.Severity.ERROR, field = {"name"})
-public class Customer implements Comparable<Customer>, java.io.Serializable, NamedEntity {
+public class Customer implements Comparable<Customer>, java.io.Serializable, NamedEntity, TotalDataGroup.GroupKey<Customer> {
 
     private String id;
     private Integer version;
@@ -433,4 +434,10 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         return getAdvanceMoney().subtract(getAccountMoney());
     }
 
+
+    @Override
+    @Transient
+    public Customer getKeyData() {
+        return this;
+    }
 }

@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.TotalDataGroup;
 import com.google.common.collect.Iterators;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.util.*;
 @Entity
 @Cacheable
 @Table(name = "STORE", catalog = "MINI_ERP")
-public class Store implements Serializable, TreeNode, Comparable<Store> {
+public class Store implements Serializable, TreeNode, Comparable<Store>, TotalDataGroup.GroupKey<Store> {
 
     private String id;
     private String name;
@@ -324,5 +325,11 @@ public class Store implements Serializable, TreeNode, Comparable<Store> {
         }else{
             return 37 * 17 + getId().hashCode();
         }
+    }
+
+    @Override
+    @Transient
+    public Store getKeyData() {
+        return this;
     }
 }

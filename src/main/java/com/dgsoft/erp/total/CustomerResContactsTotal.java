@@ -98,20 +98,20 @@ public class CustomerResContactsTotal {
         return result;
     }
 
-    public TotalDataGroup<?, StoreResPriceEntity> getCustomerResultGroup() {
+    public TotalDataGroup<?, StoreResPriceEntity,?> getCustomerResultGroup() {
         return TotalDataGroup.allGroupBy(getResultList(), new CustomerGroupStrategy(),
                 new ResPriceTotal.ResMoneyGroupStrategy<StoreResPriceEntity>(),
                 new ResPriceTotal.FormatMoneyGroupStrategy<StoreResPriceEntity>());
     }
 
-    public TotalDataGroup<?, StoreResPriceEntity> getDayResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Date, StoreResPriceEntity,RebateMoney>() {
+    public TotalDataGroup<?, StoreResPriceEntity,?> getDayResultGroup() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<TotalDataGroup.DateKey, StoreResPriceEntity,RebateMoney>() {
             @Override
-            public Date getKey(StoreResPriceEntity storeResPriceEntity) {
+            public TotalDataGroup.DateKey getKey(StoreResPriceEntity storeResPriceEntity) {
                 if (storeResPriceEntity instanceof OrderItem) {
-                    return DataFormat.halfTime(((OrderItem) storeResPriceEntity).getDispatch().getStockChange().getOperDate());
+                    return new TotalDataGroup.DateKey(DataFormat.halfTime(((OrderItem) storeResPriceEntity).getDispatch().getStockChange().getOperDate()));
                 } else if (storeResPriceEntity instanceof BackItem) {
-                    return DataFormat.halfTime(((BackItem) storeResPriceEntity).getDispatch().getStockChange().getOperDate());
+                    return new TotalDataGroup.DateKey(DataFormat.halfTime(((BackItem) storeResPriceEntity).getDispatch().getStockChange().getOperDate()));
                 } else
                     return null;
             }
@@ -163,7 +163,7 @@ public class CustomerResContactsTotal {
         return new RebateMoney(money,rebate);
     }
 
-    public static class RebateMoney{
+    public static class RebateMoney implements TotalDataGroup.GroupTotalData{
 
         private BigDecimal money;
 

@@ -3,6 +3,7 @@ package com.dgsoft.erp.model;
 
 import com.dgsoft.common.NamedEntity;
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
@@ -23,7 +24,7 @@ import java.util.*;
 @Cacheable
 @Table(name = "STORE_RES", catalog = "MINI_ERP")
 @UniqueVerify(name = "code", severity = StatusMessage.Severity.ERROR, field = {"code"})
-public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<StoreRes> {
+public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<StoreRes>, TotalDataGroup.GroupKey<StoreRes> {
 
     private String id;
     private Res res;
@@ -368,6 +369,12 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     @Override
     public String getName() {
         return null;
+    }
+
+    @Override
+    @Transient
+    public StoreRes getKeyData() {
+        return this;
     }
 
 //

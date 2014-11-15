@@ -3,10 +3,8 @@ package com.dgsoft.erp.tools;
 import com.dgsoft.erp.action.ResCategoryHome;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.action.ResHome;
-import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResEntity;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -17,7 +15,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,9 +24,9 @@ import java.util.logging.Logger;
  */
 @Name("storeResCondition")
 @Scope(ScopeType.CONVERSATION)
-public class StoreResCondition implements Serializable{
+public class StoreResCondition implements Serializable {
 
-    @In(create=true)
+    @In(create = true)
     private ResHome resHome;
 
     @In
@@ -50,6 +47,11 @@ public class StoreResCondition implements Serializable{
         this.storeResEntity = storeResEntity;
     }
 
+    public void resCategorySelected() {
+        storeResEntity = null;
+        resHome.clearInstance();
+    }
+
     public void resSelected() {
         Logging.getLog(StoreResCondition.class).debug("resSelect id is:" + resHome.getId());
         if (resHome.isIdDefined()) {
@@ -60,34 +62,38 @@ public class StoreResCondition implements Serializable{
         }
     }
 
-    public List<String> getSearchResCategoryIds(){
-        if (isCodeSearch()){
+    public List<String> getSearchResCategoryIds() {
+        if (isCodeSearch()) {
             return null;
         }
-        if ((storeResEntity == null) && (resCategoryHome != null) && resCategoryHome.isIdDefined()){
+        if ((storeResEntity == null) && (resCategoryHome != null) && resCategoryHome.isIdDefined()) {
             return resCategoryHome.getIdAndChildIds();
-        }else {
+        } else {
             return null;
         }
     }
 
-    public String getSearchResCatesoryIdsStr(){
+    public String getSearchResCatesoryIdsStr() {
         List<String> ids = getSearchResCategoryIds();
-        if (ids == null){
+        if (ids == null) {
             return null;
-        }else{
+        } else {
             return ids.toString();
         }
     }
 
-    private boolean isCodeSearch(){
+    private boolean isCodeSearch() {
         return (resCode != null) && !"".equals(resCode.trim());
     }
 
+    // isStoreResSearch() ==  !isResSearch()
     public boolean isResSearch() {
         if (storeResEntity == null) {
             return true;
         }
+        if (UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(storeResEntity.getRes().getUnitGroup().getType()) &&
+                (storeResEntity.getFloatConvertRate() != null))
+            return false;
         for (Format format : storeResEntity.getFormats()) {
             if (format.getFormatValue() != null) {
                 return false;
@@ -96,8 +102,9 @@ public class StoreResCondition implements Serializable{
         return true;
     }
 
+
     public String getSearchResId() {
-        if (isCodeSearch()){
+        if (isCodeSearch()) {
             return null;
         }
         if (isResSearch() && (storeResEntity != null)) {
@@ -107,30 +114,29 @@ public class StoreResCondition implements Serializable{
         }
     }
 
-    public BigDecimal getSearchFloatConvertRate(){
-        if (isCodeSearch()){
+    public BigDecimal getSearchFloatConvertRate() {
+        if (isCodeSearch()) {
             return null;
         }
         if (isResSearch() && (storeResEntity != null) &&
-                storeResEntity.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                storeResEntity.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             return storeResEntity.getFloatConvertRate();
-        }else{
+        } else {
             return null;
         }
     }
 
-    public String getMatchStoreResIdsStr(){
+    public String getMatchStoreResIdsStr() {
         List<String> ids = getMatchStoreResIds();
-        if (ids == null){
+        if (ids == null) {
             return null;
-        }else{
+        } else {
             return ids.toString();
         }
-
     }
 
     public List<String> getMatchStoreResIds() {
-        if (isCodeSearch()){
+        if (isCodeSearch()) {
             return new ArrayList<String>(0);
         }
         List<String> result = new ArrayList<String>();
@@ -155,7 +161,23 @@ public class StoreResCondition implements Serializable{
     }
 
 
-    public List<StoreRes> getMatchStoreReses(){
+    public boolean isMatchStoreRes(StoreRes storeRes) {
+        if (!isResSearch()) {
+            return (resHelper.matchFormat(storeResEntity.getFormats(), storeRes) &&
+                    (!storeResEntity.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) ||
+                            (storeResEntity.getFloatConvertRate() == null) ||
+                            (storeResEntity.getFloatConvertRate().compareTo(storeRes.getFloatConversionRate()) == 0)));
+        } else if (storeResEntity != null) {
+            return storeRes.getRes().equals(storeResEntity.getRes());
+        } else if (resCategoryHome.isIdDefined()) {
+            return getSearchResCategoryIds().contains(storeRes.getRes().getResCategory().getId());
+        } else {
+            return true;
+        }
+    }
+
+
+    public List<StoreRes> getMatchStoreReses() {
 
         List<StoreRes> result = new ArrayList<StoreRes>();
 
@@ -185,7 +207,7 @@ public class StoreResCondition implements Serializable{
         this.resCode = resCode;
     }
 
-    public void reset(){
+    public void reset() {
         storeResEntity = null;
         resCategoryHome.clearInstance();
         resCode = null;

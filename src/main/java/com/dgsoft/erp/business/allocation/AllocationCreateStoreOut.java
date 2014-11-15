@@ -6,6 +6,7 @@ import com.dgsoft.erp.action.store.StoreOutAction;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResCount;
 import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
@@ -31,7 +32,7 @@ public class AllocationCreateStoreOut extends StoreOutAction {
         return storeOutItems;
     }
 
-    public List<TotalDataGroup<Res, StockChangeItem>> getStockOutGroup() {
+    public List<TotalDataGroup<Res, StockChangeItem,ResCount>> getStockOutGroup() {
         return TotalDataGroup.groupBy(getStoreOutItems(), new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 

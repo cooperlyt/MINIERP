@@ -1,5 +1,6 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResUnit;
@@ -8,7 +9,7 @@ import com.dgsoft.erp.model.api.StoreResPriceEntity;
 /**
  * Created by cooper on 11/14/14.
  */
-public abstract class ResPriceGroupStrategy<E extends StoreResPriceEntity,T> implements TotalGroupStrategy<ResPriceGroupStrategy.PriceItemKey,E,T> {
+public abstract class ResPriceGroupStrategy<E extends StoreResPriceEntity,T extends TotalDataGroup.GroupTotalData> implements TotalGroupStrategy<ResPriceGroupStrategy.PriceItemKey,E,T> {
 
 
     @Override
@@ -17,7 +18,7 @@ public abstract class ResPriceGroupStrategy<E extends StoreResPriceEntity,T> imp
     }
 
 
-    public static class PriceItemKey implements Comparable<ResPriceGroupStrategy.PriceItemKey>{
+    public static class PriceItemKey implements Comparable<ResPriceGroupStrategy.PriceItemKey>, TotalDataGroup.GroupKey<PriceItemKey>{
 
         private Res res;
 
@@ -67,6 +68,10 @@ public abstract class ResPriceGroupStrategy<E extends StoreResPriceEntity,T> imp
             return result;
         }
 
+        @Override
+        public PriceItemKey getKeyData() {
+            return this;
+        }
     }
 
 }

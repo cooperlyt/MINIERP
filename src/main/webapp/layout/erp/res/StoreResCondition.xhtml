@@ -29,7 +29,7 @@
 
                     <s:selectItems value="#{resCategoryList.allResCategorys}" var="_category" label="#{_category.name}"
                                    itemValue="#{_category.id}" noSelectionLabel="#{messages.searchNoSelectLabel}"/>
-                    <a:ajax event="valueChange" render="categoryNextStep,formatList"
+                    <a:ajax event="valueChange" listener="#{storeResCondition.resCategorySelected}" render="categoryNextStep,formatList"
                             execute="@this">
                         <a:attachQueue requestDelay="0"/>
                     </a:ajax>

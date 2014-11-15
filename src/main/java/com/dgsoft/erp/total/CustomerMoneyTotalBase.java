@@ -37,7 +37,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
     }
 
 
-    private List<TotalDataGroup<Customer, AccountOper>> customerGroupResultList = null;
+    private List<TotalDataGroup<Customer, AccountOper,CustomerMoneyTotalData>> customerGroupResultList = null;
 
     private void initCustomerGroupResultList() {
         if (customerGroupResultList == null) {
@@ -55,7 +55,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
         }
     }
 
-    public List<TotalDataGroup<Customer, AccountOper>> getCustomerGroupResultList() {
+    public List<TotalDataGroup<Customer, AccountOper,CustomerMoneyTotalData>> getCustomerGroupResultList() {
         if (isAnyParameterDirty()) {
             refresh();
         }
@@ -63,14 +63,14 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
         return customerGroupResultList;
     }
 
-    private List<TotalDataGroup<Date, AccountOper>> dayGroupResultList = null;
+    private List<TotalDataGroup<TotalDataGroup.DateKey, AccountOper,CustomerMoneyTotalData>> dayGroupResultList = null;
 
     private void initDayGroupResultList() {
         if (dayGroupResultList == null) {
-            dayGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<Date, AccountOper,CustomerMoneyTotalData>() {
+            dayGroupResultList = TotalDataGroup.groupBy(getResultList(), new TotalGroupStrategy<TotalDataGroup.DateKey, AccountOper,CustomerMoneyTotalData>() {
                 @Override
-                public Date getKey(AccountOper accountOper) {
-                    return DataFormat.halfTime(accountOper.getOperDate());
+                public TotalDataGroup.DateKey getKey(AccountOper accountOper) {
+                    return new TotalDataGroup.DateKey(DataFormat.halfTime(accountOper.getOperDate()));
                 }
 
                 @Override
@@ -91,7 +91,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
     }
 
 
-    public List<TotalDataGroup<Date, AccountOper>> getDayGroupResultList() {
+    public List<TotalDataGroup<TotalDataGroup.DateKey, AccountOper,CustomerMoneyTotalData>> getDayGroupResultList() {
 
         if (isAnyParameterDirty()) {
             refresh();
@@ -112,7 +112,7 @@ public abstract class CustomerMoneyTotalBase extends ErpEntityQuery<AccountOper>
     }
 
 
-    public class CustomerMoneyTotalData {
+    public class CustomerMoneyTotalData implements TotalDataGroup.GroupTotalData{
 
         Map<AccountOper.AccountOperType, BigDecimal> typeTotalData;
 

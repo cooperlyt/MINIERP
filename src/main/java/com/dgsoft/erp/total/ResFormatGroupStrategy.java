@@ -1,5 +1,6 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
@@ -14,7 +15,7 @@ import com.dgsoft.erp.model.api.StoreResCountEntity;
  * Date: 14/04/14
  * Time: 16:42
  */
-public abstract class ResFormatGroupStrategy<E extends StoreResCountEntity,T> implements TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, E, T> {
+public abstract class ResFormatGroupStrategy<E extends StoreResCountEntity,T extends TotalDataGroup.GroupTotalData> implements TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, E, T> {
 
     @Override
     public StoreResFormatKey getKey(E e) {
@@ -31,7 +32,7 @@ public abstract class ResFormatGroupStrategy<E extends StoreResCountEntity,T> im
 //    }
 
 
-    public static class StoreResFormatKey implements Comparable<StoreResFormatKey> {
+    public static class StoreResFormatKey implements Comparable<StoreResFormatKey>, TotalDataGroup.GroupKey<StoreResFormatKey> {
 
         private StoreRes storeRes;
 
@@ -89,6 +90,11 @@ public abstract class ResFormatGroupStrategy<E extends StoreResCountEntity,T> im
         @Override
         public String toString() {
             return storeRes.getRes().getName() + ResHelper.instance().getFormatsTitle(ResFormatCache.instance().getFormats(storeRes), false);
+        }
+
+        @Override
+        public StoreResFormatKey getKeyData() {
+            return this;
         }
     }
 }

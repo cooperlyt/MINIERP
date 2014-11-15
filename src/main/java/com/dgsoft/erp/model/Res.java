@@ -2,6 +2,7 @@ package com.dgsoft.erp.model;
 // Generated Sep 25, 2013 4:34:50 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.OrderBeanComparator;
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.api.ResTreeNode;
 import com.dgsoft.erp.tools.ResTreeFilter;
 import com.dgsoft.erp.tools.StoreResPropertyTreeNode;
@@ -20,7 +21,7 @@ import java.util.*;
 @Entity
 @Cacheable
 @Table(name = "RES", catalog = "MINI_ERP", uniqueConstraints = @UniqueConstraint(columnNames = "CODE"))
-public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
+public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode, TotalDataGroup.GroupKey<Res> {
 
     private String id;
     private ResCategory resCategory;
@@ -423,5 +424,11 @@ public class Res implements Comparable<Res>, java.io.Serializable, ResTreeNode {
         } else {
             return o.getId().compareTo(getId());
         }
+    }
+
+    @Override
+    @Transient
+    public Res getKeyData() {
+        return this;
     }
 }

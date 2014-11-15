@@ -10,6 +10,7 @@ import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.total.ResFormatGroupStrategy;
 import com.dgsoft.erp.total.data.OrderItemTotal;
+import com.dgsoft.erp.total.data.ResPriceTotal;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
@@ -270,7 +271,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
 
 
-        for (TotalDataGroup<Store, OrderItem> group : getDispatchItemGroups()) {
+        for (TotalDataGroup<Store, OrderItem,OrderItemTotal> group : getDispatchItemGroups()) {
 
             TotalDataGroup.sort(group, new Comparator<OrderItem>() {
                 @Override
@@ -285,7 +286,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             });
 
             result.append("\n" + group.getKey().getName());
-            for (TotalDataGroup<?, OrderItem> sg : group.getChildGroup()) {
+            for (TotalDataGroup<?, OrderItem,?> sg : group.getChildGroup()) {
                 result.append("\n\t" + sg.getKey().toString());
                 for (OrderItem item : sg.getValues()) {
 
@@ -307,14 +308,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         //List<OrderItem> createdItems = ;
 
 
-        List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, OrderItem>> createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
+        List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, OrderItem, ResPriceTotal>> createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
                 new OrderItemTotal.FormatOrderItemGroupStrategy());
         if (!createdItems.isEmpty()) {
             result.append("\n" + messages.get("no_dispatch_order_items"));
         }
 
 
-        for (TotalDataGroup<?, OrderItem> sg : createdItems) {
+        for (TotalDataGroup<?, OrderItem,?> sg : createdItems) {
             TotalDataGroup.sort(sg, new Comparator<OrderItem>() {
                 @Override
                 public int compare(OrderItem o1, OrderItem o2) {
@@ -356,18 +357,18 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return result.toString();
     }
 
-    public List<TotalDataGroup<Store, OrderItem>> getDispatchItemGroups() {
+    public List<TotalDataGroup<Store, OrderItem, OrderItemTotal>> getDispatchItemGroups() {
 
 
         return TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.DISPATCHED)),
-                new TotalGroupStrategy<Store, OrderItem,Object>() {
+                new TotalGroupStrategy<Store, OrderItem,OrderItemTotal>() {
                     @Override
                     public Store getKey(OrderItem orderItem) {
                         return orderItem.getDispatch().getStore();
                     }
 
                     @Override
-                    public Object totalGroupData(Collection<OrderItem> datas) {
+                    public OrderItemTotal totalGroupData(Collection<OrderItem> datas) {
                         return null;
                     }
                 }, new OrderItemTotal.FormatOrderItemGroupStrategy()

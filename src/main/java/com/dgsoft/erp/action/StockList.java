@@ -7,6 +7,7 @@ import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
 import com.dgsoft.erp.tools.StoreResPropertyTreeNode;
 import com.dgsoft.erp.total.StoreResCountUnionStrategy;
+import com.dgsoft.erp.total.data.ResCount;
 import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -185,18 +186,18 @@ public class StockList extends ErpEntityQuery<Stock> {
         resGroupResult = null;
     }
 
-    private TotalDataGroup<?,Stock> storeGroupResult = null;
+    private TotalDataGroup<?,Stock,?> storeGroupResult = null;
 
     private void initStoreGroupResult(){
         if (storeGroupResult == null){
-            storeGroupResult = TotalDataGroup.allGroupBy(getResultList(),new TotalGroupStrategy<Store, Stock,Object>() {
+            storeGroupResult = TotalDataGroup.allGroupBy(getResultList(),new TotalGroupStrategy<Store, Stock,ResCount>() {
                 @Override
                 public Store getKey(Stock stock) {
                     return stock.getStore();
                 }
 
                 @Override
-                public Object totalGroupData(Collection<Stock> datas) {
+                public ResCount totalGroupData(Collection<Stock> datas) {
                     return null;
                 }
             },new ResTotalCount.ResCountGroupStrategy<Stock>());
@@ -211,7 +212,7 @@ public class StockList extends ErpEntityQuery<Stock> {
         }
     }
 
-    public TotalDataGroup<?,Stock> getStoreGroupResult(){
+    public TotalDataGroup<?,Stock,?> getStoreGroupResult(){
         if (isAnyParameterDirty()) {
             refresh();
         }
@@ -219,7 +220,7 @@ public class StockList extends ErpEntityQuery<Stock> {
         return storeGroupResult;
     }
 
-    private  TotalDataGroup<?,Stock> resGroupResult = null;
+    private  TotalDataGroup<?,Stock,?> resGroupResult = null;
 
     private void initResGroupResult(){
         if (resGroupResult == null){
@@ -234,7 +235,7 @@ public class StockList extends ErpEntityQuery<Stock> {
         }
     }
 
-    public TotalDataGroup<?,Stock> getResGroupResult(){
+    public TotalDataGroup<?,Stock,?> getResGroupResult(){
         if (isAnyParameterDirty()) {
             refresh();
         }

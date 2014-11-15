@@ -5,7 +5,7 @@ import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
-import com.dgsoft.erp.total.data.ResTotalCount;
+import com.dgsoft.erp.total.data.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -90,9 +90,9 @@ public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<S
         return result;
     }
 
-    private List<TotalDataGroup<Res, E>> formatGroup;
+    private List<TotalDataGroup<Res, E, com.dgsoft.erp.total.data.ResCount>> formatGroup;
 
-    public List<TotalDataGroup<Res, E>> getFormatGroup() {
+    public List<TotalDataGroup<Res, E, com.dgsoft.erp.total.data.ResCount>> getFormatGroup() {
         initFormatGroup();
         return formatGroup;
     }

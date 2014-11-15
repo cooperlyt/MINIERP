@@ -1,5 +1,6 @@
 package com.dgsoft.erp.total.data;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.StoreRes;
@@ -16,7 +17,7 @@ import java.util.Locale;
 /**
  * Created by cooper on 11/14/14.
  */
-public class ResPriceTotal {
+public class ResPriceTotal implements TotalDataGroup.GroupTotalData{
 
 
     public static ResPriceTotal total(Collection<? extends StoreResPriceEntity> datas) {

@@ -6,6 +6,7 @@ import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.total.data.ResCount;
 import com.dgsoft.erp.total.data.ResTotalCount;
 
 import java.util.*;
@@ -23,11 +24,11 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
         setEjbql(EJBQL);
     }
 
-    private TotalDataGroup<?, StoreResCountEntity> customerResultGroup = null;
+    private TotalDataGroup<?, StoreResCountEntity,?> customerResultGroup = null;
 
     private void initCustomerGroupResultList() {
         if (customerResultGroup == null) {
-            customerResultGroup = TotalDataGroup.allGroupBy(new ArrayList<StoreResCountEntity>(getResultList()), new TotalGroupStrategy<Customer, StoreResCountEntity,Object>() {
+            customerResultGroup = TotalDataGroup.allGroupBy(new ArrayList<StoreResCountEntity>(getResultList()), new TotalGroupStrategy<Customer, StoreResCountEntity,ResCount>() {
                 @Override
                 public Customer getKey(StoreResCountEntity stockChangeItem) {
                     if (((StockChangeItem) stockChangeItem).getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {
@@ -39,7 +40,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                 }
 
                 @Override
-                public Object totalGroupData(Collection<StoreResCountEntity> datas) {
+                public ResCount totalGroupData(Collection<StoreResCountEntity> datas) {
                     return null;
                 }
             }, new ResTotalCount.ResCountGroupStrategy<StoreResCountEntity>());
@@ -56,7 +57,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
         }
     }
 
-    public TotalDataGroup<?, StoreResCountEntity> getCustomerResultGroup() {
+    public TotalDataGroup<?, StoreResCountEntity,?> getCustomerResultGroup() {
         if (isAnyParameterDirty()) {
             refresh();
         }
@@ -64,11 +65,11 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
         return customerResultGroup;
     }
 
-    private TotalDataGroup<?, StockChangeItem> customerDetailsResultGroup = null;
+    private TotalDataGroup<?, StockChangeItem,?> customerDetailsResultGroup = null;
 
     private void initCustomerDetailsResultGroup() {
         if (customerDetailsResultGroup == null) {
-            customerDetailsResultGroup = TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Customer, StockChangeItem,Object>() {
+            customerDetailsResultGroup = TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<Customer, StockChangeItem,ResCount>() {
                 @Override
                 public Customer getKey(StockChangeItem stockChangeItem) {
                     if (stockChangeItem.getStockChange().getOperType().equals(StockChange.StoreChangeType.SELL_OUT)) {
@@ -79,7 +80,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
                 }
 
                 @Override
-                public Object totalGroupData(Collection<StockChangeItem> datas) {
+                public ResCount totalGroupData(Collection<StockChangeItem> datas) {
                     return null;
                 }
             });
@@ -87,7 +88,7 @@ public abstract class CustomerStockChangeTotal extends StoreChangeResTotal {
 
     }
 
-    public TotalDataGroup<?, StockChangeItem> getCustomerDetailsResultGroup() {
+    public TotalDataGroup<?, StockChangeItem, ?> getCustomerDetailsResultGroup() {
         if (isAnyParameterDirty()) {
             refresh();
         }

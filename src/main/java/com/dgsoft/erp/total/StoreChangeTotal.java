@@ -99,7 +99,7 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
     }
 
 
-    public List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, TotalChangeDataItem>> getTotalResultGroup() {
+    public List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, TotalChangeDataItem,FormatGroupTotalData>> getTotalResultGroup() {
         if (isAnyParameterDirty()) {
             refresh();
         }
@@ -133,7 +133,7 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
     }
 
 
-    public static class FormatGroupTotalData {
+    public static class FormatGroupTotalData implements TotalDataGroup.GroupTotalData{
 
         private Res res;
 

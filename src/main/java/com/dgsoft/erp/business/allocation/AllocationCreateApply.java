@@ -6,6 +6,7 @@ import com.dgsoft.erp.action.ResHome;
 import com.dgsoft.erp.action.StoreResHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResCount;
 import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -45,7 +46,7 @@ public class AllocationCreateApply {
     private List<AllocationRes> applyItems = new ArrayList<AllocationRes>();
 
 
-    public List<TotalDataGroup<Res, AllocationRes>> getApplyGroup() {
+    public List<TotalDataGroup<Res, AllocationRes,ResCount>> getApplyGroup() {
         return TotalDataGroup.groupBy(applyItems, new ResTotalCount.ResCountGroupStrategy<AllocationRes>(), new ResTotalCount.FormatCountGroupStrategy<AllocationRes>());
     }
 
