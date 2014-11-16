@@ -152,16 +152,15 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
             return false;
         if (!(other instanceof Stock))
             return false;
-        if (getId() == null){
+        if (getId() == null) {
             return false;
         }
         Stock castOther = (Stock) other;
+        if ((getId() == null) || "".equals(getId()) || (castOther.getId() == null) || "".equals(castOther.getId())) {
+            return false;
+        }
 
-
-        return ((this.getId() == castOther.getId()) || (this
-                .getId() != null
-                && castOther.getId() != null && this.getId()
-                .equals(castOther.getId())));
+        return getId().equals(castOther.getId());
     }
 
     @Transient
@@ -169,7 +168,7 @@ public class Stock extends StoreResCountEntity implements java.io.Serializable {
         int result = 17;
 
         result = 37 * result
-                + (getId() == null ? 0 : this.getId().hashCode());
+                + (getId() == null ? super.hashCode() : this.getId().hashCode());
         return result;
     }
 }

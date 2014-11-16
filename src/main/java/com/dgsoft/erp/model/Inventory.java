@@ -237,4 +237,29 @@ public class Inventory implements java.io.Serializable {
     public void setStatus(InvertoryStatus status) {
         this.status = status;
     }
+
+
+    public boolean equals(Object other) {
+        if ((this == other))
+            return true;
+        if ((other == null))
+            return false;
+        if (!(other instanceof Inventory))
+            return false;
+        Inventory castOther = (Inventory) other;
+        if ((castOther.getId() == null) || ("".equals(castOther.getId())) || (getId() == null) || ("".equals(getId()))){
+            return false;
+        }
+
+        return getId().equals(castOther.getId());
+    }
+
+    public int hashCode() {
+        int result = 17;
+
+        result = 37 * result
+                + (getId() == null ? super.hashCode(): this.getId().hashCode());
+
+        return result;
+    }
 }

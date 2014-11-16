@@ -44,7 +44,7 @@
         </h:outputStylesheet>
 
 
-        <a:outputPanel rendered="#{not empty inputValue.storeRes}">
+        <a:outputPanel rendered="#{(not empty inputValue.storeRes) and showTitle }">
             <ui:include src="/layout/erp/StoreResTitle.xhtml">
                 <ui:param name="storeRes" value="#{inputValue.storeRes}"/>
             </ui:include>
@@ -65,7 +65,7 @@
         <a:outputPanel id="countInputArea">
             <div>
                 <s:label styleClass="#{empty countLableStyleClass ? 'name' : countLableStyleClass}">
-                    #{messages.storeChangeCount}
+                    #{(empty label) ? messages.storeChangeCount : label}
                     <s:span styleClass="required">*</s:span>
                 </s:label>
 

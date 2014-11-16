@@ -432,3 +432,43 @@ table.radio input[type=radio] {
 .subTable2{
     font-size: 13px; font-weight: bold;background:#f5f5f5;
 }
+
+
+.detailsTable{
+    border-collapse: collapse;
+    border-spacing: 2px;
+    border: 1px solid #BED6F8;
+    display: table;
+
+}
+
+.detailsTable th{
+    vertical-align: inherit;
+    padding: 5px 5px 5px 5px;
+    background: #ECF4FE;
+    color: #797268;
+    text-align: center;
+    display: table-cell;
+
+    border-collapse: collapse;
+
+
+    display: table-cell;
+    vertical-align: inherit;
+
+    border: 1px solid #BED6F8;
+}
+
+.detailsTable td{
+
+    border-collapse: collapse;
+    display: table-cell;
+    vertical-align: inherit;
+    border: 1px solid #BED6F8;
+
+    background: #fff;
+    padding: 5px 5px 5px 5px;
+    color: #4f6b72;
+
+    text-align: left;
+}

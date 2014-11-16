@@ -2,6 +2,7 @@ package com.dgsoft.erp.action;
 
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.DictionaryWord;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.model.Word;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.model.*;
@@ -11,6 +12,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.*;
 import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
 
 import javax.persistence.EntityManager;
@@ -97,6 +99,23 @@ public class ResHelper {
 //        return result;
 //    }
 
+
+    public enum CodeValid{
+        CODE_NOT_RULE,CODE_EXISTS,CODE_VALID;
+    }
+
+    public CodeValid validStoreResCode(StoreRes storeRes){
+        if (!storeRes.getCode().matches(RunParam.instance().getStringParamValue(StoreResHome.STORE_RES_CODE_RULE_PARAM_NAME))) {
+            return CodeValid.CODE_NOT_RULE;
+        }
+
+        if (!erpEntityManager.createQuery("select storeRes from StoreRes storeRes where storeRes.id <> :storeResId and code = :code")
+                .setParameter("code", storeRes.getCode()).setParameter("storeResId",storeRes.getId()).getResultList().isEmpty()) {
+            return CodeValid.CODE_EXISTS;
+        }
+
+        return CodeValid.CODE_VALID;
+    }
 
     public boolean matchFormat(Collection<Format> formats, StoreRes storeRes) {
         for (Format cFormat : formats) {

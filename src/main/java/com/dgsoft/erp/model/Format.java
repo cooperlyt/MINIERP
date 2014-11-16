@@ -32,6 +32,12 @@ public class Format implements java.io.Serializable {
         this.formatValue = formatValue;
     }
 
+    public Format(StoreRes storeRes, FormatDefine formatDefine, String formatValue) {
+        this.storeRes = storeRes;
+        this.formatDefine = formatDefine;
+        this.formatValue = formatValue;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")

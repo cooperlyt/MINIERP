@@ -5,4 +5,5 @@
 
 
     <action execute="#{inventoryFirst.init}" on-postback="false"/>
+    <param name="abort" value="#{inventoryFirst.abort}"/>
 </page>

@@ -53,12 +53,12 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     @In(create = true)
     private ProcessInstanceHome processInstanceHome;
 
-    public void removeInventory() {
+    public String deleteInventory(){
         if (getEntityManager().createQuery("select count(inventory.id) from Inventory inventory where (inventory.type = 'MONTH_INVENTORY' or  inventory.type ='YEAR_INVENTORY') and inventory.checkDate > :checkDate and inventory.store.id = :storeId", Long.class).
                 setParameter("checkDate", getInstance().getCheckDate()).
                 setParameter("storeId", getInstance().getStore().getId()).getSingleResult() > 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "cantDeleteInventoryError");
-            return;
+            return null;
         }
         if (getInstance().getStockChangeAdd() != null) {
             for (StockChangeItem item : getInstance().getStockChangeAdd().getStockChangeItems()) {
@@ -72,7 +72,12 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         }
         processInstanceHome.setProcessDefineName("inventory");
         processInstanceHome.setProcessKey(getInstance().getId());
-        if ("removed".equals(super.remove())) {
+        return super.remove();
+    }
+
+    public void removeInventory() {
+
+        if ("removed".equals(deleteInventory())) {
             processInstanceHome.stop();
         }
     }
@@ -133,13 +138,13 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             BigDecimal beforCount = (beforItem == null) ? BigDecimal.ZERO : beforItem.getLastCount();
 
             BigDecimal inCount = getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL, BigDecimal.class).
-                    setParameter("stockId", getInstance().getStore().getId()).
+                    setParameter("stockId", stock.getId()).
                     setParameter("beginDate", (beforDate == null) ? new Date(0) : beforDate).
                     setParameter("toDate", getInstance().getCheckDate()).
                     setParameter("types", StockChange.StoreChangeType.getAllIn()).getSingleResult();
 
             BigDecimal outCount = getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL, BigDecimal.class).
-                    setParameter("stockId", getInstance().getStore().getId()).
+                    setParameter("stockId", stock.getId()).
                     setParameter("beginDate", (beforDate == null) ? new Date(0) : beforDate).
                     setParameter("toDate", getInstance().getCheckDate()).
                     setParameter("types", StockChange.StoreChangeType.getAllOut()).getSingleResult();
@@ -166,7 +171,11 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     @Override
     protected Inventory createInstance() {
         return new Inventory("P" + numberBuilder.getSampleNumber("inventory"), credentials.getUsername());
+
     }
+
+
+
 
 
 //    @In(create = true)

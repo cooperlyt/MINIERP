@@ -19,68 +19,300 @@
         width: 100px;
     }
 </h:outputStylesheet>
-<ui:remove>
-    <!-- new Item code input -->
-    <s:decorate template="/layout/edit-modalpanel.xhtml">
-        <ui:param name="panelTitle" value="#{messages.storeRes_field_code}"/>
-        <ui:param name="panelId" value="newStoreResCodeInputPanel"/>
-        <ui:define name="controls">
-        </ui:define>
 
 
-        <s:decorate template="/layout/edit.xhtml">
-            <ui:define name="label">#{messages.storeRes_field_code}</ui:define>
-            <h:inputText label="#{messages.storeRes_field_code}"
-                         required="true" size="27" maxlength="50"
-                         value="#{inventoryHome.newItemCode}"/>
-        </s:decorate>
+<s:decorate template="/layout/edit-modalpanel.xhtml">
+<ui:param name="panelId" value="changeInputPanel"/>
+<ui:param name="panelTitle" value="#{messages.InventoryEndCount}"/>
 
-        <ui:define name="actionButtons">
+<ui:define name="controls">
+    <a:commandButton immediate="true"
+                     execute="@this" image="/img/close.png"
+                     onclick="#{rich:component(panelId)}.hide(); return false;"/>
+</ui:define>
+<a:outputPanel rendered="#{not empty inventoryItems.editingItem}">
 
 
-            <a:commandButton immediate="true"
-                             execute="@this" value="#{messages.cancel}"
-                             onclick="#{rich:component('newStoreResCodeInputPanel')}.hide(); return false;">
+<ui:include src="/layout/erp/StoreResTitle.xhtml">
+    <ui:param name="storeRes" value="#{inventoryItems.editingItem.storeRes}"/>
+</ui:include>
 
-            </a:commandButton>
-            <a:commandButton value="#{messages.addItem}" execute="@form"
-                             action="#{inventoryHome.addItem}" data="#{inventoryHome.addItemLastState}"
-                             oncomplete="if (event.data == 'updated')#{rich:component('newStoreResCodeInputPanel')}.hide();"
-                             render="newStoreResCodeInputPanel_inputs,storeInItem,inventoryTable">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
+<div style="clear: both"/>
+<br/>
 
-        </ui:define>
+<table class="detailsTable">
+<tr>
+    <th colspan="2"></th>
+    <th style="min-width: 80px">#{messages.MasterUnitCount}</th>
+    <th style="min-width: 80px">#{messages.AuxUnitCount}</th>
+</tr>
+<tr>
+    <th colspan="2">#{messages.SeasonBiginCount}</th>
+    <td><h:outputText value="#{inventoryItems.editingItem.beginCount.masterCount}">
+        <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+    </h:outputText>
+        <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
 
-    </s:decorate>
 
-</ui:remove>
+    </td>
+    <td>
+        <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+            <h:outputText value="#{inventoryItems.editingItem.beginCount.auxCount}">
+                <f:convertNumber
+                        pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                          style="float: right"/>
+        </a:outputPanel>
+    </td>
+
+</tr>
+<c:forEach items="#{inventoryItems.editingItem.storeInTypeCounts}" var="_countEntry">
+
+    <tr>
+        <c:if test="#{_countEntry.key eq inventoryItems.editingItem.firstInType}">
+            <th style="width: 1px;"
+                rowspan="#{inventoryItems.editingItem.storeInTypeCounts.size + 1}">#{messages.storeIn}</th>
+        </c:if>
+        <th>
+            #{messages[_countEntry.key.name()]}
+        </th>
+        <td>
+
+            <h:outputText value="#{_countEntry.value.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{_countEntry.value.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+
+    </tr>
+
+</c:forEach>
+
+<c:if test="#{not empty inventoryItems.editingItem.firstInType}">
+    <tr>
+        <th>
+            #{messages.GroupTotal}
+        </th>
+        <td>
+
+            <h:outputText value="#{inventoryItems.editingItem.inCount.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{inventoryItems.editingItem.inCount.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:if>
+
+
+<c:forEach items="#{inventoryItems.editingItem.storeOutTypeCounts}" var="_outEntry">
+    <tr>
+        <c:if test="#{inventoryItems.editingItem.firstOutType eq _outEntry.key}">
+            <th style="width: 1px;"
+                rowspan="#{inventoryItems.editingItem.storeOutTypeCounts.size + inventoryItems.editingItem.allocationOutCounts.size + 1}">
+                #{messages.StoreOut}
+            </th>
+        </c:if>
+
+        <th>#{messages[_outEntry.key.name()]}</th>
+        <td>
+
+            <h:outputText value="#{_outEntry.value.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{_outEntry.value.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:forEach>
+
+<c:forEach items="#{inventoryItems.editingItem.allocationOutCounts}" var="_allocation">
+    <tr>
+        <c:if test="#{(empty inventoryItems.editingItem.firstOutType) and inventoryItems.editingItem.isFirstStore(_allocation.key.id)}">
+            <th style="width: 1px;" rowspan="#{inventoryItems.editingItem.allocationOutCounts.size + 1}">
+                #{messages.StoreOut}
+            </th>
+        </c:if>
+
+        <th>
+            #{messages.AllocationTo} #{_allocation.key.name}
+        </th>
+
+        <td>
+
+            <h:outputText value="#{_allocation.value.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{_allocation.value.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:forEach>
+
+<c:if test="#{(not empty inventoryItems.editingItem.firstOutType) or (not empty inventoryItems.editingItem.firstInType)}">
+    <tr>
+        <th>#{messages.GroupTotal}</th>
+        <td>
+
+            <h:outputText value="#{inventoryItems.editingItem.outCount.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{inventoryItems.editingItem.outCount.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:if>
+
+<tr>
+    <th colspan="2">#{messages.InventoryLastCount}</th>
+    <td>
+
+        <h:outputText value="#{inventoryItems.editingItem.lastCount.masterCount}">
+            <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+    </td>
+    <td>
+        <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+            <h:outputText value="#{inventoryItems.editingItem.lastCount.auxCount}">
+                <f:convertNumber
+                        pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                          style="float: right"/>
+        </a:outputPanel>
+    </td>
+</tr>
+<c:if test="#{not (inventoryItems.editingItem.inventoryItem.changeType eq 'NO_CHANGE')}">
+    <tr>
+        <th colspan="2">#{messages[inventoryItems.editingItem.inventoryItem.changeType.name()]}</th>
+        <td>
+
+            <h:outputText value="#{inventoryItems.editingItem.diffCount.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{inventoryItems.editingItem.diffCount.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:if>
+
+</table>
+<div style="clear: both"/>
+<br/>
+<s:decorate rendered="#{inventoryItems.newStoreRes}" template="/layout/edit.xhtml">
+    <ui:define name="label">
+        #{messages.storeRes_field_code}
+    </ui:define>
+    <h:inputText value="#{inventoryItems.editingItem.storeRes.code}" required="true"
+                 label="#{messages.storeRes_field_code}"/>
+</s:decorate>
+
+
+<ui:include src="/layout/erp/res/StoreResCountInput.xhtml">
+    <ui:param name="inputValue" value="#{inventoryItems.editingItem}"/>
+    <ui:param name="formatTemplate" value="/layout/edit.xhtml"/>
+    <ui:param name="countLableStyleClass" value="small_name"/>
+    <ui:param name="showTitle" value="false"/>
+    <ui:param name="label" value="#{messages.InventoryEndCount}"/>
+</ui:include>
+</a:outputPanel>
+
+<ui:define name="actionButtons">
+    <a:commandButton value="#{messages.cancel}" onclick="#{rich:component('changeInputPanel')}.hide();return false;"/>
+
+    <a:commandButton execute="@form" action="#{inventoryItems.saveChange}"
+                     rendered="#{not empty inventoryItems.editingItem}"
+                     data="#{inventoryItems.saveStatus}" value="#{messages.ok}"
+                     oncomplete="if (event.data == 'CODE_VALID')#{rich:component('changeInputPanel')}.hide();"
+                     render="changeInputPanel_form,resultDatas">
+        <a:attachQueue requestDelay="0"/>
+    </a:commandButton>
+</ui:define>
+
+</s:decorate>
+
 <rich:toolbar>
     <rich:toolbarGroup>
         <h:form>
             <h:panelGrid id="resSearchForm" columns="4">
-                <h:inputText styleClass="barsearch" id="resItemCode" value="#{resLocate.code}"
+                <h:inputText styleClass="barsearch" id="resItemCode" value="#{resCode.code}"
                              required="true">
                     <rich:placeholder value="#{messages.res_field_code}"/>
                 </h:inputText>
 
                 <a:commandButton styleClass="toolBarBtn" value="#{messages.search}" execute="@form"
-                                 render="storeInItem,resSearchForm"
-                                 action="#{resLocate.locateByCode}">
+                                 data="#{resCode.codeStatus}"
+                                 oncomplete="if (event.data == 'STORERES_DEFINED')#{rich:component('changeInputPanel')}.show();"
+                                 render="changeInputPanel_form"
+                                 action="#{inventoryItems.beginChangeByCode}">
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
 
-                <a:commandButton styleClass="toolBarBtn" image="/img/onetomany.gif" execute="@this" immediate="true"
-                                 title="#{messages.resSelect}"
-                                 onclick="#{rich:component('resSelectPanel')}.show();return false;">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
-
-                <a:commandButton styleClass="toolBarBtn" image="/img/onetomany.gif" execute="@this" immediate="true"
-                                 title="#{messages.storeResSelect}"
-                                 onclick="#{rich:component('storeResSelectPanel')}.show();return false;">
-                    <a:attachQueue requestDelay="0"/>
-                </a:commandButton>
             </h:panelGrid>
         </h:form>
     </rich:toolbarGroup>
@@ -91,26 +323,22 @@
         <h:panelGroup>
             <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                       view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
+
+            <s:button styleClass="toolBarBtn" value="#{messages.abortInventory}"
+                      action="#{inventoryFirst.complete}">
+                <f:param name="abort" value="#{true}"/>
+            </s:button>
+
             <s:button styleClass="toolBarBtn" value="#{messages.complete}"
-                      action="#{inventoryFirst.complete}"/>
+                      action="#{inventoryFirst.complete}">
+                <f:param name="abort" value="#{false}"/>
+            </s:button>
 
         </h:panelGroup>
     </rich:toolbarGroup>
 </rich:toolbar>
 <br/>
 <rich:messages ajaxRendered="true" globalOnly="true"/>
-<br/>
-
-
-<rich:panel>
-    <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
-
-        <ui:param name="inventory" value="#{inventoryHome.instance}"/>
-    </ui:include>
-
-    <div style="clear: both"/>
-</rich:panel>
-
 <br/>
 
 <h:form id="conditionsForm">
@@ -126,11 +354,17 @@
 
                 <a:outputPanel id="searchButton">
                     <a:commandButton value="#{messages.reset}" execute="@this" immediate="true"
+                                     action="#{storeResCondition.reset}"
                                      render="resultDatas,conditionsForm">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
+                    <a:commandButton value="#{messages.InventoryEndCount}" action="#{inventoryItems.beginChange}"
+                                     execute="@form" render="changeInputPanel_form"
+                                     oncomplete="#{rich:component('changeInputPanel')}.show();">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
 
-                    <a:commandButton value="#{messages.search}"
+                    <a:commandButton value="#{messages.Filter}"
                                      execute="@form" render="resultDatas">
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
@@ -142,108 +376,56 @@
 </h:form>
 
 
-<a:outputPanel id="resultDatas">
+<h:form>
+    <div style="width: 100%;height: 700px; overflow-x: auto; overflow-y: auto; padding: 0; margin: 0">
 
-    <ui:include src="/layout/erp/InventoryDataTable.xhtml"/>
-</a:outputPanel>
+        <a:outputPanel id="resultDatas">
 
+            <s:decorate template="/layout/erp/InventoryDataTable.xhtml">
+                <ui:define name="formatTitleColumn">
+                    <h:outputText value="#{_formatGroup.key.formatTitle}"
+                                  rendered="#{_formatGroup.key.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                    <a:commandLink value="#{_formatGroup.key.formatTitle}"
+                                   rendered="#{not (_formatGroup.key.res.unitGroup.type eq 'FLOAT_CONVERT')}"
+                                   action="#{inventoryItems.beginChangeByItem}" execute="@this"
+                                   render="changeInputPanel_form"
+                                   immediate="true" oncomplete="#{rich:component('changeInputPanel')}.show();">
 
-<ui:remove>
-    <!-- new StoreRes panel -->
-    <h:form id="storeInItem">
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_formatGroup.totalData.firstData.inventoryItem.id}"
+                                 assignTo="#{inventoryItems.editingItemId}"/>
 
-        <rich:panel rendered="#{resHome.idDefined}">
-
-            <h:panelGrid columns="1">
-                <h:outputText value="#{resHome.resTitle}" styleClass="name"/>
-            </h:panelGrid>
-
-
-            <a:outputPanel id="itemFormats">
-                <a:repeat value="#{storeResFormatFilter.resFormatList}" var="_format">
-                    <s:decorate id="#{_format.formatDefine.id}Field" template="/layout/seam-edit.xhtml">
-                        <ui:define name="label">#{_format.formatDefine.name}</ui:define>
-                        <ui:include src="/layout/erp/ResFormatVarInput.xhtml">
-                            <ui:param name="format" value="#{_format}"/>
-                            <ui:param name="render" value="#{_format.formatDefine.id}Field"/>
-
-                        </ui:include>
-                    </s:decorate>
-                </a:repeat>
-            </a:outputPanel>
+                    </a:commandLink>
 
 
-            <ui:include src="/layout/erp/ResCountInput.xhtml">
-                <ui:param name="resCountBean" value="#{inventoryHome.storeResCountInupt}"/>
-            </ui:include>
+                </ui:define>
+                <ui:define name="itemTitleComumn">
+                    <a:commandLink action="#{inventoryItems.beginChangeByItem}" execute="@this"
+                                   render="changeInputPanel_form"
+                                   immediate="true" oncomplete="#{rich:component('changeInputPanel')}.show();">
+                        <h:outputText value="#{_item.storeRes.floatConversionRate}">
+                            <f:convertNumber pattern="#{_item.res.unitGroup.floatConvertRateFormat}"/>
+                        </h:outputText>
+                        <h:outputText value="#{_item.res.unitGroup.name}"/>
+                        <a:attachQueue requestDelay="0"/>
+                        <a:param value="#{_item.inventoryItem.id}" assignTo="#{inventoryItems.editingItemId}"/>
+                    </a:commandLink>
+                </ui:define>
+            </s:decorate>
 
-
-            <a:commandButton style="float: left;" value="#{messages.addItem}" execute="@form"
-                             render="storeInItem,inventoryTable,newStoreResCodeInputPanel_inputs"
-                             data="#{inventoryHome.addItemLastState}"
-                             oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
-                             action="#{inventoryHome.addItem}">
-                <a:attachQueue requestDelay="0"/>
-
-            </a:commandButton>
-
-
-            <div style="clear:both">
-                <span class="required">*</span>
-                #{messages.requiredFields}
-            </div>
-
-
-        </rich:panel>
-    </h:form>
-
-</ui:remove>
+        </a:outputPanel>
+    </div>
+</h:form>
 <br/>
 
-<ui:remove>
-    <!-- loss and add edit panel-->
-    <s:decorate template="/layout/edit-modalpanel.xhtml">
-        <ui:define name="panelTitle">
-            <h:outputText value="#{messages.STORE_CHECK_ADD}#{messages.STORE_CHECK_LOSS}"/>
-        </ui:define>
+<rich:panel>
+    <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
 
-        <ui:param name="panelId" value="checkItemChangePanel"/>
-        <ui:define name="controls">
-            <a:commandButton immediate="true"
-                             execute="@this" image="/img/close.png"
-                             onclick="#{rich:component(panelId)}.hide(); return false;">
-            </a:commandButton>
-        </ui:define>
+        <ui:param name="inventory" value="#{inventoryHome.instance}"/>
+    </ui:include>
 
-        <h:selectOneRadio value="#{inventoryHome.checkLose}" disabled="#{not inventoryHome.haveStock}">
-            <f:selectItem itemLabel="#{messages.STORE_CHECK_ADD}" itemValue="#{false}"/>
-            <f:selectItem itemLabel="#{messages.STORE_CHECK_LOSS}" itemValue="#{true}"/>
-        </h:selectOneRadio>
-
-        <ui:include src="/layout/erp/ResCountInput.xhtml">
-            <ui:param name="disabledFloatRate" value="true"/>
-            <ui:param name="resCountBean" value="#{inventoryHome.itemCheckCount}"/>
-        </ui:include>
-
-
-        <ui:define name="actionButtons">
-            <a:commandButton immediate="true"
-                             execute="@this" value="#{messages.cancel}"
-                             onclick="#{rich:component('checkItemChangePanel')}.hide(); return false;">
-
-            </a:commandButton>
-            <a:commandButton value="#{messages.save}" execute="@form"
-                             action="#{inventoryHome.saveCheckItem}" data="#{inventoryHome.lastState}"
-                             oncomplete="if (event.data == 'updated')#{rich:component('checkItemChangePanel')}.hide();"
-                             render="checkItemChangePanel_inputs,inventoryTable,storeInItem">
-                <a:attachQueue requestDelay="0"/>
-            </a:commandButton>
-
-        </ui:define>
-
-    </s:decorate>
-
-</ui:remove>
+    <div style="clear: both"/>
+</rich:panel>
 
 </ui:define>
 

@@ -14,7 +14,9 @@ import org.jboss.seam.log.Logging;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,6 +98,23 @@ public class StoreResCondition implements Serializable {
             return false;
         for (Format format : storeResEntity.getFormats()) {
             if (format.getFormatValue() != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isFullStoreResSearch(){
+        if (storeResEntity == null) {
+            return false;
+        }
+        if (UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(storeResEntity.getRes().getUnitGroup().getType()) &&
+                (storeResEntity.getFloatConvertRate() == null)){
+            return false;
+        }
+
+        for (Format format : storeResEntity.getFormats()) {
+            if (format.getFormatValue() == null) {
                 return false;
             }
         }
@@ -197,6 +216,22 @@ public class StoreResCondition implements Serializable {
         }
         return result;
 
+    }
+
+    public StoreRes createStoreResByCondition(){
+        if(!isFullStoreResSearch()){
+            throw new IllegalArgumentException("must full confition");
+        }
+
+        StoreRes result = new StoreRes();
+        result.setEnable(true);
+        result.setFloatConversionRate(storeResEntity.getFloatConvertRate());
+        result.setRes(storeResEntity.getRes());
+        for (Format format : storeResEntity.getFormats()) {
+            result.getFormats().add(new Format(result,format.getFormatDefine(),format.getFormatValue()));
+        }
+        result.setCode(resHelper.genStoreResCode(result));
+        return result;
     }
 
     public String getStoreResCode() {
