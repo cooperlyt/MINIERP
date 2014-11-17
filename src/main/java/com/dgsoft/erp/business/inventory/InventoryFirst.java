@@ -35,7 +35,7 @@ public class InventoryFirst extends InventoryTaskHandle {
 
     private boolean valid(){
         for(InventoryItem item : inventoryHome.getInstance().getInventoryItems()){
-            if (BigDecimal.ZERO.compareTo(item.getLastCount()) < 0){
+            if (BigDecimal.ZERO.compareTo(item.getLastCount()) > 0){
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"InventoryLessZeroError",item.getStock().getStoreRes().getCode());
                 return false;
             }
@@ -62,6 +62,7 @@ public class InventoryFirst extends InventoryTaskHandle {
                     }
 
                     item.setStockChangeItem(new StockChangeItem(addChange,item.getStock(),item.getChangeCount()));
+                    addChange.getStockChangeItems().add(item.getStockChangeItem());
                     item.getStock().setCount(item.getStock().getCount().add(item.getChangeCount()));
                     break;
                 case INVENTORY_LOSS:
@@ -76,6 +77,7 @@ public class InventoryFirst extends InventoryTaskHandle {
                     }
 
                     item.setStockChangeItem(new StockChangeItem(lossChange,item.getStock(),item.getChangeCount()));
+                    lossChange.getStockChangeItems().add(item.getStockChangeItem());
                     item.getStock().setCount(item.getStock().getCount().subtract(item.getChangeCount()));
                     break;
             }

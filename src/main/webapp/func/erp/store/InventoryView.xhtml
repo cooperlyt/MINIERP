@@ -1,0 +1,34 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+    <ui:param value="functionTitle" name="#{messages.Inventory}"/>
+
+    <ui:define name="func-body">
+
+
+        <rich:panel>
+            <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
+
+                <ui:param name="inventory" value="#{inventoryHome.instance}"/>
+            </ui:include>
+
+            <div style="clear: both"/>
+        </rich:panel>
+
+
+        <br/>
+        <div style="width: 100%; max-height: 700px; overflow-x: auto; overflow-y: auto; padding: 0; margin: 0">
+
+        <ui:include src="/layout/erp/InventoryDataTable.xhtml"/>
+        </div>
+
+    </ui:define>
+
+
+</ui:composition>

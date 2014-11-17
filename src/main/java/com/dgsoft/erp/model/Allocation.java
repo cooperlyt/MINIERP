@@ -36,7 +36,7 @@ public class Allocation implements java.io.Serializable {
     private AllocationType type;
     private Date createDate;
     private Set<AllocationRes> allocationReses = new HashSet<AllocationRes>(0);
-    private Set<StockChange> stockChanges;
+    private Set<StockChange> stockChanges = new HashSet<StockChange>(0);
     public Allocation() {
     }
 

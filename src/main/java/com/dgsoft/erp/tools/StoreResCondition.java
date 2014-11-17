@@ -247,4 +247,8 @@ public class StoreResCondition implements Serializable {
         resCategoryHome.clearInstance();
         resCode = null;
     }
+
+    public boolean isResDefined(){
+        return storeResEntity != null;
+    }
 }

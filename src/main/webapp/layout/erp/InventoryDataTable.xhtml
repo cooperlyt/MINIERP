@@ -10,7 +10,8 @@
 
 
 
-<rich:dataTable value="#{inventoryItems.resultGroup}" var="_resGroup">
+
+<rich:dataTable value="#{inventoryItems.resultGroup}" var="_resGroup" noDataLabel="#{messages.NoConditionStock}">
 <f:facet name="header">
     <rich:columnGroup>
         <rich:column rowspan="2" colspan="3" style="min-width: 200px">

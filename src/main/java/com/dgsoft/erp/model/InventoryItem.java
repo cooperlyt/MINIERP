@@ -80,7 +80,7 @@ public class InventoryItem implements java.io.Serializable {
         this.inventory = inventory;
     }
 
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "CHANGE_ITEM")
 	public StockChangeItem getStockChangeItem() {
 		return this.stockChangeItem;

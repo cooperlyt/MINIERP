@@ -6,14 +6,68 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich"
+                xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
     <ui:param name="functionTitle" value="#{messages.Inventory}"/>
 
     <ui:define name="func-body">
+
+        <s:decorate template="/layout/edit-modalpanel.xhtml">
+            <ui:param name="panelId" value="changeInputPanel"/>
+            <ui:param name="panelTitle" value="#{messages.InventoryEndCount}"/>
+
+            <ui:define name="controls">
+                <a:commandButton immediate="true"
+                                 execute="@this" image="/img/close.png"
+                                 onclick="#{rich:component(panelId)}.hide(); return false;"/>
+            </ui:define>
+            <a:outputPanel rendered="#{not empty inventoryItems.editingItem}">
+
+
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{inventoryItems.editingItem.storeRes}"/>
+                </ui:include>
+
+            </a:outputPanel>
+
+
+
+            <s:decorate template="/layout/erp/InventoryItemDetails.xhtml">
+                   <tr>
+                       <th colspan="2">#{messages.InventoryEndCount}</th>
+                       <td>
+
+                           <h:outputText value="#{inventoryItems.editingItem.resultCount.masterCount}">
+                               <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+                           </h:outputText>
+                           <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+                       </td>
+                       <td>
+                           <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                               <h:outputText value="#{inventoryItems.editingItem.resultCount.auxCount}">
+                                   <f:convertNumber
+                                           pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                               </h:outputText>
+
+                               <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                                             style="float: right"/>
+                           </a:outputPanel>
+                       </td>
+                   </tr>
+            </s:decorate>
+
+            <ui:define name="actionButtons">
+                <a:commandButton value="#{messages.ok}"
+                                 onclick="#{rich:component('changeInputPanel')}.hide();return false;"/>
+            </ui:define>
+        </s:decorate>
+
+
         <h:form>
             <rich:toolbar>
                 <rich:toolbarGroup>
+                    <ui:remove>
                     <s:link target="_blank" view="/report/inventory.xhtml">
                         <s:graphicImage value="/img/print.png" title="#{messages.print_inventory_paper}"/>
                         <f:param name="inventoryComponentName" value="inventoryLastCheck"/>
@@ -22,6 +76,24 @@
                     <s:link value="#{messages.print_inventory_paper}" target="_blank" view="/report/inventory.xhtml">
                         <f:param name="inventoryComponentName" value="inventoryLastCheck"/>
                     </s:link>
+
+                    </ui:remove>
+
+                    <s:decorate template="/layout/grid-inside-edit.xhtml">
+                        <rich:calendar
+                                enableManualInput="true"
+                                inputSize="20"
+                                timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                datePattern="#{messages.datetimepattern}"
+                                required="true"
+                                defaultTime="#{currentTime}"
+                                defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                                label="#{messages.inventory_field_chedkedDate}"
+                                value="#{inventoryHome.instance.checkedDate}" validator="operDateValidator">
+
+                        </rich:calendar>
+                    </s:decorate>
                 </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
@@ -38,112 +110,101 @@
 
             <br/>
             <rich:messages ajaxRendered="true" globalOnly="true"/>
-            <br/>
 
-            <rich:panel>
-
-                <s:decorate template="/layout/seam-edit.xhtml">
-                    <ui:define name="label">#{messages.inventory_field_chedkedDate}</ui:define>
-                    <rich:calendar
-                            enableManualInput="true"
-                            inputSize="20"
-                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                            datePattern="#{messages.datetimepattern}"
-                            required="true"
-                            defaultTime="#{currentTime}"
-                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
-                            label="#{messages.inventory_field_chedkedDate}"
-                            value="#{inventoryHome.instance.checkedDate}" validator="operDateValidator">
-
-                    </rich:calendar>
-                </s:decorate>
-
-                 <s:decorate template="/layout/seam-edit.xhtml">
-                     <ui:define name="label">#{messages.check_pass}</ui:define>
-                     <h:selectBooleanCheckbox value="#{inventoryLastCheck.pass}"/>
-                 </s:decorate>
-
-                <div style="clear: both"/>
-
-            </rich:panel>
             <br/>
         </h:form>
 
-        <rich:panel>
-           <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
-               <ui:param name="inventory" value="#{inventoryHome.instance}"/>
-           </ui:include>
-           <div style="clear: both"/>
-        </rich:panel>
+
+        <h:form id="conditionsForm">
+            <ui:include src="/layout/erp/res/StoreResCondition.xhtml"/>
+
+            <div style="clear: both;"/>
+
+            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+            <h:panelGrid columns="1" style="width: 100%; text-align: right">
+                <a:outputPanel>
+                    <div class="actionButtons">
+
+
+                        <a:outputPanel id="searchButton">
+                            <a:commandButton value="#{messages.reset}" execute="@this" immediate="true"
+                                             action="#{inventoryItems.reset}"
+                                             render="resultDatas,conditionsForm">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+
+
+                            <a:commandButton value="#{messages.Filter}" action="#{inventoryItems.refresh}"
+                                             execute="@form" render="resultDatas" status="processWaiting">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </a:outputPanel>
+                    </div>
+                </a:outputPanel>
+            </h:panelGrid>
+
+        </h:form>
+
+
+        <h:form>
+            <div style="width: 100%;max-height: 700px; overflow-x: auto; overflow-y: auto; padding: 0; margin: 0">
+
+                <a:outputPanel id="resultDatas">
+
+
+                <h:outputText value="#{messages.plase_select_res}" rendered="#{not storeResCondition.resDefined}"/>
+
+                <a:outputPanel rendered="#{storeResCondition.resDefined}">
+
+
+                <s:decorate template="/layout/erp/InventoryDataTable.xhtml">
+                        <ui:define name="formatTitleColumn">
+                            <h:outputText value="#{_formatGroup.key.formatTitle}"
+                                          rendered="#{_formatGroup.key.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                            <a:commandLink value="#{_formatGroup.key.formatTitle}"
+                                           rendered="#{not (_formatGroup.key.res.unitGroup.type eq 'FLOAT_CONVERT')}"
+                                           execute="@this"
+                                           render="changeInputPanel_form"
+                                           immediate="true" oncomplete="#{rich:component('changeInputPanel')}.show();">
+
+                                <a:attachQueue requestDelay="0"/>
+                                <a:param value="#{_formatGroup.totalData.firstData.inventoryItem.id}"
+                                         assignTo="#{inventoryItems.editingItemId}"/>
+
+                            </a:commandLink>
+
+
+                        </ui:define>
+                        <ui:define name="itemTitleComumn">
+                            <a:commandLink execute="@this"
+                                           render="changeInputPanel_form"
+                                           immediate="true" oncomplete="#{rich:component('changeInputPanel')}.show();">
+                                <h:outputText value="#{_item.storeRes.floatConversionRate}">
+                                    <f:convertNumber pattern="#{_item.res.unitGroup.floatConvertRateFormat}"/>
+                                </h:outputText>
+                                <h:outputText value="#{_item.res.unitGroup.name}"/>
+                                <a:attachQueue requestDelay="0"/>
+                                <a:param value="#{_item.inventoryItem.id}" assignTo="#{inventoryItems.editingItemId}"/>
+                            </a:commandLink>
+                        </ui:define>
+                    </s:decorate>
+
+                </a:outputPanel>
+
+                </a:outputPanel>
+            </div>
+        </h:form>
+
         <br/>
-        <rich:dataTable id="inventoryTable" style="width: 100%" value="#{inventoryLastCheck.inventoryItems}"
-                        var="_item">
-            <f:facet name="header">
-                <rich:columnGroup>
-                    <rich:column rowspan="2">
-                        #{messages.StoreRes}
-                    </rich:column>
-                    <rich:column colspan="2">
-                        #{messages.Stock}
-                    </rich:column>
-                    <rich:column colspan="2">
-                        #{messages.STORE_CHECK_ADD}
-                    </rich:column>
-                    <rich:column colspan="2">
-                        #{messages.STORE_CHECK_LOSS}
-                    </rich:column>
 
-                    <rich:column breakRowBefore="true">
-                        #{messages.MasterUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.AuxUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.MasterUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.AuxUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.MasterUnitCount}
-                    </rich:column>
-                    <rich:column>
-                        #{messages.AuxUnitCount}
-                    </rich:column>
-                </rich:columnGroup>
-            </f:facet>
+        <rich:panel>
+            <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
 
-            <rich:column>
+                <ui:param name="inventory" value="#{inventoryHome.instance}"/>
+            </ui:include>
 
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="storeRes" value="#{_item.storeRes}"/>
-                </ui:include>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.stock.displayMasterCount}" rendered="#{not empty _item.stock}"/>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.stock.displayAuxCount}" rendered="#{not empty _item.stock}"/>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.addCount.displayMasterCount}"
-                              rendered="#{not empty _item.addCount}"/>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.addCount.displayAuxCount}"
-                              rendered="#{not empty _item.addCount}"/>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.loseCount.displayMasterCount}"
-                              rendered="#{not empty _item.loseCount}"/>
-            </rich:column>
-            <rich:column>
-                <h:outputText value="#{_item.loseCount.displayAuxCount}"
-                              rendered="#{not empty _item.loseCount}"/>
-            </rich:column>
-        </rich:dataTable>
+            <div style="clear: both"/>
+        </rich:panel>
     </ui:define>
 
 </ui:composition>

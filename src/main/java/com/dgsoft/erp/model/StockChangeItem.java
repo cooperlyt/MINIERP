@@ -93,7 +93,7 @@ public class StockChangeItem extends StoreResCountEntity implements java.io.Seri
         this.stock = stock;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "STORE_CHANGE", nullable = false)
     @NotNull
     public StockChange getStockChange() {

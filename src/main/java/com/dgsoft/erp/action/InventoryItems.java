@@ -175,6 +175,7 @@ public class InventoryItems {
             inventoryHome.getInstance().getInventoryItems().add(editingItem.getInventoryItem());
             items.add(editingItem.getInventoryItem());
             seasonStockChangeDatas.put(editingItem.getStoreRes(), editingItem);
+            refresh();
         }
         inventoryHome.update();
 
@@ -283,37 +284,53 @@ public class InventoryItems {
         return seasonStockChangeDatas;
     }
 
+    private  List<TotalDataGroup<Res, SeasonStockChangeData, SeasonStockChangeTotalData>> resultGroup;
+
+    public void refresh(){
+        resultGroup = null;
+    }
+
+    public void reset(){
+        storeResCondition.reset();
+        refresh();
+    }
+
 
     public List<TotalDataGroup<Res, SeasonStockChangeData, SeasonStockChangeTotalData>> getResultGroup() {
 
-        List<SeasonStockChangeData> values = new ArrayList<SeasonStockChangeData>();
-        for (SeasonStockChangeData value : getSeasonStockChangeDatas().values()) {
-            if (storeResCondition.isMatchStoreRes(value.getStoreRes())) {
-                values.add(value);
+        if (resultGroup == null) {
+
+            List<SeasonStockChangeData> values = new ArrayList<SeasonStockChangeData>();
+            for (SeasonStockChangeData value : getSeasonStockChangeDatas().values()) {
+                if (storeResCondition.isMatchStoreRes(value.getStoreRes())) {
+                    values.add(value);
+                }
             }
+
+            resultGroup = TotalDataGroup.groupBy(values, new TotalGroupStrategy<Res, SeasonStockChangeData, SeasonStockChangeTotalData>() {
+                @Override
+                public Res getKey(SeasonStockChangeData seasonStockChangeData) {
+                    return seasonStockChangeData.getStoreRes().getRes();
+                }
+
+                @Override
+                public SeasonStockChangeTotalData totalGroupData(Collection<SeasonStockChangeData> datas) {
+                    return totalData(datas);
+                }
+            }, new TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, SeasonStockChangeData, SeasonStockChangeTotalData>() {
+                @Override
+                public ResFormatGroupStrategy.StoreResFormatKey getKey(SeasonStockChangeData seasonStockChangeData) {
+                    return new ResFormatGroupStrategy.StoreResFormatKey(seasonStockChangeData.getStoreRes());
+                }
+
+                @Override
+                public SeasonStockChangeTotalData totalGroupData(Collection<SeasonStockChangeData> datas) {
+                    return totalData(datas);
+                }
+            });
         }
 
-        return TotalDataGroup.groupBy(values, new TotalGroupStrategy<Res, SeasonStockChangeData, SeasonStockChangeTotalData>() {
-            @Override
-            public Res getKey(SeasonStockChangeData seasonStockChangeData) {
-                return seasonStockChangeData.getStoreRes().getRes();
-            }
-
-            @Override
-            public SeasonStockChangeTotalData totalGroupData(Collection<SeasonStockChangeData> datas) {
-                return totalData(datas);
-            }
-        }, new TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, SeasonStockChangeData, SeasonStockChangeTotalData>() {
-            @Override
-            public ResFormatGroupStrategy.StoreResFormatKey getKey(SeasonStockChangeData seasonStockChangeData) {
-                return new ResFormatGroupStrategy.StoreResFormatKey(seasonStockChangeData.getStoreRes());
-            }
-
-            @Override
-            public SeasonStockChangeTotalData totalGroupData(Collection<SeasonStockChangeData> datas) {
-                return totalData(datas);
-            }
-        });
+        return resultGroup;
     }
 
 

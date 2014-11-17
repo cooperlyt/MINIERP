@@ -36,7 +36,7 @@ public class Inventory implements java.io.Serializable {
     private String checkEmp;
     private InvertoryStatus status;
     private Set<InventoryItem> inventoryItems = new HashSet<InventoryItem>(0);
-    private Set<StockChange> stockChanges;
+    private Set<StockChange> stockChanges = new HashSet<StockChange>(0);
 
 	public Inventory() {
 	}
@@ -77,7 +77,7 @@ public class Inventory implements java.io.Serializable {
 		this.store = store;
 	}
 
-    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL,mappedBy = "inventory")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "inventory")
     public Set<StockChange> getStockChanges() {
         return stockChanges;
     }

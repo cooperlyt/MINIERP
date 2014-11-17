@@ -1,0 +1,234 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+<table class="detailsTable">
+<tr>
+    <th colspan="2"></th>
+    <th style="min-width: 80px">#{messages.MasterUnitCount}</th>
+    <th style="min-width: 80px">#{messages.AuxUnitCount}</th>
+</tr>
+<tr>
+    <th colspan="2">#{messages.SeasonBiginCount}</th>
+    <td><h:outputText value="#{inventoryItems.editingItem.beginCount.masterCount}">
+        <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+    </h:outputText>
+        <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+
+
+    </td>
+    <td>
+        <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+            <h:outputText value="#{inventoryItems.editingItem.beginCount.auxCount}">
+                <f:convertNumber
+                        pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                          style="float: right"/>
+        </a:outputPanel>
+    </td>
+
+</tr>
+<c:forEach items="#{inventoryItems.editingItem.storeInTypeCounts}" var="_countEntry">
+
+    <tr>
+        <c:if test="#{_countEntry.key eq inventoryItems.editingItem.firstInType}">
+            <th style="width: 1px;"
+                rowspan="#{inventoryItems.editingItem.storeInTypeCounts.size + 1}">#{messages.storeIn}</th>
+        </c:if>
+        <th>
+            #{messages[_countEntry.key.name()]}
+        </th>
+        <td>
+
+            <h:outputText value="#{_countEntry.value.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{_countEntry.value.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+
+    </tr>
+
+</c:forEach>
+
+<c:if test="#{not empty inventoryItems.editingItem.firstInType}">
+    <tr>
+        <th>
+            #{messages.GroupTotal}
+        </th>
+        <td>
+
+            <h:outputText value="#{inventoryItems.editingItem.inCount.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{inventoryItems.editingItem.inCount.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:if>
+
+
+<c:forEach items="#{inventoryItems.editingItem.storeOutTypeCounts}" var="_outEntry">
+    <tr>
+        <c:if test="#{inventoryItems.editingItem.firstOutType eq _outEntry.key}">
+            <th style="width: 1px;"
+                rowspan="#{inventoryItems.editingItem.storeOutTypeCounts.size + inventoryItems.editingItem.allocationOutCounts.size + 1}">
+                #{messages.StoreOut}
+            </th>
+        </c:if>
+
+        <th>#{messages[_outEntry.key.name()]}</th>
+        <td>
+
+            <h:outputText value="#{_outEntry.value.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{_outEntry.value.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:forEach>
+
+<c:forEach items="#{inventoryItems.editingItem.allocationOutCounts}" var="_allocation">
+    <tr>
+        <c:if test="#{(empty inventoryItems.editingItem.firstOutType) and inventoryItems.editingItem.isFirstStore(_allocation.key.id)}">
+            <th style="width: 1px;" rowspan="#{inventoryItems.editingItem.allocationOutCounts.size + 1}">
+                #{messages.StoreOut}
+            </th>
+        </c:if>
+
+        <th>
+            #{messages.AllocationTo} #{_allocation.key.name}
+        </th>
+
+        <td>
+
+            <h:outputText value="#{_allocation.value.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{_allocation.value.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:forEach>
+
+<c:if test="#{(not empty inventoryItems.editingItem.firstOutType) or (not empty inventoryItems.editingItem.firstInType)}">
+    <tr>
+        <th>#{messages.GroupTotal}</th>
+        <td>
+
+            <h:outputText value="#{inventoryItems.editingItem.outCount.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{inventoryItems.editingItem.outCount.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:if>
+
+<tr>
+    <th colspan="2">#{messages.InventoryLastCount}</th>
+    <td>
+
+        <h:outputText value="#{inventoryItems.editingItem.lastCount.masterCount}">
+            <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+        <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+    </td>
+    <td>
+        <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+            <h:outputText value="#{inventoryItems.editingItem.lastCount.auxCount}">
+                <f:convertNumber
+                        pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                          style="float: right"/>
+        </a:outputPanel>
+    </td>
+</tr>
+<c:if test="#{not (inventoryItems.editingItem.inventoryItem.changeType eq 'NO_CHANGE')}">
+    <tr>
+        <th colspan="2">#{messages[inventoryItems.editingItem.inventoryItem.changeType.name()]}</th>
+        <td>
+
+            <h:outputText value="#{inventoryItems.editingItem.diffCount.masterCount}">
+                <f:convertNumber pattern="#{inventoryItems.editingItem.res.unitGroup.masterUnit.countFormate}"/>
+            </h:outputText>
+            <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.masterUnit.name}" style="float: right"/>
+        </td>
+        <td>
+            <a:outputPanel rendered="#{(inventoryItems.editingItem.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <h:outputText value="#{inventoryItems.editingItem.diffCount.auxCount}">
+                    <f:convertNumber
+                            pattern="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </h:outputText>
+
+                <h:outputText value="#{inventoryItems.editingItem.res.unitGroup.floatAuxiliaryUnit.name}"
+                              style="float: right"/>
+            </a:outputPanel>
+        </td>
+    </tr>
+</c:if>
+         <ui:insert/>
+</table>
+
+    </ui:composition>
