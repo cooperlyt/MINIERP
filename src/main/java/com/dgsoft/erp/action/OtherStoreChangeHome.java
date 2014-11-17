@@ -38,6 +38,11 @@ public class OtherStoreChangeHome extends ErpEntityHome<StoreChange>{
     }
 
     public String begin() {
+
+        if (!stockChangeHome.validDate()){
+            return null;
+        }
+
         getInstance().setReason(storeChangeReason);
         stockChangeHome.getInstance().setOperType(storeChangeReason.getStoreChangeType());
         if (!storeChangeReason.getStoreChangeType().isOut()){

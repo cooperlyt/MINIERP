@@ -16,6 +16,7 @@ import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +34,17 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
 
     @In
     private FacesMessages facesMessages;
+
+
+    public boolean validDate(){
+        Date checkDate = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId",Date.class).
+                setParameter("storeId",getInstance().getStore().getId()).getSingleResult();
+        if ((checkDate != null) && (checkDate.compareTo(getInstance().getOperDate()) > 0)){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsInventorError");
+            return false;
+        }
+        return true;
+    }
 
     @Override
     protected StockChange createInstance(){

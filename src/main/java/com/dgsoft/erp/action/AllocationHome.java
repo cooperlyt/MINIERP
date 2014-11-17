@@ -106,6 +106,11 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
         getInstance().setId("D" + numberBuilder.getSampleNumber("Allocation"));
 
         if (getInstance().getType().equals(Allocation.AllocationType.ALLOCATION)) {
+
+            if (!stockChangeHome.validDate()){
+                return null;
+            }
+
             getInstance().setState(Allocation.AllocationState.WAITING_IN);
             stockChangeHome.getInstance().setStore(getInstance().getOutStore());
             if (runParam.getBooleanParamValue("erp.autoGenerateStoreOutCode")) {

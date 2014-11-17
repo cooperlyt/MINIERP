@@ -89,8 +89,7 @@ public class AllocationStoreOutTask extends AllocationTaskHandle {
     @In
     protected RunParam runParam;
 
-    @In(create = true)
-    private StockChangeHome stockChangeHome;
+
 
     @DataModel("allocationStoreOutItems")
     private List<AllocationStockOutItem> outItems;

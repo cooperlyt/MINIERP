@@ -27,9 +27,6 @@ public class AllocationStoreInTask extends AllocationTaskHandle {
     @In
     protected RunParam runParam;
 
-    @In(create = true)
-    private StockChangeHome stockChangeHome;
-
     private StoreResCountGroup<StockChangeItem> inItemGroup;
 
     public StoreResCountGroup<StockChangeItem> getInItemGroup() {

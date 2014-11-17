@@ -130,8 +130,24 @@ public class OrderStoreOut extends OrderTaskHandle {
     }
 
 
+
+    public boolean validDate(){
+        Date checkDate = dispatchHome.getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId",Date.class).
+                setParameter("storeId",dispatchHome.getInstance().getStore().getId()).getSingleResult();
+        if ((checkDate != null) && (checkDate.compareTo(storeOutDate) > 0)){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsInventorError");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected String completeOrderTask() {
+
+        if(!validDate()){
+            return null;
+        }
+
 
         dispatchHome.getInstance().setStockChange(
                 new StockChange(orderHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"), dispatchHome.getInstance().getStore(), storeOutDate,

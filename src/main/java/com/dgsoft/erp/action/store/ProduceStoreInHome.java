@@ -14,6 +14,7 @@ import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,6 +48,10 @@ public class ProduceStoreInHome extends ErpEntityHome<ProductStoreIn> {
 
     public String begin() {
 
+        if (!stockChangeHome.validDate()){
+           return null;
+        }
+
         getInstance().setProductGroup(productGroupSelect.getProductGroup());
         stockChangeHome.getInstance().setOperType(StockChange.StoreChangeType.PRODUCE_IN);
         if (runParam.getBooleanParamValue("erp.autoGenerateStoreInCode")) {
@@ -78,5 +83,7 @@ public class ProduceStoreInHome extends ErpEntityHome<ProductStoreIn> {
         clearInstance();
         return "ProcduceStoreInCancel";
     }
+
+
 
 }
