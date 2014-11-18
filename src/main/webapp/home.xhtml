@@ -19,15 +19,22 @@
             <s:div styleClass="info">
 
                 <p>
-                    <strong>MINIERP 2.2.21 Bate 已发布</strong> #{' '} 更新内容如下:
+                    <strong>MINIERP 2.2.22 Bate 已发布</strong> #{' '} 更新内容如下:
                 </p>
                 <ul class="bullets">
 
-                    <li>[销售] 建立订单可直接建立新规格货品</li>
-                    <li>[仓库] 盘点功能暂时关闭，下一版本开放</li>
+                    <li>[仓库] 盘点功能开放</li>
                 </ul>
 
                 <strong>历史更新</strong>
+                <div style="clear: both;"/>
+                <s:decorate template="/layout/view-details.xhtml">
+                    <ui:param value="2.2.21" name="openLabel"/>
+                    <ul class="bullets">
+                        <li>[销售] 建立订单可直接建立新规格货品</li>
+                        <li>[仓库] 盘点功能暂时关闭，下一版本开放</li>
+                    </ul>
+                </s:decorate>
                 <div style="clear: both;"/>
                 <s:decorate template="/layout/view-details.xhtml">
                     <ui:param value="2.2.20" name="openLabel"/>
