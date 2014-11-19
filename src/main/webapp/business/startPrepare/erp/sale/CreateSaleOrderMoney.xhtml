@@ -91,6 +91,7 @@
                     #{messages.order_field_earnest}%
                     <h:inputText id="orderEarnestScaleField" value="#{orderCreate.earnestScale}" rendered="true"
                                  size="5" label="#{messages.earnestScale}">
+                        <f:validateDoubleRange minimum="0.0001"/>
                         <f:convertNumber pattern="#0.##" groupingUsed="false"/>
                         <a:ajax event="blur" execute="@this"
                                 render="orderTotalPrice">

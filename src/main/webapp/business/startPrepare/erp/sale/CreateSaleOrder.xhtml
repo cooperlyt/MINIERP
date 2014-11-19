@@ -80,9 +80,7 @@
             <rich:message for="orderSendLimitDateField" styleClass="message-icon"
                           showDetail="true" showSummary="true" tooltip="true"/>
 
-            <h:selectBooleanCheckbox value="#{needResHome.instance.fareByCustomer}">
-                #{messages.order_fare_by_customer}
-            </h:selectBooleanCheckbox>
+
 
             <a:outputPanel id="earnestFirstField">
                 <h:selectBooleanCheckbox value="#{orderCreate.instance.earnestFirst}"
@@ -90,7 +88,15 @@
                     #{messages.order_field_earnestFirst}
                 </h:selectBooleanCheckbox>
 
+                <rich:select value="#{orderCreate.instance.proxyReceiveType}" rendered="#{(not empty orderCreate.instance.payType) and (orderCreate.instance.payType eq 'EXPRESS_PROXY')}" >
+                    <s:selectItems value="#{proxyPayTypes}" var="_type" itemValue="#{_type}" label="#{messages[_type.name()]}" />
+                    <s:convertEnum/>
+                </rich:select>
             </a:outputPanel>
+
+            <h:selectBooleanCheckbox value="#{needResHome.instance.fareByCustomer}">
+                #{messages.order_fare_by_customer}
+            </h:selectBooleanCheckbox>
 
         </h:panelGrid>
     </rich:toolbarGroup>

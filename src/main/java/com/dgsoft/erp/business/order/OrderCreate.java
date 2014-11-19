@@ -4,6 +4,7 @@ import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.exception.ProcessCreatePrepareException;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.system.NumberBuilder;
+import com.dgsoft.common.system.RunParam;
 import com.dgsoft.common.system.model.BusinessDefine;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
@@ -283,7 +284,6 @@ public class OrderCreate extends OrderHome {
             needResHome.getInstance().setReceiveTel(orderHome.getMasterNeedRes().getReceiveTel());
             needResHome.getInstance().setLimitTime(orderHome.getMasterNeedRes().getLimitTime());
 
-            getInstance().setIncludeMiddleMan(orderHome.getInstance().isIncludeMiddleMan());
 
 
             getInstance().setTotalRebateMoney(orderHome.getInstance().getTotalRebateMoney());
@@ -307,6 +307,11 @@ public class OrderCreate extends OrderHome {
         return CustomerOrder.OrderPayType.values();
     }
 
+    @Factory("proxyPayTypes")
+    public CustomerOrder.ProxyReceiveType[] getProxyPayTypes(){
+        return CustomerOrder.ProxyReceiveType.values();
+    }
+
 
     //private boolean orderWired = false;
 
@@ -323,13 +328,6 @@ public class OrderCreate extends OrderHome {
             getInstance().setEarnestFirst(false);
         }
 
-
-        if (getInstance().isIncludeMiddleMan()) {
-            if (getInstance().getCustomer().getMiddleMan() == null) {
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderIncludeMiddleManError");
-                return false;
-            }
-        }
 
 
 
@@ -363,6 +361,34 @@ public class OrderCreate extends OrderHome {
         return true;
     }
 
+
+    public boolean isCustomerMoneyFill(){
+        return getInstance().getCustomer().getAccountBalance().multiply(new BigDecimal("-1")).compareTo(getInstance().getMoney()) >= 0;
+    }
+
+    private void subCustomerMoney(){
+
+
+        if (orderHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) != 0) {
+            AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, orderHome.getInstance().getOrderEmp());
+            accountOper.setCustomerOrder(getInstance());
+            accountOper.setOperDate(getInstance().getCreateDate());
+            accountOper.setCustomer(getInstance().getCustomer());
+
+
+            if (!getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST) && !getInstance().isEarnestFirst()){
+                if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                    accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
+                } else {
+                    accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
+                }
+            }
+
+
+            accountOper.calcCustomerMoney();
+            getInstance().getAccountOpers().add(accountOper);
+        }
+    }
 
     @End
     @CreateProcess(definition = "order", processKey = "#{orderCreate.instance.id}")
@@ -405,6 +431,8 @@ public class OrderCreate extends OrderHome {
                 orderItem.setStatus(OrderItem.OrderItemStatus.DISPATCHED);
             }
         }
+
+        subCustomerMoney();
 
         if (!"persisted".equals(persist())) {
             return null;

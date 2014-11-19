@@ -3044,7 +3044,6 @@
       <column name="TOTAL_COST" sqlType="DECIMAL" precision="19" scale="3" nullable="false" jdbcType="3" remarks="5Lqn5ZOB5oiQ5pys"/>
       <column name="MEMO" sqlType="VARCHAR" precision="200" scale="0" nullable="true" jdbcType="12" remarks="5aSH5rOo"/>
       <column name="VERSION" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4" remarks="VkVSU0lPTg=="/>
-      <column name="INCLUDE_MIDDLE_MAN" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7" remarks="5bim5YWl5Lit6Ze05Lq6"/>
       <column name="MIDDLE_CALC_TYPE" sqlType="VARCHAR" precision="32" scale="0" nullable="true" jdbcType="12" remarks="5L2j6YeR6K6h566X5pa55byPIDogQSAg5oC76YeR6aKdICog5o+Q54K5CkIgIOWbuuWumumHkeminQ=="/>
       <column name="MIDDLE_RATE" sqlType="DECIMAL" precision="17" scale="6" nullable="true" jdbcType="3" remarks="5oC75o+Q54K5"/>
       <column name="MIDDLE_TOTAL" sqlType="DECIMAL" precision="19" scale="3" nullable="true" jdbcType="3" remarks="5Lit6Ze05Lq65L2j6YeR"/>
@@ -3062,6 +3061,7 @@
       <column name="ALL_SHIP_DATE" sqlType="TIMESTAMP" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="ADVANCE_MONEY" sqlType="DECIMAL" precision="19" scale="3" nullable="false" jdbcType="3"/>
       <column name="PAY_TAG" sqlType="BIT" precision="1" scale="0" nullable="false" jdbcType="-7"/>
+      <column name="RECEIVE_TYPE" sqlType="VARCHAR" precision="20" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="ID"/>
       <foreign-key name="CUSTOMER_ORDER_ibfk_1" columns="CUSTOMER_ID" ref-table="CUSTOMER" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="ACCOUNT_OPER_ibfk_6" table="ACCOUNT_OPER" schema="" catalog="MINI_ERP" columns="CUSTOMER_ORDER"/>
@@ -3158,9 +3158,9 @@
       <column name="MEMO" sqlType="VARCHAR" precision="200" scale="0" nullable="true" jdbcType="12" remarks="5aSH5rOo"/>
       <column name="ID" sqlType="VARCHAR" precision="32" scale="0" nullable="false" jdbcType="12" remarks="SUQ="/>
       <primary-key name="PRIMARY" columns="ID"/>
-      <foreign-key name="INVENTORY_ITEM_ibfk_3" columns="CHANGE_ITEM" ref-table="STOCK_CHANGE_ITEM" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="INVENTORY_ITEM_ibfk_1" columns="INVENTORY" ref-table="INVENTORY" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="INVENTORY_ITEM_ibfk_2" columns="STOCK" ref-table="STOCK" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="INVENTORY_ITEM_ibfk_3" columns="CHANGE_ITEM" ref-table="STOCK_CHANGE_ITEM" ref-schema="" ref-catalog="MINI_ERP" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
       <index name="INVENTORY_STOCK_UNIQUE" unique="true" columns="INVENTORY,STOCK"/>
     </table>
     <table name="MATERIAL_BACK_STORE_IN" schema="" catalog="MINI_ERP" type="TABLE">

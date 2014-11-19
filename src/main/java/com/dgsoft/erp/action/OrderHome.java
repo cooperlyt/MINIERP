@@ -262,6 +262,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
             result.append(DecimalFormat.getCurrencyInstance(Locale.CHINA).
                     format(getInstance().getMoney()) + "   ");
+            result.append("(");
+            result.append(messages.get(getInstance().getProxyReceiveType().name()));
+            result.append(")");
         }
 
         if (getLastNeedRes().isFareByCustomer()) {

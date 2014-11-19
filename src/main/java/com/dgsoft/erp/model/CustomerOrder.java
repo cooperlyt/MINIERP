@@ -22,6 +22,10 @@ public class CustomerOrder implements java.io.Serializable {
 
     }
 
+    public enum ProxyReceiveType{
+        ANY_PROXY_RECEIVE,PROXY_MONEY,PROXY_CHECK;
+    }
+
     private String id;
     private Integer version;
     private Customer customer;
@@ -54,9 +58,9 @@ public class CustomerOrder implements java.io.Serializable {
 
 
     private boolean middlePayed;
-    private boolean includeMiddleMan;
     //private boolean moneyComplete;
     private boolean earnestFirst;
+    private ProxyReceiveType proxyReceiveType;
 
     private RebateProgram.OrderRebateMode middleMoneyCalcType;
     private Set<MiddleMoneyPay> middleMoneyPay = new HashSet<MiddleMoneyPay>();
@@ -79,7 +83,6 @@ public class CustomerOrder implements java.io.Serializable {
         earnest = BigDecimal.ZERO;
         totalRebateMoney = BigDecimal.ZERO;
         middlePayed = false;
-        includeMiddleMan = false;
         earnestFirst = false;
         advanceMoney = BigDecimal.ZERO;
         payTag = false;
@@ -320,13 +323,14 @@ public class CustomerOrder implements java.io.Serializable {
         return null;
     }
 
-    @Column(name = "INCLUDE_MIDDLE_MAN", nullable = false)
-    public boolean isIncludeMiddleMan() {
-        return this.includeMiddleMan;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "RECEIVE_TYPE",nullable = true, length = 20)
+    public ProxyReceiveType getProxyReceiveType() {
+        return proxyReceiveType;
     }
 
-    public void setIncludeMiddleMan(boolean middleManPay) {
-        this.includeMiddleMan = middleManPay;
+    public void setProxyReceiveType(ProxyReceiveType proxyReceiveType) {
+        this.proxyReceiveType = proxyReceiveType;
     }
 
     @OneToMany(fetch = FetchType.LAZY,
