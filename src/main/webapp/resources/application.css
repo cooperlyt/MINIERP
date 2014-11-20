@@ -1,11 +1,5 @@
 
 
-body {
-    font-family: "Arial","Helvetica",sans-serif;
-
-}
-
-
 
 .full-width { width:100%; }
 .text-center { text-align:center; }
@@ -15,22 +9,31 @@ body {
     margin: 0 auto;
 }
 
+.containerFull{
+    width: 100%;
+    min-width: 1020px;
+    margin: 0 auto;
+}
+
 .mid, .footer { text-align: left; }
 .mid ul { list-style: none outside none; }
 
 .mid  { padding-top: 18px; overflow:hidden; }
 
+
 .primary {
+    width: 100%;
     display: inline-block;
-    width: 775px;
+    min-width: 765;
 }
 
 .menu {
     vertical-align: top;
     display: inline-block;
     margin-right: 10px;
+    margin-left: 10px;
     width: 230px;
-    font-size: 10pt;
+    font-size: 12px;
 }
 
 .menuContainer {
@@ -66,7 +69,7 @@ body {
 
 .breadCrumbs, .themeSelect{
     color: #ccc;
-    font-size: 13px;
+    font-size: 12px;
 }
 .breadCrumbs{ float: left; }
 .themeSelect{ float: right; }
@@ -77,7 +80,7 @@ body {
     border-top: 1px solid #EAEAEA;
     margin: 40px 0 10px;
     padding: 8px 0 8px;
-    font-size: 11px;
+    font-size: 12px;
     color: #666666;
 }
 .footer p { float: left; }
@@ -92,6 +95,7 @@ body {
     background-color: transparent;
     background-position: top center;
     width: 100%;
+    min-width: 1020px;
     height: 123px;
 }
 
@@ -99,6 +103,15 @@ body {
 {
     background-color: transparent;
     width: 1020px;
+    height: 110px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.headerFull{
+    background-color: transparent;
+    width: 100%;
+    min-width: 1020px;
     height: 110px;
     margin: 0 auto;
     overflow: hidden;
@@ -144,20 +157,41 @@ body {
     border-style:  none;
 }
 
+.headerRight{
+    float: right;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.menuCol{
+    width: 250px;
+    vertical-align: top;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.layoutCol{
+    vertical-align: top;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
 
 .top_bar {
-
+    float: right;
     background-attachment: scroll;
     background-clip: border-box;
     background-color: transparent;
     background: url('#{facesContext.externalContext.requestContextPath}/img/loginbar.png') no-repeat;
     background-origin: padding-box;
     background-position: 0 0;
-    background-size: 595px 38px;
-    float: right;
+    background-size: 585px 38px;
     height: 38px;
     margin: 0 0 2px;
-    width: 610px;
+    width: 600px;
 }
 
 .top_bar .func ul {
@@ -174,7 +208,7 @@ body {
     height: 15px;
     line-height: 15px;
     border-right: 1px solid #a6a6a6;
-    font-size: 11px;
+    font-size: 12px;
     color: #d1d3d4;
     margin: 0;
 }
@@ -195,6 +229,10 @@ body {
     color: #27AAE1;
 }
 
+.top_bar a:visited{
+    color: #D1D3D4;
+}
+
 .top_bar .task ul {
     float: right;
     margin: 0;
@@ -208,7 +246,7 @@ body {
     color: #89a0be;
     cursor: default;
     font-weight: bold;
-    margin: 38px 15px 0 0;
+    margin: 0px 15px 0 0;
     text-align: right;
 }
 
@@ -423,9 +461,6 @@ a.show, a.hide {
     font: normal 12px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
 }
 */
-textarea[disabled], input[type="text"][disabled], input[type="password"][disabled], select[disabled] {
-    -webkit-text-fill-color: #B6AD84;
-}
 
 .component_status {
     position: absolute;
@@ -461,10 +496,7 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
     visibility: hidden;
 }
 
-.tooltip {
-    background-color: #{ richSkin.generalBackgroundColor};
-    border-width:3px;
-}
+
 
 .panel_documents {
     background-color: transparent;
@@ -476,7 +508,7 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
 .panel_documents div {
     background-color: transparent;
     font-family: verdana;
-    font-size: 11px;
+    font-size: 12px;
     border: 0;
     padding: 0;
 }
@@ -491,7 +523,6 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
     text-decoration: underline;
 }
 
-.toolbarbutton{
-    border-width: 1px;
-    background-color: #{ a4jSkin.generalBackgroundColor};
-}
+
+
+

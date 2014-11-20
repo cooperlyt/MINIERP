@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a="http://richfaces.org/a4j" xmlns:r="http://richfaces.org/rich"
+      xmlns:s="http://jboss.org/schema/seam/taglib">
+<f:view
+        contentType="text/html">
+
+
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=8"/>
+    <title>#{messages.mainTitle}</title>
+    <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
+    <h:outputStylesheet name="application.css"/>
+    <h:outputStylesheet name="theme.css"/>
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/birtReportControl.js"/>
+
+
+    <ui:insert name="head"/>
+</h:head>
+<h:body>
+<a:queue requestDelay="1000" ignoreDupResponses="true"/>
+<h:form>
+    <ui:insert name="taskChangePush">
+
+        <a:push id="pushTask" address="pushTaskChange">
+            <a:ajax event="dataavailable" render="taskOperLink,netOwnerTaskComeNotify,netPooledTaskComeNotify"/>
+        </a:push>
+
+    </ui:insert>
+
+    <ui:insert name="taskNotify">
+        <r:notifyStack id="pooledTaskStack" position="topRight" direction="vertical" method="first"/>
+        <r:notifyStack id="ownerTaskStack" position="bottomRight" direction="horizontal" method="last"/>
+
+
+        <a:outputPanel id="netOwnerTaskComeNotify">
+
+            <r:notify stack="ownerTaskStack" stayTime="1500" sticky="false" nonblocking="false"
+                      nonblockingOpacity="0.5" showShadow="true"
+                      rendered="#{identity.loggedIn and (ownerTaskInstanceCacheList.haveNotice)}"
+                      detail="#{ownerTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
+                <f:facet name="summary">
+                    #{messages.ownerTaskComeToast}
+                </f:facet>
+            </r:notify>
+        </a:outputPanel>
+
+        <a:outputPanel id="netPooledTaskComeNotify">
+
+            <r:notify stack="pooledTaskStack" stayTime="1500" sticky="false" nonblocking="false"
+                      nonblockingOpacity="0.5" showShadow="true"
+                      rendered="#{identity.loggedIn and (pooledTaskInstanceCacheList.haveNotice)}"
+                      detail="#{pooledTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
+                <f:facet name="summary">
+                    #{messages.pooledTaskComeToast}
+                </f:facet>
+            </r:notify>
+        </a:outputPanel>
+    </ui:insert>
+
+</h:form>
+
+
+<a:status id="processWaiting" name="processWaiting"
+          onstart="#{r:component('wait')}.show()"
+          onstop="#{r:component('wait')}.hide()"/>
+<r:popupPanel id="wait" modal="true" autosized="true"
+              moveable="false" resizeable="false">
+    <h:panelGrid columns="3">
+        <h:graphicImage value="/img/smalBlueWait.gif"/>
+        &#160;
+        <h:outputText value="#{messages.wait_please}..."/>
+    </h:panelGrid>
+</r:popupPanel>
+
+
+<h:panelGroup styleClass="header" layout="block">
+
+
+    <h:panelGroup layout="block" styleClass="headerFull">
+        <h:panelGroup layout="block" styleClass="headerLogo">
+            <h:graphicImage value="/img/logo.png" alt="#{messages.mainTitle}"/>
+        </h:panelGroup>
+            <ui:insert name="topBar">
+                <h:panelGroup layout="block" styleClass="top_bar">
+                    <div class="func">
+                        <ul>
+                            <li class="first">
+                                <s:link id="menuLoginId" view="/login.xhtml" value="#{messages.login}"
+                                        rendered="#{not identity.loggedIn}" propagation="none"/>
+                                <s:link id="accountLink" view="/#" rendered="#{identity.loggedIn}"
+                                        value="#{messages.Welcome}#{' '}#{authInfo.loginEmployee.personName}"/>
+
+                            </li>
+
+                            <li class="last">
+
+                                <s:link id="menuLogoutId"
+                                        view="/logout.xhtml"
+                                        value="#{messages.logout}"
+                                        rendered="#{identity.loggedIn}"
+                                        propagation="none"/>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <s:div rendered="#{identity.loggedIn}" styleClass="task">
+                        <ul>
+                            <li class="first">
+                                <s:link propagation="end" value="#{messages.createNewBusiness}"
+                                        view="/func/system/business/start.xhtml"
+                                        disabled="#{authInfo.loginEmployee.id eq 'root'}"/>
+                            </li>
+                            <li class="last"><s:link id="taskOperLink" propagation="end"
+                                                     view="/func/system/business/task.xhtml">#{messages.operateTask}:#{messages.todoTask}[<strong>#{pooledTaskInstanceCacheList.taskInstanceCreateList.size}</strong>]#{messages.ownerTask}[<strong>#{ownerTaskInstanceCacheList.taskInstanceCreateList.size}</strong>]</s:link>
+                            </li>
+
+                        </ul>
+                    </s:div>
+
+                </h:panelGroup>
+            </ui:insert>
+
+
+    </h:panelGroup>
+
+</h:panelGroup>
+
+
+<h:panelGroup styleClass="containerFull" layout="block">
+
+    <h:panelGroup layout="block" styleClass="mid full-width">
+        <ui:insert name="pageContent">
+            <h:panelGrid columns="2" columnClasses="menuCol,layoutCol" style="padding: 0;margin: 0;border: 0;width: 100%;">
+            <h:panelGroup styleClass="menu">
+                <h:panelGroup layout="block" styleClass="menuContainer">
+                    <ui:include src="/layout/navigation.xhtml"/>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <h:panelGroup styleClass="primary">
+
+                <ui:insert name="functionTitle">
+                    <h:panelGrid columns="2" width="100%" columnClasses=",column-right-align">
+                        <h1>#{currentFunction.name}</h1>
+
+                        <a:status>
+                            <f:facet name="start">
+                                <h:graphicImage value="/img/connect.gif"/>
+                            </f:facet>
+                            <f:facet name="stop">
+                                <h:graphicImage value="/img/connect_idle.gif"/>
+                            </f:facet>
+                        </a:status>
+
+                    </h:panelGrid>
+                </ui:insert>
+
+
+                <div class="func-body">
+                    <ui:insert name="func-body">
+                        <ui:insert name="toolbar"/>
+
+                        <r:messages ajaxRendered="true" globalOnly="true"/>
+                        <br/>
+                        <ui:insert name="body">
+                            Body content missed
+                        </ui:insert>
+                    </ui:insert>
+                </div>
+            </h:panelGroup>
+            </h:panelGrid>
+        </ui:insert>
+
+        <div class="clear"></div>
+    </h:panelGroup>
+
+
+    <h:panelGroup layout="block" styleClass="footer">
+        <!--
+        <ul class="footer-nav">
+                <li><a>about</a></li>
+                <li><a>contact</a></li>
+                <li><a>components....</a></li>
+        </ul>
+        -->
+        <p>&#xA9; 2013 Cooper's soft Studio.</p>
+        <s:fragment rendered="#{init.debug}">
+            <a:outputPanel ajaxRendered="true">
+                <a:log hotkey="D" mode="popup"/>
+
+                <p style="margin-top: -0.5em;">
+                    Conversation: id = #{conversation.id}, #{conversation.longRunning ? 'long running' : 'temporary'}#{conversation.nested ? ', nested, parent id = '.concat(conversation.parentId) : ''}
+                    #{' - '}
+                    Ajax4jsf Log (Ctrl+Shift+D)
+                    #{' - '}
+                    <s:link id="debugConsole" view="/debug.xhtml" value="Debug console"
+                            target="debugConsole"/>
+                    #{' - '}
+                    <s:link id="resetSession" view="/home.xhtml"
+                            action="#{org.jboss.seam.web.session.invalidate()}"
+                            propagation="none" value="Terminate session"/>
+                </p>
+            </a:outputPanel>
+        </s:fragment>
+    </h:panelGroup>
+
+
+</h:panelGroup>
+
+
+</h:body>
+
+</f:view>
+</html>
