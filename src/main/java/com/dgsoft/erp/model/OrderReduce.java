@@ -16,15 +16,21 @@ import java.math.BigDecimal;
 @Table(name = "ORDER_REDUCE", catalog = "MINI_ERP")
 public class OrderReduce implements Serializable {
 
+    public enum ReduceType{
+        SYSTEM_TRUNC,OTHER_REDUCE;
+    }
+
     private String id;
     private String description;
     private BigDecimal money;
     private CustomerOrder customerOrder;
+    private ReduceType type;
 
     public OrderReduce() {
     }
 
-    public OrderReduce(CustomerOrder customerOrder) {
+    public OrderReduce(CustomerOrder customerOrder,ReduceType type) {
+        this.type = type;
         this.customerOrder = customerOrder;
     }
 
@@ -60,6 +66,17 @@ public class OrderReduce implements Serializable {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="TYPE",nullable = false,length = 20)
+    @NotNull
+    public ReduceType getType() {
+        return type;
+    }
+
+    public void setType(ReduceType type) {
+        this.type = type;
     }
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)

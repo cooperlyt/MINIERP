@@ -36,7 +36,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         resSaleRebates.clear();
     }
 
-    public void reduceMoneyChangeListener(){
+    public void reduceMoneyChangeListener() {
         removeZerpReduce();
         calcMoneys();
     }
@@ -51,33 +51,34 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         this.editingReduce = editingReduce;
     }
 
-    public void addReduce(){
+    public void addReduce() {
         editingReduce.setCustomerOrder(getInstance());
+        editingReduce.setType(OrderReduce.ReduceType.OTHER_REDUCE);
         getOrderReduces().add(editingReduce);
         editingReduce = new OrderReduce();
         calcMoneys();
     }
 
-    public BigDecimal getReduceMoneyTotal(){
+    public BigDecimal getReduceMoneyTotal() {
         BigDecimal result = BigDecimal.ZERO;
-        for(OrderReduce reduce: getOrderReduces()){
+        for (OrderReduce reduce : getOrderReduces()) {
             result = result.add(reduce.getMoney());
         }
         return result;
     }
 
-    protected void initOrderReduces(){
-        if (orderReduces == null){
+    protected void initOrderReduces() {
+        if (orderReduces == null) {
             orderReduces = new SetLinkList<OrderReduce>(getInstance().getOrderReduces());
         }
     }
 
-    public List<OrderReduce> getOrderReduces(){
+    public List<OrderReduce> getOrderReduces() {
         initOrderReduces();
         return orderReduces;
     }
 
-    public void refreshSaleRebate(){
+    public void refreshSaleRebate() {
         resSaleRebates = null;
         getInstance().getResSaleRebates().clear();
         calcMoneys();
@@ -89,9 +90,8 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-
-    protected void initSaleRebates(){
-        if (resSaleRebates == null){
+    protected void initSaleRebates() {
+        if (resSaleRebates == null) {
             resSaleRebates = new SetLinkList<ResSaleRebate>(getInstance().getResSaleRebates());
             for (OrderItem item : getAllOrderItem()) {
                 boolean find = false;
@@ -109,10 +109,10 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-    protected void removeZerpReduce(){
+    protected void removeZerpReduce() {
         List<OrderReduce> removeReduce = new ArrayList<OrderReduce>();
-        for(OrderReduce orderReduce: getOrderReduces()){
-            if (orderReduce.getMoney().compareTo(BigDecimal.ZERO) == 0){
+        for (OrderReduce orderReduce : getOrderReduces()) {
+            if (orderReduce.getMoney().compareTo(BigDecimal.ZERO) == 0) {
                 removeReduce.add(orderReduce);
             }
         }
@@ -121,11 +121,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     @Override
-    protected boolean wire(){
+    protected boolean wire() {
 
         List<ResSaleRebate> removeRebates = new ArrayList<ResSaleRebate>();
-        for (ResSaleRebate resSaleRebate: getResSaleRebates()){
-            if ((resSaleRebate.getRebateMoney() == null) || (resSaleRebate.getRebateMoney().compareTo(BigDecimal.ZERO) == 0)){
+        for (ResSaleRebate resSaleRebate : getResSaleRebates()) {
+            if ((resSaleRebate.getRebateMoney() == null) || (resSaleRebate.getRebateMoney().compareTo(BigDecimal.ZERO) == 0)) {
                 removeRebates.add(resSaleRebate);
             }
         }
@@ -274,7 +274,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
 
 
-        for (TotalDataGroup<Store, OrderItem,OrderItemTotal> group : getDispatchItemGroups()) {
+        for (TotalDataGroup<Store, OrderItem, OrderItemTotal> group : getDispatchItemGroups()) {
 
             TotalDataGroup.sort(group, new Comparator<OrderItem>() {
                 @Override
@@ -289,7 +289,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             });
 
             result.append("\n" + group.getKey().getName());
-            for (TotalDataGroup<?, OrderItem,?> sg : group.getChildGroup()) {
+            for (TotalDataGroup<?, OrderItem, ?> sg : group.getChildGroup()) {
                 result.append("\n\t" + sg.getKey().toString());
                 for (OrderItem item : sg.getValues()) {
 
@@ -318,7 +318,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
 
 
-        for (TotalDataGroup<?, OrderItem,?> sg : createdItems) {
+        for (TotalDataGroup<?, OrderItem, ?> sg : createdItems) {
             TotalDataGroup.sort(sg, new Comparator<OrderItem>() {
                 @Override
                 public int compare(OrderItem o1, OrderItem o2) {
@@ -364,7 +364,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
         return TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.DISPATCHED)),
-                new TotalGroupStrategy<Store, OrderItem,OrderItemTotal>() {
+                new TotalGroupStrategy<Store, OrderItem, OrderItemTotal>() {
                     @Override
                     public Store getKey(OrderItem orderItem) {
                         return orderItem.getDispatch().getStore();
@@ -397,6 +397,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return getInstance().getEarnest().divide(getInstance().getMoney(), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100"));
     }
 
+
     public void calcMoneys() {
 
         setUseScaleRebate(false);
@@ -405,8 +406,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             item.calcMoney();
             result = result.add(item.getRebateMoney());
         }
-        for(OrderReduce orderReduce: getOrderReduces()){
-            result = result.add(orderReduce.getMoney());
+        for (OrderReduce orderReduce : getOrderReduces()) {
+            if (!OrderReduce.ReduceType.SYSTEM_TRUNC.equals(orderReduce.getType()))
+                result = result.add(orderReduce.getMoney());
         }
 
 
@@ -415,7 +417,29 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         calcTotalResMoney();
 
-        getInstance().setMoney(getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney()));
+        BigDecimal allMoney = getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney());
+        BigDecimal truncMoney = allMoney.setScale(0,BigDecimal.ROUND_DOWN);
+        BigDecimal truncReduce = allMoney.subtract(truncMoney);
+
+        BigDecimal nowReduce = BigDecimal.ZERO;
+        for (OrderReduce orderReduce : getOrderReduces()) {
+            if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(orderReduce.getType())){
+                nowReduce = nowReduce.add(orderReduce.getMoney());
+            }
+        }
+
+        if (nowReduce.compareTo(truncReduce) != 0){
+            Iterator<OrderReduce> it = getOrderReduces().iterator();
+            while(it.hasNext()){
+                if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(it.next().getType())){
+                    it.remove();
+                }
+            }
+        }
+
+        getOrderReduces().add(new OrderReduce(getInstance(),OrderReduce.ReduceType.SYSTEM_TRUNC));
+
+        getInstance().setMoney(truncMoney);
         //calcReceiveMoney();
     }
 
@@ -616,7 +640,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
 
-    public boolean isMoneyInAccount(){
+    public boolean isMoneyInAccount() {
         if (getInstance().isAllStoreOut()) {
             for (AccountOper ao : getInstance().getAccountOpers()) {
                 if (ao.getSaleCertificate() != null) {
@@ -627,11 +651,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         return false;
     }
 
-    public boolean isStoreInAccount(){
-        if (isAnyOneStoreOut()){
-            for(NeedRes n : getInstance().getNeedReses()){
-                for(Dispatch d: n.getDispatches()){
-                    if (d.isStoreOut() && (d.getStockChange().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0)){
+    public boolean isStoreInAccount() {
+        if (isAnyOneStoreOut()) {
+            for (NeedRes n : getInstance().getNeedReses()) {
+                for (Dispatch d : n.getDispatches()) {
+                    if (d.isStoreOut() && (d.getStockChange().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0)) {
                         return true;
                     }
                 }
@@ -641,11 +665,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     }
 
     public boolean isInAccount() {
-        if (isMoneyInAccount()){
+        if (isMoneyInAccount()) {
             return true;
         }
 
-        if (isStoreInAccount()){
+        if (isStoreInAccount()) {
             return true;
         }
 
