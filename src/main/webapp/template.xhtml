@@ -96,7 +96,7 @@
                                 <s:link id="menuLoginId" view="/login.xhtml" value="#{messages.login}"
                                         rendered="#{not identity.loggedIn}" propagation="none"/>
                                 <s:link id="accountLink" view="/#" rendered="#{identity.loggedIn}"
-                                        value="#{messages.Welcome}#{' '}#{authInfo.loginEmployee.personName}"/>
+                                        value="#{messages.Welcome}#{' '}#{authInfo.loginEmployee.person.name}"/>
 
                             </li>
 

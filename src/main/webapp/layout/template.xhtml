@@ -5,8 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:a="http://richfaces.org/a4j"
-      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a="http://richfaces.org/a4j" xmlns:r="http://richfaces.org/rich"
       xmlns:s="http://jboss.org/schema/seam/taglib">
 <f:view
         contentType="text/html">
@@ -26,7 +25,7 @@
     <ui:insert name="head"/>
 </h:head>
 <h:body>
-    <a:queue requestDelay="100" ignoreDupResponses="true"/>
+    <a:queue requestDelay="1000" ignoreDupResponses="true"/>
     <h:form>
         <ui:insert name="taskChangePush">
 
@@ -37,32 +36,32 @@
         </ui:insert>
 
         <ui:insert name="taskNotify">
-            <rich:notifyStack id="pooledTaskStack" position="topRight" direction="vertical" method="first"/>
-            <rich:notifyStack id="ownerTaskStack" position="bottomRight" direction="horizontal" method="last"/>
+            <r:notifyStack id="pooledTaskStack" position="topRight" direction="vertical" method="first"/>
+            <r:notifyStack id="ownerTaskStack" position="bottomRight" direction="horizontal" method="last"/>
 
 
             <a:outputPanel id="netOwnerTaskComeNotify">
 
-                <rich:notify stack="ownerTaskStack" stayTime="1500" sticky="false" nonblocking="false"
-                             nonblockingOpacity="0.5" showShadow="true"
-                             rendered="#{identity.loggedIn and (ownerTaskInstanceCacheList.haveNotice)}"
-                             detail="#{ownerTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
+                <r:notify stack="ownerTaskStack" stayTime="1500" sticky="false" nonblocking="false"
+                          nonblockingOpacity="0.5" showShadow="true"
+                          rendered="#{identity.loggedIn and (ownerTaskInstanceCacheList.haveNotice)}"
+                          detail="#{ownerTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
                     <f:facet name="summary">
                         #{messages.ownerTaskComeToast}
                     </f:facet>
-                </rich:notify>
+                </r:notify>
             </a:outputPanel>
 
             <a:outputPanel id="netPooledTaskComeNotify">
 
-                <rich:notify stack="pooledTaskStack" stayTime="1500" sticky="false" nonblocking="false"
-                             nonblockingOpacity="0.5" showShadow="true"
-                             rendered="#{identity.loggedIn and (pooledTaskInstanceCacheList.haveNotice)}"
-                             detail="#{pooledTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
+                <r:notify stack="pooledTaskStack" stayTime="1500" sticky="false" nonblocking="false"
+                          nonblockingOpacity="0.5" showShadow="true"
+                          rendered="#{identity.loggedIn and (pooledTaskInstanceCacheList.haveNotice)}"
+                          detail="#{pooledTaskInstanceCacheList.taskNoticeMsg}" showCloseButton="true" escape="false">
                     <f:facet name="summary">
                         #{messages.pooledTaskComeToast}
                     </f:facet>
-                </rich:notify>
+                </r:notify>
             </a:outputPanel>
         </ui:insert>
 
@@ -70,28 +69,25 @@
 
 
     <a:status id="processWaiting" name="processWaiting"
-              onstart="#{rich:component('wait')}.show()"
-              onstop="#{rich:component('wait')}.hide()"/>
-    <rich:popupPanel id="wait" modal="true" autosized="true"
-                     moveable="false" resizeable="false">
+              onstart="#{r:component('wait')}.show()"
+              onstop="#{r:component('wait')}.hide()"/>
+    <r:popupPanel id="wait" modal="true" autosized="true"
+                  moveable="false" resizeable="false">
         <h:panelGrid columns="3">
             <h:graphicImage value="/img/smalBlueWait.gif"/>
             &#160;
             <h:outputText value="#{messages.wait_please}..."/>
         </h:panelGrid>
-    </rich:popupPanel>
-
-
+    </r:popupPanel>
 
 
     <h:panelGroup styleClass="header" layout="block">
 
 
-        <h:panelGroup layout="block" styleClass="headerCenter">
+        <h:panelGroup layout="block" styleClass="headerFull">
             <h:panelGroup layout="block" styleClass="headerLogo">
                 <h:graphicImage value="/img/logo.png" alt="#{messages.mainTitle}"/>
             </h:panelGroup>
-
             <ui:insert name="topBar">
                 <h:panelGroup layout="block" styleClass="top_bar">
                     <div class="func">
@@ -106,13 +102,11 @@
 
                             <li class="last">
 
-                                <s:link
-                                        id="menuLogoutId"
+                                <s:link id="menuLogoutId"
                                         view="/logout.xhtml"
                                         value="#{messages.logout}"
                                         rendered="#{identity.loggedIn}"
-                                        propagation="none"
-                                        />
+                                        propagation="none"/>
                             </li>
 
                         </ul>
@@ -136,61 +130,55 @@
                 </h:panelGroup>
             </ui:insert>
 
-            <div id="header">
-                <ui:include src="/layout/skin-chooser.xhtml"/>
-            </div>
+
         </h:panelGroup>
 
     </h:panelGroup>
 
 
-    <h:panelGroup styleClass="container" layout="block">
+    <h:panelGroup styleClass="containerFull" layout="block">
 
         <h:panelGroup layout="block" styleClass="mid full-width">
             <ui:insert name="pageContent">
-                <h:panelGroup styleClass="menu">
-                    <h:panelGroup layout="block" styleClass="menuContainer">
-                        <ui:include src="/layout/navigation.xhtml"/>
+                <h:panelGrid columns="2" columnClasses="menuCol,layoutCol" style="padding: 0;margin: 0;border: 0;width: 100%;">
+                    <h:panelGroup styleClass="menu">
+                        <h:panelGroup layout="block" styleClass="menuContainer">
+                            <ui:include src="/layout/navigation.xhtml"/>
+                        </h:panelGroup>
                     </h:panelGroup>
-                </h:panelGroup>
 
-                <h:panelGroup styleClass="primary">
-                    <h:panelGroup layout="block" styleClass="breadCrumbs">
+                    <h:panelGroup styleClass="primary">
 
-                    </h:panelGroup>
-                    <!-- todo implement theme selection, going to be tricky... -->
-                    <h:panelGroup layout="block" styleClass="themeSelect">
+                        <ui:insert name="functionTitle">
+                            <h:panelGrid columns="2" width="100%" columnClasses=",column-right-align">
+                                <h1>#{currentFunction.name}</h1>
 
-                    </h:panelGroup>
-                    <ui:insert name="functionTitle">
-                        <h:panelGrid columns="2" width="100%" columnClasses=",column-right-align">
-                            <h1>#{currentFunction.name}</h1>
+                                <a:status>
+                                    <f:facet name="start">
+                                        <h:graphicImage value="/img/connect.gif"/>
+                                    </f:facet>
+                                    <f:facet name="stop">
+                                        <h:graphicImage value="/img/connect_idle.gif"/>
+                                    </f:facet>
+                                </a:status>
 
-                            <a:status>
-                                <f:facet name="start">
-                                    <h:graphicImage value="/img/connect.gif"/>
-                                </f:facet>
-                                <f:facet name="stop">
-                                    <h:graphicImage value="/img/connect_idle.gif"/>
-                                </f:facet>
-                            </a:status>
-
-                        </h:panelGrid>
-                    </ui:insert>
-
-
-                    <rich:panel styleClass="func-body">
-                        <ui:insert name="func-body">
-                            <ui:insert name="toolbar"/>
-
-                            <rich:messages ajaxRendered="true" globalOnly="true"/>
-                            <br/>
-                            <ui:insert name="body">
-                                Body content missed
-                            </ui:insert>
+                            </h:panelGrid>
                         </ui:insert>
-                    </rich:panel>
-                </h:panelGroup>
+
+
+                        <div class="func-body">
+                            <ui:insert name="func-body">
+                                <ui:insert name="toolbar"/>
+
+                                <r:messages ajaxRendered="true" globalOnly="true"/>
+                                <br/>
+                                <ui:insert name="body">
+                                    Body content missed
+                                </ui:insert>
+                            </ui:insert>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGrid>
             </ui:insert>
 
             <div class="clear"></div>

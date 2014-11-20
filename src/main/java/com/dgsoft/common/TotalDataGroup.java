@@ -1,5 +1,6 @@
 package com.dgsoft.common;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -210,7 +211,7 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
 
     }
 
-    public static class DateKey extends GroupKeyHelper<Date>{
+    public static class DateKey extends GroupKeyHelper<Date> implements Serializable{
 
         private Date date = new Date();
 

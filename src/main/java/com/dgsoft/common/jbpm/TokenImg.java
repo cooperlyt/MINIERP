@@ -1,7 +1,5 @@
 package com.dgsoft.common.jbpm;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -110,11 +108,12 @@ public abstract class TokenImg{
 
 
     protected byte[] bufferedImageToByteArray(BufferedImage img) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
-        encoder.encode(img);
-        os.flush();
-        return os.toByteArray();
+//        ByteArrayOutputStream os = new ByteArrayOutputStream();
+//        JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(os);
+//        encoder.encode(img);
+//        os.flush();
+//        return os.toByteArray();
+        return null;
     }
 
     // 图像参数
