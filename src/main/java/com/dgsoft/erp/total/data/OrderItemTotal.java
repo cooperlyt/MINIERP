@@ -17,7 +17,7 @@ import java.util.Collection;
 public class OrderItemTotal extends ResPriceTotal {
 
 
-    public static OrderItemTotal total(Collection<OrderItem> datas) {
+    public static OrderItemTotal totalOrderItems(Collection<OrderItem> datas) {
         OrderItemTotal result = null;
         for (OrderItem data : datas) {
             if (result == null) {

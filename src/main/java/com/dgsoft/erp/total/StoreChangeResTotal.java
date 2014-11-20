@@ -3,9 +3,6 @@ package com.dgsoft.erp.total;
 import com.dgsoft.common.SearchDateArea;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.StockChangeItem;
-import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 
 import java.util.*;
 
@@ -29,26 +26,27 @@ public class StoreChangeResTotal extends ErpEntityQuery<StockChangeItem> {
         return searchDateArea;
     }
 
-    public StoreResCountTotalGroup getTotalInResultList() {
-        return getTotalResCountGroup(false);
-    }
+//    public StoreResCountTotalGroup getTotalInResultList() {
+//        return getTotalResCountGroup(false);
+//    }
+//
+//    public StoreResCountTotalGroup getTotalOutResultList() {
+//        return getTotalResCountGroup(true);
+//    }
 
-    public StoreResCountTotalGroup getTotalOutResultList() {
-        return getTotalResCountGroup(true);
-    }
+//    public StoreResCountTotalGroup getTotalResCountGroup(){
+//        return new StoreResCountTotalGroup(getResultList());
+//    }
 
-    public StoreResCountTotalGroup getTotalResCountGroup(){
-        return new StoreResCountTotalGroup(getResultList());
-    }
 
-    private StoreResCountTotalGroup getTotalResCountGroup(boolean out){
-        StoreResCountTotalGroup result = new StoreResCountTotalGroup();
-        for (StockChangeItem item : getResultList()) {
-            if (item.isStoreOut() == out) {
-                result.put(item);
-            }
-        }
-        return result;
-    }
+//    private StoreResCountTotalGroup getTotalResCountGroup(boolean out){
+//        StoreResCountTotalGroup result = new StoreResCountTotalGroup();
+//        for (StockChangeItem item : getResultList()) {
+//            if (item.isStoreOut() == out) {
+//                result.put(item);
+//            }
+//        }
+//        return result;
+//    }
 
 }

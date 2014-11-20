@@ -6,7 +6,6 @@ import com.dgsoft.erp.action.TransCorpHome;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
-import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -17,7 +16,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 
-import javax.persistence.criteria.Order;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -31,6 +29,12 @@ import java.util.*;
 @Scope(ScopeType.CONVERSATION)
 public class OrderDispatch {
 
+    public class DispatchAdapter{
+
+        private Dispatch dispatch;
+
+
+    }
 
     @In
     private ActionExecuteState actionExecuteState;

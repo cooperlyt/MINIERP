@@ -1,7 +1,5 @@
 package com.dgsoft.erp.model.api;
 
-import com.dgsoft.erp.model.Stock;
-import com.dgsoft.erp.model.Store;
 import com.dgsoft.erp.model.StoreRes;
 
 import java.math.BigDecimal;
@@ -11,29 +9,29 @@ import java.math.BigDecimal;
  */
 public class StoreResStockCount extends StoreResCount{
 
-    private Store store;
+    private StockView stockView;
 
-    public StoreResStockCount(StoreRes storeRes, BigDecimal count, Store store) {
+    public StoreResStockCount(StoreRes storeRes, BigDecimal count, StockView stockView) {
         super(storeRes, count);
-        this.store = store;
+        this.stockView = stockView;
     }
 
     public boolean isEnough(){
-        if (getStock() == null){
+        if (getStockView() == null){
             return false;
         }
-        return getStock().getCount().compareTo(getCount()) >= 0;
+        return getStockView().getCanUseCount().compareTo(this) >= 0;
     }
 
-    public Stock getStock(){
-        return getStoreRes().getStock(store);
+    public StockView getStockView() {
+        return stockView;
     }
 
-    public StoreResCount getDisparity(){
-        if (getStock() == null){
-            return new StoreResCount(getStoreRes(),getCount());
+    public com.dgsoft.erp.total.data.ResCount getDisparity(){
+        if (getStockView() == null){
+            return new StoreResCount(getStoreRes(),getMasterCount());
         }
-        return new StoreResCount(getStoreRes(),getCount().subtract(getStock().getCount()));
+        return  this.subtract(stockView.getCanUseCount());
     }
 
 }

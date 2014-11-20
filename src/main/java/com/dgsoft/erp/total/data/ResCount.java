@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * Created by cooper on 11/13/14.
  */
-public interface ResCount extends TotalDataGroup.GroupTotalData{
+public interface ResCount extends TotalDataGroup.GroupTotalData, Comparable<ResCount>{
 
     public Res getRes();
 

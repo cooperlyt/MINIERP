@@ -142,6 +142,11 @@ public class ResTotalCount implements ResCount {
         return getAuxCount();
     }
 
+    @Override
+    public int compareTo(ResCount o) {
+        return getMasterCount().compareTo(o.getMasterCount());
+    }
+
 
     public static class FormatCountGroupStrategy<E extends StoreResCountEntity> extends ResFormatGroupStrategy<E, ResCount> {
         @Override

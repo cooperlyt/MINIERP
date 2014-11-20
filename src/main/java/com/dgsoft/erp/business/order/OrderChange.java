@@ -1,16 +1,9 @@
 package com.dgsoft.erp.business.order;
 
-import com.dgsoft.common.DataFormat;
-import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.action.NeedResHome;
-import com.dgsoft.erp.action.OrderHome;
 import com.dgsoft.erp.model.*;
-import com.dgsoft.erp.model.api.StoreResCount;
-import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
 

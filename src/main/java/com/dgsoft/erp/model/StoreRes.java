@@ -239,6 +239,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @Transient
+    @Deprecated
     public Stock getStock(Store store){
         for (Stock stock: getStocks()){
             if (stock.getStore().getId().equals(store.getId())){

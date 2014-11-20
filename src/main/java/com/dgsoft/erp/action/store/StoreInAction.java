@@ -1,25 +1,14 @@
 package com.dgsoft.erp.action.store;
 
 import com.dgsoft.common.DataFormat;
-import com.dgsoft.common.system.NumberBuilder;
-import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.action.*;
 import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResCountGroup;
-import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
-import org.tuckey.web.filters.urlrewrite.Run;
-
-import javax.persistence.EntityManager;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

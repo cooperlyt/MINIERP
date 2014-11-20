@@ -2,8 +2,6 @@ package com.dgsoft.erp.model;
 // Generated Oct 1, 2013 5:41:32 PM by Hibernate Tools 4.0.0
 
 import com.dgsoft.common.TotalDataGroup;
-import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
-import com.dgsoft.erp.total.ResFormatGroupStrategy;
 import com.dgsoft.erp.total.data.ResCount;
 import com.dgsoft.erp.total.data.ResTotalCount;
 
@@ -222,10 +220,10 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
                 new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
-    @Transient
-    public StoreResCountTotalGroup getChangeDetails() {
-        return new StoreResCountTotalGroup(getStockChangeItems());
-    }
+//    @Transient
+//    public StoreResCountTotalGroup getChangeDetails() {
+//        return new StoreResCountTotalGroup(getStockChangeItems());
+//    }
 
     @Transient
     public List<PrepareStockChange> getPrepareStockChangeList() {

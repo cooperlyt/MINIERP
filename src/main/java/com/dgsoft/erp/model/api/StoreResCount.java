@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 /**
  * Created by cooper on 2/27/14.
  */
-public class StoreResCount extends StoreResCountEntity implements com.dgsoft.erp.total.data.ResCount,Serializable{
+public class StoreResCount extends StoreResCountEntity implements com.dgsoft.erp.total.data.ResCount, Comparable<ResCount>,Serializable{
 
     private BigDecimal count;
 
@@ -62,5 +62,10 @@ public class StoreResCount extends StoreResCountEntity implements com.dgsoft.erp
     @Override
     public BigDecimal getCountByUnit(ResUnit resUnit) {
         return getCountByResUnit(resUnit);
+    }
+
+    @Override
+    public int compareTo(ResCount o) {
+        return getMasterCount().compareTo(o.getMasterCount());
     }
 }

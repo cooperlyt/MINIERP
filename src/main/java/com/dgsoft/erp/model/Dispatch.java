@@ -1,9 +1,6 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
-import com.dgsoft.common.TotalDataGroup;
-import com.dgsoft.erp.model.api.ResStockCountTotalGroup;
-import com.dgsoft.erp.model.api.StoreResCountTotalGroup;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -319,8 +316,14 @@ public class Dispatch implements java.io.Serializable {
     }
 
 
-    @Transient
-    public ResStockCountTotalGroup getTotalGroup() {
-        return new ResStockCountTotalGroup(getOrderItems(),getStore());
-    }
+
+//    public List<TotalDataGroup<Res,StoreResStockCount,ResCount>> getStockTotalGroup(){
+//        for (OrderItem item: )
+//        return TotalDataGroup.groupBy(getOrderItems(),new ResTotalCount.ResCountGroupStrategy<OrderItem>(),new ResTotalCount.FormatCountGroupStrategy<OrderItem>());
+//    }
+//
+//    @Transient
+//    public ResStockCountTotalGroup getTotalGroup() {
+//        return new ResStockCountTotalGroup(getOrderItems(),getStore());
+//    }
 }

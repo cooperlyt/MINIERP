@@ -13,6 +13,7 @@ import java.util.*;
 /**
  * Created by cooper on 3/3/14.
  */
+@Deprecated
 public class StoreResCountGroup<E extends StoreResCountEntity> extends HashMap<StoreRes, E> implements java.io.Serializable {
 
     public StoreResCountGroup(Collection<E> values) {

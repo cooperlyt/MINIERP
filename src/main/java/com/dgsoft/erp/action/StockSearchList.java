@@ -1,12 +1,17 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.erp.ErpEntityQuery;
+import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.Stock;
+import com.dgsoft.erp.model.Store;
+import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.api.StockView;
 import com.dgsoft.erp.model.api.StoreResCountGroup;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +42,6 @@ public class StockSearchList extends ErpEntityQuery<Stock>{
 
     private String storeId;
 
-
     public String getStoreId() {
         return storeId;
     }
@@ -65,5 +69,24 @@ public class StockSearchList extends ErpEntityQuery<Stock>{
         super.refresh();
         totalResult = null;
     }
+
+    private List<String> getStoreResIds(List<StoreRes> storeReses){
+        List<String> result = new ArrayList<String>(storeReses.size());
+        for (StoreRes storeRes: storeReses){
+            result.add(storeRes.getId());
+        }
+        return result;
+    }
+
+    public List<StockView> searchStockViews(Store store,List<StoreRes> storeReses){
+        return getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.store.id = :storeId and stock.storeRes.id in (:storeResIds)",StockView.class).
+                setParameter("storeId", storeId).setParameter("storeResIds",getStoreResIds(storeReses)).getResultList();
+    }
+
+    public List<StockView> searchStockViews(List<StoreRes> storeReses){
+        return getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.storeRes.id in (:storeResIds)",StockView.class).
+                setParameter("storeResIds",getStoreResIds(storeReses)).getResultList();
+    }
+
 
 }
