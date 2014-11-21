@@ -18,6 +18,29 @@
 
 <rich:toolbar>
     <rich:toolbarGroup>
+
+        <a:outputPanel ajaxRendered="true">
+            <a:outputPanel rendered="#{orderHome.moneyChanged}">
+        <rich:calendar id="orderCreateDateField"
+                       enableManualInput="true"
+                       inputSize="10"
+                       timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                       showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                       datePattern="#{messages.datetimepattern}"
+                       required="true"
+                       validator="operDateValidator"
+                       defaultTime="#{currentTime}"
+                       defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                       label="#{messages.order_field_createDate}"
+                       value="#{orderChange.moneyOperDate}">
+            <rich:validator event="change"/>
+            <rich:placeholder value="#{messages.order_field_createDate}"/>
+        </rich:calendar>
+        <rich:message for="orderCreateDateField" styleClass="message-icon"
+                      showDetail="true" showSummary="true" tooltip="true"/>
+            </a:outputPanel>
+        </a:outputPanel>
+
         <a:region rendered="#{not empty orderNeedItems}">
 
             <rich:select id="oweOutItemIsSendSelect" value="#{orderChange.reSend}" required="true"
@@ -27,6 +50,7 @@
                 <a:ajax event="selectitem" listener="#{orderChange.reSendChangeListener}" execute="@region"
                         render="subOverlyOrderItem,orderTotalPrice,newNeedResPanel,dispatchButton"/>
             </rich:select>
+
 
             <rich:message for="oweOutItemIsSendSelect" styleClass="message-icon"
                           showDetail="true" showSummary="true" tooltip="true"/>

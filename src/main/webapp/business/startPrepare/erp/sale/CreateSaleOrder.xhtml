@@ -41,6 +41,7 @@
                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                            datePattern="#{messages.datetimepattern}"
                            required="true"
+                           validator="operDateValidator"
                            defaultTime="#{currentTime}"
                            defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
                            label="#{messages.order_field_createDate}"

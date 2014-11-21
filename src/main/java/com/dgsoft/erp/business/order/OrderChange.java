@@ -29,6 +29,16 @@ public class OrderChange extends OrderShipTaskHandle {
     private NeedResHome needResHome;
 
 
+    private Date moneyOperDate;
+
+    public Date getMoneyOperDate() {
+        return moneyOperDate;
+    }
+
+    public void setMoneyOperDate(Date moneyOperDate) {
+        this.moneyOperDate = moneyOperDate;
+    }
+
 //    @In(create = true)
 //    private OrderReSenderCreate orderReSenderCreate;
 
@@ -182,6 +192,7 @@ public class OrderChange extends OrderShipTaskHandle {
 
         initReSend();
 
+        moneyOperDate = orderHome.getInstance().getCreateDate();
 
     }
 
@@ -279,7 +290,7 @@ public class OrderChange extends OrderShipTaskHandle {
             oweOut.setAdd(true);
         }
 
-        if ( orderHome.changeMoney() && "updated".equals(orderHome.update())) {
+        if ( orderHome.changeMoney(moneyOperDate) && "updated".equals(orderHome.update())) {
             return "taskComplete";
         } else {
             return null;

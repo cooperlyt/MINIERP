@@ -9,21 +9,36 @@
                 xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 
-<ui:define name="toolbar">
-    <rich:toolbar>
-
-        <rich:toolbarGroup location="right">
-            <s:button value="#{messages.Inventory}" styleClass="toolBarBtn"   action="#{inventoryHome.clearInstance}"
-                      view="/business/startPrepare/erp/store/Inventory.xthml" propagation="begin">
-                <f:param name="from" value="/func/erp/store/Inventory.xhtml"/>
-            </s:button>
-        </rich:toolbarGroup>
-    </rich:toolbar>
-</ui:define>
 
 <ui:define name="body">
 
-<rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
+
+<h:outputStylesheet name="font-icon-octicons.css"/>
+<rich:collapsiblePanel switchType="client">
+
+    <f:facet name="headerExpanded">
+        <s:link id="reset" value="#{messages.resetCondition}" includePageParams="false" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+        <s:link style="float: right;margin-right: 5px" styleClass="minibtn" action="#{inventoryHome.clearInstance}"
+                view="/business/startPrepare/erp/store/Inventory.xthml" propagation="begin">
+            <s:span styleClass="octicon octicon-plus"/>
+            #{messages.CreateNew}#{' '} #{messages.Inventory}
+
+            <f:param name="from" value="/func/erp/store/Inventory.xhtml"/>
+        </s:link>
+    </f:facet>
+
+    <f:facet name="headerCollapsed">
+
+
+                <h:outputText value="#{messages.search_conditions}" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+            <s:link style="float: right;;margin-right: 5px" styleClass="minibtn" action="#{inventoryHome.clearInstance}"
+                    view="/business/startPrepare/erp/store/Inventory.xthml" propagation="begin">
+                <s:span styleClass="octicon octicon-plus"/>
+                #{messages.CreateNew}#{' '} #{messages.Inventory}
+
+                <f:param name="from" value="/func/erp/store/Inventory.xhtml"/>
+            </s:link>
+    </f:facet>
     <h:form>
 
         <s:decorate template="/layout/seam-display.xhtml">
@@ -89,24 +104,22 @@
 
 
         <div style="clear:both"/>
-        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-        <h:panelGrid columns="1" style="width: 100%; text-align: right">
-            <a:outputPanel id="search_buttons">
-                <div class="actionButtons">
 
-                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+        <div class="searchButtons">
 
 
-                    <a:outputPanel id="searchButton">
-                        <a:commandButton value="#{messages.search}"
-                                         execute="@form" render="dataListResult"
-                                         action="#{inventoryList.first}">
-                            <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
-                    </a:outputPanel>
-                </div>
-            </a:outputPanel>
-        </h:panelGrid>
+            <a:commandLink styleClass="btn-link-big" style="margin-right: 5px;"
+                           execute="@form" render="dataListResult"
+                           action="#{inventoryList.first}">
+                <span class="octicon octicon-search"/>
+                #{messages.search}
+                <a:attachQueue requestDelay="0"/>
+            </a:commandLink>
+
+
+        </div>
+
+
     </h:form>
 
 

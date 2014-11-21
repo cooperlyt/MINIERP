@@ -13,6 +13,7 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.EnumSet;
 
 /**
@@ -32,6 +33,16 @@ public class OrderCancel {
 
     @In
     private OrderHome orderHome;
+
+    private Date moneyOperDate;
+
+    public Date getMoneyOperDate() {
+        return moneyOperDate;
+    }
+
+    public void setMoneyOperDate(Date moneyOperDate) {
+        this.moneyOperDate = moneyOperDate;
+    }
 
     @CreateProcess(definition = "cancelOrderMoney", processKey = "#{orderHome.instance.id}")
     @Transactional
@@ -115,7 +126,7 @@ public class OrderCancel {
             throw new IllegalArgumentException("order money is in Account!");
         }
 
-        if(orderHome.changeMoney()){
+        if(orderHome.changeMoney(moneyOperDate)){
             return orderHome.update();
         }else{
             return null;

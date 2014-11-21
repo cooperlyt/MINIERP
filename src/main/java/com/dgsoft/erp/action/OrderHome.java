@@ -643,11 +643,9 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
 
     public boolean isMoneyInAccount() {
-        if (getInstance().isAllStoreOut()) {
-            for (AccountOper ao : getInstance().getAccountOpers()) {
-                if (ao.getSaleCertificate() != null) {
-                    return true;
-                }
+        for (AccountOper ao : getInstance().getAccountOpers()) {
+            if (ao.getSaleCertificate() != null) {
+                return true;
             }
         }
         return false;
@@ -681,20 +679,20 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
     }
 
-    public boolean changeMoney(Date date){
+    public boolean changeMoney(Date date) {
         calcMoneys();
 
-        if (!isMoneyChanged()){
+        if (!isMoneyChanged()) {
             return true;
         }
 
-        if (!isMoneyCanChange()){
+        if (!isMoneyCanChange()) {
             return false;
         }
 
 
         AccountOper accountOper = getInstance().getAccountOper();
-        if (accountOper != null){
+        if (accountOper != null) {
             accountOper.revertCustomerMoney();
         }
 
@@ -703,7 +701,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     }
 
-    private boolean isMoneyChanged() {
+    public boolean isMoneyChanged() {
         AccountOper accountOper = getInstance().getAccountOper();
         if (accountOper == null)
             return !getInstance().getMoney().equals(BigDecimal.ZERO);
@@ -724,14 +722,14 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         if (accountOper.getSaleCertificate() != null) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "OrderCantChange");
             return false;
-        }else if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
-            if (getInstance().getCustomer().getProxyAccountMoney().subtract(accountOper.getProxcAccountsReceiveable()).add(getInstance().getMoney()).compareTo(BigDecimal.ZERO) < 0){
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"OrderCantChangeMoneyByProxyMoney");
+        } else if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+            if (getInstance().getCustomer().getProxyAccountMoney().subtract(accountOper.getProxcAccountsReceiveable()).add(getInstance().getMoney()).compareTo(BigDecimal.ZERO) < 0) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "OrderCantChangeMoneyByProxyMoney");
                 return false;
-            }else{
+            } else {
                 return true;
             }
-        }else
+        } else
             return true;
 
     }

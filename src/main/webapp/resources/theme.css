@@ -1,362 +1,5 @@
-html {
-    overflow-y: scroll;
-}
 
-body {
-    font-size: 12px;
-    margin: 0px;
 
-    font-family: 'Microsoft Yahei',verdana;
-}
-
-a img {
-    border: none;
-}
-
-h1 {
-    font-size: 1.6em;
-    margin-top: 0;
-}
-
-/*
-input[type=submit], input[type=button] {
-
-	margin: 5px 5px 5px 0;
-	cursor: pointer;
-}
-
-input[type=text], input[type=password], textarea {
-
-	padding-left: 1px;
-}
-
-select {
-	font-size: 13px;
-}
-
-
-
-.tableControl, .actionButtons {
-	width: 100%;
-}
-
-.tableControl a {
-	padding-left: 10px;
-}
-
-.tableControl {
-	text-align: right;
-}
-   */
-.footer {
-    text-align: center;
-    font-size: 12px;
-    margin-bottom: 10px;
-}
-
-
-/*
-.rf-tbl {
-	width: 100%;
-}
-
-
-.body {
-	padding: 30px;
-}
-
-*/
-
-.message {
-    padding: 5px;
-    list-style: none;
-    border: 0;
-    background: none;
-    padding: 0;
-    color: #000000;
-    margin: 5px 0 8px 0;
-    font-size: 12px;
-}
-
-.message li {
-    background: no-repeat left center;
-    padding-top: 1px;
-    padding-left: 20px;
-    margin-left: 3px;
-}
-
-.message li.infomsg {
-    background-image: url(../img/msginfo.png);
-}
-
-.message li.errormsg {
-    background-image: url(../img/msgerror.png);
-}
-
-.message li.warnmsg {
-    background-image: url(../img/msgwarn.png);
-}
-
-.label_column{
-    vertical-align: top;
-    font-weight: bold;
-    width: 115px;
-    padding: 0px;
-}
-
-.value_column{
-    padding: 0px;
-
-}
-
-.name {
-    vertical-align: top;
-    font-weight: bold;
-    width: 115px;
-    float: left;
-    padding: 5px;
-    margin-top: 3px;
-    clear: left;
-}
-
-.auto_width_name{
-    vertical-align: top;
-    font-weight: bold;
-    float: left;
-    padding: 5px;
-    margin-top: 3px;
-    clear: left;
-}
-
-.small_name{
-    vertical-align: top;
-    font-weight: bold;
-    width: 75px;
-    float: left;
-    padding: 5px;
-    margin-top: 3px;
-    clear: left;
-}
-
-/*  delete this*/
-.small_label{
-    font-weight: bold;
-    width: 75px;
-    padding: 5px;
-    margin-top: 3px;
-}
-
-.fix_name{
-    vertical-align: top;
-    font-weight: bold;
-    padding: 5px;
-    margin-top: 3px;
-    clear: left;
-}
-
-.fix_value{
-    vertical-align: top;
-    padding: 5px;
-}
-
-.small_value{
-    padding: 5px;
-}
-
-.value_button{
-    float: left;
-    padding: 4px;
-}
-
-.value {
-    float: left;
-    padding: 5px;
-}
-
-.requiredTip{
-    float: right;
-    padding: 5px;
-    vertical-align: bottom;
-}
-
-.error {
-    float: left;
-    padding: 5px;
-}
-
-.tipError{
-    float: left;
-    padding: 5px;
-    min-width: 26px;
-    max-width: 26px;
-}
-
-.tail{
-    float: left;
-}
-
-.fix_error{
-    vertical-align: top;
-    padding: 5px;
-}
-
-.errors {
-    color: #FF0000;
-    vertical-align: middle;
-}
-
-img.errors {
-    padding-right: 5px;
-}
-
-.errors input, .errors textarea, .errors select {
-    border: 1px solid red !important;
-}
-
-.required {
-    color: #FF0000;
-    padding-left: 2px;
-}
-
-.autoCompleteWidth50 {
-    width: 80px !important;
-}
-
-
-/*
-.rf-cp {
-	overflow: auto;
-}
-
-
-/* the specificity here is necessary to override the defaults */
-/*
-.rf-p .rf-p-hdr,
-.rf-cp .rf-cp-hdr {
-	padding: 2px 3px;
-}*/
-
-
-/*
-.rf-p input[type=submit], .rf-p input[type=button],
-.rf-tbp input[type=submit], .rf-tbp input[type=button] {
-	margin-bottom: 0;
-}
-
-.tableControl input[type=submit], .tableControl input[type=button], .tableControl select {
-	margin: 5px 0 5px 5px;
-}
-
-/* I don't know why this is necessary, but the select is off by a pixel on the top and is padding too much on the left */
-/*
-.tableControl select {
-	margin-left: 2px;
-	position: relative;
-	top: 1px;
-}
-
-
-
-/*
-.rf-tb-itm a {
-	text-decoration: none;
-}
-
-.rf-tb-itm a:hover, .rf-ddmenu-label-select {
-	text-decoration: underline;
-}
-
-.rf-tb-itm .rf-menu-itm a:hover {
-	text-decoration: none;
-}
-
-.rf-dl {
-	list-style: square;
-	margin: 6px 0 1px 0;
-	padding-left: 18px;
-}
-
-.rf-lst-itm {
-	padding-bottom: 4px;
-}
-
-
-
-div.info {
-	font-size: 1.2em;
-}
-
-
-ul.bullets {
-	list-style: square;
-}
-
-ul.bullets li {
-	padding-bottom: 2px;
-}
-
-td.action {
-	text-align: center;
-	width: 8em;
-	white-space: nowrap;
-}
-
-td.action a {
-	padding-left: 1px;
-	padding-right: 1px;
-}
-
-table.radio {
-   border: 0;
-}
-
-table.radio td {
-   padding: 0 2px;
-}
-
-table.radio input[type=radio] {
-   vertical-align: bottom;
-}
-
-*/
-
-.actionButtons {
-    padding-left: 1px;
-    width:100%
-}
-
-.actionButtons select {
-    margin: 5px 5px 5px 0;
-    vertical-align: bottom;
-}
-
-.gridLeftLayout{
-    vertical-align: top;
-    text-align: left;
-}
-
-.gridRightLayout{
-    vertical-align: top;
-    text-align: right;
-}
-
-.gridFunctionCategory{
-    vertical-align: top;
-}
-
-.gridFunction{
-    vertical-align: top;
-    text-align: right;
-}
-
-.tailBtn{
-    vertical-align: bottom;
-    margin: 0px;
-}
-
-.toolBarPic {
-    margin-right: 2px;
-}
 
 .moneyTableFooter {
     text-align: right;
@@ -395,6 +38,196 @@ table.radio input[type=radio] {
     border: solid 1px #203E5F;
 }
 
+
+
+.btn-link-big{
+    font-size: 13px;  !important;
+    color: #fff;
+    text-decoration: none;
+    background: #00509d;
+    background: -webkit-gradient(linear,left top,left bottom,from(#0079bc),to(#00509d));
+    background: -moz-linear-gradient(top,#0079bc,#00509d);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0079bc',endColorstr='#00509d');
+    display: inline-block;
+    zoom: 1;
+    vertical-align: baseline;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 500;
+    text-shadow: 0 1px 0 rgba(0,0,0,.2);
+    border-radius: 3px;
+    box-shadow: 0 3px 0 #ddd;
+    padding: .5em 1.2em;
+    white-space: nowrap;
+    border: 0;
+    align-items: flex-start;
+    box-sizing: border-box;
+
+    margin: 0;
+    font: -webkit-small-control;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+
+
+    -webkit-writing-mode: horizontal-tb;
+
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-appearance: none;
+
+}
+
+.btn-big{
+    font-size: 13px;  !important;
+    color: #fff;
+    text-decoration: none;
+    background: #00509d;
+    background: -webkit-gradient(linear,left top,left bottom,from(#0079bc),to(#00509d));
+    background: -moz-linear-gradient(top,#0079bc,#00509d);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0079bc',endColorstr='#00509d');
+
+    display: inline-block;
+    zoom: 1;
+    vertical-align: baseline;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 500;
+    text-shadow: 0 1px 0 rgba(0,0,0,.2);
+    border-radius: 3px;
+    box-shadow: 0 3px 0 #ddd;
+    padding: .5em 1.2em;
+    white-space: nowrap;
+    border: 0;
+    align-items: flex-start;
+    box-sizing: border-box;
+
+    margin: 0;
+    font: -webkit-small-control;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+
+
+    -webkit-writing-mode: horizontal-tb;
+    -webkit-appearance: button;
+}
+
+.btn-link-big:hover, .btn-big:hover{
+    background: #00509d;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00509d',endColorstr='#00509d');
+    text-decoration: none;
+    -webkit-box-shadow: 0 0 0 rgba(0,0,0,.2);
+    -moz-box-shadow: 0 0 0 rgba(0,0,0,.2);
+    box-shadow: 0 0 0 rgba(0,0,0,.2);
+    -moz-transition: background-position .1s linear 0s;
+    background-position: 0 -15px;
+}
+
+.btn-link-big:active, .btn-big:active{
+    position: relative;
+    top: 1px;
+}
+
+.btn-link-big:focus, .btn-big:focus{
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+
+.toolBarBtn {
+    border-width: 1px;
+    margin: 5px 5px 5px 0;
+
+    border-color: #BED6F8;
+    font-size: 13px;  !important;
+    font-family: 'Microsoft Yahei',verdana;
+    color: #000000;
+    background-repeat: repeat-x;
+    background-position: top left;
+    background-color: #BED6F8;
+    background-image: url(#{resource['org.richfaces.images:buttonBackgroundImage.png']});
+}
+
+.toolBarBtn:hover{
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    background-image: url(#{resource['org.richfaces.images:buttonHoverBackgroundImage.png']});
+}
+
+
+.toolBarBtn:disabled{
+    color: #8DB7F3;
+    border-color: #cccccc;
+    background-color: #cccccc;
+    background-image: url(resource['org.richfaces.images:buttonDisabledBackgroundImage.png']});
+    background-position: top left;
+}
+
+.minibtn{
+    font-size: 13px;  !important;
+    box-sizing: border-box;
+
+    text-decoration: none;
+
+    position: relative;
+    display: inline-block;
+    font-weight: bold;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 3px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-appearance: none;
+    border: 1px solid #5ca941;
+
+
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background-color: #60b044;
+    background-image: -webkit-linear-gradient(#8add6d, #60b044);
+    background-image: linear-gradient(#8add6d, #60b044);
+    background-repeat: repeat-x;
+    padding: 0 14px;
+    line-height: 24px;
+    margin: 0;
+}
+
+.minibtn:hover{
+    color: #fff;
+    background-color: #569e3d;
+    background-image: -webkit-linear-gradient(#79d858, #569e3d);
+    background-image: linear-gradient(#79d858, #569e3d);
+    background-repeat: repeat-x;
+    border-color: #4a993e;
+    text-decoration: none;
+    outline: 0;
+}
+
+
+.minibtn:active{
+    background-color: #569e3d;
+    background-image: none;
+    border-color: #418737;
+}
+
+.minibtn:focus{
+    text-decoration: none;
+    border-color: #51a7e8;
+    outline: none;
+    box-shadow: 0 0 5px rgba(81,167,232,0.5);
+}
+
+.minibtn:visited{
+    color: #fff;
+}
 
 .flow-steps{overflow:hidden;margin:20px 0;}
 .num3{
@@ -440,73 +273,14 @@ table.radio input[type=radio] {
 .flow-steps li.done .first{background-color:#ffe6ba;background-position:-12px -115px;}
 .flow-steps li.last-current{background-color:#f60;color:#fff;background-position:100% -161px;}
 
-.submitbox {
-    padding-left: 390px;
-    margin: 10px 0;
-    clear:both;
-}
-
-.subbtn{
-    width: 80px;
-    height: 25px;
-    line-height: 25px;
-}
-
-
-.toolBarBtn {
-    border-width: 1px;
-    margin: 5px 5px 5px 0;
-    background-color: #FFFFFF;
-}
 
 
 .tooltip {
     border-width:3px;
 }
 
-.toolbarbutton{
-    border-width: 1px;
-    background-color: #FFFFFF;
-}
-
-
-.detailsTable{
-    width: 100%; padding: 5px; margin: 0;
-    display:table;
-    border-collapse: collapse;
-    border: 1px solid #BED6F8;
-}
-
-.detailsTable th{
-    display: table-cell;
-    border-collapse: collapse;
-    vertical-align: inherit;
-
-    border: 1px solid #BED6F8;
-    padding: 5px 5px 5px 5px;
-    background: #ECF4FE;
-    color: #797268;
-    text-align: center;
-}
-
-.detailsTable td{
-    border-collapse: collapse;
-
-    display: table-cell;
-    vertical-align: inherit;
-    border: 1px solid #BED6F8;
-
-    background: #fff;
-    padding: 5px 5px 5px 5px;
-    color: #4f6b72;
-
-    min-width: 100px;
-    text-align: left;
-}
-
-
 .layoutColumn{
-    padding: 0px; border: 0px;
+    padding: 0px; border: 0px; margin: 0;
 }
 
 .cancelLink{
@@ -516,84 +290,3 @@ table.radio input[type=radio] {
     padding-left: 20px;
 }
 
-table {
-    white-space: normal;
-    line-height: normal;
-    font-weight: normal;
-    font-family: 'Microsoft Yahei',verdana;
-    font-size: 12px;
-    font-variant: normal;
-    font-style: normal;
-    color: -webkit-text;
-    text-align: start;
-}
-
-input, select, textarea, button, keygen, isindex, legend, a {
-    font-size: 12px;
-    font-family: 'Microsoft Yahei',verdana;
-    color: #000000;
-}
-fieldset {
-    border-width: 1px;
-    border-style: solid;
-    padding: 10px;
-    border-color: #BED6F8;
-}
-hr {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #BED6F8;
-}
-a {
-    color: #0078D0;
-}
-a:hover {
-    color: #0090FF;
-}
-a:visited {
-    color: #0090FF;
-}
-input, select, textarea, button, keygen, isindex {
-    border-width: 1px;
-    border-color: #BED6F8;
-    color: #000000;
-}
-button, input[type="reset"], input[type="submit"], input[type="button"] {
-    border-width: 1px;
-    border-color: #BED6F8;
-    font-size: 12px;
-    font-family: 'Microsoft Yahei',verdana;
-    color: #000000;
-    background-repeat: repeat-x;
-    background-position: top left;
-    background-color: #BED6F8;
-    background-image: url(#{resource['org.richfaces.images:buttonBackgroundImage.png']});
-}
-button:hover, input[type="reset"]:hover, input[type="submit"]:hover, input[type="button"]:hover {
-    background-position: bottom left;
-    background-repeat: repeat-x;
-    background-image: url(#{resource['org.richfaces.images:buttonHoverBackgroundImage.png']});
-}
-button[disabled], input[type="reset"][disabled], input[type="submit"][disabled], input[type="button"][disabled] {
-    color: #8DB7F3;
-    border-color: #cccccc;
-    background-color: #cccccc;
-    background-image: url(resource['org.richfaces.images:buttonDisabledBackgroundImage.png']});
-    background-position: top left;
-}
-textarea, input[type="text"], input[type="password"], select {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #BED6F8;
-    font-size: 12px;
-    font-family: 'Microsoft Yahei',verdana;
-    color: #000000;
-    background-repeat: no-repeat;
-    background-position: 1px 1px;
-    background-color: #ffffff;
-    background-image: url(resource['org.richfaces.images:inputBackgroundImage.png']});
-}
-textarea[disabled], input[type="text"][disabled], input[type="password"][disabled], select[disabled] {
-    color: #BED6F8;
-    cursor: default;
-}
