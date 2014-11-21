@@ -656,12 +656,12 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     @In
     private FacesMessages facesMessages;
 
-    public void subCustomerMoney() {
+    protected void subCustomerMoney(Date date) {
         getInstance().getAccountOpers().clear();
         if (getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0) {
             AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, getInstance().getOrderEmp());
             accountOper.setCustomerOrder(getInstance());
-            accountOper.setOperDate(getInstance().getCreateDate());
+            accountOper.setOperDate(date);
             accountOper.setCustomer(getInstance().getCustomer());
 
 
@@ -681,7 +681,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
     }
 
-    public boolean changeMoney(){
+    public boolean changeMoney(Date date){
         calcMoneys();
 
         if (!isMoneyChanged()){
@@ -698,7 +698,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             accountOper.revertCustomerMoney();
         }
 
-        subCustomerMoney();
+        subCustomerMoney(date);
         return true;
 
     }

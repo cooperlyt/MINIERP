@@ -410,7 +410,7 @@ public class OrderCreate extends OrderHome {
             }
         }
 
-        subCustomerMoney();
+        subCustomerMoney(getInstance().getCreateDate());
 
         if (!"persisted".equals(persist())) {
             return null;
