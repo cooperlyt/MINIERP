@@ -14,6 +14,8 @@ import com.dgsoft.erp.total.data.ResPriceTotal;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -418,26 +420,26 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         calcTotalResMoney();
 
         BigDecimal allMoney = getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney());
-        BigDecimal truncMoney = allMoney.setScale(0,BigDecimal.ROUND_DOWN);
+        BigDecimal truncMoney = allMoney.setScale(0, BigDecimal.ROUND_DOWN);
         BigDecimal truncReduce = allMoney.subtract(truncMoney);
 
         BigDecimal nowReduce = BigDecimal.ZERO;
         for (OrderReduce orderReduce : getOrderReduces()) {
-            if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(orderReduce.getType())){
+            if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(orderReduce.getType())) {
                 nowReduce = nowReduce.add(orderReduce.getMoney());
             }
         }
 
-        if (nowReduce.compareTo(truncReduce) != 0){
+        if (nowReduce.compareTo(truncReduce) != 0) {
             Iterator<OrderReduce> it = getOrderReduces().iterator();
-            while(it.hasNext()){
-                if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(it.next().getType())){
+            while (it.hasNext()) {
+                if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(it.next().getType())) {
                     it.remove();
                 }
             }
         }
 
-        getOrderReduces().add(new OrderReduce(getInstance(),OrderReduce.ReduceType.SYSTEM_TRUNC));
+        getOrderReduces().add(new OrderReduce(getInstance(), OrderReduce.ReduceType.SYSTEM_TRUNC));
 
         getInstance().setMoney(truncMoney);
         //calcReceiveMoney();
@@ -649,6 +651,89 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             }
         }
         return false;
+    }
+
+    @In
+    private FacesMessages facesMessages;
+
+    public void subCustomerMoney() {
+        getInstance().getAccountOpers().clear();
+        if (getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0) {
+            AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, getInstance().getOrderEmp());
+            accountOper.setCustomerOrder(getInstance());
+            accountOper.setOperDate(getInstance().getCreateDate());
+            accountOper.setCustomer(getInstance().getCustomer());
+
+
+            if (!getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST) && !getInstance().isEarnestFirst()) {
+                if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                    accountOper.setProxcAccountsReceiveable(getInstance().getMoney());
+                    accountOper.setAccountsReceivable(BigDecimal.ZERO);
+                } else {
+                    accountOper.setAccountsReceivable(getInstance().getMoney());
+                    accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+                }
+            }
+
+
+            accountOper.calcCustomerMoney();
+            getInstance().getAccountOpers().add(accountOper);
+        }
+    }
+
+    public boolean changeMoney(){
+        calcMoneys();
+
+        if (!isMoneyChanged()){
+            return true;
+        }
+
+        if (!isMoneyCanChange()){
+            return false;
+        }
+
+
+        AccountOper accountOper = getInstance().getAccountOper();
+        if (accountOper != null){
+            accountOper.revertCustomerMoney();
+        }
+
+        subCustomerMoney();
+        return true;
+
+    }
+
+    private boolean isMoneyChanged() {
+        AccountOper accountOper = getInstance().getAccountOper();
+        if (accountOper == null)
+            return !getInstance().getMoney().equals(BigDecimal.ZERO);
+
+        return getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY) ?
+                (accountOper.getProxcAccountsReceiveable().equals(getInstance().getMoney()) && accountOper.getAccountsReceivable().equals(BigDecimal.ZERO)) :
+                (accountOper.getAccountsReceivable().equals(getInstance().getMoney()) && accountOper.getProxcAccountsReceiveable().equals(BigDecimal.ZERO));
+    }
+
+    public boolean isMoneyCanChange() {
+        AccountOper accountOper = getInstance().getAccountOper();
+        if (accountOper == null) {
+            return true;
+        }
+        if (!isMoneyChanged()) {
+            return true;
+        }
+        if (accountOper.getSaleCertificate() != null) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "OrderCantChange");
+            return false;
+        }else if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
+            if (getInstance().getCustomer().getProxyAccountMoney().subtract(accountOper.getProxcAccountsReceiveable()).add(getInstance().getMoney()).compareTo(BigDecimal.ZERO) < 0){
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"OrderCantChangeMoneyByProxyMoney");
+                return false;
+            }else{
+                return true;
+            }
+        }else
+            return true;
+
     }
 
     public boolean isStoreInAccount() {

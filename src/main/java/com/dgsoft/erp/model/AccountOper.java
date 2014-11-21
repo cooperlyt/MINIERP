@@ -130,7 +130,6 @@ public class AccountOper implements java.io.Serializable {
     }
 
 
-
 //    public AccountOper(PreparePay preparePay, Customer customer, String operEmp) {
 //        this.operType = AccountOperType.PRE_DEPOSIT;
 //        this.preparePay = preparePay;
@@ -193,7 +192,7 @@ public class AccountOper implements java.io.Serializable {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     @JoinColumn(name = "CUSTOM", nullable = false)
     @NotNull
     public Customer getCustomer() {
@@ -429,7 +428,7 @@ public class AccountOper implements java.io.Serializable {
 
                     if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) == 0) {
                         getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
-                    }else{
+                    } else {
                         getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
                     }
                 }
@@ -467,7 +466,7 @@ public class AccountOper implements java.io.Serializable {
 
                     if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) == 0) {
                         getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
-                    }else{
+                    } else {
                         getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
                     }
                 }
@@ -510,7 +509,7 @@ public class AccountOper implements java.io.Serializable {
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.pac.PROXY_SAVINGS"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + getCustomer().getId(), BigDecimal.ZERO, getProxcAccountsReceiveable()));
                 }
-                if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0){
+                if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.PROXY_SAVINGS"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), BigDecimal.ZERO, getAccountsReceivable()));

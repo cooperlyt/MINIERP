@@ -115,26 +115,11 @@ public class OrderCancel {
             throw new IllegalArgumentException("order money is in Account!");
         }
 
-        orderHome.calcMoneys();
-
-        for (AccountOper accountOper : orderHome.getInstance().getAccountOpers()) {
-            accountOper.revertCustomerMoney();
-
-            // accountOper.setAdvanceReceivable();
-            if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-                accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
-                accountOper.setAccountsReceivable(BigDecimal.ZERO);
-            } else {
-                accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
-                accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
-            }
-            accountOper.calcCustomerMoney();
+        if(orderHome.changeMoney()){
+            return orderHome.update();
+        }else{
+            return null;
         }
-
-
-
-        return orderHome.update();
-
     }
 
     @Transactional

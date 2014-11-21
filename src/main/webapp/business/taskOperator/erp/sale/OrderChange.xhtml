@@ -21,7 +21,7 @@
         <a:region rendered="#{not empty orderNeedItems}">
 
             <rich:select id="oweOutItemIsSendSelect" value="#{orderChange.reSend}" required="true"
-                         label="#{messages.sub_overly_oper_type}">
+                         label="#{messages.sub_overly_oper_type}" disabled="true">
                 <f:selectItem itemLabel="#{messages.sub_overly_oper_render_true}" itemValue="#{true}"/>
                 <f:selectItem itemLabel="#{messages.sub_overly_oper_render_false}" itemValue="#{false}"/>
                 <a:ajax event="selectitem" listener="#{orderChange.reSendChangeListener}" execute="@region"
@@ -40,7 +40,7 @@
                   view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
 
-        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+        <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}" disabled="#{orderHome.moneyInAccount}"
                          action="#{orderChange.toChangeOrderMoney}">
         </h:commandButton>
     </rich:toolbarGroup>
@@ -49,6 +49,11 @@
 
 <rich:messages globalOnly="true" ajaxRendered="true"/>
 <br/>
+
+<a:outputPanel rendered="#{orderHome.moneyInAccount}">
+    <h:outputText value="#{messages.OrderCantChange}"  style="color: red;"/>
+
+</a:outputPanel>
 
 <a:outputPanel id="newNeedResPanel">
 <rich:panel rendered="#{orderChange.reSend}">

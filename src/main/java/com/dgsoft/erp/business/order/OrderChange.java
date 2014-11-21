@@ -1,6 +1,7 @@
 package com.dgsoft.erp.business.order;
 
 import com.dgsoft.erp.action.NeedResHome;
+import com.dgsoft.erp.business.finance.AccountDateHelper;
 import com.dgsoft.erp.model.*;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -114,7 +115,11 @@ public class OrderChange extends OrderShipTaskHandle {
             }
             dispatched = false;
         }
+
+        reSend = false;
+
         reSendChangeListener();
+
 
     }
 
@@ -229,6 +234,10 @@ public class OrderChange extends OrderShipTaskHandle {
     protected String completeOrderTask() {
         Logging.getLog(getClass()).debug("orderChange complete is execute");
 
+        if (!orderHome.isMoneyCanChange()){
+            return null;
+        }
+
         List<ResSaleRebate> removeItems = new ArrayList<ResSaleRebate>();
         for (ResSaleRebate resSaleRebate : orderHome.getResSaleRebates()) {
             if (resSaleRebate.getRebateMoney().compareTo(BigDecimal.ZERO) == 0){
@@ -270,8 +279,7 @@ public class OrderChange extends OrderShipTaskHandle {
             oweOut.setAdd(true);
         }
 
-
-        if ("updated".equals(orderHome.update())) {
+        if ( orderHome.changeMoney() && "updated".equals(orderHome.update())) {
             return "taskComplete";
         } else {
             return null;

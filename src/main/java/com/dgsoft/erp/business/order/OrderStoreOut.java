@@ -225,6 +225,16 @@ public class OrderStoreOut extends OrderTaskHandle {
             dispatchHome.getInstance().getNeedRes().getCustomerOrder().setResReceived(true);
         }
 
+        boolean allStoreOut = true;
+        for (Dispatch dispatch: dispatchHome.getInstance().getNeedRes().getDispatches()){
+            if (!dispatch.isStoreOut() && !dispatch.getId().equals(dispatchHome.getInstance().getId())){
+                allStoreOut = false;
+                break;
+            }
+        }
+
+        dispatchHome.getInstance().getNeedRes().getCustomerOrder().setAllStoreOut(allStoreOut);
+
 
         boolean needResComplete = true;
         for (Dispatch dispatch : dispatchHome.getInstance().getNeedRes().getDispatches()) {

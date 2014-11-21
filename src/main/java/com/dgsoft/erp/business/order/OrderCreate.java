@@ -366,29 +366,7 @@ public class OrderCreate extends OrderHome {
         return getInstance().getCustomer().getAccountBalance().multiply(new BigDecimal("-1")).compareTo(getInstance().getMoney()) >= 0;
     }
 
-    private void subCustomerMoney(){
 
-
-        if (orderHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) != 0) {
-            AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, orderHome.getInstance().getOrderEmp());
-            accountOper.setCustomerOrder(getInstance());
-            accountOper.setOperDate(getInstance().getCreateDate());
-            accountOper.setCustomer(getInstance().getCustomer());
-
-
-            if (!getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST) && !getInstance().isEarnestFirst()){
-                if (orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-                    accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
-                } else {
-                    accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
-                }
-            }
-
-
-            accountOper.calcCustomerMoney();
-            getInstance().getAccountOpers().add(accountOper);
-        }
-    }
 
     @End
     @CreateProcess(definition = "order", processKey = "#{orderCreate.instance.id}")

@@ -459,7 +459,7 @@ public class CustomerOrder implements java.io.Serializable {
         this.advanceMoney = advanceMoney;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "customerOrder")
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true, cascade = {CascadeType.ALL}, mappedBy = "customerOrder")
     public Set<AccountOper> getAccountOpers() {
         return accountOpers;
     }
@@ -467,6 +467,15 @@ public class CustomerOrder implements java.io.Serializable {
     public void setAccountOpers(Set<AccountOper> accountOpers) {
         this.accountOpers = accountOpers;
     }
+
+    @Transient
+    public AccountOper getAccountOper(){
+        if (getAccountOpers().isEmpty()){
+            return null;
+        }
+        return getAccountOpers().iterator().next();
+    }
+
 
     @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,mappedBy = "customerOrder",cascade = {CascadeType.ALL})
     public Set<OrderReduce> getOrderReduces() {
