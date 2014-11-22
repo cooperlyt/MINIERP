@@ -126,6 +126,10 @@
 <br/>
 
 
+<h:outputScript>
+    var tableWidth = jQuery('.primary').width();
+
+</h:outputScript>
 
 <h:form>
 
@@ -136,6 +140,10 @@
             <ui:param name="entityList" value="#{customerMoneyOperList}"/>
         </ui:include>
     </a:outputPanel>
+
+    <h:outputScript>
+        #{rich:jQuery('dataListResult')}.width(tableWidth);
+    </h:outputScript>
 </f:facet>
 
 <rich:column>
@@ -341,12 +349,6 @@
 </h:form>
 
 
-<h:outputScript>
-    #{rich:jQuery('dataListResult')}.width(jQuery('.primary').width());
-
-    alert(#{rich:jQuery('dataListResult')}.width());
-
-</h:outputScript>
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="dateChangePanel"/>
