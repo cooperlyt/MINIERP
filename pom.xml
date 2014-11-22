@@ -567,6 +567,12 @@
             <version>2010-09-21</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sourceforge.cssparser</groupId>
+            <artifactId>cssparser</artifactId>
+            <version>0.9.14</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -585,7 +591,8 @@
                             <filtering>true</filtering>
                             <excludes>
                                 <exclude>**/*.swf</exclude>
-
+                                <exclude>**/*.icon</exclude>
+                                <exclude>**/*.ico</exclude>
                             </excludes>
                         </resource>
 
@@ -595,6 +602,8 @@
 
                             <includes>
                                 <include>**/*.swf</include>
+                                <include>**/*.icon</include>
+                                <exclude>**/*.ico</exclude>
                             </includes>
                         </resource>
                     </webResources>

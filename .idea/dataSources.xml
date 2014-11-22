@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="383766122">
+  <component name="DataSourceManagerImpl" format="xml" hash="882030940">
     <data-source source="LOCAL" name="Data Source" uuid="9e6053d3-0caf-4ab7-810e-8bdc741cafba">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
@@ -8,11 +8,7 @@
       <jdbc-url>jdbc:mysql://localhost:3306/DG_SYSTEM</jdbc-url>
       <user-name>root</user-name>
       <user-password>df9fdf98df9fdf9ddfc7dfdb</user-password>
-      <libraries>
-        <library>
-          <url>file://$USER_HOME$/DeveloperTools/mysql-connector-java-5.1.24-bin.jar</url>
-        </library>
-      </libraries>
+      <libraries />
     </data-source>
   </component>
 </project>

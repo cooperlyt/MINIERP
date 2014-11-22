@@ -11,10 +11,19 @@
 
 <ui:param name="functionTitle" value="#{messages.CustomerMoneyCome}"/>
 
+
+
 <ui:define name="toolbar">
 
-    <rich:toolbar>
+    <rich:toolbar id="actions" height="34" itemSeparator="line">
 
+
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/money.png"/>
+            <s:link value="#{messages.PayByOrder}" propagation="begin" view="/func/erp/finance/cashier/PayByOrder.xhtml"/>
+        </rich:toolbarGroup>
+
+        <ui:remove>
         <rich:toolbarGroup location="right">
             <h:form>
                 <h:selectOneMenu value="#{customerAccountOper.type}" label=" #{messages.accountOper_field_operType}"
@@ -29,6 +38,7 @@
                 </h:commandButton>
             </h:form>
         </rich:toolbarGroup>
+        </ui:remove>
     </rich:toolbar>
 </ui:define>
 
@@ -115,8 +125,11 @@
 
 <br/>
 
+
+
 <h:form>
-<rich:extendedDataTable style="width: 100%" frozenColumns="6" id="dataListResult" value="#{customerMoneyOperList.resultList}" var="_item">
+
+<rich:extendedDataTable id="dataListResult" value="#{customerMoneyOperList.resultList}" var="_item">
 <f:facet name="footer">
     <a:outputPanel rendered="#{not empty customerMoneyOperList.resultList}">
         <ui:include src="/layout/pageA4jNavigation.xhtml">
@@ -325,8 +338,15 @@
 </rich:column>
 
 </rich:extendedDataTable>
-
 </h:form>
+
+
+<h:outputScript>
+    #{rich:jQuery('dataListResult')}.width(jQuery('.primary').width());
+
+    alert(#{rich:jQuery('dataListResult')}.width());
+
+</h:outputScript>
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
     <ui:param name="panelId" value="dateChangePanel"/>

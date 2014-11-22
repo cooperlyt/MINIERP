@@ -15,16 +15,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=8"/>
     <title>#{messages.mainTitle}</title>
+
     <link rel="shortcut icon" href="#{request.contextPath}/favicon.ico"/>
     <h:outputStylesheet name="application.css"/>
     <h:outputStylesheet name="theme.css"/>
-
-    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/birtReportControl.js"/>
-
+    <h:outputStylesheet name="theme.ecss"/>
 
     <ui:insert name="head"/>
 </h:head>
 <h:body>
+
     <a:queue requestDelay="1000" ignoreDupResponses="true"/>
     <h:form>
         <ui:insert name="taskChangePush">
@@ -79,6 +79,7 @@
             <h:outputText value="#{messages.wait_please}..."/>
         </h:panelGrid>
     </r:popupPanel>
+
 
 
     <h:panelGroup styleClass="header" layout="block">
@@ -147,7 +148,7 @@
                         </h:panelGroup>
                     </h:panelGroup>
 
-                    <h:panelGroup styleClass="primary">
+                    <h:panelGroup layout="block" styleClass="primary">
 
                         <ui:insert name="functionTitle">
                             <h:panelGrid columns="2" width="100%" columnClasses=",column-right-align">
