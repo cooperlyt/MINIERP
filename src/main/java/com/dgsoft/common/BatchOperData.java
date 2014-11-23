@@ -1,6 +1,10 @@
 package com.dgsoft.common;
 
 import javax.persistence.Transient;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +15,7 @@ import java.util.List;
  * Date: 28/02/14
  * Time: 16:49
  */
-public class BatchOperData<T> {
+public class BatchOperData<T> implements Serializable {
 
     public static <T> List<BatchOperData<T>> createBatchOperDataList(Collection<? extends T> datas, boolean selected) {
         List<BatchOperData<T>> result = new ArrayList<BatchOperData<T>>(datas.size());
@@ -49,4 +53,5 @@ public class BatchOperData<T> {
     public void setData(T data) {
         this.data = data;
     }
+
 }

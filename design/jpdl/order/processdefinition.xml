@@ -100,10 +100,10 @@
 
 	<decision name="付款方式">
 		<transition to="调度判断" name="先货">
-			<condition expression="#{(not (orderHome.instance.payType eq 'PAY_FIRST')) and (not orderHome.instance.earnestFirst)}"></condition>
+			<condition expression="#{orderHome.instance.accountChange }"></condition>
 		</transition>
 		<transition to="等待付款" name="订金发货">
-			<condition expression="#{(orderHome.instance.payType eq 'PAY_FIRST') or  (orderHome.instance.earnestFirst)}"></condition>
+			<condition expression="#{not orderHome.instance.accountChange }"></condition>
 		</transition>
 	</decision>
 

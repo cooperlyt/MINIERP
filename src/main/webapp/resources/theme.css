@@ -289,3 +289,41 @@
     background-position: 0 0;
     padding-left: 20px;
 }
+
+
+.order-status{
+    padding-right: 5px;
+}
+
+.myebay-sprite{
+    display: inline-block;
+    overflow: hidden;
+    margin-right: 7px;
+
+    background: url(../img/orderStatus.png) -24px -96px;
+}
+
+
+.ph-fund {
+    background-position: -77px 0;
+    height: 16px;
+    width: 16px;
+}
+
+.ph-not-fund {
+    background-position: -57px 0;
+    height: 16px;
+    width: 16px;
+}
+
+.ph-ship {
+    background-position: -40px 2px;
+    height: 16px;
+    width: 16px;
+}
+
+.ph-not-ship {
+    background-position: 0 2px;
+    height: 16px;
+    width: 16px;
+}

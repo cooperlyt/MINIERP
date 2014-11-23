@@ -410,7 +410,28 @@ public class OrderCreate extends OrderHome {
             }
         }
 
-        subCustomerMoney(getInstance().getCreateDate());
+        BigDecimal needCustomerMoney = BigDecimal.ZERO;
+
+        if ((getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0)) {
+            getInstance().setPayTag(false);
+            if (getInstance().isEarnestFirst()) {
+                needCustomerMoney = getInstance().getEarnest();
+            }
+
+            if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)) {
+                needCustomerMoney = getInstance().getMoney();
+            }
+
+        }else{
+            getInstance().setPayTag(true);
+        }
+        getInstance().setAccountChange((needCustomerMoney.compareTo(BigDecimal.ZERO) <= 0) ||
+                (customerHome.getCanUseMoney().compareTo(needCustomerMoney) >= 0));
+
+
+
+        if (getInstance().isAccountChange())
+            subCustomerMoney(getInstance().getCreateDate());
 
         if (!"persisted".equals(persist())) {
             return null;

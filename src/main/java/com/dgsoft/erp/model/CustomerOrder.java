@@ -46,6 +46,8 @@ public class CustomerOrder implements java.io.Serializable {
 
     private boolean payTag;
 
+    private boolean accountChange;
+
     private BigDecimal earnest;
     private BigDecimal totalRebateMoney;
     private BigDecimal middleMoney;
@@ -476,6 +478,14 @@ public class CustomerOrder implements java.io.Serializable {
         return getAccountOpers().iterator().next();
     }
 
+    @Column(name = "ACCOUNT_CHANGE",nullable = false)
+    public boolean isAccountChange() {
+        return accountChange;
+    }
+
+    public void setAccountChange(boolean accountChange) {
+        this.accountChange = accountChange;
+    }
 
     @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,mappedBy = "customerOrder",cascade = {CascadeType.ALL})
     public Set<OrderReduce> getOrderReduces() {
@@ -578,6 +588,10 @@ public class CustomerOrder implements java.io.Serializable {
 
         CustomerOrder otherOrder = (CustomerOrder) other;
 
+        if ((this.getId() == null) || getId().trim().isEmpty() || (otherOrder.getId() == null) || otherOrder.getId().trim().equals("")){
+            return false;
+        }
+
         if ((otherOrder.getId() != null) && (!"".equals(otherOrder.getId().trim()))) {
             return otherOrder.getId().equals(getId());
         }
@@ -591,9 +605,8 @@ public class CustomerOrder implements java.io.Serializable {
         if ((getId() != null) && !getId().trim().equals("")) {
             return getId().hashCode();
         } else {
-            return this.toString().hashCode();
+            return super.hashCode();
         }
-
     }
 
 
@@ -606,4 +619,7 @@ public class CustomerOrder implements java.io.Serializable {
         }
         return result;
     }
+
+
+
 }

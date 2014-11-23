@@ -120,6 +120,14 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
         return true;
     }
 
+    public BigDecimal getCanUseMoney(){
+        if (BigDecimal.ZERO.compareTo(getInstance().getAccountMoney()) > 0){
+            return getInstance().getAccountMoney().multiply(new BigDecimal("-1"));
+        }else{
+            return BigDecimal.ZERO;
+        }
+    }
+
     public BigDecimal getCanUseAdvanceMoney(){
         BigDecimal result;
         if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")){

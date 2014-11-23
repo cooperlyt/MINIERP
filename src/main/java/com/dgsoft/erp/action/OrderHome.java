@@ -663,7 +663,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             accountOper.setCustomer(getInstance().getCustomer());
 
 
-            if (!getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST) && !getInstance().isEarnestFirst()) {
+
                 if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
                     accountOper.setProxcAccountsReceiveable(getInstance().getMoney());
                     accountOper.setAccountsReceivable(BigDecimal.ZERO);
@@ -671,11 +671,12 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
                     accountOper.setAccountsReceivable(getInstance().getMoney());
                     accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
                 }
-            }
+
 
 
             accountOper.calcCustomerMoney();
             getInstance().getAccountOpers().add(accountOper);
+            getInstance().setAccountChange(true);
         }
     }
 

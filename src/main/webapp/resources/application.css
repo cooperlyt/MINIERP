@@ -14,8 +14,9 @@ a img {
 }
 
 h1 {
-    font-size: 1.6em;
-    margin-top: 0;
+    font-size: 18px;
+    white-space: nowrap;
+    color: #444;
 }
 
 
@@ -155,24 +156,22 @@ img.errors {
 
 
 .primary {
-    width: 100%;
     display: inline-block;
-    min-width: 765;
+    width: 775px;
 }
 
 .menu {
     vertical-align: top;
     display: inline-block;
     margin-right: 10px;
-    margin-left: 10px;
     width: 230px;
     font-size: 12px;
 }
 
 .menuContainer {
-    -moz-border-radius: 5px;
+    -moz-border-radius: 3px;
     border-radius:5px;
-    background-color: #F1F1F1;
+    background-color: #F9F9F9;
     margin-bottom: 10px;
     padding: 16px 19px;
 }
@@ -706,8 +705,37 @@ table.radio input[type=radio] {
     text-align: right;
 }
 
+.func-title-table{
+    padding: 0 0 5px 0;
+    margin: 0;
+    border: 0;
+    width: 100%;
+    vertical-align: middle;
+}
+
+.func-title{
+    padding-left: 10px;
+    margin: 0;
+    border: 0;
+    vertical-align: middle;
+}
+
+.func-title-cat{
+    width: 1px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.func-title-process{
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 50px;
+    text-align: right;
+}
+
 .func-body {
-    height: 100%;
     min-height: 460px;
 }
 
@@ -960,6 +988,7 @@ select {
 }
 
 .actionButtons {
+
     padding-left: 1px;
     width:100%
 }
@@ -979,4 +1008,11 @@ select {
 
 .toolBarPic {
     margin-right: 2px;
+}
+
+
+.form-actions {
+    margin: 20px 0 5px 5px;
+    padding-bottom: 5px;
+    text-align: right;
 }

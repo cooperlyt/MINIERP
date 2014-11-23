@@ -125,15 +125,9 @@
 
 <br/>
 
-
-<h:outputScript>
-    var tableWidth = jQuery('.primary').width();
-
-</h:outputScript>
-
 <h:form>
 
-<rich:extendedDataTable id="dataListResult" value="#{customerMoneyOperList.resultList}" var="_item">
+<rich:extendedDataTable id="dataListResult" style="width: 775px;" frozenColumns="3" value="#{customerMoneyOperList.resultList}" var="_item">
 <f:facet name="footer">
     <a:outputPanel rendered="#{not empty customerMoneyOperList.resultList}">
         <ui:include src="/layout/pageA4jNavigation.xhtml">
@@ -141,9 +135,6 @@
         </ui:include>
     </a:outputPanel>
 
-    <h:outputScript>
-        #{rich:jQuery('dataListResult')}.width(tableWidth);
-    </h:outputScript>
 </f:facet>
 
 <rich:column>
@@ -346,8 +337,8 @@
 </rich:column>
 
 </rich:extendedDataTable>
-</h:form>
 
+</h:form>
 
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
