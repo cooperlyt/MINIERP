@@ -104,12 +104,12 @@ public class StoreResCondition implements Serializable {
         return true;
     }
 
-    public boolean isFullStoreResSearch(){
+    public boolean isFullStoreResSearch() {
         if (storeResEntity == null) {
             return false;
         }
         if (UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(storeResEntity.getRes().getUnitGroup().getType()) &&
-                (storeResEntity.getFloatConvertRate() == null)){
+                (storeResEntity.getFloatConvertRate() == null)) {
             return false;
         }
 
@@ -218,17 +218,20 @@ public class StoreResCondition implements Serializable {
 
     }
 
-    public StoreRes createStoreResByCondition(){
-        if(!isFullStoreResSearch()){
+    public StoreRes createStoreResByCondition() {
+        if (!isFullStoreResSearch()) {
             throw new IllegalArgumentException("must full confition");
         }
 
         StoreRes result = new StoreRes();
         result.setEnable(true);
-        result.setFloatConversionRate(storeResEntity.getFloatConvertRate());
         result.setRes(storeResEntity.getRes());
+        if (UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(
+                storeResEntity.getRes().getUnitGroup().getType()))
+            result.setFloatConversionRate(storeResEntity.getFloatConvertRate());
+
         for (Format format : storeResEntity.getFormats()) {
-            result.getFormats().add(new Format(result,format.getFormatDefine(),format.getFormatValue()));
+            result.getFormats().add(new Format(result, format.getFormatDefine(), format.getFormatValue()));
         }
         result.setCode(resHelper.genStoreResCode(result));
         return result;
@@ -248,7 +251,7 @@ public class StoreResCondition implements Serializable {
         resCode = null;
     }
 
-    public boolean isResDefined(){
+    public boolean isResDefined() {
         return storeResEntity != null;
     }
 }
