@@ -11,6 +11,9 @@
 <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
 
 <s:decorate template="/layout/edit-modalpanel.xhtml">
+    <ui:param name="autosized" value="false"/>
+    <ui:param name="height" value="500"/>
+    <ui:param name="width" value="500"/>
     <ui:param name="panelId" value="singleDispatchPanel"/>
     <ui:param name="panelTitle" value="#{messages.Dispatch}"/>
     <ui:define name="controls">
@@ -171,7 +174,7 @@
                         noDataLabel="#{messages.emptyResult}">
             <f:facet name="header">
                 <rich:columnGroup>
-                    <rich:column colspan="3">
+                    <rich:column colspan="5">
                         <h:outputText value="#{messages.order_storeRes_item}"/>
 
                         <rich:column>
@@ -189,17 +192,17 @@
                     <rich:column breakRowBefore="true">
                         <h:outputText value="#{messages.Store}"/>
                     </rich:column>
-                    <rich:column>
-                        <h:outputText value="#{messages.stockCount}"/>
+                    <rich:column colspan="2">
+                        <h:outputText value="#{messages.StockCount}"/>
                     </rich:column>
-                    <rich:column>
-                        <h:outputText value="#{messages.AuxUnitCount}"/>
+                    <rich:column colspan="2">
+                        <h:outputText value="#{messages.StockCanUseCount}"/>
                     </rich:column>
 
 
                 </rich:columnGroup>
             </f:facet>
-            <rich:column colspan="4">
+            <rich:column colspan="5">
                 <rich:collapsibleSubTableToggler for="srsbtbl"/>
                 <ui:include src="/layout/erp/StoreResTitle.xhtml">
                     <ui:param name="storeRes" value="#{_orderItem.storeRes}"/>
@@ -221,13 +224,28 @@
             <rich:collapsibleSubTable value="#{_orderItem.storeRes.vaildStockList}"
                                       var="_item" id="srsbtbl" expandMode="client">
                 <rich:column>
-                    <h:outputText value="#{_item.store.name}(#{_item.store.id})"/>
+                    <h:outputText value="#{_item.stock.store.name}(#{_item.stock.store.id})"/>
                 </rich:column>
                 <rich:column>
-                    <h:outputText value="#{_item.displayMasterCount}"/>
+                    <h:outputText value="#{_item.stock.displayMasterCount}"/>
                 </rich:column>
                 <rich:column>
-                    #{_item.displayAuxCount}
+                    #{_item.stock.displayAuxCount}
+                </rich:column>
+
+                <rich:column>
+                    #{_item.canUseCount.masterCount}
+                    <h:outputText style="float: right" value="#{_item.stock.res.unitGroup.masterUnit.name}"/>
+                </rich:column>
+                <rich:column>
+                    <a:outputPanel rendered="#{_item.stock.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+                        <h:outputText value="#{_item.canUseCount.auxCount}">
+                            <f:convertNumber pattern="#{_item.stock.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                        </h:outputText>
+
+                        <h:outputText style="float: right"
+                                      value="#{_item.stock.res.unitGroup.floatAuxiliaryUnit.name}"/>
+                    </a:outputPanel>
                 </rich:column>
 
                 <f:facet name="footer">
@@ -306,20 +324,20 @@
     <rich:dataTable style="width: 100%" value="#{orderDispatch.dispatchList}" var="_dispatch">
         <f:facet name="header">
             <rich:columnGroup>
-                <rich:column colspan="3" rowspan="2">
+                <rich:column colspan="2" rowspan="2">
                     #{messages.StoreRes}
                 </rich:column>
-                <rich:column colspan="2">
+                <rich:column colspan="4">
                     #{messages.Stock}
                 </rich:column>
                 <rich:column colspan="2">
                     #{messages.Dispatch}
                 </rich:column>
-                <rich:column breakRowBefore="true">
-                    #{messages.MasterUnitCount}
+                <rich:column breakRowBefore="true" colspan="2">
+                    #{messages.StockCount}
                 </rich:column>
-                <rich:column>
-                    #{messages.AuxUnitCount}
+                <rich:column colspan="2">
+                    #{messages.StockCanUseCount}
                 </rich:column>
                 <rich:column>
                     #{messages.MasterUnitCount}
@@ -329,7 +347,7 @@
                 </rich:column>
             </rich:columnGroup>
         </f:facet>
-        <rich:column colspan="7">
+        <rich:column colspan="8">
             <rich:collapsibleSubTableToggler for="sbtbl"/>
             #{_dispatch.store.name}(#{_dispatch.store.id})
 
@@ -347,34 +365,30 @@
 
             ]
         </rich:column>
-        <rich:collapsibleSubTable value="#{_dispatch.totalGroup.getResGroupList()}" var="_resTotal" id="sbtbl"
+        <rich:collapsibleSubTable value="#{_dispatch.orderItemList}" var="_orderItem" id="sbtbl"
                                   expandMode="client">
             <rich:column/>
-            <rich:column colspan="6">
-                <rich:collapsibleSubTableToggler event="none" for="sbtbl2"/>
-                #{_resTotal.res.name}
-            </rich:column>
 
-            <rich:collapsibleSubTable value="#{_resTotal.values}" var="_item" id="sbtbl2" expandMode="client">
-                <rich:column/><rich:column/>
 
-                <rich:column>
-                    <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                        <ui:param name="storeRes" value="#{_item.storeRes}"/>
-                        <ui:param name="showResName" value="false"/>
-                    </ui:include>
+            <rich:column>
+                <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                    <ui:param name="storeRes" value="#{_orderItem.storeRes}"/>
 
-                    <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
-                                    title="#{messages.order_item_full}:#{_item.stock.displayMasterCount}(#{_item.stock.displayAuxCount}) "
-                                    value="/img/full_tip.png"
-                                    rendered="#{_item.enough}"/>
+                </ui:include>
 
-                    <a:outputPanel style="float:right" rendered="#{not _item.enough}">
-                        <h:outputText style="color: #FF0000;" value="(#{_item.disparity.displayMasterCount})"/>
-                        <h:graphicImage alt="#{messages.order_item_not_full}"
-                                        value="/img/not_full_tip.png"/>
-                        <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
-                                      layout="block">
+                <h:graphicImage style="float:right" alt="#{messages.order_item_full}"
+                                title="#{messages.order_item_full}:#{_orderItem.dispatchCount.stockView.stock.displayMasterCount}(#{_orderItem.dispatchCount.stockView.stock.displayAuxCount}) "
+                                value="/img/full_tip.png"
+                                rendered="#{_orderItem.dispatchCount.enough}"/>
+
+                <a:outputPanel style="float:right" rendered="#{not _orderItem.dispatchCount.enough}">
+                    (<h:outputText style="color: #FF0000;" value="#{_orderItem.dispatchCount.disparity.masterCount}">
+                        <f:convertNumber pattern="#{_orderItem.res.unitGroup.masterUnit.countFormate}"/>
+                    </h:outputText> #{_orderItem.res.unitGroup.masterUnit.name})
+                    <h:graphicImage alt="#{messages.order_item_not_full}"
+                                    value="/img/not_full_tip.png"/>
+                    <rich:tooltip followMouse="false" showDelay="1000" styleClass="tooltip-custom-body"
+                                  layout="block">
 
                                   <span style="white-space: nowrap;color: #FF0000;">
                                     #{messages.order_item_not_full}
@@ -382,44 +396,64 @@
 
                             <span style="white-space: nowrap;">
                            #{messages.InventoryCount}:
-                                #{_item.stock.displayMasterCount}
-                                (#{_item.stock.displayAuxCount})  </span> <br/>
+                                #{_orderItem.dispatchCount.stockView.stock.displayMasterCount}
+                                (#{_orderItem.dispatchCount.stockView.stock.displayAuxCount})  </span> <br/>
                         <span style="white-space: nowrap;color: #FF0000;">
                                 #{messages.stockDisparity}:
-                            #{_item.disparity.displayMasterCount}
-                            (#{_item.disparity.displayAuxCount})
+                            <h:outputText value="#{_orderItem.dispatchCount.disparity.masterCount}">
+                                <f:convertNumber pattern="#{_orderItem.storeRes.res.unitGroup.masterUnit.countFormate}"/>
+                            </h:outputText>    #{_orderItem.storeRes.res.unitGroup.masterUnit.name}
+                                <a:outputPanel rendered="#{_orderItem.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}" >
+                            (<h:outputText value="#{_orderItem.dispatchCount.disparity.auxCount}" >
+                            <f:convertNumber pattern="#{_orderItem.storeRes.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                        </h:outputText> #{_orderItem.storeRes.res.unitGroup.floatAuxiliaryUnit.name})      </a:outputPanel>
                                </span>
-                        </rich:tooltip>
-                    </a:outputPanel>
-                    <f:facet name="footer">
-                        #{_resTotal.values.size}
-                    </f:facet>
-                </rich:column>
-                <rich:column>
-                    <h:outputText value="#{_item.stock.displayMasterCount}" rendered="#{not empty _item.stock}"/>
+                    </rich:tooltip>
+                </a:outputPanel>
 
-                </rich:column>
-                <rich:column>
-                    <h:outputText value="#{_item.stock.displayAuxCount}" rendered="#{not empty _item.stock}"/>
+            </rich:column>
+            <rich:column>
+                <a:outputPanel rendered="#{not empty _orderItem.dispatchCount.stockView}">
+                    <h:outputText value="#{_orderItem.dispatchCount.stockView.stock.masterCount}">
+                        <f:convertNumber pattern="#{_orderItem.storeRes.res.unitGroup.masterUnit.countFormate}"/>
+                    </h:outputText>
+                    <h:outputText value="#{_orderItem.storeRes.res.unitGroup.masterUnit.name}" style="float: right"/>
+                </a:outputPanel>
+            </rich:column>
+            <rich:column>
+                <a:outputPanel
+                        rendered="#{(not empty _orderItem.dispatchCount.stockView) and (_orderItem.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                    <h:outputText value="#{_orderItem.dispatchCount.stockView.stock.auxCount}" >
+                        <f:convertNumber pattern="#{_orderItem.storeRes.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                    </h:outputText>
+                    <h:outputText value="#{_orderItem.storeRes.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right"/>
+                </a:outputPanel>
+            </rich:column>
+            <rich:column>
+                <a:outputPanel rendered="#{not empty _orderItem.dispatchCount.stockView}">
+                    <h:outputText value="#{_orderItem.dispatchCount.stockView.canUseCount.masterCount}">
+                        <f:convertNumber pattern="#{_orderItem.storeRes.res.unitGroup.masterUnit.countFormate}"/>
+                    </h:outputText>
+                    <h:outputText value="#{_orderItem.storeRes.res.unitGroup.masterUnit.name}" style="float: right"/>
+                </a:outputPanel>
+            </rich:column>
+            <rich:column>
+                <a:outputPanel
+                        rendered="#{(not empty _orderItem.dispatchCount.stockView) and (_orderItem.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                    <h:outputText value="#{_orderItem.dispatchCount.stockView.canUseCount.auxCount}" >
+                        <f:convertNumber pattern="#{_orderItem.storeRes.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                    </h:outputText>
+                    <h:outputText value="#{_orderItem.storeRes.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right"/>
+                </a:outputPanel>
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_orderItem.displayMasterCount}" style="#{_orderItem.dispatchCount.enough ? '' : 'color: red'}"/>
 
-                </rich:column>
-                <rich:column>
-                    <h:outputText value="#{_item.displayMasterCount}" style="#{_item.enough ? '' : 'color: red'}"/>
-                    <f:facet name="footer">
-                        #{_resTotal.totalMasterCount}
+            </rich:column>
+            <rich:column>
+                <h:outputText value="#{_orderItem.displayAuxCount}" style="#{_orderItem.dispatchCount.enough ? '' : 'color: red'}"/>
 
-                        #{_resTotal.res.unitGroup.masterUnit.name}
-                    </f:facet>
-                </rich:column>
-                <rich:column>
-                    <h:outputText value="#{_item.displayAuxCount}" style="#{_item.enough ? '' : 'color: red'}"/>
-                    <f:facet name="footer">
-                        #{_resTotal.totalAuxCount}
-                        <h:outputText value="#{_resTotal.res.unitGroup.floatAuxiliaryUnit.name}"
-                                      rendered="#{_resTotal.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
-                    </f:facet>
-                </rich:column>
-            </rich:collapsibleSubTable>
+            </rich:column>
 
         </rich:collapsibleSubTable>
 

@@ -319,10 +319,13 @@ public class CustomerOrder implements java.io.Serializable {
         return true;
     }
 
-    @Deprecated
     @Transient
     public BigDecimal getShortageMoney() {
-        return null;
+        BigDecimal result = getMoney();
+        if (isEarnestFirst()){
+            result = result.subtract(getEarnest());
+        }
+        return result;
     }
 
     @Enumerated(EnumType.STRING)

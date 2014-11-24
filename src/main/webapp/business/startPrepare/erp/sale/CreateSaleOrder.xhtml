@@ -62,7 +62,7 @@
                 <s:convertEnum/>
                 <rich:validator/>
                 <rich:placeholder value="#{messages.order_field_payType}"/>
-                <a:ajax event="selectitem" render="earnestFirstField"/>
+                <a:ajax event="selectitem" render="earnestFirstField,eptype"/>
             </rich:select>
             <rich:message for="payTypeField" styleClass="message-icon"
                           showDetail="true" showSummary="true" tooltip="true"/>
@@ -81,24 +81,29 @@
             <rich:message for="orderSendLimitDateField" styleClass="message-icon"
                           showDetail="true" showSummary="true" tooltip="true"/>
 
-
+             <a:outputPanel id="eptype">
+            <rich:select id="eptypeInput" value="#{orderCreate.instance.proxyReceiveType}" required="true"
+                         rendered="#{(not empty orderCreate.instance.payType) and (orderCreate.instance.payType eq 'EXPRESS_PROXY')}">
+                <s:selectItems value="#{proxyPayTypes}" var="_type" itemValue="#{_type}"
+                               label="#{messages[_type.name()]}"/>
+                <s:convertEnum/>
+            </rich:select>             <rich:message for="eptypeInput" styleClass="message-icon"
+                                                     showDetail="true" showSummary="true" tooltip="true"/> </a:outputPanel>
 
             <a:outputPanel id="earnestFirstField">
-                <h:selectBooleanCheckbox value="#{orderCreate.instance.earnestFirst}"
-                                         rendered="#{(not empty orderCreate.instance.payType) and (not (orderCreate.instance.payType eq 'PAY_FIRST'))}">
-                    #{messages.order_field_earnestFirst}
-                </h:selectBooleanCheckbox>
 
-                <rich:select value="#{orderCreate.instance.proxyReceiveType}" rendered="#{(not empty orderCreate.instance.payType) and (orderCreate.instance.payType eq 'EXPRESS_PROXY')}" >
-                    <s:selectItems value="#{proxyPayTypes}" var="_type" itemValue="#{_type}" label="#{messages[_type.name()]}" />
-                    <s:convertEnum/>
-                </rich:select>
+                <a:outputPanel layout="block" style="width: 100px;">
+                    <h:selectBooleanCheckbox value="#{orderCreate.instance.earnestFirst}"
+                                             rendered="#{(not empty orderCreate.instance.payType) and (not (orderCreate.instance.payType eq 'PAY_FIRST'))}">
+                        #{messages.order_field_earnestFirst}
+                    </h:selectBooleanCheckbox>
+                </a:outputPanel>
             </a:outputPanel>
+            <a:outputPanel layout="block" style="width: 100px;">
 
-            <h:selectBooleanCheckbox value="#{needResHome.instance.fareByCustomer}">
-                #{messages.order_fare_by_customer}
-            </h:selectBooleanCheckbox>
-
+                <h:selectBooleanCheckbox value="#{needResHome.instance.fareByCustomer}">
+                    #{messages.order_fare_by_customer}
+                </h:selectBooleanCheckbox> </a:outputPanel>
         </h:panelGrid>
     </rich:toolbarGroup>
 
@@ -247,7 +252,7 @@
             <ui:define name="label">#{messages.order_field_postCode}</ui:define>
             <h:inputText value="#{needResHome.instance.postCode}" label="#{messages.order_field_postCode}"
                          size="10" maxlength="10">
-                <a:ajax event="blur" render="orderPostCodeField" />
+                <a:ajax event="blur" render="orderPostCodeField"/>
             </h:inputText>
         </s:decorate>
 

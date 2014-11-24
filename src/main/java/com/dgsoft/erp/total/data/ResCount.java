@@ -23,5 +23,4 @@ public interface ResCount extends TotalDataGroup.GroupTotalData, Comparable<ResC
 
     public BigDecimal getCountByUnit(ResUnit resUnit);
 
-
 }

@@ -79,6 +79,8 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"MoneyNotinf");
             return null;
         }
+
+        return null;
     }
 
     @Override

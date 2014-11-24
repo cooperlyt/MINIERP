@@ -1,6 +1,10 @@
 package com.dgsoft.erp.model;
 // Generated Oct 30, 2013 3:06:10 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.common.TotalGroupStrategy;
+import com.dgsoft.erp.model.api.StoreResStockCount;
+import com.dgsoft.erp.total.data.ResCount;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -314,6 +318,7 @@ public class Dispatch implements java.io.Serializable {
         }
         return false;
     }
+
 
 
 

@@ -7,8 +7,11 @@ import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.utils.persistence.UniqueVerify;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
+import com.dgsoft.erp.action.StockSearchList;
+import com.dgsoft.erp.model.api.StockView;
 import com.dgsoft.erp.model.api.StoreResCount;
 import org.hibernate.annotations.GenericGenerator;
+import org.jboss.seam.Component;
 import org.jboss.seam.international.StatusMessage;
 
 import javax.persistence.*;
@@ -250,28 +253,26 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     }
 
     @Transient
-    public List<Stock> getVaildStockList() {
-        List<Stock> result = new ArrayList<Stock>();
-        for (Stock stock : getStocks()) {
-            if (stock.getCount().compareTo(BigDecimal.ZERO) > 0) {
-                result.add(stock);
-            }
-        }
+    public List<StockView> getVaildStockList() {
 
-        Collections.sort(result, new Comparator<Stock>() {
-            @Override
-            public int compare(Stock o1, Stock o2) {
-                return o1.getStore().getId().compareTo(o2.getStore().getId());
-            }
-        });
-        return result;
+       return ((StockSearchList)Component.getInstance(StockSearchList.class,true)).searchStockViews(this);
+
+
+    }
+
+    @Transient
+    public StockView getStockByStore(Store store) {
+
+        return ((StockSearchList)Component.getInstance(StockSearchList.class,true)).searchStockViews(store,this);
+
+
     }
 
     @Transient
     public StoreResCount getTotalCount() {
         StoreResCount resCount = new StoreResCount(this, BigDecimal.ZERO);
-        for (Stock stock : getVaildStockList()) {
-            resCount.addCount(stock);
+        for (StockView stock : getVaildStockList()) {
+            resCount.addCount(stock.getStock());
 
         }
         return resCount;

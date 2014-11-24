@@ -5,6 +5,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
+import com.dgsoft.erp.model.api.StoreResStockCount;
 import org.hibernate.annotations.GenericGenerator;
 import org.jboss.seam.log.Logging;
 
@@ -174,11 +175,11 @@ public class OrderItem extends StoreResPriceEntity
     @Override
     protected void calcTotalMoney() {
         calcNeedMoney();
-        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-            if((getMoney() != null) && (getCount() != null) && (!getUseUnit().isMasterUnit()) && (getNeedConvertRate() != null)) {
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            if ((getMoney() != null) && (getCount() != null) && (!getUseUnit().isMasterUnit()) && (getNeedConvertRate() != null)) {
                 setTotalMoney(getNeedCount().multiply(getRebateUnitPrice()));
             }
-        }else{
+        } else {
             super.calcTotalMoney();
         }
     }
@@ -241,7 +242,7 @@ public class OrderItem extends StoreResPriceEntity
         this.id = id;
     }
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
+    @ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "STORE_RES", nullable = true)
     public StoreRes getStoreRes() {
         return this.storeRes;
@@ -294,7 +295,7 @@ public class OrderItem extends StoreResPriceEntity
         this.count = count;
     }
 
-    @Column(name="SALE_COUNT", nullable = true, scale = 4)
+    @Column(name = "SALE_COUNT", nullable = true, scale = 4)
     @Override
     public BigDecimal getSaleCount() {
         return saleCount;
@@ -444,8 +445,8 @@ public class OrderItem extends StoreResPriceEntity
     }
 
     @Transient
-    public BigDecimal getSalerTotalMoney(){
-        if (OrderItemRebate.ItemRebateModel.BY_SUB.equals(getMiddleMoneyCalcType()) && (getMiddleUnit() != null) && (getMiddleRate() != null)){
+    public BigDecimal getSalerTotalMoney() {
+        if (OrderItemRebate.ItemRebateModel.BY_SUB.equals(getMiddleMoneyCalcType()) && (getMiddleUnit() != null) && (getMiddleRate() != null)) {
             return getMiddleUnitCount().multiply(getMiddleRate());
         }
         return null;
@@ -463,10 +464,10 @@ public class OrderItem extends StoreResPriceEntity
             switch (getMiddleMoneyCalcType()) {
                 case BY_SUB:
 
-                    if (getMiddleUnit() != null){
+                    if (getMiddleUnit() != null) {
                         BigDecimal salerTotalMoney = getSalerTotalMoney();
                         if (getTotalMoney().compareTo(salerTotalMoney) > 0)
-                         return getTotalMoney().subtract(salerTotalMoney);
+                            return getTotalMoney().subtract(salerTotalMoney);
                     }
                     break;
                 case BY_COUNT:
@@ -483,5 +484,10 @@ public class OrderItem extends StoreResPriceEntity
         return BigDecimal.ZERO;
     }
 
+
+    @Transient
+    public StoreResStockCount getDispatchCount() {
+        return new StoreResStockCount(getStoreRes(), getCount(), getStoreRes().getStockByStore(getDispatch().getStore()));
+    }
 
 }

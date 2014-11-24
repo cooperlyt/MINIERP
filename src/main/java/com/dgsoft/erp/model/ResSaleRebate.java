@@ -183,6 +183,8 @@ public class ResSaleRebate implements Serializable {
 
     @Transient
     public boolean isSameItem(OrderItem other) {
+        if ((other.getMoney() == null) || (other.getRebate() == null))
+            return false;
         return getRes().equals(other.getRes()) && getResUnit().getId().equals(other.getResUnit().getId())
                 && (other.getMoney().compareTo(getMoney()) == 0) &&
                 (other.getRebate().compareTo(getItemRebate()) == 0);

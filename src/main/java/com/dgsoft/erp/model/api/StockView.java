@@ -15,7 +15,7 @@ public class StockView {
 
     public StockView(Stock stock, BigDecimal saleMasterCount) {
         this.stock = stock;
-        saleCount = new StoreResCount(stock.getStoreRes(),saleMasterCount);
+        saleCount = new StoreResCount(stock.getStoreRes(),(saleMasterCount == null) ? BigDecimal.ZERO : saleMasterCount);
     }
 
     public Stock getStock() {

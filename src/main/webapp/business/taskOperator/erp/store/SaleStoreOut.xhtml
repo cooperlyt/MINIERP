@@ -73,13 +73,11 @@
     <rich:toolbar>
 
         <rich:toolbarGroup rendered="#{orderHome.instance.payType eq 'EXPRESS_PROXY'}">
-            <h:panelGrid columns="2">
                 #{messages.EXPRESS_PROXY}
                 <h:outputText value="#{orderHome.instance.shortageMoney}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>
-            </h:panelGrid>
         </rich:toolbarGroup>
 
         <rich:toolbarGroup location="right">

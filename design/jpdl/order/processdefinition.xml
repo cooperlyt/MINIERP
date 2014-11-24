@@ -118,10 +118,10 @@
 
 	<decision name="发货情况判断">
 		<transition to="订单完成" name="全部发货">
-			<condition expression="#{orderHome.instance.allStoreOut}"></condition>
+			<condition expression="#{not orderHome.haveStoreOutChange}"></condition>
 		</transition>
 		<transition to="订单更改" name="订单更改">
-			<condition expression="#{not orderHome.instance.allStoreOut}"></condition>
+			<condition expression="#{orderHome.haveStoreOutChange}"></condition>
 		</transition>
 	</decision>
 

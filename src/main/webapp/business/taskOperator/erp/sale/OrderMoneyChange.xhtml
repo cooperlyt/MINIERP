@@ -19,7 +19,7 @@
                     <a:region>
                         <a:outputPanel ajaxRendered="true">
                             <h:panelGrid id="orderTotalPrice" columns="20">
-                                #{messages.orderPrice}:
+
                                 <h:outputText value="#{orderHome.instance.resMoney}">
                                     <f:convertNumber locale="#{calendarBean.locale}"
                                                      type="currency" groupingUsed="true"/>
@@ -88,6 +88,26 @@
                     </a:region>
                 </rich:toolbarGroup>
 
+
+                <rich:toolbarGroup>
+                    <rich:calendar id="orderCreateDateField"
+                                   enableManualInput="true"
+                                   inputSize="10"
+                                   timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                   showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                   datePattern="#{messages.datetimepattern}"
+                                   required="true"
+                                   validator="operDateValidator"
+                                   defaultTime="#{currentTime}"
+                                   defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
+                                   label="#{messages.order_field_createDate}"
+                                   value="#{orderChange.moneyOperDate}">
+                        <rich:validator event="change"/>
+                        <rich:placeholder value="#{messages.order_field_createDate}"/>
+                    </rich:calendar>
+                    <rich:message for="orderCreateDateField" styleClass="message-icon"
+                                  showDetail="true" showSummary="true" tooltip="true"/>
+                </rich:toolbarGroup>
 
 
                 <rich:toolbarGroup location="right">

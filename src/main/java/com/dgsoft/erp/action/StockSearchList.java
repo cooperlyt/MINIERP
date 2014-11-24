@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Name("stockSearchList")
 @Scope(ScopeType.CONVERSATION)
-public class StockSearchList extends ErpEntityQuery<Stock>{
+public class StockSearchList extends ErpEntityQuery<Stock> {
 
     private static final String EJBQL = "select stock from Stock stock left join fetch stock.storeRes storeRes " +
             "left join fetch storeRes.res res left join fetch res.unitGroup where stock.count > 0 ";
@@ -52,8 +52,8 @@ public class StockSearchList extends ErpEntityQuery<Stock>{
 
     private StoreResCountGroup<Stock> totalResult;
 
-    private void initTotalResult(){
-        if ((getMaxResults() != null) || (totalResult == null)){
+    private void initTotalResult() {
+        if ((getMaxResults() != null) || (totalResult == null)) {
             setMaxResults(null);
             totalResult = new StoreResCountGroup<Stock>(getResultList());
         }
@@ -65,27 +65,53 @@ public class StockSearchList extends ErpEntityQuery<Stock>{
     }
 
     @Override
-    public void refresh(){
+    public void refresh() {
         super.refresh();
         totalResult = null;
     }
 
-    private List<String> getStoreResIds(List<StoreRes> storeReses){
+    private List<String> getStoreResIds(List<StoreRes> storeReses) {
         List<String> result = new ArrayList<String>(storeReses.size());
-        for (StoreRes storeRes: storeReses){
-            result.add(storeRes.getId());
+        for (StoreRes storeRes : storeReses) {
+            if (storeRes.getId() != null)
+                result.add(storeRes.getId());
         }
         return result;
     }
 
-    public List<StockView> searchStockViews(Store store,List<StoreRes> storeReses){
-        return getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.store.id = :storeId and stock.storeRes.id in (:storeResIds)",StockView.class).
-                setParameter("storeId", storeId).setParameter("storeResIds",getStoreResIds(storeReses)).getResultList();
+    public List<StockView> searchStockViews(Store store, List<StoreRes> storeReses) {
+        List<String> ids = getStoreResIds(storeReses);
+        if (ids.isEmpty()) {
+            return new ArrayList<StockView>(0);
+        }
+        return getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.count != 0 and stock.store.id = :storeId and stock.storeRes.id in (:storeResIds)", StockView.class).
+                setParameter("storeId", store.getId()).setParameter("storeResIds", ids).getResultList();
     }
 
-    public List<StockView> searchStockViews(List<StoreRes> storeReses){
-        return getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.storeRes.id in (:storeResIds)",StockView.class).
-                setParameter("storeResIds",getStoreResIds(storeReses)).getResultList();
+    public StockView searchStockViews(Store store, StoreRes storeRes) {
+        List<StoreRes> storeReses = new ArrayList<StoreRes>(1);
+        storeReses.add(storeRes);
+        List<StockView> result = searchStockViews(store, storeReses);
+        if (result.isEmpty()) {
+            return null;
+        } else
+            return result.get(0);
+    }
+
+    public List<StockView> searchStockViews(StoreRes storeRes) {
+        List<StoreRes> storeReses = new ArrayList<StoreRes>(1);
+        storeReses.add(storeRes);
+        return searchStockViews(storeReses);
+    }
+
+    public List<StockView> searchStockViews(List<StoreRes> storeReses) {
+
+        List<String> ids = getStoreResIds(storeReses);
+        if (ids.isEmpty()) {
+            return new ArrayList<StockView>(0);
+        }
+        return getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.count != 0 and stock.storeRes.id in (:storeResIds)", StockView.class).
+                setParameter("storeResIds", ids).getResultList();
     }
 
 

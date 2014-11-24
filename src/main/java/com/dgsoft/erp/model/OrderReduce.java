@@ -34,6 +34,12 @@ public class OrderReduce implements Serializable {
         this.customerOrder = customerOrder;
     }
 
+    public OrderReduce(CustomerOrder customerOrder, BigDecimal money, ReduceType type) {
+        this.customerOrder = customerOrder;
+        this.money = money;
+        this.type = type;
+    }
+
     @Id
     @Column(name = "ID", unique = true, nullable = false, length = 32)
     @GeneratedValue(generator = "system-uuid")

@@ -231,6 +231,23 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
     }
 
+    public boolean isHaveStoreOutChange(){
+
+        for (NeedRes needRes: getInstance().getNeedReses()){
+            for(Dispatch dispatch: needRes.getDispatches()){
+                if (!dispatch.getOweOuts().isEmpty()){
+                    return true;
+                }
+                for(OrderItem item : dispatch.getOrderItems()){
+                    if (item.isOverlyOut()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public void setInputOrderMoney(BigDecimal money) {
         getInstance().setMoney(money);
         calcTotalResMoney();
@@ -420,28 +437,28 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         calcTotalResMoney();
 
         BigDecimal allMoney = getInstance().getResMoney().subtract(getInstance().getTotalRebateMoney());
-        BigDecimal truncMoney = allMoney.setScale(0, BigDecimal.ROUND_DOWN);
-        BigDecimal truncReduce = allMoney.subtract(truncMoney);
+//        BigDecimal truncMoney = allMoney.setScale(0, BigDecimal.ROUND_DOWN);
+//        BigDecimal truncReduce = allMoney.subtract(truncMoney);
+//
+//        BigDecimal nowReduce = BigDecimal.ZERO;
+//        for (OrderReduce orderReduce : getOrderReduces()) {
+//            if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(orderReduce.getType())) {
+//                nowReduce = nowReduce.add(orderReduce.getMoney());
+//            }
+//        }
+//
+//        if (nowReduce.compareTo(truncReduce) != 0) {
+//            Iterator<OrderReduce> it = getOrderReduces().iterator();
+//            while (it.hasNext()) {
+//                if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(it.next().getType())) {
+//                    it.remove();
+//                }
+//            }
+//        }
+//
+//        getOrderReduces().add(new OrderReduce(getInstance(), OrderReduce.ReduceType.SYSTEM_TRUNC));
 
-        BigDecimal nowReduce = BigDecimal.ZERO;
-        for (OrderReduce orderReduce : getOrderReduces()) {
-            if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(orderReduce.getType())) {
-                nowReduce = nowReduce.add(orderReduce.getMoney());
-            }
-        }
-
-        if (nowReduce.compareTo(truncReduce) != 0) {
-            Iterator<OrderReduce> it = getOrderReduces().iterator();
-            while (it.hasNext()) {
-                if (OrderReduce.ReduceType.SYSTEM_TRUNC.equals(it.next().getType())) {
-                    it.remove();
-                }
-            }
-        }
-
-        getOrderReduces().add(new OrderReduce(getInstance(), OrderReduce.ReduceType.SYSTEM_TRUNC));
-
-        getInstance().setMoney(truncMoney);
+        getInstance().setMoney(allMoney.setScale(0, BigDecimal.ROUND_DOWN));
         //calcReceiveMoney();
     }
 
