@@ -99,11 +99,14 @@ public class AccountOper implements java.io.Serializable {
     public AccountOper() {
     }
 
-    public AccountOper(Customer customer, String operEmp, AccountOperType operType) {
+    public AccountOper(MoneySave moneySave,Customer customer, String operEmp, AccountOperType operType) {
         this.customer = customer;
         this.operEmp = operEmp;
         this.operType = operType;
-        this.operDate = operDate;
+        this.moneySave = moneySave;
+        this.advanceReceivable = BigDecimal.ZERO;
+        this.accountsReceivable = BigDecimal.ZERO;
+        this.proxcAccountsReceiveable = BigDecimal.ZERO;
     }
 
     public AccountOper(AccountOperType operType, String operEmp) {

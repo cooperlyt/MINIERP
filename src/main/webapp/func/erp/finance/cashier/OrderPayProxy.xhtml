@@ -1,12 +1,199 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-    <title></title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
 
-</body>
-</html>
+
+    <ui:define name="body">
+        <rich:panel>
+
+            <h:panelGrid columns="2">
+                <h:form>
+                    <a:outputPanel>
+                        <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">
+                                #{messages.accountOper_field_operDate}
+                            </ui:define>
+                            <rich:calendar
+                                    enableManualInput="true"
+                                    inputSize="20"
+                                    timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                                    showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                                    datePattern="#{messages.datetimepattern}"
+                                    required="true"
+                                    defaultTime="#{currentTime}"
+                                    label="#{messages.accountOper_field_operDate}"
+                                    value="#{payByOrder.operDate}" validator="operDateValidator">
+
+                            </rich:calendar>
+
+                        </s:decorate>
+
+
+                        <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                            <ui:param name="moneySave" value="#{payByOrder.instance}"/>
+                        </ui:include>
+
+                        <s:decorate
+                                template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.ComeMoney}</ui:define>
+                            <h:inputText value="#{payByOrder.instance.money}"
+                                         label="#{messages.ComeMoney}"
+                                         required="true"
+                                         converter="javax.faces.BigDecimal">
+                                <f:validateDoubleRange minimum="0.01"/>
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                                 currencySymbol=""/>
+                                <a:ajax event="change" render="outMoney,customerOpers"/>
+                            </h:inputText>
+                        </s:decorate>
+
+
+                        <s:decorate id="remitFeeField"
+                                    template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.accountOper_field_fee}</ui:define>
+                            <h:inputText value="#{payByOrder.instance.remitFee}"
+                                         label="#{messages.accountOper_field_fee}"
+                                         required="true"
+                                         converter="javax.faces.BigDecimal">
+                                <f:validateDoubleRange minimum="0"/>
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                                 currencySymbol=""/>
+                                <a:ajax event="change" render="outMoney,customerOpers"/>
+                            </h:inputText>
+                        </s:decorate>
+
+
+                        <a:outputPanel id="outMoney">
+
+                            #{messages.MoneySaveAccountAdd}(<h:outputText value="#{payByOrder.outMoney}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
+                            = #{messages.ComeMoney}(<h:outputText value="#{payByOrder.instance.money}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
+                            + #{messages.accountOper_field_fee}(<h:outputText value="#{payByOrder.instance.remitFee}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText>)
+
+                            - #{messages.SelectOrderMoney}(<h:outputText value="#{orderSelectList.selectOrderTotalMoney}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
+
+                            <h:outputText value="#{messages.MoneyNotinf}" style="color: #ff0000;"
+                                          rendered="#{payByOrder.outMoney lt 0}"/>
+
+                            <s:decorate template="/layout/seam-display.xhtml" rendered="#{payByOrder.outMoney gt 0}">
+                                <ui:define name="label">
+                                    #{messages.MoneySaveAccountAdd}
+                                </ui:define>
+                                <h:outputText value="#{payByOrder.outMoney}">
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                </h:outputText>
+
+                            </s:decorate>
+
+                        </a:outputPanel>
+
+                        <div style="clear:both">
+                            <span class="required">*</span>
+                            #{messages.requiredFields}
+                        </div>
+
+                        <rich:dataTable id="customerOpers" value="#{payByOrder.accountOpers}" var="_oper">
+
+                            <rich:column>
+                                <h:outputText value=" #{_oper.customer.name}" style="#{(_oper.proxcAccountsReceiveable eq 0) ? 'color: red;' : ''}"/>
+
+                            </rich:column>
+                            <rich:column style="text-align: right;">
+                                <h:outputText value="#{_oper.customer.accountMoney}">
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                </h:outputText>
+                            </rich:column>
+                            <rich:column style="text-align: right;">
+                                <h:outputText value="#{_oper.customer.proxyAccountMoney}">
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                </h:outputText>
+                            </rich:column>
+                            <rich:column style="text-align: right;">
+                                <h:outputText value="#{_oper.proxcAccountsReceiveable}">
+                                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                </h:outputText>
+                                <f:facet name="footer">
+
+                                    <h:outputText value="#{payByOrder.customerProxyReceiveMoney}">
+                                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                    </h:outputText>
+                                </f:facet>
+                            </rich:column>
+
+                            <rich:column style="text-align: right;">
+                                <s:decorate template="/layout/grid-inside-edit.xhtml">
+                                    <rich:inplaceInput value="#{_oper.accountsReceivable}" required="true"
+                                                       label="#{messages.MoneySaveAccountAdd}" style="width: 95%">
+                                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"
+                                                         groupingUsed="false" currencySymbol=""/>
+                                        <f:validateDoubleRange minimum="0"/>
+                                        <a:ajax event="blur" execute="@this"
+                                                render="customerOpers"/>
+                                    </rich:inplaceInput>
+                                </s:decorate>
+
+                                <f:facet name="footer">
+
+                                    <h:outputText value="#{payByOrder.customerSaveReceiveMoney}">
+                                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                                    </h:outputText>
+                                </f:facet>
+                            </rich:column>
+
+                        </rich:dataTable>
+
+                        <div class="form-actions">
+                            <h:commandButton styleClass="btn-big" value="#{messages.ReceiveMoney}" action="#{payByOrder.receiveMoney}">
+
+                            </h:commandButton>
+                        </div>
+                    </a:outputPanel>
+
+                </h:form>
+                <rich:dataTable var="_order" value="#{orderSelectList.selectOrders}">
+                    <rich:column>
+                        #{_order.id}
+                    </rich:column>
+
+                    <rich:column>
+                        #{_order.customer.name}
+                    </rich:column>
+
+                    <rich:column>
+                        <h:outputText value="#{_order.createDate}">
+                            <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                        </h:outputText>
+                    </rich:column>
+
+                    <rich:column style="text-align: right;">
+
+                        <h:outputText value="#{_order.money}">
+                            <f:convertNumber locale="#{calendarBean.locale}"
+                                             type="currency" groupingUsed="true"/>
+                        </h:outputText>
+
+                        <f:facet name="footer">
+                            <h:outputText value="#{orderSelectList.selectOrderTotalMoney}">
+                                <f:convertNumber locale="#{calendarBean.locale}"
+                                                 type="currency" groupingUsed="true"/>
+                            </h:outputText>
+
+                        </f:facet>
+
+                    </rich:column>
+
+                </rich:dataTable>
+
+            </h:panelGrid>
+
+        </rich:panel>
+
+
+    </ui:define>
+
+</ui:composition>

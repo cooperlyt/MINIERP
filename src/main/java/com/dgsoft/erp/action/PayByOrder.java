@@ -16,6 +16,8 @@ import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cooper on 11/23/14.
@@ -33,8 +35,17 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
     @In
     private Credentials credentials;
 
+    private Date operDate;
+
     private SetLinkList<AccountOper> accountOpers;
 
+    public Date getOperDate() {
+        return operDate;
+    }
+
+    public void setOperDate(Date operDate) {
+        this.operDate = operDate;
+    }
 
     public String orderSelectComplete() {
         if (orderSelectList.getSelectOrders().isEmpty()) {
@@ -54,6 +65,32 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
                 return null;
             }
 
+            Map<Customer, AccountOper> opers = new HashMap<Customer, AccountOper>();
+            for (CustomerOrder order : orderSelectList.getSelectOrders()) {
+                AccountOper oper = opers.get(order.getCustomer());
+                if (oper == null) {
+                    oper = new AccountOper(getInstance(),order.getCustomer(), credentials.getUsername(), AccountOper.AccountOperType.PROXY_SAVINGS);
+                    getAccountOpers().add(oper);
+                    oper.setProxcAccountsReceiveable(order.getMoney());
+                    opers.put(order.getCustomer(), oper);
+                } else {
+                    oper.setProxcAccountsReceiveable(oper.getProxcAccountsReceiveable().add(order.getMoney()));
+                }
+
+
+            }
+
+            for(Map.Entry<Customer, AccountOper> entry : opers.entrySet()){
+                BigDecimal customerProxyAM = entry.getKey().getProxyAccountMoney();
+                if (customerProxyAM == null) {
+                    customerProxyAM = BigDecimal.ZERO;
+                }
+                if (customerProxyAM.compareTo(entry.getValue().getProxcAccountsReceiveable()) < 0){
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"CustomerProxyAccountGt",entry.getKey().getName(),customerProxyAM,entry.getValue().getProxcAccountsReceiveable());
+                    entry.getValue().setProxcAccountsReceiveable(BigDecimal.ZERO);
+                }
+            }
+
             return "proxy";
         } else {
             Customer customer = null;
@@ -65,7 +102,7 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
                 customer = order.getCustomer();
             }
 
-            getAccountOpers().add(new AccountOper(customer, credentials.getUsername(), AccountOper.AccountOperType.CUSTOMER_SAVINGS));
+            getAccountOpers().add(new AccountOper(getInstance(),customer, credentials.getUsername(), AccountOper.AccountOperType.CUSTOMER_SAVINGS));
 
 
             return "customer";
@@ -74,13 +111,54 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
     }
 
 
-    public String receiveMoney(){
-        if (getOutMoney().compareTo(BigDecimal.ZERO) < 0){
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"MoneyNotinf");
+    public String receiveMoney() {
+        if (getOutMoney().compareTo(BigDecimal.ZERO) < 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "MoneyNotinf");
             return null;
         }
 
-        return null;
+        if (getEditingOper().getOperType().equals(AccountOper.AccountOperType.PROXY_SAVINGS)){
+            BigDecimal outMoney = BigDecimal.ZERO;
+            for(AccountOper oper: getAccountOpers()){
+                outMoney = outMoney.add(oper.getAccountsReceivable());
+                if (oper.getProxcAccountsReceiveable().equals(BigDecimal.ZERO)){
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"CustomerProxyAccountGt",oper.getCustomer().getName(),oper.getCustomer().getProxyAccountMoney());
+                    return null;
+                }
+            }
+            if (!outMoney.equals(getOutMoney())){
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ProxyOutMoneyError",getOutMoney(),outMoney);
+                return null;
+            }
+        }else{
+            if(getOutMoney().compareTo(BigDecimal.ZERO) < 0){
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"MoneyNotinf");
+                return null;
+            }
+            getEditingOper().setAccountsReceivable(getInstance().getMoney().add(getInstance().getRemitFee()));
+        }
+
+        for(CustomerOrder order: orderSelectList.getSelectOrders()){
+            order.setPayTag(true);
+        }
+
+        for(AccountOper oper: getAccountOpers()){
+            oper.setOperDate(operDate);
+            oper.calcCustomerMoney();
+            if (oper.getOperType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) &&
+                    (oper.getCustomer().getProxyAccountMoney().compareTo(BigDecimal.ZERO) <= 0)){
+                getEntityManager().createQuery("update CustomerOrder set payTag = true where accountChange = true and customer.id = :customerId and payType ='EXPRESS_PROXY' ").setParameter("customerId",oper.getCustomer().getId()).executeUpdate();
+
+            }
+            if (oper.getOperType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS) &&
+                    (oper.getCustomer().getAccountMoney().compareTo(BigDecimal.ZERO) <= 0)){
+                getEntityManager().createQuery("update CustomerOrder set payTag = true where accountChange = true and customer.id = :customerId and payType <> 'EXPRESS_PROXY' ").setParameter("customerId",oper.getCustomer().getId()).executeUpdate();
+            }
+        }
+
+
+
+        return "persisted".equals(persist()) ? "/func/erp/finance/cashier/CustomerMoneySavings.xhtml" : null;
     }
 
     @Override
@@ -90,14 +168,14 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
     }
 
     @Override
-    protected MoneySave createInstance(){
+    protected MoneySave createInstance() {
         MoneySave result = new MoneySave();
         result.setMoney(BigDecimal.ZERO);
         return result;
     }
 
     public SetLinkList<AccountOper> getAccountOpers() {
-        if(accountOpers == null){
+        if (accountOpers == null) {
             accountOpers = new SetLinkList<AccountOper>(getInstance().getAccountOpers());
         }
         return accountOpers;
@@ -107,7 +185,23 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
         return accountOpers.get(0);
     }
 
-    public BigDecimal getOutMoney(){
-      return getInstance().getMoney().subtract(orderSelectList.getSelectOrderTotalMoney());
+    public BigDecimal getCustomerSaveReceiveMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for(AccountOper oper: getAccountOpers()){
+            result = result.add(oper.getAccountsReceivable());
+        }
+        return result;
+    }
+
+    public BigDecimal getCustomerProxyReceiveMoney(){
+        BigDecimal result = BigDecimal.ZERO;
+        for(AccountOper oper: getAccountOpers()){
+            result = result.add(oper.getProxcAccountsReceiveable());
+        }
+        return result;
+    }
+
+    public BigDecimal getOutMoney() {
+        return getInstance().getMoney().add(getInstance().getRemitFee()).subtract(orderSelectList.getSelectOrderTotalMoney());
     }
 }
