@@ -1,6 +1,7 @@
 package com.dgsoft.erp.action;
 
 import com.dgsoft.common.SetLinkList;
+import com.dgsoft.common.jbpm.ProcessInstanceHome;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.Customer;
@@ -110,6 +111,9 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
 
     }
 
+    @In(create = true)
+    private ProcessInstanceHome processInstanceHome;
+
 
     public String receiveMoney() {
         if (getOutMoney().compareTo(BigDecimal.ZERO) < 0) {
@@ -140,6 +144,36 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
 
         for(CustomerOrder order: orderSelectList.getSelectOrders()){
             order.setPayTag(true);
+            if(!order.isAccountChange() && (order.getMoney().compareTo(BigDecimal.ZERO) > 0) && order.getAccountOpers().isEmpty() ){
+
+
+
+                AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, order.getOrderEmp());
+                accountOper.setCustomerOrder(order);
+                accountOper.setOperDate(operDate);
+                accountOper.setCustomer(order.getCustomer());
+
+
+
+                if (order.getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                    accountOper.setProxcAccountsReceiveable(getInstance().getMoney());
+                    accountOper.setAccountsReceivable(BigDecimal.ZERO);
+                } else {
+                    accountOper.setAccountsReceivable(getInstance().getMoney());
+                    accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+                }
+
+
+
+                accountOper.calcCustomerMoney();
+                order.getAccountOpers().add(accountOper);
+                order.setAccountChange(true);
+
+
+                processInstanceHome.setProcessDefineName("order");
+                processInstanceHome.setProcessKey(order.getId());
+                processInstanceHome.signalState();
+            }
         }
 
         for(AccountOper oper: getAccountOpers()){

@@ -84,6 +84,17 @@ public class ProcessInstanceHome {
         }
     }
 
+    public boolean signalState(){
+        if ("State".equals(getInstance().getRootToken().getNode().getNodeType().toString())){
+            getInstance().signal();
+            Events.instance().raiseTransactionSuccessEvent("org.jboss.seam.endTask");
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
 
     public void stop() {
 
@@ -138,6 +149,8 @@ public class ProcessInstanceHome {
         });
         return result;
     }
+
+
 
 
 }
