@@ -112,8 +112,7 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
     }
 
     @In(create = true)
-    private ProcessInstanceHome processInstanceHome;
-
+    private OrderHome orderHome;
 
     public String receiveMoney() {
         if (getOutMoney().compareTo(BigDecimal.ZERO) < 0) {
@@ -125,12 +124,12 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
             BigDecimal outMoney = BigDecimal.ZERO;
             for(AccountOper oper: getAccountOpers()){
                 outMoney = outMoney.add(oper.getAccountsReceivable());
-                if (oper.getProxcAccountsReceiveable().equals(BigDecimal.ZERO)){
+                if (oper.getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) == 0){
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"CustomerProxyAccountGt",oper.getCustomer().getName(),oper.getCustomer().getProxyAccountMoney());
                     return null;
                 }
             }
-            if (!outMoney.equals(getOutMoney())){
+            if (outMoney.compareTo(getOutMoney()) != 0 ){
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ProxyOutMoneyError",getOutMoney(),outMoney);
                 return null;
             }
@@ -144,36 +143,11 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
 
         for(CustomerOrder order: orderSelectList.getSelectOrders()){
             order.setPayTag(true);
-            if(!order.isAccountChange() && (order.getMoney().compareTo(BigDecimal.ZERO) > 0) && order.getAccountOpers().isEmpty() ){
-
-
-
-                AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, order.getOrderEmp());
-                accountOper.setCustomerOrder(order);
-                accountOper.setOperDate(operDate);
-                accountOper.setCustomer(order.getCustomer());
-
-
-
-                if (order.getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-                    accountOper.setProxcAccountsReceiveable(getInstance().getMoney());
-                    accountOper.setAccountsReceivable(BigDecimal.ZERO);
-                } else {
-                    accountOper.setAccountsReceivable(getInstance().getMoney());
-                    accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
-                }
-
-
-
-                accountOper.calcCustomerMoney();
-                order.getAccountOpers().add(accountOper);
-                order.setAccountChange(true);
-
-
-                processInstanceHome.setProcessDefineName("order");
-                processInstanceHome.setProcessKey(order.getId());
-                processInstanceHome.signalState();
+            if(!order.isAccountChange() && (order.getMoney().compareTo(BigDecimal.ZERO) > 0) && order.getAccountOpers().isEmpty() ) {
+                orderHome.setInstance(order);
+                orderHome.signalMoney(operDate);
             }
+
         }
 
         for(AccountOper oper: getAccountOpers()){
@@ -205,6 +179,7 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
     protected MoneySave createInstance() {
         MoneySave result = new MoneySave();
         result.setMoney(BigDecimal.ZERO);
+        result.setRemitFee(BigDecimal.ZERO);
         return result;
     }
 

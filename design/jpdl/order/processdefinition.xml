@@ -51,10 +51,10 @@
 
 	<decision name="出库判断(1库)">
 		<transition to="出库完成(1库)">
-			<condition expression="#{not needResHome.needStoreOut('A')}"></condition>
+			<condition expression="#{not orderHome.lastNeedRes.needStoreOut('A')}"></condition>
 		</transition>
 		<transition to="订单出库(1库)" name="出库">
-			<condition expression="#{needResHome.needStoreOut('A')}"></condition>
+			<condition expression="#{orderHome.lastNeedRes.needStoreOut('A')}"></condition>
 		</transition>
 	</decision>
 
@@ -70,19 +70,19 @@
 
 	<decision name="出库判断(2库)">
 		<transition to="订单出库(2库)" name="出库">
-			<condition expression="#{needResHome.needStoreOut('B')}"></condition>
+			<condition expression="#{orderHome.lastNeedRes.needStoreOut('B')}"></condition>
 		</transition>
 		<transition to="出库完成(2库)">
-			<condition expression="#{not needResHome.needStoreOut('B')}"></condition>
+			<condition expression="#{not orderHome.lastNeedRes.needStoreOut('B')}"></condition>
 		</transition>
 	</decision>
 
 	<decision name="出库判断(天津)">
 		<transition to="订单出库(天津)" name="出库">
-			<condition expression="#{needResHome.needStoreOut('C')}"></condition>
+			<condition expression="#{orderHome.lastNeedRes.needStoreOut('C')}"></condition>
 		</transition>
 		<transition to="出库完成(天津)">
-			<condition expression="#{not needResHome.needStoreOut('C')}"></condition>
+			<condition expression="#{not orderHome.lastNeedRes.needStoreOut('C')}"></condition>
 		</transition>
 	</decision>
 
@@ -137,10 +137,10 @@
 
 	<decision name="出库判断(公司)">
 		<transition to="订单出库(公司)" name="出库">
-			<condition expression="#{needResHome.needStoreOut('D')}"></condition>
+			<condition expression="#{orderHome.lastNeedRes.needStoreOut('D')}"></condition>
 		</transition>
 		<transition to="出库完成(公司)" name="无出库">
-			<condition expression="#{not needResHome.needStoreOut('D')}"></condition>
+			<condition expression="#{not orderHome.lastNeedRes.needStoreOut('D')}"></condition>
 		</transition>
 	</decision>
 

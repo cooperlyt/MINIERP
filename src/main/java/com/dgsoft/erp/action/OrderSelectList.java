@@ -24,6 +24,7 @@ public class OrderSelectList extends ErpEntityQuery<CustomerOrder> {
 
     private static final String[] RESTRICTIONS = {
             "customerOrder.payType = #{orderSelectList.payTypeCondition}",
+            "customerOrder.payType <> #{orderSelectList.notPayTypeCondition}",
             "customerOrder.customer.customerArea.id = #{orderSelectList.customerAreaId}",
             "lower(customerOrder.customer.name) like lower(orderSelectList(#{orderSelectList.customerName},'%'))",
             "customerOrder.createDate >= #{orderSelectList.searchDateArea.dateFrom}",
@@ -46,10 +47,14 @@ public class OrderSelectList extends ErpEntityQuery<CustomerOrder> {
 
     private String selectOrderId;
 
-    private boolean proxyPay;
+    private boolean proxyPay = false;
 
     public CustomerOrder.OrderPayType getPayTypeCondition() {
         return proxyPay ? CustomerOrder.OrderPayType.EXPRESS_PROXY : null;
+    }
+
+    public CustomerOrder.OrderPayType getNotPayTypeCondition(){
+        return proxyPay ?  null :CustomerOrder.OrderPayType.EXPRESS_PROXY;
     }
 
     private List<CustomerOrder> selectOrders = new ArrayList<CustomerOrder>();
@@ -136,7 +141,7 @@ public class OrderSelectList extends ErpEntityQuery<CustomerOrder> {
     }
 
     public Boolean getFlagCondition() {
-        return onlyNotFlag ? true : null;
+        return onlyNotFlag ? false : null;
     }
 
     public SearchDateArea getSearchDateArea() {

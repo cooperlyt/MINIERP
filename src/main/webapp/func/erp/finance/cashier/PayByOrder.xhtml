@@ -8,27 +8,13 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/full-template.xhtml">
 
-<ui:define name="toolbar">
-    <rich:toolbar height="34" itemSeparator="line">
-
-        <rich:toolbarGroup location="right">
-            <s:button value="#{messages.newOrder}" styleClass="toolBarBtn"
-                      action="#{orderCreate.beginCreateOrder}" propagation="begin">
-                <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-                <f:param name="businessDefineId" value="erp.business.order"/>
-                <f:param name="orderId" value=""/>
-            </s:button>
-        </rich:toolbarGroup>
-    </rich:toolbar>
-
-
-</ui:define>
-
 <ui:define name="body">
 
 <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
 <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
 
+
+<ui:param name="functionTitle" value="#{messages.OrderSelect}"/>
 
 <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
 
@@ -193,13 +179,9 @@
                 </ui:include>
             </f:facet>
 
-
-            <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.data.id}" target="_blank"
-                    style="#{_order.data.canceled ? 'text-decoration:line-through; color: red;' : ''}">
-                <f:param name="orderId" value="#{_order.data.id}"/>
-            </s:link>
-
+            #{_order.data.id}
             <div class="order-status" style="float: right;padding-right: 5px;">
+                <div class="myebay-sprite #{_order.data.accountChange ? 'ph-fund' : 'ph-not-fund' }"/>
 
                 <div class="myebay-sprite #{_order.data.allStoreOut ? 'ph-ship' : 'ph-not-ship' }"></div>
             </div>
@@ -312,22 +294,17 @@
 <h:form>
     <a:outputPanel id="selectedOrder">
 
-        <h:dataTable value="#{orderSelectList.selectOrders}" var="_order">
+        <rich:dataTable value="#{orderSelectList.selectOrders}" style="width: 100%" var="_order">
 
             <rich:column>
                 <f:facet name="header">
-                        #{messages.order_field_id}"
+                        #{messages.order_field_id}
                 </f:facet>
 
-
-                <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.data.id}" target="_blank"
-                        style="#{_order.data.canceled ? 'text-decoration:line-through; color: red;' : ''}">
-                    <f:param name="orderId" value="#{_order.data.id}"/>
-                </s:link>
-
+                #{_order.id}
                 <div class="order-status" style="float: right;padding-right: 5px;">
-
-                    <div class="myebay-sprite #{_order.data.allStoreOut ? 'ph-ship' : 'ph-not-ship' }"></div>
+                    <div class="myebay-sprite #{_order.accountChange ? 'ph-fund' : 'ph-not-fund' }"/>
+                    <div class="myebay-sprite #{_order.allStoreOut ? 'ph-ship' : 'ph-not-ship' }"></div>
                 </div>
 
                 <f:facet name="footer">
@@ -337,9 +314,9 @@
 
             <rich:column width="110px">
                 <f:facet name="header">
-                      #{messages.order_field_createDate}"
+                      #{messages.order_field_createDate}
                 </f:facet>
-                <h:outputText value="#{_order.data.createDate}">
+                <h:outputText value="#{_order.createDate}">
                     <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
                 </h:outputText>
             </rich:column>
@@ -347,16 +324,16 @@
 
             <rich:column>
                 <f:facet name="header">
-                    #{messages.orderCustomer}"
+                    #{messages.orderCustomer}
 
                 </f:facet>
-                #{_order.data.customer.name}
+                #{_order.customer.name}
             </rich:column>
             <rich:column width="70px">
                 <f:facet name="header">
                         #{messages.order_field_payType}
                 </f:facet>
-                #{messages[_order.data.payType.name()]}
+                #{messages[_order.payType.name()]}
 
             </rich:column>
 
@@ -367,7 +344,7 @@
                         #{messages.orderMoney}
                 </f:facet>
 
-                <h:outputText value="#{_order.data.money}">
+                <h:outputText value="#{_order.money}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>
@@ -381,7 +358,7 @@
                        #{messages.orderResMoney}
                 </f:facet>
 
-                <h:outputText value="#{_order.data.resMoney}">
+                <h:outputText value="#{_order.resMoney}">
                     <f:convertNumber locale="#{calendarBean.locale}"
                                      type="currency" groupingUsed="true"/>
                 </h:outputText>
@@ -393,27 +370,27 @@
                 <f:facet name="header">
                        #{messages.CustomerArea}
                 </f:facet>
-                #{_order.data.customer.customerArea.name}
+                #{_order.customer.customerArea.name}
 
             </rich:column>
             <rich:column>
                 <f:facet name="header">
-                        #{messages.order_field_emp}"
+                        #{messages.order_field_emp}
                 </f:facet>
-                #{dictionary.getEmpNameById(_order.data.orderEmp)}
+                #{dictionary.getEmpNameById(_order.orderEmp)}
             </rich:column>
 
 
-            <rich:column>
+            <rich:column style="text-align: center;">
                 <a:commandButton image="/img/delete.png" execute="@this"
                                  action="#{orderSelectList.removeSelected}"
                                  immediate="true" render="selectedOrder,dataListResult">
-                    <a:param value="#{_order.data.id}" assignTo="#{orderSelectList.selectOrderId}"/>
+                    <a:param value="#{_order.id}" assignTo="#{orderSelectList.selectOrderId}"/>
                     <a:attachQueue requestDelay="0"/>
                 </a:commandButton>
             </rich:column>
 
-        </h:dataTable>
+        </rich:dataTable>
 
 
 
@@ -421,7 +398,9 @@
     </a:outputPanel>
 
     <div class="form-actions">
-        <s:button styleClass="btn-big" action="#{payByOrder.orderSelectComplete}"/>
+        <s:button styleClass="btn-big" value="#{messages.cancel}" propagation="end"
+                  view="/func/erp/finance/cashier/CustomerMoneySavings.xhtml"/>
+        <s:button styleClass="btn-big" style="margin-left: 5px;"  value="#{messages.ok}" action="#{payByOrder.orderSelectComplete}"/>
     </div>
 
 

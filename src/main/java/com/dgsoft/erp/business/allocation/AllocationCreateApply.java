@@ -95,7 +95,7 @@ public class AllocationCreateApply {
 
     public void addItem() {
 
-        if (editingApplyItems.getMasterCount().equals(BigDecimal.ZERO)){
+        if (editingApplyItems.getMasterCount().compareTo(BigDecimal.ZERO) == 0){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"allocation_item_zero");
             return;
         }

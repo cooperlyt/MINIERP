@@ -27,7 +27,7 @@ import java.util.Date;
 @Name("needResHome")
 public class NeedResHome extends ErpEntityHome<NeedRes> {
 
-
+    @Deprecated
     public synchronized boolean needStoreOut(String storeId) {
 
 
@@ -92,7 +92,7 @@ public class NeedResHome extends ErpEntityHome<NeedRes> {
             throw new IllegalArgumentException("editingItem state error");
         }
 
-        if (editingItem.getMasterCount().equals(BigDecimal.ZERO)) {
+        if (editingItem.getMasterCount().compareTo(BigDecimal.ZERO) == 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "orderItemZeroError");
             return;
         }

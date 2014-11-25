@@ -4,6 +4,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.SetLinkList;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
+import com.dgsoft.common.jbpm.ProcessInstanceHome;
 import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.business.finance.AccountDateHelper;
 import com.dgsoft.erp.model.*;
@@ -231,15 +232,15 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         }
     }
 
-    public boolean isHaveStoreOutChange(){
+    public boolean isHaveStoreOutChange() {
 
-        for (NeedRes needRes: getInstance().getNeedReses()){
-            for(Dispatch dispatch: needRes.getDispatches()){
-                if (!dispatch.getOweOuts().isEmpty()){
+        for (NeedRes needRes : getInstance().getNeedReses()) {
+            for (Dispatch dispatch : needRes.getDispatches()) {
+                if (!dispatch.getOweOuts().isEmpty()) {
                     return true;
                 }
-                for(OrderItem item : dispatch.getOrderItems()){
-                    if (item.isOverlyOut()){
+                for (OrderItem item : dispatch.getOrderItems()) {
+                    if (item.isOverlyOut()) {
                         return true;
                     }
                 }
@@ -671,8 +672,26 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     @In
     private FacesMessages facesMessages;
 
+
+    @In(create = true)
+    private ProcessInstanceHome processInstanceHome;
+
+    public void signalMoney(Date operDate) {
+
+
+        subCustomerMoney(operDate);
+
+
+        processInstanceHome.setProcessDefineName("order");
+        processInstanceHome.setProcessKey(getInstance().getId());
+        processInstanceHome.signalState();
+    }
+
     protected void subCustomerMoney(Date date) {
-        getInstance().getAccountOpers().clear();
+        if (!getInstance().getAccountOpers().isEmpty()) {
+            throw new IllegalArgumentException("customerOrder have money oper");
+        }
+
         if (getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0) {
             AccountOper accountOper = new AccountOper(AccountOper.AccountOperType.ORDER_PAY, getInstance().getOrderEmp());
             accountOper.setCustomerOrder(getInstance());
@@ -680,15 +699,13 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
             accountOper.setCustomer(getInstance().getCustomer());
 
 
-
-                if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
-                    accountOper.setProxcAccountsReceiveable(getInstance().getMoney());
-                    accountOper.setAccountsReceivable(BigDecimal.ZERO);
-                } else {
-                    accountOper.setAccountsReceivable(getInstance().getMoney());
-                    accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
-                }
-
+            if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                accountOper.setProxcAccountsReceiveable(getInstance().getMoney());
+                accountOper.setAccountsReceivable(BigDecimal.ZERO);
+            } else {
+                accountOper.setAccountsReceivable(getInstance().getMoney());
+                accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+            }
 
 
             accountOper.calcCustomerMoney();
@@ -713,7 +730,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         if (accountOper != null) {
             accountOper.revertCustomerMoney();
         }
-
+        getInstance().getAccountOpers().clear();
         subCustomerMoney(date);
         return true;
 
@@ -722,11 +739,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     public boolean isMoneyChanged() {
         AccountOper accountOper = getInstance().getAccountOper();
         if (accountOper == null)
-            return !getInstance().getMoney().equals(BigDecimal.ZERO);
+            return getInstance().getMoney().compareTo(BigDecimal.ZERO) != 0;
 
         return getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY) ?
-                (accountOper.getProxcAccountsReceiveable().equals(getInstance().getMoney()) && accountOper.getAccountsReceivable().equals(BigDecimal.ZERO)) :
-                (accountOper.getAccountsReceivable().equals(getInstance().getMoney()) && accountOper.getProxcAccountsReceiveable().equals(BigDecimal.ZERO));
+                (accountOper.getProxcAccountsReceiveable().equals(getInstance().getMoney()) && (accountOper.getAccountsReceivable().compareTo(BigDecimal.ZERO) == 0)) :
+                (accountOper.getAccountsReceivable().equals(getInstance().getMoney()) && (accountOper.getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) == 0));
     }
 
     public boolean isMoneyCanChange() {

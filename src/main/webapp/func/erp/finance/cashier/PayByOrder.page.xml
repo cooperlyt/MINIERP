@@ -9,7 +9,7 @@
         </rule>
         <rule if-outcome="customer">
             <redirect view-id="/func/erp/finance/cashier/OrderPayCustomer.xhtml">
-                <param name="customerId" value="#{editingOper.editingOper.customer.id}"/>
+                <param name="customerId" value="#{payByOrder.editingOper.customer.id}"/>
             </redirect>
         </rule>
     </navigation>

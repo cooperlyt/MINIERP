@@ -9,16 +9,45 @@
                 template="/layout/full-template.xhtml">
 
 
+
+    <ui:define name="functionTitle">
+       <h1> #{customerHome.instance.name} #{' '} </h1> <span style="font-weight: bold; font-size: 15px;"> #{messages.customer_field_ac}:<h:outputText value="#{customerHome.instance.accountMoney}">
+        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/></h:outputText>
+        #{' '}    #{messages.customer_field_pac}:
+        <h:outputText value="#{customerHome.instance.proxyAccountMoney}">
+            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/></h:outputText>  </span>
+    </ui:define>
+    
+
     <ui:define name="body">
         <rich:panel>
-            <h1>#{customerHome.instance.name} <h:outputText value="#{customerHome.instance.accountMoney}">
-                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/></h:outputText>
-                <h:outputText value="#{customerHome.instance.proxyAccountMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/></h:outputText>
-            </h1>
+
+            <a:outputPanel id="outMoney" style="font-weight: bold;padding-left: 5px;" >
+                <span style="#{(payByOrder.outMoney lt 0) ? 'color: #ff0000;' : 'color: green;'}">
+                #{messages.MoneySaveAccountAdd}(<h:outputText value="#{payByOrder.outMoney}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
+                            </span>
+
+                = #{messages.ComeMoney}(<h:outputText value="#{payByOrder.instance.money}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
+                + #{messages.accountOper_field_fee}(<h:outputText value="#{payByOrder.instance.remitFee}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText>)
+
+                - #{messages.SelectOrderMoney}(<h:outputText value="#{orderSelectList.selectOrderTotalMoney}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
+
+                <br/>
+            </a:outputPanel>
+
+            <h:outputStylesheet>
+                .columInput{
+                    width: 700px;
+                }
+
+                .columOrder{
+                    vertical-align: top;
+
+                }
+            </h:outputStylesheet>
 
 
-            <h:panelGrid columns="2">
+            <h:panelGrid style="width: 100%" columns="2" columnClasses="columInput,columOrder">
                 <h:form>
                 <a:outputPanel>
                     <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">
@@ -75,46 +104,35 @@
                     </s:decorate>
 
 
-                    <a:outputPanel id="outMoney">
-
-                        #{messages.MoneySaveAccountAdd}(<h:outputText value="#{payByOrder.outMoney}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
-                        = #{messages.ComeMoney}(<h:outputText value="#{payByOrder.instance.money}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
-                        + #{messages.accountOper_field_fee}(<h:outputText value="#{payByOrder.instance.remitFee}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText>)
-                        - #{messages.SelectOrderMoney}(<h:outputText value="#{orderSelectList.selectOrderTotalMoney}"><f:convertNumber type="currency" locale="#{calendarBean.locale}" /></h:outputText> )
-
-                        <h:outputText value="#{messages.MoneyNotinf}" style="color: #ff0000;"
-                                      rendered="#{payByOrder.outMoney lt 0}"/>
-
-                        <s:decorate template="/layout/seam-display.xhtml" rendered="#{payByOrder.outMoney gt 0}">
-                            <ui:define name="label">
-                                #{messages.MoneySaveAccountAdd}
-                            </ui:define>
-                            <h:outputText value="#{payByOrder.outMoney}">
-                                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                            </h:outputText>
-
-                        </s:decorate>
-
-                    </a:outputPanel>
 
                     <div style="clear:both">
                         <span class="required">*</span>
                         #{messages.requiredFields}
                     </div>
                     <div class="form-actions">
-                        <h:commandButton styleClass="btn-big" value="#{messages.ReceiveMoney}" action="#{payByOrder.receiveMoney}">
+
+                        <s:button styleClass="btn-big" value="#{messages.cancel}" propagation="end"
+                                  view="/func/erp/finance/cashier/CustomerMoneySavings.xhtml"/>
+                        <h:commandButton styleClass="btn-big" style="margin-left: 5px" value="#{messages.ReceiveMoney}" action="#{payByOrder.receiveMoney}">
 
                         </h:commandButton>
                     </div>
                 </a:outputPanel>
 
                 </h:form>
-                <rich:dataTable var="_order" value="#{orderSelectList.selectOrders}">
+                <rich:dataTable style="width: 100%; padding: 10px 5px 0 0" var="_order" value="#{orderSelectList.selectOrders}">
                     <rich:column>
+                        <f:facet name="header">
+                            #{messages.order_field_id}
+                        </f:facet>
+
                         #{_order.id}
                     </rich:column>
 
                     <rich:column>
+                        <f:facet name="header">
+                            #{messages.order_field_createDate}
+                        </f:facet>
                         <h:outputText value="#{_order.createDate}">
                             <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
                         </h:outputText>
@@ -122,6 +140,9 @@
 
                     <rich:column style="text-align: right;">
 
+                        <f:facet name="header">
+                            #{messages.orderMoney}
+                        </f:facet>
                         <h:outputText value="#{_order.money}">
                             <f:convertNumber locale="#{calendarBean.locale}"
                                              type="currency" groupingUsed="true"/>

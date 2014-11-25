@@ -66,7 +66,7 @@
 
                 <h:panelGrid columns="2" width="100%" columnClasses=",column-right-align">
                     <a:outputPanel>
-                        <h1> #{functionTitle}</h1>
+                        <ui:insert name="functionTitle">  <h1>  #{functionTitle}</h1>  </ui:insert>
                     </a:outputPanel>
                     <a:status>
                         <f:facet name="start">

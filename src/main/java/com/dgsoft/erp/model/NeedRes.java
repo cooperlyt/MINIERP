@@ -298,4 +298,15 @@ public class NeedRes implements java.io.Serializable {
         return result;
     }
 
+    @Transient
+    public synchronized boolean needStoreOut(String storeId) {
+
+        for (Dispatch dispatch : getDispatches()) {
+            if (dispatch.getStore().getId().equals(storeId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

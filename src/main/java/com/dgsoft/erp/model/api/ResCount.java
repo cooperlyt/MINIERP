@@ -152,7 +152,7 @@ public class ResCount implements java.io.Serializable {
 
 
     public BigDecimal getMasterCount() {
-        if (count.equals(BigDecimal.ZERO)){
+        if (count.compareTo(BigDecimal.ZERO) == 0){
             return BigDecimal.ZERO;
         }
         if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FIX_CONVERT)) {
@@ -163,7 +163,7 @@ public class ResCount implements java.io.Serializable {
     }
 
     public BigDecimal getAuxCount() {
-        if (count.equals(BigDecimal.ZERO)){
+        if (count.compareTo(BigDecimal.ZERO) == 0){
             return BigDecimal.ZERO;
         }
         if (useUnit.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
@@ -176,7 +176,7 @@ public class ResCount implements java.io.Serializable {
 
 
     public BigDecimal getCountByResUnit(ResUnit resUnit) {
-        if (count.equals(BigDecimal.ZERO)){
+        if (count.compareTo(BigDecimal.ZERO) == 0){
             return BigDecimal.ZERO;
         }
         if (resUnit.getId().equals(useUnit.getId())) {
@@ -212,7 +212,7 @@ public class ResCount implements java.io.Serializable {
     }
 
     public String getDisplayAuxCount() {
-        if (count.equals(BigDecimal.ZERO)){
+        if (count.compareTo(BigDecimal.ZERO) == 0){
             return "";
         }
         DecimalFormat df = new DecimalFormat();
@@ -297,7 +297,7 @@ public class ResCount implements java.io.Serializable {
     }
 
     public String getMasterDisplayCount() {
-        if (count.equals(BigDecimal.ZERO)){
+        if (count.compareTo(BigDecimal.ZERO) == 0){
             return "";
         }
         DecimalFormat df = new DecimalFormat(useUnit.getUnitGroup().getMasterUnit().getCountFormate());
