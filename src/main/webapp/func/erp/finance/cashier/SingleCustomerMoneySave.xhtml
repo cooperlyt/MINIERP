@@ -130,7 +130,11 @@
                         </ui:define>
                         <h:outputText value="#{moneySaveHome.instance.remitFee}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                        </h:outputText> (#{messages.ComeMoney} - #{messages.ReceiveAccountMoney})
+                        </h:outputText>
+                        <h:outputText value="( #{messages.ReceiveAccountMoney} - #{messages.ComeMoney})"
+                                      rendered="#{ moneySaveHome.editingOper.operType eq 'CUSTOMER_SAVINGS'}"/>
+                        <h:outputText value="(#{messages.OutMoney} - #{messages.ReceiveAccountMoney} )"
+                                      rendered="#{ moneySaveHome.editingOper.operType eq 'DEPOSIT_BACK'}"/>
                     </s:decorate>
                 </a:outputPanel>
 

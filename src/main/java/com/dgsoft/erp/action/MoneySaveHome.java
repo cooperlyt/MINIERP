@@ -39,7 +39,19 @@ public class MoneySaveHome extends MoneySaveBaseHome {
 
     public void calcRemitFee() {
         if (getInstance().getMoney() != null) {
-            getInstance().setRemitFee(getInstance().getMoney().subtract(getCustomerSaveReceiveMoney().add(getCustomerProxyReceiveMoney())));
+            switch (getEditingOper().getOperType()) {
+
+                case PROXY_SAVINGS:
+                case CUSTOMER_SAVINGS:
+                    getInstance().setRemitFee(getCustomerSaveReceiveMoney().add(getCustomerProxyReceiveMoney()).subtract(getInstance().getMoney()));
+                    break;
+                case DEPOSIT_BACK:
+                    getInstance().setRemitFee(getInstance().getMoney().subtract(getCustomerSaveReceiveMoney().add(getCustomerProxyReceiveMoney())));
+                    break;
+                default:
+                    getInstance().setRemitFee(BigDecimal.ZERO);
+
+            }
         }
         vaildProxyAccount();
     }
@@ -119,7 +131,7 @@ public class MoneySaveHome extends MoneySaveBaseHome {
                             oper.getCustomer().getName(), oper.getProxcAccountsReceiveable(), oper.getCustomer().getProxyAccountMoney());
                     return false;
                 }
-            }else{
+            } else {
                 return true;
             }
         }

@@ -94,6 +94,9 @@ public class PayByOrder extends MoneySaveBaseHome {
 
     }
 
+
+
+
     @Transactional
     public String receiveMoney() {
         if (getOutMoney().compareTo(BigDecimal.ZERO) < 0) {

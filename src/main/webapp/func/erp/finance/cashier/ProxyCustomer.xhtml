@@ -77,7 +77,7 @@
                 </ui:define>
                 <h:outputText value="#{moneySaveHome.instance.remitFee}">
                       <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText> (#{messages.ComeMoney} - #{messages.ReceiveAccountMoney} - #{messages.ProxyMoneyReceiveByOrder})
+                </h:outputText> ((#{messages.ReceiveAccountMoney} + #{messages.ProxyMoneyReceiveByOrder}) - #{messages.ComeMoney} )
             </s:decorate>
             </a:outputPanel>
                 <div style="clear: both"></div>
