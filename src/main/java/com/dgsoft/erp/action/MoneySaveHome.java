@@ -1,24 +1,12 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.SetLinkList;
-import com.dgsoft.common.system.RunParam;
-import com.dgsoft.erp.ErpEntityHome;
-import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.business.CustomerAccountOper;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.MoneySave;
 import com.dgsoft.erp.model.TransCorp;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.EnumSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,54 +15,15 @@ import java.util.EnumSet;
  * Time: 下午4:51
  */
 @Name("moneySaveHome")
-public class MoneySaveHome extends ErpEntityHome<MoneySave> {
-
-    private SetLinkList<AccountOper> accountOperList;
-
-    //private BigDecimal toAccountMoney;
-
-    private TransCorp transCorp;
-
-    @In
-    private FacesMessages facesMessages;
-
-    @In(required = false)
-    private CustomerHome customerHome;
-
-    @In
-    private Credentials credentials;
-
-    @In
-    private CustomerAccountOper customerAccountOper;
+public class MoneySaveHome extends MoneySaveBaseHome {
 
 
     @Override
-    protected void initInstance() {
-        super.initInstance();
-        accountOperList = new SetLinkList<AccountOper>(getInstance().getAccountOpers());
+    public Class<MoneySave> getEntityClass() {
+        return MoneySave.class;
     }
 
-    public BigDecimal getOperMoney() {
-        if (customerAccountOper.getOperMoney() == null) {
-            return null;
-        } else if (getInstance().getRemitFee() == null) {
-            return customerAccountOper.getOperMoney();
-        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) || customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
-            return customerAccountOper.getOperMoney().add(getInstance().getRemitFee());
-        } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)) {
-            return customerAccountOper.getOperMoney().subtract(getInstance().getRemitFee());
-        } else
-            return customerAccountOper.getOperMoney();
-
-    }
-
-    public SetLinkList<AccountOper> getAccountOperList() {
-        return accountOperList;
-    }
-
-    public AccountOper getSingleAccountOper() {
-        return accountOperList.get(0);
-    }
+    private TransCorp transCorp;
 
     public TransCorp getTransCorp() {
         return transCorp;
@@ -84,14 +33,30 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
         this.transCorp = transCorp;
     }
 
+    @In(required = false)
+    private CustomerHome customerHome;
+
+
+    public void calcRemitFee() {
+        if (getInstance().getMoney() != null) {
+            getInstance().setRemitFee(getInstance().getMoney().subtract(getCustomerSaveReceiveMoney().add(getCustomerProxyReceiveMoney())));
+        }
+        vaildProxyAccount();
+    }
+
     public void addProxyItem() {
-        for (AccountOper oper: getAccountOperList()){
-            if (oper.getCustomer().getId().equals(customerHome.getInstance().getId())){
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"CustomerExistsInOperList");
+        if (customerHome.getInstance().getProxyAccountMoney().compareTo(BigDecimal.ZERO) <= 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "CustomerNotHaveProxyAccountMoney");
+            return;
+        }
+
+        for (AccountOper oper : getAccountOpers()) {
+            if (oper.getCustomer().getId().equals(customerHome.getInstance().getId())) {
+                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "CustomerExistsInOperList");
                 return;
             }
         }
-        getAccountOperList().add(new AccountOper(getInstance(), AccountOper.AccountOperType.PROXY_SAVINGS, customerHome.getInstance(), credentials.getUsername()));
+        getAccountOpers().add(new AccountOper(getInstance(), AccountOper.AccountOperType.PROXY_SAVINGS, customerHome.getInstance(), credentials.getUsername()));
     }
 
     private String removeProxyCustomerId;
@@ -104,59 +69,75 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
         this.removeProxyCustomerId = removeProxyCustomerId;
     }
 
-    public void removeProxyItem(){
-        for (AccountOper oper: getAccountOperList()){
-            if (oper.getCustomer().getId().equals(removeProxyCustomerId)){
-                getAccountOperList().remove(oper);
+    public void removeProxyItem() {
+        for (AccountOper oper : getAccountOpers()) {
+            if (oper.getCustomer().getId().equals(removeProxyCustomerId)) {
+                getAccountOpers().remove(oper);
                 return;
             }
         }
     }
 
-    public BigDecimal getTotalCustomerPorxyMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper accountOper : getAccountOperList()) {
-            result = result.add(accountOper.getCustomer().getProxyAccountMoney());
-        }
-        return result;
-    }
+    public String validCustomerOrder() {
+        getEditingOper().setCustomer(customerHome.getInstance());
 
-    public BigDecimal getTotalReceiveProxyMoney() {
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper accountOper : getAccountOperList()) {
-            result = result.add(accountOper.getProxcAccountsReceiveable());
+        if (getEntityManager().createQuery("select count(customerOrder.id) from CustomerOrder customerOrder Where customerOrder.canceled = false and customerOrder.customer.id =:customerId and customerOrder.accountChange = false", Long.class).
+                setParameter("customerId", customerHome.getInstance().getId()).getSingleResult() > 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.WARN, "CustomerHaveWaitMoneyOrder");
         }
-        return result;
-    }
-
-    public BigDecimal getTotalReceiveAccountMoney(){
-        BigDecimal result = BigDecimal.ZERO;
-        for (AccountOper accountOper : getAccountOperList()) {
-            result = result.add(accountOper.getAccountsReceivable());
-        }
-        return result;
+        return "next";
     }
 
 
-    public void initAccountOper() {
-        getInstance();
-        getAccountOperList().clear();
+    @Begin(pageflow = "CustomerMoneyOper", flushMode = FlushModeType.MANUAL)
+    public void beginCustomerSave() {
 
-        switch (customerAccountOper.getType()) {
-
-            case DEPOSIT_BACK:
-            case CUSTOMER_SAVINGS:
-                getAccountOperList().add(new AccountOper(customerAccountOper.getType(), credentials.getUsername()));
-                break;
-            case PROXY_SAVINGS:
-                break;
-
-        }
+        getAccountOpers().add(new AccountOper(getInstance(), AccountOper.AccountOperType.CUSTOMER_SAVINGS, credentials.getUsername()));
     }
 
-    public String checkProxyMoney() {
-        if (getTotalReceiveProxyMoney().add(getTotalReceiveAccountMoney()).compareTo(getOperMoney()) != 0) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "proxyMoneyNotBalance", getOperMoney(), getTotalReceiveProxyMoney());
+    @Begin(pageflow = "CustomerMoneyOper", flushMode = FlushModeType.MANUAL)
+    public void beginFreeMoneyOper() {
+        getAccountOpers().add(new AccountOper(AccountOper.AccountOperType.MONEY_FREE, credentials.getUsername()));
+    }
+
+    @Begin(pageflow = "CustomerMoneyOper", flushMode = FlushModeType.MANUAL)
+    public void beginProxyOper() {
+
+    }
+
+
+    @Begin(pageflow = "CustomerMoneyOper", flushMode = FlushModeType.MANUAL)
+    public void beginCustomerMoneyBack() {
+        getAccountOpers().add(new AccountOper(getInstance(), AccountOper.AccountOperType.DEPOSIT_BACK, credentials.getUsername()));
+    }
+
+    private boolean vaildProxyAccount() {
+        for (AccountOper oper : getAccountOpers()) {
+            if (oper.getOperType().equals(AccountOper.AccountOperType.PROXY_SAVINGS)) {
+                if (oper.getProxcAccountsReceiveable().compareTo(oper.getCustomer().getProxyAccountMoney()) > 0) {
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "CustomerReceiveProxyMoneyGt",
+                            oper.getCustomer().getName(), oper.getProxcAccountsReceiveable(), oper.getCustomer().getProxyAccountMoney());
+                    return false;
+                }
+            }else{
+                return true;
+            }
+        }
+        return true;
+    }
+
+    public String toConfirm() {
+        calcRemitFee();
+        if (getInstance().getRemitFee().compareTo(BigDecimal.ZERO) < 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "ReceiveMoneyltAccountMoney");
+            return null;
+        }
+        if (getAccountOpers().isEmpty()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "ProxyMestHaveCustomerError");
+            return null;
+        }
+
+        if (!vaildProxyAccount()) {
             return null;
         }
 
@@ -164,68 +145,23 @@ public class MoneySaveHome extends ErpEntityHome<MoneySave> {
         return "next";
     }
 
-    @Override
-    protected boolean wire() {
-        getInstance().setMoney(customerAccountOper.getOperMoney());
 
-        if (!customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) &&
-                (getAccountOperList().size() != 1)) {
-                throw new IllegalArgumentException(customerAccountOper.getType() + "error accountOperList:" + getAccountOperList().size());
-        }
-
-
-        for (AccountOper accountOper : getAccountOperList()) {
-            accountOper.setOperType(customerAccountOper.getType());
-            accountOper.setOperEmp(credentials.getUsername());
-            accountOper.setOperDate(customerAccountOper.getOperDate());
-            accountOper.setMoneySave(getInstance());
-            accountOper.setAdvanceReceivable(BigDecimal.ZERO);
-
-
-            if (!customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS)) {
-                accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
-                accountOper.setAccountsReceivable(BigDecimal.ZERO);
-                accountOper.setCustomer(customerHome.getReadyInstance());
-
-            }
-        }
-
-        if (customerAccountOper.getType().equals(AccountOper.AccountOperType.PROXY_SAVINGS)) {
-            getInstance().setTransCorp(transCorp);
+    @Transactional
+    public String receiveMoney() {
+        joinTransaction();
+        calcCustomerOrderPayTag();
+        if (getEditingOper().getOperType().equals(AccountOper.AccountOperType.MONEY_FREE)) {
+            getEntityManager().persist(getEditingOper());
+            getEntityManager().flush();
+            return "persisted";
         } else {
-            getInstance().setTransCorp(null);
-            getSingleAccountOper().setCustomer(customerHome.getReadyInstance());
-            if (customerAccountOper.getType().equals(AccountOper.AccountOperType.DEPOSIT_BACK)) {
-                if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")) {
-                    getSingleAccountOper().setAdvanceReceivable(getOperMoney());
-                }else{
-                    getSingleAccountOper().setAccountsReceivable(getOperMoney());
-                }
-
-            } else if (customerAccountOper.getType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS)) {
-
-                if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")) {
-                    if (customerHome.getInstance().getAccountMoney().compareTo(getOperMoney()) >= 0) {
-                        getSingleAccountOper().setAdvanceReceivable(BigDecimal.ZERO);
-                        getSingleAccountOper().setAccountsReceivable(getOperMoney());
-                    } else if (customerHome.getInstance().getAccountMoney().compareTo(BigDecimal.ZERO) <= 0) {
-                        getSingleAccountOper().setAdvanceReceivable(getOperMoney());
-                        getSingleAccountOper().setAccountsReceivable(BigDecimal.ZERO);
-                    } else {
-                        getSingleAccountOper().setAdvanceReceivable(getOperMoney().subtract(customerHome.getInstance().getAccountMoney()));
-                        getSingleAccountOper().setAccountsReceivable(customerHome.getInstance().getAccountMoney());
-                    }
-                } else {
-                    getSingleAccountOper().setAccountsReceivable(getOperMoney());
-                }
-            } else {
-                throw new IllegalArgumentException("unkonw type:" + customerAccountOper.getType());
-            }
+            if (getEditingOper().getOperType().equals(AccountOper.AccountOperType.PROXY_SAVINGS))
+                getInstance().setTransCorp(transCorp);
+            else
+                getInstance().setTransCorp(null);
+            return persist();
         }
 
-        for (AccountOper accountOper : getAccountOperList()) {
-            accountOper.calcCustomerMoney();
-        }
-        return true;
     }
+
 }

@@ -76,6 +76,10 @@ public class ClosingAccount {
                 aco.setClosingBalance(aco.getBeginningBalance().add(aco.getCreditMoney()).subtract(aco.getDebitMoney()));
                 aco.setClosingCount(aco.getBeginningCount().add(aco.getCreditCount()).subtract(aco.getDebitCount()));
             } else {
+
+                // Logging.getLog(getClass()).debug("aco:" + aco );
+                // Logging.getLog(getClass()).debug("aco id:" + aco.getAccountCode() );
+                //  Logging.getLog(getClass()).debug("aco.getBeginningBalance():" + aco.getBeginningBalance() );
                 aco.setClosingBalance(aco.getBeginningBalance().add(aco.getDebitMoney()).subtract(aco.getCreditMoney()));
                 aco.setClosingCount(aco.getBeginningCount().add(aco.getDebitCount()).subtract(aco.getCreditCount()));
             }

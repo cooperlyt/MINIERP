@@ -9,29 +9,29 @@
                 template="/layout/full-template.xhtml">
 
 
-    <ui:param name="functionTitle" value="#{messages[customerAccountOper.type.name()]}"/>
+    <ui:param name="functionTitle" value="#{messages[moneySaveHome.editingOper.operType.name()]}"/>
 
     <ui:define name="body">
-
+        <rich:panel>
 
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">
                 #{messages.accountOper_field_operType}
             </ui:define>
-            #{messages[customerAccountOper.type.name()]}
+            #{messages[moneySaveHome.editingOper.operType.name()]}
         </s:decorate>
 
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">
                 #{messages.accountOper_field_operDate}
             </ui:define>
-            <h:outputText value="#{customerAccountOper.operDate}">
+            <h:outputText value="#{moneySaveHome.operDate}">
                 <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
             </h:outputText>
         </s:decorate>
 
         <s:decorate
-                rendered="#{not (customerAccountOper.type eq 'DEPOSIT_PAY') and not (customerAccountOper.type eq 'MONEY_FREE')}"
+                rendered="#{not (moneySaveHome.editingOper.operType eq 'DEPOSIT_PAY') and not (moneySaveHome.editingOper.operType eq 'MONEY_FREE')}"
                 template="/layout/seam-display.xhtml">
             <ui:define name="label">
                 #{messages.payType}
@@ -47,18 +47,37 @@
             <h:outputText value="#{moneySaveHome.instance.checkNumber}" rendered="#{moneySaveHome.instance.useCheck}"/>
         </s:decorate>
 
+
+        <s:decorate template="/layout/seam-display.xhtml" rendered="#{not (moneySaveHome.editingOper.operType eq 'MONEY_FREE')}">
+            <ui:define name="label">
+                #{messages.ComeMoney}
+            </ui:define>
+            <h:outputText value="#{moneySaveHome.instance.money}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml" rendered="#{moneySaveHome.editingOper.operType eq 'PROXY_SAVINGS'}">
+            <ui:define name="label">
+                #{messages.accountOper_field_operMoney}
+            </ui:define>
+            <h:outputText value="#{moneySaveHome.customerProxyReceiveMoney}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+            </h:outputText>
+        </s:decorate>
+
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">
                 #{messages.accountOper_field_operMoney}
             </ui:define>
-            <h:outputText value="#{customerAccountOper.operMoney}">
+            <h:outputText value="#{moneySaveHome.customerSaveReceiveMoney}">
                 <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
             </h:outputText>
         </s:decorate>
 
 
         <s:decorate
-                rendered="#{not (customerAccountOper.type eq 'DEPOSIT_PAY') and not (customerAccountOper.type eq 'MONEY_FREE')}"
+                rendered="#{not (moneySaveHome.editingOper.operType eq 'DEPOSIT_PAY') and not (moneySaveHome.editingOper.operType eq 'MONEY_FREE')}"
                 template="/layout/seam-display.xhtml">
             <ui:define name="label">
                 #{messages.accountOper_field_fee}
@@ -70,7 +89,7 @@
 
         <div style="clear: both"/>
 
-        <a:outputPanel rendered="#{not (customerAccountOper.type eq 'PROXY_SAVINGS')}">
+        <a:outputPanel rendered="#{not (moneySaveHome.editingOper.operType eq 'PROXY_SAVINGS')}">
 
             <s:decorate
                     template="/layout/view-details.xhtml">
@@ -84,8 +103,8 @@
         </a:outputPanel>
 
 
-        <rich:dataTable id="accountOperList" style="width: 100%" value="#{moneySaveHome.accountOperList}"
-                        var="_oper" rendered="#{(customerAccountOper.type eq 'PROXY_SAVINGS')}">
+        <rich:dataTable id="accountOperList" style="width: 100%" value="#{moneySaveHome.accountOpers}"
+                        var="_oper" rendered="#{(moneySaveHome.editingOper.operType eq 'PROXY_SAVINGS')}">
             <rich:column>
                 <f:facet name="header">
                     #{messages.Customer}
@@ -145,23 +164,19 @@
                 <h:outputText value="#{_oper.customer.proxyAccountMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
-                <f:facet name="footer">
-                    <h:outputText value="#{moneySaveHome.totalCustomerPorxyMoney}">
-                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                    </h:outputText>
-                </f:facet>
+
             </rich:column>
 
             <rich:column style="text-align: right;">
                 <f:facet name="header">
-                    #{messages.proxy_receivePAC}
+                    #{messages.ProxyMoneyReceiveByOrder}
                 </f:facet>
                 <h:outputText value="#{_oper.proxcAccountsReceiveable}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
 
                 <f:facet name="footer">
-                    <h:outputText value="#{moneySaveHome.totalReceiveProxyMoney}">
+                    <h:outputText value="#{moneySaveHome.customerProxyReceiveMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                 </f:facet>
@@ -176,7 +191,7 @@
                 </h:outputText>
 
                 <f:facet name="footer">
-                    <h:outputText value="#{moneySaveHome.totalReceiveAccountMoney}">
+                    <h:outputText value="#{moneySaveHome.customerSaveReceiveMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                 </f:facet>
@@ -185,22 +200,18 @@
         </rich:dataTable>
 
 
-        <br/>
-        <br/>
 
         <div style="clear:both">
-            <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
         </div>
-        <h:panelGrid columns="1" style="width: 100%; text-align: center">
-            <s:div styleClass="actionButtons">
 
-                <s:button value="#{messages.cancel}" action="cancel"/>
-                <s:button value="#{messages.complete}" action="#{customerAccountOper.doOper}"/>
+        </rich:panel>
+            <div class="form-actions">
+
+                <s:button value="#{messages.cancel}" styleClass="btn-big" action="cancel"/>
+                <s:button value="#{messages.complete}" style="margin: 5px" styleClass="btn-big" action="#{moneySaveHome.receiveMoney}"/>
 
 
-            </s:div>
-
-        </h:panelGrid>
+            </div>
 
 
     </ui:define>

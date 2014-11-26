@@ -9,16 +9,17 @@
                 template="/layout/full-template.xhtml">
 
 
-    <ui:param name="functionTitle" value="#{messages[customerAccountOper.type.name()]}"/>
+    <ui:param name="functionTitle" value="#{messages[moneySaveHome.editingOper.operType.name()]}"/>
 
     <ui:define name="func-body">
         <h:form>
+
             <rich:toolbar>
 
                 <rich:toolbarGroup rendered="#{runParam.getBooleanParamValue('erp.finance.useAdvance')}">
 
-                    <h:outputText value="#{messages.customer_field_ad}:" />
-                    <h:outputText value="#{customerHome.instance.advanceMoney}" >
+                    <h:outputText value="#{messages.customer_field_ad}:"/>
+                    <h:outputText value="#{customerHome.instance.advanceMoney}">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
@@ -66,9 +67,72 @@
             <rich:messages ajaxRendered="true" globalOnly="true"/>
             <br/>
             <rich:panel>
-                <ui:include src="/layout/erp/biz/CustomerMoneySave.xhtml">
-                    <ui:param name="render" value="moneyPatchFields"/>
-                </ui:include>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">
+                        #{messages.accountOper_field_operDate}
+                    </ui:define>
+                    <rich:calendar
+                            enableManualInput="true"
+                            inputSize="20"
+                            timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                            showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                            datePattern="#{messages.datetimepattern}"
+                            required="true"
+                            defaultTime="#{currentTime}"
+                            label="#{messages.accountOper_field_operDate}"
+                            value="#{moneySaveHome.operDate}" validator="operDateValidator">
+
+                    </rich:calendar>
+                </s:decorate>
+
+                <a:outputPanel
+                        rendered="#{(moneySaveHome.editingOper.operType eq 'CUSTOMER_SAVINGS') or (moneySaveHome.editingOper.operType eq 'DEPOSIT_BACK')}">
+                    <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                        <ui:param name="moneySave" value="#{moneySaveHome.instance}"/>
+                    </ui:include>
+                </a:outputPanel>
+
+                <s:decorate id="operMoneyField1" rendered="#{not (moneySaveHome.editingOper.operType eq 'MONEY_FREE')}"
+                            template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{(moneySaveHome.editingOper.operType eq 'DEPOSIT_BACK') ? messages.OutMoney :  messages.ComeMoney}</ui:define>
+                    <h:inputText value="#{moneySaveHome.instance.money}"
+                                 label="#{messages.ComeMoney}"
+                                 converter="javax.faces.BigDecimal" required="true">
+                        <f:validateDoubleRange minimum="0.01"/>
+                        <a:ajax event="blur" execute="@this" listener="#{moneySaveHome.calcRemitFee}"
+                                render="operMoneyField1"/>
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                         currencySymbol=""/>
+                    </h:inputText>
+                </s:decorate>
+
+
+                <s:decorate id="operMoneyField2"
+                            template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.ReceiveAccountMoney}</ui:define>
+                    <h:inputText value="#{moneySaveHome.editingOper.accountsReceivable}"
+                                 label="#{messages.ReceiveAccountMoney}"
+                                 converter="javax.faces.BigDecimal" required="true">
+                        <f:validateDoubleRange minimum="0.01"/>
+                        <a:ajax event="blur" execute="@this" listener="#{moneySaveHome.calcRemitFee}"
+                                render="operMoneyField2"/>
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                         currencySymbol=""/>
+                    </h:inputText>
+                </s:decorate>
+
+
+                <a:outputPanel ajaxRendered="true" rendered="#{not (moneySaveHome.editingOper.operType eq 'MONEY_FREE')}">
+                    <s:decorate template="/layout/seam-display.xhtml" >
+                        <ui:define name="label">
+                            #{messages.accountOper_field_fee}
+                        </ui:define>
+                        <h:outputText value="#{moneySaveHome.instance.remitFee}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText> (#{messages.ComeMoney} - #{messages.ReceiveAccountMoney})
+                    </s:decorate>
+                </a:outputPanel>
 
 
                 <div style="clear:both">

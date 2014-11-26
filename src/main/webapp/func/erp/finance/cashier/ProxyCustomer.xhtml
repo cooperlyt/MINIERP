@@ -9,7 +9,7 @@
                 template="/layout/full-template.xhtml">
 
 
-    <ui:param name="functionTitle" value="#{messages[customerAccountOper.type.name()]}"/>
+    <ui:param name="functionTitle" value="#{messages.ProxyMoneyReceiveByOrder}"/>
 
     <ui:define name="func-body">
         <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
@@ -20,17 +20,72 @@
                 width: 115px;
             }
         </h:outputStylesheet>
-
+        <h:form>
         <rich:toolbar>
             <rich:toolbarGroup location="right">
                 <s:button styleClass="toolBarBtn" value="#{messages.cancel}" action="cancel"/>
-                <s:button styleClass="toolBarBtn" action="#{moneySaveHome.checkProxyMoney}"
-                                 value="#{messages.Next}"/>
+
+                <h:commandButton styleClass="toolBarBtn" action="#{moneySaveHome.toConfirm}" value="#{messages.Next}"/>
 
             </rich:toolbarGroup>
         </rich:toolbar>
-
+                       <br/>
         <rich:messages ajaxRendered="true" globalOnly="true"/>
+
+
+
+            <rich:panel>
+            <s:decorate id="operDateField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">
+                    #{messages.accountOper_field_operDate}
+                </ui:define>
+                <rich:calendar
+                        enableManualInput="true"
+                        inputSize="20"
+                        timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
+                        showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
+                        datePattern="#{messages.datetimepattern}"
+                        required="true"
+                        defaultTime="#{currentTime}"
+                        label="#{messages.accountOper_field_operDate}"
+                        value="#{moneySaveHome.operDate}" validator="operDateValidator">
+
+                </rich:calendar>
+
+            </s:decorate>
+
+            <ui:include src="/layout/erp/biz/PayTypeSelect.xhtml">
+                <ui:param name="moneySave" value="#{moneySaveHome.instance}"/>
+            </ui:include>
+
+            <s:decorate id="operMoneyField" template="/layout/seam-edit.xhtml">
+                <ui:define name="label">#{messages.ComeMoney}</ui:define>
+                <h:inputText value="#{moneySaveHome.instance.money}"
+                             label="#{messages.ComeMoney}"
+                             converter="javax.faces.BigDecimal" required="true">
+                    <f:validateDoubleRange minimum="0.01"/>
+                    <a:ajax event="blur" execute="@this" listener="#{moneySaveHome.calcRemitFee}" render="operMoneyField"/>
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                     currencySymbol=""/>
+                </h:inputText>
+            </s:decorate>
+
+            <a:outputPanel ajaxRendered="true">
+            <s:decorate template="/layout/seam-display.xhtml">
+                <ui:define name="label">
+                    #{messages.accountOper_field_fee}
+                </ui:define>
+                <h:outputText value="#{moneySaveHome.instance.remitFee}">
+                      <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText> (#{messages.ComeMoney} - #{messages.ReceiveAccountMoney} - #{messages.ProxyMoneyReceiveByOrder})
+            </s:decorate>
+            </a:outputPanel>
+                <div style="clear: both"></div>
+            </rich:panel>
+
+        </h:form>
+
+
 
         <h:form>
             <h:panelGrid columns="3">
@@ -75,7 +130,7 @@
                     </rich:autocomplete>
                     <ui:define name="tail">
 
-                        <a:commandButton value="#{messages.add}" render="accountOperList" action="#{moneySaveHome.addProxyItem}">
+                        <a:commandButton value="#{messages.add}" styleClass="toolBarBtn" render="accountOperList" action="#{moneySaveHome.addProxyItem}">
                             <a:attachQueue requestDelay="0"/>
 
                         </a:commandButton>
@@ -88,7 +143,7 @@
         </h:form>
 
         <h:form>
-            <rich:dataTable id="accountOperList" style="width: 100%" value="#{moneySaveHome.accountOperList}"
+            <rich:dataTable id="accountOperList" style="width: 100%" value="#{moneySaveHome.accountOpers}"
                             var="_oper">
                 <rich:column>
                     <f:facet name="header">
@@ -103,18 +158,7 @@
                     </f:facet>
                     #{_oper.customer.customerArea.name}
                 </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.customer_field_type}
-                    </f:facet>
-                    #{dictionary.getWordValue(_oper.customer.type)}
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages.customer_field_level}
-                    </f:facet>
-                    #{_oper.customer.customerLevel.name}(#{_oper.customer.customerLevel.priority})
-                </rich:column>
+
                 <rich:column>
                     <f:facet name="header">
                         #{messages.customer_field_province}
@@ -122,15 +166,6 @@
                     #{dictionary.getCityName(_oper.customer.provinceCode)}
                 </rich:column>
 
-                <rich:column style="text-align: right;" rendered="#{runParam.getBooleanParamValue('erp.finance.useAdvance')}">
-                    <f:facet name="header">
-                        #{messages.customer_field_ad}
-                    </f:facet>
-                    <h:outputText value="#{_oper.customer.advanceMoney}">
-                        <f:convertNumber locale="#{calendarBean.locale}"
-                                         type="currency" groupingUsed="true"/>
-                    </h:outputText>
-                </rich:column>
 
                 <rich:column style="text-align: right;">
                     <f:facet name="header">
@@ -149,27 +184,24 @@
                     <h:outputText value="#{_oper.customer.proxyAccountMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
-                    <f:facet name="footer">
-                        <h:outputText value="#{moneySaveHome.totalCustomerPorxyMoney}">
-                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                        </h:outputText>
-                    </f:facet>
+
                 </rich:column>
 
                 <rich:column style="text-align: right;">
                     <f:facet name="header">
-                        #{messages.proxy_receivePAC}
+                        #{messages.ProxyMoneyReceiveByOrder}
                     </f:facet>
                     <s:decorate template="/layout/grid-inside-edit.xhtml">
                         <rich:inplaceInput value="#{_oper.proxcAccountsReceiveable}" required="true"
                                            label="#{messages.proxy_receivePAC}" style="width: 95%" >
-                            <a:ajax event="blur" render="accountOperList" execute="@this"/>
+                            <a:ajax event="blur" listener="#{moneySaveHome.calcRemitFee}" render="accountOperList" execute="@this"/>
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"
                                              currencySymbol="" groupingUsed="false"/>
+                            <f:validateDoubleRange  minimum="0.01"/>
                         </rich:inplaceInput>
                     </s:decorate>
                     <f:facet name="footer">
-                        <h:outputText value="#{moneySaveHome.totalReceiveProxyMoney}">
+                        <h:outputText value="#{moneySaveHome.customerProxyReceiveMoney}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                     </f:facet>
@@ -184,13 +216,14 @@
                     <s:decorate template="/layout/grid-inside-edit.xhtml">
                         <rich:inplaceInput value="#{_oper.accountsReceivable}" required="true"
                                            label="#{messages.Proxy_receiveAC}" style="width: 95%" >
-                            <a:ajax event="blur" render="accountOperList" execute="@this"/>
+                            <a:ajax event="blur" listener="#{moneySaveHome.calcRemitFee}" render="accountOperList" execute="@this"/>
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"
                                              currencySymbol="" groupingUsed="false"/>
+                            <f:validateDoubleRange minimum="0"/>
                         </rich:inplaceInput>
                     </s:decorate>
                     <f:facet name="footer">
-                        <h:outputText value="#{moneySaveHome.totalReceiveAccountMoney}">
+                        <h:outputText value="#{moneySaveHome.customerSaveReceiveMoney}">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                     </f:facet>

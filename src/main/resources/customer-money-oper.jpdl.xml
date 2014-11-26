@@ -8,8 +8,8 @@
         <transition to="decideOperType"/>
     </start-state>
 
-    <decision name="decideOperType" expression="#{customerAccountOper.type eq 'PROXY_SAVINGS'}">
-        <transition name="true" to="proxyMoneySave"/>
+    <decision name="decideOperType" expression="#{empty moneySaveHome.accountOpers}">
+        <transition name="true" to="proxyCustomer"/>
         <transition name="false" to="decideCustomerSelect"/>
     </decision>
     <decision name="decideCustomerSelect" expression="#{customerHome.idDefined}">
@@ -23,26 +23,11 @@
         <transition to="done" name="cancel"/>
     </page>
 
-    <page view-id="/func/erp/finance/cashier/ProxyMoneySave.xhtml" name="proxyMoneySave"
-          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
-        <transition to="proxyCustomer" name="customer"/>
-        <transition to="proxyOrder" name="order"/>
-        <transition to="done" name="cancel"/>
-    </page>
-
     <page view-id="/func/erp/finance/cashier/ProxyCustomer.xhtml" name="proxyCustomer"
           no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
         <transition to="confirm" name="next"/>
         <transition to="done" name="cancel"/>
     </page>
-
-
-    <page view-id="/func/erp/finance/cashier/ProxyOrder.xhtml" name="proxyOrder"
-          no-conversation-view-id="/func/erp/finance/cashier/CustomerMoneySavings.xhtml" redirect="true">
-        <transition to="confirm" name="next"/>
-        <transition to="done" name="cancel"/>
-    </page>
-
 
 
     <page view-id="/func/erp/finance/cashier/SingleCustomerMoneySave.xhtml" name="singleCustomerSave"

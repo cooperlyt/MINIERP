@@ -23,22 +23,28 @@
             <s:link value="#{messages.PayByOrder}" propagation="begin" view="/func/erp/finance/cashier/PayByOrder.xhtml"/>
         </rich:toolbarGroup>
 
-        <ui:remove>
-        <rich:toolbarGroup location="right">
-            <h:form>
-                <h:selectOneMenu value="#{customerAccountOper.type}" label=" #{messages.accountOper_field_operType}"
-                                 required="true">
-                    <s:selectItems value="#{moneySaveTypes}" var="_type" label="#{messages[_type.name()]}"/>
-                    <s:convertEnum/>
-                </h:selectOneMenu>
-
-                <h:commandButton id="beginBtn" styleClass="toolBarBtn" action="#{customerAccountOper.beginOper}"
-                                 value="#{messages.ok}">
-
-                </h:commandButton>
-            </h:form>
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/money.png"/>
+            <s:link value="#{messages.CustomerMoneySavings}" action="#{moneySaveHome.beginCustomerSave}"/>
         </rich:toolbarGroup>
-        </ui:remove>
+
+
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/money.png"/>
+            <s:link value="#{messages.PROXY_SAVINGS}" action="#{moneySaveHome.beginProxyOper}"/>
+        </rich:toolbarGroup>
+
+
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/money.png"/>
+            <s:link value="#{messages.MONEY_FREE}" action="#{moneySaveHome.beginFreeMoneyOper}"/>
+        </rich:toolbarGroup>
+
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/money.png"/>
+            <s:link value="#{messages.DEPOSIT_BACK}" action="#{moneySaveHome.beginCustomerMoneyBack}"/>
+        </rich:toolbarGroup>
+
     </rich:toolbar>
 </ui:define>
 

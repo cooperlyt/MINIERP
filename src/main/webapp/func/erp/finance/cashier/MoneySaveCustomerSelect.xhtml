@@ -9,7 +9,7 @@
                 template="/layout/full-template.xhtml">
 
 
-    <ui:param name="functionTitle" value="#{messages[customerAccountOper.type.name()]} - #{messages.CustomerSelect}"/>
+    <ui:param name="functionTitle" value="#{messages[moneySaveHome.editingOper.operType.name()]} - #{messages.CustomerSelect}"/>
 
     <ui:define name="func-body">
 
@@ -27,7 +27,7 @@
             <rich:toolbar>
                 <rich:toolbarGroup location="right">
                     <s:button styleClass="toolBarBtn" value="#{messages.cancel}" action="cancel"/>
-                    <h:commandButton styleClass="toolBarBtn" action="next" value="#{messages.Next}"/>
+                    <h:commandButton styleClass="toolBarBtn" action="#{moneySaveHome.validCustomerOrder}" value="#{messages.Next}"/>
 
                 </rich:toolbarGroup>
             </rich:toolbar>

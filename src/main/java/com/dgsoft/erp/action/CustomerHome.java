@@ -111,6 +111,8 @@ public class CustomerHome extends ErpSimpleEntityHome<Customer> {
 
     }
 
+
+
     @Override
     public boolean wire() {
 

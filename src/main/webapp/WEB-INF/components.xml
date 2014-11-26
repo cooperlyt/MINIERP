@@ -7,16 +7,17 @@
             xmlns:mail="http://jboss.org/schema/seam/mail"
             xmlns:web="http://jboss.org/schema/seam/web"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:tx="http://jboss.com/products/seam/transaction"
             xsi:schemaLocation=
                     "http://jboss.org/schema/seam/core http://jboss.org/schema/seam/core-2.3.xsd
                  http://jboss.org/schema/seam/persistence http://jboss.org/schema/seam/persistence-2.3.xsd
-
+                 http://jboss.com/products/seam/transaction http://jboss.com/products/seam/transaction-2.1.xsd
                  http://jboss.org/schema/seam/bpm http://jboss.org/schema/seam/bpm-2.3.xsd
                  http://jboss.org/schema/seam/security http://jboss.org/schema/seam/security-2.3.xsd
                  http://jboss.org/schema/seam/mail http://jboss.org/schema/seam/mail-2.3.xsd
                  http://jboss.org/schema/seam/web http://jboss.org/schema/seam/web-2.3.xsd
                  http://jboss.org/schema/seam/components http://jboss.org/schema/seam/components-2.3.xsd">
-    <core:init debug="true" jndi-pattern="@jndiPattern@"/>
+    <core:init debug="true" jndi-pattern="@jndiPattern@" />
 
 
     <core:manager concurrent-request-timeout="60000"
@@ -47,6 +48,8 @@ persistence-unit-name="house_owner"
 
     <persistence:managed-persistence-context name="systemEntityManager" auto-create="true"
                                              persistence-unit-jndi-name="java:/systemEntityManagerFactory"/>
+
+
 
     <!--    other
  <persistence:managed-persistence-context name="entityManager" auto-create="true"

@@ -57,11 +57,15 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     public Customer() {
     }
 
-    public Customer(boolean enable){
+    public Customer(boolean enable) {
         this.enable = enable;
         advanceMoney = BigDecimal.ZERO;
         accountMoney = BigDecimal.ZERO;
         proxyAccountMoney = BigDecimal.ZERO;
+        initAD = BigDecimal.ZERO;
+        initAC = BigDecimal.ZERO;
+        initPAC = BigDecimal.ZERO;
+        this.createDate = new Date();
     }
 
     @Id
@@ -172,7 +176,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         this.postCode = postCode;
     }
 
-    @Column(name="CITY",length = 100,nullable = false)
+    @Column(name = "CITY", length = 100, nullable = false)
     @NotNull
     @Size(max = 100)
     public String getCity() {
@@ -240,7 +244,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         this.customerOrders = customerOrders;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer",orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", orphanRemoval = true, cascade = {CascadeType.ALL})
     public Set<AccountOper> getAccountOpers() {
         return this.accountOpers;
     }
@@ -299,7 +303,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     }
 
 
-    @Column(name="INIT_AD",nullable = true, scale = 4)
+    @Column(name = "INIT_AD", nullable = true, scale = 4)
     public BigDecimal getInitAD() {
         return initAD;
     }
@@ -308,7 +312,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         this.initAD = initAD;
     }
 
-    @Column(name="INIT_AC", nullable = true, scale = 4)
+    @Column(name = "INIT_AC", nullable = true, scale = 4)
     public BigDecimal getInitAC() {
         return initAC;
     }
@@ -317,7 +321,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         this.initAC = initAC;
     }
 
-    @Column(name="INIT_PAC",nullable = true,scale = 4)
+    @Column(name = "INIT_PAC", nullable = true, scale = 4)
     public BigDecimal getInitPAC() {
         return initPAC;
     }
@@ -326,8 +330,8 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
         this.initPAC = initPAC;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = true)
-    @JoinColumn(name = "REBATE_PROGRAM",nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "REBATE_PROGRAM", nullable = true)
     public RebateProgram getRebateProgram() {
         return rebateProgram;
     }
@@ -337,18 +341,18 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     }
 
     @Transient
-    public List<CustomerContact> getCustomerContactList(){
+    public List<CustomerContact> getCustomerContactList() {
         List<CustomerContact> result = new ArrayList<CustomerContact>(getCustomerContacts());
-        Collections.sort(result,new Comparator<CustomerContact>() {
+        Collections.sort(result, new Comparator<CustomerContact>() {
             @Override
             public int compare(CustomerContact o1, CustomerContact o2) {
-                if ((o1.getId()) == null || (o2.getId() == null)){
+                if ((o1.getId()) == null || (o2.getId() == null)) {
                     return 0;
                 }
                 int r = o1.getType().compareTo(o2.getType());
-                if (r == 0){
+                if (r == 0) {
                     return o1.getName().compareTo(o2.getName());
-                }else
+                } else
                     return r;
 
             }
@@ -357,9 +361,9 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     }
 
     @Transient
-    public List<AccountOper> getAccountOperList(){
+    public List<AccountOper> getAccountOperList() {
         List<AccountOper> result = new ArrayList<AccountOper>(getAccountOpers());
-        Collections.sort(result,new Comparator<AccountOper>() {
+        Collections.sort(result, new Comparator<AccountOper>() {
             @Override
             public int compare(AccountOper o1, AccountOper o2) {
                 return o1.getOperDate().compareTo(o2.getOperDate());
@@ -405,7 +409,7 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
     public int hashCode() {
         if ((getId() != null) && (!"".equals(getId().trim()))) {
             return getId().hashCode();
-        }else{
+        } else {
             return super.hashCode();
         }
 
@@ -413,24 +417,24 @@ public class Customer implements Comparable<Customer>, java.io.Serializable, Nam
 
     @Override
     public int compareTo(Customer o) {
-        if ((getId() == null) || (o.getId() == null)){
-            if ((getName() != null) && (o.getName() != null)){
+        if ((getId() == null) || (o.getId() == null)) {
+            if ((getName() != null) && (o.getName() != null)) {
                 return getName().compareTo(o.getName());
-            }else{
+            } else {
                 return 0;
             }
-        } else{
+        } else {
             return getId().compareTo(o.getId());
         }
     }
 
     @Transient
-    public BigDecimal getBalance(){
+    public BigDecimal getBalance() {
         return getAdvanceMoney().subtract(getAccountMoney()).subtract(getProxyAccountMoney());
     }
 
     @Transient
-    public BigDecimal getAccountBalance(){
+    public BigDecimal getAccountBalance() {
         return getAdvanceMoney().subtract(getAccountMoney());
     }
 

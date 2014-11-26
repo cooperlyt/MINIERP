@@ -1,8 +1,5 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.SetLinkList;
-import com.dgsoft.common.jbpm.ProcessInstanceHome;
-import com.dgsoft.erp.ErpEntityHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.Customer;
 import com.dgsoft.erp.model.CustomerOrder;
@@ -11,12 +8,10 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,28 +20,16 @@ import java.util.Map;
  */
 @Name("payByOrder")
 @Scope(ScopeType.CONVERSATION)
-public class PayByOrder extends ErpEntityHome<MoneySave> {
+public class PayByOrder extends MoneySaveBaseHome {
+
+
+    @Override
+    public Class<MoneySave> getEntityClass(){
+        return MoneySave.class;
+    }
 
     @In
     private OrderSelectList orderSelectList;
-
-    @In
-    private FacesMessages facesMessages;
-
-    @In
-    private Credentials credentials;
-
-    private Date operDate;
-
-    private SetLinkList<AccountOper> accountOpers;
-
-    public Date getOperDate() {
-        return operDate;
-    }
-
-    public void setOperDate(Date operDate) {
-        this.operDate = operDate;
-    }
 
     public String orderSelectComplete() {
         if (orderSelectList.getSelectOrders().isEmpty()) {
@@ -111,9 +94,7 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
 
     }
 
-    @In(create = true)
-    private OrderHome orderHome;
-
+    @Transactional
     public String receiveMoney() {
         if (getOutMoney().compareTo(BigDecimal.ZERO) < 0) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "MoneyNotinf");
@@ -150,64 +131,11 @@ public class PayByOrder extends ErpEntityHome<MoneySave> {
 
         }
 
-        for(AccountOper oper: getAccountOpers()){
-            oper.setOperDate(operDate);
-            oper.calcCustomerMoney();
-            if (oper.getOperType().equals(AccountOper.AccountOperType.PROXY_SAVINGS) &&
-                    (oper.getCustomer().getProxyAccountMoney().compareTo(BigDecimal.ZERO) <= 0)){
-                getEntityManager().createQuery("update CustomerOrder set payTag = true where accountChange = true and customer.id = :customerId and payType ='EXPRESS_PROXY' ").setParameter("customerId",oper.getCustomer().getId()).executeUpdate();
-
-            }
-            if (oper.getOperType().equals(AccountOper.AccountOperType.CUSTOMER_SAVINGS) &&
-                    (oper.getCustomer().getAccountMoney().compareTo(BigDecimal.ZERO) <= 0)){
-                getEntityManager().createQuery("update CustomerOrder set payTag = true where accountChange = true and customer.id = :customerId and payType <> 'EXPRESS_PROXY' ").setParameter("customerId",oper.getCustomer().getId()).executeUpdate();
-            }
-        }
-
+        joinTransaction();
+        calcCustomerOrderPayTag();
 
 
         return "persisted".equals(persist()) ? "/func/erp/finance/cashier/CustomerMoneySavings.xhtml" : null;
-    }
-
-    @Override
-    public void initInstance() {
-        super.initInstance();
-        accountOpers = null;
-    }
-
-    @Override
-    protected MoneySave createInstance() {
-        MoneySave result = new MoneySave();
-        result.setMoney(BigDecimal.ZERO);
-        result.setRemitFee(BigDecimal.ZERO);
-        return result;
-    }
-
-    public SetLinkList<AccountOper> getAccountOpers() {
-        if (accountOpers == null) {
-            accountOpers = new SetLinkList<AccountOper>(getInstance().getAccountOpers());
-        }
-        return accountOpers;
-    }
-
-    public AccountOper getEditingOper() {
-        return accountOpers.get(0);
-    }
-
-    public BigDecimal getCustomerSaveReceiveMoney(){
-        BigDecimal result = BigDecimal.ZERO;
-        for(AccountOper oper: getAccountOpers()){
-            result = result.add(oper.getAccountsReceivable());
-        }
-        return result;
-    }
-
-    public BigDecimal getCustomerProxyReceiveMoney(){
-        BigDecimal result = BigDecimal.ZERO;
-        for(AccountOper oper: getAccountOpers()){
-            result = result.add(oper.getProxcAccountsReceiveable());
-        }
-        return result;
     }
 
     public BigDecimal getOutMoney() {
