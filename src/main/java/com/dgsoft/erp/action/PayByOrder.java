@@ -86,8 +86,9 @@ public class PayByOrder extends MoneySaveBaseHome {
                 customer = order.getCustomer();
             }
 
-            getAccountOpers().add(new AccountOper(getInstance(),customer, credentials.getUsername(), AccountOper.AccountOperType.CUSTOMER_SAVINGS));
-
+            AccountOper oper = new AccountOper(getInstance(),customer, credentials.getUsername(), AccountOper.AccountOperType.CUSTOMER_SAVINGS);
+            oper.setAccountsReceivable(orderSelectList.getSelectOrderTotalMoney());
+            getAccountOpers().add(oper);
 
             return "customer";
         }
@@ -95,34 +96,43 @@ public class PayByOrder extends MoneySaveBaseHome {
     }
 
 
+    public void calcRemfee(){
+         if (getInstance().getMoney() != null){
+             getInstance().setRemitFee(getCustomerSaveReceiveMoney().add(getCustomerProxyReceiveMoney()).subtract(getInstance().getMoney()));
+         }else{
+             getInstance().setRemitFee(BigDecimal.ZERO);
+         }
+    }
 
 
     @Transactional
     public String receiveMoney() {
-        if (getOutMoney().compareTo(BigDecimal.ZERO) < 0) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "MoneyNotinf");
+
+        calcRemfee();
+        if (getInstance().getRemitFee().compareTo(BigDecimal.ZERO) < 0){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "remitFeeIsltZero");
             return null;
         }
 
         if (getEditingOper().getOperType().equals(AccountOper.AccountOperType.PROXY_SAVINGS)){
-            BigDecimal outMoney = BigDecimal.ZERO;
+           // BigDecimal outMoney = BigDecimal.ZERO;
             for(AccountOper oper: getAccountOpers()){
-                outMoney = outMoney.add(oper.getAccountsReceivable());
+               // outMoney = outMoney.add(oper.getAccountsReceivable());
                 if (oper.getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) == 0){
                     facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"CustomerProxyAccountGt",oper.getCustomer().getName(),oper.getCustomer().getProxyAccountMoney());
                     return null;
                 }
             }
-            if (outMoney.compareTo(getOutMoney()) != 0 ){
-                facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ProxyOutMoneyError",getOutMoney(),outMoney);
-                return null;
-            }
+            //if (outMoney.compareTo(getOutMoney()) != 0 ){
+             //   facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ProxyOutMoneyError",getOutMoney(),outMoney);
+             //   return null;
+           // }
         }else{
-            if(getOutMoney().compareTo(BigDecimal.ZERO) < 0){
+            if(orderSelectList.getSelectOrderTotalMoney().compareTo(getCustomerSaveReceiveMoney()) > 0){
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"MoneyNotinf");
                 return null;
             }
-            getEditingOper().setAccountsReceivable(getInstance().getMoney().add(getInstance().getRemitFee()));
+            //getEditingOper().setAccountsReceivable(getInstance().getMoney().add(getInstance().getRemitFee()));
         }
 
         for(CustomerOrder order: orderSelectList.getSelectOrders()){
@@ -141,7 +151,7 @@ public class PayByOrder extends MoneySaveBaseHome {
         return "persisted".equals(persist()) ? "/func/erp/finance/cashier/CustomerMoneySavings.xhtml" : null;
     }
 
-    public BigDecimal getOutMoney() {
-        return getInstance().getMoney().add(getInstance().getRemitFee()).subtract(orderSelectList.getSelectOrderTotalMoney());
-    }
+//    public BigDecimal getOutMoney() {
+//        return getInstance().getMoney().add(getInstance().getRemitFee()).subtract(orderSelectList.getSelectOrderTotalMoney());
+//    }
 }

@@ -134,8 +134,9 @@
 
 <h:form>
 
-    <a:jsFunction name="orderSelect" action="#{orderSelectList.orderSelection}" render="selectedOrder">
+    <a:jsFunction name="orderSelect" status="processWaiting" action="#{orderSelectList.orderSelection}" render="selectedOrder">
          <a:param name="orderId" assignTo="#{orderSelectList.selectOrderId}"/>
+        <a:attachQueue requestDelay="0"/>
     </a:jsFunction>
 
     <rich:dataTable id="dataListResult" style="width: 100%" value="#{orderSelectList.resultDatas}" var="_order"
@@ -156,7 +157,7 @@
                 <a:outputPanel ajaxRendered="true">
                     <h:selectBooleanCheckbox value="#{orderSelectList.selectAll}">
 
-                        <a:ajax event="click" render="selectedOrder,dataListResult">
+                        <a:ajax event="click" status="processWaiting" render="selectedOrder,dataListResult">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
 
