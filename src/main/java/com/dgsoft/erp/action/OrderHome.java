@@ -687,6 +687,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         processInstanceHome.signalState();
     }
 
+    public boolean isMoneyEnough() {
+        return getInstance().getCustomer().getAccountMoney().multiply(new BigDecimal("-1")).
+                compareTo(getInstance().isEarnestFirst() ? getInstance().getEarnest() : getInstance().getMoney()) >= 0;
+    }
+
     protected void subCustomerMoney(Date date) {
         if (!getInstance().getAccountOpers().isEmpty()) {
             throw new IllegalArgumentException("customerOrder have money oper");
@@ -773,7 +778,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         if (isAnyOneStoreOut()) {
             for (NeedRes n : getInstance().getNeedReses()) {
                 for (Dispatch d : n.getDispatches()) {
-                    if (d.isStoreOut() && (d.getStockChange().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0)) {
+                    if (d.isStoreOut() && (d.getStockChange().getOperDate().compareTo(AccountDateHelper.instance().getStoreCloseDate(d.getStore().getId())) <= 0)) {
                         return true;
                     }
                 }

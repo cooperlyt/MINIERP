@@ -27,30 +27,6 @@
                     </a:outputPanel>
                 </rich:toolbarGroup>
 
-                <rich:toolbarGroup>
-                    <a:outputPanel ajaxRendered="true">
-                        <a:outputPanel rendered="#{orderHome.moneyChanged}">
-                            <rich:calendar id="orderCreateDateField"
-                                           enableManualInput="true"
-                                           inputSize="10"
-                                           timeZone="#{calendarBean.timeZone}" locale="#{calendarBean.locale}"
-                                           showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
-                                           datePattern="#{messages.datetimepattern}"
-                                           required="true"
-                                           validator="operDateValidator"
-                                           defaultTime="#{currentTime}"
-                                           defaultLabel="#{org.jboss.seam.framework.currentDatetime}"
-                                           label="#{messages.order_field_createDate}"
-                                           value="#{orderCancel.moneyOperDate}">
-                                <rich:validator event="change"/>
-                                <rich:placeholder value="#{messages.order_field_createDate}"/>
-                            </rich:calendar>
-                            <rich:message for="orderCreateDateField" styleClass="message-icon"
-                                          showDetail="true" showSummary="true" tooltip="true"/>
-                        </a:outputPanel>
-                    </a:outputPanel>
-
-                </rich:toolbarGroup>
 
                 <rich:toolbarGroup location="right">
                     <s:button styleClass="toolBarBtn" propagation="end" view="/func/erp/sale/CustomerOrder.xhtml"

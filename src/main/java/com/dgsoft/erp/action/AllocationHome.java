@@ -71,11 +71,13 @@ public class AllocationHome extends ErpEntityHome<Allocation> {
 
     @Override
     public String remove() {
+
+
         if (getInstance().getStockChangeByStoreOut() != null) {
             if (((getInstance().getStockChangeByStoreOut() != null) &&
-                    (getInstance().getStockChangeByStoreOut().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0)) ||
+                    (getInstance().getStockChangeByStoreOut().getOperDate().compareTo(AccountDateHelper.instance().getStoreCloseDate(getInstance().getOutStore().getId())) < 0)) ||
                     ( (getInstance().getStockChangeByStoreIn() != null) &&
-                            (getInstance().getStockChangeByStoreIn().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0))){
+                            (getInstance().getStockChangeByStoreIn().getOperDate().compareTo(AccountDateHelper.instance().getStoreCloseDate(getInstance().getInStore().getId())) < 0))){
                 facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsClose");
                 return null;
             }

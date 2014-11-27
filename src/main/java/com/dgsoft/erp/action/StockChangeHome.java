@@ -106,7 +106,7 @@ public class StockChangeHome extends ErpEntityHome<StockChange> {
     @Override
     public String remove(){
                                 //TODO implemete can delete type
-        if (getInstance().getOperDate().compareTo(AccountDateHelper.instance().getNextBeginDate()) < 0){
+        if (getInstance().getOperDate().compareTo(AccountDateHelper.instance().getStoreCloseDate(getInstance().getStore().getId())) < 0){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsClose");
             return null;
         }

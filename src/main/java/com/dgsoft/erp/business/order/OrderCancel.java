@@ -79,11 +79,17 @@ public class OrderCancel {
 
         if (!orderHome.getInstance().getAccountOpers().isEmpty()) {
             for (AccountOper oper : orderHome.getInstance().getAccountOpers()) {
-                oper.setOperDate(orderHome.getLastShipDate());
+                oper.setOperDate(orderHome.getInstance().getCreateDate());
             }
         }
         orderHome.update();
 
+    }
+
+    public void subMoneyStoreOut(){
+        if (orderHome.getInstance().isAccountChange() && orderHome.getInstance().getAccountOpers().isEmpty()){
+            orderHome.signalMoney(moneyOperDate);
+        }
     }
 
     public void changePayType() {
@@ -93,18 +99,27 @@ public class OrderCancel {
         if (!orderHome.getInstance().getPayType().equals(changeToPayType)) {
             if ((orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)
                     || changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) &&
-                    (orderHome.getInstance().getAccountOpers() != null)) {
+                    (!orderHome.getInstance().getAccountOpers().isEmpty())) {
                 for (AccountOper accountOper : orderHome.getInstance().getAccountOpers()) {
-                    accountOper.revertCustomerMoney();
+
 
                     // accountOper.setAdvanceReceivable();
                     if (changeToPayType.equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+                        if (orderHome.getInstance().getCustomer().getProxyAccountMoney().
+                                subtract(accountOper.getProxcAccountsReceiveable()).
+                                add(orderHome.getInstance().getMoney()).compareTo(BigDecimal.ZERO) < 0) {
+                            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "OrderCantChangeMoneyByProxyMoney");
+                            return;
+                        }
+                        accountOper.revertCustomerMoney();
                         accountOper.setProxcAccountsReceiveable(orderHome.getInstance().getMoney());
                         accountOper.setAccountsReceivable(BigDecimal.ZERO);
                     } else {
+                        accountOper.revertCustomerMoney();
                         accountOper.setAccountsReceivable(orderHome.getInstance().getMoney());
                         accountOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
                     }
+
                     accountOper.calcCustomerMoney();
                 }
 
@@ -116,7 +131,7 @@ public class OrderCancel {
 
     }
 
-    public String toEditMoneyRebate(){
+    public String toEditMoneyRebate() {
         orderHome.refreshSaleRebate();
         return "/func/erp/sale/OrderEditMoney.xhtml";
     }
@@ -126,9 +141,10 @@ public class OrderCancel {
             throw new IllegalArgumentException("order money is in Account!");
         }
 
-        if(orderHome.changeMoney(moneyOperDate)){
+
+        if (orderHome.changeMoney(orderHome.getInstance().getCreateDate())) {
             return orderHome.update();
-        }else{
+        } else {
             return null;
         }
     }

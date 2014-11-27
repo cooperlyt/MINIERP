@@ -56,6 +56,12 @@ public class AccountDateHelper implements Serializable {
         return nextBeginDate == null;
     }
 
+
+    public Date getStoreCloseDate(String storeId){
+        return erpEntityManager.createQuery("select max(inv.checkDate) from Inventory inv where inv.store.id = :storeId",Date.class).
+                setParameter("storeId",storeId).getSingleResult();
+    }
+
     public Date getNextBeginDate() {
         if (nextBeginDate == null){
             Date saleMinDate = erpEntityManager.createQuery("select min(accountoper.operDate) from AccountOper accountoper",Date.class).getSingleResult();
