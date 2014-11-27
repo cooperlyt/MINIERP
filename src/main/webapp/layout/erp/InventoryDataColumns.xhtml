@@ -26,7 +26,7 @@
         </a:outputPanel>
     </rich:column>
 
-
+      <c:if test="#{inventoryItems.showInOutCount}">
     <c:forEach items="#{inventoryItems.storeInTypes}" var="_type">
         <rich:column style="#{columnStyle}">
             <a:outputPanel rendered="#{not empty data.getChangeCountByType(_type)}">
@@ -125,7 +125,7 @@
             <h:outputText value="#{res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"/>
         </a:outputPanel>
     </rich:column>
-
+      </c:if>
     <rich:column style="#{columnStyle}">
         <h:outputText value="#{data.lastCount.masterCount}">
             <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>

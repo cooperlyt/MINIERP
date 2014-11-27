@@ -6,6 +6,8 @@
     <param name="resCategoryId" value="#{resCategoryHome.id}"/>
     <param name="resId" value="#{resHome.id}"/>
 
+    <param name="storeIn" value="#{stockChangeTypeCondition.storeIn}"/>
+
     <param name="storeResEntity" value="#{storeResCondition.storeResEntity}" converterId="serializableConverter"/>
 
 </page>

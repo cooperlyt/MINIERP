@@ -21,12 +21,12 @@
             #{messages.SeasonBiginCount}
         </rich:column>
         <rich:column colspan="#{(inventoryItems.storeInTypes.size + 1) * 2}"
-                     rendered="#{not empty inventoryItems.storeInTypes}">
+                     rendered="#{ (not empty inventoryItems.storeInTypes) and inventoryItems.showInOutCount }">
             #{messages.storeIn}
         </rich:column>
         <rich:column
                 colspan="#{(inventoryItems.storeOutTypes.size + inventoryItems.allocationOutStores.size + 1) * 2}"
-                rendered="#{(not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores)}">
+                rendered="#{inventoryItems.showInOutCount and ((not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores))}">
             #{messages.storeOut}
         </rich:column>
         <rich:column rowspan="2" colspan="2" style="min-width: 180px">
@@ -42,15 +42,18 @@
             #{messages.InventoryEndCount}
         </rich:column>
 
+        <c:if test="#{inventoryItems.showInOutCount}">
         <c:forEach items="#{inventoryItems.storeInTypes}" var="_type">
             <rich:column colspan="2" breakRowBefore="#{_type eq inventoryItems.firstInType}" style="min-width: 150px">
                 #{messages[_type.name()]}
             </rich:column>
 
         </c:forEach>
+
         <rich:column colspan="2" rendered="#{not empty inventoryItems.storeInTypes}" style="min-width: 160px">
             #{messages.GroupTotal}
         </rich:column>
+
         <c:forEach items="#{inventoryItems.storeOutTypes}" var="_type">
             <rich:column colspan="2"  style="min-width: 150px"
                          breakRowBefore="#{(_type eq inventoryItems.firstOutType) and (empty inventoryItems.storeInTypes)}">
@@ -67,7 +70,7 @@
                      rendered="#{(not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores)}">
             #{messages.GroupTotal}
         </rich:column>
-
+        </c:if>
     </rich:columnGroup>
 </f:facet>
 

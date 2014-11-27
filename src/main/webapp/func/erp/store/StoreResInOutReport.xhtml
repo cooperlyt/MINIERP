@@ -4,6 +4,7 @@
                 xmlns:s="http://jboss.org/schema/seam/taglib"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:l="http://www.lapis.com/jsf/exporter"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
@@ -83,13 +84,11 @@
                     </h:selectOneMenu>
                 </h:panelGrid>
             </s:decorate>
-            <a:outputPanel ajaxRendered="true">
-                #{stockChangeTypeCondition.produceIn}
-                #{stockChangeTypeCondition.storeIn}
-            </a:outputPanel>
+
 
             <a:outputPanel id="storeChangeOption">
-        <a:outputPanel rendered="#{(empty stockChangeTypeCondition.storeIn) or stockChangeTypeCondition.storeIn}">
+
+        <a:outputPanel rendered="#{stockChangeTypeCondition.storeIn}">
                 <s:decorate  template="/layout/seam-display.xhtml">
                     <ui:define name="label">#{messages.StockChange_field_operType}</ui:define>
                     <h:panelGrid columns="3">
@@ -104,7 +103,6 @@
                             #{messages.SELL_BACK}
                         </h:selectBooleanCheckbox>
                         <h:selectBooleanCheckbox value="#{stockChangeTypeCondition.produceIn}">
-                            <a:ajax event="click" execute="@form"/>
                             #{messages.PRODUCE_IN}
                         </h:selectBooleanCheckbox>
                         <h:selectBooleanCheckbox value="#{stockChangeTypeCondition.allocationIn}">
@@ -122,7 +120,7 @@
                     </h:panelGrid>
                 </s:decorate>
         </a:outputPanel>
-                <s:decorate rendered="#{(empty stockChangeTypeCondition.storeIn) or not stockChangeTypeCondition.storeIn}"
+                <s:decorate rendered="#{not stockChangeTypeCondition.storeIn}"
                             template="/layout/seam-display.xhtml">
                     <ui:define name="label">#{messages.StockChange_field_operType}</ui:define>
                     <h:panelGrid columns="3">
@@ -165,7 +163,7 @@
                         <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
 
                         <a:outputPanel id="searchButton">
-                            <a:commandButton value="#{messages.search}"
+                            <a:commandButton value="#{messages.search}" status="processWaiting"
                                              execute="@form" render="searchResult"
                                              action="#{stockChangeItemTotal.refresh}">
                                 <a:attachQueue requestDelay="0"/>
@@ -217,7 +215,7 @@
     <rich:collapsibleSubTable expandMode="client" value="#{_day.childGroup}" var="_res" id="sbtbl_c_res">
         <rich:column/>
         <rich:column colspan="3" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
-            <rich:collapsibleSubTableToggler for="sbtbl_c_format" event="none"/>
+            <rich:collapsibleSubTableToggler for="sbtbl_c_format" />
             #{_res.key.name}(#{_res.key.code})
         </rich:column>
 
@@ -243,7 +241,7 @@
             <rich:column/>
             <rich:column/>
             <rich:column colspan="4">
-                <rich:collapsibleSubTableToggler event="none" for="sbtbl_c_item"/>
+                <rich:collapsibleSubTableToggler  for="sbtbl_c_item"/>
                 #{_format.key.formatTitle}
             </rich:column>
 
@@ -333,7 +331,7 @@
     <rich:collapsibleSubTable expandMode="client" value="#{_day.childGroup}" var="_res" id="sbtbl_res">
         <rich:column/>
         <rich:column colspan="6" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
-            <rich:collapsibleSubTableToggler for="sbtbl_format" event="none"/>
+            <rich:collapsibleSubTableToggler for="sbtbl_format" />
             #{_res.key.name}(#{_res.key.code})
         </rich:column>
 
@@ -359,7 +357,7 @@
             <rich:column/>
             <rich:column/>
             <rich:column colspan="7">
-                <rich:collapsibleSubTableToggler event="none" for="sbtbl_item"/>
+                <rich:collapsibleSubTableToggler  for="sbtbl_item"/>
                 #{_format.key.formatTitle}
             </rich:column>
 
@@ -479,7 +477,7 @@
                               id="sbtbl_n_format">
         <rich:column style="width: 1px"/>
         <rich:column colspan="8">
-            <rich:collapsibleSubTableToggler event="none" for="sbtbl_n_item"/>
+            <rich:collapsibleSubTableToggler  for="sbtbl_n_item"/>
             #{_format.key.formatTitle}
         </rich:column>
 

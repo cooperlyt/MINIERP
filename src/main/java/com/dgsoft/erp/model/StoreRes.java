@@ -353,6 +353,10 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     public int compareTo(StoreRes o) {
         int result = getRes().compareTo(o.getRes());
         if (result == 0) {
+            if(UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(getRes().getUnitGroup().getType())){
+                return getFloatConversionRate().compareTo(o.getFloatConversionRate());
+            }
+
             if ((o.getId() == null) || (getId() == null)){
                 if ((o.getName() == null) || (getName() == null)){
                     return 0;

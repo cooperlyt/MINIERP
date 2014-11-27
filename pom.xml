@@ -313,8 +313,6 @@
         </dependency>
 
 
-
-
         <dependency>
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
@@ -440,7 +438,6 @@
             <artifactId>jboss-seam-pdf</artifactId>
 
         </dependency>
-
 
 
         <dependency>
@@ -578,28 +575,24 @@
             <groupId>com.lapis.jsfexporter</groupId>
             <artifactId>jsf-exporter-core</artifactId>
             <version>1.0.2.Final</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.lapis.jsfexporter</groupId>
-            <artifactId>export-type-csv</artifactId>
-            <version>1.0.2.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lapis.jsfexporter</groupId>
-            <artifactId>export-type-excel</artifactId>
-            <version>1.0.2.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lapis.jsfexporter</groupId>
-            <artifactId>export-type-pdf</artifactId>
-            <version>1.0.2.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lapis.jsfexporter</groupId>
-            <artifactId>export-type-xml</artifactId>
-            <version>1.0.2.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.faces</groupId>
+                    <artifactId>jsf-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.el</groupId>
+                    <artifactId>javax.el-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.omnifaces</groupId>
+                    <artifactId>omnifaces</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -684,7 +677,6 @@
                     </execution>
                 </executions>
             </plugin-->
-
 
 
         </plugins>

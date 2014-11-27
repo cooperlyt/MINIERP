@@ -49,7 +49,9 @@ public class InventoryItems {
 
     private Map<StoreRes, SeasonStockChangeData> seasonStockChangeDatas;
 
-    private boolean showInOutCount;
+    private boolean showInOutCount = false;
+
+    private boolean hideZero= false;
 
     @In(create = true)
     private ResCode resCode;
@@ -61,6 +63,14 @@ public class InventoryItems {
     private boolean newStock;
 
     private ResHelper.CodeValid saveStatus;
+
+    public boolean isHideZero() {
+        return hideZero;
+    }
+
+    public void setHideZero(boolean hideZero) {
+        this.hideZero = hideZero;
+    }
 
     public boolean isShowInOutCount() {
         return showInOutCount;
@@ -312,8 +322,14 @@ public class InventoryItems {
 
             List<SeasonStockChangeData> values = new ArrayList<SeasonStockChangeData>();
             for (SeasonStockChangeData value : getSeasonStockChangeDatas().values()) {
-                if (storeResCondition.isMatchStoreRes(value.getStoreRes())) {
-                    values.add(value);
+                if (storeResCondition.isMatchStoreRes(value.getStoreRes()) &&
+                        ((value.getLastCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
+                                (value.getResultCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0)||
+                                (value.getBeginCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
+                                (!value.getChangeEntrySet().isEmpty()))) {
+                    if (!hideZero || ((value.getLastCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
+                            (value.getResultCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0)))
+                        values.add(value);
                 }
             }
 
@@ -339,6 +355,15 @@ public class InventoryItems {
                 }
             });
         }
+
+         for(TotalDataGroup<Res, SeasonStockChangeData, SeasonStockChangeTotalData> data: resultGroup){
+             TotalDataGroup.sort(data,new Comparator<SeasonStockChangeData>() {
+                 @Override
+                 public int compare(SeasonStockChangeData o1, SeasonStockChangeData o2) {
+                     return o1.getStoreRes().compareTo(o2.getStoreRes());
+                 }
+             });
+         }
 
         return resultGroup;
     }

@@ -15,7 +15,7 @@ import java.util.List;
 @Name("stockChangeTypeCondition")
 public class StockChangeTypeCondition {
 
-    private Boolean storeIn = false;
+    private boolean storeIn = false;
 
     private String storeId;
 
@@ -127,11 +127,11 @@ public class StockChangeTypeCondition {
         this.storeId = storeId;
     }
 
-    public Boolean getStoreIn() {
+    public boolean isStoreIn() {
         return storeIn;
     }
 
-    public void setStoreIn(Boolean storeIn) {
+    public void setStoreIn(boolean storeIn) {
         this.storeIn = storeIn;
     }
 
