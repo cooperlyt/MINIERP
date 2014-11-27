@@ -7,5 +7,6 @@
           <module name="org.dom4j" export="true"/>
           <module name="org.hibernate.validator" export="true"/>
 	    </dependencies>
+
   </deployment>  
 </jboss-deployment-structure> 
