@@ -573,6 +573,37 @@
             <version>0.9.14</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.lapis.jsfexporter</groupId>
+            <artifactId>jsf-exporter-core</artifactId>
+            <version>1.0.2.Final</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.lapis.jsfexporter</groupId>
+            <artifactId>export-type-csv</artifactId>
+            <version>1.0.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lapis.jsfexporter</groupId>
+            <artifactId>export-type-excel</artifactId>
+            <version>1.0.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lapis.jsfexporter</groupId>
+            <artifactId>export-type-pdf</artifactId>
+            <version>1.0.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lapis.jsfexporter</groupId>
+            <artifactId>export-type-xml</artifactId>
+            <version>1.0.2.Final</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>

@@ -49,6 +49,8 @@ public class InventoryItems {
 
     private Map<StoreRes, SeasonStockChangeData> seasonStockChangeDatas;
 
+    private boolean showInOutCount;
+
     @In(create = true)
     private ResCode resCode;
 
@@ -59,6 +61,14 @@ public class InventoryItems {
     private boolean newStock;
 
     private ResHelper.CodeValid saveStatus;
+
+    public boolean isShowInOutCount() {
+        return showInOutCount;
+    }
+
+    public void setShowInOutCount(boolean showInOutCount) {
+        this.showInOutCount = showInOutCount;
+    }
 
     public ResHelper.CodeValid getSaveStatus() {
         return saveStatus;

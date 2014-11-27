@@ -4,6 +4,7 @@ import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.Store;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Logging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Name("stockChangeTypeCondition")
 public class StockChangeTypeCondition {
 
-    private boolean storeIn = false;
+    private Boolean storeIn = false;
 
     private String storeId;
 
@@ -74,6 +75,8 @@ public class StockChangeTypeCondition {
                 result.addAll(StockChange.StoreChangeType.getAllIn());
             }
 
+            Logging.getLog(getClass()).debug("produceIn:" + produceIn + result.size());
+            Logging.getLog(getClass()).debug(result);
         } else {
             if (materialOut)
                 result.add(StockChange.StoreChangeType.MATERIAL_OUT);
@@ -124,11 +127,11 @@ public class StockChangeTypeCondition {
         this.storeId = storeId;
     }
 
-    public boolean isStoreIn() {
+    public Boolean getStoreIn() {
         return storeIn;
     }
 
-    public void setStoreIn(boolean storeIn) {
+    public void setStoreIn(Boolean storeIn) {
         this.storeIn = storeIn;
     }
 

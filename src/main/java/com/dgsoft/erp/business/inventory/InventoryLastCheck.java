@@ -23,6 +23,6 @@ public class InventoryLastCheck extends InventoryTaskHandle {
     protected String completeInventoryTask() {
         inventoryHome.getInstance().setCheckEmp(credentials.getUsername());
         inventoryHome.getInstance().setStatus(Inventory.InvertoryStatus.INVERTORY_COMPLETE);
-        return "taskComplete";
+        return  "updated".equals(inventoryHome.update()) ? "taskComplete" : null;
     }
 }

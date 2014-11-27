@@ -5,6 +5,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:l="http://www.lapis.com/jsf/exporter"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 <ui:define name="toolbar">
@@ -14,6 +15,10 @@
             background: #{a4jSkin.tableBackgroundColor};
     }
     </h:outputStylesheet>
+
+    <h:commandButton value="333">
+        <l:dataExporter source="noGroupResult" fileType="excel" fileName="myfile"/>
+    </h:commandButton>
 
     <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
         <h:form>
@@ -78,10 +83,14 @@
                     </h:selectOneMenu>
                 </h:panelGrid>
             </s:decorate>
+            <a:outputPanel ajaxRendered="true">
+                #{stockChangeTypeCondition.produceIn}
+                #{stockChangeTypeCondition.storeIn}
+            </a:outputPanel>
 
             <a:outputPanel id="storeChangeOption">
-
-                <s:decorate rendered="#{stockChangeTypeCondition.storeIn}" template="/layout/seam-display.xhtml">
+        <a:outputPanel rendered="#{(empty stockChangeTypeCondition.storeIn) or stockChangeTypeCondition.storeIn}">
+                <s:decorate  template="/layout/seam-display.xhtml">
                     <ui:define name="label">#{messages.StockChange_field_operType}</ui:define>
                     <h:panelGrid columns="3">
 
@@ -95,6 +104,7 @@
                             #{messages.SELL_BACK}
                         </h:selectBooleanCheckbox>
                         <h:selectBooleanCheckbox value="#{stockChangeTypeCondition.produceIn}">
+                            <a:ajax event="click" execute="@form"/>
                             #{messages.PRODUCE_IN}
                         </h:selectBooleanCheckbox>
                         <h:selectBooleanCheckbox value="#{stockChangeTypeCondition.allocationIn}">
@@ -111,8 +121,8 @@
                         </h:selectBooleanCheckbox>
                     </h:panelGrid>
                 </s:decorate>
-
-                <s:decorate rendered="#{not stockChangeTypeCondition.storeIn}"
+        </a:outputPanel>
+                <s:decorate rendered="#{(empty stockChangeTypeCondition.storeIn) or not stockChangeTypeCondition.storeIn}"
                             template="/layout/seam-display.xhtml">
                     <ui:define name="label">#{messages.StockChange_field_operType}</ui:define>
                     <h:panelGrid columns="3">
@@ -406,7 +416,7 @@
 </rich:dataTable>
 
 
-<rich:dataTable style="width: 100%" rendered="#{stockChangeItemTotal.resultGroupBy eq 'NO_GROUP'}"
+<rich:dataTable id="noGroupResult" style="width: 100%" rendered="#{stockChangeItemTotal.resultGroupBy eq 'NO_GROUP'}"
                 value="#{stockChangeItemTotal.resultGroup.childGroup}"
                 var="_res">
     <f:facet name="header">
