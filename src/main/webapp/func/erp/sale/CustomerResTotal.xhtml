@@ -118,6 +118,7 @@
 <h:form>
 <a:outputPanel id="dataResult">
 
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
 
 <rich:dataTable value="#{customerResContactsTotal.dayResultGroup.childGroup}" var="_day" style="width: 100%"
                 rendered="#{customerResContactsTotal.groupByDay}">

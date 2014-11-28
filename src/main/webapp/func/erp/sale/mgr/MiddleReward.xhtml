@@ -150,7 +150,10 @@
 
 <br/>
 <h:form>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+
 <a:outputPanel ajaxRendered="true">
+
 <rich:dataTable id="constainCustomers" value="#{middleManRewardCalc.containCustomer}" var="_customer"
                 noDataLabel="#{messages.middleMan_reward_customer_empty}" style="width: 100%">
 

@@ -25,6 +25,7 @@
     </h:outputText>
 
 </s:decorate>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
 
 <rich:dataTable rendered="#{not orderBack.dispatched}" style="width: 100%"
                 value="#{orderBack.backItemList}" var="_item">

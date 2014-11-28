@@ -43,7 +43,9 @@
 
 <a:region>
 <a:outputPanel id="itemCalcType">
-<rich:dataTable style="width: 100%"
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+
+    <rich:dataTable style="width: 100%"
                 value="#{middleManHome.salerPrices}" var="_resRebate">
 
 <f:facet name="header">

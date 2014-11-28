@@ -10,7 +10,8 @@
 
 
 
-    <h:form id="storeOutItems">
+    <h:form id="storeOutItems"><script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+
         <rich:dataTable rendered="#{(not empty storeOutAction.selectStore)}" value="#{storeOutAction.storeOutItemGroups}"
                         var="_outGroup">
             <f:facet name="header">

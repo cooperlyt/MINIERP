@@ -9,6 +9,7 @@
                 xmlns:rich="http://richfaces.org/rich">
 
     <!-- param: dispatchList-->
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
 
     <rich:dataTable style="width: 100%" value="#{dispatchList}" var="_dispatch"
                     noDataLabel="#{messages.emptyResult}">
