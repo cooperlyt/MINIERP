@@ -1,5 +1,5 @@
 input, select, textarea, button, keygen, isindex, legend, a {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }
@@ -31,7 +31,7 @@ input, select, textarea, button, keygen, isindex {
 button, input[type="reset"], input[type="submit"], input[type="button"] {
 	border-width: 1px;
 	border-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 	background-repeat: repeat-x;
@@ -55,7 +55,7 @@ textarea, input[type="text"], input[type="password"], select {
 	border-width: 1px;
 	border-style: solid;
 	border-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 	background-repeat: no-repeat;
@@ -69,7 +69,7 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
 }
 
 *.rfs-ctn input, *.rfs-input, *.rfs-ctn select, *.rfs-select, *.rfs-ctn textarea, *.rfs-textarea, *.rfs-ctn button, *.rfs-btn, *.rfs-ctn keygen, *.rfs-keygen, *.rfs-ctn isindex, *.rfs-isindex, *.rfs-ctn legend, *.rfs-legend, *.rfs-ctn a, *.rfs-link, *.rfs-ctn fieldset, *.rfs-fieldset, *.rfs-field, *.rfs-field-edit, *.rfs-field-error, *.rfs-btn, *.rfs-btn-disabled, *.rfs-btn-over, *.rfs-btn-press {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }
@@ -259,10 +259,10 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
 	color: #0090FF;
 }
 *.rfs-font-size-general {
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rfs-font-size-header {
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rfs-font-family-general {
 	font-family: 'Microsoft Yahei',verdana;
@@ -271,22 +271,22 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rfs-txt-general {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }
 *.rfs-txt-header {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }
 *.rfs-txt-tab-disabled {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #8DB7F3;
 }
 *.rfs-txt-control-select {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #E79A00;
 }
@@ -302,7 +302,7 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
 	background-position: top left;
 	background-color: #BED6F8;
 	background-image: url(org.richfaces.images/buttonBackgroundImage.png);
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }
@@ -326,7 +326,7 @@ textarea[disabled], input[type="text"][disabled], input[type="password"][disable
 	background-position: 1px 1px;
 	background-color: #ffffff;
 	background-image: url(org.richfaces.images/inputBackgroundImage.png);
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }

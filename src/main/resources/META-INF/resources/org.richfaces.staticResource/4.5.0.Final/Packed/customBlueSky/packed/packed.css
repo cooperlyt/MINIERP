@@ -1,5 +1,5 @@
 *.rf-ulst-itm, *.rf-olst-itm, *.rf-dlst-trm, *.rf-dlst-dfn {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }
@@ -13,7 +13,7 @@
 *.rf-p-hdr {
 	background-color: #BED6F8;
 	border-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	color: #000000;
 	font-weight: bold;
 	font-family: 'Microsoft Yahei',verdana;
@@ -25,7 +25,7 @@
 	background-image: url(../org.richfaces.images/gradientA.png);
 }
 *.rf-p-b {
-	font-size: 12px;
+	font-size: 13px;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
 	padding: 10px;
@@ -35,7 +35,7 @@
 	border-color: #BED6F8;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 0px;
 	background-color: #BED6F8;
@@ -104,7 +104,7 @@
 	border-right-color: #C0C0C0;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 4px;
 }
 *.rf-dt-nd {
@@ -116,7 +116,7 @@
 	border-right-color: #C0C0C0;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 4px;
 }
 *.rf-dt-hdr-c {
@@ -131,7 +131,7 @@
 	background-position: top left;
 	color: #0B356C;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: center;
@@ -148,7 +148,7 @@
 	background-position: top left;
 	color: #0B356C;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: center;
@@ -163,7 +163,7 @@
 	background-color: #f1f1f1;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: center;
@@ -183,7 +183,7 @@
 	color: #000000;
 	background-color: #cccccc;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: center;
@@ -246,7 +246,7 @@
 	border-right-color: #C0C0C0;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 4px;
 }
 *.rf-dg-c {
@@ -258,7 +258,7 @@
 	border-right-color: #C0C0C0;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 4px;
 }
 *.rf-dg-h-c {
@@ -273,7 +273,7 @@
 	background-position: top left;
 	color: #0B356C;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: center;
@@ -293,7 +293,7 @@
 	color: #000000;
 	background-color: #cccccc;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: center;
@@ -332,7 +332,7 @@
 	color: #000000;
 	background-color: #FFFFFF;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 4px;
 }
 *.rf-cst-hdr-c {
@@ -345,7 +345,7 @@
 	color: #000000;
 	background-color: #ECF4FE;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: left;
@@ -360,7 +360,7 @@
 	background-color: #ECF4FE;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 }
@@ -374,7 +374,7 @@
 	background-color: #f1f1f1;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding: 4px;
 	text-align: left;
@@ -389,13 +389,13 @@
 	background-color: #f1f1f1;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 4px;
 }
 *.rf-ds {
 	white-space: nowrap;
 	display: inline-block;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 1px;
 	font-family: 'Microsoft Yahei',verdana;
 	background: #FFFFFF;
@@ -409,7 +409,7 @@ a.rf-ds-btn {
 *.rf-ds-cont {
 	white-space: nowrap;
 	display: inline-block;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 1px;
 	font-family: 'Microsoft Yahei',verdana;
 	background: #FFFFFF;
@@ -430,7 +430,7 @@ a.rf-ds-btn {
 	background-repeat: repeat-x;
 	background-color: #BED6F8;
 	background-image: url(../org.richfaces.images/dsBtnGrad.png);
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 	text-decoration: none;
@@ -467,7 +467,7 @@ a.rf-ds-btn {
 	background-position: top left;
 	background-repeat: repeat-x;
 	display: inline-block;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	text-decoration: none;
 	color: #000000;
@@ -611,7 +611,7 @@ div.rf-edt-ftr-cnt {
 *.rf-edt-c-cnt, *.rf-edt-hdr-c-cnt, *.rf-edt-ftr-c-cnt, *.rf-edt-tbl-hdr, *.rf-edt-tbl-ftr {
 	padding: 3px 7px;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-edt-hdr-c-cnt, *.rf-edt-tbl-hdr, *.rf-edt-ftr-c-cnt, *.rf-edt-tbl-ftr {
 	font-weight: bold;
@@ -671,7 +671,7 @@ div.rf-edt-ftr-cnt {
 }
 *.rf-msg, *.rf-msgs {
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-msg-err, *.rf-msgs-err, *.rf-msg-ftl, *.rf-msgs-ftl, *.rf-msg-inf, *.rf-msgs-inf, *.rf-msg-wrn, *.rf-msgs-wrn, *.rf-msg-ok, *.rf-msgs-ok {
 	display: block;
@@ -767,7 +767,7 @@ div.rf-edt-ftr-cnt {
 }
 *.rf-fu-btn-cnt-add, *.rf-fu-btn-cnt-add-dis, *.rf-fu-btn-cnt-upl, *.rf-fu-btn-cnt-clr, *.rf-fu-itm-lbl, *.rf-fu-itm-st, *.rf-fu-itm-lnk {
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-fu-btn-cnt-add, *.rf-fu-btn-cnt-upl, *.rf-fu-btn-cnt-clr, *.rf-fu-itm-lbl, *.rf-fu-itm-st {
 	color: #000000;
@@ -846,7 +846,7 @@ div.rf-edt-ftr-cnt {
 	vertical-align: top;
 }
 *.rf-insl-mn, *.rf-insl-mx, input.rf-insl-inp, *.rf-insl-tt {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 }
@@ -952,7 +952,7 @@ input.rf-insl-inp {
 *.rf-trn {
 	background: url(../org.richfaces.images/last.png) no-repeat center left;
 	cursor: default;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	color: #000000;
 	padding: 1px 0px 1px 0px;
@@ -1041,7 +1041,7 @@ input.rf-insp-inp[type="text"] {
 	border: 0px;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	margin: 0px;
 	padding: 0px;
 	vertical-align: top;
@@ -1087,7 +1087,7 @@ input.rf-insp-inp[type="text"] {
 	overflow: hidden;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	background-color: #ffffff;
 	padding: 0px;
@@ -1112,7 +1112,7 @@ input.rf-insp-inp[type="text"] {
 *.rf-pb-init, *.rf-pb-fin {
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-tab-hdr {
 	white-space: nowrap;
@@ -1205,7 +1205,7 @@ input.rf-insp-inp[type="text"] {
 *.rf-tab-lbl {
 	white-space: nowrap;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-tab-hdn {
 	display: none;
@@ -1221,7 +1221,7 @@ input.rf-insp-inp[type="text"] {
 	text-align: center;
 	font-weight: bold;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding-top: 6px;
 }
 *.rf-tab-hdr-scrl-rgh {
@@ -1234,7 +1234,7 @@ input.rf-insp-inp[type="text"] {
 	border: 1px solid #BED6F8;
 	text-align: center;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	padding-top: 6px;
 }
@@ -1261,7 +1261,7 @@ input.rf-insp-inp[type="text"] {
 *.rf-tab-cnt {
 	border: 1px solid #BED6F8;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 10px;
 	background: #FFFFFF;
 }
@@ -1316,7 +1316,7 @@ input.rf-insp-inp[type="text"] {
 	font-weight: bold;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	padding: 2px;
 	padding-left: 10px;
 }
@@ -1329,7 +1329,7 @@ input.rf-insp-inp[type="text"] {
 	font-weight: bold;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	z-index: 100;
 }
 *.rf-pp-cnt-scrlr {
@@ -1342,7 +1342,7 @@ input.rf-insp-inp[type="text"] {
 	padding: 10px;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-pp-hndlr {
 	background-image: url(../../spacer.gif);
@@ -1489,7 +1489,7 @@ html > body *.rf-ntf {
 *.rf-ntf-hstr {
 	background-color: #BED6F8;
 	border-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
 	font-weight: normal;
@@ -1623,7 +1623,7 @@ html > body *.rf-ntf {
 }
 *.rf-au-fnt {
 	color: #000000;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 input.rf-au-inp {
@@ -1787,7 +1787,7 @@ input.rf-au-inp {
 	font-weight: bold;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	cursor: pointer;
 	min-height: 0px;
 }
@@ -1799,7 +1799,7 @@ input.rf-au-inp {
 	overflow: auto;
 	overflow-x: hidden;
 	padding: 10px;
-	font-size: 12px;
+	font-size: 13px;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
 }
@@ -1864,7 +1864,7 @@ input.rf-au-inp {
 	cursor: pointer;
 	background-color: #BED6F8;
 	border-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	color: #000000;
 	font-weight: bold;
 	font-family: 'Microsoft Yahei',verdana;
@@ -1876,7 +1876,7 @@ input.rf-au-inp {
 	background-image: url(../org.richfaces.images/gradientA.png);
 }
 *.rf-cp-b {
-	font-size: 12px;
+	font-size: 13px;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
 	padding: 10px;
@@ -1937,7 +1937,7 @@ input.rf-au-inp {
 }
 *.rf-pm-itm-lbl {
 	padding: 2px 0px 3px 0px;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	white-space: normal !important;
 }
@@ -1986,7 +1986,7 @@ input.rf-au-inp {
 *.rf-pm-gr-lbl {
 	display: inline-block;
 	padding: 2px 0px 3px 0px;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	white-space: normal !important;
 }
@@ -2020,7 +2020,7 @@ input.rf-au-inp {
 *.rf-pm-top-itm-lbl {
 	display: inline-block;
 	padding: 2px 0px 3px 0px;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	white-space: normal !important;
 }
@@ -2097,7 +2097,7 @@ input.rf-au-inp {
 *.rf-pm-top-gr-lbl {
 	display: inline-block;
 	padding: 2px 0px 3px 0px;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	white-space: normal !important;
 }
@@ -2143,7 +2143,7 @@ input.rf-au-inp {
 	border-bottom: 1px solid;
 	border-bottom-color: #BED6F8;
 	background-color: #ECF4FE;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	padding: 7px;
 	height: 22px;
@@ -2154,7 +2154,7 @@ input.rf-au-inp {
 	border-bottom: 1px solid;
 	border-bottom-color: #BED6F8;
 	background-color: #ECF4FE;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-cal-c-cnt-overflow {
@@ -2173,7 +2173,7 @@ input.rf-au-inp {
 	border-bottom-color: #BED6F8;
 	border-right-color: #BED6F8;
 	background-color: #FFFFFF;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-cal-hdr-month {
@@ -2182,7 +2182,7 @@ input.rf-au-inp {
 	height: 22px;
 	white-space: nowrap;
 	background-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	font-weight: bold;
 	color: #000000;
@@ -2193,7 +2193,7 @@ input.rf-au-inp {
 	width: 20px;
 	height: 22px;
 	background-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	font-weight: bold;
 	color: #000000;
@@ -2207,7 +2207,7 @@ input.rf-au-inp {
 	border-bottom-color: #BED6F8;
 	border-right-color: #BED6F8;
 	background-color: #ECF4FE;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-cal-week {
@@ -2220,7 +2220,7 @@ input.rf-au-inp {
 	border-bottom-color: #BED6F8;
 	background-color: #F5F5F5;
 	border-right-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-cal-right-c {
@@ -2233,7 +2233,7 @@ input.rf-au-inp {
 	height: 22px;
 	padding: 1px 2px 1px 1px;
 	background: #ECF4FE;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	background-image: url(../org.richfaces.images/calendarSeparator.png);
 	background-repeat: no-repeat;
@@ -2248,13 +2248,13 @@ input.rf-au-inp {
 	border-top-color: #BED6F8;
 	border-right-color: #BED6F8;
 	background: #ECF4FE;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-cal-ftr {
 	border-top: 1px solid;
 	border-right: 0px solid;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	background: #ECF4FE;
 	border-top-color: #BED6F8;
@@ -2264,7 +2264,7 @@ input.rf-au-inp {
 	border: 0px;
 	padding: 0px 0px 0px 3px;
 	background: none transparent scroll repeat 0% 0%;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	width: 18px;
 }
@@ -2363,7 +2363,7 @@ input.rf-au-inp {
 	position: relative;
 }
 *.rf-cal-timepicker-cnt, *.rf-cal-monthpicker-cnt, *.rf-cal-timepicker-cnt input {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-cal-timepicker-inp {
@@ -2496,12 +2496,12 @@ input.rf-cal-dflt-lbl {
 	border: 1px solid;
 	border-color: #E5973E ;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	display: inline-block;
 }
 *.rf-ddm-lbl, *.rf-ddm-lbl-dis {
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	position: relative;
 	white-space: nowrap;
@@ -2561,7 +2561,7 @@ input.rf-cal-dflt-lbl {
 	padding: 1px 35px 1px 1px;
 	white-space: nowrap;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	position: relative;
 }
 *.rf-ddm-itm-unsel {
@@ -2647,7 +2647,7 @@ input.rf-ii-fld {
 	height: 100%;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-ii-fld-cntr {
 	position: absolute;
@@ -2660,7 +2660,7 @@ input.rf-ii-fld {
 	white-space: nowrap;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-ii {
 	display: inline-block;
@@ -2790,7 +2790,7 @@ input.rf-ii-fld {
 }
 *.rf-ctx-lbl, *.rf-ctx-lbl-dis {
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: bold;
 	position: relative;
 	white-space: nowrap;
@@ -2849,7 +2849,7 @@ input.rf-ii-fld {
 	padding: 1px 35px 1px 1px;
 	white-space: nowrap;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	position: relative;
 }
 *.rf-ctx-itm-unsel {
@@ -2924,7 +2924,7 @@ input.rf-ii-fld {
 }
 *.rf-sel-inp, *.rf-sel-opt {
 	color: #000000;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-sel-cntr {
@@ -3061,7 +3061,7 @@ input.rf-sel-dflt-lbl {
 *.rf-is-fld, *.rf-is-opt, *.rf-is-lbl {
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 input.rf-is-fld {
 	background: #FEFFDA;
@@ -3074,7 +3074,7 @@ input.rf-is-fld {
 	background-repeat: no-repeat;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 }
 *.rf-is-none {
 	clip: rect(0px 0px 1px 1px);
@@ -3139,7 +3139,7 @@ input.rf-is-fld {
 	position: absolute;
 	color: #000000;
 	font-family: 'Microsoft Yahei',verdana;
-	font-size: 12px;
+	font-size: 13px;
 	z-index: 10000;
 }
 *.rf-is-lst-pos {
@@ -3255,7 +3255,7 @@ input.rf-is-fld {
 }
 *.rf-pick-opt {
 	color: #000000;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-pick {
@@ -3271,7 +3271,7 @@ input.rf-is-fld {
 	background-repeat: repeat-x;
 	background-position: top left;
 	background-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	font-weight: bold;
 	color: #000000;
@@ -3280,7 +3280,7 @@ input.rf-is-fld {
 	padding: 0 0.5em;
 }
 *.rf-pick-src-cptn, *.rf-pick-tgt-cptn {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	font-weight: bold;
 	color: #000000;
@@ -3339,7 +3339,7 @@ input.rf-pick-dflt-lbl {
 }
 *.rf-ord-opt {
 	color: #000000;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 }
 *.rf-ord {
@@ -3354,7 +3354,7 @@ input.rf-pick-dflt-lbl {
 	background-repeat: repeat-x;
 	background-position: top left;
 	background-color: #BED6F8;
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	font-weight: bold;
 	color: #000000;
@@ -3363,7 +3363,7 @@ input.rf-pick-dflt-lbl {
 	padding: 0 0.5em;
 }
 *.rf-ord-cptn {
-	font-size: 12px;
+	font-size: 13px;
 	font-family: 'Microsoft Yahei',verdana;
 	font-weight: bold;
 	color: #000000;
