@@ -1,12 +1,14 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.Stock;
 import com.dgsoft.erp.model.Store;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.api.StockView;
-import com.dgsoft.erp.model.api.StoreResCountGroup;
+import com.dgsoft.erp.total.data.ResCount;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -16,15 +18,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by cooper on 5/13/14.
+ * Created by cooper on 11/28/14.
  */
-@Name("stockSearchList")
+@Name("stockViewSearchList")
 @Scope(ScopeType.CONVERSATION)
-@Deprecated
-public class StockSearchList extends ErpEntityQuery<Stock> {
+public class StockViewSearchList extends ErpEntityQuery<Stock> {
 
-    private static final String EJBQL = "select stock from Stock stock left join fetch stock.storeRes storeRes " +
-            "left join fetch storeRes.res res left join fetch res.unitGroup where stock.count > 0 ";
+    private static final String EJBQL = "select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.count != 0";
 
     private static final String[] RESTRICTIONS = {
             "stock.store.id =  #{stockSearchList.storeId}",
@@ -34,7 +34,7 @@ public class StockSearchList extends ErpEntityQuery<Stock> {
             "stock.storeRes.floatConversionRate = #{storeResCondition.searchFloatConvertRate}",
             "stock.storeRes.id in (#{storeResCondition.matchStoreResIds})"};
 
-    public StockSearchList() {
+    public StockViewSearchList() {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
@@ -51,24 +51,20 @@ public class StockSearchList extends ErpEntityQuery<Stock> {
         this.storeId = storeId;
     }
 
-    private StoreResCountGroup<Stock> totalResult;
 
-    private void initTotalResult() {
-        if ((getMaxResults() != null) || (totalResult == null)) {
-            setMaxResults(null);
-            totalResult = new StoreResCountGroup<Stock>(getResultList());
+    public List<TotalDataGroup<Res,StockView,StockView.StockTotalCount>> resultGroup;
+
+    public List<TotalDataGroup<Res,StockView,StockView.StockTotalCount>> getResultGroup(){
+        if (resultGroup == null){
+            TotalDataGroup.groupBy(getResultList(), new Res)
         }
-    }
-
-    public StoreResCountGroup<Stock> getTotalResult() {
-        initTotalResult();
-        return totalResult;
+        return resultGroup;
     }
 
     @Override
     public void refresh() {
         super.refresh();
-        totalResult = null;
+        resultGroup = null;
     }
 
     private List<String> getStoreResIds(List<StoreRes> storeReses) {
