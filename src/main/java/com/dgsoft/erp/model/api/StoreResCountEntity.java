@@ -140,7 +140,7 @@ public abstract class StoreResCountEntity extends StoreResEntity{
 
     public BigDecimal getAuxCount() {
         if (!getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            throw new IllegalArgumentException("only float convert res can call this function");
+            return null;
         }
 
         if (getMasterCount() == null) {

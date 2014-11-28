@@ -45,6 +45,10 @@ public class StoreResCount extends StoreResCountEntity implements com.dgsoft.erp
 
     @Override
     public ResCount add(ResCount other) {
+        if(other.getRes() == null){
+            return new StoreResCount(storeRes,getMasterCount());
+        }
+
         if (!other.getRes().equals(storeRes.getRes())){
             throw new IllegalArgumentException("not same Res canot oper");
         }
@@ -53,6 +57,9 @@ public class StoreResCount extends StoreResCountEntity implements com.dgsoft.erp
 
     @Override
     public ResCount subtract(ResCount other) {
+        if(other.getRes() == null){
+            return new StoreResCount(storeRes,getMasterCount());
+        }
         if (!other.getRes().equals(storeRes.getRes())){
             throw new IllegalArgumentException("not same Res canot oper");
         }

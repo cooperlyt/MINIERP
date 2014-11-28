@@ -26,7 +26,7 @@
             <h:form id="condition">
                 <s:decorate template="/layout/seam-edit.xhtml" rendered="#{not s:hasRole('erp.storage.dispatch') and not s:hasRole('erp.storage.manager')}">
                     <ui:define name="label">#{messages.Store}</ui:define>
-                    <h:selectOneMenu value="#{stockSearchList.storeId}" required="true" label="#{messages.Store}">
+                    <h:selectOneMenu value="#{stockViewSearchList.storeId}" required="true" label="#{messages.Store}">
                         <s:selectItems value="#{myStores}" var="_store" label="#{_store.name}" itemValue="#{_store.id}"
                                        noSelectionLabel="#{messages.searchNoSelectLabel}"/>
                     </h:selectOneMenu>
@@ -34,7 +34,7 @@
 
                 <s:decorate template="/layout/seam-edit.xhtml" rendered="#{s:hasRole('erp.storage.dispatch') or s:hasRole('erp.storage.manager')}">
                     <ui:define name="label">#{messages.Store}</ui:define>
-                    <h:selectOneMenu value="#{stockSearchList.storeId}" label="#{messages.Store}">
+                    <h:selectOneMenu value="#{stockViewSearchList.storeId}" label="#{messages.Store}">
                         <s:selectItems value="#{allStoreList}" var="_store" label="#{_store.name}" itemValue="#{_store.id}"
                                        noSelectionLabel="#{messages.searchNoSelectLabel}"/>
                     </h:selectOneMenu>
@@ -68,34 +68,48 @@
             <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
 
             <a:outputPanel id="searchResult">
-                <rich:dataTable style="width: 100%" rendered="#{(not empty stockSearchList.storeId) or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}"
-                                value="#{stockSearchList.totalResult.getFormatGroup()}" var="_res">
+                <rich:dataTable style="width: 100%" rendered="#{(not empty stockViewSearchList.storeId) or s:hasRole('erp.sale.manager') or s:hasRole('erp.sale.saler')}"
+                                value="#{stockViewSearchList.resultGroup}" var="_res">
 
                     <f:facet name="header">
                         <rich:columnGroup>
-                            <rich:column colspan="3" rowspan="2">
+                            <rich:column colspan="3" >
                                 #{messages.StoreRes}
                             </rich:column>
 
+
                             <rich:column colspan="2">
-                                #{messages.count}
+                                #{messages.StockCount}
                             </rich:column>
 
-                            <rich:column breakRowBefore="true">
-                                #{messages.MasterUnitCount}
+                            <rich:column colspan="2">
+                                #{messages.SaleStockCount}
                             </rich:column>
 
-                            <rich:column>
-                                #{messages.AuxUnitCount}
+                            <rich:column colspan="2">
+                                #{messages.StockCanUseCount}
                             </rich:column>
 
                         </rich:columnGroup>
                     </f:facet>
 
-                    <rich:column colspan="5">
-                        <rich:collapsibleSubTableToggler for="sbtb_format"/>
+                    <rich:column colspan="3">
+                        <rich:collapsibleSubTableToggler  for="sbtb_format"/>
                         #{_res.key.name}(#{_res.key.code})
                     </rich:column>
+
+                    <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                        <ui:param name="resCount" value="#{_res.totalData.stockCount}"/>
+                    </ui:include>
+
+                    <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                        <ui:param name="resCount" value="#{_res.totalData.saleCount}"/>
+                    </ui:include>
+
+
+                    <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                        <ui:param name="resCount" value="#{_res.totalData.canUseCount}"/>
+                    </ui:include>
 
 
                     <rich:collapsibleSubTable id="sbtb_format" value="#{_res.childGroup}" var="_format">
@@ -108,38 +122,22 @@
 
                         </rich:column>
 
-                        <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
-                            <h:outputText value="#{_format.totalData.masterUnitCount}" style="font-weight: bold;">
-                                <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
-                            </h:outputText>
-                            #{_res.key.unitGroup.masterUnit.name}
+                        <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                            <ui:param name="resCount" value="#{_format.totalData.stockCount}"/>
+                            <ui:param name="style" value="background: #{a4jSkin.tableSubHeaderBackgroundColor}"/>
+                        </ui:include>
 
-                            <f:facet name="footer">
-                                <h:outputText value="#{_res.totalData.masterUnitCount}" style="font-weight: bold;">
-                                    <f:convertNumber pattern="#{_res.key.unitGroup.masterUnit.countFormate}"/>
-                                </h:outputText>
-                                #{_res.key.unitGroup.masterUnit.name}
-                            </f:facet>
-                        </rich:column>
+                        <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                            <ui:param name="resCount" value="#{_format.totalData.saleCount}"/>
+                            <ui:param name="style" value="background: #{a4jSkin.tableSubHeaderBackgroundColor}"/>
+                        </ui:include>
 
-                        <rich:column style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
-                            <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}" >
-                                <h:outputText value="#{_format.totalData.auxUnitCount}" style="font-weight: bold;">
-                                    <f:convertNumber
-                                            pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
-                                </h:outputText>
-                                #{_res.key.unitGroup.floatAuxiliaryUnit.name}
-                            </a:outputPanel>
-                            <f:facet name="footer">
-                                <a:outputPanel rendered="#{_res.key.unitGroup.type eq 'FLOAT_CONVERT'}">
-                                    <h:outputText value="#{_res.totalData.auxUnitCount}" style="font-weight: bold;">
-                                        <f:convertNumber
-                                                pattern="#{_res.key.unitGroup.floatAuxiliaryUnit.countFormate}"/>
-                                    </h:outputText>
-                                    #{_res.key.unitGroup.floatAuxiliaryUnit.name}
-                                </a:outputPanel>
-                            </f:facet>
-                        </rich:column>
+
+                        <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                            <ui:param name="resCount" value="#{_format.totalData.canUseCount}"/>
+                            <ui:param name="style" value="background: #{a4jSkin.tableSubHeaderBackgroundColor}"/>
+                        </ui:include>
+
 
                         <rich:collapsibleSubTable id="sbtb_storeRes" value="#{_format.values}" var="_item">
 
@@ -147,22 +145,28 @@
                             <rich:column style="width: 1px"/>
 
                             <rich:column>
-                                <h:outputText rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"
-                                              value="#{_item.storeRes.floatConversionRate}">
-                                    <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+                                <h:outputText rendered="#{_item.res.unitGroup.type eq 'FLOAT_CONVERT'}"
+                                              value="#{_item.stock.storeRes.floatConversionRate}">
+                                    <f:convertNumber pattern="#{_item.res.unitGroup.floatConvertRateFormat}"/>
                                 </h:outputText>
-                                <h:outputText value="#{_item.storeRes.res.unitGroup.name}"
-                                              rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                                <h:outputText value="#{_item.res.unitGroup.name}"
+                                              rendered="#{_item.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
                             </rich:column>
 
 
-                            <rich:column>
-                                #{_item.displayMasterCount}
-                            </rich:column>
+                            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                                <ui:param name="resCount" value="#{_item.stockCount}"/>
+                            </ui:include>
 
-                            <rich:column>
-                                #{_item.displayAuxCount}
-                            </rich:column>
+                            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                                <ui:param name="resCount" value="#{_item.saleCount}"/>
+                            </ui:include>
+
+
+                            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                                <ui:param name="resCount" value="#{_item.canUseCount}"/>
+                            </ui:include>
+
 
                         </rich:collapsibleSubTable>
 

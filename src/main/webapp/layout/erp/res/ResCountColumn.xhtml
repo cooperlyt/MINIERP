@@ -1,0 +1,30 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:a="http://richfaces.org/a4j"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <rich:column style="#{style}" styleClass="#{styleClass}">
+        <a:outputPanel rendered="#{(empty rendered) ? true : rendered}">
+        <h:outputText value="#{resCount.masterCount}">
+            <f:convertNumber pattern="#{resCount.res.unitGroup.masterUnit.countFormate}"/>
+        </h:outputText>
+
+        <h:outputText value="#{resCount.res.unitGroup.masterUnit.name}" style="float: right;" />
+        </a:outputPanel>
+    </rich:column>
+    <rich:column style="#{style}" styleClass="#{styleClass}">
+        <a:outputPanel rendered="#{((empty rendered) ? true : rendered) and (resCount.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+            <h:outputText value="#{resCount.auxCount}">
+                <f:convertNumber pattern="#{resCount.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+            </h:outputText>
+
+            <h:outputText value="#{resCount.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;" />
+        </a:outputPanel>
+
+    </rich:column>
+
+</ui:composition>

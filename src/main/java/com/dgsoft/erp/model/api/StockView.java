@@ -22,7 +22,7 @@ public class StockView extends StockCountView {
 
     public StockView(Stock stock, BigDecimal saleMasterCount) {
         this.stock = stock;
-        saleCount = new StoreResCount(stock.getStoreRes(),(saleMasterCount == null) ? BigDecimal.ZERO : saleMasterCount);
+        saleCount = new StoreResCount(stock.getStoreRes(), (saleMasterCount == null) ? BigDecimal.ZERO : saleMasterCount);
     }
 
     public Stock getStock() {
@@ -43,39 +43,38 @@ public class StockView extends StockCountView {
         return saleCount;
     }
 
-    public static StockTotalCount totalCount(Collection<? extends StockCountView> counts){
-        StockTotalCount result = null;
-        for(StockCountView count: counts){
-            if (result == null){
-                result = new StockTotalCount(count.getRes(),count.getStockCount(),count.getSaleCount());
-            }else{
-                result = result.add(count);
-            }
+    public static StockTotalCount totalCount(Collection<? extends StockCountView> counts) {
+        StockTotalCount result = ZERO;
+        for (StockCountView count : counts) {
+
+            result = result.add(count);
         }
         return result;
     }
 
-    public static class StockTotalCount extends StockCountView implements TotalDataGroup.GroupTotalData{
+    public static final StockTotalCount ZERO = new StockTotalCount(ResTotalCount.ZERO, ResTotalCount.ZERO);
 
-        private Res res;
+    public static class StockTotalCount extends StockCountView implements TotalDataGroup.GroupTotalData {
+
+        //private Res res;
 
         private ResCount stockCount;
 
         private ResCount saleCount;
 
-        public StockTotalCount(Res res, ResCount stockCount, ResCount saleCount) {
-            this.res = res;
+        public StockTotalCount(ResCount stockCount, ResCount saleCount) {
             this.stockCount = stockCount;
             this.saleCount = saleCount;
         }
 
-        public StockTotalCount add(StockCountView other){
-            return new StockTotalCount(res,stockCount.add(other.getStockCount()),saleCount.add(other.getSaleCount()))
+
+        public StockTotalCount add(StockCountView other) {
+            return new StockTotalCount(stockCount.add(other.getStockCount()), saleCount.add(other.getSaleCount()));
         }
 
         @Override
         public Res getRes() {
-            return res;
+            return stockCount.getRes();
         }
 
         @Override
@@ -89,15 +88,22 @@ public class StockView extends StockCountView {
         }
     }
 
-    public static class FormatCountGroupStrategy<E extends StockCountView> extends ResFormatGroupStrategy<E, ResCount> {
+    public static class FormatCountGroupStrategy implements TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, StockView, StockTotalCount> {
+
+
         @Override
-        public ResCount totalGroupData(Collection<E> datas) {
-            return ResTotalCount.total(datas);
+        public ResFormatGroupStrategy.StoreResFormatKey getKey(StockView stockView) {
+            return new ResFormatGroupStrategy.StoreResFormatKey(stockView.getStock().getStoreRes());
+        }
+
+        @Override
+        public StockTotalCount totalGroupData(Collection<StockView> datas) {
+            return totalCount(datas);
         }
     }
 
 
-    public static class ResCountGroupStrategy<E extends StockCountView> implements TotalGroupStrategy<Res, E, ResCount> {
+    public static class ResCountGroupStrategy<E extends StockCountView> implements TotalGroupStrategy<Res, E, StockTotalCount> {
 
         @Override
         public Res getKey(E e) {
@@ -105,9 +111,11 @@ public class StockView extends StockCountView {
         }
 
         @Override
-        public ResCount totalGroupData(Collection<E> datas) {
-            return ResTotalCount.total(datas);
+        public StockTotalCount totalGroupData(Collection<E> datas) {
+            return totalCount(datas);
         }
+
+
     }
 
 }

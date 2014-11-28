@@ -26,15 +26,11 @@ public class ResTotalCount implements ResCount {
         }
     }
 
-    public static ResCount total(Collection<? extends StoreResCountEntity> datas) {
-        ResCount result = null;
-        for (StoreResCountEntity data : datas) {
-            if (result == null) {
-                result = ResTotalCount.ZERO(data.getRes());
-            } else if (!result.getRes().equals(data.getRes())) {
-                throw new IllegalArgumentException("total muest same RES");
-            }
+    public static final ResTotalCount ZERO = new ResTotalCount(BigDecimal.ZERO, BigDecimal.ZERO);
 
+    public static ResCount total(Collection<? extends StoreResCountEntity> datas) {
+        ResCount result = ZERO;
+        for (StoreResCountEntity data : datas) {
             result = result.add(new StoreResCount(data.getStoreRes(), data.getMasterCount()));
         }
         return result;
@@ -46,13 +42,15 @@ public class ResTotalCount implements ResCount {
 
     private BigDecimal auxCount;
 
+    private ResTotalCount(BigDecimal masterCount, BigDecimal auxCount) {
+        this.masterCount = masterCount;
+        this.auxCount = auxCount;
+    }
 
-    public ResTotalCount(StoreResCount storeResCount) {
+    public ResTotalCount(ResCount storeResCount) {
         this.res = storeResCount.getRes();
         this.masterCount = storeResCount.getMasterCount();
-        if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            this.auxCount = storeResCount.getAuxCount();
-        }
+        this.auxCount = storeResCount.getAuxCount();
     }
 
     public ResTotalCount(Res res, BigDecimal masterCount) {
@@ -79,6 +77,12 @@ public class ResTotalCount implements ResCount {
 
     @Override
     public ResCount add(ResCount other) {
+        if (res == null)
+            return new ResTotalCount(other);
+        if(other.getRes() == null){
+            return new ResTotalCount(this);
+        }
+
         if (!getRes().equals(other.getRes())) {
             throw new IllegalArgumentException("only same res can do this oper");
         }
@@ -91,6 +95,20 @@ public class ResTotalCount implements ResCount {
 
     @Override
     public ResCount subtract(ResCount other) {
+        if(res == null){
+            if (other.getRes() == null){
+                return ZERO;
+            }else{
+                if (UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(other.getRes())){
+                    return new ResTotalCount(other.getRes(),BigDecimal.ZERO.subtract(other.getMasterCount()),BigDecimal.ZERO.subtract(other.getAuxCount()));
+                }else{
+                    return new ResTotalCount(other.getRes(),BigDecimal.ZERO.subtract(other.getMasterCount()));
+                }
+            }
+        }
+        if(other.getRes() == null){
+            return new ResTotalCount(this);
+        }
         if (!getRes().equals(other.getRes())) {
             throw new IllegalArgumentException("only same res can do this oper");
         }
@@ -111,6 +129,9 @@ public class ResTotalCount implements ResCount {
 
     @Override
     public BigDecimal getCountByUnit(ResUnit resUnit) {
+        if (res == null){
+            return BigDecimal.ZERO;
+        }
         if (resUnit.isMasterUnit()) {
             return getMasterCount();
         } else {

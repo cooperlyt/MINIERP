@@ -15,6 +15,7 @@ import org.jboss.seam.annotations.Scope;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -22,12 +23,12 @@ import java.util.List;
  */
 @Name("stockViewSearchList")
 @Scope(ScopeType.CONVERSATION)
-public class StockViewSearchList extends ErpEntityQuery<Stock> {
+public class StockViewSearchList extends ErpEntityQuery<StockView> {
 
     private static final String EJBQL = "select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.count != 0";
 
     private static final String[] RESTRICTIONS = {
-            "stock.store.id =  #{stockSearchList.storeId}",
+            "stock.store.id =  #{stockViewSearchList.storeId}",
             "stock.storeRes.code = #{storeResCondition.storeResCode}",
             "stock.storeRes.res.resCategory.id in (#{storeResCondition.searchResCategoryIds})",
             "stock.storeRes.res.id = #{storeResCondition.searchResId}",
@@ -38,7 +39,6 @@ public class StockViewSearchList extends ErpEntityQuery<Stock> {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
-        setMaxResults(25);
     }
 
     private String storeId;
@@ -56,7 +56,16 @@ public class StockViewSearchList extends ErpEntityQuery<Stock> {
 
     public List<TotalDataGroup<Res,StockView,StockView.StockTotalCount>> getResultGroup(){
         if (resultGroup == null){
-            TotalDataGroup.groupBy(getResultList(), new Res)
+            resultGroup =
+                    TotalDataGroup.groupBy(getResultList(), new StockView.ResCountGroupStrategy<StockView>(), new StockView.FormatCountGroupStrategy());
+            for(TotalDataGroup<Res,StockView,StockView.StockTotalCount> group: resultGroup){
+                TotalDataGroup.sort(group,new Comparator<StockView>() {
+                    @Override
+                    public int compare(StockView o1, StockView o2) {
+                        return o1.getStock().getStoreRes().compareTo(o2.getStock().getStoreRes());
+                    }
+                });
+            }
         }
         return resultGroup;
     }
