@@ -38,13 +38,14 @@
 
         <h:form id="condition">
 
-
+            <div style="padding-left: 5px;font-weight: bold;">
             <a:repeat value="#{stockSearchList.selectStores}" var="_store">
-                <h:selectBooleanCheckbox value="#{_store.selected}">
+                <h:selectBooleanCheckbox style="margin-right: 20px;" value="#{_store.selected}">
                     #{_store.data.name}
                 </h:selectBooleanCheckbox>
 
             </a:repeat>
+            </div>
             <div style="clear:both"/>
             <br/>
 
@@ -54,12 +55,12 @@
 
             <div class="searchButtons">
 
-                <a:outputPanel id="searchButton">
-                    <a:commandButton value="#{messages.search}" styleClass="btn-link-big"
-                                     execute="@form" render="condition,searchResult">
-                        <a:attachQueue requestDelay="0"/>
-                    </a:commandButton>
-                </a:outputPanel>
+                <a:commandLink styleClass="btn-link-big" action="#{stockViewSearchList.refresh}" status="processWaiting"
+                                 execute="@form" render="condition,searchResult">
+                    <span class="octicon octicon-search"/>
+                    #{messages.search}
+                    <a:attachQueue requestDelay="0"/>
+                </a:commandLink>
             </div>
 
 
@@ -115,7 +116,8 @@
                 </ui:include>
 
 
-                <rich:collapsibleSubTable expandMode="ajax" id="sbtb_format" value="#{_res.childGroup}" var="_format">
+                <rich:collapsibleSubTable expanded="#{_res.expanded}" id="sbtb_format" value="#{_res.childGroup}"
+                                          var="_format">
 
                     <rich:column style="width: 1px;background: #{a4jSkin.tableSubHeaderBackgroundColor}"/>
 
@@ -142,13 +144,14 @@
                     </ui:include>
 
 
-                    <rich:collapsibleSubTable expandMode="ajax" id="sbtb_storeRes" value="#{_format.childGroup}"
+                    <rich:collapsibleSubTable expanded="#{_format.expanded}" id="sbtb_storeRes"
+                                              value="#{_format.childGroup}"
                                               var="_storeRes">
 
-                        <rich:column/>
-                        <rich:column style="width: 1px"/>
+                        <rich:column style="background: #f5f5f5;"/>
+                        <rich:column style="width: 1px; background: #f5f5f5;"/>
 
-                        <rich:column colspan="2">
+                        <rich:column colspan="2" style="background: #f5f5f5;">
 
                             <rich:collapsibleSubTableToggler for="sbtb_item"/>
                             <h:outputText rendered="#{_storeRes.key.res.unitGroup.type eq 'FLOAT_CONVERT'}"
@@ -162,18 +165,22 @@
 
                         <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
                             <ui:param name="resCount" value="#{_storeRes.totalData.stockCount}"/>
+                            <ui:param name="style" value="background: #f5f5f5;"/>
                         </ui:include>
 
                         <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
                             <ui:param name="resCount" value="#{_storeRes.totalData.saleCount}"/>
+                            <ui:param name="style" value="background: #f5f5f5;"/>
                         </ui:include>
 
 
                         <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
                             <ui:param name="resCount" value="#{_storeRes.totalData.canUseCount}"/>
+                            <ui:param name="style" value="background: #f5f5f5;"/>
                         </ui:include>
 
-                        <rich:collapsibleSubTable id="sbtb_item" value="#{_storeRes.values}" var="_item">
+                        <rich:collapsibleSubTable id="sbtb_item" expanded="#{_storeRes.expanded}"
+                                                  value="#{_storeRes.values}" var="_item">
                             <rich:column/>
                             <rich:column/>
                             <rich:column style="width: 1px"/>

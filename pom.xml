@@ -590,6 +590,9 @@
                                 <exclude>**/*.swf</exclude>
                                 <exclude>**/*.icon</exclude>
                                 <exclude>**/*.ico</exclude>
+                                <exclude>**/*.eot</exclude>
+                                <exclude>**/*.ttf</exclude>
+                                <exclude>**/*.woff</exclude>
                             </excludes>
                         </resource>
 
@@ -601,6 +604,9 @@
                                 <include>**/*.swf</include>
                                 <include>**/*.icon</include>
                                 <exclude>**/*.ico</exclude>
+                                <exclude>**/*.eot</exclude>
+                                <exclude>**/*.ttf</exclude>
+                                <exclude>**/*.woff</exclude>
                             </includes>
                         </resource>
                     </webResources>

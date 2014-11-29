@@ -83,7 +83,7 @@ public class StockSearchList extends ErpEntityQuery<Stock> {
             }
         }
         if (result.isEmpty()){
-            result = storeCredentials.getSearchViewStoreIds();
+            result.add("-none-");
         }
 
         return result;
@@ -101,7 +101,7 @@ public class StockSearchList extends ErpEntityQuery<Stock> {
         if(selectStores == null){
             selectStores = new ArrayList<BatchOperData<Store>>();
             for(Store store: storeCredentials.getViewStores()){
-                selectStores.add(new BatchOperData<Store>(store,true));
+                selectStores.add(new BatchOperData<Store>(store,false));
             }
         }
         return selectStores;

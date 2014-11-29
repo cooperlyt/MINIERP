@@ -30,7 +30,7 @@
 
             <h:form id="loginForm">
 
-                    <h:panelGrid columns="1" rowClasses="prop" >
+                    <h:panelGrid style="width: 100%" columns="1" rowClasses="prop" >
 
                         <h:inputText id="username"  style="width: 100%"
                                      value="#{credentials.username}">
@@ -44,7 +44,7 @@
                     </h:panelGrid>
 
                 <div class="actionButtons">
-                    <h:commandButton id="submit" value="#{messages.login}" action="#{identity.login}"/>
+                    <h:commandButton id="submit" styleClass="minibtn" value="#{messages.login}" action="#{identity.login}"/>
                 </div>
             </h:form>
         </rich:panel>
