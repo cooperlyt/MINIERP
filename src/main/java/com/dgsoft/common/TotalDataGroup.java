@@ -16,6 +16,16 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
 
     private K key;
 
+    private boolean expanded = false;
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
     private List<TotalDataGroup<? extends GroupKey, V, ? extends GroupTotalData>> childGroup;
 
     private List<V> values = new ArrayList<V>();

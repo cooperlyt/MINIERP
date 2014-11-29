@@ -6,58 +6,61 @@ import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.Stock;
 import com.dgsoft.erp.model.Store;
 import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.api.SaleCount;
 import com.dgsoft.erp.model.api.StockView;
-import com.dgsoft.erp.total.data.ResCount;
-import com.dgsoft.erp.total.data.ResTotalCount;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.log.Logging;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created by cooper on 11/28/14.
  */
 @Name("stockViewSearchList")
 @Scope(ScopeType.CONVERSATION)
-public class StockViewSearchList extends ErpEntityQuery<StockView> {
+public class StockViewSearchList extends ErpEntityQuery<SaleCount> {
 
-    private static final String EJBQL = "select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.count != 0";
+    private static final String EJBQL = "select new com.dgsoft.erp.model.api.SaleCount(orderItem.dispatch.store.id,orderItem.storeRes.id,sum(orderItem.count)) from OrderItem orderItem where orderItem.status = 'DISPATCHED'";
 
     private static final String[] RESTRICTIONS = {
-            "stock.store.id =  #{stockViewSearchList.storeId}",
-            "stock.storeRes.code = #{storeResCondition.storeResCode}",
-            "stock.storeRes.res.resCategory.id in (#{storeResCondition.searchResCategoryIds})",
-            "stock.storeRes.res.id = #{storeResCondition.searchResId}",
-            "stock.storeRes.floatConversionRate = #{storeResCondition.searchFloatConvertRate}",
-            "stock.storeRes.id in (#{storeResCondition.matchStoreResIds})"};
+            "orderItem.dispatch.store.id in (#{stockSearchList.storeIds})",
+            "orderItem.storeRes.code = #{storeResCondition.storeResCode}",
+            "orderItem.storeRes.res.resCategory.id in (#{storeResCondition.searchResCategoryIds})",
+            "orderItem.storeRes.res.id = #{storeResCondition.searchResId}",
+            "orderItem.storeRes.floatConversionRate = #{storeResCondition.searchFloatConvertRate}",
+            "orderItem.storeRes.id in (#{storeResCondition.matchStoreResIds})"};
 
     public StockViewSearchList() {
         setEjbql(EJBQL);
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
+        setGroupBy(" orderItem.dispatch.store.id, orderItem.storeRes.id ");
     }
 
-    private String storeId;
-
-    public String getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(String storeId) {
-        this.storeId = storeId;
-    }
+    @In(create = true)
+    private StockSearchList stockSearchList;
 
 
     public List<TotalDataGroup<Res,StockView,StockView.StockTotalCount>> resultGroup;
 
     public List<TotalDataGroup<Res,StockView,StockView.StockTotalCount>> getResultGroup(){
+
         if (resultGroup == null){
+            List<StockView> stockViews = new ArrayList<StockView>();
+            stockSearchList.setMaxResults(null);
+            for(Stock stock: stockSearchList.getResultList()){
+                stockViews.add(new StockView(stock,getStockSaleCount(stock)));
+            }
+
             resultGroup =
-                    TotalDataGroup.groupBy(getResultList(), new StockView.ResCountGroupStrategy<StockView>(), new StockView.FormatCountGroupStrategy());
+                    TotalDataGroup.groupBy(stockViews, new StockView.ResCountGroupStrategy<StockView>(),
+                            new StockView.FormatCountGroupStrategy(), new StockView.StoreResCountGroupStrategy());
+
             for(TotalDataGroup<Res,StockView,StockView.StockTotalCount> group: resultGroup){
                 TotalDataGroup.sort(group,new Comparator<StockView>() {
                     @Override
@@ -74,6 +77,11 @@ public class StockViewSearchList extends ErpEntityQuery<StockView> {
     public void refresh() {
         super.refresh();
         resultGroup = null;
+        resultMap = null;
+        StockSearchList searchList = (StockSearchList)Component.getInstance("stockSearchList",false,false);
+        if(searchList != null){
+            searchList.refresh();
+        }
     }
 
     private List<String> getStoreResIds(List<StoreRes> storeReses) {
@@ -119,6 +127,43 @@ public class StockViewSearchList extends ErpEntityQuery<StockView> {
         return getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockView(stock,(select sum(orderItem.count) from OrderItem orderItem where orderItem.status = 'DISPATCHED' and orderItem.dispatch.store.id = stock.store.id and orderItem.storeRes.id = stock.storeRes.id)) from Stock stock where stock.count != 0 and stock.storeRes.id in (:storeResIds)", StockView.class).
                 setParameter("storeResIds", ids).getResultList();
     }
+
+    public BigDecimal getStockSaleCount(Stock stock){
+        Map<String,BigDecimal> resMap = getResultMap().get(stock.getStore().getId());
+        if (resMap == null){
+            return BigDecimal.ZERO;
+        }else{
+            BigDecimal count = resMap.get(stock.getStoreRes().getId());
+            return (count == null) ? BigDecimal.ZERO : count;
+        }
+    }
+
+    private Map<String,Map<String,BigDecimal>> resultMap;
+
+    public Map<String, Map<String, BigDecimal>> getResultMap() {
+        if (resultMap == null){
+            List<SaleCount> resultList = getResultList();
+            resultMap = new HashMap<String, Map<String, BigDecimal>>();
+            for(SaleCount saleCount: resultList){
+                Map<String,BigDecimal> storeResCount = resultMap.get(saleCount.getStoreId());
+                if (storeResCount == null){
+                    storeResCount = new HashMap<String, BigDecimal>();
+                    resultMap.put(saleCount.getStoreId(),storeResCount);
+                }
+                BigDecimal count = storeResCount.get(saleCount.getStoreResId());
+                if (count ==  null){
+                    storeResCount.put(saleCount.getStoreResId(),saleCount.getCount());
+                }else{
+                    storeResCount.put(saleCount.getStoreResId(),count.add(saleCount.getCount()));
+                }
+
+            }
+        }
+        return resultMap;
+    }
+
+
+
 
 
 }

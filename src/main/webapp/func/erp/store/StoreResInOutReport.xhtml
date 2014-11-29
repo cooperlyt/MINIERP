@@ -6,7 +6,6 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:l="http://www.lapis.com/jsf/exporter"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
                 template="/layout/template.xhtml">
 <ui:define name="toolbar">
@@ -16,10 +15,6 @@
             background: #{a4jSkin.tableBackgroundColor};
     }
     </h:outputStylesheet>
-
-    <h:commandButton value="333">
-        <l:dataExporter source="noGroupResult" fileType="excel" fileName="myfile"/>
-    </h:commandButton>
 
     <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
         <h:form>

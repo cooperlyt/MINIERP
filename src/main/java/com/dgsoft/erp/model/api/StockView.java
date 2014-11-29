@@ -4,6 +4,7 @@ import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.Stock;
+import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.total.ResFormatGroupStrategy;
 import com.dgsoft.erp.total.data.*;
 import com.dgsoft.erp.total.data.ResCount;
@@ -114,8 +115,20 @@ public class StockView extends StockCountView {
         public StockTotalCount totalGroupData(Collection<E> datas) {
             return totalCount(datas);
         }
+    }
+
+    public static class StoreResCountGroupStrategy implements TotalGroupStrategy<StoreRes, StockView, StockTotalCount> {
 
 
+        @Override
+        public StoreRes getKey(StockView stockView) {
+            return stockView.getStock().getStoreRes();
+        }
+
+        @Override
+        public StockTotalCount totalGroupData(Collection<StockView> datas) {
+            return totalCount(datas);
+        }
     }
 
 }

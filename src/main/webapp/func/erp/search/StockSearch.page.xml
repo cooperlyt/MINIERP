@@ -11,6 +11,6 @@
 
     <param name="storeResEntity" value="#{storeResCondition.storeResEntity}" converterId="serializableConverter"/>
 
-
+    <param name="storeIds" value="#{stockSearchList.storeIds}" converterId="stringListConverter"/>
 
 </page>
