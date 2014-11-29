@@ -12,12 +12,7 @@
     <rich:toolbar height="34" itemSeparator="line">
 
         <rich:toolbarGroup location="right">
-            <s:button value="#{messages.newOrder}" styleClass="toolBarBtn"
-                      action="#{orderCreate.beginCreateOrder}" propagation="begin">
-                <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
-                <f:param name="businessDefineId" value="erp.business.order"/>
-                <f:param name="orderId" value=""/>
-            </s:button>
+
         </rich:toolbarGroup>
     </rich:toolbar>
 
@@ -30,7 +25,35 @@
 <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
 
 
-<rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+<rich:collapsiblePanel switchType="client">
+
+
+    <f:facet name="headerExpanded">
+        <s:link id="reset" value="#{messages.resetCondition}" includePageParams="false" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+        <s:link style="float: right;margin-right: 5px" styleClass="minibtn" action="#{orderCreate.beginCreateOrder}"
+                propagation="begin">
+            <s:span styleClass="octicon octicon-plus"/>
+            #{messages.beginCreateOrder}
+            <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+            <f:param name="businessDefineId" value="erp.business.order"/>
+            <f:param name="orderId" value=""/>
+        </s:link>
+
+    </f:facet>
+
+    <f:facet name="headerCollapsed">
+
+
+        <h:outputText value="#{messages.search_conditions}" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+        <s:link style="float: right;margin-right: 5px" styleClass="minibtn" action="#{orderCreate.beginCreateOrder}"
+                propagation="begin">
+            <s:span styleClass="octicon octicon-plus"/>
+            #{messages.beginCreateOrder}
+            <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
+            <f:param name="businessDefineId" value="erp.business.order"/>
+            <f:param name="orderId" value=""/>
+        </s:link>
+    </f:facet>
     <h:form>
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.order_search_onlyMyOrder}</ui:define>
@@ -128,22 +151,16 @@
 
 
         <div style="clear:both"/>
-        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-        <h:panelGrid columns="1" style="width: 100%; text-align: right">
-            <a:outputPanel id="#{panelId}_buttons">
-                <div class="actionButtons">
 
-                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+                <div class="searchButtons">
 
-                    <a:outputPanel id="searchButton">
-                        <a:commandButton value="#{messages.search}"
+                        <a:commandLink styleClass="btn-link-big"
                                          execute="@form" render="dataListResult" action="#{orderList.first}">
+                            <span class="octicon octicon-search"/>
+                            #{messages.search}
                             <a:attachQueue requestDelay="0"/>
-                        </a:commandButton>
-                    </a:outputPanel>
+                        </a:commandLink>
                 </div>
-            </a:outputPanel>
-        </h:panelGrid>
     </h:form>
 </rich:collapsiblePanel>
 
