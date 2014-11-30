@@ -4,6 +4,7 @@
                 xmlns:s="http://jboss.org/schema/seam/taglib"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:r="http://richfaces.org/rich"
                 template="layout/template.xhtml">
 
     <ui:define name="functionTitle">
@@ -12,8 +13,39 @@
 
     <ui:define name="body">
 
+     <ui:remove>
+    <r:dataTable value="#{testKnow.topLevelDatas}" var="_topLevel">
 
-        <h:panelGrid columns="2">
+        <r:column>
+            <r:collapsibleSubTableToggler for="sbtb2"/>
+            <h:outputText value="#{_topLevel.title}"/>
+        </r:column>
+
+        <r:collapsibleSubTable id="sbtb2" value="#{_topLevel.secondLevels}" var="_sencondLevel">
+
+            <r:column>
+                <r:collapsibleSubTableToggler for="sbtb3"/>
+                <h:outputText value="#{_sencondLevel.title}"/>
+            </r:column>
+
+            <r:collapsibleSubTable id="sbtb3" value="#{_sencondLevel.thirdLevels}" var="_thirdLevel">
+                <r:column>
+                    <r:collapsibleSubTableToggler for="sbtbFourth"/>
+                    <h:outputText value="#{_thirdLevel.title}"/>
+                </r:column>
+
+                <r:collapsibleSubTable  id="sbtbFourth" value="#{_thirdLevel.fourthLevels}" var="_fourthLevel">
+                       <r:column>
+                           <h:outputText value="#{_fourthLevel}"/>
+                       </r:column>
+                </r:collapsibleSubTable>
+
+            </r:collapsibleSubTable>
+
+        </r:collapsibleSubTable>
+    </r:dataTable>
+     </ui:remove>
+    <h:panelGrid columns="2">
             <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png"
                             alt="Seam logo"/>
             <s:div styleClass="info">

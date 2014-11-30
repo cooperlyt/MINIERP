@@ -26,6 +26,95 @@ import java.util.*;
 public class TestKnow {
 
 
+    public List<TopLevel> getTopLevelDatas(){
+        List<TopLevel> result = new ArrayList<TopLevel>(2);
+        result.add(new TopLevel( "test Top level"));
+        return result;
+    }
+
+    public static class TopLevel {
+
+        private String title;
+
+        private List<SecondLevel> secondLevels = new ArrayList<SecondLevel>(3);
+
+        public TopLevel(String title) {
+            this.title =  title;
+            secondLevels.add(new SecondLevel("test second Level"));
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public List<SecondLevel> getSecondLevels() {
+            return secondLevels;
+        }
+
+        public void setSecondLevels(List<SecondLevel> secondLevels) {
+            this.secondLevels = secondLevels;
+        }
+    }
+
+    public static class SecondLevel {
+        private String title;
+
+        private List<ThirdLevel> thirdLevels = new ArrayList<ThirdLevel>(3);
+
+
+        public SecondLevel(String title) {
+            this.title = title;
+            thirdLevels.add(new ThirdLevel("test third Level"));
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public List<ThirdLevel> getThirdLevels() {
+            return thirdLevels;
+        }
+
+
+    }
+
+    public static class ThirdLevel{
+        private String title;
+
+        private List<String> fourthLevels = new ArrayList<String>(3);
+
+        public ThirdLevel(String title) {
+            this.title = title;
+            fourthLevels.add("1");
+            fourthLevels.add("2");
+            fourthLevels.add("3");
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public List<String> getFourthLevels() {
+            return fourthLevels;
+        }
+
+        public void setFourthLevels(List<String> fourthLevels) {
+            this.fourthLevels = fourthLevels;
+        }
+    }
+
     private static void testDecimal(BigDecimal m){
         m = m.add(new BigDecimal("1"));
 

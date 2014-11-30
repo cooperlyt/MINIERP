@@ -68,7 +68,7 @@
 
             <div class="searchButtons">
 
-                <a:commandLink styleClass="btn-link-big"
+                <a:commandLink styleClass="btn-link-big"  status="processWaiting"
                                execute="@form" render="totalResults"
                                action="#{productGroupStoreInTotal.refresh}">
                     <span class="octicon octicon-search"/>
@@ -86,6 +86,8 @@
     <br/>
     <script type="text/javascript"
             src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+    <script type="text/javascript"
+            src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable-toggler.js"/>
 
     <a:outputPanel id="totalResults">
         <rich:dataTable style="width: 100%" value="#{productGroupStoreInTotal.dayTotal}"
