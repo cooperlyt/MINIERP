@@ -135,6 +135,12 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
         return result.values();
     }
 
+    public static <K, V, DK extends GroupKey,DT extends GroupTotalData> void unionGroupData(Collection<TotalDataGroup<DK, V, DT>> datas, TotalDataUnionStrategy<K, V> unionStrategy) {
+        for(TotalDataGroup<DK, V, DT> group: datas){
+            unionData(group,unionStrategy);
+        }
+    }
+
     public static <K, V> void unionData(TotalDataGroup<?, V, ?> data, TotalDataUnionStrategy<K, V> unionStrategy) {
 
         Map<K, V> result = new HashMap<K, V>();
@@ -183,9 +189,6 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
 
     @Override
     public int compareTo(TotalDataGroup o) {
-
-
-
         return getKey().getKeyData().compareTo(o.getKey().getKeyData());
     }
 
@@ -210,14 +213,33 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
 
 
         @Override
-        public boolean equals(Object obj){
-            return getKeyData().equals(obj);
+        public boolean equals(Object other){
+
+            if (other == null) {
+                return false;
+            }
+            if (other == this) {
+                return true;
+            }
+
+            if (!(other instanceof GroupKeyHelper)) {
+                return false;
+            }
+
+            GroupKeyHelper otherKey = (GroupKeyHelper) other;
+
+            if ((otherKey.getKeyData() != null) && (getKeyData() != null)) {
+                return getKeyData().equals(otherKey.getKeyData());
+            }
+
+            return false;
         }
 
         @Override
         public int hashCode(){
-            return 17 * 37 + getKeyData().hashCode();
+            return 17 * 37 + ((getKeyData() != null) ? getKeyData().hashCode() : super.hashCode());
         }
+
 
     }
 

@@ -20,7 +20,7 @@ public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
 
     private static final String EJBQL = "select item from StockChangeItem item  left join fetch item.storeRes storeRes " +
             " left join fetch storeRes.res res left join fetch res.unitGroup unitGroup " +
-            " left join fetch item.stockChange storeChange left join fetch storeChange.allocationForStoreOuts where item.stockChange.verify = true";
+            " left join fetch item.stockChange storeChange where item.stockChange.verify = true";
 
 
     private static final String[] RESTRICTIONS = {

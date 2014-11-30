@@ -5,4 +5,6 @@
 
     <param name="inventoryId" value="#{inventoryHome.id}"/>
 
+    <param name="showInOut" value="#{inventoryItems.showInOutCount}"/>
+
 </page>

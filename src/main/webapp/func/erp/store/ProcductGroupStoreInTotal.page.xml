@@ -3,6 +3,11 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-    <begin-conversation join="true"/>
+    <param name="dateFrom" value="#{productGroupStoreInTotal.searchDateArea.dateFrom}"/>
+    <param name="dateTo" value="#{productGroupStoreInTotal.searchDateArea.dateTo}"/>
+
+    <param name="resCategoryId" value="#{resCategoryHome.id}"/>
+    <param name="resId" value="#{resHome.id}"/>
+    <param name="storeResEntity" value="#{storeResCondition.storeResEntity}" converterId="serializableConverter"/>
 
 </page>

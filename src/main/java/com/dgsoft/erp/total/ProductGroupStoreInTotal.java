@@ -1,12 +1,19 @@
 package com.dgsoft.erp.total;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.common.TotalDataUnionStrategy;
+import com.dgsoft.common.TotalGroupStrategy;
+import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
+import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.total.data.ResCount;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -25,9 +32,17 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
     private static final String[] RESTRICTIONS = {
             "stockChangeItem.stockChange.operDate >= #{productGroupStoreInTotal.searchDateArea.dateFrom}",
             "stockChangeItem.stockChange.operDate <= #{productGroupStoreInTotal.searchDateArea.searchDateTo}",
-            "stockChangeItem.storeRes.res.id = #{storeResList.resultSearchResId}",
-            "stockChangeItem.storeRes.floatConversionRate = #{storeResList.resultSearchFloatConvertRate}",
-            "stockChangeItem.storeRes in (#{storeResList.filterResultList})"};
+            "stockChangeItem.storeRes.code = #{storeResCondition.storeResCode}",
+            "stockChangeItem.storeRes.res.resCategory.id in (#{storeResCondition.searchResCategoryIds})",
+            "stockChangeItem.storeRes.res.id = #{storeResCondition.searchResId}",
+            "stockChangeItem.storeRes.floatConversionRate = #{storeResCondition.searchFloatConvertRate}",
+            "stockChangeItem.storeRes.id in (#{storeResCondition.matchStoreResIds})"
+
+
+    };
+
+
+
 
 
     public ProductGroupStoreInTotal() {
@@ -37,9 +52,23 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
 
     }
 
-    public List<TotalDataGroup<TotalDataGroup.DateKey,StockChangeItem,ResCount>> getDayTotal(){
-        //TODO
-        return null;
+    public List<TotalDataGroup<TotalDataGroup.DateKey,StockChangeItem,TotalDataGroup.GroupTotalData>> getDayTotal(){
+        return TotalDataGroup.groupBy(getResultList(),
+                    new TotalGroupStrategy<TotalDataGroup.DateKey, StockChangeItem, TotalDataGroup.GroupTotalData>() {
+                        @Override
+                        public TotalDataGroup.DateKey getKey(StockChangeItem stockChangeItem) {
+                            return new TotalDataGroup.DateKey(DataFormat.halfTime(stockChangeItem.getStockChange().getOperDate()));
+                        }
+
+                        @Override
+                        public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
+                            return null;
+                        }
+                    },
+                    new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(),
+                    new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>(),
+                    new ResTotalCount.StoreResCountGroupStrategy<StockChangeItem>());
+
     }
 
 //    public Map<Date,Map<ProductGroup,StoreResCountTotalGroup>> getDayTotalMap(){
