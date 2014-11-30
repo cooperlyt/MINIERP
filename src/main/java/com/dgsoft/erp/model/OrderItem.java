@@ -4,6 +4,7 @@ package com.dgsoft.erp.model;
 import com.dgsoft.common.DataFormat;
 import com.dgsoft.erp.ResFormatCache;
 import com.dgsoft.erp.action.ResHelper;
+import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import com.dgsoft.erp.model.api.StoreResStockCount;
 import org.hibernate.annotations.GenericGenerator;
@@ -434,6 +435,11 @@ public class OrderItem extends StoreResPriceEntity
 
     public void setNeedCount(BigDecimal needCount) {
         this.needCount = needCount;
+    }
+
+    @Transient
+    public StoreResCount getStoreResCount(){
+        return new StoreResCount(getStoreRes(),getCount());
     }
 
     @Transient

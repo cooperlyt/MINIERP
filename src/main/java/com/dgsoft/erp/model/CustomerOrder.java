@@ -1,8 +1,12 @@
 package com.dgsoft.erp.model;
 // Generated Oct 28, 2013 12:46:39 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.common.TotalDataLazyList;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResPriceGroup;
+import com.dgsoft.erp.total.ResPriceGroupStrategy;
+import com.dgsoft.erp.total.data.OrderItemTotal;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -623,6 +627,29 @@ public class CustomerOrder implements java.io.Serializable {
         return result;
     }
 
+    private boolean expanded = false;
+
+    @Transient
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    @Transient
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
+    private List<TotalDataGroup<OrderItemTotal.OrderItemResKey,OrderItem,OrderItemTotal>> itemTotalGroup;
+
+    @Transient
+    public List<TotalDataGroup<OrderItemTotal.OrderItemResKey,OrderItem,OrderItemTotal>> getItemTotalGroup(){
+        if (itemTotalGroup == null){
+            itemTotalGroup = new TotalDataLazyList<OrderItemTotal.OrderItemResKey,OrderItem,OrderItemTotal>(getOrderItemList(),
+                    new OrderItemTotal.ResOrderItemGroupStrategy(),new OrderItemTotal.FormatOrderItemGroupStrategy());
+        }
+        return itemTotalGroup;
+
+    }
 
 
 }

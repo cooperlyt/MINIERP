@@ -279,11 +279,11 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         result.append(messages.get(getInstance().getPayType().name()) + "   ");
 
-        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)) {
+        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.COMPLETE_PAY)) {
             result.append(DecimalFormat.getCurrencyInstance(Locale.CHINA).
                     format(getInstance().getMoney()) + "   ");
             result.append("(");
-            result.append(messages.get(getInstance().getProxyReceiveType().name()));
+            result.append(messages.get((getInstance().getProxyReceiveType() == null) ? CustomerOrder.ProxyReceiveType.ANY_PROXY_RECEIVE.name() : getInstance().getProxyReceiveType().name()));
             result.append(")");
         }
 
@@ -331,7 +331,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         //List<OrderItem> createdItems = ;
 
 
-        List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, OrderItem, ResPriceTotal>> createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
+        List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, OrderItem, OrderItemTotal>> createdItems = TotalDataGroup.groupBy(getOrderItemByStatus(EnumSet.of(OrderItem.OrderItemStatus.CREATED)),
                 new OrderItemTotal.FormatOrderItemGroupStrategy());
         if (!createdItems.isEmpty()) {
             result.append("\n" + messages.get("no_dispatch_order_items"));

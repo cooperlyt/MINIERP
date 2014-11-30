@@ -6,16 +6,10 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
-                template="/layout/template.xhtml">
+                template="/layout/full-template.xhtml">
 
 <ui:define name="toolbar">
-    <rich:toolbar height="34" itemSeparator="line">
-
-        <rich:toolbarGroup location="right">
-
-        </rich:toolbarGroup>
-    </rich:toolbar>
-
+    <h:outputStylesheet name="font-icon-octicons.css"/>
 
 </ui:define>
 
@@ -30,13 +24,17 @@
 
     <f:facet name="headerExpanded">
         <s:link id="reset" value="#{messages.resetCondition}" includePageParams="false" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+
         <s:link style="float: right;margin-right: 5px" styleClass="minibtn" action="#{orderCreate.beginCreateOrder}"
                 propagation="begin">
             <s:span styleClass="octicon octicon-plus"/>
-            #{messages.beginCreateOrder}
+            #{messages.createOrder}
             <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
             <f:param name="businessDefineId" value="erp.business.order"/>
             <f:param name="orderId" value=""/>
+        </s:link>
+        <s:link style="float: right;margin-right: 5px" styleClass="norbtn" view="/home.xhtml">
+            #{messages.return}
         </s:link>
 
     </f:facet>
@@ -45,13 +43,18 @@
 
 
         <h:outputText value="#{messages.search_conditions}" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+
+
         <s:link style="float: right;margin-right: 5px" styleClass="minibtn" action="#{orderCreate.beginCreateOrder}"
                 propagation="begin">
             <s:span styleClass="octicon octicon-plus"/>
-            #{messages.beginCreateOrder}
+            #{messages.createOrder}
             <f:param name="from" value="/func/erp/sale/CustomerOrder.xhtml"/>
             <f:param name="businessDefineId" value="erp.business.order"/>
             <f:param name="orderId" value=""/>
+        </s:link>
+        <s:link style="float: right;margin-right: 5px" styleClass="norbtn" view="/home.xhtml">
+            #{messages.return}
         </s:link>
     </f:facet>
     <h:form>
@@ -67,17 +70,11 @@
 
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.order_field_state}</ui:define>
-            <h:panelGrid columns="90">
-                <h:selectOneMenu value="#{orderList.canceled}">
+            <h:panelGrid columns="90" style="padding: 0; margin: 0;border: 0;" columnClasses="layoutColumn,layoutColumn,layoutColumn">
+                <h:selectOneMenu value="#{orderList.canceled}" style="margin-left: 0">
                     <f:selectItem itemLabel="#{messages.order_search_canceled_true}" itemValue="#{true}"/>
                     <f:selectItem itemLabel="#{messages.order_search_canceled_false}" itemValue="#{false}"/>
                     <f:selectItem itemLabel="#{messages.order_search_canceled_null}" noSelectionOption="true"/>
-                </h:selectOneMenu>
-
-                <h:selectOneMenu value="#{orderList.moneyComplete}">
-                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_true}" itemValue="#{true}"/>
-                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_false}" itemValue="#{false}"/>
-                    <f:selectItem itemLabel="#{messages.order_search_moneyComplete_null}" noSelectionOption="true"/>
                 </h:selectOneMenu>
 
 
@@ -87,11 +84,7 @@
                     <f:selectItem itemLabel="#{messages.order_search_allStoreOut_null}" noSelectionOption="true"/>
                 </h:selectOneMenu>
 
-                <h:selectOneMenu value="#{orderList.customerConfirm}">
-                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_true}" itemValue="#{true}"/>
-                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_false}" itemValue="#{false}"/>
-                    <f:selectItem itemLabel="#{messages.order_search_customerConfirm_all}" noSelectionOption="true"/>
-                </h:selectOneMenu>
+
 
 
             </h:panelGrid>
@@ -212,7 +205,6 @@
                 </ui:include>
             </f:facet>
 
-
             <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.id}" target="_blank"
                     style="#{_order.canceled ? 'text-decoration:line-through; color: red;' : ''}">
                 <f:param name="orderId" value="#{_order.id}"/>
@@ -271,6 +263,34 @@
             <f:facet name="header">
                 <ui:include src="/layout/a4jSort.xhtml">
                     <ui:param name="entityList" value="#{orderList}"/>
+                    <ui:param name="propertyLabel" value="#{messages.OrderTotalRebateMoney}"/>
+                    <ui:param name="propertyPath" value="customerOrder.totalRebateMoney"/>
+                </ui:include>
+            </f:facet>
+
+            <h:outputText value="#{_order.totalRebateMoney}">
+                <f:convertNumber locale="#{calendarBean.locale}"
+                                 type="currency" groupingUsed="true"/>
+
+            </h:outputText>
+
+
+            <f:facet name="footer">
+                <h:outputText value="#{orderList.totalRebateMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+
+            </f:facet>
+
+        </rich:column>
+
+
+        <rich:column style="text-align: right" footerClass="moneyTableFooter">
+
+            <f:facet name="header">
+                <ui:include src="/layout/a4jSort.xhtml">
+                    <ui:param name="entityList" value="#{orderList}"/>
                     <ui:param name="propertyLabel" value="#{messages.orderMoney}"/>
                     <ui:param name="propertyPath" value="customerOrder.money"/>
                 </ui:include>
@@ -291,31 +311,7 @@
         </rich:column>
 
 
-        <rich:column style="text-align: right" footerClass="moneyTableFooter">
 
-            <f:facet name="header">
-                <ui:include src="/layout/a4jSort.xhtml">
-                    <ui:param name="entityList" value="#{orderList}"/>
-                    <ui:param name="propertyLabel" value="#{messages.orderResMoney}"/>
-                    <ui:param name="propertyPath" value=" (customerOrder.resMoney) "/>
-                </ui:include>
-            </f:facet>
-
-            <h:outputText value="#{_order.resMoney}">
-                <f:convertNumber locale="#{calendarBean.locale}"
-                                 type="currency" groupingUsed="true"/>
-            </h:outputText>
-
-
-            <f:facet name="footer">
-                <h:outputText value="#{orderList.totalResMoney}">
-                    <f:convertNumber locale="#{calendarBean.locale}"
-                                     type="currency" groupingUsed="true"/>
-                </h:outputText>
-
-            </f:facet>
-
-        </rich:column>
 
         <rich:column width="60px">
             <f:facet name="header">
@@ -339,6 +335,116 @@
             #{dictionary.getEmpNameById(_order.orderEmp)}
         </rich:column>
 
+<ui:remove>
+        <rich:collapsibleSubTable expandMode="ajax" expanded="#{_order.expanded}" id="sbtbRes" value="#{_order.itemTotalGroup}" var="_res">
+
+            <rich:column/>
+
+
+            <rich:column>
+                <rich:collapsibleSubTableToggler for="sbtbFormat"/>
+                #{_res.key.res.name} #{_res.key.resUnit.name}
+            </rich:column>
+
+            <rich:column>
+                 <h:outputText value="#{_res.key.resSaleRebate.rebateCount}" ></h:outputText>
+
+                <h:outputText value="#{_res.key.resSaleRebate.rebateMoney}" ></h:outputText>
+            </rich:column>
+
+            <rich:column>
+                #{_res.totalData.needCount}
+                #{_res.totalData.needAddCount}
+            </rich:column>
+            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                <ui:param name="resCount" value="#{_res.totalData.resCount}"/>
+            </ui:include>
+
+            <rich:column>
+                #{_res.totalData.money}
+            </rich:column>
+
+            <rich:column>
+
+            </rich:column>
+
+            <rich:column>
+
+            </rich:column>
+
+            <rich:collapsibleSubTable id="sbtbFormat" expanded="#{_res.expanded}" value="#{_res.childGroup}" var="_format">
+
+                <rich:column/>
+
+                <rich:column>
+                    <rich:collapsibleSubTableToggler for="sbtbItem"/>
+                    #{_format.key.formatTitle}
+                </rich:column>
+
+                <rich:column>
+
+                </rich:column>
+
+                <rich:column>
+
+                </rich:column>
+
+                <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                    <ui:param name="resCount" value="#{_format.totalData.resCount}"/>
+                </ui:include>
+
+
+                <rich:column>
+                    #{_res.totalData.money}
+                </rich:column>
+
+                <rich:column>
+
+                </rich:column>
+
+                <rich:column>
+
+                </rich:column>
+
+                <rich:collapsibleSubTable id="sbtbItem" expanded="#{_format.expanded}" value="#{_format.values}" var="_item">
+                    <rich:column/>
+
+                    <rich:column>
+                        #{_item.storeRes.floatConversionRate}
+                    </rich:column>
+
+                    <rich:column>
+                        #{_item.money}
+                    </rich:column>
+                    #{_item.needConvertRate}
+                    <rich:column>
+
+                    </rich:column>
+                    <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                        <ui:param name="resCount" value="#{_item.storeResCount}"/>
+                    </ui:include>
+
+                    <rich:column>
+                        #{_item.totalMoney}
+                    </rich:column>
+
+                    <rich:column>
+                        #{_item.needCount}
+                    </rich:column>
+
+                    <rich:column>
+                        #{_item.needAddCount}
+
+                    </rich:column>
+
+
+                </rich:collapsibleSubTable>
+
+            </rich:collapsibleSubTable>
+
+
+        </rich:collapsibleSubTable>
+</ui:remove>
     </rich:dataTable>
 </h:form>
 <rich:popupPanel id="cancelOrderOperSelectPanel" modal="true" width="600" height="500"

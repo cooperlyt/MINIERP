@@ -1,9 +1,7 @@
 package com.dgsoft.erp.total.data;
 
 import com.dgsoft.common.TotalGroupStrategy;
-import com.dgsoft.erp.model.OrderItem;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import com.dgsoft.erp.total.ResFormatGroupStrategy;
 import com.dgsoft.erp.total.ResPriceGroupStrategy;
@@ -47,8 +45,10 @@ public class OrderItemTotal extends ResPriceTotal {
 
     public void putItem(OrderItem other) {
         super.putItem(other);
-        needAddCount = needAddCount.add(other.getNeedAddCount());
-        needCount = needCount.add(other.getNeedCount());
+        if(getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            needAddCount = needAddCount.add(other.getNeedAddCount());
+            needCount = needCount.add(other.getNeedCount());
+        }
     }
 
 
@@ -63,31 +63,48 @@ public class OrderItemTotal extends ResPriceTotal {
     }
 
 
-    public static class FormatOrderItemGroupStrategy extends ResFormatGroupStrategy<OrderItem, ResPriceTotal> {
+    public static class FormatOrderItemGroupStrategy extends ResFormatGroupStrategy<OrderItem, OrderItemTotal> {
         @Override
-        public ResPriceTotal totalGroupData(Collection<OrderItem> datas) {
-            return ResPriceTotal.total(datas);
+        public OrderItemTotal totalGroupData(Collection<OrderItem> datas) {
+            return totalOrderItems(datas);
         }
     }
 
 
-    public static class ResOrderItemGroupStrategy extends ResPriceGroupStrategy<OrderItem,ResPriceTotal> {
+    public static class ResOrderItemGroupStrategy implements TotalGroupStrategy<OrderItemResKey,OrderItem,OrderItemTotal> {
         @Override
-        public ResPriceTotal totalGroupData(Collection<OrderItem> datas) {
-            return ResPriceTotal.total(datas);
+        public OrderItemResKey getKey(OrderItem orderItem) {
+            Res res = orderItem.getStoreRes().getRes();
+            ResUnit resUnit = orderItem.getResUnit();
+            ResSaleRebate resSaleRebate = null;
+            for(ResSaleRebate rebate: orderItem.getNeedRes().getCustomerOrder().getResSaleRebates()){
+                if (rebate.getRes().equals(res) && rebate.getResUnit().equals(resUnit)){
+                    resSaleRebate = rebate;
+                    break;
+                }
+            }
+
+            return new OrderItemResKey(res,resUnit,resSaleRebate);
+        }
+
+        @Override
+        public OrderItemTotal totalGroupData(Collection<OrderItem> datas) {
+            return totalOrderItems(datas);
         }
     }
 
-    public static class StoreResOrderItemGroupStrategy implements TotalGroupStrategy<StoreRes, OrderItem, ResPriceTotal> {
 
-        @Override
-        public StoreRes getKey(OrderItem e) {
-            return e.getStoreRes();
+    public static class OrderItemResKey extends ResPriceGroupStrategy.PriceItemKey{
+
+        private ResSaleRebate resSaleRebate;
+
+        public OrderItemResKey(Res res, ResUnit resUnit, ResSaleRebate resSaleRebate) {
+            super(res, resUnit);
+            this.resSaleRebate = resSaleRebate;
         }
 
-        @Override
-        public ResPriceTotal totalGroupData(Collection<OrderItem> datas) {
-            return ResPriceTotal.total(datas);
+        public ResSaleRebate getResSaleRebate() {
+            return resSaleRebate;
         }
     }
 

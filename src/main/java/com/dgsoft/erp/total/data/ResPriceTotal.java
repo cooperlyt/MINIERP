@@ -44,6 +44,18 @@ public class ResPriceTotal implements TotalDataGroup.GroupTotalData{
 
     private int count = 0;
 
+    public Res getRes() {
+        return res;
+    }
+
+    public ResCount getResCount() {
+        return resCount;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
     public BigDecimal getMoneyAVG() {
         if (BigDecimal.ZERO.equals(money) || BigDecimal.ZERO.equals(count)) {
             return BigDecimal.ZERO;

@@ -83,7 +83,7 @@
 
              <a:outputPanel id="eptype">
             <rich:select id="eptypeInput" value="#{orderCreate.instance.proxyReceiveType}" required="true"
-                         rendered="#{(not empty orderCreate.instance.payType) and (orderCreate.instance.payType eq 'EXPRESS_PROXY')}">
+                         rendered="#{(not empty orderCreate.instance.payType) and (orderCreate.instance.payType eq 'COMPLETE_PAY')}">
                 <s:selectItems value="#{proxyPayTypes}" var="_type" itemValue="#{_type}"
                                label="#{messages[_type.name()]}"/>
                 <s:convertEnum/>
@@ -99,7 +99,7 @@
                     </h:selectBooleanCheckbox>
                 </a:outputPanel>
             </a:outputPanel>
-            <a:outputPanel layout="block" style="width: 100px;">
+            <a:outputPanel layout="block" style="width: 150px;">
 
                 <h:selectBooleanCheckbox value="#{needResHome.instance.fareByCustomer}">
                     #{messages.order_fare_by_customer}
