@@ -13,28 +13,31 @@
 
     <ui:define name="body">
 
-     <ui:remove>
+
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
     <r:dataTable value="#{testKnow.topLevelDatas}" var="_topLevel">
 
         <r:column>
-            <r:collapsibleSubTableToggler for="sbtb2"/>
+            <r:collapsibleSubTableToggler id="aaa" for="sbtb2"/>
             <h:outputText value="#{_topLevel.title}"/>
         </r:column>
+
 
         <r:collapsibleSubTable id="sbtb2" value="#{_topLevel.secondLevels}" var="_sencondLevel">
 
             <r:column>
-                <r:collapsibleSubTableToggler for="sbtb3"/>
+                <r:collapsibleSubTableToggler id="bbb" for="sbtb3"/>
                 <h:outputText value="#{_sencondLevel.title}"/>
             </r:column>
 
             <r:collapsibleSubTable id="sbtb3" value="#{_sencondLevel.thirdLevels}" var="_thirdLevel">
                 <r:column>
-                    <r:collapsibleSubTableToggler for="sbtbFourth"/>
+                    <r:collapsibleSubTableToggler for="sbtb4"/>
                     <h:outputText value="#{_thirdLevel.title}"/>
                 </r:column>
 
-                <r:collapsibleSubTable  id="sbtbFourth" value="#{_thirdLevel.fourthLevels}" var="_fourthLevel">
+                <r:collapsibleSubTable  id="sbtb4" value="#{_thirdLevel.fourthLevels}" var="_fourthLevel">
                        <r:column>
                            <h:outputText value="#{_fourthLevel}"/>
                        </r:column>
@@ -44,7 +47,6 @@
 
         </r:collapsibleSubTable>
     </r:dataTable>
-     </ui:remove>
     <h:panelGrid columns="2">
             <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png"
                             alt="Seam logo"/>

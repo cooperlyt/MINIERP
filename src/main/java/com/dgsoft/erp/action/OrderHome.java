@@ -279,9 +279,13 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
         result.append(messages.get(getInstance().getPayType().name()) + "   ");
 
-        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.COMPLETE_PAY)) {
+        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY)){
             result.append(DecimalFormat.getCurrencyInstance(Locale.CHINA).
                     format(getInstance().getMoney()) + "   ");
+        }
+
+        if (getInstance().getPayType().equals(CustomerOrder.OrderPayType.COMPLETE_PAY)) {
+
             result.append("(");
             result.append(messages.get((getInstance().getProxyReceiveType() == null) ? CustomerOrder.ProxyReceiveType.ANY_PROXY_RECEIVE.name() : getInstance().getProxyReceiveType().name()));
             result.append(")");

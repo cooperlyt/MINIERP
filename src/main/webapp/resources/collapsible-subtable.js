@@ -66,7 +66,7 @@
                 return $(document.getElementById(this.id)).parent();
             } else {
                 var regex = new RegExp(this.id + "\\:\\d+\\:b");
-                return $(document.getElementById(this.id)).parent().find("tr").filter(function() {
+                return $(document.getElementById(this.id)).parent().find("tr[style!='display: none;']").filter(function() {
                     return this.id.match(regex);
                 });
             }
@@ -92,6 +92,18 @@
 
         var client = function(options) {
             if (this.isExpanded()) {
+                if(this.isNested){
+                    var regex = new RegExp(this.id + "\\:\\d+\\:\\w+");
+
+                    $(document.getElementById(this.id)).parent().find("tr[style='display: none;']").filter(function() {
+                        return this.id.match(regex);
+                    }).each(function(){
+                        alert(this.id);
+                        if(this.rf) {
+                            this.rf.component.collapse();
+                        }
+                    });
+                }
                 this.collapse(options);
             } else {
                 this.expand(options);

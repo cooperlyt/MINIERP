@@ -27,10 +27,6 @@
                 var subtable = rf.component(this.forId);
                 if (subtable) {
 
-                    if(subtable.isExpanded()){
-                       // subtable.
-                    }
-
                     var mode = subtable.getMode();
 
                     if (rf.ui.CollapsibleSubTable.MODE_CLNT == mode) {
