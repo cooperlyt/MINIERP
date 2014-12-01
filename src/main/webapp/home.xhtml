@@ -7,23 +7,21 @@
                 xmlns:r="http://richfaces.org/rich"
                 template="layout/template.xhtml">
 
-    <ui:define name="functionTitle">
-        <h1>Welcome to MINI ERP!</h1>
-    </ui:define>
+<ui:define name="functionTitle">
+    <h1>Welcome to MINI ERP!</h1>
+</ui:define>
 
-    <ui:define name="body">
+<ui:define name="body">
 
+<ui:remove>
 
-
-    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+    <script type="text/javascript"
+            src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
     <r:dataTable value="#{testKnow.topLevelDatas}" var="_topLevel">
-
         <r:column>
             <r:collapsibleSubTableToggler id="aaa" for="sbtb2"/>
             <h:outputText value="#{_topLevel.title}"/>
         </r:column>
-
-
         <r:collapsibleSubTable id="sbtb2" value="#{_topLevel.secondLevels}" var="_sencondLevel">
 
             <r:column>
@@ -37,360 +35,392 @@
                     <h:outputText value="#{_thirdLevel.title}"/>
                 </r:column>
 
-                <r:collapsibleSubTable  id="sbtb4" value="#{_thirdLevel.fourthLevels}" var="_fourthLevel">
-                       <r:column>
-                           <h:outputText value="#{_fourthLevel}"/>
-                       </r:column>
+                <r:collapsibleSubTable id="sbtb4" value="#{_thirdLevel.fourthLevels}" var="_fourthLevel">
+                    <r:column>
+                        <h:outputText value="#{_fourthLevel}"/>
+                    </r:column>
                 </r:collapsibleSubTable>
 
             </r:collapsibleSubTable>
 
         </r:collapsibleSubTable>
     </r:dataTable>
-    <h:panelGrid columns="2">
-            <h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png"
-                            alt="Seam logo"/>
-            <s:div styleClass="info">
+</ui:remove>
+<h:panelGrid columns="2">
+<h:graphicImage width="200px" height="200px" style="padding: 10px" value="/img/seamlogo.png"
+                alt="Seam logo"/>
+<s:div styleClass="info">
 
-                <p>
-                    <strong>MINIERP 2.3.1 Bate 已发布</strong> #{' '} 更新内容如下:
-                </p>
-                <ul class="bullets">
+<p>
+    <strong>MINIERP 2.3.2 Bate 已发布</strong> #{' '} 更新内容如下:
+</p>
+<ul class="bullets">
+    <li>[销售] 修正代办订单QQ消息不显示金额错误</li>
+    <li>[财务] 收退款加入备注</li>
+    <li>[系统] 修正多级明细表收起错误</li>
+</ul>
 
-                    <li>[仓库] 修正生产小组入库汇总</li>
-                    <li>[仓库] 库存查询增加占用数量和可用数量</li>
-                    <li>[销售] 货到付款增加收款方式，并加入QQ消息</li>
-                </ul>
+<strong>历史更新</strong>
 
-                <strong>历史更新</strong>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.3.0" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 订单流程更改</li>
-                        <li>[财务] 收款更改</li>
-                        <li>[仓库] 盘点更改</li>
-                        <li>[统计] 出入库分组汇总条件错误修正</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.22" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[仓库] 盘点功能开放</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.21" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 建立订单可直接建立新规格货品</li>
-                        <li>[仓库] 盘点功能暂时关闭，下一版本开放</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.20" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 增加客户销售排行</li>
-                        <li>[销售] 修改费用计算</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.19" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[财务] 增加按订单收取代收货款方式</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.18" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 增加产品销售统计</li>
-                        <li>[销售] 订单销售情况增加条件</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.17" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 发货时间 去掉未到达时间限制</li>
-                        <li>[销售] 订单价格按订购数量计算</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.16" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[财务] 可处理代收多收情况</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.15" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 修正双倍扣款错误</li>
-                        <li>[销售] 修正退货列表销售非直管区域不显示错误</li>
-                        <li>[财务] 删除收款后续操作可能出错</li>
-                        <li>[财务] 修正结账，记账错误</li>
-                        <li>[仓库] 修正因入库编号问题引起的退货入库错误</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.14" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[仓库] 增加仓库货品出入库汇总</li>
-                        <li>[销售] 饼图标签增加百分比</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.13" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 增加订单优惠</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.12" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 修正订单金额合计权限问题</li>
-                        <li>[销售] 新增货品销售统计</li>
-                        <li>[仓库] 修正调拨出错</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.11" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 加入订单修改</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.10" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[系统] 权限调整</li>
-                        <li>[销售] 修正关系人错误</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.8" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[仓库] 修改订单出库，退货入库流程</li>
-                        <li>[仓库] 所有出库都可打印或补打出库/入库单</li>
-                        <li>[仓库] 订单出库增加分组合计汇总</li>
-                        <li>[仓库] 所有出入库和删除增加结账判断</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.7" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[财务] 修改结账</li>
-                        <li>[财务] 客户增加期初余额，并可在结账功能中根据期初余额计算当前客户余额（仅初始化结账前）</li>
-                        <li>[销售] 修正重下订单，和订单反点错误</li>
-                        <li>[仓库] 修改库存查询样式</li>
-                        <li>[仓库] 仓库结账，与销售结账同时结,仓库账下一版本加入</li>
-                        <li>[货品] 优化货品管理</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.6" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 修正订单更改</li>
-                        <li>[销售] 保存订单反点</li>
-                        <li>[销售] 增加客户金额排行</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.5" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[收款] 去掉预收账款</li>
-                        <li>[收款] 增加代收重复客户验证和移除</li>
-                        <li>[仓库] 修正出入库查询汇总表的仓库条件无效问题</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.4" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[新增] 财务相关功能完成</li>
-                        <li>[新增] 所有报表已修正</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.2" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[新增] 仓库调拨查询，删除（调拨已完成的需要 仓储主管 权限）</li>
-                        <li>[新增] 财务记账</li>
-                        <li>[错误] 修正客户退预存款手续费计算错误</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.1" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[错误] 修正订单更改阶段错误</li>
-                        <li>[更改] 更改收款方式和记录方式，影响客户货款往来查询，后续版本修正</li>
-                        <li>[系统] 优化数据分页</li>
-                        <li>[仓库] 出入库查询中增加删除功能(需有权限用户)</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.2.0" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[错误] 修正订单更改阶段错误</li>
-                        <li>[更改] 更改收款方式和记录方式，影响客户货款往来查询，后续版本修正</li>
-                        <li>[系统] 优化数据分页</li>
-                        <li>[仓库] 出入库查询中增加删除功能(需有权限用户)</li>
-                    </ul>
-                </s:decorate>
-                <div style="clear: both;"/>
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.13" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[仓库] 增加"出/入库分组汇总"查询</li>
-                        <li>[错误] 修正某些查询页面结果会消失问题</li>
-                        <li>[订单] 增加收费阶段任务描述</li>
-                        <li>[订单] 出库和发货去掉默认时间以避免出错</li>
-                        <li>[客户] 客户操作中增加"客户帐户操作流水查询"</li>
-                        <li>[订单] 更改为除帐户扣款外其它缴费方式也可填写手续费</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.3.1" name="openLabel"/>
+    <ul class="bullets">
+        <li>[仓库] 修正生产小组入库汇总</li>
+        <li>[仓库] 库存查询增加占用数量和可用数量</li>
+        <li>[销售] 货到付款增加收款方式，并加入QQ消息</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.3.0" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 订单流程更改</li>
+        <li>[财务] 收款更改</li>
+        <li>[仓库] 盘点更改</li>
+        <li>[统计] 出入库分组汇总条件错误修正</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.12" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[退货] 优化退货业务建立和出库</li>
-                        <li>[错误] 修复删除退货业务帐户问题</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.22" name="openLabel"/>
+    <ul class="bullets">
+        <li>[仓库] 盘点功能开放</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.21" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 建立订单可直接建立新规格货品</li>
+        <li>[仓库] 盘点功能暂时关闭，下一版本开放</li>
+    </ul>
+</s:decorate>
 
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.20" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 增加客户销售排行</li>
+        <li>[销售] 修改费用计算</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.11" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[退货] 增加退货业务列表</li>
-                        <li>[错误] 修复退货业务状态错误</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.19" name="openLabel"/>
+    <ul class="bullets">
+        <li>[财务] 增加按订单收取代收货款方式</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.18" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 增加产品销售统计</li>
+        <li>[销售] 订单销售情况增加条件</li>
+    </ul>
+</s:decorate>
 
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.17" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 发货时间 去掉未到达时间限制</li>
+        <li>[销售] 订单价格按订购数量计算</li>
+    </ul>
+</s:decorate>
 
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.16" name="openLabel"/>
+    <ul class="bullets">
+        <li>[财务] 可处理代收多收情况</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.10" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[统计] 新增订单销售情况图表</li>
-                        <li>[错误] 修复任务列表消息提示错误</li>
-                        <li>[错误] 修复退货业务状态错误</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.15" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 修正双倍扣款错误</li>
+        <li>[销售] 修正退货列表销售非直管区域不显示错误</li>
+        <li>[财务] 删除收款后续操作可能出错</li>
+        <li>[财务] 修正结账，记账错误</li>
+        <li>[仓库] 修正因入库编号问题引起的退货入库错误</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.14" name="openLabel"/>
+    <ul class="bullets">
+        <li>[仓库] 增加仓库货品出入库汇总</li>
+        <li>[销售] 饼图标签增加百分比</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.9" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[优化] 优化任务列表(要所有旧业务完成后生效)</li>
-                        <li>[业务] 修正几个业务启动错误</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.13" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 增加订单优惠</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.12" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 修正订单金额合计权限问题</li>
+        <li>[销售] 新增货品销售统计</li>
+        <li>[仓库] 修正调拨出错</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.8" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[优化] 优化建立订单流程</li>
-                        <li>[客户] 预存货款类型增加减免</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.11" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 加入订单修改</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.10" name="openLabel"/>
+    <ul class="bullets">
+        <li>[系统] 权限调整</li>
+        <li>[销售] 修正关系人错误</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.7" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[错误] 修正产生小组入库汇总错误</li>
-                        <li>[错误] 修正客户结算金额计算错误</li>
-                        <li>[错误] 修正按客户名称查询错误</li>
-                        <li>[客户] 增加客户排行</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.8" name="openLabel"/>
+    <ul class="bullets">
+        <li>[仓库] 修改订单出库，退货入库流程</li>
+        <li>[仓库] 所有出库都可打印或补打出库/入库单</li>
+        <li>[仓库] 订单出库增加分组合计汇总</li>
+        <li>[仓库] 所有出入库和删除增加结账判断</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.7" name="openLabel"/>
+    <ul class="bullets">
+        <li>[财务] 修改结账</li>
+        <li>[财务] 客户增加期初余额，并可在结账功能中根据期初余额计算当前客户余额（仅初始化结账前）</li>
+        <li>[销售] 修正重下订单，和订单反点错误</li>
+        <li>[仓库] 修改库存查询样式</li>
+        <li>[仓库] 仓库结账，与销售结账同时结,仓库账下一版本加入</li>
+        <li>[货品] 优化货品管理</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.6" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[优化] 填加货品规格缓存</li>
-                        <li>[客戶] 增加客戶欠款和订单情況并可排序</li>
-                        <li>[订单] 修改下单时间，使最近的订单排在前面</li>
-                        <li>[订单] 增加收款及欠款情况和合计并可排序</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.6" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 修正订单更改</li>
+        <li>[销售] 保存订单反点</li>
+        <li>[销售] 增加客户金额排行</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.5" name="openLabel"/>
+    <ul class="bullets">
+        <li>[收款] 去掉预收账款</li>
+        <li>[收款] 增加代收重复客户验证和移除</li>
+        <li>[仓库] 修正出入库查询汇总表的仓库条件无效问题</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.5" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[报表] 将客户往来报表分解为三个报表，分别为:客户货品往来明细,货品往来分组汇总,客户货款往来</li>
-                        <li>[客户] 修改客户省为选择，市根据省列出可选项，或不在列表中可手动添写</li>
-                        <li>[错误] 修正旧订单不能撤消问题</li>
-                        <li>[维护] PPR分水器增加阀门属性</li>
-                        <li>[优化] 加入二级高速缓存(待测试)</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.4" name="openLabel"/>
+    <ul class="bullets">
+        <li>[新增] 财务相关功能完成</li>
+        <li>[新增] 所有报表已修正</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.2" name="openLabel"/>
+    <ul class="bullets">
+        <li>[新增] 仓库调拨查询，删除（调拨已完成的需要 仓储主管 权限）</li>
+        <li>[新增] 财务记账</li>
+        <li>[错误] 修正客户退预存款手续费计算错误</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.4" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[报表] 修改客户往来报表</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.1" name="openLabel"/>
+    <ul class="bullets">
+        <li>[错误] 修正订单更改阶段错误</li>
+        <li>[更改] 更改收款方式和记录方式，影响客户货款往来查询，后续版本修正</li>
+        <li>[系统] 优化数据分页</li>
+        <li>[仓库] 出入库查询中增加删除功能(需有权限用户)</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.2.0" name="openLabel"/>
+    <ul class="bullets">
+        <li>[错误] 修正订单更改阶段错误</li>
+        <li>[更改] 更改收款方式和记录方式，影响客户货款往来查询，后续版本修正</li>
+        <li>[系统] 优化数据分页</li>
+        <li>[仓库] 出入库查询中增加删除功能(需有权限用户)</li>
+    </ul>
+</s:decorate>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.3" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 合并和排序QQ消息通知</li>
-                        <li>[销售] 修改收款缴费方式，增加 预存 和 欠款</li>
-                        <li>[销售] 优化订单建立</li>
-                    </ul>
-                </s:decorate>
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.13" name="openLabel"/>
+    <ul class="bullets">
+        <li>[仓库] 增加"出/入库分组汇总"查询</li>
+        <li>[错误] 修正某些查询页面结果会消失问题</li>
+        <li>[订单] 增加收费阶段任务描述</li>
+        <li>[订单] 出库和发货去掉默认时间以避免出错</li>
+        <li>[客户] 客户操作中增加"客户帐户操作流水查询"</li>
+        <li>[订单] 更改为除帐户扣款外其它缴费方式也可填写手续费</li>
+    </ul>
+</s:decorate>
 
-                <div style="clear: both;"/>
+<div style="clear: both;"/>
 
-                <s:decorate template="/layout/view-details.xhtml">
-                    <ui:param value="2.1.2" name="openLabel"/>
-                    <ul class="bullets">
-                        <li>[销售] 增加客户操作功能，可直接使用客户名称的拼音首字母定位客户，并对客户进行操作</li>
-                        <li>[销售] 修改客户对帐单，可按三种方式显示款向往来</li>
-                    </ul>
-                </s:decorate>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.12" name="openLabel"/>
+    <ul class="bullets">
+        <li>[退货] 优化退货业务建立和出库</li>
+        <li>[错误] 修复删除退货业务帐户问题</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
 
 
-            </s:div>
-        </h:panelGrid>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.11" name="openLabel"/>
+    <ul class="bullets">
+        <li>[退货] 增加退货业务列表</li>
+        <li>[错误] 修复退货业务状态错误</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
 
 
-    </ui:define>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.10" name="openLabel"/>
+    <ul class="bullets">
+        <li>[统计] 新增订单销售情况图表</li>
+        <li>[错误] 修复任务列表消息提示错误</li>
+        <li>[错误] 修复退货业务状态错误</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.9" name="openLabel"/>
+    <ul class="bullets">
+        <li>[优化] 优化任务列表(要所有旧业务完成后生效)</li>
+        <li>[业务] 修正几个业务启动错误</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.8" name="openLabel"/>
+    <ul class="bullets">
+        <li>[优化] 优化建立订单流程</li>
+        <li>[客户] 预存货款类型增加减免</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.7" name="openLabel"/>
+    <ul class="bullets">
+        <li>[错误] 修正产生小组入库汇总错误</li>
+        <li>[错误] 修正客户结算金额计算错误</li>
+        <li>[错误] 修正按客户名称查询错误</li>
+        <li>[客户] 增加客户排行</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.6" name="openLabel"/>
+    <ul class="bullets">
+        <li>[优化] 填加货品规格缓存</li>
+        <li>[客戶] 增加客戶欠款和订单情況并可排序</li>
+        <li>[订单] 修改下单时间，使最近的订单排在前面</li>
+        <li>[订单] 增加收款及欠款情况和合计并可排序</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.5" name="openLabel"/>
+    <ul class="bullets">
+        <li>[报表] 将客户往来报表分解为三个报表，分别为:客户货品往来明细,货品往来分组汇总,客户货款往来</li>
+        <li>[客户] 修改客户省为选择，市根据省列出可选项，或不在列表中可手动添写</li>
+        <li>[错误] 修正旧订单不能撤消问题</li>
+        <li>[维护] PPR分水器增加阀门属性</li>
+        <li>[优化] 加入二级高速缓存(待测试)</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.4" name="openLabel"/>
+    <ul class="bullets">
+        <li>[报表] 修改客户往来报表</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.3" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 合并和排序QQ消息通知</li>
+        <li>[销售] 修改收款缴费方式，增加 预存 和 欠款</li>
+        <li>[销售] 优化订单建立</li>
+    </ul>
+</s:decorate>
+
+<div style="clear: both;"/>
+
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.1.2" name="openLabel"/>
+    <ul class="bullets">
+        <li>[销售] 增加客户操作功能，可直接使用客户名称的拼音首字母定位客户，并对客户进行操作</li>
+        <li>[销售] 修改客户对帐单，可按三种方式显示款向往来</li>
+    </ul>
+</s:decorate>
+
+
+</s:div>
+</h:panelGrid>
+
+
+</ui:define>
 </ui:composition>

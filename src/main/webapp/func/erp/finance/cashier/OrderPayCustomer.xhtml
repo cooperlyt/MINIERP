@@ -104,6 +104,12 @@
                             </s:decorate>
                         </a:outputPanel>
 
+                        <s:decorate template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">
+                                #{messages.field_memo}
+                            </ui:define>
+                            <h:inputTextarea value="#{payByOrder.editingOper.description}" cols="50" rows="3"/>
+                        </s:decorate>
 
                         <div style="clear:both">
                             <span class="required">*</span>
