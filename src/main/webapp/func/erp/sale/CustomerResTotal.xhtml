@@ -35,14 +35,69 @@
         background: #{a4jSkin.tableBackgroundColor};
 }
 
-     .minaTableFooter{
-         background: #{a4jSkin.tableFooterBackgroundColor};
-     }
+.minaTableFooter {
+    background: #{a4jSkin.tableFooterBackgroundColor};
+}
 </h:outputStylesheet>
 
 
 <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+    <f:facet name="headerExpanded">
+        <s:link id="reset" value="#{messages.resetCondition}" includePageParams="false" />
+
+    </f:facet>
+
+
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/mootools.js"/>
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/pinyin.js"/>
     <h:form>
+        <h:panelGrid columns="2">
+            <s:decorate id="customerAreaField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.CustomerArea}</ui:define>
+                <rich:select value="#{customerAreaHome.id}"
+                             label="#{messages.CustomerArea}"
+                             styleClass="saleAreaSelect" listWidth="132px">
+                    <s:selectItems value="#{customerAreaList.resultList}" var="_customerArea"
+                                   noSelectionLabel="#{messages.searchNoSelectLabel}"
+                                   label="#{_customerArea.name}" itemValue="#{_customerArea.id}"/>
+                    <a:ajax event="selectitem" execute="@this"
+                            listener="#{customerHome.clearInstance}"
+                            render="customerSelectNameField,customerAreaField,conditionForm">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </rich:select>
+            </s:decorate>
+
+
+            <s:decorate id="customerSelectNameField" template="/layout/edit.xhtml">
+                <ui:define name="label">#{messages.Customer}</ui:define>
+                <rich:autocomplete id="pinyinSearchCustomer"
+                                   mode="client" minChars="1" autofill="false"
+                                   showButton="true"
+                                   selectFirst="true"
+                                   label="#{messages.Customer}"
+                                   clientFilterFunction="pinyinFilter"
+                                   autocompleteList="#{customerSelectList.resultList}"
+                                   value="#{customerHome.pinyinSearchName}"
+                                   fetchValue="[#{_customer.name}][id:#{_customer.id}]" var="_customer">
+
+                    <h:outputText value="#{_customer.name}"/>
+                    <a:ajax event="selectitem" render="customerSelectNameField,conditionForm" execute="@this">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                    <a:ajax event="blur" execute="@this" render="customerSelectNameField,conditionForm">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:ajax>
+                </rich:autocomplete>
+            </s:decorate>
+        </h:panelGrid>
+    </h:form>
+
+    <h:form id="conditionForm">
+
+        <a:outputPanel rendered="#{customerHome.idDefined}">
+
+
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.dateTime}</ui:define>
             <rich:calendar
@@ -52,7 +107,7 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.dateTime}"
-                    value="#{searchDateArea.dateFrom}">
+                    value="#{customerStoresTotalConditions.searchDateArea.dateFrom}">
             </rich:calendar>
 
             --
@@ -64,51 +119,42 @@
                     showApplyButton="#{calendarBean.showApply}" popup="#{calendarBean.popup}"
                     datePattern="#{messages.datePattern}"
                     label="#{messages.dateTime}"
-                    value="#{searchDateArea.dateTo}">
+                    value="#{customerStoresTotalConditions.searchDateArea.dateTo}">
             </rich:calendar>
         </s:decorate>
 
-        <ui:include src="/layout/erp/biz/CustomerSearchCondition.xhtml"/>
 
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.customerResContactsTypes}</ui:define>
-            <h:selectOneMenu value="#{customerResContactsTotal.onlyStoreOut}">
+            <h:selectOneMenu value="#{customerStoresTotalConditions.searchSale}">
                 <f:selectItem itemValue="#{true}" itemLabel="#{messages.SELL_OUT}"/>
                 <f:selectItem itemValue="#{false}" itemLabel="#{messages.SELL_BACK}"/>
             </h:selectOneMenu>
 
         </s:decorate>
 
-        <div style="clear:both"/>
-        <h:panelGrid columns="2">
-            <h:selectBooleanCheckbox value="#{customerResCondition.containFreeRes}">
-                #{messages.containFreeRes}
-            </h:selectBooleanCheckbox>
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.containNotInOutStore}</ui:define>
+            <h:selectBooleanCheckbox value="#{customerStoresTotalConditions.containStoreNoChange}"/>
 
-            <h:selectBooleanCheckbox value="#{customerResContactsTotal.groupByDay}">
-                #{messages.groupByDay}
-            </h:selectBooleanCheckbox>
-        </h:panelGrid>
+        </s:decorate>
 
 
         <div style="clear:both"/>
-        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-        <h:panelGrid columns="1" style="width: 100%; text-align: right">
-            <a:outputPanel id="search_buttons">
-                <div class="actionButtons">
 
-                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+        <div class="searchButtons">
 
-                    <a:outputPanel id="searchButton">
-                        <a:commandButton value="#{messages.search}"
-                                         execute="@form" render="dataResult">
-                            <a:attachQueue requestDelay="0"/>
-                            <a:param value="#{true}" assignTo="#{customerResContactsTotal.onlyModel}"/>
-                        </a:commandButton>
-                    </a:outputPanel>
-                </div>
-            </a:outputPanel>
-        </h:panelGrid>
+
+
+            <a:commandLink styleClass="btn-link-big"
+                           execute="@form" render="dataResult"
+                           action="">
+                <span class="octicon octicon-search"/>
+                #{messages.search}
+                <a:attachQueue requestDelay="0"/>
+            </a:commandLink>
+
+        </div>
 
     </h:form>
 
@@ -118,7 +164,8 @@
 <h:form>
 <a:outputPanel id="dataResult">
 
-<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+<script type="text/javascript"
+        src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
 
 <rich:dataTable value="#{customerResContactsTotal.dayResultGroup.childGroup}" var="_day" style="width: 100%"
                 rendered="#{customerResContactsTotal.groupByDay}">
@@ -189,7 +236,7 @@
 
     <rich:column style="width: 1px;"/>
     <rich:column colspan="14" style="background: #{a4jSkin.tableSubHeaderBackgroundColor}">
-        <rich:collapsibleSubTableToggler  for="sbRes"/>
+        <rich:collapsibleSubTableToggler for="sbRes"/>
         #{_customer.key.name}
     </rich:column>
 
@@ -215,7 +262,7 @@
 
         <rich:column footerClass="lastSubTableFooter"/> <rich:column style="width: 1px"/>
         <rich:column colspan="4">
-            <rich:collapsibleSubTableToggler  for="sbFormat"/>
+            <rich:collapsibleSubTableToggler for="sbFormat"/>
 
             #{_res.key.name}
 
@@ -262,7 +309,7 @@
 
             <rich:column style="width: 1px"/> <rich:column style="width: 1px"/> <rich:column style="width: 1px"/>
             <rich:column colspan="3">
-                <rich:collapsibleSubTableToggler  for="sbItem"/>
+                <rich:collapsibleSubTableToggler for="sbItem"/>
                 #{_format.key.formatTitle}
             </rich:column>
             <rich:column style="width: 1px"/>
@@ -432,7 +479,7 @@
 </rich:column>
 
 
-<rich:column colspan="3"  footerClass="minaTableFooter"
+<rich:column colspan="3" footerClass="minaTableFooter"
              style="text-align: right;  background: #{a4jSkin.tableSubHeaderBackgroundColor}">
     <a:outputPanel rendered="#{customerResContactsTotal.onlyStoreOut}">
 
@@ -443,7 +490,7 @@
 </rich:column>
 
 
-<rich:column colspan="4"  footerClass="minaTableFooter"
+<rich:column colspan="4" footerClass="minaTableFooter"
              style="text-align: right;background: #{a4jSkin.tableSubHeaderBackgroundColor}">
     <h:outputText value="#{_customer.totalData.calcMoney}">
         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
@@ -463,7 +510,7 @@
 
     <rich:column styleClass="lastSubTableFooter"/> <rich:column style="width: 1px"/>
     <rich:column colspan="5">
-        <rich:collapsibleSubTableToggler  for="sbFormat2"/>
+        <rich:collapsibleSubTableToggler for="sbFormat2"/>
 
         #{_res.key.name}
 
@@ -510,7 +557,7 @@
 
         <rich:column style="width: 1px"/> <rich:column style="width: 1px"/> <rich:column style="width: 1px"/>
         <rich:column colspan="4">
-            <rich:collapsibleSubTableToggler  for="sbItem2"/>
+            <rich:collapsibleSubTableToggler for="sbItem2"/>
             #{_format.key.formatTitle}
         </rich:column>
         <rich:column style="width: 1px"/>
