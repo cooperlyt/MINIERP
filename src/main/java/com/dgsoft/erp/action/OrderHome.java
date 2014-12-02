@@ -17,6 +17,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -681,7 +682,7 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
     private ProcessInstanceHome processInstanceHome;
 
     public void signalMoney(Date operDate) {
-
+        Logging.getLog(getClass()).debug("singnal process and Sub Customer money ");
 
         subCustomerMoney(operDate);
 

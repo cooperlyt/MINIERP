@@ -38,6 +38,8 @@ public class MoneySaveHome extends MoneySaveBaseHome {
 
 
     public void calcRemitFee() {
+        if(getAccountOpers().isEmpty())
+            return;
         if (getInstance().getMoney() != null) {
             switch (getEditingOper().getOperType()) {
 

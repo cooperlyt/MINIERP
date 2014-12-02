@@ -87,8 +87,9 @@ public class OrderCancel {
     }
 
     public void subMoneyStoreOut(){
-        if (orderHome.getInstance().isAccountChange() && orderHome.getInstance().getAccountOpers().isEmpty()){
+        if (!orderHome.getInstance().isAccountChange() && orderHome.getInstance().getAccountOpers().isEmpty()){
             orderHome.signalMoney(moneyOperDate);
+            orderHome.update();
         }
     }
 
@@ -124,7 +125,15 @@ public class OrderCancel {
                 }
 
             }
-            orderHome.getInstance().setPayType(changeToPayType);
+
+            if(orderHome.getInstance().getAccountOpers().isEmpty() &&
+                    (orderHome.getInstance().getMoney().compareTo(BigDecimal.ZERO) > 0) &&
+                    orderHome.getInstance().getPayType().equals(CustomerOrder.OrderPayType.PAY_FIRST)){
+                orderHome.getInstance().setPayType(changeToPayType);
+                orderHome.signalMoney(orderHome.getInstance().getCreateDate());
+            }else
+
+                orderHome.getInstance().setPayType(changeToPayType);
 
             orderHome.update();
         }

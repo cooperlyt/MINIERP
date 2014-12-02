@@ -509,10 +509,10 @@
                 </rich:toolbarGroup>
             </rich:toolbar>
             <rich:messages ajaxRendered="true" globalOnly="true"/>
-
+            <br/>
             <rich:panel
                     rendered="#{(not orderHome.instance.accountChange) and (s:hasRole(orderHome.instance.customer.customerArea.role) or s:hasRole('erp.sale.manager'))}">
-                <br/>
+
                 <h:outputText value="#{messages.CustomerAccountMoneyNotEnough}"
                               style="font-weight: bold; color: red;" rendered="#{not orderHome.moneyEnough}"/>
                 <a:region>
@@ -536,7 +536,7 @@
                         </rich:calendar>
                     </s:decorate>
 
-                    <a:commandButton render="dataListResult" execute="@region"
+                    <a:commandButton render="dataListResult,cancelOrderOperAction" execute="@region"
                                      action="#{orderCancel.subMoneyStoreOut}" styleClass="toolBarBtn"
                                      value="#{messages.ToShip}">
                         <a:attachQueue requestDelay="0"/>

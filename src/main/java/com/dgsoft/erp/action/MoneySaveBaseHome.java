@@ -59,6 +59,9 @@ public abstract class MoneySaveBaseHome extends ErpEntityHome<MoneySave> {
     }
 
     public AccountOper getEditingOper() {
+        if (accountOpers.isEmpty()){
+            return null;
+        }
         return accountOpers.get(0);
     }
 
