@@ -24,7 +24,7 @@ import java.util.*;
 public class StockSearchList extends ErpEntityQuery<Stock> {
 
     private static final String EJBQL = "select stock from Stock stock left join fetch stock.storeRes storeRes " +
-            "left join fetch storeRes.res res left join fetch res.unitGroup left join fetch stock.store where stock.count != 0 ";
+            "left join fetch storeRes.res res left join fetch res.unitGroup left join fetch stock.store where stock.count <> 0 ";
 
     private static final String[] RESTRICTIONS = {
             "stock.store.id in (#{stockSearchList.storeIds})",
