@@ -422,41 +422,78 @@ public class AccountOper implements java.io.Serializable {
         return BigDecimal.ZERO;
     }
 
+    private BigDecimal operCustomerAccountMoney = BigDecimal.ZERO;
+    private BigDecimal operCustomerProxyAccountMoney = BigDecimal.ZERO;
+    private BigDecimal operCustomerAdvanceMoney = BigDecimal.ZERO;
+
     @Transient
     public void calcCustomerMoney() {
+
+        if (operCustomerAdvanceMoney.compareTo(BigDecimal.ZERO) != 0){
+            getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(operCustomerAdvanceMoney));
+            operCustomerAdvanceMoney = BigDecimal.ZERO;
+        }
+
+        if (operCustomerProxyAccountMoney.compareTo(BigDecimal.ZERO) != 0){
+            getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(operCustomerProxyAccountMoney));
+            operCustomerProxyAccountMoney = BigDecimal.ZERO;
+        }
+
+        if (operCustomerAccountMoney.compareTo(BigDecimal.ZERO) != 0){
+            getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(operCustomerAccountMoney));
+            operCustomerAccountMoney = BigDecimal.ZERO;
+        }
+
         switch (getOperType()) {
 
+
             case DEPOSIT_BACK:
+
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                operCustomerAdvanceMoney = getAdvanceReceivable();
+
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                operCustomerAccountMoney =  getAccountsReceivable().negate();
                 break;
             case PROXY_SAVINGS:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                operCustomerAccountMoney = getAccountsReceivable();
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
+                operCustomerProxyAccountMoney = getProxcAccountsReceiveable();
                 break;
             case CUSTOMER_SAVINGS:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                operCustomerAccountMoney = getAccountsReceivable();
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                operCustomerAdvanceMoney = getAdvanceReceivable().negate();
                 break;
             case DEPOSIT_PAY:
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                operCustomerAdvanceMoney = getAdvanceReceivable();
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                operCustomerAccountMoney = getAccountsReceivable();
                 break;
             case MONEY_FREE:
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                operCustomerAccountMoney = getAccountsReceivable();
                 break;
             case ORDER_PAY:
                 getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
+                operCustomerAdvanceMoney = getAdvanceReceivable();
                 getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                operCustomerAccountMoney = getAccountsReceivable().negate();
                 getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
+                operCustomerProxyAccountMoney =  getProxcAccountsReceiveable().negate();
                 break;
             case ORDER_BACK:
                 if (getMoneySave() == null) {
 
                     if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) == 0) {
                         getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
+                        operCustomerAccountMoney = getAccountsReceivable();
                     } else {
                         getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
+                        operCustomerAdvanceMoney = getAdvanceReceivable().negate();
                     }
                 }
 

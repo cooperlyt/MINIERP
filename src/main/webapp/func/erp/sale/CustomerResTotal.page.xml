@@ -11,5 +11,5 @@
 
     <param name="searchSale" value="#{customerStoresTotalConditions.searchSale}"/>
 
-    <param name="containStoreNoChange" value="#{containStoreNoChange.containStoreNoChange"/>
+    <param name="containStoreNoChange" value="#{customerStoresTotalConditions.containStoreNoChange}"/>
 </page>

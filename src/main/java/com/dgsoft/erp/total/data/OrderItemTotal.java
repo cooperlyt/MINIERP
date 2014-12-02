@@ -45,7 +45,7 @@ public class OrderItemTotal extends ResPriceTotal {
 
     public void putItem(OrderItem other) {
         super.putItem(other);
-        if(getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+        if(getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
             needAddCount = needAddCount.add(other.getNeedAddCount());
             needCount = needCount.add(other.getNeedCount());
         }
