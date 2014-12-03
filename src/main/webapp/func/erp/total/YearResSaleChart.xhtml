@@ -38,30 +38,12 @@
 <br/>
 
 <a:outputPanel id="dataResults">
-    <p:linechart title="#{messages.ProcedureSaleMoneyChart}" borderVisible="false"
-                 legend="true" plotOutlinePaint="white" plotBackgroundAlpha="0.1"
-                 width="1000">
 
-        <ui:repeat value="#{collectionTools.mapToList(yearSaleResChartData.totalStoreResSaleData)}"
-                   var="_entry">
-            <p:series key="#{_entry.key.name}(#{_entry.key.code})">
-                <ui:repeat value="#{collectionTools.mapToList(_entry.value)}" var="_data">
-                    <p:data key="#{_data.key}#{messages.Month}"
-                            value="#{_data.value.money}"/>
-                </ui:repeat>
-
-            </p:series>
-        </ui:repeat>
-
-
-
-
-    </p:linechart>
     <h:form>
 
 
 
-    <rich:chart title="Countries by carbon dioxide emissions per capita" >
+    <rich:chart title="#{messages.ProcedureSaleMoneyChart}"  styleClass="graf" >
         <a:repeat value="#{collectionTools.mapToList(yearSaleResChartData.totalStoreResSaleData)}" var="_entry" >
             <rich:chartSeries label="#{_entry.key.name}(#{_entry.key.code})" type="line">
                 <a:repeat value="#{collectionTools.mapToList(_entry.value)}" var="_data">
@@ -69,8 +51,8 @@
                 </a:repeat>
             </rich:chartSeries>
         </a:repeat>
-        <rich:chartXAxis  label="year"/>
-        <rich:chartYAxis label="metric tons of CO2 per capita"/>
+        <rich:chartXAxis  label="#{messages.Month}"/>
+        <rich:chartYAxis label="#{messages.ProcedureSaleMoneyChart}"/>
     </rich:chart>
 
     </h:form>
