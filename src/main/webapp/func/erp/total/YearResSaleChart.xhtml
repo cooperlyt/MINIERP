@@ -19,7 +19,7 @@
         <h:form>
             <h:selectOneMenu value="#{yearSaleResChartData.totalYear}">
                 <s:selectItems value="#{saleSearchYears}" var="_year" itemValue="#{_year}"
-                               label="#{_year}"/>
+                               label="#{_year}" noSelectionLabel="#{messages.noSelectLabelShort}"/>
                 <a:ajax event="valueChange" render="dataResults" execute="@form">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
@@ -54,9 +54,26 @@
         </ui:repeat>
 
 
+
+
     </p:linechart>
+    <h:form>
 
 
+
+    <rich:chart title="Countries by carbon dioxide emissions per capita" >
+        <a:repeat value="#{collectionTools.mapToList(yearSaleResChartData.totalStoreResSaleData)}" var="_entry" >
+            <rich:chartSeries label="#{_entry.key.name}(#{_entry.key.code})" type="line">
+                <a:repeat value="#{collectionTools.mapToList(_entry.value)}" var="_data">
+                    <rich:chartPoint x="#{_data.key.intValue()}" y="#{_data.value.money.doubleValue()}" />
+                </a:repeat>
+            </rich:chartSeries>
+        </a:repeat>
+        <rich:chartXAxis  label="year"/>
+        <rich:chartYAxis label="metric tons of CO2 per capita"/>
+    </rich:chart>
+
+    </h:form>
     <br/>
 
     <div style="width: 100%; overflow-x:scroll;">

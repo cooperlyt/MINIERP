@@ -1,6 +1,10 @@
 package com.dgsoft.erp.model;
 // Generated Oct 17, 2013 5:33:51 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.common.TotalDataGroup;
+import com.dgsoft.erp.total.ResPriceGroupStrategy;
+import com.dgsoft.erp.total.data.ResPriceTotal;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -260,5 +264,23 @@ public class OrderBack implements java.io.Serializable {
 
         return false;
     }
+
+    @Transient
+    public List<TotalDataGroup<ResPriceGroupStrategy.PriceItemKey,BackItem,ResPriceTotal>> getItemGroup(){
+        List<TotalDataGroup<ResPriceGroupStrategy.PriceItemKey,BackItem,ResPriceTotal>> result =
+                TotalDataGroup.groupBy(getBackItems(),new ResPriceTotal.ResMoneyGroupStrategy(),new ResPriceTotal.FormatMoneyGroupStrategy());
+        for(TotalDataGroup<ResPriceGroupStrategy.PriceItemKey,BackItem,ResPriceTotal> group: result){
+            TotalDataGroup.sort(group,new Comparator<BackItem>() {
+                @Override
+                public int compare(BackItem o1, BackItem o2) {
+
+                    return o1.getStoreRes().compareTo(o2.getStoreRes());
+                }
+            });
+        }
+        return result;
+    }
+
+
 
 }

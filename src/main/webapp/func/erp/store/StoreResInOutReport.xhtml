@@ -18,15 +18,7 @@
 
     <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
         <h:form>
-            <s:decorate template="/layout/seam-display.xhtml">
-                <ui:define name="label">#{messages.ResultGorupType}</ui:define>
-                <h:selectOneMenu value="#{stockChangeItemTotal.resultGroupBy}">
-                    <s:selectItems value="#{stockChangeItemTotal.allGroupType}" var="_type"
-                                   label="#{messages[_type.name()]}"/>
-                    <s:convertEnum/>
-                </h:selectOneMenu>
 
-            </s:decorate>
             <s:decorate template="/layout/seam-display.xhtml" rendered="#{not s:hasRole('erp.storage.manager')}">
                 <ui:define name="label">#{messages.Store}</ui:define>
                 <h:selectOneMenu value="#{stockChangeTypeCondition.storeId}">
@@ -171,10 +163,10 @@
     </rich:collapsiblePanel>
 </ui:define>
 
-<ui:define name="body"><script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+<ui:define name="body">
 
 <a:outputPanel id="searchResult">
-
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
 <rich:dataTable style="width: 100%" rendered="#{stockChangeItemTotal.resultGroupBy eq 'GROUP_BY_CHANGE'}"
                 value="#{stockChangeItemTotal.changeResultGroup.childGroup}"
                 var="_day">
@@ -319,7 +311,7 @@
     </f:facet>
     <rich:column colspan="9">
         <rich:collapsibleSubTableToggler for="sbtbl_res"/>
-        <h:outputText value="#{_day.key}">
+        <h:outputText value="#{_day.key.keyData}">
             <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
         </h:outputText>
     </rich:column>

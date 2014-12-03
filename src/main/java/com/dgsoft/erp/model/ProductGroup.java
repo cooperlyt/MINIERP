@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 
 import com.dgsoft.common.NamedEntity;
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.system.model.Role;
 import com.dgsoft.erp.action.ResHelper;
 import com.google.common.collect.Iterators;
@@ -19,7 +20,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "PRODUCT_GROUP", catalog = "MINI_ERP")
-public class ProductGroup implements Comparable<ProductGroup>, java.io.Serializable, TreeNode, NamedEntity {
+public class ProductGroup implements Comparable<ProductGroup>, TotalDataGroup.GroupKey<ProductGroup>, java.io.Serializable, TreeNode, NamedEntity {
 
     private String id;
 
@@ -279,5 +280,11 @@ public class ProductGroup implements Comparable<ProductGroup>, java.io.Serializa
             return o.getName().compareTo(getName());
         }else
             return 0;
+    }
+
+    @Override
+    @Transient
+    public ProductGroup getKeyData() {
+        return this;
     }
 }

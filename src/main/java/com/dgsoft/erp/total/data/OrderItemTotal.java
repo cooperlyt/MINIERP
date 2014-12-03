@@ -45,9 +45,10 @@ public class OrderItemTotal extends ResPriceTotal {
 
     public void putItem(OrderItem other) {
         super.putItem(other);
-        if(getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            needAddCount = needAddCount.add(other.getNeedAddCount());
-            needCount = needCount.add(other.getNeedCount());
+        if(getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) &&
+                other.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            needAddCount = needAddCount.add((other.getNeedCount() == null) ? BigDecimal.ZERO : other.getNeedAddCount());
+            needCount = needCount.add((other.getNeedCount() == null) ? other.getAuxCount() : other.getNeedCount());
         }
     }
 

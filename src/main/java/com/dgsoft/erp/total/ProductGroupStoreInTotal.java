@@ -4,6 +4,7 @@ import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalDataUnionStrategy;
 import com.dgsoft.common.TotalGroupStrategy;
+import com.dgsoft.erp.model.ProductGroup;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
 import com.dgsoft.erp.model.StoreRes;
@@ -51,6 +52,27 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
 
     }
+
+
+    public List<TotalDataGroup<ProductGroup,StockChangeItem,TotalDataGroup.GroupTotalData>> getProductGroupTotal(){
+        return TotalDataGroup.groupBy(getResultList(),
+                new TotalGroupStrategy<ProductGroup, StockChangeItem, TotalDataGroup.GroupTotalData>() {
+                    @Override
+                    public ProductGroup getKey(StockChangeItem stockChangeItem) {
+                        return stockChangeItem.getStockChange().getProductStoreIn().getProductGroup();
+                    }
+
+                    @Override
+                    public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
+                        return null;
+                    }
+                },
+                new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(),
+                new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>(),
+                new ResTotalCount.StoreResCountGroupStrategy<StockChangeItem>());
+
+    }
+
 
     public List<TotalDataGroup<TotalDataGroup.DateKey,StockChangeItem,TotalDataGroup.GroupTotalData>> getDayTotal(){
         return TotalDataGroup.groupBy(getResultList(),
