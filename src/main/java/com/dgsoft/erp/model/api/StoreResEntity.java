@@ -32,7 +32,7 @@ public class StoreResEntity implements Serializable{
         this.res = storeRes.getRes();
 
         //this.formatHistory = ResHelper.instance().getFormatHistory(res);
-        formats = new ArrayList<Format>(res.getFormatDefines().size());
+        formats = new ArrayList<Format>();
         for (Format format : ResFormatCache.instance().getFormats(storeRes)) {
             formats.add(new Format(format.getFormatDefine(), format.getFormatValue()));
         }

@@ -54,6 +54,7 @@ public class ResFormatCache {
 
         List<Format> result = cache.get(storeResId);
         if (result == null) {
+            Logging.getLog(getClass()).debug("not in cache search");
             result = erpEntityManager.createQuery("select format from Format format left join format.formatDefine where format.storeRes.id = :storeResId order by format.formatDefine.priority", Format.class).setParameter("storeResId", storeResId).getResultList();
             cache.put(storeResId, result);
         }
