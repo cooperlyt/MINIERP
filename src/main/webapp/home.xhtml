@@ -52,17 +52,25 @@
 <s:div styleClass="info">
 
 <p>
-    <strong>MINIERP 2.3.3 Bate 已发布</strong> #{' '} 更新内容如下:
+    <strong>MINIERP 2.3.4 Bate 已发布</strong> #{' '} 更新内容如下:
 </p>
 <ul class="bullets">
     <li>[销售] 修正“订单修改”中直接发货功能失效问题</li>
     <li>[销售] 修正“订单修改”中修改订单收款类型“款到发货”改为其它方式时不扣客户应收货款错误</li>
-    <li>[财务] 修正“代办收款”错误</li>
+    <li>[财务] 订单收款客户查询错误</li>
     <li>[销售] 修改货品往来分组汇总表</li>
 </ul>
 
 <strong>历史更新</strong>
-
+<div style="clear: both;"/>
+<s:decorate template="/layout/view-details.xhtml">
+    <ui:param value="2.3.3" name="openLabel"/>
+    <ul class="bullets">
+        <li>[仓库] 修正盘点查看错误</li>
+        <li>[仓库] 优化盘点数据查看</li>
+        <li>[财务] 修正“代办收款”错误</li>
+    </ul>
+</s:decorate>
 <div style="clear: both;"/>
 <s:decorate template="/layout/view-details.xhtml">
     <ui:param value="2.3.2" name="openLabel"/>
