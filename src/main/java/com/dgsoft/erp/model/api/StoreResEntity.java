@@ -31,28 +31,27 @@ public class StoreResEntity implements Serializable{
     public StoreResEntity(StoreRes storeRes) {
         this.res = storeRes.getRes();
 
-        this.formatHistory = ResHelper.instance().getFormatHistory(res);
+        //this.formatHistory = ResHelper.instance().getFormatHistory(res);
         formats = new ArrayList<Format>(res.getFormatDefines().size());
         for (Format format : ResFormatCache.instance().getFormats(storeRes)) {
             formats.add(new Format(format.getFormatDefine(), format.getFormatValue()));
         }
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
 
-            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
+
             floatConvertRate = storeRes.getFloatConversionRate();
         }
     }
 
     protected void initByRes(Res res){
         this.res = res;
-        this.formatHistory = ResHelper.instance().getFormatHistory(res);
+        //this.formatHistory = ResHelper.instance().getFormatHistory(res);
         formats = new ArrayList<Format>(res.getFormatDefines().size());
         for (FormatDefine formatDefine : res.getFormatDefineList()) {
             formats.add(new Format(formatDefine));
         }
         if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
 
-            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
             floatConvertRate = res.getUnitGroup().getFloatAuxiliaryUnit().getConversionRate();
         }
     }
@@ -87,10 +86,16 @@ public class StoreResEntity implements Serializable{
     }
 
     public List<Object> getFormatHistorys(String defineId) {
+        if (formatHistory == null){
+            this.formatHistory = ResHelper.instance().getFormatHistory(res);
+        }
         return new ArrayList<Object>(formatHistory.get(defineId));
     }
 
     public List<BigDecimal> getFloatConvertRateHistory() {
+        if ((floatConvertRateHistory == null) && res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
+        }
         return floatConvertRateHistory;
     }
 
