@@ -7,4 +7,6 @@
 
     <param name="showInOut" value="#{inventoryItems.showInOutCount}"/>
 
+    <param name="hideZero" value="#{inventoryItems.hideZero}"/>
+
 </page>

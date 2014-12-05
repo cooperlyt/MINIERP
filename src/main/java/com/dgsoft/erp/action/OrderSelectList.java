@@ -26,7 +26,7 @@ public class OrderSelectList extends ErpEntityQuery<CustomerOrder> {
             "customerOrder.payType = #{orderSelectList.payTypeCondition}",
             "customerOrder.payType <> #{orderSelectList.notPayTypeCondition}",
             "customerOrder.customer.customerArea.id = #{orderSelectList.customerAreaId}",
-            "lower(customerOrder.customer.name) like lower(orderSelectList(#{orderSelectList.customerName},'%'))",
+            "lower(customerOrder.customer.name) like lower(concat('%',#{orderSelectList.customerName},'%'))",
             "customerOrder.createDate >= #{orderSelectList.searchDateArea.dateFrom}",
             "customerOrder.createDate <= #{orderSelectList.searchDateArea.searchDateTo}",
             "customerOrder.payTag = #{orderSelectList.flagCondition}",

@@ -83,7 +83,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     }
 
     public Date getBeforInventoryDate() {
-        Date result = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId and inventory.id <> :thisId", Date.class).
+        Date result = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId and ((inventory.type = 'MONTH_INVENTORY') or (inventory.type='YEAR_INVENTORY')) and inventory.id <> :thisId", Date.class).
                 setParameter("storeId", getInstance().getStore().getId()).setParameter("thisId", getInstance().getId()).getSingleResult();
         if (result == null) {
             result = new Date(0);
@@ -102,7 +102,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
             return null;
         }
 
-        if (getEntityManager().createQuery("select count(inventory.id) from Inventory inventory where inventory.store.id = :storeId and (inventory.type = 'YEAR_INVENTORY' and inventory.type = 'MONTH_INVENTORY') and inventory.checkDate >= :checkDate", Long.class).
+        if (getEntityManager().createQuery("select count(inventory.id) from Inventory inventory where inventory.store.id = :storeId and (inventory.type = 'YEAR_INVENTORY' or inventory.type = 'MONTH_INVENTORY') and inventory.checkDate >= :checkDate", Long.class).
                 setParameter("storeId", getInstance().getStore().getId()).
                 setParameter("checkDate", getInstance().getCheckDate()).getSingleResult() > 0) {
 
@@ -115,7 +115,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
         Date beforDate;
         try {
-            beforDate = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId", Date.class).
+            beforDate = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where (inventory.type = 'YEAR_INVENTORY' or inventory.type = 'MONTH_INVENTORY') and inventory.store.id = :storeId", Date.class).
                     setParameter("storeId", getInstance().getStore().getId()).getSingleResult();
         } catch (NoResultException e) {
             beforDate = null;
@@ -124,7 +124,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         Map<Stock, InventoryItem> beforStocks = null;
         if (beforDate != null) {
             beforStocks = new HashMap<Stock, InventoryItem>();
-            for (InventoryItem item : getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock where item.inventory.checkDate =:checkDate and item.inventory.store.id = :storeId", InventoryItem.class).
+            for (InventoryItem item : getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock where (inventory.type = 'YEAR_INVENTORY' or inventory.type = 'MONTH_INVENTORY') and item.inventory.checkDate =:checkDate and item.inventory.store.id = :storeId", InventoryItem.class).
                     setParameter("storeId", getInstance().getStore().getId()).setParameter("checkDate", beforDate).getResultList()) {
                 beforStocks.put(item.getStock(), item);
             }
