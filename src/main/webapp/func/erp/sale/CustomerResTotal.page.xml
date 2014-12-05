@@ -3,7 +3,12 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
 
-      <param name="customerId" value="#{customerHome.id}"/>
+    <param name="orderFirstResult" value="#{orderResTotalList.firstResult}"/>
+
+    <param name="backFirstResult" value="#{backResTotalList.firstResult}"/>
+
+
+    <param name="customerId" value="#{customerHome.id}"/>
 
     <param name="searchDateFrom" value="#{customerStoresTotalConditions.searchDateArea.dateFrom}"/>
     <param name="searchDateTo" value="#{customerStoresTotalConditions.searchDateArea.dateTo}"/>
@@ -11,5 +16,5 @@
 
     <param name="searchSale" value="#{customerStoresTotalConditions.searchSale}"/>
 
-    <param name="containStoreNoChange" value="#{containStoreNoChange.containStoreNoChange"/>
+    <param name="containStoreNoChange" value="#{customerStoresTotalConditions.containStoreNoChange}"/>
 </page>

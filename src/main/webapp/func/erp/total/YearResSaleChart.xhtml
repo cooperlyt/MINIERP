@@ -19,7 +19,7 @@
         <h:form>
             <h:selectOneMenu value="#{yearSaleResChartData.totalYear}">
                 <s:selectItems value="#{saleSearchYears}" var="_year" itemValue="#{_year}"
-                               label="#{_year}"/>
+                               label="#{_year}" noSelectionLabel="#{messages.noSelectLabelShort}"/>
                 <a:ajax event="valueChange" render="dataResults" execute="@form">
                     <a:attachQueue requestDelay="0"/>
                 </a:ajax>
@@ -38,25 +38,24 @@
 <br/>
 
 <a:outputPanel id="dataResults">
-    <p:linechart title="#{messages.ProcedureSaleMoneyChart}" borderVisible="false"
-                 legend="true" plotOutlinePaint="white" plotBackgroundAlpha="0.1"
-                 width="1000">
 
-        <ui:repeat value="#{collectionTools.mapToList(yearSaleResChartData.totalStoreResSaleData)}"
-                   var="_entry">
-            <p:series key="#{_entry.key.name}(#{_entry.key.code})">
-                <ui:repeat value="#{collectionTools.mapToList(_entry.value)}" var="_data">
-                    <p:data key="#{_data.key}#{messages.Month}"
-                            value="#{_data.value.money}"/>
-                </ui:repeat>
-
-            </p:series>
-        </ui:repeat>
+    <h:form>
 
 
-    </p:linechart>
 
+    <rich:chart title="#{messages.ProcedureSaleMoneyChart}"  styleClass="graf" >
+        <a:repeat value="#{collectionTools.mapToList(yearSaleResChartData.totalStoreResSaleData)}" var="_entry" >
+            <rich:chartSeries label="#{_entry.key.name}(#{_entry.key.code})" type="line">
+                <a:repeat value="#{collectionTools.mapToList(_entry.value)}" var="_data">
+                    <rich:chartPoint x="#{_data.key.intValue()}" y="#{_data.value.money.doubleValue()}" />
+                </a:repeat>
+            </rich:chartSeries>
+        </a:repeat>
+        <rich:chartXAxis  label="#{messages.Month}"/>
+        <rich:chartYAxis label="#{messages.ProcedureSaleMoneyChart}"/>
+    </rich:chart>
 
+    </h:form>
     <br/>
 
     <div style="width: 100%; overflow-x:scroll;">

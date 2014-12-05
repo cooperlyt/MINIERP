@@ -644,7 +644,7 @@ public class CustomerOrder implements java.io.Serializable {
     @Transient
     public List<TotalDataGroup<OrderItemTotal.OrderItemResKey,OrderItem,OrderItemTotal>> getItemTotalGroup(){
         if (itemTotalGroup == null){
-            itemTotalGroup = new TotalDataLazyList<OrderItemTotal.OrderItemResKey,OrderItem,OrderItemTotal>(getOrderItemList(),
+            itemTotalGroup = TotalDataGroup.groupBy(getOrderItemList(),
                     new OrderItemTotal.ResOrderItemGroupStrategy(),new OrderItemTotal.FormatOrderItemGroupStrategy());
         }
         return itemTotalGroup;

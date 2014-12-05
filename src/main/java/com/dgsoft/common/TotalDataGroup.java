@@ -172,9 +172,7 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
                 sort(d);
             }
         }
-
     }
-
 
     public static <V> void sort(TotalDataGroup<?, V, ?> data, Comparator<? super V> c) {
         Collections.sort(data.values, c);

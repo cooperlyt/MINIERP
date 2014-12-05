@@ -90,7 +90,7 @@
             src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable-toggler.js"/>
 
     <a:outputPanel id="totalResults">
-        <rich:dataTable style="width: 100%" value="#{productGroupStoreInTotal.dayTotal}"
+        <rich:dataTable style="width: 100%" value="#{productGroupStoreInTotal.productGroupTotal}"
                         var="_day">
             <f:facet name="header">
                 <rich:columnGroup>
@@ -112,10 +112,7 @@
 
             <rich:column colspan="7">
                 <rich:collapsibleSubTableToggler for="sbtbRes"/>
-                <h:outputText value="#{_day.key.keyData}">
-                    <s:convertDateTime
-                            pattern="#{messages.displayDatePattern}"/>
-                </h:outputText>
+                #{_day.key.name}
 
             </rich:column>
 
@@ -178,7 +175,7 @@
                             <rich:column style="width: 1px"/>
                             <rich:column>
                                 <h:outputText value="#{_item.stockChange.operDate}">
-                                    <s:convertDateTime pattern="#{messages.displayTimePattern}"/>
+                                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
                                 </h:outputText>
                             </rich:column>
 

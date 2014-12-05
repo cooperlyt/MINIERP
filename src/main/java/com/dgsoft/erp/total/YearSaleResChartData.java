@@ -28,7 +28,6 @@ public class YearSaleResChartData {
     @Factory(value = "saleSearchYears", scope = ScopeType.SESSION)
     public List<Integer> getSaleSearchYears() {
 
-
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(new Date());
         int maxYear = gc.get(Calendar.YEAR);
@@ -55,16 +54,13 @@ public class YearSaleResChartData {
     private Integer totalYear;
 
     public Integer getTotalYear() {
-        if (totalYear == null) {
-            GregorianCalendar gc = new GregorianCalendar();
-            gc.setTime(new Date());
-            totalYear = gc.get(Calendar.YEAR);
-        }
 
         return totalYear;
     }
 
     public void setTotalYear(Integer totalYear) {
+        if ((this.totalYear == null) || !this.totalYear.equals(totalYear))
+            totalStoreResSaleData = null;
         this.totalYear = totalYear;
     }
 
@@ -78,11 +74,11 @@ public class YearSaleResChartData {
     }
 
 
-    public List<YearTotalData<Res,ResSaleTotalData>> getResYearTotalData(){
+    public List<YearTotalData<Res, ResSaleTotalData>> getResYearTotalData() {
         initTotalStoreResSaleData();
-        List<YearTotalData<Res,ResSaleTotalData>> result = new ArrayList<YearTotalData<Res, ResSaleTotalData>>(totalStoreResSaleData.size());
+        List<YearTotalData<Res, ResSaleTotalData>> result = new ArrayList<YearTotalData<Res, ResSaleTotalData>>(totalStoreResSaleData.size());
         for (Map.Entry<Res, Map<Integer, ResSaleTotalData>> entry : totalStoreResSaleData.entrySet()) {
-            result.add(new YearTotalData<Res, ResSaleTotalData>(entry.getKey(),entry.getValue()));
+            result.add(new YearTotalData<Res, ResSaleTotalData>(entry.getKey(), entry.getValue()));
         }
         Collections.sort(result, new Comparator<YearTotalData<Res, ResSaleTotalData>>() {
             @Override
@@ -94,22 +90,22 @@ public class YearSaleResChartData {
     }
 
 
-    public List<MonthTotalData<ResSaleTotalData>> getResMonthTotalData(){
+    public List<MonthTotalData<ResSaleTotalData>> getResMonthTotalData() {
         initTotalStoreResSaleData();
-        Map<Integer,MonthTotalData<ResSaleTotalData>> result = new HashMap<Integer, MonthTotalData<ResSaleTotalData>>();
+        Map<Integer, MonthTotalData<ResSaleTotalData>> result = new HashMap<Integer, MonthTotalData<ResSaleTotalData>>();
 
         for (Map.Entry<Res, Map<Integer, ResSaleTotalData>> entry : totalStoreResSaleData.entrySet()) {
-            for(int i = 1 ; i<=12 ;i++){
+            for (int i = 1; i <= 12; i++) {
                 MonthTotalData<ResSaleTotalData> data = result.get(i);
-                if (data == null){
+                if (data == null) {
                     data = new MonthTotalData<ResSaleTotalData>(i);
-                    result.put(i,data);
+                    result.put(i, data);
                 }
                 data.getData().add(entry.getValue().get(i));
             }
         }
         List<MonthTotalData<ResSaleTotalData>> listResult = new ArrayList<MonthTotalData<ResSaleTotalData>>(result.values());
-        Collections.sort(listResult,new Comparator<MonthTotalData<ResSaleTotalData>>() {
+        Collections.sort(listResult, new Comparator<MonthTotalData<ResSaleTotalData>>() {
             @Override
             public int compare(MonthTotalData<ResSaleTotalData> o1, MonthTotalData<ResSaleTotalData> o2) {
                 return o1.getMonth().compareTo(o2.getMonth());
@@ -119,7 +115,7 @@ public class YearSaleResChartData {
 
     }
 
-    public static class MonthTotalData<E>{
+    public static class MonthTotalData<E> {
 
         private Integer month;
 
@@ -146,7 +142,7 @@ public class YearSaleResChartData {
         }
     }
 
-    public static class YearTotalData<T,E>{
+    public static class YearTotalData<T, E> {
 
         private T obj;
 
@@ -161,41 +157,51 @@ public class YearSaleResChartData {
             return obj;
         }
 
-        public E getMonth1(){
-              return data.get(1);
+        public E getMonth1() {
+            return data.get(1);
         }
 
-        public E getMonth2(){
+        public E getMonth2() {
             return data.get(2);
         }
-        public E getMonth3(){
+
+        public E getMonth3() {
             return data.get(3);
         }
-        public E getMonth4(){
+
+        public E getMonth4() {
             return data.get(4);
         }
-        public E getMonth5(){
+
+        public E getMonth5() {
             return data.get(5);
         }
-        public E getMonth6(){
+
+        public E getMonth6() {
             return data.get(6);
         }
-        public E getMonth7(){
+
+        public E getMonth7() {
             return data.get(7);
         }
-        public E getMonth8(){
+
+        public E getMonth8() {
             return data.get(8);
         }
-        public E getMonth9(){
+
+        public E getMonth9() {
             return data.get(9);
         }
-        public E getMonth10(){
+
+        public E getMonth10() {
             return data.get(10);
         }
-        public E getMonth11(){
+
+        public E getMonth11() {
             return data.get(11);
         }
-        public E getMonth12(){
+
+        public E getMonth12() {
             return data.get(12);
         }
 
@@ -205,33 +211,36 @@ public class YearSaleResChartData {
         if (totalStoreResSaleData == null) {
 
             Map<Res, Map<Integer, ResSaleTotalData>> result = new HashMap<Res, Map<Integer, ResSaleTotalData>>();
-            for (StoreResMonthTotalData storeResData : erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.total.data.StoreResMonthTotalData(item.storeRes,month(item.needRes.customerOrder.createDate),sum(item.count),sum(item.totalMoney)) from OrderItem item  where year(item.needRes.customerOrder.createDate) = :year and item.storeRes.res.resCategory.type = 'PRODUCT' and item.needRes.customerOrder.canceled = false group by item.storeRes,month(item.needRes.customerOrder.createDate)", StoreResMonthTotalData.class).
-                    setParameter("year", totalYear).getResultList()) {
-                Map<Integer, ResSaleTotalData> totalData = result.get(storeResData.getStoreRes().getRes());
-                if (totalData == null) {
-                    totalData = new HashMap<Integer, ResSaleTotalData>();
-                    result.put(storeResData.getStoreRes().getRes(), totalData);
-                }
+
+            if (totalYear != null) {
+
+                for (StoreResMonthTotalData storeResData : erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.total.data.StoreResMonthTotalData(item.storeRes,month(item.needRes.customerOrder.createDate),sum(item.count),sum(item.totalMoney)) from OrderItem item  where year(item.needRes.customerOrder.createDate) = :year and item.storeRes.res.resCategory.type = 'PRODUCT' and item.needRes.customerOrder.canceled = false group by item.storeRes,month(item.needRes.customerOrder.createDate)", StoreResMonthTotalData.class).
+                        setParameter("year", totalYear).getResultList()) {
+                    Map<Integer, ResSaleTotalData> totalData = result.get(storeResData.getStoreRes().getRes());
+                    if (totalData == null) {
+                        totalData = new HashMap<Integer, ResSaleTotalData>();
+                        result.put(storeResData.getStoreRes().getRes(), totalData);
+                    }
 
 
-                ResSaleTotalData data = totalData.get(storeResData.getMonth());
-                if (data != null) {
-                    totalData.put(storeResData.getMonth(), data.add(new ResSaleTotalData(new ResTotalCount(storeResData.getStoreResCount()), storeResData.getMoney())));
-                } else {
-                    totalData.put(storeResData.getMonth(), new ResSaleTotalData(new ResTotalCount(storeResData.getStoreResCount()), storeResData.getMoney()));
-                }
-
-            }
-
-            for (Map.Entry<Res, Map<Integer, ResSaleTotalData>> entry : result.entrySet()) {
-                for (int i = 1; i <= 12; i++) {
-                    if (entry.getValue().get(i) == null) {
-                        entry.getValue().put(i, new ResSaleTotalData(ResTotalCount.ZERO(entry.getKey()), BigDecimal.ZERO));
+                    ResSaleTotalData data = totalData.get(storeResData.getMonth());
+                    if (data != null) {
+                        totalData.put(storeResData.getMonth(), data.add(new ResSaleTotalData(new ResTotalCount(storeResData.getStoreResCount()), storeResData.getMoney())));
+                    } else {
+                        totalData.put(storeResData.getMonth(), new ResSaleTotalData(new ResTotalCount(storeResData.getStoreResCount()), storeResData.getMoney()));
                     }
 
                 }
-            }
 
+                for (Map.Entry<Res, Map<Integer, ResSaleTotalData>> entry : result.entrySet()) {
+                    for (int i = 1; i <= 12; i++) {
+                        if (entry.getValue().get(i) == null) {
+                            entry.getValue().put(i, new ResSaleTotalData(ResTotalCount.ZERO(entry.getKey()), BigDecimal.ZERO));
+                        }
+
+                    }
+                }
+            }
             totalStoreResSaleData = result;
         }
     }
