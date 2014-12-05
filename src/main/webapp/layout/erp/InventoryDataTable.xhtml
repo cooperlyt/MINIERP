@@ -11,13 +11,18 @@
 
 
     <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
-<rich:dataTable value="#{inventoryItems.resultGroup}" var="_resGroup" noDataLabel="#{messages.NoConditionStock}">
+
+
+
+
+
+<rich:dataTable style="table-layout: fixed;"  styleClass="bigTable" value="#{inventoryItems.resultGroup}" var="_resGroup" noDataLabel="#{messages.NoConditionStock}">
 <f:facet name="header">
     <rich:columnGroup>
-        <rich:column rowspan="2" colspan="3" style="min-width: 200px">
+        <rich:column rowspan="2" colspan="3" style="min-width: 180px">
             #{messages.StoreRes}
         </rich:column>
-        <rich:column rowspan="2" colspan="2" style="min-width: 180px">
+        <rich:column rowspan="2" colspan="2" style="min-width: 155px">
             #{messages.SeasonBiginCount}
         </rich:column>
         <rich:column colspan="#{(inventoryItems.storeInTypes.size + 1) * 2}"
@@ -29,7 +34,7 @@
                 rendered="#{inventoryItems.showInOutCount and ((not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores))}">
             #{messages.storeOut}
         </rich:column>
-        <rich:column rowspan="2" colspan="2" style="min-width: 180px">
+        <rich:column rowspan="2" colspan="2" style="min-width: 150px">
             #{messages.InventoryLastCount}
         </rich:column>
         <rich:column rowspan="2" colspan="2" style="min-width: 150px">
@@ -38,7 +43,7 @@
         <rich:column rowspan="2" colspan="2" style="min-width: 150px">
             #{messages.STORE_CHECK_LOSS}
         </rich:column>
-        <rich:column rowspan="2" colspan="2" style="min-width: 180px">
+        <rich:column rowspan="2" colspan="2" style="min-width: 150px">
             #{messages.InventoryEndCount}
         </rich:column>
 
@@ -74,7 +79,7 @@
     </rich:columnGroup>
 </f:facet>
 
-<rich:column colspan="3" style="font-size: 14px;font-weight: bold;background: #ecf4fe;">
+<rich:column colspan="3" style="min-width: 180px;font-size: 14px;font-weight: bold;background: #ecf4fe;">
     <rich:collapsibleSubTableToggler for="sbtbFormat"/>
     #{_resGroup.key.name}
 </rich:column>

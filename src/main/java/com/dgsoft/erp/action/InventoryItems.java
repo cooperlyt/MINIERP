@@ -206,7 +206,7 @@ public class InventoryItems {
 
     private void initItems() {
         if (items == null) {
-            items = erpEntityLoader.getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock stock left join fetch stock.storeRes where item.inventory.id = :inventoryId", InventoryItem.class).
+            items = erpEntityLoader.getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock stock left join fetch stock.store left join fetch stock.storeRes storeRes left join fetch storeRes.res res left join fetch res.unitGroup  where item.inventory.id = :inventoryId", InventoryItem.class).
                     setParameter("inventoryId", inventoryHome.getId()).getResultList();
             Logging.getLog(getClass()).debug("init Items count:" + items.size());
         }
@@ -372,27 +372,27 @@ public class InventoryItems {
     private void initSeasonStockChangeDatas() {
         if (seasonStockChangeDatas == null) {
 
-            List<StockChangeGroup> datas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockChangeGroup(item.storeRes,item.stockChange.operType,sum(item.count)) from StockChangeItem item where item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.store.id = :storeId and ( ((item.stockChange.operType <> 'STORE_CHECK_ADD') and (item.stockChange.operType <> 'STORE_CHECK_LOSS')) or (item.stockChange.inventory.id <> :thisInventoryId) ) group by item.storeRes,item.stockChange.operType", StockChangeGroup.class).
+            List<StockChangeGroup> datas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.StockChangeGroup(item.storeRes.id,item.stockChange.operType,sum(item.count)) from StockChangeItem item where item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.store.id = :storeId and ( ((item.stockChange.operType <> 'STORE_CHECK_ADD') and (item.stockChange.operType <> 'STORE_CHECK_LOSS')) or (item.stockChange.inventory.id <> :thisInventoryId) ) group by item.storeRes.id,item.stockChange.operType", StockChangeGroup.class).
                     setParameter("beginDate", inventoryHome.getBeforInventoryDate()).setParameter("endDate", inventoryHome.getInstance().getCheckDate()).
                     setParameter("storeId", inventoryHome.getInstance().getStore().getId()).setParameter("thisInventoryId", inventoryHome.getInstance().getId()).getResultList();
-            Map<StoreRes, Map<StockChange.StoreChangeType, BigDecimal>> dataMap = new HashMap<StoreRes, Map<StockChange.StoreChangeType, BigDecimal>>();
+            Map<String, Map<StockChange.StoreChangeType, BigDecimal>> dataMap = new HashMap<String, Map<StockChange.StoreChangeType, BigDecimal>>();
 
             for (StockChangeGroup data : datas) {
-                Map<StockChange.StoreChangeType, BigDecimal> countMap = dataMap.get(data.getStoreRes());
+                Map<StockChange.StoreChangeType, BigDecimal> countMap = dataMap.get(data.getStoreResId());
                 if (countMap == null) {
                     countMap = new HashMap<StockChange.StoreChangeType, BigDecimal>();
-                    dataMap.put(data.getStoreRes(), countMap);
+                    dataMap.put(data.getStoreResId(), countMap);
                 }
                 countMap.put(data.getType(), data.getMastCount());
             }
 
 
-            List<AllocationOutGroup> aoDatas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.AllocationOutGroup(item.storeRes,item.stockChange.allocation.inStore,sum(item.count)) from StockChangeItem item where item.stockChange.operType = 'ALLOCATION_OUT' and item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.allocation.outStore.id = :storeId group by item.storeRes,item.stockChange.allocation.inStore", AllocationOutGroup.class).
+            List<AllocationOutGroup> aoDatas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.AllocationOutGroup(item.storeRes.id,item.stockChange.allocation.inStore,sum(item.count)) from StockChangeItem item where item.stockChange.operType = 'ALLOCATION_OUT' and item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.allocation.outStore.id = :storeId group by item.storeRes.id,item.stockChange.allocation.inStore", AllocationOutGroup.class).
                     setParameter("beginDate", inventoryHome.getBeforInventoryDate()).setParameter("endDate", inventoryHome.getInstance().getCheckDate()).
                     setParameter("storeId", inventoryHome.getInstance().getStore().getId()).getResultList();
-            Map<StoreRes, AllocationOutGroup> aoDataMap = new HashMap<StoreRes, AllocationOutGroup>();
+            Map<String, AllocationOutGroup> aoDataMap = new HashMap<String, AllocationOutGroup>();
             for (AllocationOutGroup ao : aoDatas) {
-                aoDataMap.put(ao.getStoreRes(), ao);
+                aoDataMap.put(ao.getStoreResId(), ao);
             }
 
 
@@ -400,13 +400,13 @@ public class InventoryItems {
             for (InventoryItem item : getItems()) {
                 SeasonStockChangeData newGroupData = new SeasonStockChangeData(item);
                 seasonStockChangeDatas.put(item.getStock().getStoreRes(), newGroupData);
-                Map<StockChange.StoreChangeType, BigDecimal> data = dataMap.get(newGroupData.getStoreRes());
+                Map<StockChange.StoreChangeType, BigDecimal> data = dataMap.get(newGroupData.getStoreRes().getId());
                 if (data != null) {
                     for (Map.Entry<StockChange.StoreChangeType, BigDecimal> entry : data.entrySet()) {
                         newGroupData.putChange(entry.getKey(), new StoreResCount(item.getStock().getStoreRes(), entry.getValue()));
                     }
                 }
-                AllocationOutGroup aoGroup = aoDataMap.get(newGroupData.getStoreRes());
+                AllocationOutGroup aoGroup = aoDataMap.get(newGroupData.getStoreRes().getId());
                 if (aoGroup != null) {
                     newGroupData.putAllocationOutChange(aoGroup.getStore(), new StoreResCount(item.getStock().getStoreRes(), aoGroup.getMastCount()));
                 }

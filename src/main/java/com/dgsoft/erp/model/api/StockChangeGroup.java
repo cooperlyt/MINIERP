@@ -10,20 +10,21 @@ import java.math.BigDecimal;
  */
 public class StockChangeGroup {
 
-    private StoreRes storeRes;
+    //private StoreRes storeRes;
+    private String storeResId;
 
     private StockChange.StoreChangeType type;
 
     private BigDecimal mastCount;
 
-    public StockChangeGroup(StoreRes storeRes, StockChange.StoreChangeType type, BigDecimal mastCount) {
-        this.storeRes = storeRes;
+    public StockChangeGroup(String storeResId, StockChange.StoreChangeType type, BigDecimal mastCount) {
+        this.storeResId = storeResId;
         this.type = type;
         this.mastCount = mastCount;
     }
 
-    public StoreRes getStoreRes() {
-        return storeRes;
+    public String getStoreResId() {
+        return storeResId;
     }
 
     public StockChange.StoreChangeType getType() {

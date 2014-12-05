@@ -9,7 +9,7 @@
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j">
 
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 70px">
         <h:outputText value="#{data.beginCount.masterCount}">
             <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
         </h:outputText>
@@ -17,7 +17,7 @@
     </rich:column>
 
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle}min-width: 80px">
         <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
             <h:outputText value="#{data.beginCount.auxCount}">
                 <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
@@ -126,14 +126,14 @@
         </a:outputPanel>
     </rich:column>
       </c:if>
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 70px">
         <h:outputText value="#{data.lastCount.masterCount}">
             <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
         </h:outputText>
         <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
     </rich:column>
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 75px">
         <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
             <h:outputText value="#{data.lastCount.auxCount}">
                 <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
@@ -143,7 +143,7 @@
     </rich:column>
 
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 70px">
         <a:outputPanel rendered="#{data.addCount.masterCount gt 0}">
             <h:outputText value="#{data.addCount.masterCount}">
                 <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
@@ -152,7 +152,7 @@
         </a:outputPanel>
     </rich:column>
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 75px">
         <a:outputPanel rendered="#{(res.unitGroup.type eq 'FLOAT_CONVERT') and (data.addCount.masterCount gt 0)}">
             <h:outputText value="#{data.addCount.auxCount}">
                 <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
@@ -161,7 +161,7 @@
         </a:outputPanel>
     </rich:column>
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 70px">
         <a:outputPanel rendered="#{data.lossCount.masterCount gt 0}">
             <h:outputText value="#{data.lossCount.masterCount}">
                 <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
@@ -170,7 +170,7 @@
         </a:outputPanel>
     </rich:column>
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 75px">
         <a:outputPanel rendered="#{(res.unitGroup.type eq 'FLOAT_CONVERT') and (data.lossCount.masterCount gt 0)}">
             <h:outputText value="#{data.lossCount.auxCount}">
                 <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
@@ -179,14 +179,14 @@
         </a:outputPanel>
     </rich:column>
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 70px">
         <h:outputText value="#{data.resultCount.masterCount}">
             <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
         </h:outputText>
         <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
     </rich:column>
 
-    <rich:column style="#{columnStyle}">
+    <rich:column style="#{columnStyle};min-width: 75px">
         <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
             <h:outputText value="#{data.resultCount.auxCount}">
                 <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>

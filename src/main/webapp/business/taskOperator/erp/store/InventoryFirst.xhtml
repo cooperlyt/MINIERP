@@ -80,9 +80,9 @@
 
 <rich:toolbar>
     <rich:toolbarGroup>
-        <h:form>
+        <h:form style="margin-bottom: 0">
             <h:panelGrid id="resSearchForm" columns="4">
-                <h:inputText styleClass="barsearch" id="resItemCode" value="#{resCode.code}"
+                <h:inputText  id="resItemCode" value="#{resCode.code}"
                              required="true">
                     <rich:placeholder value="#{messages.res_field_code}"/>
                 </h:inputText>
@@ -126,10 +126,7 @@
 
 <h:form id="conditionsForm">
     <h:panelGrid columns="2">
-    <h:selectBooleanCheckbox value="#{inventoryItems.showInOutCount}">
-        <a:ajax event="click" execute="@this" render="resultDatas"/>
-    </h:selectBooleanCheckbox>
-           #{messages.showInventoryItemInOut}
+
 
     <h:selectBooleanCheckbox value="#{inventoryItems.hideZero}">
         <a:ajax event="click" execute="@this" render="resultDatas"/>
@@ -172,7 +169,20 @@
 
 
 <h:form>
-    <div style="width: 100%;max-height: 700px; overflow-x: auto; overflow-y: auto; padding: 0; margin: 0">
+    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jquery.floatThead.min.js"/>
+
+
+    <h:outputScript>
+        $(document).ready(function () {
+        $('.bigTable').floatThead({
+        useAbsolutePositioning: false
+        // absolutePositioning is better for
+        // highly dynamic sites
+        // (which this is not)
+        });
+
+        });
+    </h:outputScript>
 
         <a:outputPanel id="resultDatas">
 
@@ -181,6 +191,8 @@
             <a:outputPanel rendered="#{storeResCondition.resDefined}">
 
                 <s:decorate template="/layout/erp/InventoryDataTable.xhtml">
+                    <ui:param name="tableStyle" value="width: 100%"/>
+
                     <ui:define name="formatTitleColumn">
                         <h:outputText value="#{_formatGroup.key.formatTitle}"
                                       rendered="#{_formatGroup.key.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
@@ -213,7 +225,7 @@
                 </s:decorate>
             </a:outputPanel>
         </a:outputPanel>
-    </div>
+
 </h:form>
 <br/>
 

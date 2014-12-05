@@ -10,20 +10,21 @@ import java.math.BigDecimal;
  */
 public class AllocationOutGroup {
 
-    private StoreRes storeRes;
+    //private StoreRes storeRes;
+    private String storeResId;
 
     private Store store;
 
     private BigDecimal mastCount;
 
-    public AllocationOutGroup(StoreRes storeRes, Store store, BigDecimal mastCount) {
-        this.storeRes = storeRes;
+    public AllocationOutGroup(String storeResId, Store store, BigDecimal mastCount) {
+        this.storeResId = storeResId;
         this.store = store;
         this.mastCount = mastCount;
     }
 
-    public StoreRes getStoreRes() {
-        return storeRes;
+    public String getStoreResId() {
+        return storeResId;
     }
 
     public BigDecimal getMastCount() {

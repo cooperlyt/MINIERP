@@ -124,7 +124,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         Map<Stock, InventoryItem> beforStocks = null;
         if (beforDate != null) {
             beforStocks = new HashMap<Stock, InventoryItem>();
-            for (InventoryItem item : getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock where (inventory.type = 'YEAR_INVENTORY' or inventory.type = 'MONTH_INVENTORY') and item.inventory.checkDate =:checkDate and item.inventory.store.id = :storeId", InventoryItem.class).
+            for (InventoryItem item : getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock where (item.inventory.type = 'YEAR_INVENTORY' or item.inventory.type = 'MONTH_INVENTORY') and item.inventory.checkDate =:checkDate and item.inventory.store.id = :storeId", InventoryItem.class).
                     setParameter("storeId", getInstance().getStore().getId()).setParameter("checkDate", beforDate).getResultList()) {
                 beforStocks.put(item.getStock(), item);
             }
