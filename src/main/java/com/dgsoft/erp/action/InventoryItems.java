@@ -798,11 +798,6 @@ public class InventoryItems {
         }
 
         @Override
-        public void setStoreRes(StoreRes storeRes) {
-            throw new IllegalArgumentException("cant set");
-        }
-
-        @Override
         public StoreResCount getBeginCount() {
             return new StoreResCount(getStoreRes(), inventoryItem.getBeforCount());
         }

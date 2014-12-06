@@ -53,7 +53,7 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     @In(create = true)
     private ProcessInstanceHome processInstanceHome;
 
-    public String deleteInventory(){
+    public String deleteInventory() {
         if (getEntityManager().createQuery("select count(inventory.id) from Inventory inventory where (inventory.type = 'MONTH_INVENTORY' or  inventory.type ='YEAR_INVENTORY') and inventory.checkDate > :checkDate and inventory.store.id = :storeId", Long.class).
                 setParameter("checkDate", getInstance().getCheckDate()).
                 setParameter("storeId", getInstance().getStore().getId()).getSingleResult() > 0) {
@@ -113,50 +113,53 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
 
         getInstance().setApplyEmp(credentials.getUsername());
 
-        Date beforDate;
-        try {
-            beforDate = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where (inventory.type = 'YEAR_INVENTORY' or inventory.type = 'MONTH_INVENTORY') and inventory.store.id = :storeId", Date.class).
-                    setParameter("storeId", getInstance().getStore().getId()).getSingleResult();
-        } catch (NoResultException e) {
-            beforDate = null;
-        }
+        if (!getInstance().getType().equals(Inventory.InventoryType.RANDOM_INVENTORY)) {
 
-        Map<Stock, InventoryItem> beforStocks = null;
-        if (beforDate != null) {
-            beforStocks = new HashMap<Stock, InventoryItem>();
-            for (InventoryItem item : getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock where (item.inventory.type = 'YEAR_INVENTORY' or item.inventory.type = 'MONTH_INVENTORY') and item.inventory.checkDate =:checkDate and item.inventory.store.id = :storeId", InventoryItem.class).
-                    setParameter("storeId", getInstance().getStore().getId()).setParameter("checkDate", beforDate).getResultList()) {
-                beforStocks.put(item.getStock(), item);
+
+            Date beforDate;
+            try {
+                beforDate = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where (inventory.type = 'YEAR_INVENTORY' or inventory.type = 'MONTH_INVENTORY') and inventory.store.id = :storeId", Date.class).
+                        setParameter("storeId", getInstance().getStore().getId()).getSingleResult();
+            } catch (NoResultException e) {
+                beforDate = null;
             }
+
+            Map<Stock, InventoryItem> beforStocks = null;
+            if (beforDate != null) {
+                beforStocks = new HashMap<Stock, InventoryItem>();
+                for (InventoryItem item : getEntityManager().createQuery("select item from InventoryItem item left join fetch item.stock where (item.inventory.type = 'YEAR_INVENTORY' or item.inventory.type = 'MONTH_INVENTORY') and item.inventory.checkDate =:checkDate and item.inventory.store.id = :storeId", InventoryItem.class).
+                        setParameter("storeId", getInstance().getStore().getId()).setParameter("checkDate", beforDate).getResultList()) {
+                    beforStocks.put(item.getStock(), item);
+                }
+            }
+
+            for (Stock stock : getEntityManager().createQuery("select stock from Stock stock left join fetch stock.storeRes where stock.store.id= :storeId", Stock.class).
+                    setParameter("storeId", getInstance().getStore().getId()).getResultList()) {
+
+                InventoryItem beforItem = (beforStocks == null) ? null : beforStocks.get(stock);
+
+                BigDecimal beforCount = (beforItem == null) ? BigDecimal.ZERO : beforItem.getLastCount();
+
+                BigDecimal inCount = getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL, BigDecimal.class).
+                        setParameter("stockId", stock.getId()).
+                        setParameter("beginDate", (beforDate == null) ? new Date(0) : beforDate).
+                        setParameter("toDate", getInstance().getCheckDate()).
+                        setParameter("types", StockChange.StoreChangeType.getAllIn()).getSingleResult();
+
+                BigDecimal outCount = getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL, BigDecimal.class).
+                        setParameter("stockId", stock.getId()).
+                        setParameter("beginDate", (beforDate == null) ? new Date(0) : beforDate).
+                        setParameter("toDate", getInstance().getCheckDate()).
+                        setParameter("types", StockChange.StoreChangeType.getAllOut()).getSingleResult();
+
+                BigDecimal afterCount = beforCount.add((inCount == null) ? BigDecimal.ZERO : inCount).subtract((outCount == null) ? BigDecimal.ZERO : outCount);
+
+                getInstance().getInventoryItems().add(new InventoryItem(beforCount, afterCount, getInstance(), stock));
+
+
+            }
+
         }
-
-        for (Stock stock : getEntityManager().createQuery("select stock from Stock stock left join fetch stock.storeRes where stock.store.id= :storeId", Stock.class).
-                setParameter("storeId", getInstance().getStore().getId()).getResultList()) {
-
-            InventoryItem beforItem = (beforStocks == null) ? null : beforStocks.get(stock);
-
-            BigDecimal beforCount = (beforItem == null) ? BigDecimal.ZERO : beforItem.getLastCount();
-
-            BigDecimal inCount = getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL, BigDecimal.class).
-                    setParameter("stockId", stock.getId()).
-                    setParameter("beginDate", (beforDate == null) ? new Date(0) : beforDate).
-                    setParameter("toDate", getInstance().getCheckDate()).
-                    setParameter("types", StockChange.StoreChangeType.getAllIn()).getSingleResult();
-
-            BigDecimal outCount = getEntityManager().createQuery(DATE_AREA_STOCK_CHANGE_SQL, BigDecimal.class).
-                    setParameter("stockId", stock.getId()).
-                    setParameter("beginDate", (beforDate == null) ? new Date(0) : beforDate).
-                    setParameter("toDate", getInstance().getCheckDate()).
-                    setParameter("types", StockChange.StoreChangeType.getAllOut()).getSingleResult();
-
-            BigDecimal afterCount = beforCount.add((inCount == null) ? BigDecimal.ZERO : inCount).subtract((outCount == null) ? BigDecimal.ZERO : outCount);
-
-            getInstance().getInventoryItems().add(new InventoryItem(beforCount, afterCount, getInstance(), stock));
-
-
-        }
-
-
         if (!"persisted".equals(persist())) {
             return null;
         }
@@ -173,9 +176,6 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
         return new Inventory("P" + numberBuilder.getSampleNumber("inventory"), credentials.getUsername());
 
     }
-
-
-
 
 
 //    @In(create = true)

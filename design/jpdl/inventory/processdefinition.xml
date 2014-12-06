@@ -11,7 +11,7 @@
 	<task-node name="盘点">
 		<task name="盘点">
 			<description>
-				{&quot;businessName&quot;:&quot;盘点&quot;,&quot;businessKey&quot;:&quot;#{inventoryHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{inventoryHome.instance.store.name}&quot;],&quot;description&quot;:&quot;#{inventoryHome.instance.store.name}&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/InventoryFirst.xhtml&quot;}
+				{&quot;businessName&quot;:&quot;盘点&quot;,&quot;businessKey&quot;:&quot;#{inventoryHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{inventoryHome.instance.store.name}&quot;],&quot;description&quot;:&quot;#{inventoryHome.instance.store.name}&quot;,&quot;operPage&quot;:&quot;#{(inventoryHome.instance.type eq 'RANDOM_INVENTORY') ? '/business/taskOperator/erp/store/InventoryRandom.xhtml':'/business/taskOperator/erp/store/InventoryFirst.xhtml'}&quot;}
 			</description>
 			<assignment actor-id="#{actor.id}"></assignment>
 		</task>

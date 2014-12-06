@@ -425,11 +425,6 @@ public class OrderStoreOut extends OrderTaskHandle {
                 return dispatchItem.getStoreRes();
         }
 
-        @Override
-        public void setStoreRes(StoreRes storeRes) {
-            throw new IllegalArgumentException("this is readonly");
-        }
-
         public void reset() {
             if (dispatchItem != null) {
                 oweOut.setCount(BigDecimal.ZERO);

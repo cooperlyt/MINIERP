@@ -1,6 +1,7 @@
 package com.dgsoft.erp.model;
 // Generated Nov 9, 2014 12:57:57 PM by Hibernate Tools 4.0.0
 
+import com.dgsoft.erp.model.api.StoreResCountEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "INVENTORY_ITEM", catalog = "MINI_ERP",uniqueConstraints = @UniqueConstraint(columnNames = {"STOCK","INVENTORY"}) )
 
-public class InventoryItem implements java.io.Serializable {
+public class InventoryItem extends StoreResCountEntity implements java.io.Serializable {
 
     public enum InventoryItemChangeType{
         NO_CHANGE,INVENTORY_ADD,INVENTORY_LOSS;
@@ -32,6 +33,33 @@ public class InventoryItem implements java.io.Serializable {
 
 	public InventoryItem() {
 	}
+
+    public InventoryItem(Res res,Inventory inventory) {
+        super(res, res.getResUnitByInDefault());
+        this.inventory = inventory;
+    }
+
+    @Override
+    @Transient
+    public BigDecimal getCount() {
+        return changeCount;
+    }
+
+    @Override
+    @Transient
+    public void setCount(BigDecimal count) {
+        this.changeCount = count;
+    }
+
+    @Override
+    @Transient
+    public StoreRes getStoreRes() {
+        if (getStock() == null){
+            return null;
+        }
+        return getStock().getStoreRes();
+    }
+
 
     public InventoryItem(BigDecimal beforCount,BigDecimal lastCount,Inventory inventory, Stock stock) {
         this.lastCount = lastCount;
