@@ -114,8 +114,17 @@
             <br/>
         </h:form>
 
+        <a:outputPanel rendered="#{not (inventoryHome.instance.type eq 'RANDOM_INVENTORY')}">
 
         <h:form id="conditionsForm">
+            <h:panelGrid columns="2">
+
+
+                <h:selectBooleanCheckbox value="#{inventoryItems.hideZero}">
+                    <a:ajax event="click" execute="@this" render="resultDatas"/>
+                </h:selectBooleanCheckbox>
+                #{messages.hideZeroInventoryItem}
+            </h:panelGrid>
             <ui:include src="/layout/erp/res/StoreResCondition.xhtml"/>
 
             <div style="clear: both;"/>
@@ -132,10 +141,15 @@
                                              render="resultDatas,conditionsForm">
                                 <a:attachQueue requestDelay="0"/>
                             </a:commandButton>
-
+                            <a:commandButton value="#{messages.InventoryEndCount}" action="#{inventoryItems.beginChange}"
+                                             execute="@form" render="changeInputPanel_form"
+                                             oncomplete="#{rich:component('changeInputPanel')}.show();">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
 
                             <a:commandButton value="#{messages.Filter}" action="#{inventoryItems.refresh}"
-                                             execute="@form" render="resultDatas" status="processWaiting">
+                                             status="processWaiting"
+                                             execute="@form" render="resultDatas">
                                 <a:attachQueue requestDelay="0"/>
                             </a:commandButton>
                         </a:outputPanel>
@@ -146,8 +160,24 @@
         </h:form>
 
 
+
         <h:form>
-            <div style="width: 100%;max-height: 700px; overflow-x: auto; overflow-y: auto; padding: 0; margin: 0">
+
+
+            <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jquery.floatThead.min.js"/>
+
+
+            <h:outputScript>
+                $(document).ready(function () {
+                $('.bigTable').floatThead({
+                useAbsolutePositioning: false
+                // absolutePositioning is better for
+                // highly dynamic sites
+                // (which this is not)
+                });
+
+                });
+            </h:outputScript>
 
                 <a:outputPanel id="resultDatas">
 
@@ -192,11 +222,10 @@
                 </a:outputPanel>
 
                 </a:outputPanel>
-            </div>
         </h:form>
 
         <br/>
-
+        </a:outputPanel>
         <rich:panel>
             <ui:include src="/layout/erp/InventoryMainDetails.xhtml">
 
@@ -205,6 +234,119 @@
 
             <div style="clear: both"/>
         </rich:panel>
+
+        <a:outputPanel rendered="#{inventoryHome.instance.type eq 'RANDOM_INVENTORY'}" >
+
+            <br/>
+            <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/jquery.floatThead.min.js"/>
+            <rich:dataTable id="dataResultList" var="_res1" value="#{randomInventory.resultGroup}" style="width: 100%">
+                <f:facet name="header">
+                    <rich:columnGroup>
+                        <rich:column colspan="3">
+                            #{messages.StoreRes}
+                        </rich:column>
+
+
+
+                        <rich:column colspan="2">
+                            #{messages.INVENTORY_ADD}
+                        </rich:column>
+
+                        <rich:column colspan="2">
+                            #{messages.INVENTORY_LOSS}
+                        </rich:column>
+
+
+                        <rich:column>
+                            #{messages.field_memo}
+                        </rich:column>
+
+                    </rich:columnGroup>
+                </f:facet>
+
+
+                <rich:column colspan="3" style="background: #ecf4fe;">
+                    <rich:collapsibleSubTableToggler for="sbtbFormat"/>
+                    #{_res1.key.name}
+                </rich:column>
+
+
+
+                <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                    <ui:param name="resCount" value="#{_res1.totalData.inventoryAddCount}"/>
+                    <ui:param name="style" value="background: #ecf4fe;"/>
+                </ui:include>
+
+                <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                    <ui:param name="resCount" value="#{_res1.totalData.inventoryLossCount}"/>
+                    <ui:param name="style" value="background: #ecf4fe;"/>
+                </ui:include>
+
+                <rich:column style="background: #ecf4fe;"/>
+                <rich:collapsibleSubTable id="sbtbFormat" value="#{_res1.childGroup}" var="_format">
+                    <rich:column style="width: 1px;background:#f5f5f5;" />
+                    <rich:column colspan="2" style="background:#f5f5f5;">
+                        <rich:collapsibleSubTableToggler for="sbtbItem"/>
+                        #{_format.key.formatTitle}
+                    </rich:column>
+
+
+
+                    <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                        <ui:param name="resCount" value="#{_format.totalData.inventoryAddCount}"/>
+                        <ui:param name="style" value="background:#f5f5f5;"/>
+                    </ui:include>
+
+                    <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                        <ui:param name="resCount" value="#{_format.totalData.inventoryLossCount}"/>
+                        <ui:param name="style" value="background:#f5f5f5;"/>
+                    </ui:include>
+
+
+                    <rich:column style="background:#f5f5f5;"/>
+
+                    <rich:collapsibleSubTable id="sbtbItem" var="_item" value="#{_format.values}">
+                        <rich:column/>
+                        <rich:column style="width: 1px"/>
+
+                        <rich:column>
+                            <a:outputPanel rendered="#{_item.storeRes.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+                                <h:outputText value="#{_item.storeRes.floatConversionRate}">
+                                    <f:convertNumber pattern="#{_item.storeRes.res.unitGroup.floatConvertRateFormat}"/>
+                                </h:outputText>
+                                #{_item.storeRes.res.unitGroup.name}
+                            </a:outputPanel>
+                        </rich:column>
+
+
+
+                        <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                            <ui:param name="rendered" value="#{_item.changeType eq 'INVENTORY_ADD'}"/>
+                            <ui:param name="resCount" value="#{_item.storeResCount}"/>
+                        </ui:include>
+
+                        <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                            <ui:param name="rendered" value="#{_item.changeType eq 'INVENTORY_LOSS'}"/>
+                            <ui:param name="resCount" value="#{_item.storeResCount}"/>
+                        </ui:include>
+
+                        <rich:column>
+                            <ui:include src="/layout/long-text-display.xhtml">
+                                <ui:param name="value" value="#{_item.memo}"/>
+                                <ui:param name="size" value="10"/>
+                            </ui:include>
+
+                        </rich:column>
+
+                    </rich:collapsibleSubTable>
+
+
+                </rich:collapsibleSubTable>
+
+            </rich:dataTable>
+
+
+        </a:outputPanel>
     </ui:define>
 
 </ui:composition>

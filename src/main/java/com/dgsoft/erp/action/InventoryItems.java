@@ -798,6 +798,11 @@ public class InventoryItems {
         }
 
         @Override
+        public void setStoreRes(StoreRes storeRes) {
+
+        }
+
+        @Override
         public StoreResCount getBeginCount() {
             return new StoreResCount(getStoreRes(), inventoryItem.getBeforCount());
         }

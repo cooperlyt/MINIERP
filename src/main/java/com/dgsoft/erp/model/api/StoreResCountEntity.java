@@ -50,7 +50,7 @@ public abstract class StoreResCountEntity extends StoreResEntity{
 
     public abstract StoreRes getStoreRes();
 
-    //public abstract void setStoreRes(StoreRes storeRes);
+    public abstract void setStoreRes(StoreRes storeRes);
 
     private ResUnit useUnit;
 

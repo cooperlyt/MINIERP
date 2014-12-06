@@ -425,6 +425,11 @@ public class OrderStoreOut extends OrderTaskHandle {
                 return dispatchItem.getStoreRes();
         }
 
+        @Override
+        public void setStoreRes(StoreRes storeRes) {
+
+        }
+
         public void reset() {
             if (dispatchItem != null) {
                 oweOut.setCount(BigDecimal.ZERO);

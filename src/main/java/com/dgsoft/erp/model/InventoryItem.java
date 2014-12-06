@@ -60,6 +60,12 @@ public class InventoryItem extends StoreResCountEntity implements java.io.Serial
         return getStock().getStoreRes();
     }
 
+    @Override
+    @Transient
+    public void setStoreRes(StoreRes storeRes) {
+
+    }
+
 
     public InventoryItem(BigDecimal beforCount,BigDecimal lastCount,Inventory inventory, Stock stock) {
         this.lastCount = lastCount;
