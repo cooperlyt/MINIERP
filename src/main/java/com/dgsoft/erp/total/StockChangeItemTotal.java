@@ -6,6 +6,7 @@ import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityQuery;
 import com.dgsoft.erp.model.StockChange;
 import com.dgsoft.erp.model.StockChangeItem;
+import com.dgsoft.erp.total.data.ResCount;
 import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.annotations.Name;
 
@@ -60,15 +61,15 @@ public class StockChangeItemTotal extends ErpEntityQuery<StockChangeItem> {
         this.resultGroupBy = resultGroupBy;
     }
 
-    public TotalDataGroup<?, StockChangeItem,?> getDayResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<TotalDataGroup.DateKey, StockChangeItem,TotalDataGroup.GroupTotalData>() {
+    public TotalDataGroup<?, StockChangeItem,ResCount> getDayResultGroup() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<TotalDataGroup.DateKey, StockChangeItem,ResCount>() {
             @Override
             public TotalDataGroup.DateKey getKey(StockChangeItem stockChangeItem) {
                 return new TotalDataGroup.DateKey(DataFormat.halfTime(stockChangeItem.getStockChange().getOperDate()));
             }
 
             @Override
-            public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
+            public ResCount totalGroupData(Collection<StockChangeItem> datas) {
                 return null;
             }
         }, new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
@@ -79,15 +80,15 @@ public class StockChangeItemTotal extends ErpEntityQuery<StockChangeItem> {
                 new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());
     }
 
-    public TotalDataGroup<?, StockChangeItem,?> getChangeResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<StockChange, StockChangeItem,TotalDataGroup.GroupTotalData>() {
+    public TotalDataGroup<?, StockChangeItem,ResCount> getChangeResultGroup() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<StockChange, StockChangeItem,ResCount>() {
             @Override
             public StockChange getKey(StockChangeItem stockChangeItem) {
                 return stockChangeItem.getStockChange();
             }
 
             @Override
-            public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
+            public ResCount totalGroupData(Collection<StockChangeItem> datas) {
                 return null;
             }
         },new ResTotalCount.ResCountGroupStrategy<StockChangeItem>(), new ResTotalCount.FormatCountGroupStrategy<StockChangeItem>());

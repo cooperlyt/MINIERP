@@ -1,5 +1,7 @@
 package com.dgsoft.common;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -26,7 +28,7 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
         this.expanded = expanded;
     }
 
-    private List<TotalDataGroup<? extends GroupKey, V, ? extends GroupTotalData>> childGroup;
+    private List<TotalDataGroup<? extends GroupKey, V, T>> childGroup;
 
     private List<V> values = new ArrayList<V>();
 
@@ -47,7 +49,7 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
     }
 
 
-    public List<TotalDataGroup<? extends GroupKey, V, ? extends GroupTotalData>> getChildGroup() {
+    public List<TotalDataGroup<? extends GroupKey, V, T>> getChildGroup() {
         return childGroup;
     }
 
@@ -59,12 +61,12 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
     //public static        Object... params
 
     @Deprecated
-    public static <V> TotalDataGroup<?, V, ?> allGroupBy(Collection<? extends V> values, TotalGroupStrategy<?, V, ?>... groupStrategys) {
+    public static <V, T extends GroupTotalData> TotalDataGroup<?, V, T> allGroupBy(Collection<? extends V> values, TotalGroupStrategy<?, V, T>... groupStrategys) {
 
-        TotalDataGroup<?, V, ?> result = new TotalDataGroup<GroupKey, V, TotalDataGroup.GroupTotalData>(null);
+        TotalDataGroup<?, V, T> result = new TotalDataGroup<GroupKey, V, T>(null);
         result.values = new ArrayList<V>(values);
         //result.childGroup =  groupBy(values,groupStrategy,groupStrategys);
-        for (TotalGroupStrategy<?, V, ?> stragegy : groupStrategys) {
+        for (TotalGroupStrategy<?, V, T> stragegy : groupStrategys) {
             groupChildBy(result, stragegy);
         }
 
@@ -72,12 +74,12 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
     }
 
     public static <K extends GroupKey, V, T extends GroupTotalData> List<TotalDataGroup<K, V, T>> groupBy(Collection<V> values,
-                                                                                                TotalGroupStrategy<K, V, T> groupStrategy,
-                                                                                                TotalGroupStrategy<?, V, ?>... groupStrategys) {
+                                                                                                          TotalGroupStrategy<K, V, T> groupStrategy,
+                                                                                                          TotalGroupStrategy<? extends GroupKey, V, T>... groupStrategys) {
         List<TotalDataGroup<K, V, T>> result = groupCollection(values, groupStrategy);
 
 
-        for (TotalGroupStrategy<?, V, ?> stragegy : groupStrategys) {
+        for (TotalGroupStrategy<? extends GroupKey, V, T> stragegy : groupStrategys) {
             for (TotalDataGroup<K, V, T> l : result) {
                 groupChildBy(l, stragegy);
             }
@@ -86,7 +88,7 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
     }
 
     private static <K extends GroupKey, V, T extends GroupTotalData> List<TotalDataGroup<K, V, T>> groupCollection(Collection<V> values,
-                                                                                                         TotalGroupStrategy<K, V, T> groupStrategy) {
+                                                                                                                   TotalGroupStrategy<K, V, T> groupStrategy) {
         Map<K, TotalDataGroup<K, V, T>> result = new HashMap<K, TotalDataGroup<K, V, T>>();
         for (V value : values) {
             K valueKey = groupStrategy.getKey(value);
@@ -108,14 +110,14 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
         return listResult;
     }
 
-    private static <K extends TotalDataGroup.GroupKey, V, T extends TotalDataGroup.GroupTotalData> void groupChildBy(TotalDataGroup<?, V, ?> values, TotalGroupStrategy<K, V, T> groupStrategy) {
+    private static <K extends TotalDataGroup.GroupKey, V, T extends TotalDataGroup.GroupTotalData> void groupChildBy(TotalDataGroup<?, V, T> values, TotalGroupStrategy<K, V, T> groupStrategy) {
         if (values.isLeaf()) {
-            values.childGroup = new ArrayList<TotalDataGroup<? extends TotalDataGroup.GroupKey, V, ? extends TotalDataGroup.GroupTotalData>>();
+            values.childGroup = new ArrayList<TotalDataGroup<? extends TotalDataGroup.GroupKey, V, T>>();
             for (TotalDataGroup<K, V, T> c : groupCollection(values.getValues(), groupStrategy)) {
                 values.childGroup.add(c);
             }
         } else {
-            for (TotalDataGroup<? extends TotalDataGroup.GroupKey, V,? extends TotalDataGroup.GroupTotalData> c : values.getChildGroup()) {
+            for (TotalDataGroup<? extends TotalDataGroup.GroupKey, V, T> c : values.getChildGroup()) {
                 groupChildBy(c, groupStrategy);
             }
         }
@@ -135,9 +137,9 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
         return result.values();
     }
 
-    public static <K, V, DK extends GroupKey,DT extends GroupTotalData> void unionGroupData(Collection<TotalDataGroup<DK, V, DT>> datas, TotalDataUnionStrategy<K, V> unionStrategy) {
-        for(TotalDataGroup<DK, V, DT> group: datas){
-            unionData(group,unionStrategy);
+    public static <K, V, DK extends GroupKey, DT extends GroupTotalData> void unionGroupData(Collection<TotalDataGroup<DK, V, DT>> datas, TotalDataUnionStrategy<K, V> unionStrategy) {
+        for (TotalDataGroup<DK, V, DT> group : datas) {
+            unionData(group, unionStrategy);
         }
     }
 
@@ -184,6 +186,72 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
         }
     }
 
+    public interface TotalDataExportStrategy<V, T extends GroupTotalData> {
+
+        public int wirteData(int row, int beginCol, V value, ExportRender render);
+
+        public int wirteTotal(int row, int beginCol, T value, GroupKey<?> key, ExportRender render, int childCount);
+
+        public void wirteKey(int row, int col, int toRow, int toCol, GroupKey<?> key, ExportRender render);
+
+        public int wirteHeader(ExportRender render);
+
+    }
+
+
+    public static <K extends GroupKey, V, T extends GroupTotalData> int export(int beginRow, int beginCol, int level, Collection<TotalDataGroup<K, V, T>> datas,
+                                                                               TotalDataExportStrategy<V, T> strategy,
+                                                                               ExportRender render) {
+        int row = beginRow;
+        for (TotalDataGroup<K, V, T> data : datas) {
+            row = export(row, beginCol, level, data, strategy, render);
+        }
+        return row;
+    }
+
+    public static <K extends GroupKey, V, T extends GroupTotalData> void export(Collection<TotalDataGroup<K, V, T>> datas,
+                                                                                TotalDataExportStrategy<V, T> strategy,
+                                                                                ExportRender render, OutputStream outputStream) throws IOException {
+
+        render.setNextCellType(ExportRender.Type.HEADER, 0);
+        int row = strategy.wirteHeader(render);
+        for (TotalDataGroup<K, V, T> data : datas) {
+            row = export(row, 0, 0, data, strategy, render);
+        }
+
+        render.write(outputStream);
+    }
+
+    private static <V, T extends GroupTotalData> int export(int beginRow, int beginCol, int level,
+                                                            TotalDataGroup<? extends GroupKey, V, T> data,
+                                                            TotalDataExportStrategy<V, T> strategy, ExportRender render) {
+
+        //render.setNextRowType(ExportRender.Type.DATA, level);
+        render.setNextCellType(ExportRender.Type.DATA, level);
+        int row = beginRow;
+        //int col = beginCol;
+        int childCount;
+        if (data.isLeaf()) {
+            childCount = data.values.size();
+            for (V v : data.values) {
+                render.setNextCellType(ExportRender.Type.DATA, level);
+                row = strategy.wirteData(row, beginCol + 1, v, render);
+            }
+        } else {
+            childCount = data.getChildGroup().size();
+            for (TotalDataGroup<? extends GroupKey, V, T> child : data.getChildGroup()) {
+                row = export(row, beginCol + 1, level + 1, child, strategy, render);
+            }
+        }
+        render.setNextCellType(ExportRender.Type.HEADER, level);
+        strategy.wirteKey(beginRow, beginCol, row - 1, beginCol, data.getKey(), render);
+        // render.setNextRowType(ExportRender.Type.FOOTER, level);
+        render.setNextCellType(ExportRender.Type.FOOTER, level);
+        row = strategy.wirteTotal(row, beginCol, data.getTotalData(), data.getKey(), render, childCount);
+
+        return row;
+
+    }
 
     @Override
     public int compareTo(TotalDataGroup o) {
@@ -197,21 +265,21 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
     }
 
 
-    public interface GroupTotalData{
+    public interface GroupTotalData {
 
     }
 
-    public interface GroupKey<T extends Comparable<? super T>>{
+    public interface GroupKey<T extends Comparable<? super T>> {
 
         public T getKeyData();
 
     }
 
-    public static abstract class GroupKeyHelper<T extends Comparable<? super T>> implements GroupKey<T>{
+    public static abstract class GroupKeyHelper<T extends Comparable<? super T>> implements GroupKey<T> {
 
 
         @Override
-        public boolean equals(Object other){
+        public boolean equals(Object other) {
 
             if (other == null) {
                 return false;
@@ -234,14 +302,14 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
         }
 
         @Override
-        public int hashCode(){
+        public int hashCode() {
             return 17 * 37 + ((getKeyData() != null) ? getKeyData().hashCode() : super.hashCode());
         }
 
 
     }
 
-    public static class DateKey extends GroupKeyHelper<Date> implements Serializable{
+    public static class DateKey extends GroupKeyHelper<Date> implements Serializable {
 
         private Date date = new Date();
 

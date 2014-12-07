@@ -63,12 +63,12 @@ public class CustomerResContactsTotal {
         this.onlyModel = onlyModel;
     }
 
-    public RebateMoney getTotalPrice(){
+    public ResPriceTotal getTotalPrice(){
 //        BigDecimal result = BigDecimal.ZERO;
 //        for (StoreResPriceEntity item: getResultList()){
 //            result = result.add(item.getTotalMoney());
 //        }
-        return genRebateMoney(getResultList());
+        return ResPriceTotal.total(getResultList());
     }
 
 
@@ -98,14 +98,14 @@ public class CustomerResContactsTotal {
         return result;
     }
 
-    public TotalDataGroup<?, StoreResPriceEntity,?> getCustomerResultGroup() {
+    public TotalDataGroup<?, StoreResPriceEntity,ResPriceTotal> getCustomerResultGroup() {
         return TotalDataGroup.allGroupBy(getResultList(), new CustomerGroupStrategy(),
                 new ResPriceTotal.ResMoneyGroupStrategy<StoreResPriceEntity>(),
                 new ResPriceTotal.FormatMoneyGroupStrategy<StoreResPriceEntity>());
     }
 
-    public TotalDataGroup<?, StoreResPriceEntity,?> getDayResultGroup() {
-        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<TotalDataGroup.DateKey, StoreResPriceEntity,RebateMoney>() {
+    public TotalDataGroup<?, StoreResPriceEntity,ResPriceTotal> getDayResultGroup() {
+        return TotalDataGroup.allGroupBy(getResultList(), new TotalGroupStrategy<TotalDataGroup.DateKey, StoreResPriceEntity,ResPriceTotal>() {
             @Override
             public TotalDataGroup.DateKey getKey(StoreResPriceEntity storeResPriceEntity) {
                 if (storeResPriceEntity instanceof OrderItem) {
@@ -117,14 +117,14 @@ public class CustomerResContactsTotal {
             }
 
             @Override
-            public RebateMoney totalGroupData(Collection<StoreResPriceEntity> datas) {
-                return genRebateMoney(datas);
+            public ResPriceTotal totalGroupData(Collection<StoreResPriceEntity> datas) {
+                return ResPriceTotal.total(datas);
             }
         }, new CustomerGroupStrategy(), new ResPriceTotal.ResMoneyGroupStrategy<StoreResPriceEntity>(), new ResPriceTotal.FormatMoneyGroupStrategy<StoreResPriceEntity>());
     }
 
 
-    private static class CustomerGroupStrategy implements TotalGroupStrategy<Customer, StoreResPriceEntity,RebateMoney> {
+    private static class CustomerGroupStrategy implements TotalGroupStrategy<Customer, StoreResPriceEntity,ResPriceTotal> {
         @Override
         public Customer getKey(StoreResPriceEntity storeResPriceEntity) {
             if (storeResPriceEntity instanceof OrderItem) {
@@ -136,60 +136,10 @@ public class CustomerResContactsTotal {
         }
 
         @Override
-        public RebateMoney totalGroupData(Collection<StoreResPriceEntity> datas) {
-            return genRebateMoney(datas);
+        public ResPriceTotal totalGroupData(Collection<StoreResPriceEntity> datas) {
+            return ResPriceTotal.total(datas);
         }
     }
 
-    private static RebateMoney genRebateMoney(Collection<StoreResPriceEntity> datas){
-        Map<String,BigDecimal> orderRebateMap = new HashMap<String, BigDecimal>();
-
-        BigDecimal money = BigDecimal.ZERO;
-        for(StoreResPriceEntity item: datas){
-            if (item instanceof OrderItem) {
-                CustomerOrder order = ((OrderItem)item).getNeedRes().getCustomerOrder();
-                if (orderRebateMap.get(order.getId()) == null){
-                    orderRebateMap.put(order.getId(),order.getTotalRebateMoney());
-                }
-            }
-            money = money.add(item.getTotalMoney());
-        }
-
-        BigDecimal rebate = BigDecimal.ZERO;
-        for (BigDecimal r: orderRebateMap.values()){
-            rebate = rebate.add(r);
-        }
-
-        return new RebateMoney(money,rebate);
-    }
-
-    public static class RebateMoney implements TotalDataGroup.GroupTotalData{
-
-        private BigDecimal money;
-
-        private BigDecimal rebate;
-
-        public RebateMoney(BigDecimal money, BigDecimal rebate) {
-            this.money = money;
-            this.rebate = rebate;
-        }
-
-        public RebateMoney(BigDecimal money) {
-            this.money = money;
-            rebate = BigDecimal.ZERO;
-        }
-
-        public BigDecimal getMoney() {
-            return money;
-        }
-
-        public BigDecimal getRebate() {
-            return rebate;
-        }
-
-        public BigDecimal getCalcMoney(){
-            return money.subtract(rebate);
-        }
-    }
 
 }

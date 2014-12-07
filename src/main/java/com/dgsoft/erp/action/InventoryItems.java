@@ -1,7 +1,6 @@
 package com.dgsoft.erp.action;
 
-import com.dgsoft.common.TotalDataGroup;
-import com.dgsoft.common.TotalGroupStrategy;
+import com.dgsoft.common.*;
 import com.dgsoft.common.system.RunParam;
 import com.dgsoft.erp.ErpEntityLoader;
 import com.dgsoft.erp.model.*;
@@ -20,7 +19,12 @@ import org.jboss.seam.framework.EntityQuery;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -51,7 +55,7 @@ public class InventoryItems {
 
     private boolean showInOutCount = false;
 
-    private boolean hideZero= false;
+    private boolean hideZero = false;
 
     @In(create = true)
     private ResCode resCode;
@@ -126,7 +130,7 @@ public class InventoryItems {
         resCode.find();
         if (ResCode.CodeStatus.STORERES_DEFINED.equals(resCode.getCodeStatus())) {
             editingItem = getSeasonStockChangeDatas().get(resCode.getStoreRes());
-            if(editingItem == null){
+            if (editingItem == null) {
                 editingItem = createNewItem(resCode.getStoreRes());
             }
         } else {
@@ -304,15 +308,189 @@ public class InventoryItems {
         return seasonStockChangeDatas;
     }
 
-    private  List<TotalDataGroup<Res, SeasonStockChangeData, SeasonStockChangeTotalData>> resultGroup;
+    private List<TotalDataGroup<Res, SeasonStockChangeData, SeasonStockChangeTotalData>> resultGroup;
 
-    public void refresh(){
+    public void refresh() {
         resultGroup = null;
     }
 
-    public void reset(){
+    public void reset() {
         storeResCondition.reset();
         refresh();
+    }
+
+    @In(create = true)
+    private FacesContext facesContext;
+
+
+    @In
+    private Map<String, String> messages;
+
+    public void export() {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/vnd.ms-excel");
+        externalContext.setResponseHeader("Content-Disposition", "attachment;filename=export.xls");
+
+        try {
+            TotalDataGroup.export(getResultGroup(), new ResTotalCount.CountExportStrategy<SeasonStockChangeData, SeasonStockChangeTotalData>() {
+
+
+                @Override
+                public int wirteData(int row, int beginCol, SeasonStockChangeData value, ExportRender render) {
+                    int col = beginCol;
+                    boolean isFloatUnit = value.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT);
+
+
+                    if (isFloatUnit) {
+                        DecimalFormat df = new DecimalFormat(value.getStoreRes().getRes().getUnitGroup().getFloatConvertRateFormat());
+                        df.setGroupingUsed(false);
+                        df.setRoundingMode(RoundingMode.HALF_UP);
+                        render.cell(row, col++, df.format(value.getStoreRes().getFloatConversionRate()) + value.getStoreRes().getRes().getUnitGroup().getName());
+                    }else{
+                        col++;
+
+                    }
+
+                    col = outCount(row, col, value.getBeginCount(), render);
+
+                    for (StockChange.StoreChangeType type : getStoreInTypes()) {
+                        col = outCount(row, col, value.getChangeCountByType(type), render);
+                    }
+
+                    col = outCount(row, col, value.getInCount(), render);
+
+                    for (StockChange.StoreChangeType type : getStoreOutTypes()) {
+                        col = outCount(row, col, value.getChangeCountByType(type), render);
+                    }
+
+                    for (Store store : getAllocationOutStores()) {
+                        col = outCount(row, col, value.getAllocationOutCountByStoreId(store.getId()), render);
+                    }
+
+                    col = outCount(row, col, value.getOutCount(), render);
+
+
+                    col = outCount(row, col, value.getLastCount(), render);
+
+                    col = outCount(row, col, value.getAddCount(), render);
+
+                    col = outCount(row, col, value.getLossCount(), render);
+
+                    col = outCount(row, col, value.getResultCount(), render);
+
+                    return row + 1;
+                }
+
+                @Override
+                public int wirteTotal(int row, int beginCol, SeasonStockChangeTotalData value, TotalDataGroup.GroupKey<?> key, ExportRender render, int childCount) {
+
+                    if (childCount <= 1){
+                        return row;
+                    }
+                    int col = beginCol;
+                    //render.cell(row , col++ , "TOTAL:");
+
+                    if (key instanceof Res){
+                        render.cell(row,beginCol,row,beginCol + 2,messages.get("Total"));
+                        col = col + 3;
+                    }else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey){
+                        if (!value.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                            return row;
+                        }
+                        render.cell(row,beginCol,row,beginCol + 1,messages.get("GroupTotal"));
+                        col = col + 2;
+                    }
+
+                    col = outCount(row, col, value.getBeginCount(), render);
+
+                    for (StockChange.StoreChangeType type : getStoreInTypes()) {
+                        col = outCount(row, col, value.getChangeCountByType(type), render);
+                    }
+
+                    col = outCount(row, col, value.getInCount(), render);
+
+                    for (StockChange.StoreChangeType type : getStoreOutTypes()) {
+                        col = outCount(row, col, value.getChangeCountByType(type), render);
+                    }
+
+                    for (Store store : getAllocationOutStores()) {
+                        col = outCount(row, col, value.getAllocationOutCountByStoreId(store.getId()), render);
+                    }
+
+                    col = outCount(row, col, value.getOutCount(), render);
+
+
+                    col = outCount(row, col, value.getLastCount(), render);
+
+                    col = outCount(row, col, value.getAddCount(), render);
+
+                    col = outCount(row, col, value.getLossCount(), render);
+
+                    col = outCount(row, col, value.getResultCount(), render);
+
+                    return row + 1;
+                }
+
+                @Override
+                public void wirteKey(int row, int col, int toRow, int toCol, TotalDataGroup.GroupKey<?> key, ExportRender render) {
+                    String title;
+
+                    if (key instanceof Res){
+                        title = ((Res) key).getName();
+                    }else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey){
+                        title = ((ResFormatGroupStrategy.StoreResFormatKey) key).getFormatTitle();
+                    }else{
+                        title = "Not Difine";
+                    }
+                    render.cell(row, col, toRow, toCol, title);
+                }
+
+                @Override
+                public int wirteHeader(ExportRender render) {
+
+                    render.cell(0,0,1,2,messages.get("StoreRes"));
+                    render.cell(0,3,1,6,messages.get("SeasonBiginCount"));
+                    int col = 6;
+                    render.cell(0,col + 1,0,col + getStoreInTypes().size() * 4 + 4,messages.get("storeIn"));
+
+                    for (StockChange.StoreChangeType type : getStoreInTypes()) {
+                        render.cell(1,col + 1,1,col + 4,messages.get(type.name()));
+                        col = col + 4;
+                    }
+
+                    render.cell(1,col + 1,1,col +4,messages.get("GroupTotal"));
+                    col = col + 4;
+
+                    render.cell(0,col + 1,0,col + getStoreOutTypes().size() * 4 + getAllocationOutStores().size() * 4 + 4,messages.get("storeOut") );
+                    for (StockChange.StoreChangeType type : getStoreOutTypes()){
+                        render.cell(1,col + 1,1, col + 4,messages.get(type.name()));
+                        col = col + 4;
+                    }
+
+                    for(Store store: getAllocationOutStores()){
+                        render.cell(1,col + 1, 1, col +4,messages.get("AllocationTo") + store.getName());
+                        col = col + 4;
+                    }
+                    render.cell(1,col + 1,1,col +4 ,messages.get("GroupTotal"));
+                    col = col + 4;
+                    render.cell(0,col + 1,1,col +4 ,messages.get("InventoryLastCount"));
+                    col = col + 4;
+                    render.cell(0,col + 1,1,col +4 ,messages.get("STORE_CHECK_ADD"));
+                    col = col + 4;
+                    render.cell(0,col + 1,1,col +4 ,messages.get("STORE_CHECK_LOSS"));
+                    col = col + 4;
+                    render.cell(0,col + 1,1,col +4 ,messages.get("InventoryEndCount"));
+                    col = col + 4;
+                    return 2;
+                }
+
+            }, new ExcelExportRender(inventoryHome.getInstance().getStore().getName() + messages.get("Inventory")), externalContext.getResponseOutputStream());
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ExportIOError");
+            Logging.getLog(getClass()).error("export error", e);
+        }
     }
 
 
@@ -324,7 +502,7 @@ public class InventoryItems {
             for (SeasonStockChangeData value : getSeasonStockChangeDatas().values()) {
                 if (storeResCondition.isMatchStoreRes(value.getStoreRes()) &&
                         ((value.getLastCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
-                                (value.getResultCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0)||
+                                (value.getResultCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
                                 (value.getBeginCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
                                 (!value.getChangeEntrySet().isEmpty()))) {
                     if (!hideZero || ((value.getLastCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
@@ -356,14 +534,14 @@ public class InventoryItems {
             });
         }
 
-         for(TotalDataGroup<Res, SeasonStockChangeData, SeasonStockChangeTotalData> data: resultGroup){
-             TotalDataGroup.sort(data,new Comparator<SeasonStockChangeData>() {
-                 @Override
-                 public int compare(SeasonStockChangeData o1, SeasonStockChangeData o2) {
-                     return o1.getStoreRes().compareTo(o2.getStoreRes());
-                 }
-             });
-         }
+        for (TotalDataGroup<Res, SeasonStockChangeData, SeasonStockChangeTotalData> data : resultGroup) {
+            TotalDataGroup.sort(data, new Comparator<SeasonStockChangeData>() {
+                @Override
+                public int compare(SeasonStockChangeData o1, SeasonStockChangeData o2) {
+                    return o1.getStoreRes().compareTo(o2.getStoreRes());
+                }
+            });
+        }
 
         return resultGroup;
     }

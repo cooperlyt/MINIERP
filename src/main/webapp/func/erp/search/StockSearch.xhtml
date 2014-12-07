@@ -22,6 +22,7 @@
     </h:outputStylesheet>
 
 
+    <h:form id="condition">
     <rich:collapsiblePanel switchType="client">
 
         <f:facet name="headerExpanded">
@@ -35,8 +36,12 @@
             <h:outputText value="#{messages.search_conditions}"/>
 
         </f:facet>
-
-        <h:form id="condition">
+        <div style="clear: both; padding: 3px;float: right;" >
+            <h:commandLink styleClass="norbtn" action="#{stockViewSearchList.export}" >
+                <h:graphicImage style="vertical-align: text-top;" value="/img/download.png"/>
+                #{messages.Export}
+            </h:commandLink>
+        </div>
 
             <div style="padding-left: 5px;font-weight: bold;">
             <a:repeat value="#{stockSearchList.selectStores}" var="_store">
@@ -64,10 +69,17 @@
             </div>
 
 
-        </h:form>
+
     </rich:collapsiblePanel>
+</h:form>
+
+
     <h:form>
-        <br/>
+
+
+
+
+
         <script type="text/javascript"
                 src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
 

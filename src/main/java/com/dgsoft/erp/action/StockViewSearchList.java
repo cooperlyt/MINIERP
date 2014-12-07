@@ -1,21 +1,29 @@
 package com.dgsoft.erp.action;
 
+import com.dgsoft.common.ExcelExportRender;
+import com.dgsoft.common.ExportRender;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.erp.ErpEntityQuery;
-import com.dgsoft.erp.model.Res;
-import com.dgsoft.erp.model.Stock;
-import com.dgsoft.erp.model.Store;
-import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.SaleCount;
 import com.dgsoft.erp.model.api.StockView;
+import com.dgsoft.erp.total.ResFormatGroupStrategy;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -44,6 +52,105 @@ public class StockViewSearchList extends ErpEntityQuery<SaleCount> {
 
     @In(create = true)
     private StockSearchList stockSearchList;
+
+    @In(create = true)
+    private FacesContext facesContext;
+
+    @In(create = true)
+    private FacesMessages facesMessages;
+
+    @In
+    private Map<String, String> messages;
+
+    public void export(){
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/vnd.ms-excel");
+        externalContext.setResponseHeader("Content-Disposition", "attachment;filename=export.xls");
+
+        try {
+            TotalDataGroup.export(getResultGroup(), new ResTotalCount.CountExportStrategy<StockView, StockView.StockTotalCount>() {
+                @Override
+                public int wirteData(int row, int beginCol, StockView value, ExportRender render) {
+                    int col = beginCol;
+                    render.cell(row,col++,value.getStock().getStore().getName());
+                    col = outCount(row,col,value.getStockCount(),render);
+                    col = outCount(row,col,value.getSaleCount(),render);
+                    col = outCount(row,col,value.getCanUseCount(),render);
+                    return row + 1;
+                }
+
+                @Override
+                public int wirteTotal(int row, int beginCol, StockView.StockTotalCount value, TotalDataGroup.GroupKey<?> key, ExportRender render, int childCount) {
+                    if (childCount <= 1){
+                        return row;
+                    }
+                    int col = beginCol;
+                    if (key instanceof Res){
+                        col = col + 3;
+                        render.cell(row,beginCol,row,col,messages.get("Total"));
+                        col ++;
+                    }else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey){
+                        if (!((ResFormatGroupStrategy.StoreResFormatKey) key).getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                           return row;
+                        }
+                        col = col + 2;
+                        render.cell(row,beginCol,row,col,messages.get("GroupTotal"));
+                        col++;
+
+                    }else if (key instanceof StoreRes){
+                        if (stockSearchList.getStoreIds().size() == 1){
+                            return row;
+                        }
+                        render.cell(row,beginCol,row,++col,messages.get("GroupTotal"));
+                        col++;
+                    }else{
+                        return row;
+                    }
+
+                    col = outCount(row,col,value.getStockCount(),render);
+                    col = outCount(row,col,value.getSaleCount(),render);
+                    col = outCount(row,col,value.getCanUseCount(),render);
+
+
+                    return row + 1;
+                }
+
+                @Override
+                public void wirteKey(int row, int col, int toRow, int toCol, TotalDataGroup.GroupKey<?> key, ExportRender render) {
+                    if (key instanceof Res){
+                        render.cell(row,col,toRow,toCol,((Res) key).getName());
+                    }else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey){
+                        render.cell(row,col,toRow,toCol,((ResFormatGroupStrategy.StoreResFormatKey) key).getFormatTitle());
+                    }else if (key instanceof StoreRes){
+
+
+                       if (((StoreRes) key).getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+                           DecimalFormat df = new DecimalFormat(((StoreRes) key).getRes().getUnitGroup().getFloatConvertRateFormat());
+                           df.setGroupingUsed(false);
+                           df.setRoundingMode(RoundingMode.HALF_UP);
+                           render.cell(row,col,toRow,toCol,df.format(((StoreRes) key).getFloatConversionRate()) + ((StoreRes) key).getRes().getUnitGroup().getName());
+                       }
+                    }else{
+                        render.cell(row,col,toRow,toCol,"not Define");
+                    }
+                }
+
+                @Override
+                public int wirteHeader(ExportRender render) {
+                    render.cell(0,0,0,3,messages.get("StoreRes"));
+                    render.cell(0,4,0,7,messages.get("StockCount"));
+                    render.cell(0,8,0,11,messages.get("SaleStockCount"));
+                    render.cell(0,12,0,15,messages.get("StockCanUseCount"));
+                    return 1;
+                }
+            },new ExcelExportRender(messages.get("Stock")), externalContext.getResponseOutputStream());
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ExportIOError");
+            Logging.getLog(getClass()).error("export error", e);
+        }
+    }
 
 
     public List<TotalDataGroup<Res,StockView,StockView.StockTotalCount>> resultGroup;

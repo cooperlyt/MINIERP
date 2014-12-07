@@ -120,22 +120,30 @@ public class TestKnow {
 
     }
 
+    public static int testADD(){
+        int i = 0;
+        return i++;
+    }
+
     public static void main(String[] args){
 
-        List<String> value = new ArrayList<String>();
-        value.add("1");
-        value.add("2");
-        value.add("3");
-        value.add("4");
-        System.out.println(value.toString());
 
-        String s1 = "[1, 2, 3, 4]";
-        String replace = s1.replace("[","");
-        System.out.println(replace);
-        String replace1 = replace.replace("]","");
-        System.out.println(replace1);
-        List<String> myList = new ArrayList<String>(Arrays.asList(replace1.split(",")));
-        System.out.println(myList.toString());
+        System.out.println(testADD());
+
+//        List<String> value = new ArrayList<String>();
+//        value.add("1");
+//        value.add("2");
+//        value.add("3");
+//        value.add("4");
+//        System.out.println(value.toString());
+//
+//        String s1 = "[1, 2, 3, 4]";
+//        String replace = s1.replace("[","");
+//        System.out.println(replace);
+//        String replace1 = replace.replace("]","");
+//        System.out.println(replace1);
+//        List<String> myList = new ArrayList<String>(Arrays.asList(replace1.split(",")));
+//        System.out.println(myList.toString());
 
     }
 

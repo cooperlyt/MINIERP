@@ -54,16 +54,16 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
     }
 
 
-    public List<TotalDataGroup<ProductGroup,StockChangeItem,TotalDataGroup.GroupTotalData>> getProductGroupTotal(){
+    public List<TotalDataGroup<ProductGroup,StockChangeItem,ResCount>> getProductGroupTotal(){
         return TotalDataGroup.groupBy(getResultList(),
-                new TotalGroupStrategy<ProductGroup, StockChangeItem, TotalDataGroup.GroupTotalData>() {
+                new TotalGroupStrategy<ProductGroup, StockChangeItem, ResCount>() {
                     @Override
                     public ProductGroup getKey(StockChangeItem stockChangeItem) {
                         return stockChangeItem.getStockChange().getProductStoreIn().getProductGroup();
                     }
 
                     @Override
-                    public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
+                    public ResCount totalGroupData(Collection<StockChangeItem> datas) {
                         return null;
                     }
                 },
@@ -74,16 +74,16 @@ public class ProductGroupStoreInTotal extends StoreChangeResTotal {
     }
 
 
-    public List<TotalDataGroup<TotalDataGroup.DateKey,StockChangeItem,TotalDataGroup.GroupTotalData>> getDayTotal(){
+    public List<TotalDataGroup<TotalDataGroup.DateKey,StockChangeItem,ResCount>> getDayTotal(){
         return TotalDataGroup.groupBy(getResultList(),
-                    new TotalGroupStrategy<TotalDataGroup.DateKey, StockChangeItem, TotalDataGroup.GroupTotalData>() {
+                    new TotalGroupStrategy<TotalDataGroup.DateKey, StockChangeItem, ResCount>() {
                         @Override
                         public TotalDataGroup.DateKey getKey(StockChangeItem stockChangeItem) {
                             return new TotalDataGroup.DateKey(DataFormat.halfTime(stockChangeItem.getStockChange().getOperDate()));
                         }
 
                         @Override
-                        public TotalDataGroup.GroupTotalData totalGroupData(Collection<StockChangeItem> datas) {
+                        public ResCount totalGroupData(Collection<StockChangeItem> datas) {
                             return null;
                         }
                     },

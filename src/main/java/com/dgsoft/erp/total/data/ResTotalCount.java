@@ -1,6 +1,8 @@
 package com.dgsoft.erp.total.data;
 
 import com.dgsoft.common.DataFormat;
+import com.dgsoft.common.ExportRender;
+import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.model.Res;
 import com.dgsoft.erp.model.ResUnit;
@@ -201,6 +203,28 @@ public class ResTotalCount implements ResCount {
         @Override
         public ResCount totalGroupData(Collection<E> datas) {
             return ResTotalCount.total(datas);
+        }
+    }
+
+
+    public static abstract class CountExportStrategy<E,T extends TotalDataGroup.GroupTotalData> implements TotalDataGroup.TotalDataExportStrategy<E,T>{
+
+        protected int outCount(int row, int col, ResCount count, ExportRender render) {
+            if (count == null) {
+                col = col + 4;
+                return col;
+            }
+            render.cell(row, col++, count.getMasterCount().doubleValue());
+            render.cell(row, col++, count.getRes().getUnitGroup().getMasterUnit().getName());
+
+            if (count.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))
+                render.cell(row, col, count.getAuxCount().doubleValue());
+            col++;
+
+            if (count.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT))
+                render.cell(row, col, count.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
+            col++;
+            return col;
         }
     }
 

@@ -99,7 +99,15 @@
 
         <a:outputPanel rendered="#{customerHome.idDefined}">
 
+
             <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
+
+            <div style="clear: both; padding: 3px;float: right;" >
+                <h:commandLink styleClass="norbtn" action="#{orderResTotalList.export}" >
+                    <h:graphicImage style="vertical-align: text-top;" value="/img/download.png"/>
+                    #{messages.Export}
+                </h:commandLink>
+            </div>
             <s:decorate template="/layout/seam-display.xhtml">
                 <ui:define name="label">#{messages.dateTime}</ui:define>
                 <rich:calendar

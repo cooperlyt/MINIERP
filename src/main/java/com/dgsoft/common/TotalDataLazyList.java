@@ -17,11 +17,11 @@ public class TotalDataLazyList<K extends TotalDataGroup.GroupKey, V, T extends T
 
     private TotalGroupStrategy<K, V, T> topStrategy;
 
-    private  TotalGroupStrategy<?, V, ?>[] subStrategys;
+    private  TotalGroupStrategy<?, V, T>[] subStrategys;
 
     public TotalDataLazyList(Collection<V> values,
                              TotalGroupStrategy<K, V, T> groupStrategy,
-                             TotalGroupStrategy<?, V, ?>... groupStrategys) {
+                             TotalGroupStrategy<?, V, T>... groupStrategys) {
         this.datas = values;
         this.topStrategy = groupStrategy;
         this.subStrategys = groupStrategys;

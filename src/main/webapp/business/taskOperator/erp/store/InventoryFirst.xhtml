@@ -122,9 +122,15 @@
 </rich:toolbar>
 <br/>
 <rich:messages ajaxRendered="true" globalOnly="true"/>
-<br/>
+<div style="padding: 3px;float: right;" >
+    <s:link styleClass="norbtn" action="#{inventoryItems.export}" >
+        <h:graphicImage style="vertical-align: text-top;" value="/img/download.png"/>
+        #{messages.Export}
+    </s:link>
+</div>
 
 <h:form id="conditionsForm">
+
     <h:panelGrid columns="2">
 
 
