@@ -87,14 +87,14 @@ public class StoreResEntity implements Serializable{
 
     public List<Object> getFormatHistorys(String defineId) {
         if (formatHistory == null){
-            this.formatHistory = ResHelper.instance().getFormatHistory(res);
+            this.formatHistory = ResHelper.instance().getFormatHistory(getRes());
         }
         return new ArrayList<Object>(formatHistory.get(defineId));
     }
 
     public List<BigDecimal> getFloatConvertRateHistory() {
-        if ((floatConvertRateHistory == null) && res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(res);
+        if ((floatConvertRateHistory == null) && getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+            this.floatConvertRateHistory = ResHelper.instance().getFloatConvertRateHistory(getRes());
         }
         return floatConvertRateHistory;
     }
