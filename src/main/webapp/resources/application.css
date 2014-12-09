@@ -19,6 +19,9 @@ h1 {
     color: #444;
 }
 
+form {
+    margin-bottom: 0;
+}
 
 table {
     white-space: normal;

@@ -1,0 +1,48 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+    <ui:define name="func-body">
+
+        <h:outputStylesheet library="bootstarp" name="/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="bootstarp" name="/css/bootstrap-theme.css"/>
+        <h:outputScript library="bootstarp" name="/js/bootstrap.min.js"/>
+
+        <div class="bs-docs-section">
+            <h1 class="page-header">任务处理</h1>
+            <img src="Selection_012.png" class="img-responsive" alt="Responsive image"/>
+        </div>
+
+        <div class="bs-docs-section">
+            <h1 class="page-header">出入库
+
+            </h1>
+
+            <p>所有类型的出入库使用上似，以生产出库举例.</p>
+            <img src="Selection_004.png" class="img-responsive" alt="Responsive image"/>
+            <img src="Selection_005.png" class="img-responsive" alt="Responsive image"/>
+
+            <p>如出入库物资规格在系统中未定义（从未出现过），则会出现如下窗口，系统自动生成货品编码，确认后系统会自动添加此货品</p>
+            <img src="Selection_006.png" class="img-responsive" alt="Responsive image"/>
+        </div>
+        <div class="bs-docs-section">
+        <h1 class="page-header">仓库调拨</h1>
+        <img src="Selection_007.png" class="img-responsive" alt="Responsive image"/>
+        <img src="Selection_008.png" class="img-responsive" alt="Responsive image"/>
+        <img src="Selection_009.png" class="img-responsive" alt="Responsive image"/>
+        <img src="Selection_011.png" class="img-responsive" alt="Responsive image"/>
+                            </div>
+
+        <div class="bs-docs-section">
+        <h1 class="page-header">订单出库</h1>
+        <img src="Selection_013.png" class="img-responsive" alt="Responsive image"/>
+        <img src="Selection_014.png" class="img-responsive" alt="Responsive image"/>
+                   </div>
+    </ui:define>
+</ui:composition>
