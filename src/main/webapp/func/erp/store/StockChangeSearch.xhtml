@@ -185,9 +185,9 @@
 
         <rich:column>
             <f:facet name="header">
-                #{messages.order_field_reveiveContact}
+                #{messages.Customer}
             </f:facet>
-            <h:outputText value="#{_change.orderDispatch.needRes.receivePerson}"
+            <h:outputText value="#{_change.orderDispatch.needRes.customerOrder.customer.name}"
                           rendered="#{not empty _change.orderDispatch}"/>
 
         </rich:column>
