@@ -192,9 +192,9 @@
 
         <a:outputPanel id="resultDatas">
 
-            <h:outputText value="#{messages.plase_select_res}" rendered="#{not storeResCondition.resDefined}"/>
+            <h:outputText value="#{messages.plase_select_res}" rendered="#{not resCategoryHome.idDefined}"/>
 
-            <a:outputPanel rendered="#{storeResCondition.resDefined}">
+            <a:outputPanel rendered="#{resCategoryHome.idDefined}">
 
                 <s:decorate template="/layout/erp/InventoryDataTable.xhtml">
                     <ui:param name="tableStyle" value="width: 100%"/>

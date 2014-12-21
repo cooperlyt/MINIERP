@@ -322,6 +322,13 @@
 
 </rich:column>
 
+<rich:column>
+    <f:facet name="header">
+        #{messages.field_memo}
+    </f:facet>
+    #{_item.description}
+</rich:column>
+
 <rich:column style="text-align: center;" width="50px" rendered="#{s:hasRole('erp.finance.cashier')}">
     <a:commandButton image="/img/dtpick.gif" title="#{messages.accountOperChangeDate}" render="dateChangePanel_form"
                      onclick=" if  ( #{not (empty _item.saleCertificate)} ){alert('#{messages.isInAccount}');return false;}"

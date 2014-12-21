@@ -18,14 +18,14 @@
 		<transition to="出库完成(1库)"></transition>
 	</task-node>
 
-	<task-node name="订单出库(2库)">
-		<task name="订单出库(2库)">
+	<task-node name="订单出库(2管材库)">
+		<task name="订单出库(2厂管材库)">
 			<description>
 				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;B&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
 			</description>
 			<assignment pooled-actors="#{storeHome.getStoreRole('B')}"></assignment>
 		</task>
-		<transition to="出库完成(2库)"></transition>
+		<transition to="出库完成(2管材库)"></transition>
 	</task-node>
 
 	<task-node name="订单出库(天津)">
@@ -44,9 +44,10 @@
 
 	<fork name="fork2">
 		<transition to="出库判断(1库)" name="出库(1库)"></transition>
-		<transition to="出库判断(2库)" name="出库(2库)"></transition>
+		<transition to="出库判断(2管材库)" name="出库(2管材库)"></transition>
 		<transition to="出库判断(天津)" name="出库(天冿)"></transition>
 		<transition to="出库判断(公司)" name="出库(公司)"></transition>
+		<transition to="出库判断(2分水器)" name="出库(2分水器)"></transition>
 	</fork>
 
 	<decision name="出库判断(1库)">
@@ -68,11 +69,11 @@
 		<transition to="fork2"></transition>
 	</task-node>
 
-	<decision name="出库判断(2库)">
-		<transition to="订单出库(2库)" name="出库">
+	<decision name="出库判断(2管材库)">
+		<transition to="订单出库(2管材库)" name="出库">
 			<condition expression="#{orderHome.lastNeedRes.needStoreOut('B')}"></condition>
 		</transition>
-		<transition to="出库完成(2库)">
+		<transition to="出库完成(2管材库)">
 			<condition expression="#{not orderHome.lastNeedRes.needStoreOut('B')}"></condition>
 		</transition>
 	</decision>
@@ -90,7 +91,7 @@
 		<transition to="join3"></transition>
 	</node>
 
-	<node name="出库完成(2库)">
+	<node name="出库完成(2管材库)">
 		<transition to="join3"></transition>
 	</node>
 
@@ -161,6 +162,29 @@
 	<state name="等待付款">
 		<transition to="调度判断"></transition>
 	</state>
+
+	<decision name="出库判断(2分水器)">
+		<transition to="订单出库(2分水器)" name="2分水器出库">
+			<condition expression="#{orderHome.lastNeedRes.needStoreOut('5')}"></condition>
+		</transition>
+		<transition to="出库完成(2分水器)" name="2分水器无出库">
+			<condition expression="#{not orderHome.lastNeedRes.needStoreOut('5')}"></condition>
+		</transition>
+	</decision>
+
+	<task-node name="订单出库(2分水器)">
+		<task name="订单出库(2厂分水器库)">
+			<description>
+				{&quot;businessName&quot;:&quot;销售订单&quot;,&quot;businessKey&quot;:&quot;#{orderHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderHome.instance.customer.customerArea.name}&quot;],&quot;description&quot;:&quot;#{orderHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;5&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/SaleStoreOut.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('5')}"></assignment>
+		</task>
+		<transition to="出库完成(2分水器)"></transition>
+	</task-node>
+
+	<node name="出库完成(2分水器)">
+		<transition to="join3"></transition>
+	</node>
 
 
 	<end-state name="订单完成"></end-state>

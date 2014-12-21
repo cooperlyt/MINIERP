@@ -63,24 +63,27 @@ public class ExcelExportRender implements ExportRender {
                 result.setVerticalAlignment(HSSFCellStyle.ALIGN_CENTER);
                 Font font = workbook.createFont();
                 //font.setBoldweight((short) (10 - level));
-                result.setFont(font);
+
                 if (type.equals(Type.FOOTER)){
-                    Logging.getLog(getClass()).debug("setBackground level:" + level);
+                    //Logging.getLog(getClass()).debug("setBackground level:" + level);
                     switch (level) {
                         case 0:
-                            result.setFillBackgroundColor(HSSFColor.GREY_50_PERCENT.index);
+                            font.setColor(HSSFColor.GREY_50_PERCENT.index);
+                            //result.setFillBackgroundColor(HSSFColor.GREY_50_PERCENT.index);
                             break;
                         case 1:
-                            result.setFillBackgroundColor(HSSFColor.GREY_40_PERCENT.index);
+                            font.setColor(HSSFColor.GREY_40_PERCENT.index);
+                            //result.setFillBackgroundColor(HSSFColor.GREY_40_PERCENT.index);
                             break;
                         default:
-                            result.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
+                            font.setColor(HSSFColor.GREY_25_PERCENT.index);
+                            //result.setFillBackgroundColor(HSSFColor.GREY_25_PERCENT.index);
                             break;
 
                     }
-                    result.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                    //result.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
                 }
-
+                result.setFont(font);
             }
 
 
