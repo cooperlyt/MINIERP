@@ -243,10 +243,10 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
 
     @Transient
     @Deprecated
-    public Stock getStock(Store store){
-        for (Stock stock: getStocks()){
-            if (stock.getStore().getId().equals(store.getId())){
-                 return stock;
+    public Stock getStock(Store store) {
+        for (Stock stock : getStocks()) {
+            if (stock.getStore().getId().equals(store.getId())) {
+                return stock;
             }
         }
         return null;
@@ -255,7 +255,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     @Transient
     public List<StockView> getVaildStockList() {
 
-       return ((StockSearchList)Component.getInstance(StockSearchList.class,true)).searchStockViews(this);
+        return ((StockSearchList) Component.getInstance(StockSearchList.class, true)).searchStockViews(this);
 
 
     }
@@ -263,7 +263,7 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     @Transient
     public StockView getStockByStore(Store store) {
 
-        return ((StockSearchList)Component.getInstance(StockSearchList.class,true)).searchStockViews(store,this);
+        return ((StockSearchList) Component.getInstance(StockSearchList.class, true)).searchStockViews(store, this);
 
 
     }
@@ -351,23 +351,20 @@ public class StoreRes implements NamedEntity, java.io.Serializable, Comparable<S
     @Override
     @Transient
     public int compareTo(StoreRes o) {
-        int result = getRes().compareTo(o.getRes());
-        if (result == 0) {
-            if(UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(getRes().getUnitGroup().getType())){
-                return getFloatConversionRate().compareTo(o.getFloatConversionRate());
-            }
-
-            if ((o.getId() == null) || (getId() == null)){
-                if ((o.getName() == null) || (getName() == null)){
-                    return 0;
-                }else{
-                    return getName().compareTo(o.getName());
-                }
-            }else{
-                result = o.getId().compareTo(getId());
-            }
-
+        if ((o.getId() == null) || (getId() == null)) {
+            return 0;
         }
+        int result = getRes().compareTo(o.getRes());
+        if (result == 0)
+
+
+                if ( UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(getRes().getUnitGroup().getType())){
+                    return getFloatConversionRate().compareTo(o.getFloatConversionRate());
+                }else{
+                    return getId().compareTo(o.getId());
+                }
+
+
         return result;
     }
 

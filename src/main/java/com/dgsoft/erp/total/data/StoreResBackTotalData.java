@@ -1,5 +1,8 @@
 package com.dgsoft.erp.total.data;
 
+import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.api.StoreResCount;
+
 import java.math.BigDecimal;
 
 /**
@@ -7,42 +10,27 @@ import java.math.BigDecimal;
  */
 public class StoreResBackTotalData {
 
-    private String storeResId;
-
-    //private String unitId;
+    private StoreRes storeRes;
 
     private BigDecimal count;
 
     private BigDecimal money;
 
-    public StoreResBackTotalData(String storeResId,BigDecimal count, BigDecimal money) {
-        this.storeResId = storeResId;
+    public StoreResBackTotalData(StoreRes storeRes,BigDecimal count, BigDecimal money) {
+        this.storeRes = storeRes;
         this.count = count;
         this.money = money;
     }
 
-    public String getStoreResId() {
-        return storeResId;
-    }
-
-    public void setStoreResId(String storeResId) {
-        this.storeResId = storeResId;
-    }
-
-
-    public BigDecimal getCount() {
-        return count;
-    }
-
-    public void setCount(BigDecimal count) {
-        this.count = count;
+    public StoreRes getStoreRes() {
+        return storeRes;
     }
 
     public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public ResCount getResCount(){
+        return new StoreResCount(storeRes,count);
     }
 }

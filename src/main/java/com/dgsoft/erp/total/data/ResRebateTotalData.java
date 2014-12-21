@@ -1,5 +1,7 @@
 package com.dgsoft.erp.total.data;
 
+import com.dgsoft.erp.model.Res;
+
 import java.math.BigDecimal;
 
 /**
@@ -7,24 +9,24 @@ import java.math.BigDecimal;
  */
 public class ResRebateTotalData {
 
-    private String resId;
+    private Res res;
 
     private BigDecimal count;
 
     private BigDecimal money;
 
-    public ResRebateTotalData(String resId, BigDecimal count, BigDecimal money) {
-        this.resId = resId;
+    public ResRebateTotalData(Res res, BigDecimal count, BigDecimal money) {
+        this.res = res;
         this.count = count;
         this.money = money;
     }
 
-    public String getResId() {
-        return resId;
+    public Res getRes() {
+        return res;
     }
 
-    public void setResId(String resId) {
-        this.resId = resId;
+    public void setRes(Res res) {
+        this.res = res;
     }
 
     public BigDecimal getCount() {

@@ -1,5 +1,9 @@
 package com.dgsoft.erp.total.data;
 
+import com.dgsoft.erp.model.StoreRes;
+import com.dgsoft.erp.model.UnitGroup;
+import com.dgsoft.erp.model.api.StoreResCount;
+
 import java.math.BigDecimal;
 
 /**
@@ -7,11 +11,9 @@ import java.math.BigDecimal;
  */
 public class StoreResSaleTotalData {
 
-    private String storeResId;
+    private StoreRes storeRes;
 
     private BigDecimal count;
-
-    //private String unitId;
 
     private Double avgMoney;
 
@@ -19,8 +21,8 @@ public class StoreResSaleTotalData {
 
     private BigDecimal needCount;
 
-    public StoreResSaleTotalData(String storeResId, BigDecimal count, Double avgMoney, BigDecimal money, BigDecimal needCount) {
-        this.storeResId = storeResId;
+    public StoreResSaleTotalData(StoreRes storeRes, BigDecimal count, Double avgMoney, BigDecimal money, BigDecimal needCount) {
+        this.storeRes = storeRes;
         this.count = count;
        // this.unitId = unitId;
         this.avgMoney = avgMoney;
@@ -28,44 +30,37 @@ public class StoreResSaleTotalData {
         this.needCount = needCount;
     }
 
-    public String getStoreResId() {
-        return storeResId;
+    public StoreRes getStoreRes() {
+        return storeRes;
     }
 
-    public void setStoreResId(String storeResId) {
-        this.storeResId = storeResId;
+    public ResCount getResCount(){
+        return new StoreResCount(storeRes,count);
     }
-
-    public BigDecimal getCount() {
-        return count;
-    }
-
-    public void setCount(BigDecimal count) {
-        this.count = count;
-    }
-
 
     public Double getAvgMoney() {
         return avgMoney;
-    }
-
-    public void setAvgMoney(Double avgMoney) {
-        this.avgMoney = avgMoney;
     }
 
     public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
     public BigDecimal getNeedCount() {
+        if ((needCount == null) && storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            return getResCount().getAuxCount();
+        }
         return needCount;
     }
 
     public void setNeedCount(BigDecimal needCount) {
         this.needCount = needCount;
+    }
+
+    public BigDecimal getAddCount(){
+        if(storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
+            return getNeedCount().subtract(getResCount().getAuxCount());
+        }
+        return null;
     }
 }
