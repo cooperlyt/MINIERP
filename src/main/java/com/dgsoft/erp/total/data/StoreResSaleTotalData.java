@@ -1,5 +1,6 @@
 package com.dgsoft.erp.total.data;
 
+import com.dgsoft.erp.model.ResUnit;
 import com.dgsoft.erp.model.StoreRes;
 import com.dgsoft.erp.model.UnitGroup;
 import com.dgsoft.erp.model.api.StoreResCount;
@@ -21,13 +22,22 @@ public class StoreResSaleTotalData {
 
     private BigDecimal needCount;
 
-    public StoreResSaleTotalData(StoreRes storeRes, BigDecimal count, Double avgMoney, BigDecimal money, BigDecimal needCount) {
+    private BigDecimal needMoney;
+
+
+    public StoreResSaleTotalData(StoreRes storeRes, BigDecimal count, Double avgMoney, BigDecimal money, BigDecimal needCount,BigDecimal needMoney) {
         this.storeRes = storeRes;
         this.count = count;
        // this.unitId = unitId;
+
         this.avgMoney = avgMoney;
         this.money = money;
         this.needCount = needCount;
+        this.needMoney = needMoney;
+    }
+
+    public BigDecimal getNeedMoney() {
+        return needMoney;
     }
 
     public StoreRes getStoreRes() {

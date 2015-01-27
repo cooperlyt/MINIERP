@@ -26,8 +26,8 @@
         </a:outputPanel>
     </rich:column>
 
-      <c:if test="#{inventoryItems.showInOutCount}">
-    <c:forEach items="#{inventoryItems.storeInTypes}" var="_type">
+      <c:if test="#{inventoryItemsBean.showInOutCount}">
+    <c:forEach items="#{inventoryItemsBean.storeInTypes}" var="_type">
         <rich:column style="#{columnStyle}">
             <a:outputPanel rendered="#{not empty data.getChangeCountByType(_type)}">
                 <h:outputText value="#{data.getChangeCountByType(_type).masterCount}">
@@ -48,14 +48,14 @@
         </rich:column>
     </c:forEach>
 
-    <rich:column style="#{columnStyle}" rendered="#{not empty inventoryItems.storeInTypes}">
+    <rich:column style="#{columnStyle}" rendered="#{not empty inventoryItemsBean.storeInTypes}">
         <h:outputText value="#{data.inCount.masterCount}">
             <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
         </h:outputText>
         <h:outputText value="#{res.unitGroup.masterUnit.name}" style="float: right;"/>
     </rich:column>
 
-    <rich:column style="#{columnStyle}" rendered="#{not empty inventoryItems.storeInTypes}">
+    <rich:column style="#{columnStyle}" rendered="#{not empty inventoryItemsBean.storeInTypes}">
         <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
             <h:outputText value="#{data.inCount.auxCount}">
                 <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
@@ -65,7 +65,7 @@
     </rich:column>
 
 
-    <c:forEach items="#{inventoryItems.storeOutTypes}" var="_type">
+    <c:forEach items="#{inventoryItemsBean.storeOutTypes}" var="_type">
         <rich:column style="#{columnStyle}">
             <a:outputPanel rendered="#{not empty data.getChangeCountByType(_type)}">
                 <h:outputText value="#{data.getChangeCountByType(_type).masterCount}">
@@ -86,7 +86,7 @@
         </rich:column>
     </c:forEach>
 
-    <c:forEach items="#{inventoryItems.allocationOutStores}" var="_store">
+    <c:forEach items="#{inventoryItemsBean.allocationOutStores}" var="_store">
         <rich:column style="#{columnStyle}">
             <a:outputPanel rendered="#{not empty data.getAllocationOutCountByStoreId(_store.id)}">
                 <h:outputText value="#{data.getAllocationOutCountByStoreId(_store.id).masterCount}">
@@ -109,7 +109,7 @@
 
 
     <rich:column style="#{columnStyle}" 
-            rendered="#{(not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores)}">
+            rendered="#{(not empty inventoryItemsBean.storeOutTypes) or (not empty inventoryItemsBean.allocationOutStores)}">
         <h:outputText value="#{data.outCount.masterCount}">
             <f:convertNumber pattern="#{res.unitGroup.masterUnit.countFormate}"/>
         </h:outputText>
@@ -117,7 +117,7 @@
     </rich:column>
 
     <rich:column style="#{columnStyle}"
-            rendered="#{(not empty inventoryItems.storeOutTypes) or (not empty inventoryItems.allocationOutStores)}">
+            rendered="#{(not empty inventoryItemsBean.storeOutTypes) or (not empty inventoryItemsBean.allocationOutStores)}">
         <a:outputPanel rendered="#{res.unitGroup.type eq 'FLOAT_CONVERT'}">
             <h:outputText value="#{data.outCount.auxCount}">
                 <f:convertNumber pattern="#{res.unitGroup.floatAuxiliaryUnit.countFormate}"/>

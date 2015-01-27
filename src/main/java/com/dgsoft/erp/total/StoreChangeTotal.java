@@ -3,12 +3,22 @@ package com.dgsoft.erp.total;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.TotalGroupStrategy;
 import com.dgsoft.erp.ErpEntityQuery;
+import com.dgsoft.erp.action.InventoryItemList;
+import com.dgsoft.erp.action.InventoryItems;
+import com.dgsoft.erp.action.StockStoreResList;
 import com.dgsoft.erp.model.*;
+import com.dgsoft.erp.model.api.AllocationOutGroup;
+import com.dgsoft.erp.model.api.StockChangeGroup;
 import com.dgsoft.erp.model.api.StoreResCount;
 import com.dgsoft.erp.model.api.StoreResCountEntity;
+import com.dgsoft.erp.total.data.ResCount;
+import com.dgsoft.erp.total.data.ResTotalCount;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.framework.EntityQuery;
 import org.jboss.seam.log.Logging;
 
+import javax.persistence.NoResultException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -16,347 +26,373 @@ import java.util.*;
  * Created by cooper on 6/19/14.
  */
 @Name("storeChangeTotal")
-public class StoreChangeTotal extends ErpEntityQuery<StockChangeItem> {
+public class StoreChangeTotal extends ErpEntityQuery<StockChangeGroup> {
 
-    private static final String EJBQL = "select item from StockChangeItem item  left join fetch item.storeRes storeRes " +
-            " left join fetch storeRes.res res left join fetch res.unitGroup unitGroup " +
-            " left join fetch item.stockChange storeChange where item.stockChange.verify = true";
+    private static final String EJBQL = "select new com.dgsoft.erp.model.api.StockChangeGroup(item.storeRes.id,item.stockChange.operType,sum(item.count)) from StockChangeItem item";
 
 
     private static final String[] RESTRICTIONS = {
-            "item.stockChange.operDate >= #{searchDateArea.dateFrom}",
+            "item.stockChange.operDate > #{storeChangeTotal.dateFrom}",
             "item.stockChange.operDate <= #{searchDateArea.searchDateTo}",
-            "item.stockChange.store.id = #{storeChangeTotal.storeId}",
+            "item.stockChange.store.id = #{stockStoreResList.storeId}",
             "item.storeRes.res.resCategory.id in (#{storeResCondition.searchResCategoryIds})",
             "item.storeRes.res.id = #{storeResCondition.searchResId}",
             "item.storeRes.floatConversionRate = #{storeResCondition.searchFloatConvertRate}",
             "item.storeRes.id in (#{storeResCondition.matchStoreResIds})"};
 
 
+    @In(create = true)
+    private StockStoreResList stockStoreResList;
+
+
+    @In(create = true)
+    private InventoryItemList inventoryItemList;
+
+    @In(create = true)
+    private EntityQuery<Store> allStoreList;
+
+    @In(create = true)
+    private StoreAllocationTotal storeAllocationTotal;
+
+    private List<StockChange.StoreChangeType> storeInTypes;
+
+    private List<StockChange.StoreChangeType> storeOutTypes;
+
+    private List<Store> allocationOutStores;
+
+    private boolean showInOutCount = true;
+
+    private boolean hideZero = false;
+
+    public boolean isHideZero() {
+        return hideZero;
+    }
+
+    public void setHideZero(boolean hideZero) {
+        this.hideZero = hideZero;
+    }
+
+    public boolean isShowInOutCount() {
+        return showInOutCount;
+    }
+
+    public void setShowInOutCount(boolean showInOutCount) {
+        this.showInOutCount = showInOutCount;
+    }
+
+    public List<StockChange.StoreChangeType> getStoreInTypes() {
+        if (storeInTypes == null) {
+            Set<StockChange.StoreChangeType> result = new HashSet<StockChange.StoreChangeType>();
+            for (StockChange.StoreChangeType type : StockChange.StoreChangeType.getAllIn()) {
+                for (SeasonStockChangeData data : getTotalResult()) {
+                    if (data.typeInChange(type)) {
+                        result.add(type);
+                        break;
+                    }
+                }
+            }
+            storeInTypes = new ArrayList<StockChange.StoreChangeType>(result);
+            Collections.sort(storeInTypes);
+        }
+        return storeInTypes;
+    }
+
+    public List<StockChange.StoreChangeType> getStoreOutTypes() {
+        if (storeOutTypes == null) {
+
+            Set<StockChange.StoreChangeType> result = new HashSet<StockChange.StoreChangeType>();
+            for (StockChange.StoreChangeType type : StockChange.StoreChangeType.getAllOut()) {
+                if (!StockChange.StoreChangeType.ALLOCATION_OUT.equals(type))
+                    for (SeasonStockChangeData data : getTotalResult()) {
+                        if (data.typeInChange(type)) {
+                            result.add(type);
+                            break;
+                        }
+                    }
+            }
+            storeOutTypes = new ArrayList<StockChange.StoreChangeType>(result);
+            Collections.sort(storeOutTypes);
+        }
+        return storeOutTypes;
+    }
+
+    public List<Store> getAllocationOutStores() {
+        if (allocationOutStores == null) {
+            allocationOutStores = new ArrayList<Store>();
+            for (Store store : allStoreList.getResultList()) {
+                for (SeasonStockChangeData data : getTotalResult()) {
+                    if (data.storeInChange(store.getId())) {
+                        allocationOutStores.add(store);
+                        break;
+                    }
+                }
+            }
+            Collections.sort(allocationOutStores);
+        }
+        return allocationOutStores;
+    }
+
+    public StockChange.StoreChangeType getFirstInType() {
+        if (getStoreInTypes().isEmpty()) {
+            return null;
+        } else {
+            return getStoreInTypes().get(0);
+        }
+    }
+
+    public StockChange.StoreChangeType getFirstOutType() {
+        if (getStoreOutTypes().isEmpty()) {
+            return null;
+        } else {
+            return getStoreOutTypes().get(0);
+        }
+    }
+
+    public boolean isFirstStore(String storeId) {
+        if (getAllocationOutStores().isEmpty()) {
+            return false;
+        }
+        return getAllocationOutStores().get(0).getId().equals(storeId);
+    }
+
     public StoreChangeTotal() {
         super();
         setEjbql(EJBQL);
+        setGroupBy("item.storeRes.id,item.stockChange.operType");
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
     }
 
-    private boolean accountModel = false;
+    private Inventory lastInventory;
 
-    private String storeId;
-
-    public String getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(String storeId) {
-        Logging.getLog(getClass()).debug("setStoreId:" + storeId);
-        this.storeId = storeId;
-    }
-
-    public boolean isAccountModel() {
-        return accountModel;
-    }
-
-    public void setAccountModel(boolean accountModel) {
-        this.accountModel = accountModel;
-    }
-
-    private Map<String, TotalChangeDataItem> totalResult;
-
-    private void initTotalResult() {
-        if (totalResult == null) {
-            getResultList();
-            totalResult = new HashMap<String, TotalChangeDataItem>();
-            for (StockChangeItem item : getResultList()) {
-                TotalChangeDataItem data = totalResult.get(item.getStoreRes().getId());
-                if (data == null) {
-                    data = new TotalChangeDataItem(item.getStoreRes());
-                    totalResult.put(data.getStoreRes().getId(), data);
-                }
-
-                if (item.getStockChange().getOperType().equals(StockChange.StoreChangeType.ALLOCATION_OUT)) {
-                    data.putChange(item.getStockChange().getAllocation().getInStore().getId(), item);
-                } else {
-                    data.putChange(item.getStockChange().getOperType(), item);
-                }
+    public Inventory getLastInventory() {
+        if (lastInventory == null) {
+            try {
+                lastInventory = getEntityManager().createQuery("select inventory from Inventory inventory where inventory.checkDate = :checkDate and inventory.store.id = :storeId", Inventory.class)
+                        .setParameter("checkDate", getDateFrom()).setParameter("storeId", getStoreId()).getSingleResult();
+            } catch (NoResultException e) {
+                Logging.getLog(getClass()).debug("lastInventory not found");
+                lastInventory = new Inventory();
             }
         }
+        return lastInventory;
     }
 
-    public List<TotalChangeDataItem> getTotalResultList() {
-        if (isAnyParameterDirty()) {
-            refresh();
+    private Date dateFrom;
+
+    public Date getDateFrom() {
+        if (dateFrom == null) {
+            try {
+                dateFrom = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where (inventory.type = 'YEAR_INVENTORY' or inventory.type = 'MONTH_INVENTORY') and inventory.store.id = :storeId", Date.class).
+                        setParameter("storeId", getStoreId()).getSingleResult();
+            } catch (NoResultException e) {
+                dateFrom = new Date(0);
+            }
         }
-        initTotalResult();
-        List<TotalChangeDataItem> result = new ArrayList<TotalChangeDataItem>(totalResult.values());
-        Collections.sort(result, new Comparator<TotalChangeDataItem>() {
+        return dateFrom;
+
+    }
+
+    public List<TotalDataGroup<Res, SeasonStockChangeData, SeasonStockTotalData>> getResultGroup() {
+
+
+
+        List<TotalDataGroup<Res, SeasonStockChangeData, SeasonStockTotalData>> resultGroup = TotalDataGroup.groupBy(getTotalResult(), new TotalGroupStrategy<Res, SeasonStockChangeData, SeasonStockTotalData>() {
             @Override
-            public int compare(TotalChangeDataItem o1, TotalChangeDataItem o2) {
-                return o1.getStoreRes().compareTo(o2.getStoreRes());
+            public Res getKey(SeasonStockChangeData seasonStockChangeData) {
+                return seasonStockChangeData.getStoreRes().getRes();
+            }
+
+            @Override
+            public SeasonStockTotalData totalGroupData(Collection<SeasonStockChangeData> datas) {
+                return totalData(datas);
+            }
+        }, new TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, SeasonStockChangeData, SeasonStockTotalData>() {
+            @Override
+            public ResFormatGroupStrategy.StoreResFormatKey getKey(SeasonStockChangeData seasonStockChangeData) {
+                return new ResFormatGroupStrategy.StoreResFormatKey(seasonStockChangeData.getStoreRes());
+            }
+
+            @Override
+            public SeasonStockTotalData totalGroupData(Collection<SeasonStockChangeData> datas) {
+                return totalData(datas);
             }
         });
+
+
+        for (TotalDataGroup<Res, SeasonStockChangeData, SeasonStockTotalData> data : resultGroup) {
+            TotalDataGroup.sort(data, new Comparator<SeasonStockChangeData>() {
+                @Override
+                public int compare(SeasonStockChangeData o1, SeasonStockChangeData o2) {
+                    return o1.getStoreRes().compareTo(o2.getStoreRes());
+                }
+            });
+        }
+
+        return resultGroup;
+    }
+
+    private static SeasonStockTotalData totalData(Collection<SeasonStockChangeData> datas) {
+        SeasonStockTotalData result = null;
+
+        for (SeasonStockChangeData data : datas) {
+            if (result == null) {
+                result = new SeasonStockTotalData(data.getRes());
+
+            }
+
+            result.putBeginCount(data.getBeginCount());
+
+            for (Map.Entry<StockChange.StoreChangeType, ResCount> entry : data.getChangeEntrySet()) {
+                result.putChange(entry.getKey(), entry.getValue());
+            }
+            for (Map.Entry<Store, ResCount> entry : data.getAllocationOutEntrySet()) {
+                result.putAllocationOutChange(entry.getKey(), entry.getValue());
+            }
+
+        }
         return result;
     }
 
+    private List<SeasonStockChangeData> totalResult;
 
-    public List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey, TotalChangeDataItem,FormatGroupTotalData>> getTotalResultGroup() {
-        if (isAnyParameterDirty()) {
-            refresh();
-        }
-        initTotalResult();
+    private List<SeasonStockChangeData> getTotalResult() {
+        if (totalResult == null) {
 
-        return TotalDataGroup.groupBy(totalResult.values(), new TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, TotalChangeDataItem, FormatGroupTotalData>() {
-            @Override
-            public ResFormatGroupStrategy.StoreResFormatKey getKey(TotalChangeDataItem totalChangeDataItem) {
-                return new ResFormatGroupStrategy.StoreResFormatKey(totalChangeDataItem.getStoreRes());
+            Map<String, SeasonStockChangeData> resultMap = new HashMap<String, SeasonStockChangeData>();
+            Map<StoreRes, InventoryItem> inventoryItemMap = null;
+
+            if (getLastInventory().getId() != null) {
+                inventoryItemList.setInventoryId(getLastInventory().getId());
+
+                inventoryItemMap = inventoryItemList.getStoreResMap();
             }
 
-            @Override
-            public FormatGroupTotalData totalGroupData(Collection<TotalChangeDataItem> datas) {
-                FormatGroupTotalData result = null;
-                for (TotalChangeDataItem item : datas) {
-                    if (result == null) {
-                        result = new FormatGroupTotalData(item.getStoreRes().getRes());
-                    }
-                    result.add(item);
+
+            Logging.getLog(getClass()).debug("stock Count:" + stockStoreResList.getResultList().size() + "-" + stockStoreResList.getStoreId());
+            for (Stock stock : stockStoreResList.getResultList()) {
+                InventoryItem item = null;
+                if (inventoryItemMap != null) {
+                    item = inventoryItemMap.get(stock.getStoreRes());
                 }
-                return result;
-            }
-        });
+                if (item == null) {
+                    resultMap.put(stock.getStoreRes().getId(), new SeasonStockChangeData(stock));
+                } else {
+                    resultMap.put(stock.getStoreRes().getId(), new SeasonStockChangeData(item));
+                }
 
+            }
+
+
+            for (StockChangeGroup data : getResultList()) {
+                SeasonStockChangeData stcd = resultMap.get(data.getStoreResId());
+                stcd.putChange(data.getType(), new StoreResCount(stcd.getStoreRes(), data.getMastCount()));
+            }
+
+            for (AllocationOutGroup aog : storeAllocationTotal.getResultList()) {
+                SeasonStockChangeData stcd = resultMap.get(aog.getStoreResId());
+                stcd.putAllocationOutChange(aog.getStore(), new StoreResCount(stcd.getStoreRes(), aog.getMastCount()));
+
+            }
+
+            totalResult = new ArrayList<SeasonStockChangeData>(resultMap.values());
+        }
+        return totalResult;
     }
+
+
+    private String getStoreId() {
+        return stockStoreResList.getStoreId();
+    }
+
 
     @Override
     public void refresh() {
         super.refresh();
         totalResult = null;
+        lastInventory = null;
+        dateFrom = null;
     }
 
 
-    public static class FormatGroupTotalData implements TotalDataGroup.GroupTotalData{
+    public static class SeasonStockTotalData extends InventoryItems.SeasonStockChangeDataCalc implements TotalDataGroup.GroupTotalData {
 
         private Res res;
 
-        private Map<StockChange.StoreChangeType, BigDecimal> masterCount;
+        private ResCount beginCount;
 
-        private Map<StockChange.StoreChangeType, BigDecimal> auxCount;
-
-        private Map<String, BigDecimal> allocationMasterCount;
-
-        private Map<String, BigDecimal> allocationAuxCount;
-
-        public FormatGroupTotalData(Res res) {
+        public SeasonStockTotalData(Res res) {
             this.res = res;
-            masterCount = new HashMap<StockChange.StoreChangeType, BigDecimal>();
-            allocationMasterCount = new HashMap<String, BigDecimal>();
-            if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                auxCount = new HashMap<StockChange.StoreChangeType, BigDecimal>();
-                allocationAuxCount = new HashMap<String, BigDecimal>();
-            }
+            beginCount = ResTotalCount.ZERO(res);
         }
 
-        public void add(TotalChangeDataItem item) {
-
-            BigDecimal count;
-            for (StockChange.StoreChangeType type : item.getChangeCount().keySet()) {
-
-                count = masterCount.get(type);
-
-                masterCount.put(type, item.getChangeCount().get(type).getMasterCount().add(count == null ? BigDecimal.ZERO : count));
-
-                if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                    count = auxCount.get(type);
-                    auxCount.put(type, item.getChangeCount().get(type).getAuxCount().add(count == null ? BigDecimal.ZERO : count));
-                }
-            }
-            for (String storeId : item.getAllocationOutCount().keySet()) {
-                count = allocationMasterCount.get(storeId);
-
-                allocationMasterCount.put(storeId, item.getAllocationOutCount().get(storeId).getMasterCount().add(count == null ? BigDecimal.ZERO : count));
-
-                if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                    count = allocationAuxCount.get(storeId);
-                    allocationAuxCount.put(storeId, item.getAllocationOutCount().get(storeId).getAuxCount().add(count == null ? BigDecimal.ZERO : count));
-                }
-            }
-
+        public void putBeginCount(ResCount resCount) {
+            beginCount = beginCount.add(resCount);
         }
 
+        @Override
+        public ResCount getBeginCount() {
+            return beginCount;
+        }
 
+        @Override
+        public ResCount getAddCount() {
+            return ResTotalCount.ZERO(res);
+        }
+
+        @Override
+        public ResCount getLossCount() {
+            return ResTotalCount.ZERO(res);
+        }
+
+        @Override
         public Res getRes() {
             return res;
         }
-
-        public Map<StockChange.StoreChangeType, BigDecimal> getMasterCount() {
-            return masterCount;
-        }
-
-        public Map<StockChange.StoreChangeType, BigDecimal> getAuxCount() {
-            return auxCount;
-        }
-
-        public Map<String, BigDecimal> getAllocationMasterCount() {
-            return allocationMasterCount;
-        }
-
-        public Map<String, BigDecimal> getAllocationAuxCount() {
-            return allocationAuxCount;
-        }
-
-        public BigDecimal getInMasterCountTotal() {
-            BigDecimal result = BigDecimal.ZERO;
-            for (StockChange.StoreChangeType type : masterCount.keySet()) {
-                if (!type.isOut()) {
-                    result = result.add(masterCount.get(type));
-                }
-            }
-            return result;
-        }
-
-
-        public BigDecimal getOutMasterCountTotal() {
-            BigDecimal result = BigDecimal.ZERO;
-            for (StockChange.StoreChangeType type : masterCount.keySet()) {
-                if (type.isOut()) {
-                    result = result.add(masterCount.get(type));
-                }
-            }
-            for (BigDecimal count : allocationMasterCount.values()) {
-                result = result.add(count);
-            }
-
-            return result;
-        }
-
-        public BigDecimal getInAuxCountTotal() {
-            if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                return null;
-            }
-
-            BigDecimal result = BigDecimal.ZERO;
-            for (StockChange.StoreChangeType type : auxCount.keySet()) {
-                if (!type.isOut()) {
-                    result = result.add(auxCount.get(type));
-                }
-            }
-            return result;
-        }
-
-
-        public BigDecimal getOutAuxCountTotal() {
-            if (!res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                return null;
-            }
-            BigDecimal result = BigDecimal.ZERO;
-            for (StockChange.StoreChangeType type : auxCount.keySet()) {
-                if (type.isOut()) {
-                    result = result.add(auxCount.get(type));
-                }
-            }
-            for (BigDecimal count : allocationAuxCount.values()) {
-                result = result.add(count);
-            }
-
-            return result;
-        }
-
-
     }
 
-    public static class TotalChangeDataItem {
+    public static class SeasonStockChangeData extends InventoryItems.SeasonStockChangeDataCalc {
 
+        private Stock stock;
 
-        //private StockAccount account;
+        private InventoryItem inventoryItem;
 
-        private StoreRes storeRes;
-
-        public TotalChangeDataItem(StoreRes storeRes) {
-            super();
-            this.storeRes = storeRes;
+        public SeasonStockChangeData(Stock stock) {
+            this.stock = stock;
         }
 
-//        public TotalChangeDataItem(StoreRes storeRes, StockAccount account) {
-//            this.storeRes = storeRes;
-//            this.account = account;
-//        }
+        public SeasonStockChangeData(InventoryItem inventoryItem) {
+            this.inventoryItem = inventoryItem;
+            this.stock = inventoryItem.getStock();
+        }
 
-        private Map<StockChange.StoreChangeType, StoreResCount> changeCount = new HashMap<StockChange.StoreChangeType, StoreResCount>();
-
-        private Map<String, StoreResCount> allocationOutCount = new HashMap<String, StoreResCount>();
-
-        public void putChange(StockChange.StoreChangeType type, StoreResCountEntity count) {
-            StoreResCount result = changeCount.get(type);
-            if (result == null) {
-                result = new StoreResCount(count.getStoreRes(), count.getCount());
-                changeCount.put(type, result);
+        @Override
+        public ResCount getBeginCount() {
+            if (inventoryItem == null) {
+                return ResTotalCount.ZERO(getRes());
             } else {
-                result.addCount(count);
+                return new StoreResCount(inventoryItem.getStoreRes(), inventoryItem.getLastCount());
             }
 
         }
 
-        public void putChange(String storeId, StoreResCountEntity count) {
-
-            StoreResCount result = allocationOutCount.get(storeId);
-            if (result == null) {
-                result = new StoreResCount(count.getStoreRes(), count.getCount());
-                allocationOutCount.put(storeId, result);
-            } else {
-                result.addCount(count);
-            }
+        @Override
+        public ResCount getAddCount() {
+            return ResTotalCount.ZERO(getRes());
         }
 
-        public Map<StockChange.StoreChangeType, StoreResCount> getChangeCount() {
-            return changeCount;
+        @Override
+        public ResCount getLossCount() {
+            return ResTotalCount.ZERO(getRes());
         }
 
-        public void setChangeCount(Map<StockChange.StoreChangeType, StoreResCount> changeCount) {
-            this.changeCount = changeCount;
-        }
-
-        public Map<String, StoreResCount> getAllocationOutCount() {
-            return allocationOutCount;
-        }
-
-        public void setAllocationOutCount(Map<String, StoreResCount> allocationOutCount) {
-            this.allocationOutCount = allocationOutCount;
+        @Override
+        public Res getRes() {
+            return stock.getRes();
         }
 
         public StoreRes getStoreRes() {
-            return storeRes;
-        }
-
-        public void setStoreRes(StoreRes storeRes) {
-            this.storeRes = storeRes;
-        }
-
-//        public StockAccount getAccount() {
-//            return account;
-//        }
-
-        public StoreResCount getInTotal() {
-            StoreResCount result = new StoreResCount(storeRes, BigDecimal.ZERO);
-            for (StockChange.StoreChangeType type : changeCount.keySet()) {
-                if (!type.isOut()) {
-                    result.addCount(changeCount.get(type));
-                }
-            }
-            return result;
-        }
-
-        public StoreResCount getOutTotal() {
-            StoreResCount result = new StoreResCount(storeRes, BigDecimal.ZERO);
-            for (StockChange.StoreChangeType type : changeCount.keySet()) {
-                if (type.isOut()) {
-                    result.addCount(changeCount.get(type));
-                }
-            }
-            for (StoreResCount allocationCount : allocationOutCount.values()) {
-                result.addCount(allocationCount);
-            }
-
-            return result;
+            return stock.getStoreRes();
         }
     }
-
 }

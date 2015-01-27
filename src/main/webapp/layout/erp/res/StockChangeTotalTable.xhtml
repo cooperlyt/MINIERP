@@ -9,8 +9,7 @@
                 xmlns:rich="http://richfaces.org/rich">
 
     <!-- params value tableHeader-->
-    <f:subview><script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
-
+    <f:subview>
         <rich:dataTable style="width: 100%" value="#{value.getResGroupList()}" var="_item">
             <f:facet name="header">
                 <rich:columnGroup>

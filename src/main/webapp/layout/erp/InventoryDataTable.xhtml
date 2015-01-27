@@ -10,10 +10,6 @@
 
 
 
-    <script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
-
-
-
 
 
 <rich:dataTable style="table-layout: fixed;"  styleClass="bigTable" value="#{inventoryItems.resultGroup}" var="_resGroup" noDataLabel="#{messages.NoConditionStock}">
@@ -86,6 +82,7 @@
 
 
 <ui:include src="InventoryDataColumns.xhtml">
+    <ui:param name="inventoryItemsBean" value="#{inventoryItems}"/>
     <ui:param name="data" value="#{_resGroup.totalData}"/>
     <ui:param name="res" value="#{_resGroup.key}"/>
     <ui:param name="columnStyle" value="font-size: 14px;font-weight: bold;background: #ecf4fe;"/>
@@ -107,6 +104,7 @@
 
 
 <ui:include src="InventoryDataColumns.xhtml">
+    <ui:param name="inventoryItemsBean" value="#{inventoryItems}"/>
     <ui:param name="data" value="#{_formatGroup.totalData}"/>
     <ui:param name="res" value="#{_formatGroup.key.res}"/>
     <ui:param name="columnStyle" value="#{(_formatGroup.key.res.unitGroup.type eq 'FLOAT_CONVERT') ? 'font-size: 13px; font-weight: bold;background:#f5f5f5;' : ''}"/>
@@ -130,6 +128,7 @@
     <ui:include src="InventoryDataColumns.xhtml">
         <ui:param name="data" value="#{_item}"/>
         <ui:param name="res" value="#{_item.res}"/>
+        <ui:param name="inventoryItemsBean" value="#{inventoryItems}"/>
     </ui:include>
 
 

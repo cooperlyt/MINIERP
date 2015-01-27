@@ -33,7 +33,7 @@ public class ResSaleTotal {
 
     private Map<Res, ResSaleTotalResult> resultData;
 
-    private static final String SALE_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount)) " +
+    private static final String SALE_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(oi.money * oi.needCount)) " +
             " from OrderItem oi where oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate group by oi.storeRes";
 
 
@@ -280,6 +280,8 @@ public class ResSaleTotal {
 
         private BigDecimal addCount;
 
+        private BigDecimal needMoney;
+
         public void totalCount() {
             saleCount = ResTotalCount.ZERO(res);
             backCount = ResTotalCount.ZERO(res);
@@ -287,6 +289,7 @@ public class ResSaleTotal {
             backMoney = BigDecimal.ZERO;
             needCount = BigDecimal.ZERO;
             addCount = BigDecimal.ZERO;
+            needMoney = BigDecimal.ZERO;
             for (SaleAndBack saleAndBack : saleAndBacks.values()) {
                 if (saleAndBack.getBack() != null) {
                     backCount = backCount.add(saleAndBack.getBack().getResCount());
@@ -299,9 +302,16 @@ public class ResSaleTotal {
                     if (res.getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                         needCount = needCount.add(saleAndBack.getSale().getNeedCount());
                         addCount = addCount.add(saleAndBack.getSale().getAddCount());
+                        needMoney = needMoney.add(saleAndBack.getSale().getNeedMoney());
                     }
                 }
             }
+        }
+
+        public BigDecimal getNeedMoney() {
+            if (needMoney == null)
+                totalCount();
+            return needMoney;
         }
 
         public BigDecimal getSaleMoney() {

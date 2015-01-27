@@ -100,7 +100,7 @@
 
     <properties>
         <seam.version>2.3.1.Final</seam.version>
-        <richfaces.version>4.5.1.Final</richfaces.version>
+        <richfaces.version>4.5.2.Final</richfaces.version>
         <version.org.hibernate.search>4.2.0.Final</version.org.hibernate.search>
 
         <!-- Excluded TestNG groups (ex: slow annotated tests won't run during
@@ -666,10 +666,10 @@
     <!--
 <properties>
     <jsf.version>2.1.7</jsf.version>
-    <org.richfaces.bom.version>4.3.1.Final</org.richfaces.bom.version>
+    <org.richfaces.bom.version>4.3.1.4.5.2.Final</org.richfaces.bom.version>
 
-    <seam.version>2.3.0.Final</seam.version>
-    <hibernate.version>4.1.0.Final</hibernate.version>
+    <seam.version>2.3.0.4.5.2.Final</seam.version>
+    <hibernate.version>4.1.0.4.5.2.Final</hibernate.version>
     <slf4j.version>1.5.8</slf4j.version>
 
 

@@ -166,7 +166,7 @@
 <ui:define name="body">
 
 <a:outputPanel id="searchResult">
-<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/resources/collapsible-subtable.js"/>
+
 <rich:dataTable style="width: 100%" rendered="#{stockChangeItemTotal.resultGroupBy eq 'GROUP_BY_CHANGE'}"
                 value="#{stockChangeItemTotal.changeResultGroup.childGroup}"
                 var="_day">
