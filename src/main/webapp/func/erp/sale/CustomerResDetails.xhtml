@@ -29,6 +29,27 @@
 
 
 <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
+
+    <f:facet name="headerExpanded">
+        <s:link id="reset" value="#{messages.resetCondition}" includePageParams="false" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+
+
+        <s:link style="float: right;margin-right: 5px" styleClass="norbtn" view="/home.xhtml">
+            #{messages.return}
+        </s:link>
+
+    </f:facet>
+
+    <f:facet name="headerCollapsed">
+
+
+        <h:outputText value="#{messages.search_conditions}" style="float: left; padding-top: 5px; font-size: 13px; font-weight: bold"/>
+
+        <s:link style="float: right;margin-right: 5px" styleClass="norbtn" view="/home.xhtml">
+            #{messages.return}
+        </s:link>
+    </f:facet>
+
     <h:form>
 
         <s:decorate template="/layout/seam-display.xhtml">
