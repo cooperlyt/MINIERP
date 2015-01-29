@@ -6,7 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
-                template="/layout/template.xhtml">
+                template="/layout/full-template.xhtml">
 
 <ui:define name="func-body">
 <h:outputStylesheet>
@@ -76,25 +76,21 @@
 
         </s:decorate>
 
-
         <div style="clear:both"/>
-        <hr style="border:1px dashed #{a4jSkin.panelBorderColor}" width="95%" size="1"/>
-        <h:panelGrid columns="1" style="width: 100%; text-align: right">
-            <a:outputPanel id="search_buttons">
-                <div class="actionButtons">
 
-                    <s:button id="reset" value="#{messages.reset}" includePageParams="false"/>
+        <div class="searchButtons">
 
-                    <a:outputPanel id="searchButton">
-                        <a:commandButton value="#{messages.search}"
-                                         execute="@form" render="dataResult">
-                            <a:attachQueue requestDelay="0"/>
-                            <a:param value="#{false}" assignTo="#{customerResContactsTotal.onlyModel}"/>
-                        </a:commandButton>
-                    </a:outputPanel>
-                </div>
-            </a:outputPanel>
-        </h:panelGrid>
+
+            <a:commandLink styleClass="btn-link-big"  status="processWaiting"
+                           execute="@form" render="dataResult">
+                <span class="octicon octicon-search"/>
+                #{messages.search}
+                <a:attachQueue requestDelay="0"/>
+                <a:param value="#{false}" assignTo="#{customerResContactsTotal.onlyModel}"/>
+            </a:commandLink>
+
+        </div>
+
 
     </h:form>
 
@@ -104,8 +100,300 @@
 
 <h:form>
 <a:outputPanel id="dataResult">
+    <rich:dataTable style="width: 100%" rendered="#{customerResCondition.containStoreOut and customerResCondition.containResBack}"
+                    value="#{customerResContactsTotal.customerResultGroups}" var="_customer">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="3">
+                    #{messages.Customer}
+                </rich:column>
+                <rich:column>
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.orderItemUnitPrice}
+                </rich:column>
+                <rich:column>
+                    #{messages.rebate}
+                </rich:column>
+                <rich:column>
+                    #{messages.orderItemPrice}
+                </rich:column>
+                <rich:column>
+                    #{messages.needConvertRate}
+                </rich:column>
+                <rich:column>
+                    #{messages.needItemAdd}
+                </rich:column>
+                <rich:column>
+                    #{messages.field_memo}
+                </rich:column>
+            </rich:columnGroup>
+
+        </f:facet>
+
+        <rich:column colspan="13">
+
+            <rich:collapsibleSubTableToggler for="sbtb_dir"/>
+            #{_customer.key.name}
+        </rich:column>
+
+        <rich:collapsibleSubTable id="sbtb_dir" value="#{_customer.childGroup}" var="_dir">
+            <rich:column style="width: 1px;background: #ecf4fe"/>
+            <rich:column colspan="8" style="background: #ecf4fe">
+
+                <rich:collapsibleSubTableToggler for="sbtb_item"/>
+                #{messages[_dir.key.keyData]}
+            </rich:column>
+            <rich:column style="text-align: right;background: #ecf4fe">
+                <h:outputText value="#{_dir.totalData.data}" style="#{(_dir.key.keyData eq 'back') ? 'color: red;' : ''}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column colspan="3" style="background: #ecf4fe"/>
+
+            <rich:collapsibleSubTable id="sbtb_item" value="#{_dir.values}" var="_item">
+                <rich:column style="width: 1px"/>
+                <rich:column style="width: 1px"/>
+                <rich:column>
+                    <h:outputText value="#{_item.dispatch.stockChange.operDate}">
+                        <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    <a:outputPanel>
+                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                            <ui:param name="showPropertyLabel" value="false"/>
+                            <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                            <ui:param name="showCode" value="false"/>
+                        </ui:include>
+
+                        <rich:tooltip styleClass="tooltip-custom-body"
+                                      layout="block" mode="client">
+                            <span style="white-space: nowrap"> #{_item.storeRes.code}</span>
+
+                        </rich:tooltip>
+                    </a:outputPanel>
 
 
+                </rich:column>
+
+                <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                    <ui:param name="resCount" value="#{_item}"/>
+                </ui:include>
+
+                <rich:column style="text-align: right" >
+
+                    <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
+                    <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column >
+
+                    #{_item.resUnit.name}
+
+                </rich:column>
+                <rich:column >
+
+                    <h:outputText value="#{_item.rebate}" rendered="#{not _item.presentation}">
+                        <f:convertNumber pattern="#0.####"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column  style="text-align: right">
+
+                    <h:outputText value="#{_item.totalMoney}" rendered="#{not _item.presentation}"
+                                  style="#{(_item.type eq 'back') ? 'color: red;' : ''}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+
+                <rich:column>
+
+                    <h:outputText value="#{_item.needConvertRate}"
+                                  rendered="#{(_item.type eq 'sale') and not _item.presentation}">
+                        <f:convertNumber pattern="#0.#######"/>
+                    </h:outputText>
+                </rich:column>
+
+
+                <rich:column>
+
+                    <h:outputText value="#{_item.needAddCount}"
+                                  rendered="#{(_item.type eq 'sale') and not _item.presentation}">
+                        <f:convertNumber pattern="#0.####"/>
+                    </h:outputText>
+
+                </rich:column>
+
+                <rich:column>
+
+                    <a:outputPanel>
+                        #{_item.memo}
+                        <rich:tooltip styleClass="tooltip-custom-body"
+                                      layout="block" mode="client">
+                            <span style="white-space: nowrap"> #{_item.memo}</span>
+
+                        </rich:tooltip>
+                    </a:outputPanel>
+
+                </rich:column>
+
+
+            </rich:collapsibleSubTable>
+
+        </rich:collapsibleSubTable>
+    </rich:dataTable>
+
+    <rich:dataTable style="width: 100%" rendered="#{not (customerResCondition.containStoreOut and customerResCondition.containResBack)}"
+                    value="#{customerResContactsTotal.customerResultGroups}" var="_customer">
+        <f:facet name="header">
+            <rich:columnGroup>
+                <rich:column colspan="3">
+                    #{messages.Customer}
+                </rich:column>
+                <rich:column>
+                    #{messages.StoreRes}
+                </rich:column>
+                <rich:column colspan="2">
+                    #{messages.count}
+                </rich:column>
+
+                <rich:column colspan="2">
+                    #{messages.orderItemUnitPrice}
+                </rich:column>
+                <rich:column>
+                    #{messages.rebate}
+                </rich:column>
+                <rich:column>
+                    #{messages.orderItemPrice}
+                </rich:column>
+                <rich:column>
+                    #{messages.needConvertRate}
+                </rich:column>
+                <rich:column>
+                    #{messages.needItemAdd}
+                </rich:column>
+                <rich:column>
+                    #{messages.field_memo}
+                </rich:column>
+            </rich:columnGroup>
+
+        </f:facet>
+
+        <rich:column colspan="13">
+
+            <rich:collapsibleSubTableToggler for="sbtb_item1"/>
+            #{_customer.key.name}
+        </rich:column>
+
+
+
+
+            <rich:collapsibleSubTable id="sbtb_item1" value="#{_customer.values}" var="_item">
+                <rich:column style="width: 1px"/>
+                <rich:column style="width: 1px"/>
+                <rich:column>
+                    <h:outputText value="#{_item.dispatch.stockChange.operDate}">
+                        <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column>
+                    <a:outputPanel>
+                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                            <ui:param name="showPropertyLabel" value="false"/>
+                            <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                            <ui:param name="showCode" value="false"/>
+                        </ui:include>
+
+                        <rich:tooltip styleClass="tooltip-custom-body"
+                                      layout="block" mode="client">
+                            <span style="white-space: nowrap"> #{_item.storeRes.code}</span>
+
+                        </rich:tooltip>
+                    </a:outputPanel>
+
+
+                </rich:column>
+
+                <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                    <ui:param name="resCount" value="#{_item}"/>
+                </ui:include>
+
+                <rich:column style="text-align: right" >
+
+                    <h:outputText value="#{messages.Presentation}" rendered="#{_item.presentation}"/>
+                    <h:outputText value="#{_item.money}" rendered="#{not _item.presentation}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column >
+
+                    #{_item.resUnit.name}
+
+                </rich:column>
+                <rich:column >
+
+                    <h:outputText value="#{_item.rebate}" rendered="#{not _item.presentation}">
+                        <f:convertNumber pattern="#0.####"/>
+                    </h:outputText>
+                </rich:column>
+
+                <rich:column  style="text-align: right">
+
+                    <h:outputText value="#{_item.totalMoney}" rendered="#{not _item.presentation}"
+                                  style="#{(_item.type eq 'back') ? 'color: red;' : ''}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+
+                <rich:column>
+
+                    <h:outputText value="#{_item.needConvertRate}"
+                                  rendered="#{(_item.type eq 'sale') and not _item.presentation}">
+                        <f:convertNumber pattern="#0.#######"/>
+                    </h:outputText>
+                </rich:column>
+
+
+                <rich:column>
+
+                    <h:outputText value="#{_item.needAddCount}"
+                                  rendered="#{(_item.type eq 'sale') and not _item.presentation}">
+                        <f:convertNumber pattern="#0.####"/>
+                    </h:outputText>
+
+                </rich:column>
+
+                <rich:column>
+
+                    <a:outputPanel>
+                        #{_item.memo}
+                        <rich:tooltip styleClass="tooltip-custom-body"
+                                      layout="block" mode="client">
+                            <span style="white-space: nowrap"> #{_item.memo}</span>
+
+                        </rich:tooltip>
+                    </a:outputPanel>
+
+                </rich:column>
+
+
+            </rich:collapsibleSubTable>
+
+
+    </rich:dataTable>
+
+    <ui:remove>
     <rich:extendedDataTable frozenColumns="3" value="#{customerResContactsTotal.resultList}" var="_item"
                             style="width: 100%; height: 450px">
 
@@ -241,7 +529,7 @@
 
     </rich:extendedDataTable>
 
-
+    </ui:remove>
 </a:outputPanel>
 </h:form>
 </ui:define>

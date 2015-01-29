@@ -83,8 +83,8 @@ public class InventoryHome extends ErpEntityHome<Inventory> {
     }
 
     public Date getBeforInventoryDate() {
-        Date result = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId and ((inventory.type = 'MONTH_INVENTORY') or (inventory.type='YEAR_INVENTORY')) and inventory.id <> :thisId", Date.class).
-                setParameter("storeId", getInstance().getStore().getId()).setParameter("thisId", getInstance().getId()).getSingleResult();
+        Date result = getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId and (inventory.checkDate < :thisDate) and ((inventory.type = 'MONTH_INVENTORY') or (inventory.type='YEAR_INVENTORY')) and inventory.id <> :thisId", Date.class).
+                setParameter("storeId", getInstance().getStore().getId()).setParameter("thisDate",getInstance().getCheckDate()).setParameter("thisId", getInstance().getId()).getSingleResult();
         if (result == null) {
             result = new Date(0);
         }

@@ -505,8 +505,11 @@ public class InventoryItems {
                                 (value.getResultCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
                                 (value.getBeginCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
                                 (!value.getChangeEntrySet().isEmpty()))) {
-                    if (!hideZero || ((value.getLastCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
-                            (value.getResultCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0)))
+                    if (!hideZero || ((value.getBeginCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0 ||
+                            value.getLastCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
+                            (value.getResultCount().getMasterCount().compareTo(BigDecimal.ZERO) != 0) ||
+                            !value.getStoreInTypeCounts().isEmpty() || !value.getStoreOutTypeCounts().isEmpty()
+                            || !value.getAllocationOutCounts().isEmpty()))
                         values.add(value);
                 }
             }

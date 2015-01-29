@@ -98,10 +98,85 @@ public class CustomerResContactsTotal {
         return result;
     }
 
+    @Deprecated
     public TotalDataGroup<?, StoreResPriceEntity,ResPriceTotal> getCustomerResultGroup() {
         return TotalDataGroup.allGroupBy(getResultList(), new CustomerGroupStrategy(),
                 new ResPriceTotal.ResMoneyGroupStrategy<StoreResPriceEntity>(),
                 new ResPriceTotal.FormatMoneyGroupStrategy<StoreResPriceEntity>());
+    }
+
+
+    public List<TotalDataGroup<Customer,StoreResPriceEntity,TotalDataGroup.SingleTotalData<BigDecimal>>> getCustomerResultGroups(){
+        if(customerResCondition.isContainStoreOut() && customerResCondition.isContainResBack()){
+
+            return TotalDataGroup.groupBy(getResultList(),
+                    new TotalGroupStrategy<Customer, StoreResPriceEntity, TotalDataGroup.SingleTotalData<BigDecimal>>() {
+                        @Override
+                        public Customer getKey(StoreResPriceEntity storeResPriceEntity) {
+                            if (storeResPriceEntity instanceof OrderItem) {
+                                return ((OrderItem) storeResPriceEntity).getNeedRes().getCustomerOrder().getCustomer();
+                            } else if (storeResPriceEntity instanceof BackItem) {
+                                return ((BackItem) storeResPriceEntity).getOrderBack().getCustomer();
+                            } else
+                                return null;
+                        }
+
+                        @Override
+                        public TotalDataGroup.SingleTotalData totalGroupData(Collection<StoreResPriceEntity> datas) {
+                            return null;
+                        }
+                    }
+                    ,
+
+                    new TotalGroupStrategy<TotalDataGroup.StringKey, StoreResPriceEntity, TotalDataGroup.SingleTotalData<BigDecimal>>() {
+                        @Override
+                        public TotalDataGroup.StringKey getKey(StoreResPriceEntity storeResPriceEntity) {
+                            if ((storeResPriceEntity instanceof OrderItem) &&
+                                    ((OrderItem)storeResPriceEntity).isFree()) {
+                                return new TotalDataGroup.StringKey("free");
+
+                            }
+                            return new TotalDataGroup.StringKey(storeResPriceEntity.getType()) ;
+
+                        }
+
+                        @Override
+                        public TotalDataGroup.SingleTotalData<BigDecimal> totalGroupData(Collection<StoreResPriceEntity> datas) {
+                            return new TotalDataGroup.SingleTotalData<BigDecimal>(totalMoney(datas)) ;
+                        }
+                    }
+                    );
+        }else{
+            return TotalDataGroup.groupBy(getResultList(),
+                    new TotalGroupStrategy<Customer, StoreResPriceEntity, TotalDataGroup.SingleTotalData<BigDecimal>>() {
+                        @Override
+                        public Customer getKey(StoreResPriceEntity storeResPriceEntity) {
+                            if (storeResPriceEntity instanceof OrderItem) {
+                                return ((OrderItem) storeResPriceEntity).getNeedRes().getCustomerOrder().getCustomer();
+                            } else if (storeResPriceEntity instanceof BackItem) {
+                                return ((BackItem) storeResPriceEntity).getOrderBack().getCustomer();
+                            } else
+                                return null;
+                        }
+
+                        @Override
+                        public TotalDataGroup.SingleTotalData<BigDecimal> totalGroupData(Collection<StoreResPriceEntity> datas) {
+                            return new TotalDataGroup.SingleTotalData<BigDecimal>(totalMoney(datas)) ;
+                        }
+                    }
+
+            );
+        }
+
+    }
+
+    private BigDecimal totalMoney(Collection<StoreResPriceEntity> datas){
+        BigDecimal result = BigDecimal.ZERO;
+        for (StoreResPriceEntity item: datas){
+            if (! item.isFree())
+            result = result.add(item.getTotalMoney());
+        }
+        return result;
     }
 
     public TotalDataGroup<?, StoreResPriceEntity,ResPriceTotal> getDayResultGroup() {
@@ -140,6 +215,7 @@ public class CustomerResContactsTotal {
             return ResPriceTotal.total(datas);
         }
     }
+
 
 
 }

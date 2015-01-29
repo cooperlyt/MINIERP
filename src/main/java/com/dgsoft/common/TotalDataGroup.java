@@ -269,6 +269,19 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
 
     }
 
+    public static class SingleTotalData<E> implements GroupTotalData{
+
+        public SingleTotalData(E data) {
+            this.data = data;
+        }
+
+        private E data;
+
+        public E getData() {
+            return data;
+        }
+    }
+
     public interface GroupKey<T extends Comparable<? super T>> {
 
         public T getKeyData();
@@ -307,6 +320,20 @@ public class TotalDataGroup<K extends TotalDataGroup.GroupKey, V, T extends Tota
         }
 
 
+    }
+
+    public static class StringKey extends GroupKeyHelper<String> implements Serializable{
+
+        private String data;
+
+        public StringKey(String data) {
+            this.data = data;
+        }
+
+        @Override
+        public String getKeyData() {
+            return data;
+        }
     }
 
     public static class DateKey extends GroupKeyHelper<Date> implements Serializable {
