@@ -1,18 +1,25 @@
 package com.dgsoft.erp.total;
 
-import com.dgsoft.common.DataFormat;
-import com.dgsoft.common.TotalDataGroup;
-import com.dgsoft.common.TotalGroupStrategy;
-import com.dgsoft.erp.model.BackItem;
-import com.dgsoft.erp.model.Customer;
-import com.dgsoft.erp.model.CustomerOrder;
-import com.dgsoft.erp.model.OrderItem;
+import com.dgsoft.common.*;
+import com.dgsoft.erp.action.ResHelper;
+import com.dgsoft.erp.model.*;
 import com.dgsoft.erp.model.api.StoreResPriceEntity;
 import com.dgsoft.erp.total.data.ResPriceTotal;
+import com.dgsoft.erp.total.data.ResTotalCount;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.log.Logging;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -169,6 +176,112 @@ public class CustomerResContactsTotal {
         }
 
     }
+
+    @In(create = true)
+    private FacesContext facesContext;
+
+
+    @In
+    private Map<String, String> messages;
+
+    public void export() {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.responseReset();
+        externalContext.setResponseContentType("application/vnd.ms-excel");
+        externalContext.setResponseHeader("Content-Disposition", "attachment;filename=export.xls");
+
+        try {
+            TotalDataGroup.export(getCustomerResultGroups(), new ResTotalCount.CountExportStrategy<StoreResPriceEntity,TotalDataGroup.SingleTotalData<BigDecimal>>() {
+
+
+                @Override
+                public int wirteData(int row, int beginCol, StoreResPriceEntity value, ExportRender render) {
+                    int col = beginCol;
+
+                    DateFormat df = new SimpleDateFormat(messages.get("displayDatePattern"));
+
+                    if (value instanceof OrderItem){
+                        render.cell(row,col++,df.format(((OrderItem) value).getNeedRes().getCustomerOrder().getCreateDate()));
+                    }else{
+                        render.cell(row,col++,df.format(((BackItem) value).getDispatch().getStockChange().getOperDate()));
+                    }
+
+
+                    render.cell(row,col++, ResHelper.instance().generateStoreResTitle(value.getStoreRes(),true));
+
+                    col = outCount(row, col, value.getStoreResCount(), render);
+
+                    render.cell(row,col++,value.getMoney().doubleValue());
+
+                    render.cell(row,col++,value.getUseUnit().getName());
+
+                    render.cell(row,col++,value.getRebate().doubleValue());
+
+                    render.cell(row,col++,value.getTotalMoney().doubleValue());
+
+                    if(value.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) && (value instanceof OrderItem)){
+                        render.cell(row,col++,((OrderItem) value).getNeedConvertRate().doubleValue());
+                        render.cell(row,col++ ,((OrderItem) value).getNeedAddCount().doubleValue());
+
+                    }else{
+                        col = col + 2;
+                    }
+
+                    render.cell(row,col,value.getMemo());
+
+
+
+                    return row + 1;
+                }
+
+                @Override
+                public int wirteTotal(int row, int beginCol, TotalDataGroup.SingleTotalData<BigDecimal> value,
+                                      TotalDataGroup.GroupKey<?> key, ExportRender render, int childCount) {
+
+                    return row ;
+                }
+
+                @Override
+                public void wirteKey(int row, int col, int toRow, int toCol, TotalDataGroup.GroupKey<?> key, ExportRender render) {
+                    String title;
+
+                    if (key instanceof Customer){
+                        title = ((Customer) key).getName();
+                    }else if (key instanceof TotalDataGroup.StringKey){
+                        title = messages.get(((TotalDataGroup.StringKey) key).getKeyData());
+                    }else{
+                        title = "Not Difine";
+                    }
+                    render.cell(row, col, toRow, toCol, title);
+                }
+
+                @Override
+                public int wirteHeader(ExportRender render) {
+
+                    render.cell(0,0,0,2,messages.get("SaleTime"));
+                    render.cell(0,3,messages.get("StoreRes"));
+                    render.cell(0,4,0,7,messages.get("count"));
+                    render.cell(0,8,0,9,messages.get("orderItemUnitPrice"));
+                    render.cell(0,10,messages.get("rebate"));
+
+                    render.cell(0,11,messages.get("orderItemPrice"));
+
+                    render.cell(0,12,messages.get("needConvertRate"));
+                    render.cell(0,13,messages.get("needItemAdd"));
+                    render.cell(0,14,messages.get("field_memo"));
+                    return 1;
+                }
+
+            }, new ExcelExportRender(messages.get("Total")), externalContext.getResponseOutputStream());
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ExportIOError");
+            Logging.getLog(getClass()).error("export error", e);
+        }
+    }
+
+    @In(create = true)
+    private FacesMessages facesMessages;
 
     private BigDecimal totalMoney(Collection<StoreResPriceEntity> datas){
         BigDecimal result = BigDecimal.ZERO;

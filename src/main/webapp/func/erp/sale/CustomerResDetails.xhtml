@@ -52,6 +52,13 @@
 
     <h:form>
 
+        <div style="clear: both; padding: 3px;float: right;" >
+            <h:commandLink styleClass="norbtn" action="#{customerResContactsTotal.export}" >
+                <h:graphicImage style="vertical-align: text-top;" value="/img/download.png"/>
+                #{messages.Export}
+            </h:commandLink>
+        </div>
+
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.dateTime}</ui:define>
             <rich:calendar
@@ -126,7 +133,7 @@
         <f:facet name="header">
             <rich:columnGroup>
                 <rich:column colspan="3">
-                    #{messages.Customer}
+                    #{messages.Customer}/#{messages.SaleTime}
                 </rich:column>
                 <rich:column>
                     #{messages.StoreRes}
@@ -181,7 +188,10 @@
                 <rich:column style="width: 1px"/>
                 <rich:column style="width: 1px"/>
                 <rich:column>
-                    <h:outputText value="#{_item.dispatch.stockChange.operDate}">
+                    <h:outputText value="#{_item.needRes.customerOrder.createDate}" rendered="#{(_item.type eq 'sale')}">
+                        <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                    </h:outputText>
+                    <h:outputText value="#{_item.dispatch.stockChange.operDate}" rendered="#{not (_item.type eq 'sale')}">
                         <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
                     </h:outputText>
                 </rich:column>
@@ -256,14 +266,10 @@
 
                 <rich:column>
 
-                    <a:outputPanel>
-                        #{_item.memo}
-                        <rich:tooltip styleClass="tooltip-custom-body"
-                                      layout="block" mode="client">
-                            <span style="white-space: nowrap"> #{_item.memo}</span>
-
-                        </rich:tooltip>
-                    </a:outputPanel>
+                    <ui:include src="/layout/long-text-display.xhtml">
+                        <ui:param name="value" value="#{_item.memo}"/>
+                        <ui:param name="size" value="5"/>
+                    </ui:include>
 
                 </rich:column>
 
