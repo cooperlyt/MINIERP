@@ -93,20 +93,21 @@
         <rich:dataTable id="totalResultDatas" style="width: 100%" value="#{resSaleTotal.resultList}" var="_item">
             <f:facet name="header">
                 <rich:columnGroup>
-                    <rich:column colspan="2">
+                    <rich:column colspan="3">
                         #{messages.res}/#{messages.StoreRes}
                     </rich:column>
                     <rich:column colspan="2">
                         #{messages.SaleCount}
                     </rich:column>
                     <rich:column>
-                        #{messages.SaleMoney}
-                    </rich:column>
-                    <rich:column>
                         #{messages.NeedCount}
                     </rich:column>
                     <rich:column>
-                        #{messages.NeedMoeny}
+                        #{messages.RealSaleMoney}
+                    </rich:column>
+
+                    <rich:column>
+                        #{messages.NeedSaleMoney}
                     </rich:column>
 
 
@@ -127,19 +128,15 @@
                 </rich:columnGroup>
             </f:facet>
 
-            <rich:column colspan="2">
-                <rich:collapsibleSubTableToggler for="sbtb1"/>
+            <rich:column colspan="3" style="background: #ecf4fe;">
+                <rich:collapsibleSubTableToggler for="sbtb1" />
                 #{_item.res.name}
             </rich:column>
             <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
                 <ui:param name="resCount" value="#{_item.saleCount}"/>
+                <ui:param name="style" value="background: #ecf4fe;"/>
             </ui:include>
-            <rich:column style="text-align: right">
-                <h:outputText value="#{_item.saleMoney}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </rich:column>
-            <rich:column>
+            <rich:column style="background: #ecf4fe;">
                 <a:outputPanel rendered="#{ (_item.res.unitGroup.type eq 'FLOAT_CONVERT')}">
                     <h:outputText value="#{_item.needCount}">
                         <f:convertNumber pattern="#{_item.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
@@ -148,7 +145,13 @@
                     <h:outputText value="#{_item.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;" />
                 </a:outputPanel>
             </rich:column>
-            <rich:column>
+            <rich:column style="background: #ecf4fe;text-align: right">
+                <h:outputText value="#{_item.saleMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="background: #ecf4fe;text-align: right">
                 <a:outputPanel rendered="#{ (_item.res.unitGroup.type eq 'FLOAT_CONVERT')}">
                     <h:outputText value="#{_item.needMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
@@ -161,81 +164,141 @@
 
             <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
                 <ui:param name="resCount" value="#{_item.backCount}"/>
-
+                <ui:param name="style" value="background: #ecf4fe;"/>
             </ui:include>
 
-            <rich:column style="text-align: right">
+            <rich:column style="background: #ecf4fe;text-align: right">
                 <h:outputText value="#{_item.backMoney}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </rich:column>
 
-            <rich:column>
+            <rich:column style="background: #ecf4fe;">
                 <h:outputText value="#{_item.rebate.count}" rendered="#{not empty _item.rebate}">
                     <f:convertNumber pattern="#0.#####"/>
                 </h:outputText>
             </rich:column>
-            <rich:column>
+            <rich:column style="background: #ecf4fe;">
                 <h:outputText value="#{_item.rebate.money}" rendered="#{not empty _item.rebate}">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </rich:column>
 
 
-        <rich:collapsibleSubTable id="sbtb1" value="#{_item.saleAndBacks}" var="_sb" expanded="#{false}">
-            <rich:column style="background:#f5f5f5;">
+        <rich:collapsibleSubTable id="sbtb1" value="#{_item.saleAndBacksGroups}" var="_fm">
+            <rich:column style="background:#f5f5f5;width: 1px;">
 
             </rich:column>
+            <rich:column colspan="2" style="background:#f5f5f5;">
+                <rich:collapsibleSubTableToggler for="sbtb2" rendered="#{(_fm.key.res.unitGroup.type eq 'FLOAT_CONVERT')}"/>
+                #{_fm.key.formatTitle}
+
+
+            </rich:column>
+
+            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                <ui:param name="resCount" value="#{_fm.totalData.saleCount}"/>
+                <ui:param name="style" value="background:#f5f5f5;"/>
+            </ui:include>
+
             <rich:column style="background:#f5f5f5;">
-                <ui:include src="/layout/erp/StoreResTitle.xhtml">
-                    <ui:param name="showResName" value="false"/>
-                    <ui:param name="showCode" value="false"/>
-                    <ui:param name="storeRes" value="#{_sb.storeRes}"/>
+                <a:outputPanel rendered="#{ (_fm.key.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                    <h:outputText value="#{_fm.totalData.needCount}">
+                        <f:convertNumber pattern="#{_fm.key.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                    </h:outputText>
+
+                    <h:outputText value="#{_fm.key.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;" />
+                </a:outputPanel>
+            </rich:column>
+
+            <rich:column style="text-align: right;background:#f5f5f5;">
+                <h:outputText value="#{_fm.totalData.saleMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column style="text-align: right;background:#f5f5f5;">
+                <h:outputText value="#{_fm.totalData.needMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                <ui:param name="resCount" value="#{_fm.totalData.backCount}"/>
+                <ui:param name="style" value="background:#f5f5f5;"/>
+            </ui:include>
+
+            <rich:column style="text-align: right;background:#f5f5f5;">
+                <h:outputText value="#{_fm.totalData.backMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
+            <rich:column style="background:#f5f5f5;"/>
+            <rich:column style="background:#f5f5f5;"/>
+
+
+
+
+            <rich:collapsibleSubTable id="sbtb2" value="#{_fm.values}" var="_sb" expanded="#{false}">
+                <rich:column style="width: 1px;">
+
+                </rich:column>
+                <rich:column style="width: 1px;">
+
+                </rich:column>
+                <rich:column >
+
+                    <h:outputText value="#{_sb.storeRes.floatConversionRate}"
+                                  rendered="#{(_sb.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                        <f:convertNumber pattern="#{_sb.res.unitGroup.floatConvertRateFormat}"/>
+                    </h:outputText>
+
+                    <h:outputText value="#{_sb.res.unitGroup.name}" rendered="#{(_sb.res.unitGroup.type eq 'FLOAT_CONVERT')}"/>
+
+                </rich:column>
+
+                <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                    <ui:param name="resCount" value="#{_sb.sale.resCount}"/>
+
                 </ui:include>
-            </rich:column>
 
-            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
-                <ui:param name="resCount" value="#{_sb.sale.resCount}"/>
-                <ui:param name="style" value="background:#f5f5f5;"/>
-            </ui:include>
+                <rich:column >
+                    <a:outputPanel rendered="#{ (_sb.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                        <h:outputText value="#{_sb.sale.needCount}">
+                            <f:convertNumber pattern="#{_sb.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                        </h:outputText>
 
-            <rich:column style="background:#f5f5f5;">
-                <a:outputPanel rendered="#{ (_sb.res.unitGroup.type eq 'FLOAT_CONVERT')}">
-                    <h:outputText value="#{_sb.sale.needCount}">
-                        <f:convertNumber pattern="#{_sb.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                        <h:outputText value="#{_sb.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;" />
+                    </a:outputPanel>
+                </rich:column>
+
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_sb.sale.money}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
-
-                    <h:outputText value="#{_sb.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;" />
-                </a:outputPanel>
-            </rich:column>
-            <rich:column style="background:#f5f5f5;">
-                <a:outputPanel rendered="#{ (_sb.res.unitGroup.type eq 'FLOAT_CONVERT')}">
-                    <h:outputText value="#{_sb.sale.addCount}">
-                        <f:convertNumber pattern="#{_sb.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                </rich:column>
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_sb.sale.needMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
+                </rich:column>
+                <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
+                    <ui:param name="resCount" value="#{_sb.back.resCount}"/>
 
-                    <h:outputText value="#{_sb.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;" />
-                </a:outputPanel>
-            </rich:column>
-            <rich:column style="text-align: right;background:#f5f5f5;">
-                <h:outputText value="#{_sb.sale.money}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </rich:column>
-            <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
-                <ui:param name="resCount" value="#{_sb.back.resCount}"/>
-                <ui:param name="style" value="background:#f5f5f5;"/>
-            </ui:include>
+                </ui:include>
 
-            <rich:column style="text-align: right;background:#f5f5f5;">
-                <h:outputText value="#{_sb.back.money}">
-                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
-                </h:outputText>
-            </rich:column>
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_sb.back.money}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
 
-            <rich:column style="background:#f5f5f5;"/>
-            <rich:column style="background:#f5f5f5;"/>
+                <rich:column />
+                <rich:column />
 
+
+
+
+            </rich:collapsibleSubTable>
 
         </rich:collapsibleSubTable>
         </rich:dataTable>

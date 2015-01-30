@@ -25,7 +25,8 @@ public class StoreResSaleTotalData {
     private BigDecimal needMoney;
 
 
-    public StoreResSaleTotalData(StoreRes storeRes, BigDecimal count, Double avgMoney, BigDecimal money, BigDecimal needCount,BigDecimal needMoney) {
+    public StoreResSaleTotalData(StoreRes storeRes, BigDecimal count,
+                                 Double avgMoney, BigDecimal money, BigDecimal needCount,BigDecimal needMoney) {
         this.storeRes = storeRes;
         this.count = count;
        // this.unitId = unitId;
@@ -37,6 +38,8 @@ public class StoreResSaleTotalData {
     }
 
     public BigDecimal getNeedMoney() {
+        if (needMoney == null)
+            return BigDecimal.ZERO;
         return needMoney;
     }
 

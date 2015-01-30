@@ -33,7 +33,7 @@ public class ResSaleTotal {
 
     private Map<Res, ResSaleTotalResult> resultData;
 
-    private static final String SALE_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(oi.money * oi.needCount)) " +
+    private static final String SALE_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(oi.money * oi.saleCount)) " +
             " from OrderItem oi where oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate group by oi.storeRes";
 
 
@@ -107,85 +107,154 @@ public class ResSaleTotal {
     @In
     private Map<String, String> messages;
 
+    private void exportSaleAndBackRow(ExportRender render,int beginCol,int row, SaleAndBack sb){
+        int col = beginCol;
+
+
+        if (sb.getSale() != null) {
+            render.cell(row, col++, sb.getSale().getResCount().getMasterCount().doubleValue());
+            render.cell(row, col++, sb.getRes().getUnitGroup().getMasterUnit().getName());
+            if (sb.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                render.cell(row, col++, sb.getSale().getResCount().getAuxCount().doubleValue());
+                render.cell(row, col++, sb.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
+                render.cell(row, col++, sb.getSale().getNeedCount().doubleValue());
+
+            }else{
+                col = col + 3;
+            }
+            render.cell(row, col++, sb.getSale().getMoney().doubleValue());
+
+            if (sb.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                render.cell(row, col, sb.getSale().getNeedMoney().doubleValue());
+            }
+            col ++;
+        }else{
+            col = col + 7;
+        }
+        if (sb.getBack() != null) {
+
+            render.cell(row, col++, sb.getBack().getResCount().getMasterCount().doubleValue());
+            render.cell(row, col++, sb.getRes().getUnitGroup().getMasterUnit().getName());
+
+            if (sb.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                render.cell(row, col++, sb.getBack().getResCount().getAuxCount().doubleValue());
+                render.cell(row, col++, sb.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
+
+            }else{
+                col = col + 2;
+            }
+
+
+            render.cell(row, col, sb.getBack().getMoney().doubleValue());
+        }
+    }
+
     public void export() {
         refresh();
         ExportRender render = new ExcelExportRender(messages.get("ResSaleTotal"));
 
         render.setNextCellType(ExportRender.Type.HEADER, 0);
-        render.cell(0, 0, messages.get("res"));
-        render.cell(0, 1, messages.get("StoreRes"));
-        render.cell(0, 2, 0, 5, messages.get("SaleCount"));
-        render.cell(0, 6, messages.get("NeedCount"));
-        render.cell(0, 7, messages.get("needItemAdd"));
+        render.cell(0, 0, 0, 2, messages.get("StoreRes"));
+
+        render.cell(0, 3, 0, 6, messages.get("SaleCount"));
+        render.cell(0, 7, messages.get("NeedCount"));
+
         render.cell(0, 8, messages.get("SaleMoney"));
-        render.cell(0, 9, 0, 12, messages.get("SaleBackCount"));
-        render.cell(0, 13, messages.get("SaleBackMoney"));
-        render.cell(0, 14, messages.get("SaleRebateCount"));
-        render.cell(0, 15, messages.get("SaleRebateMoney"));
+
+        render.cell(0, 9, messages.get("NeedSaleMoney"));
+        render.cell(0, 10, 0, 13, messages.get("SaleBackCount"));
+        render.cell(0, 14, messages.get("SaleBackMoney"));
+        render.cell(0, 15, messages.get("SaleRebateCount"));
+        render.cell(0, 16, messages.get("SaleRebateMoney"));
         int row = 1;
         for (ResSaleTotalResult result : getResultList()) {
             int beginRow = row;
             Logging.getLog(getClass()).debug("resyktL:" + result.getSaleAndBacks().size());
-            for (SaleAndBack sb : result.getSaleAndBacks()) {
 
-                render.cell(row, 1, ResHelper.instance().generateStoreResTitle(sb.getStoreRes()));
-                if (sb.getSale() != null) {
-                    render.cell(row, 2, sb.getSale().getResCount().getMasterCount().doubleValue());
-                    render.cell(row, 3, sb.getRes().getUnitGroup().getMasterUnit().getName());
-                    if (sb.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                        render.cell(row, 4, sb.getSale().getResCount().getAuxCount().doubleValue());
-                        render.cell(row, 5, sb.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
-                        render.cell(row, 6, sb.getSale().getNeedCount().doubleValue());
-                        render.cell(row, 7, sb.getSale().getAddCount().doubleValue());
+            for(TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey,SaleAndBack,SaleAndBackTotalData> total: result.getSaleAndBacksGroups()){
+
+                if (total.getKey().getRes().getCode().equals("FR") || total.getKey().getRes().getCode().equals("FD")){
+                    int sbBeginRow = row;
+                    for(SaleAndBack sb: total.getValues()){
+                        DecimalFormat df = new DecimalFormat(total.getKey().getRes().getUnitGroup().getFloatConvertRateFormat());
+                        df.setGroupingUsed(false);
+                        df.setRoundingMode(RoundingMode.HALF_UP);
+                        render.cell(row, 2, df.format(sb.getStoreRes().getFloatConversionRate()) + total.getKey().getRes().getUnitGroup().getName());
+                        exportSaleAndBackRow(render, 3, row++, sb);
                     }
-                    render.cell(row, 8, sb.getSale().getMoney().doubleValue());
-                }
-                if (sb.getBack() != null) {
-
-                    render.cell(row, 9, sb.getBack().getResCount().getMasterCount().doubleValue());
-                    render.cell(row, 10, sb.getRes().getUnitGroup().getMasterUnit().getName());
-
-                    if (sb.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                        render.cell(row, 11, sb.getBack().getResCount().getAuxCount().doubleValue());
-                        render.cell(row, 12, sb.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
-
+                    if (sbBeginRow != row){
+                        render.cell(sbBeginRow,1,row - 1,1,total.getKey().getFormatTitle());
                     }
+                }else{
+                    render.cell(row,1,row,2,total.getKey().getFormatTitle());
 
 
-                    render.cell(row, 13, sb.getBack().getMoney().doubleValue());
+
+
+
+                        render.cell(row, 3, total.getTotalData().getSaleCount().getMasterCount().doubleValue());
+                        render.cell(row, 4, total.getKey().getRes().getUnitGroup().getMasterUnit().getName());
+                        if (total.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                            render.cell(row, 5, total.getTotalData().getSaleCount().getAuxCount().doubleValue());
+                            render.cell(row, 6, total.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
+                            render.cell(row, 7, total.getTotalData().getNeedCount().doubleValue());
+
+                        }
+                        render.cell(row, 8, total.getTotalData().getSaleMoney().doubleValue());
+
+                        if (total.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                            render.cell(row, 9,  total.getTotalData().getNeedMoney().doubleValue());
+                        }
+
+
+
+                        render.cell(row, 10, total.getTotalData().getBackCount().getMasterCount().doubleValue());
+                        render.cell(row, 11, total.getKey().getRes().getUnitGroup().getMasterUnit().getName());
+
+                        if (total.getKey().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                            render.cell(row, 12, total.getTotalData().getBackCount().getAuxCount().doubleValue());
+                            render.cell(row, 13, total.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
+
+                        }
+
+                        render.cell(row, 14, total.getTotalData().getBackMoney().doubleValue());
+                    row ++;
+
                 }
-                row++;
 
             }
+
+
+
 
             if (!result.getSaleAndBacks().isEmpty())
 
             render.cell(beginRow, 0, row - 1, 0, result.getRes().getName());
 
-            render.cell(row, 0, row, 1, result.getSaleAndBacks().isEmpty() ? result.getRes().getName() : messages.get("Total"));
-            render.cell(row, 2, result.getSaleCount().getMasterCount().doubleValue());
-            render.cell(row, 3, result.getRes().getUnitGroup().getMasterUnit().getName());
+            render.cell(row, 0, row, 2, result.getSaleAndBacks().isEmpty() ? result.getRes().getName() : messages.get("Total"));
+            render.cell(row, 3, result.getSaleCount().getMasterCount().doubleValue());
+            render.cell(row, 4, result.getRes().getUnitGroup().getMasterUnit().getName());
             if (result.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                render.cell(row, 4, result.getSaleCount().getAuxCount().doubleValue());
-                render.cell(row, 5, result.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
-                render.cell(row, 6, result.getNeedCount().doubleValue());
-                render.cell(row, 7, result.getAddCount().doubleValue());
+                render.cell(row, 5, result.getSaleCount().getAuxCount().doubleValue());
+                render.cell(row, 6, result.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
+                render.cell(row, 7, result.getNeedCount().doubleValue());
+
             }
             render.cell(row, 8, result.getSaleMoney().doubleValue());
-
-            render.cell(row, 9, result.getBackCount().getMasterCount().doubleValue());
-            render.cell(row, 10, result.getRes().getUnitGroup().getMasterUnit().getName());
+            render.cell(row, 9, result.getNeedMoney().doubleValue());
+            render.cell(row, 10, result.getBackCount().getMasterCount().doubleValue());
+            render.cell(row, 11, result.getRes().getUnitGroup().getMasterUnit().getName());
             if (result.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-                render.cell(row, 11, result.getBackCount().getAuxCount().doubleValue());
-                render.cell(row, 12, result.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
+                render.cell(row, 12, result.getBackCount().getAuxCount().doubleValue());
+                render.cell(row, 13, result.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
 
             }
 
-            render.cell(row, 13, result.getBackMoney().doubleValue());
+            render.cell(row, 14, result.getBackMoney().doubleValue());
 
             if (result.getRebate() != null) {
-                render.cell(row, 14, result.getRebate().getCount().doubleValue());
-                render.cell(row, 15, result.getRebate().getMoney().doubleValue());
+                render.cell(row, 15, result.getRebate().getCount().doubleValue());
+                render.cell(row, 16, result.getRebate().getMoney().doubleValue());
             }
 
             row++;
@@ -266,6 +335,24 @@ public class ResSaleTotal {
                 }
             });
             return result;
+        }
+
+        public List<TotalDataGroup<ResFormatGroupStrategy.StoreResFormatKey,SaleAndBack,SaleAndBackTotalData>> getSaleAndBacksGroups(){
+            return TotalDataGroup.groupBy(getSaleAndBacks(), new TotalGroupStrategy<ResFormatGroupStrategy.StoreResFormatKey, SaleAndBack, SaleAndBackTotalData>() {
+                @Override
+                public ResFormatGroupStrategy.StoreResFormatKey getKey(SaleAndBack saleAndBack) {
+                    return new ResFormatGroupStrategy.StoreResFormatKey(saleAndBack.getStoreRes());
+                }
+
+                @Override
+                public SaleAndBackTotalData totalGroupData(Collection<SaleAndBack> datas) {
+                    SaleAndBackTotalData result = new SaleAndBackTotalData();
+                    for (SaleAndBack item: datas){
+                        result.put(item);
+                    }
+                    return result;
+                }
+            });
         }
 
         private ResCount saleCount;
@@ -393,5 +480,93 @@ public class ResSaleTotal {
         public void setSale(StoreResSaleTotalData sale) {
             this.sale = sale;
         }
+    }
+
+    public static class SaleAndBackTotalData implements TotalDataGroup.GroupTotalData{
+
+        private ResCount saleCount;
+
+        private ResCount backCount;
+
+        private BigDecimal saleMoney;
+
+        private BigDecimal backMoney;
+
+        private BigDecimal needCount;
+
+        private BigDecimal addCount;
+
+        private BigDecimal needMoney;
+
+        public SaleAndBackTotalData() {
+
+            saleCount = ResTotalCount.ZERO;
+            backCount = ResTotalCount.ZERO;
+            saleMoney = BigDecimal.ZERO;
+            backMoney = BigDecimal.ZERO;
+            needCount = BigDecimal.ZERO;
+            addCount = BigDecimal.ZERO;
+            needMoney = BigDecimal.ZERO;
+        }
+
+
+        public void put(SaleAndBack saleAndBack){
+            if (saleAndBack.getBack() != null) {
+                backCount = backCount.add(saleAndBack.getBack().getResCount());
+                backMoney = backMoney.add(saleAndBack.getBack().getMoney());
+
+            }
+            if (saleAndBack.getSale() != null) {
+                saleCount = saleCount.add(saleAndBack.getSale().getResCount());
+                saleMoney = saleMoney.add(saleAndBack.getSale().getMoney());
+                if (saleAndBack.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                    needCount = needCount.add(saleAndBack.getSale().getNeedCount());
+                    addCount = addCount.add(saleAndBack.getSale().getAddCount());
+                    needMoney = needMoney.add(saleAndBack.getSale().getNeedMoney());
+                }
+
+            }
+        }
+
+
+        public ResCount getSaleCount() {
+            return saleCount;
+        }
+
+
+
+        public ResCount getBackCount() {
+            return backCount;
+        }
+
+
+
+        public BigDecimal getSaleMoney() {
+            return saleMoney;
+        }
+
+
+        public BigDecimal getBackMoney() {
+            return backMoney;
+        }
+
+
+
+        public BigDecimal getNeedCount() {
+            return needCount;
+        }
+
+
+
+        public BigDecimal getAddCount() {
+            return addCount;
+        }
+
+
+        public BigDecimal getNeedMoney() {
+            return needMoney;
+        }
+
+
     }
 }
