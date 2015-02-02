@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
     <property name="units">in</property>
     <method name="initialize"><![CDATA[
 importPackage(Packages.java.lang);
@@ -228,9 +228,10 @@ mIt = customerMoneyConfirm.getResultList().iterator();
 	row['OperTypeOrdinal'] = accountOper.getOperType().ordinal();
 	row['red'] = !accountOper.getOperType().getAdd().booleanValue();
 
-	row['PayType'] = messages.get(accountOper.getMoneySave().getPayType().name());
+	if((accountOper.getMoneySave() != null) &amp;&amp;  (accountOper.getMoneySave().getPayType() != null))
+		row['PayType'] = messages.get(accountOper.getMoneySave().getPayType().name());
 	
-	if (accountOper.getMoneySave().getPayType().equals(com.dgsoft.erp.model.api.PayType.BANK_TRANSFER) &amp;&amp; (accountOper.getMoneySave().getBankAccount() != null))
+	if ((accountOper.getMoneySave() != null) &amp;&amp; accountOper.getMoneySave().getPayType().equals(com.dgsoft.erp.model.api.PayType.BANK_TRANSFER) &amp;&amp; (accountOper.getMoneySave().getBankAccount() != null))
 		row['bank'] = dictionary.getWordValue(accountOper.getMoneySave().getBankAccount().getBank());
 	return true;
 }else
@@ -313,6 +314,16 @@ mIt = customerMoneyConfirm.getResultList().iterator();
                     <property name="name">REBATE</property>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">AUX_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">MASTER_NAME</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
@@ -359,6 +370,12 @@ mIt = customerMoneyConfirm.getResultList().iterator();
                 </structure>
                 <structure>
                     <property name="columnName">REBATE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">AUX_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">MASTER_NAME</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -438,6 +455,16 @@ mIt = customerMoneyConfirm.getResultList().iterator();
                         <property name="name">REBATE</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">AUX_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">MASTER_NAME</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -464,6 +491,12 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
 	row['UNIT_MONEY'] = item.getMoney();
 	row['MONEY_UNIT'] = item.getResUnit().getName();
 	row['MONEY_UNIT_COUNT'] = item.getUseUnitCount();
+	row['MASTER_COUNT'] = item.getMasterCount();
+	row['MASTER_NAME'] = item.getStoreRes().getRes().getUnitGroup().getMasterUnit().getName();
+	if (item.getStoreRes().getRes().getUnitGroup().getType().equals(com.dgsoft.erp.model.UnitGroup.UnitGroupType.FLOAT_CONVERT)){	
+		row['AUX_COUNT'] = item.getAuxCount();
+		row['AUX_NAME'] = item.getStoreRes().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName();
+	}
 	row['MONEY'] = item.getTotalMoney();
 	row['REBATE'] = item.getRebate();
 	return true;
@@ -508,7 +541,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
-            <property name="orientation">portrait</property>
+            <property name="orientation">landscape</property>
             <page-header>
                 <text id="11">
                     <property name="fontFamily">"SimSun"</property>
@@ -572,7 +605,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
     </page-setup>
     <body>
         <grid id="37">
-            <property name="width">7.760416666666667in</property>
+            <property name="width">11.083333333333334in</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">Column Binding</property>
@@ -627,13 +660,13 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <property name="width">0.9791666666666666in</property>
             </column>
             <column id="244">
-                <property name="width">3.71875in</property>
+                <property name="width">4.291666666666667in</property>
             </column>
             <column id="39">
-                <property name="width">0.8229166666666666in</property>
+                <property name="width">0.9583333333333334in</property>
             </column>
             <column id="40">
-                <property name="width">2.2395833333333335in</property>
+                <property name="width">4.847222222222222in</property>
             </column>
             <row id="41">
                 <cell id="42">
@@ -774,7 +807,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
 </H3>]]></text-property>
         </text>
         <table id="15">
-            <property name="width">7.764227642276423in</property>
+            <property name="width">11.055555555555555in</property>
             <property name="dataSet">MoneyDataSet</property>
             <list-property name="visibility">
                 <structure>
@@ -925,7 +958,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <property name="width">1.2276422764227641in</property>
             </column>
             <column id="589">
-                <property name="width">1.8780487804878048in</property>
+                <property name="width">5.166666666666667in</property>
             </column>
             <header>
                 <row id="16">
@@ -1379,6 +1412,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
             </footer>
         </table>
         <table id="903">
+            <property name="width">11.041666666666666in</property>
             <property name="dataSet">MoneyDataSet</property>
             <list-property name="visibility">
                 <structure>
@@ -1627,14 +1661,66 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                     <expression name="filterExpr" type="javascript">!dataSetRow["red"]</expression>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">MONEY_FREE_NAME</property>
+                    <expression name="expression" type="javascript">messages.get(AccountOper.AccountOperType.MONEY_FREE.name())</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">FREE_GROUP_TOTAL</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["Money"]</expression>
+                        </structure>
+                    </list-property>
+                    <expression name="filterExpr" type="javascript">dataSetRow["OperTypeOrdinal"]  ==  AccountOper.AccountOperType.MONEY_FREE.ordinal()</expression>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">FREE_TOTAL</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["Money"]</expression>
+                        </structure>
+                    </list-property>
+                    <expression name="filterExpr" type="javascript">dataSetRow["OperTypeOrdinal"]  ==  AccountOper.AccountOperType.MONEY_FREE.ordinal()</expression>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
-            <column id="942"/>
-            <column id="943"/>
-            <column id="944"/>
-            <column id="945"/>
-            <column id="946"/>
-            <column id="991"/>
-            <column id="948"/>
+            <column id="942">
+                <property name="width">1.1111111111111112in</property>
+            </column>
+            <column id="943">
+                <property name="width">0.8611111111111112in</property>
+            </column>
+            <column id="944">
+                <property name="width">0.9027777777777778in</property>
+            </column>
+            <column id="945">
+                <property name="width">0.9305555555555556in</property>
+            </column>
+            <column id="946">
+                <property name="width">1.7222222222222223in</property>
+            </column>
+            <column id="1622">
+                <property name="width">1.4305555555555556in</property>
+            </column>
+            <column id="991">
+                <property name="width">1.6527777777777777in</property>
+            </column>
+            <column id="948">
+                <property name="width">2.4305555555555554in</property>
+            </column>
             <header>
                 <row id="904">
                     <cell id="905">
@@ -1710,6 +1796,21 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <property name="fontFamily">"SimSun"</property>
                             <property name="fontSize">10pt</property>
                             <property name="resultSetColumn">ORDER_BACK</property>
+                        </data>
+                    </cell>
+                    <cell id="1619">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1627">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontSize">10pt</property>
+                            <property name="resultSetColumn">MONEY_FREE_NAME</property>
                         </data>
                     </cell>
                     <cell id="988">
@@ -1848,6 +1949,26 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                 </structure>
                                 <property name="textAlign">right</property>
                                 <property name="resultSetColumn">ORDER_BACK_VALUE</property>
+                            </data>
+                        </cell>
+                        <cell id="1620">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="1628">
+                                <property name="fontFamily">"SimSun"</property>
+                                <structure name="numberFormat">
+                                    <property name="category">Currency</property>
+                                    <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                    <property name="locale">zh_Hans_CN</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">FREE_GROUP_TOTAL</property>
                             </data>
                         </cell>
                         <cell id="989">
@@ -1994,6 +2115,27 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <property name="resultSetColumn">TOTAL_MONEY4</property>
                         </data>
                     </cell>
+                    <cell id="1621">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1629">
+                            <property name="fontFamily">"SimSun"</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">center</property>
+                            <property name="resultSetColumn">FREE_TOTAL</property>
+                        </data>
+                    </cell>
                     <cell id="990">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -2040,7 +2182,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
             </footer>
         </table>
         <table id="675">
-            <property name="width">7.764227642276423in</property>
+            <property name="width">11.041666666666666in</property>
             <property name="dataSet">MoneyDataSet</property>
             <list-property name="visibility">
                 <structure>
@@ -2144,7 +2286,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <property name="width">1.2276422764227641in</property>
             </column>
             <column id="715">
-                <property name="width">1.8780487804878048in</property>
+                <property name="width">5.152777777777778in</property>
             </column>
             <header>
                 <row id="676">
@@ -2442,7 +2584,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
         </text>
         <table id="1373">
             <property name="fontFamily">"SimSun"</property>
-            <property name="width">7.739583333333333in</property>
+            <property name="width">11.097222222222221in</property>
             <property name="dataSet">ResSaleDataSet</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -2554,6 +2696,18 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                     <property name="dataType">decimal</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">MASTER_NAME</property>
+                    <text-property name="displayName">MASTER_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MASTER_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">AUX_NAME</property>
+                    <text-property name="displayName">AUX_NAME</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AUX_NAME"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="1452">
                 <property name="width">0.15625in</property>
@@ -2562,22 +2716,34 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <property name="width">0.9791666666666666in</property>
             </column>
             <column id="1506">
-                <property name="width">2.4479166666666665in</property>
+                <property name="width">2.736111111111111in</property>
             </column>
             <column id="1512">
-                <property name="width">0.7291666666666666in</property>
+                <property name="width">0.7222222222222222in</property>
             </column>
-            <column id="1518">
-                <property name="width">0.3854166666666667in</property>
+            <column id="1650">
+                <property name="width">0.3472222222222222in</property>
+            </column>
+            <column id="1645">
+                <property name="width">0.7638888888888888in</property>
+            </column>
+            <column id="1640">
+                <property name="width">0.375in</property>
             </column>
             <column id="1455">
-                <property name="width">1.0833333333333333in</property>
+                <property name="width">0.8055555555555556in</property>
+            </column>
+            <column id="1655">
+                <property name="width">0.3611111111111111in</property>
             </column>
             <column id="1524">
-                <property name="width">0.65625in</property>
+                <property name="width">0.9583333333333334in</property>
             </column>
             <column id="1460">
-                <property name="width">1.25in</property>
+                <property name="width">1.125in</property>
+            </column>
+            <column id="1634">
+                <property name="width">1.3333333333333333in</property>
             </column>
             <header>
                 <row id="1374">
@@ -2612,6 +2778,8 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         </label>
                     </cell>
                     <cell id="1507">
+                        <property name="colSpan">4</property>
+                        <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -2625,21 +2793,9 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <text-property name="text">数量</text-property>
                         </label>
                     </cell>
-                    <cell id="1513">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <label id="1113">
-                            <property name="fontFamily">"SimSun"</property>
-                            <text-property name="text">单位</text-property>
-                        </label>
-                    </cell>
                     <cell id="1381">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -2683,6 +2839,20 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <text-property name="text">金额</text-property>
                         </label>
                     </cell>
+                    <cell id="1630">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="1635">
+                            <property name="fontFamily">"SimSun"</property>
+                            <text-property name="text">订单金额</text-property>
+                        </label>
+                    </cell>
                 </row>
             </header>
             <group id="1467">
@@ -2708,7 +2878,27 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             </data>
                         </cell>
                         <cell id="1570">
-                            <property name="colSpan">4</property>
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="1660">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <label id="1666">
+                                <property name="fontFamily">"SimSun"</property>
+                                <text-property name="text">订单优惠/减免/返点</text-property>
+                            </label>
+                        </cell>
+                        <cell id="1663">
+                            <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">solid</property>
                             <property name="borderBottomWidth">thin</property>
@@ -2733,7 +2923,25 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                 <property name="resultSetColumn">GROUP_REBATE</property>
                             </data>
                         </cell>
+                        <cell id="1665">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
                         <cell id="1493">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="1632">
                             <property name="borderBottomStyle">solid</property>
                             <property name="borderBottomWidth">thin</property>
                             <property name="borderLeftStyle">solid</property>
@@ -2802,26 +3010,43 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1658">
+                            <property name="resultSetColumn">MASTER_COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="1647">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="1421">
-                            <property name="resultSetColumn">MONEY_UNIT_COUNT</property>
+                        <data id="1656">
+                            <property name="resultSetColumn">MASTER_NAME</property>
                         </data>
                     </cell>
-                    <cell id="1515">
+                    <cell id="1642">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1659">
+                            <property name="resultSetColumn">AUX_COUNT</property>
+                        </data>
+                    </cell>
+                    <cell id="1637">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="1419">
-                            <property name="textAlign">center</property>
-                            <property name="resultSetColumn">MONEY_UNIT</property>
+                        <data id="1657">
+                            <property name="resultSetColumn">AUX_NAME</property>
                         </data>
                     </cell>
                     <cell id="1412">
@@ -2829,8 +3054,6 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <data id="1413">
@@ -2841,6 +3064,18 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             </structure>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">UNIT_MONEY</property>
+                        </data>
+                    </cell>
+                    <cell id="1652">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1419">
+                            <property name="textAlign">center</property>
+                            <property name="resultSetColumn">MONEY_UNIT</property>
                         </data>
                     </cell>
                     <cell id="1521">
@@ -2887,12 +3122,29 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <property name="resultSetColumn">MONEY</property>
                         </data>
                     </cell>
+                    <cell id="1631">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <list-property name="highlightRules">
+                            <structure>
+                                <property name="operator">is-false</property>
+                                <property name="color">#FF0000</property>
+                                <expression name="testExpr" type="javascript">row["IS_SALE_GROUP"]</expression>
+                            </structure>
+                        </list-property>
+                    </cell>
                 </row>
             </detail>
             <footer>
                 <row id="1571">
                     <cell id="1572">
-                        <property name="colSpan">7</property>
+                        <property name="colSpan">10</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -2903,7 +3155,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <grid id="1598">
-                            <property name="width">6.410526315789474in</property>
+                            <property name="width">6.958333333333333in</property>
                             <column id="1599">
                                 <property name="width">2.3684210526315788in</property>
                             </column>
@@ -2917,7 +3169,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                                 <property name="width">0.8736842105263158in</property>
                             </column>
                             <column id="1603">
-                                <property name="width">1.105263157894737in</property>
+                                <property name="width">1.6527777777777777in</property>
                             </column>
                             <row id="1604">
                                 <cell id="1605">
@@ -2965,6 +3217,16 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         </grid>
                     </cell>
                     <cell id="1579">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="1633">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>

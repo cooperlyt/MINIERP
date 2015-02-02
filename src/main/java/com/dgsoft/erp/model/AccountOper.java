@@ -39,8 +39,9 @@ public class AccountOper implements java.io.Serializable {
         }
 
         public static EnumSet<AccountOperType> getCustomerOpers() {
-            return EnumSet.of(DEPOSIT_BACK, PROXY_SAVINGS, CUSTOMER_SAVINGS, ORDER_BACK);
+            return EnumSet.of(DEPOSIT_BACK, PROXY_SAVINGS, CUSTOMER_SAVINGS, ORDER_BACK, MONEY_FREE);
         }
+
 
         public boolean isCustomerOper() {
             return getCustomerOpers().contains(this);

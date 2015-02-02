@@ -45,8 +45,9 @@ public class CustomerResConfirmTotal {
             "left join fetch customerOrder.customer customer left join fetch customer.customerArea " +
 
             "left join fetch customer.customerLevel " +
-            "where orderItem.needRes.customerOrder.canceled = false and orderItem.status = 'COMPLETED' " +
-            "and orderItem.needRes.customerOrder.allStoreOut = true " +
+            "where orderItem.needRes.customerOrder.canceled = false " +
+            //"and orderItem.status = 'COMPLETED' " +
+            //"and orderItem.needRes.customerOrder.allStoreOut = true " +
             "and orderItem.dispatch.sendTime >= :dateFrom and orderItem.dispatch.sendTime <= :searchDateTo " +
             "and orderItem.dispatch.needRes.customerOrder.customer.id = :customerId";
 
