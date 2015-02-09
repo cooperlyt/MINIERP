@@ -303,8 +303,10 @@ public class OrderCreate extends OrderHome {
     }
 
     @Factory("orderPayTypes")
-    public CustomerOrder.OrderPayType[] getOrderPayTypes() {
-        return CustomerOrder.OrderPayType.values();
+    public EnumSet<CustomerOrder.OrderPayType> getOrderPayTypes() {
+       return EnumSet.of(CustomerOrder.OrderPayType.COMPLETE_PAY, CustomerOrder.OrderPayType.PAY_FIRST,
+                CustomerOrder.OrderPayType.EXPRESS_PROXY, CustomerOrder.OrderPayType.OVERDRAFT);
+
     }
 
     @Factory("proxyPayTypes")

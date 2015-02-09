@@ -101,10 +101,13 @@
                             <ui:define name="label">
                                 #{messages.priceChangeMoney}
                             </ui:define>
-                            <h:inputText value="#{orderItemCreate.editingItem.totalMoney}" label="#{messages.priceChangeMoney}">
+                            <h:inputText value="#{orderItemCreate.editingItem.totalMoney}"
+                                         required="true"
+                                         label="#{messages.priceChangeMoney}">
                                 <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
                                                  type="currency" groupingUsed="false"/>
                             </h:inputText>
+
                         </s:decorate>
 
                         <s:decorate template="/layout/seam-edit.xhtml">
@@ -120,9 +123,7 @@
                         </s:span>
                         <s:span styleClass="value">
                             <a:commandButton value="#{messages.addItem}" execute="@form"
-                                             action="#{orderCreate.addOrderItem}"
-                                             data="#{needResHome.addOrderItemLastStatus}"
-                                             oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
+                                             action="#{priceChangeOrderCreate.addOrderItem}"
                                              render="orderItemListTable,orderItemDetails, orderTotalPrice,newStoreResCodeInputPanel_form">
                                 <a:attachQueue requestDelay="0"/>
                             </a:commandButton>
@@ -142,7 +143,7 @@
 
 
         <h:form>
-            <rich:dataTable id="orderItemListTable" style="width: 100%" value="#{orderNeedItems}"
+            <rich:dataTable id="orderItemListTable" style="width: 100%" value="#{orderHome.lastNeedRes.orderItemList}"
                             var="_item">
                 <f:facet name="header">
                     #{messages.orderItems}
@@ -174,12 +175,12 @@
                     <f:facet name="header">
                         #{messages.orderItemTotalPrice}
                     </f:facet>
-                    <h:outputText value="#{_item.totalMoney}">
+                    <h:outputText value="#{_item.totalMoney}" style="#{(_item.totalMoney lt 0) ? 'color: #ff0000' : ''} ">
                         <f:convertNumber locale="#{calendarBean.locale}"
                                          type="currency" groupingUsed="true"/>
                     </h:outputText>
                     <f:facet name="footer">
-                        <h:outputText value="">
+                        <h:outputText value="#{priceChangeOrderCreate.totalMoney}" style="#{(priceChangeOrderCreate.totalMoney lt 0) ? 'color: #ff0000' : ''} ">
                             <f:convertNumber locale="#{calendarBean.locale}"
                                              type="currency" groupingUsed="true"/>
                         </h:outputText>
@@ -189,9 +190,10 @@
                     <f:facet name="header">
                         #{messages.field_memo}
                     </f:facet>
-                    <rich:inplaceInput value="#{_item.memo}" style="width: 95%">
-                        <a:ajax event="blur" render="@none"/>
-                    </rich:inplaceInput>
+                    <ui:include src="/layout/long-text-display.xhtml">
+                        <ui:param name="value" value="#{_item.memo}"/>
+                        <ui:param name="size" value="70"/>
+                    </ui:include>
                 </rich:column>
 
                 <rich:column style="text-align: center">
@@ -199,12 +201,22 @@
                     </f:facet>
                     <a:commandButton image="/img/delete.png" render="orderItemListTable"
                                      title="#{messages.remove}"
-                                     execute="@form" action="#{orderCreate.removeItem}">
+                                     execute="@form" action="#{priceChangeOrderCreate.removeItem}">
+                        <a:param value="#{_item.storeRes.id}" assignTo="#{priceChangeOrderCreate.selectStoreResId}"/>
                         <a:attachQueue requestDelay="0"/>
                     </a:commandButton>
                 </rich:column>
             </rich:dataTable>
         </h:form>
+
+
+        <div class="searchButtons">
+
+            <s:button styleClass="btn-big" value="#{messages.ok}"
+                             action="#{priceChangeOrderCreate.complete}">
+            </s:button>
+
+        </div>
 
 
     </ui:define>

@@ -17,11 +17,11 @@ import java.util.*;
 public class NeedRes implements java.io.Serializable {
 
     public enum NeedResType {
-        ORDER_SEND, SUPPLEMENT_SEND;
+        ORDER_SEND, SUPPLEMENT_SEND,PRICE_CHANGE
     }
 
     public enum NeedResStatus {
-        CREATED, DISPATCHED, OUTED, REMOVED;
+        CREATED, DISPATCHED, OUTED, REMOVED
     }
 
     private String id;
@@ -58,6 +58,22 @@ public class NeedRes implements java.io.Serializable {
     public NeedRes(Date createDate, NeedResStatus status) {
         this.createDate = createDate;
         this.status = status;
+    }
+
+    public NeedRes(CustomerOrder customerOrder, NeedResType type) {
+        this.customerOrder = customerOrder;
+        this.type = type;
+        if (NeedResType.PRICE_CHANGE.equals(type)){
+            this.limitTime = customerOrder.getCreateDate();
+            this.createDate = customerOrder.getCreateDate();
+            this.reason = customerOrder.getMemo();
+            this.memo = customerOrder.getMemo();
+            this.fareByCustomer = false;
+            this.address = " ";
+            this.receivePerson = customerOrder.getCustomer().getName();
+            this.receiveTel = " ";
+            this.status = NeedResStatus.OUTED;
+        }
     }
 
     @Id

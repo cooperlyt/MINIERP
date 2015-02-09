@@ -27,7 +27,7 @@ public class OrderItem extends StoreResPriceEntity
 
     public enum OrderItemStatus {
 
-        CREATED, DISPATCHED, WAIT_PRICE, COMPLETED, REMOVED;
+        CREATED, DISPATCHED, WAIT_PRICE, COMPLETED, REMOVED
 
     }
 

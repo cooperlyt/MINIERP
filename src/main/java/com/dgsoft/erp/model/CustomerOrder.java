@@ -22,12 +22,12 @@ import java.util.*;
 public class CustomerOrder implements java.io.Serializable {
 
     public enum OrderPayType {
-        COMPLETE_PAY, PAY_FIRST, EXPRESS_PROXY, OVERDRAFT;
+        COMPLETE_PAY, PAY_FIRST, EXPRESS_PROXY, OVERDRAFT, PRICE_CHANGE
 
     }
 
     public enum ProxyReceiveType{
-        ANY_PROXY_RECEIVE,PROXY_MONEY,PROXY_CHECK;
+        ANY_PROXY_RECEIVE,PROXY_MONEY,PROXY_CHECK
     }
 
     private String id;

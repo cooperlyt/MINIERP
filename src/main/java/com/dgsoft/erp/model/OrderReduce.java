@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 public class OrderReduce implements Serializable {
 
     public enum ReduceType{
-        SYSTEM_TRUNC,OTHER_REDUCE;
+        SYSTEM_TRUNC,OTHER_REDUCE,PRICE_CHANGE
     }
 
     private String id;
@@ -37,6 +37,13 @@ public class OrderReduce implements Serializable {
     public OrderReduce(CustomerOrder customerOrder, BigDecimal money, ReduceType type) {
         this.customerOrder = customerOrder;
         this.money = money;
+        this.type = type;
+    }
+
+    public OrderReduce(String description, BigDecimal money, CustomerOrder customerOrder, ReduceType type) {
+        this.description = description;
+        this.money = money;
+        this.customerOrder = customerOrder;
         this.type = type;
     }
 
