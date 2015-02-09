@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.1.v201309091055 Build &lt;4.3.1.v20130917-1035></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140218-1056></property>
     <property name="units">in</property>
     <method name="initialize"><![CDATA[
 importPackage(Packages.java.lang);
@@ -659,6 +659,12 @@ it=orderItems.iterator();
                     <cell id="188">
                         <data id="251">
                             <property name="fontFamily">"SimHei"</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["REBATE"] == 100</expression>
+                                </structure>
+                            </list-property>
                             <property name="resultSetColumn">REBATE</property>
                         </data>
                     </cell>
@@ -739,7 +745,7 @@ it=orderItems.iterator();
                         <property name="rowSpan">1</property>
                         <label id="275">
                             <property name="fontFamily">"SimHei"</property>
-                            <text-property name="text">折扣(%)</text-property>
+                            <text-property name="text">折扣</text-property>
                         </label>
                     </cell>
                     <cell id="272">
@@ -1108,6 +1114,12 @@ it=orderItems.iterator();
                     <cell id="649">
                         <data id="650">
                             <property name="fontFamily">"SimHei"</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["REBATE"] == 100</expression>
+                                </structure>
+                            </list-property>
                             <property name="resultSetColumn">REBATE</property>
                         </data>
                     </cell>
@@ -1188,7 +1200,7 @@ it=orderItems.iterator();
                         <property name="rowSpan">1</property>
                         <label id="672">
                             <property name="fontFamily">"SimHei"</property>
-                            <text-property name="text">折扣(%)</text-property>
+                            <text-property name="text">折扣</text-property>
                         </label>
                     </cell>
                     <cell id="673">

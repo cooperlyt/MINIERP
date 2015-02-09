@@ -1,0 +1,212 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+
+    <ui:param name="functionTitle" value="#{messages.createOrder}-#{messages.orderItem}"/>
+
+    <ui:define name="func-body">
+
+
+
+        <h:outputStylesheet>
+            .barOrderNumber {
+                height: 14px;
+                width: 100px;
+            }
+        </h:outputStylesheet>
+
+
+
+        <rich:messages ajaxRendered="true" globalOnly="false"/>
+
+        <br/>
+        <h:form id="orderItemDetails">
+
+            <rich:panel>
+
+                <s:decorate template="/layout/seam-edit.xhtml">
+                    <ui:define name="label">#{messages.resCategory}</ui:define>
+                    <h:selectOneMenu value="#{resCategoryHome.id}" required="true" label="#{messages.resCategory}">
+
+                        <s:selectItems value="#{resCategoryList.saleResCategorys}" var="_category" label="#{_category.name}"
+                                       itemValue="#{_category.id}" noSelectionLabel="#{messages.noSelectLabel}"/>
+                        <a:ajax event="valueChange" listener="#{orderItemCreate.resCategorySelected}" render="categoryNextStep"
+                                execute="@this">
+                            <a:attachQueue requestDelay="0"/>
+                        </a:ajax>
+                    </h:selectOneMenu>
+                </s:decorate>
+
+                <a:outputPanel id="categoryNextStep">
+
+                    <a:outputPanel rendered="#{resCategoryHome.idDefined}">
+
+                        <s:decorate template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.res}</ui:define>
+                            <h:selectOneMenu value="#{resHome.id}" required="true"
+                                             label="#{messages.res}">
+                                <s:selectItems value="#{resCategoryHome.reses}" var="_res"
+                                               label="#{_res.name}" itemValue="#{_res.id}"
+                                               noSelectionLabel="#{messages.noSelectLabel}"/>
+                                <a:ajax event="valueChange" listener="#{orderItemCreate.resChange}" render="orderItemDetails">
+                                    <a:attachQueue requestDelay="0"/>
+                                </a:ajax>
+                            </h:selectOneMenu>
+                        </s:decorate>
+                    </a:outputPanel>
+
+                    <a:outputPanel rendered="#{not empty orderItemCreate.editingItem}">
+
+                        <ui:include src="/layout/erp/res/ResFormatsInput.xhtml">
+                            <ui:param name="required" value="true"/>
+                            <ui:param name="inputValue" value="#{orderItemCreate.editingItem}"/>
+                            <ui:param name="formatTemplate" value="/layout/seam-edit.xhtml"/>
+                            <ui:param name="showTitle" value="false"/>
+                        </ui:include>
+
+                        <a:region id="floatConvertRateRegion">
+
+                            <s:decorate template="/layout/seam-edit.xhtml">
+                                <ui:define name="label">
+                                    #{orderItemCreate.editingItem.res.unitGroup.name}
+                                </ui:define>
+
+                            <rich:autocomplete inputClass="floatConvertRateWidth" mode="client"
+
+                                               disabled="#{not empty orderItemCreate.editingItem.storeRes}"
+                                               value="#{orderItemCreate.editingItem.floatConvertRate}"
+                                               layout="div"
+                                               label="#{orderItemCreate.editingItem.res.unitGroup.name}#{messages.storeIn_field_floatConvertRate}"
+                                               required="true"
+                                               var="_value"
+                                               selectFirst="false"
+                                               fetchValue="#{_value}"
+                                               autocompleteList="#{orderItemCreate.editingItem.floatConvertRateHistory}"
+                                               showButton="true" converter="javax.faces.BigDecimal">
+                                <b>#{_value}</b>
+
+
+                            </rich:autocomplete>
+                            </s:decorate>
+                        </a:region>
+
+                        <s:decorate template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">
+                                #{messages.priceChangeMoney}
+                            </ui:define>
+                            <h:inputText value="#{orderItemCreate.editingItem.totalMoney}" label="#{messages.priceChangeMoney}">
+                                <f:convertNumber locale="#{calendarBean.locale}" currencySymbol=""
+                                                 type="currency" groupingUsed="false"/>
+                            </h:inputText>
+                        </s:decorate>
+
+                        <s:decorate template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.field_memo}</ui:define>
+                            <h:inputTextarea value="#{orderItemCreate.editingItem.memo}" cols="65"/>
+                        </s:decorate>
+
+                        <s:span styleClass="value">
+                            <a:commandButton value="#{messages.cancel}" immediate="true" execute="@this"
+                                             action="#{orderItemCreate.clear}" render="orderItemDetails">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+                        </s:span>
+                        <s:span styleClass="value">
+                            <a:commandButton value="#{messages.addItem}" execute="@form"
+                                             action="#{orderCreate.addOrderItem}"
+                                             data="#{needResHome.addOrderItemLastStatus}"
+                                             oncomplete="if (event.data == 'code_not_set')#{rich:component('newStoreResCodeInputPanel')}.show();"
+                                             render="orderItemListTable,orderItemDetails, orderTotalPrice,newStoreResCodeInputPanel_form">
+                                <a:attachQueue requestDelay="0"/>
+                            </a:commandButton>
+
+
+                        </s:span>
+                    </a:outputPanel>
+                </a:outputPanel>
+
+                <div style="clear:both"/>
+            </rich:panel>
+
+
+        </h:form>
+
+
+
+
+        <h:form>
+            <rich:dataTable id="orderItemListTable" style="width: 100%" value="#{orderNeedItems}"
+                            var="_item">
+                <f:facet name="header">
+                    #{messages.orderItems}
+                </f:facet>
+
+
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.orderItem}
+                    </f:facet>
+                    <a:outputPanel>
+
+                        <ui:include src="/layout/erp/StoreResTitle.xhtml">
+                            <ui:param name="storeRes" value="#{_item.storeRes}"/>
+                        </ui:include>
+                    </a:outputPanel>
+
+                    <f:facet name="footer">
+                        #{messages.recordTotal} #{orderNeedItems.size} #{messages.item}
+                    </f:facet>
+
+                </rich:column>
+
+
+
+
+
+                <rich:column style="text-align: right">
+                    <f:facet name="header">
+                        #{messages.orderItemTotalPrice}
+                    </f:facet>
+                    <h:outputText value="#{_item.totalMoney}">
+                        <f:convertNumber locale="#{calendarBean.locale}"
+                                         type="currency" groupingUsed="true"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="">
+                            <f:convertNumber locale="#{calendarBean.locale}"
+                                             type="currency" groupingUsed="true"/>
+                        </h:outputText>
+                    </f:facet>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        #{messages.field_memo}
+                    </f:facet>
+                    <rich:inplaceInput value="#{_item.memo}" style="width: 95%">
+                        <a:ajax event="blur" render="@none"/>
+                    </rich:inplaceInput>
+                </rich:column>
+
+                <rich:column style="text-align: center">
+                    <f:facet name="header">
+                    </f:facet>
+                    <a:commandButton image="/img/delete.png" render="orderItemListTable"
+                                     title="#{messages.remove}"
+                                     execute="@form" action="#{orderCreate.removeItem}">
+                        <a:attachQueue requestDelay="0"/>
+                    </a:commandButton>
+                </rich:column>
+            </rich:dataTable>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

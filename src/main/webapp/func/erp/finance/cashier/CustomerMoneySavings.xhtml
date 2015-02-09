@@ -45,6 +45,11 @@
             <s:link value="#{messages.DEPOSIT_BACK}" action="#{moneySaveHome.beginCustomerMoneyBack}"/>
         </rich:toolbarGroup>
 
+        <rich:toolbarGroup>
+            <h:graphicImage value="/img/money.png"/>
+            <s:link value="#{messages.PriceChangeOrder}"  view="/func/erp/finance/cashier/PriceChangeOrder.xhtml"/>
+        </rich:toolbarGroup>
+
     </rich:toolbar>
 </ui:define>
 
