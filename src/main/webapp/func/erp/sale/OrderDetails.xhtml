@@ -22,7 +22,7 @@
         </h:outputStylesheet>
 
         <rich:toolbar  height="34" itemSeparator="line">
-            <rich:toolbarGroup>
+            <rich:toolbarGroup rendered="#{not (orderHome.instance.payType eq 'PRICE_CHANGE')}">
                 <s:link target="_blank" view="/report/salePaper.xhtml"
                         rendered="#{s:hasRole('erp.sale.manager') or s:hasRole(orderHome.instance.customer.customerArea.role)}">
                     <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
@@ -37,7 +37,7 @@
 
             </rich:toolbarGroup>
 
-            <rich:toolbarGroup>
+            <rich:toolbarGroup rendered="#{not (orderHome.instance.payType eq 'PRICE_CHANGE')}">
                 <h:graphicImage value="/img/qq.png"/>
 
                 <a id="clip-button-id" href="#" data-clipboard-text="#{orderHome.toastMessages}" class="clipboard">

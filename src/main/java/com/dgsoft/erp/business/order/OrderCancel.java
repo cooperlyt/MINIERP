@@ -159,6 +159,20 @@ public class OrderCancel {
     }
 
     @Transactional
+    public void removePriceOrder(){
+        if (orderHome.isInAccount()) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "isInAccount");
+            return;
+        }
+        for (AccountOper ao : orderHome.getInstance().getAccountOpers()) {
+            ao.revertCustomerMoney();
+            orderHome.getEntityManager().remove(ao);
+        }
+        orderHome.getInstance().getAccountOpers().clear();
+        orderHome.remove();
+    }
+
+    @Transactional
     public void removeOrder() {
         if (orderHome.isInAccount()) {
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "isInAccount");

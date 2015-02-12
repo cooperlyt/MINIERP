@@ -147,5 +147,9 @@
         <action execute="#{inventoryList.refresh}"/>
     </event>
 
+    <event type="org.jboss.seam.afterTransactionSuccess.CustomerOrder">
+        <action execute="#{orderList.refresh}"/>
+    </event>
+
 
 </components>

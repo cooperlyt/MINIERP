@@ -71,7 +71,7 @@
 
 
 <a:outputPanel
-        rendered="#{s:hasRole('erp.sale.manager') or s:hasRole('erp.storage.dispatch') or s:hasRole('erp.sale.saler')}">
+        rendered="#{not (empty orderHome.instance.needReses) and (s:hasRole('erp.sale.manager') or s:hasRole('erp.storage.dispatch') or s:hasRole('erp.sale.saler'))}">
 
     <ui:include src="/layout/erp/OrderItemTable.xhtml">
         <ui:param name="orderItems" value="#{orderHome.allOrderItem}"/>
@@ -218,7 +218,7 @@
     </rich:dataTable>
 
     <br/>
-    <rich:dataTable style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
+    <rich:dataTable rendered="#{not (orderHome.instance.payType eq 'PRICE_CHANGE')}" style="width: 100%" value="#{allShipStoreResEntrySet}" var="_entry">
         <f:facet name="header">
             <rich:columnGroup>
                 <rich:column colspan="3">
@@ -255,7 +255,7 @@
     </rich:dataTable>
 
 
-    <a:repeat value="#{orderHome.instance.needResList}" var="_needRes">
+    <a:repeat rendered="#{not (orderHome.instance.payType eq 'PRICE_CHANGE')}" value="#{orderHome.instance.needResList}" var="_needRes">
         <br/>
         <rich:panel>
             <f:facet name="header">

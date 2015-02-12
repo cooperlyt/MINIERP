@@ -174,11 +174,19 @@
 
         <rich:column style="text-align: center;" width="30px">
 
+            <a:commandButton image="/img/delete.png" title="#{messages.delete}" immediate="true" execute="@this"
+                             action="#{orderCancel.removePriceOrder}"
+                             onclick="JavaScript:if(confirm('#{messages.deleteConfirm}')){}else{return false;}"
+                             render="dataListResult" rendered="#{_order.payType eq 'PRICE_CHANGE'}">
+                <a:param value="#{_order.id}" assignTo="#{orderHome.id}"/>
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+
 
             <a:commandButton image="/img/edit.png" title="#{messages.EditOrder}" immediate="true" execute="@this"
                              render="cancelOrderIdTitle,cancelOrderOperAction"
                              oncomplete="#{rich:component('cancelOrderOperSelectPanel')}.show()"
-                             rendered="#{(not _order.canceled)}">
+                             rendered="#{(not _order.canceled) and not (_order.payType eq 'PRICE_CHANGE')}">
 
                 <a:param value="#{_order.id}" assignTo="#{orderHome.id}"/>
                 <a:attachQueue requestDelay="0"/>
@@ -186,7 +194,7 @@
 
 
             <s:link action="#{orderCreate.createCloneOrder}" propagation="begin" includePageParams="true"
-                    rendered="#{_order.canceled}">
+                    rendered="#{_order.canceled and not (_order.payType eq 'PRICE_CHANGE')}">
                 <s:graphicImage value="/img/undo.png" title="#{messages.reCreateOrder}"/>
                 <f:param name="cloneOrderId" value="#{_order.id}"/>
                 <f:param name="cloneCustomerAreaId" value="#{_order.customer.customerArea.id}"/>
