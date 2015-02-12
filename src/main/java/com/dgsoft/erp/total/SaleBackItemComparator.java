@@ -19,14 +19,14 @@ public class SaleBackItemComparator implements Comparator<StoreResPriceEntity> {
     public int compare(StoreResPriceEntity o1, StoreResPriceEntity o2) {
         Date o1Date;
         if (o1 instanceof OrderItem) {
-            o1Date = ((OrderItem) o1).getDispatch().getStockChange().getOperDate();
+            o1Date = ((OrderItem) o1).getNeedRes().getCustomerOrder().getCreateDate();
         } else {
             o1Date = ((BackItem) o1).getDispatch().getStockChange().getOperDate();
         }
 
         Date o2Date;
         if (o2 instanceof OrderItem) {
-            o2Date = ((OrderItem) o2).getDispatch().getStockChange().getOperDate();
+            o2Date = ((OrderItem) o2).getNeedRes().getCustomerOrder().getCreateDate();
         } else {
             o2Date = ((BackItem) o2).getDispatch().getStockChange().getOperDate();
         }

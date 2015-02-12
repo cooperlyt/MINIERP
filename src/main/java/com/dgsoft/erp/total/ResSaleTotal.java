@@ -31,10 +31,24 @@ public class ResSaleTotal {
     @In(create = true)
     private SearchDateArea searchDateArea;
 
+    private boolean conationPriceOrder = false;
+
+    public boolean isConationPriceOrder() {
+        return conationPriceOrder;
+    }
+
+    public void setConationPriceOrder(boolean conationPriceOrder) {
+        this.conationPriceOrder = conationPriceOrder;
+    }
+
     private Map<Res, ResSaleTotalResult> resultData;
 
     private static final String SALE_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(oi.money * oi.saleCount)) " +
             " from OrderItem oi where oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate group by oi.storeRes";
+
+    private static final String SALE_DATA_SQL_NO_PRICE = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(oi.money * oi.saleCount)) " +
+            " from OrderItem oi where oi.needRes.customerOrder.payType <> 'PRICE_CHANGE' and oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate group by oi.storeRes";
+
 
 
     private static final String REBATE_DATA_SQL = "select new com.dgsoft.erp.total.data.ResRebateTotalData(rsr.res,sum(rsr.rebateCount),sum(rsr.rebateMoney)) " +
@@ -46,7 +60,14 @@ public class ResSaleTotal {
     private void total() {
         resultData = new HashMap<Res, ResSaleTotalResult>();
 
-        List<StoreResSaleTotalData> saleTotal = erpEntityLoader.getEntityManager().createQuery(SALE_DATA_SQL, StoreResSaleTotalData.class)
+        String saleSQL;
+        if (conationPriceOrder){
+            saleSQL = SALE_DATA_SQL;
+        }else{
+            saleSQL = SALE_DATA_SQL_NO_PRICE;
+        }
+
+        List<StoreResSaleTotalData> saleTotal = erpEntityLoader.getEntityManager().createQuery(saleSQL, StoreResSaleTotalData.class)
                 .setParameter("beginDate", searchDateArea.getDateFrom())
                 .setParameter("endDate", searchDateArea.getSearchDateTo()).getResultList();
 

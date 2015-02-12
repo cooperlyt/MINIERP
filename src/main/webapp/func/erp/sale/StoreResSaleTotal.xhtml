@@ -68,6 +68,11 @@
                     </rich:calendar>
                 </s:decorate>
 
+                <s:decorate template="/layout/seam-display.xhtml">
+                    <ui:define name="label">#{messages.containPriceOrder}</ui:define>
+                    <h:selectBooleanCheckbox value="#{resSaleTotal.conationPriceOrder}"/>
+                </s:decorate>
+
 
                 <div style="clear:both"/>
 

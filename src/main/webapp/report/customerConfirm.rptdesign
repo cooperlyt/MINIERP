@@ -474,12 +474,12 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
 	item = sIt.next();
 	row['STORE_RES'] = resHelper.generateStoreResTitle(item.getStoreRes(),true);
 	if (item instanceof com.dgsoft.erp.model.OrderItem){
-		row['OUT_DATE'] = item.getDispatch().getSendTime();
-		row['GROUP_ID'] = item.getDispatch().getNeedRes().getCustomerOrder().getId();
+		row['OUT_DATE'] = item.getNeedRes().getCustomerOrder().getCreateDate();
+		row['GROUP_ID'] = item.getNeedRes().getCustomerOrder().getId();
 		row['IS_SALE_GROUP'] = true;
 		row['OPER_TYPE'] = '订单发货';
-		row['GROUP_REBATE'] = item.getDispatch().getNeedRes().getCustomerOrder().getTotalRebateMoney();
-		row['GROUP_MONEY'] = item.getDispatch().getNeedRes().getCustomerOrder().getMoney(); 
+		row['GROUP_REBATE'] = item.getNeedRes().getCustomerOrder().getTotalRebateMoney();
+		row['GROUP_MONEY'] = item.getNeedRes().getCustomerOrder().getMoney(); 
 	}else{
 		row['OUT_DATE'] = item.getDispatch().getStockChange().getOperDate();
 		row['GROUP_ID'] = item.getDispatch().getOrderBack().getId();
@@ -502,6 +502,66 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
 	return true;
 }else
 	return false;]]></method>
+        </script-data-set>
+        <script-data-set name="Data Set" id="1667">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">0</property>
+                    <property name="name">PRICE_DATE</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">PRICE_MEMO</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">PRICE_MONEY</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">PRICE_DATE</property>
+                </structure>
+                <structure>
+                    <property name="columnName">PRICE_MEMO</property>
+                </structure>
+                <structure>
+                    <property name="columnName">PRICE_MONEY</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">PRICE_DATE</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">PRICE_MEMO</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">PRICE_MONEY</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <method name="open"><![CDATA[psIt = customerResConfirmTotal.getPriceOrder().iterator();]]></method>
+            <method name="fetch"><![CDATA[if (psIt.hasNext()){
+	item = psIt.next();
+	row['PRICE_DATE'] = item.getCreateDate();
+	row['PRICE_MEMO'] = item.getMemo();
+	row['PRICE_MONEY'] = item.getMoney();
+	return true;
+	}else{
+	return false;
+	}]]></method>
         </script-data-set>
     </data-sets>
     <styles>
@@ -2572,6 +2632,182 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
             </footer>
         </table>
         <text id="54">
+            <property name="fontFamily">"SimSun"</property>
+            <property name="textAlign">center</property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<br/>
+<H3>
+<B>
+调价订单
+</B>
+</H3>]]></text-property>
+        </text>
+        <table id="1668">
+            <property name="fontFamily">"SimSun"</property>
+            <property name="width">11.11111111111111in</property>
+            <property name="dataSet">Data Set</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">PRICE_DATE</property>
+                    <text-property name="displayName">PRICE_DATE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PRICE_DATE"]</expression>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="name">PRICE_MEMO</property>
+                    <text-property name="displayName">PRICE_MEMO</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PRICE_MEMO"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">PRICE_MONEY</property>
+                    <text-property name="displayName">PRICE_MONEY</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PRICE_MONEY"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <column id="1687">
+                <property name="width">2.0694444444444446in</property>
+            </column>
+            <column id="1688">
+                <property name="width">6.944444444444445in</property>
+            </column>
+            <column id="1689">
+                <property name="width">2.0972222222222223in</property>
+            </column>
+            <header>
+                <row id="1669">
+                    <cell id="1670">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="1671">
+                            <text-property name="text">日期</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1672">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="1673">
+                            <text-property name="text">描述</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1674">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="1675">
+                            <text-property name="text">金额</text-property>
+                        </label>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="1676">
+                    <cell id="1677">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1678">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Long Date</property>
+                                <property name="pattern">Long Date</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="resultSetColumn">PRICE_DATE</property>
+                        </data>
+                    </cell>
+                    <cell id="1679">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1680">
+                            <property name="resultSetColumn">PRICE_MEMO</property>
+                        </data>
+                    </cell>
+                    <cell id="1681">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1682">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
+                                <property name="locale">zh_Hans_CN</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">PRICE_MONEY</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="1683">
+                    <cell id="1684">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="1685">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="1686">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                </row>
+            </footer>
+        </table>
+        <text id="1690">
             <property name="fontFamily">"SimSun"</property>
             <property name="textAlign">center</property>
             <property name="contentType">html</property>

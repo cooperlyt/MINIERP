@@ -628,17 +628,17 @@ public class AccountOper implements java.io.Serializable {
                 }
                 break;
             case ORDER_PAY:
-                if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) {
+                if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) != 0) {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ad.ORDER_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.advance") + getCustomer().getId(), getAdvanceReceivable(), BigDecimal.ZERO));
                 }
-                if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
+                if (getAccountsReceivable().compareTo(BigDecimal.ZERO) != 0) {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.ORDER_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable(), BigDecimal.ZERO));
                 }
-                if (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0) {
+                if (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) != 0) {
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.pac.ORDER_PAY"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + getCustomer().getId(), getProxcAccountsReceiveable(), BigDecimal.ZERO));

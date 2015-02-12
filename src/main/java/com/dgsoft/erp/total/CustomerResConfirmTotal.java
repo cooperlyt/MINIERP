@@ -38,18 +38,24 @@ public class CustomerResConfirmTotal {
 
 
     private static final String ORDER_TEIM_EJBQL = "select orderItem from OrderItem orderItem " +
-            "left join fetch orderItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
+
             "left join fetch orderItem.storeRes storeRes left join fetch storeRes.res res " +
-            "left join fetch res.unitGroup unitGroup left join fetch dispatch.stockChange " +
+            "left join fetch res.unitGroup unitGroup " +
             "left join fetch orderItem.needRes needRes left join fetch needRes.customerOrder customerOrder " +
             "left join fetch customerOrder.customer customer left join fetch customer.customerArea " +
 
             "left join fetch customer.customerLevel " +
             "where orderItem.needRes.customerOrder.canceled = false " +
+            "and orderItem.needRes.customerOrder.payType <> 'PRICE_CHANGE' " +
             //"and orderItem.status = 'COMPLETED' " +
             //"and orderItem.needRes.customerOrder.allStoreOut = true " +
-            "and orderItem.dispatch.sendTime >= :dateFrom and orderItem.dispatch.sendTime <= :searchDateTo " +
-            "and orderItem.dispatch.needRes.customerOrder.customer.id = :customerId";
+            "and orderItem.needRes.customerOrder.createDate >= :dateFrom and orderItem.needRes.customerOrder.createDate <= :searchDateTo " +
+            "and orderItem.needRes.customerOrder.customer.id = :customerId";
+
+    private static final String PRICE_ORDER_ITEM_EJBQL = "select customerOrder from CustomerOrder customerOrder " +
+            "where customerOrder.canceled = false AND customerOrder.payType = 'PRICE_CHANGE' " +
+            "and customerOrder.createDate >= :dateFrom and customerOrder.createDate <= :searchDateTo " +
+            "and customerOrder.customer.id = :customerId";
 
     private static final String ACCOUNT_MONETY_EJBQL = "select accountOper from AccountOper accountOper where " +
             "(accountOper.operType in ('DEPOSIT_BACK', 'PROXY_SAVINGS','CUSTOMER_SAVINGS','MONEY_FREE','ORDER_PAY') " +
@@ -94,6 +100,12 @@ public class CustomerResConfirmTotal {
 
     public List<AccountOper> getAccountOpers() {
         return accountOpers;
+    }
+
+    public List<CustomerOrder> getPriceOrder(){
+        return erpEntityManager.createQuery(PRICE_ORDER_ITEM_EJBQL,CustomerOrder.class).setParameter("dateFrom", searchDateArea.getDateFrom())
+                .setParameter("searchDateTo", searchDateArea.getSearchDateTo())
+                .setParameter("customerId", getCustomerId()).getResultList();
     }
 
     public boolean setAccountConfirmDate(int year, int month) {
@@ -176,7 +188,7 @@ public class CustomerResConfirmTotal {
         Map<String, BigDecimal> backMoneyMap = new HashMap<String, BigDecimal>();
         for (StoreResPriceEntity entity : getResultList()) {
             if (entity instanceof OrderItem) {
-                CustomerOrder order = ((OrderItem) entity).getDispatch().getNeedRes().getCustomerOrder();
+                CustomerOrder order = ((OrderItem) entity).getNeedRes().getCustomerOrder();
                 saleMoneyMap.put(order.getId(), order.getMoney());
             } else if (entity instanceof BackItem) {
                 OrderBack orderBack = ((BackItem) entity).getOrderBack();
