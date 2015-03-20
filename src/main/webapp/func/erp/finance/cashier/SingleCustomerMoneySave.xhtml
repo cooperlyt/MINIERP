@@ -97,7 +97,7 @@
                             template="/layout/seam-edit.xhtml">
                     <ui:define name="label">#{(moneySaveHome.editingOper.operType eq 'DEPOSIT_BACK') ? messages.OutMoney :  messages.ComeMoney}</ui:define>
                     <h:inputText value="#{moneySaveHome.instance.money}"
-                                 label="#{messages.ComeMoney}"
+                                 label="#{messages.ComeMoney}" autocomplete="off"
                                  converter="javax.faces.BigDecimal" required="true">
                         <f:validateDoubleRange minimum="0.01"/>
                         <a:ajax event="blur" execute="@this" listener="#{moneySaveHome.calcRemitFee}"
@@ -112,7 +112,7 @@
                             template="/layout/seam-edit.xhtml">
                     <ui:define name="label">#{messages.ReceiveAccountMoney}</ui:define>
                     <h:inputText value="#{moneySaveHome.editingOper.accountsReceivable}"
-                                 label="#{messages.ReceiveAccountMoney}"
+                                 label="#{messages.ReceiveAccountMoney}" autocomplete="off"
                                  converter="javax.faces.BigDecimal" required="true">
                         <f:validateDoubleRange minimum="0.01"/>
                         <a:ajax event="blur" execute="@this" listener="#{moneySaveHome.calcRemitFee}"
@@ -128,7 +128,7 @@
                         <ui:define name="label">
                             #{messages.accountOper_field_fee}
                         </ui:define>
-                        <h:outputText value="#{moneySaveHome.instance.remitFee}">
+                        <h:outputText value="#{moneySaveHome.instance.remitFee}" autocomplete="off">
                             <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                         </h:outputText>
                         <h:outputText value="( #{messages.ReceiveAccountMoney} - #{messages.ComeMoney})"

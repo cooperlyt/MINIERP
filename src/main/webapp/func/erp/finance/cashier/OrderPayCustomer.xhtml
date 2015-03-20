@@ -67,7 +67,7 @@
                             <ui:define name="label">#{messages.ComeMoney}</ui:define>
                             <h:inputText value="#{payByOrder.instance.money}"
                                          label="#{messages.ComeMoney}"
-                                         required="true"
+                                         required="true" autocomplete="off"
                                          converter="javax.faces.BigDecimal">
                                 <f:validateDoubleRange minimum="0"/>
                                 <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
@@ -82,7 +82,7 @@
                             <ui:define name="label">#{messages.ReceiveAccountMoney}</ui:define>
                             <h:inputText value="#{payByOrder.editingOper.accountsReceivable}"
                                          label="#{messages.ReceiveAccountMoney}"
-                                         required="true"
+                                         required="true" autocomplete="off"
                                          converter="javax.faces.BigDecimal">
                                 <f:validateDoubleRange minimum="0.01"/>
                                 <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
@@ -97,7 +97,7 @@
                                 <ui:define name="label">
                                     #{messages.accountOper_field_fee}
                                 </ui:define>
-                                <h:outputText value="#{payByOrder.instance.remitFee}">
+                                <h:outputText value="#{payByOrder.instance.remitFee}" autocomplete="off">
                                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                                 </h:outputText>
                                 <h:outputText value="( #{messages.ReceiveAccountMoney} - #{messages.ComeMoney})"/>
