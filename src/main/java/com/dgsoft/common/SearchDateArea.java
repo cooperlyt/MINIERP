@@ -4,6 +4,7 @@ import org.jboss.seam.annotations.Name;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -115,5 +116,11 @@ public class SearchDateArea {
             query.setParameter("dateTo", getSearchDateTo());
         }
         return query;
+    }
+
+    public String getDisplay(){
+        SimpleDateFormat sFormat = new SimpleDateFormat("yyyy年MM月dd日");
+        return sFormat.format(dateFrom) + "-" + sFormat.format(dateTo);
+
     }
 }
