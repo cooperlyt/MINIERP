@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -347,7 +348,7 @@ public class InventoryItems {
                         df.setGroupingUsed(false);
                         df.setRoundingMode(RoundingMode.HALF_UP);
                         render.cell(row, col++, df.format(value.getStoreRes().getFloatConversionRate()) + value.getStoreRes().getRes().getUnitGroup().getName());
-                    }else{
+                    } else {
                         col++;
 
                     }
@@ -385,20 +386,20 @@ public class InventoryItems {
                 @Override
                 public int wirteTotal(int row, int beginCol, SeasonStockChangeTotalData value, TotalDataGroup.GroupKey<?> key, ExportRender render, int childCount) {
 
-                    if (childCount <= 1){
+                    if (childCount <= 1) {
                         return row;
                     }
                     int col = beginCol;
                     //render.cell(row , col++ , "TOTAL:");
 
-                    if (key instanceof Res){
-                        render.cell(row,beginCol,row,beginCol + 2,messages.get("Total"));
+                    if (key instanceof Res) {
+                        render.cell(row, beginCol, row, beginCol + 2, messages.get("Total"));
                         col = col + 3;
-                    }else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey){
+                    } else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey) {
                         if (!value.getRes().getUnitGroup().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
                             return row;
                         }
-                        render.cell(row,beginCol,row,beginCol + 1,messages.get("GroupTotal"));
+                        render.cell(row, beginCol, row, beginCol + 1, messages.get("GroupTotal"));
                         col = col + 2;
                     }
 
@@ -436,11 +437,11 @@ public class InventoryItems {
                 public void wirteKey(int row, int col, int toRow, int toCol, TotalDataGroup.GroupKey<?> key, ExportRender render) {
                     String title;
 
-                    if (key instanceof Res){
+                    if (key instanceof Res) {
                         title = ((Res) key).getName();
-                    }else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey){
+                    } else if (key instanceof ResFormatGroupStrategy.StoreResFormatKey) {
                         title = ((ResFormatGroupStrategy.StoreResFormatKey) key).getFormatTitle();
-                    }else{
+                    } else {
                         title = "Not Difine";
                     }
                     render.cell(row, col, toRow, toCol, title);
@@ -449,46 +450,55 @@ public class InventoryItems {
                 @Override
                 public int wirteHeader(ExportRender render) {
 
-                    render.cell(0,0,1,2,messages.get("StoreRes"));
-                    render.cell(0,3,1,6,messages.get("SeasonBiginCount"));
+
+
+                    render.cell(1, 0, 2, 2, messages.get("StoreRes"));
+                    render.cell(1, 3, 2, 6, messages.get("SeasonBiginCount"));
                     int col = 6;
-                    render.cell(0,col + 1,0,col + getStoreInTypes().size() * 4 + 4,messages.get("storeIn"));
+                    render.cell(1, col + 1, 1, col + getStoreInTypes().size() * 4 + 4, messages.get("storeIn"));
 
                     for (StockChange.StoreChangeType type : getStoreInTypes()) {
-                        render.cell(1,col + 1,1,col + 4,messages.get(type.name()));
+                        render.cell(2, col + 1, 2, col + 4, messages.get(type.name()));
                         col = col + 4;
                     }
 
-                    render.cell(1,col + 1,1,col +4,messages.get("GroupTotal"));
+                    render.cell(2, col + 1, 2, col + 4, messages.get("GroupTotal"));
                     col = col + 4;
 
-                    render.cell(0,col + 1,0,col + getStoreOutTypes().size() * 4 + getAllocationOutStores().size() * 4 + 4,messages.get("storeOut") );
-                    for (StockChange.StoreChangeType type : getStoreOutTypes()){
-                        render.cell(1,col + 1,1, col + 4,messages.get(type.name()));
+                    render.cell(1, col + 1, 1, col + getStoreOutTypes().size() * 4 + getAllocationOutStores().size() * 4 + 4, messages.get("storeOut"));
+                    for (StockChange.StoreChangeType type : getStoreOutTypes()) {
+                        render.cell(2, col + 2, 2, col + 4, messages.get(type.name()));
                         col = col + 4;
                     }
 
-                    for(Store store: getAllocationOutStores()){
-                        render.cell(1,col + 1, 1, col +4,messages.get("AllocationTo") + store.getName());
+                    for (Store store : getAllocationOutStores()) {
+                        render.cell(2, col + 1, 2, col + 4, messages.get("AllocationTo") + store.getName());
                         col = col + 4;
                     }
-                    render.cell(1,col + 1,1,col +4 ,messages.get("GroupTotal"));
+                    render.cell(2, col + 1, 2, col + 4, messages.get("GroupTotal"));
                     col = col + 4;
-                    render.cell(0,col + 1,1,col +4 ,messages.get("InventoryLastCount"));
+                    render.cell(1, col + 1, 2, col + 4, messages.get("InventoryLastCount"));
                     col = col + 4;
-                    render.cell(0,col + 1,1,col +4 ,messages.get("STORE_CHECK_ADD"));
+                    render.cell(1, col + 1, 2, col + 4, messages.get("STORE_CHECK_ADD"));
                     col = col + 4;
-                    render.cell(0,col + 1,1,col +4 ,messages.get("STORE_CHECK_LOSS"));
+                    render.cell(1, col + 1, 2, col + 4, messages.get("STORE_CHECK_LOSS"));
                     col = col + 4;
-                    render.cell(0,col + 1,1,col +4 ,messages.get("InventoryEndCount"));
+                    render.cell(1, col + 1, 2, col + 4, messages.get("InventoryEndCount"));
                     col = col + 4;
-                    return 2;
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
+                    render.cell(0,0,0,col,inventoryHome.getInstance().getStore().getName() +
+                            "(" + dateFormat.format(inventoryHome.getBeforInventoryDate()) + messages.get("to") +
+                            dateFormat.format(inventoryHome.getInstance().getCheckDate())  + ")" + messages.get("invertory_grid"));
+                    return 3;
                 }
 
             }, new ExcelExportRender(inventoryHome.getInstance().getStore().getName() + messages.get("Inventory")), externalContext.getResponseOutputStream());
             facesContext.responseComplete();
         } catch (IOException e) {
-            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"ExportIOError");
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "ExportIOError");
             Logging.getLog(getClass()).error("export error", e);
         }
     }
@@ -571,9 +581,15 @@ public class InventoryItems {
             List<AllocationOutGroup> aoDatas = erpEntityLoader.getEntityManager().createQuery("select new com.dgsoft.erp.model.api.AllocationOutGroup(item.storeRes.id,item.stockChange.allocation.inStore,sum(item.count)) from StockChangeItem item where item.stockChange.operType = 'ALLOCATION_OUT' and item.stockChange.operDate > :beginDate and item.stockChange.operDate <= :endDate and item.stockChange.allocation.outStore.id = :storeId group by item.storeRes.id,item.stockChange.allocation.inStore", AllocationOutGroup.class).
                     setParameter("beginDate", inventoryHome.getBeforInventoryDate()).setParameter("endDate", inventoryHome.getInstance().getCheckDate()).
                     setParameter("storeId", inventoryHome.getInstance().getStore().getId()).getResultList();
-            Map<String, AllocationOutGroup> aoDataMap = new HashMap<String, AllocationOutGroup>();
+            Map<String, List<AllocationOutGroup>> aoDataMap = new HashMap<String, List<AllocationOutGroup>>();
             for (AllocationOutGroup ao : aoDatas) {
-                aoDataMap.put(ao.getStoreResId(), ao);
+                Logging.getLog(getClass()).debug("add:" + ao.getStoreResId() + "-" + ao.getMastCount());
+                List<AllocationOutGroup> aom = aoDataMap.get(ao.getStoreResId());
+                if (aom == null) {
+                    aom = new ArrayList<AllocationOutGroup>();
+                    aoDataMap.put(ao.getStoreResId(), aom);
+                }
+                aom.add(ao);
             }
 
 
@@ -587,9 +603,10 @@ public class InventoryItems {
                         newGroupData.putChange(entry.getKey(), new StoreResCount(item.getStock().getStoreRes(), entry.getValue()));
                     }
                 }
-                AllocationOutGroup aoGroup = aoDataMap.get(newGroupData.getStoreRes().getId());
+                List<AllocationOutGroup> aoGroup = aoDataMap.get(newGroupData.getStoreRes().getId());
                 if (aoGroup != null) {
-                    newGroupData.putAllocationOutChange(aoGroup.getStore(), new StoreResCount(item.getStock().getStoreRes(), aoGroup.getMastCount()));
+                    for (AllocationOutGroup ao : aoGroup)
+                        newGroupData.putAllocationOutChange(ao.getStore(), new StoreResCount(item.getStock().getStoreRes(), ao.getMastCount()));
                 }
             }
 
@@ -771,8 +788,12 @@ public class InventoryItems {
             }
             count = count.add(changeCount);
 
+
             storeAllocationOutCounts.put(store, count);
+
             storesMap.put(store.getId(), store);
+
+            Logging.getLog(getClass()).debug("put Allocation:" + store.getId() + "|count:" + count.getMasterCount());
         }
 
         public void putChange(StockChange.StoreChangeType type, ResCount changeCount) {

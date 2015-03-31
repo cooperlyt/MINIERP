@@ -51,21 +51,37 @@
 <s:div styleClass="info">
 
 <p>
-    <strong>MINIERP 2.3.7 Bate 已发布</strong> #{' '} 更新内容如下:
+    <strong>MINIERP 2.3.8 Bate 已发布</strong> #{' '} 更新内容如下:
 </p>
 <ul class="bullets">
-    <li>[仓库] 修正盘点查看错误</li>
-    <li>[仓库] 更改仓库货品出入库汇总为根据盘点</li>
-    <li>[销售] 客户货品往来按客户分组</li>
-    <li>[销售] 修改货品销售统计显示和导入格式</li>
-    <li>[销售] 修改客户往来对帐单</li>
-    <li>[销售] 修改销售小票</li>
-    <li>[销售] 加入调价订单功能</li>
+    <li>[仓库] 修正盘点表调拨显示错误</li>
+    <li>[仓库] 盘点表导出标题</li>
+
 </ul>
 
 <strong>历史更新</strong>
 
     <div style="clear: both;"/>
+
+
+
+    <s:decorate template="/layout/view-details.xhtml">
+        <ui:param value="2.3.7" name="openLabel"/>
+        <ul class="bullets">
+            <li>[仓库] 修正盘点查看错误</li>
+            <li>[仓库] 更改仓库货品出入库汇总为根据盘点</li>
+            <li>[销售] 客户货品往来按客户分组</li>
+            <li>[销售] 修改货品销售统计显示和导入格式</li>
+            <li>[销售] 修改客户往来对帐单</li>
+            <li>[销售] 修改销售小票</li>
+            <li>[销售] 加入调价订单功能</li>
+        </ul>
+    </s:decorate>
+
+    <div style="clear: both;"/>
+
+
+
     <s:decorate template="/layout/view-details.xhtml">
         <ui:param value="2.3.6" name="openLabel"/>
         <ul class="bullets">
