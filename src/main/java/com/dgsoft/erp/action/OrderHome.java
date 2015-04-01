@@ -731,10 +731,12 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
         calcMoneys();
 
         if (!isMoneyChanged()) {
+            Logging.getLog(getClass()).debug("not isMoneyChanged");
             return true;
         }
 
         if (!isMoneyCanChange()) {
+            Logging.getLog(getClass()).debug("not isMoneyCanChange");
             return false;
         }
 
@@ -751,12 +753,15 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 
     public boolean isMoneyChanged() {
         AccountOper accountOper = getInstance().getAccountOper();
-        if (accountOper == null)
+        if (accountOper == null){
+            Logging.getLog(getClass()).debug("accountOper is null");
             return getInstance().getMoney().compareTo(BigDecimal.ZERO) != 0;
+        }
+
 
         return getInstance().getPayType().equals(CustomerOrder.OrderPayType.EXPRESS_PROXY) ?
-                (accountOper.getProxcAccountsReceiveable().equals(getInstance().getMoney()) && (accountOper.getAccountsReceivable().compareTo(BigDecimal.ZERO) == 0)) :
-                (accountOper.getAccountsReceivable().equals(getInstance().getMoney()) && (accountOper.getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) == 0));
+                !(accountOper.getProxcAccountsReceiveable().equals(getInstance().getMoney()) && (accountOper.getAccountsReceivable().compareTo(BigDecimal.ZERO) == 0)) :
+                !(accountOper.getAccountsReceivable().equals(getInstance().getMoney()) && (accountOper.getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) == 0));
     }
 
     public boolean isMoneyCanChange() {
