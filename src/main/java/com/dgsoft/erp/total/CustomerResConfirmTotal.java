@@ -203,7 +203,7 @@ public class CustomerResConfirmTotal {
 
         BigDecimal backMoney = BigDecimal.ZERO;
         for (BigDecimal money : backMoneyMap.values()) {
-            backMoney = saleMoney.add(money);
+            backMoney = backMoney.add(money);
         }
         return new ResTotalMoney(saleMoney, backMoney);
     }
