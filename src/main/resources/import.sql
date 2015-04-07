@@ -258,6 +258,11 @@ VALUES ('erp.product.factoryMgr', '工厂管理', 'erp.produce.mgr', '', '/func/
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES
   ('erp.product.factoryGroup', '生厂小组管理', 'erp.produce.mgr', '', '/func/erp/product/ProductGroupMgr.seam', '', '2', '');
 
+
+INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES
+  ('erp.search.giftsTotal', '赠品统计', 'erp.search', '', '/func/erp/sale/GiftsTotal.seam', '', '300',
+   '');
+
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES
   ('erp.search.customerShip', '客户货品往来明细', 'erp.search', '', '/func/erp/sale/SaleCustomerShipReport.seam', '', '400',
    '');
@@ -278,6 +283,7 @@ INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIO
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO) VALUES
   ('erp.search.deliveryFareSearch', '运费查询', 'erp.search', '', '/func/erp/sale/DeliveryFareSearch.seam', '', '530',
    '');
+
 
 INSERT INTO DG_SYSTEM.FUNCTION (ID, NAME, CATEGORY, ICON, LOCATION, BANNER, PRIORITY, MEMO)
 VALUES ('erp.total.customerBalance', '客户帐户分析', 'erp.total', '', '/func/erp/total/customerMoney.seam', '', '100', '');
@@ -375,6 +381,9 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', '
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.search.customerMoneyReport');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.sale.customerOper');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'system.processInstanceMgr');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.search.giftsTotal');
+
+
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.total.orderMoneyChart');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.saler', 'erp.search.storeResSaleTotal');
@@ -398,6 +407,7 @@ INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager',
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.search.deliveryFareSearch');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.total.procedureSaleChart');
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.total.resYearChart');
+INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.sale.manager', 'erp.search.giftsTotal');
 
 INSERT INTO DG_SYSTEM.ROLE_FUNCTION (ROL_ID, FUN_ID) VALUES ('erp.storage.dispatch','erp.store.stockSearch');
 

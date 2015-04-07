@@ -51,16 +51,27 @@
 <s:div styleClass="info">
 
 <p>
-    <strong>MINIERP 2.3.8 Bate 已发布</strong> #{' '} 更新内容如下:
+    <strong>MINIERP 2.3.9 Bate 已发布</strong> #{' '} 更新内容如下:
 </p>
 <ul class="bullets">
-    <li>[仓库] 修正盘点表调拨显示错误</li>
-    <li>[仓库] 盘点表导出标题</li>
-    <li>[销售] 修正订单价格修改后客户余额不同步修改错误</li>
+    <li>[销售] 调整客户往来对帐单</li>
+    <li>[销售] 新增"赠品统计"功能</li>
 
 </ul>
 
 <strong>历史更新</strong>
+    <div style="clear: both;"/>
+
+
+
+    <s:decorate template="/layout/view-details.xhtml">
+        <ui:param value="2.3.8" name="openLabel"/>
+        <ul class="bullets">
+            <li>[仓库] 修正盘点表调拨显示错误</li>
+            <li>[仓库] 盘点表导出标题</li>
+            <li>[销售] 修正订单价格修改后客户余额不同步修改错误</li>
+        </ul>
+    </s:decorate>
 
     <div style="clear: both;"/>
 

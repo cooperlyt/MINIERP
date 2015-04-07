@@ -34,6 +34,7 @@
     <file url="file://$PROJECT_DIR$/design/database/Update2.3.0.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2.3.7.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2.3.8.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/design/database/Update2.3.9.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2_0.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/Update2_0_3.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/design/database/resParamAdd.sql" dialect="MySQL" />
