@@ -34,7 +34,7 @@ public class CustomerMoneyOperList extends ErpEntityQuery<AccountOper> {
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
         setRestrictionLogicOperator("and");
         setMaxResults(25);
-        setOrderColumn("accountOper.operDate");
+        setOrderColumn("accountOper.createDate");
     }
 
 

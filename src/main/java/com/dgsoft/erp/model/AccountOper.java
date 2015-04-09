@@ -82,6 +82,7 @@ public class AccountOper implements java.io.Serializable {
     private String operEmp;
     private AccountOperType operType;
     private Date operDate;
+    private Date createDate;
     private String description;
 
     private BigDecimal advanceReceivable;
@@ -108,6 +109,7 @@ public class AccountOper implements java.io.Serializable {
         this.advanceReceivable = BigDecimal.ZERO;
         this.accountsReceivable = BigDecimal.ZERO;
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
+        this.createDate = new Date();
     }
 
     public AccountOper(AccountOperType operType, String operEmp, Customer customer) {
@@ -117,6 +119,7 @@ public class AccountOper implements java.io.Serializable {
         this.advanceReceivable = BigDecimal.ZERO;
         this.accountsReceivable = BigDecimal.ZERO;
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
+        this.createDate = new Date();
     }
 
     public AccountOper(AccountOperType operType, String operEmp) {
@@ -125,6 +128,7 @@ public class AccountOper implements java.io.Serializable {
         this.advanceReceivable = BigDecimal.ZERO;
         this.accountsReceivable = BigDecimal.ZERO;
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
+        this.createDate = new Date();
     }
 
     public AccountOper(MoneySave moneySave, AccountOperType operType, Customer customer, String operEmp) {
@@ -135,6 +139,7 @@ public class AccountOper implements java.io.Serializable {
         this.advanceReceivable = BigDecimal.ZERO;
         this.accountsReceivable = BigDecimal.ZERO;
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
+        this.createDate = new Date();
     }
 
     public AccountOper(MoneySave moneySave, AccountOperType operType, String operEmp) {
@@ -144,6 +149,7 @@ public class AccountOper implements java.io.Serializable {
         this.advanceReceivable = BigDecimal.ZERO;
         this.accountsReceivable = BigDecimal.ZERO;
         this.proxcAccountsReceiveable = BigDecimal.ZERO;
+        this.createDate = new Date();
     }
 
 
@@ -155,6 +161,7 @@ public class AccountOper implements java.io.Serializable {
         this.advanceReceivable = BigDecimal.ZERO;
         this.accountsReceivable = BigDecimal.ZERO;
         this.proxcAccountsReceiveable = proxcAccountsReceiveable;
+        this.createDate = new Date();
     }
 
 
@@ -264,6 +271,15 @@ public class AccountOper implements java.io.Serializable {
         this.operDate = operDate;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="CREATE_DATE",nullable = true,length = 19)
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
     @Column(name = "DESCRIPTION", length = 200)
     @Size(max = 200)

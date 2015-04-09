@@ -190,6 +190,30 @@
     </a:outputPanel>
 </rich:column>
 
+    <rich:column width="105px">
+        <f:facet name="header">
+            <ui:include src="/layout/a4jSort.xhtml">
+                <ui:param name="entityList" value="#{customerMoneyOperList}"/>
+                <ui:param name="propertyLabel" value="#{messages.recordCreateTime}"/>
+                <ui:param name="propertyPath" value="accountOper.createDate"/>
+            </ui:include>
+
+        </f:facet>
+
+        <a:outputPanel>
+            <h:outputText value="#{_item.createDate}">
+                <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+            </h:outputText>
+            <rich:tooltip styleClass="tooltip-custom-body"
+                          layout="block">
+                    <span style="white-space: nowrap"><h:outputText value="#{_item.createDate}">
+                        <s:convertDateTime pattern="#{messages.displayDateTimePattern}"/>
+                    </h:outputText></span>
+            </rich:tooltip>
+
+        </a:outputPanel>
+    </rich:column>
+
 
 <rich:column width="70px" style="text-align: center;">
     <f:facet name="header">
@@ -203,6 +227,8 @@
     #{messages[_item.operType.name()]}
 
 </rich:column>
+
+<ui:remove>
 
 <rich:column style="text-align: right;">
     <f:facet name="header">
@@ -219,8 +245,8 @@
 
 
 </rich:column>
-
-<rich:column style="text-align: right;">
+</ui:remove>
+    <rich:column style="text-align: right;">
     <f:facet name="header">
         <ui:include src="/layout/a4jSort.xhtml">
             <ui:param name="entityList" value="#{customerMoneyOperList}"/>

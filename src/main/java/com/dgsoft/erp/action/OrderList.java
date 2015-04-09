@@ -30,6 +30,7 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
             "lower(customerOrder.id)  like lower(concat('%',#{orderList.orderId}))",
             "customerOrder.canceled = #{orderList.canceled}",
             "customerOrder.allStoreOut = #{orderList.allStoreOut}",
+            "customerOrder.payType = #{orderList.payType}",
             "customerOrder.moneyComplete = #{orderList.moneyComplete}"};
 
     @In
@@ -53,9 +54,20 @@ public class OrderList extends ErpEntityQuery<CustomerOrder> {
 
     private Boolean moneyComplete;
 
+    private CustomerOrder.OrderPayType payType;
+
+    public CustomerOrder.OrderPayType[] getOrderPayTypes(){
+        return CustomerOrder.OrderPayType.values();
+    }
 
 
+    public CustomerOrder.OrderPayType getPayType() {
+        return payType;
+    }
 
+    public void setPayType(CustomerOrder.OrderPayType payType) {
+        this.payType = payType;
+    }
 
     public OrderList() {
         setEjbql(EJBQL);

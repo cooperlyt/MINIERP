@@ -33,6 +33,9 @@
             <f:param name="businessDefineId" value="erp.business.order"/>
             <f:param name="orderId" value=""/>
         </s:link>
+
+        <s:link style="float: right;margin-right: 5px" styleClass="minibtn" value="#{messages.PriceChangeOrder}"  view="/func/erp/finance/cashier/PriceChangeOrder.xhtml"/>
+
         <s:link style="float: right;margin-right: 5px" styleClass="norbtn" view="/home.xhtml">
             #{messages.return}
         </s:link>
@@ -53,6 +56,10 @@
             <f:param name="businessDefineId" value="erp.business.order"/>
             <f:param name="orderId" value=""/>
         </s:link>
+
+        <s:link style="float: right;margin-right: 5px" styleClass="minibtn" value="#{messages.PriceChangeOrder}"  view="/func/erp/finance/cashier/PriceChangeOrder.xhtml"/>
+
+
         <s:link style="float: right;margin-right: 5px" styleClass="norbtn" view="/home.xhtml">
             #{messages.return}
         </s:link>
@@ -88,6 +95,17 @@
 
 
             </h:panelGrid>
+        </s:decorate>
+
+        <s:decorate template="/layout/seam-display.xhtml">
+            <ui:define name="label">#{messages.order_field_payType}</ui:define>
+
+            <h:selectOneMenu value="#{orderList.payType}">
+                <s:selectItems value="#{orderList.orderPayTypes}" var="_payType"
+                               noSelectionLabel="#{messages.searchNoSelectLabel}"
+                               label="#{messages[_payType.name()]}" itemValue="#{_payType}"/>
+                <s:convertEnum/>
+            </h:selectOneMenu>
         </s:decorate>
 
         <s:decorate template="/layout/seam-display.xhtml">
@@ -665,7 +683,32 @@
                 </a:outputPanel>
             </rich:panel>
 
+
+
         </a:outputPanel>
+
+        <h:outputStylesheet>
+            .bd{
+                vertical-align: bottom;
+            }
+        </h:outputStylesheet>
+
+        <rich:panel rendered="#{s:hasRole(orderHome.instance.customer.customerArea.role) or s:hasRole('erp.sale.manager')}">
+            <a:region>
+                <h:panelGrid columns="2" columnClasses="bd,bd">
+                <h:inputTextarea cols="60" rows="4" value="#{orderHome.instance.memo}">
+
+                </h:inputTextarea>
+
+            <a:commandButton render="dataListResult" execute="@region"
+                             action="#{orderHome.update}" styleClass="toolBarBtn"
+                             value="#{messages.save}">
+                <a:attachQueue requestDelay="0"/>
+                <a:param assignTo="#{orderHome.id}" value="#{orderHome.instance.id}"/>
+            </a:commandButton>
+                </h:panelGrid>
+            </a:region>
+        </rich:panel>
 
     </a:outputPanel>
 </h:form>
