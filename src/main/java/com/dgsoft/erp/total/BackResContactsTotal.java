@@ -30,8 +30,8 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
             "where backItem.backItemStatus = 'STORE_IN' and backItem.orderBack.moneyComplete = true";
 
     protected static final String[] RESTRICTIONS = {
-            "backItem.dispatch.stockChange.operDate >= #{searchDateArea.dateFrom}",
-            "backItem.dispatch.stockChange.operDate <= #{searchDateArea.searchDateTo}",
+            "backItem.orderBack.createDate >= #{searchDateArea.dateFrom}",
+            "backItem.orderBack.createDate <= #{searchDateArea.searchDateTo}",
             "backItem.orderBack.customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",
             "backItem.orderBack.customer.customerLevel.priority >= #{customerSearchCondition.levelFrom}",
             "backItem.orderBack.customer.customerLevel.priority <= #{customerSearchCondition.levelTo}",
@@ -44,6 +44,6 @@ public class BackResContactsTotal extends ErpEntityQuery<BackItem>{
         setEjbql(EJBQL);
         setRestrictionLogicOperator("and");
         setRestrictionExpressionStrings(Arrays.asList(RESTRICTIONS));
-        setOrderColumn("backItem.dispatch.stockChange.operDate");
+        setOrderColumn("backItem.orderBack.createDate");
     }
 }

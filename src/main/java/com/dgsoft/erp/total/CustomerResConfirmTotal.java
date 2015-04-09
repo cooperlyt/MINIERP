@@ -32,9 +32,8 @@ public class CustomerResConfirmTotal {
             "left join fetch backItem.dispatch dispatch left join fetch dispatch.stockChange stockChange " +
             "left join fetch backItem.orderBack orderBack left join fetch orderBack.customer customer " +
             "left join fetch customer.customerArea left join fetch customer.customerLevel  " +
-            "where backItem.backItemStatus = 'STORE_IN' and backItem.orderBack.moneyComplete = true " +
-            "and  backItem.dispatch.stockChange.operDate >= :dateFrom " +
-            "and backItem.dispatch.stockChange.operDate <= :searchDateTo and backItem.orderBack.customer.id = :customerId ";
+            "where  backItem.orderBack.createDate >= :dateFrom " +
+            "and backItem.orderBack.createDate <= :searchDateTo and backItem.orderBack.customer.id = :customerId ";
 
 
     private static final String ORDER_TEIM_EJBQL = "select orderItem from OrderItem orderItem " +

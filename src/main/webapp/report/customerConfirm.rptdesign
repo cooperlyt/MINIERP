@@ -112,6 +112,7 @@ customerResConfirmTotal.setCustomerId(params['customerId'].value);
 customerResConfirmTotal.getSearchDateArea().setDateFrom(params['dateFrom'].value);
 customerResConfirmTotal.getSearchDateArea().setDateTo(params['dateTo'].value);
 
+messages = Component.getInstance("org.jboss.seam.international.messages", false);
 ]]></method>
         </script-data-source>
     </data-sources>
@@ -153,6 +154,11 @@ customerResConfirmTotal.getSearchDateArea().setDateTo(params['dateTo'].value);
                     <property name="name">OperTypeOrdinal</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">MEMO</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
@@ -175,6 +181,9 @@ customerResConfirmTotal.getSearchDateArea().setDateTo(params['dateTo'].value);
                 </structure>
                 <structure>
                     <property name="columnName">OperTypeOrdinal</property>
+                </structure>
+                <structure>
+                    <property name="columnName">MEMO</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -214,6 +223,11 @@ customerResConfirmTotal.getSearchDateArea().setDateTo(params['dateTo'].value);
                         <property name="name">OperTypeOrdinal</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">MEMO</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -224,7 +238,7 @@ mIt = customerMoneyConfirm.getResultList().iterator();
 	accountOper = mIt.next();
 	row['OperDate'] = accountOper.getOperDate();
 	row['OperType'] = messages.get(accountOper.getOperType().name());
-
+	row['MEMO'] = accountOper.getDescription();
 	row['OperTypeOrdinal'] = accountOper.getOperType().ordinal();
 	row['red'] = !accountOper.getOperType().getAdd().booleanValue();
 	if (accountOper.getOperType().getAdd().booleanValue()){
@@ -329,6 +343,16 @@ mIt = customerMoneyConfirm.getResultList().iterator();
                     <property name="name">MASTER_NAME</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">GROUP_MEMO</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">GROUP_PAY_TYPE</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
@@ -381,6 +405,12 @@ mIt = customerMoneyConfirm.getResultList().iterator();
                 </structure>
                 <structure>
                     <property name="columnName">MASTER_NAME</property>
+                </structure>
+                <structure>
+                    <property name="columnName">GROUP_MEMO</property>
+                </structure>
+                <structure>
+                    <property name="columnName">GROUP_PAY_TYPE</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -470,6 +500,16 @@ mIt = customerMoneyConfirm.getResultList().iterator();
                         <property name="name">MASTER_NAME</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">GROUP_MEMO</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">GROUP_PAY_TYPE</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -486,14 +526,18 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
 		row['GROUP_REBATE'] = item.getNeedRes().getCustomerOrder().getTotalRebateMoney();
 		row['GROUP_MONEY'] = item.getNeedRes().getCustomerOrder().getMoney(); 
 		row['MONEY'] = item.getTotalMoney();
+		row['GROUP_MEMO'] = item.getNeedRes().getCustomerOrder().getMemo();
+		row['GROUP_PAY_TYPE'] = messages.get(item.getNeedRes().getCustomerOrder().getPayType().name());
 	}else{
-		row['OUT_DATE'] = item.getDispatch().getStockChange().getOperDate();
-		row['GROUP_ID'] = item.getDispatch().getOrderBack().getId();
+		row['OUT_DATE'] = item.getOrderBack().getCreateDate();
+		row['GROUP_ID'] = item.getOrderBack().getId();
 		row['IS_SALE_GROUP'] = false;
 		row['OPER_TYPE'] = '退货';
 		row['GROUP_REBATE'] = 0;
 		row['GROUP_MONEY'] = item.getDispatch().getOrderBack().getMoney() * -1;
 		row['MONEY'] = item.getTotalMoney() * -1; 
+		row['GROUP_PAY_TYPE'] = "";
+		row['GROUP_MEMO'] = item.getOrderBack().getMemo();
 	}
 	row['UNIT_MONEY'] = item.getMoney();
 	row['MONEY_UNIT'] = item.getResUnit().getName();
@@ -573,7 +617,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
     </data-sets>
     <styles>
         <style name="report" id="4">
-            <property name="fontFamily">sans-serif</property>
+            <property name="fontFamily">"SimSun"</property>
             <property name="fontSize">10pt</property>
         </style>
         <style name="crosstab-cell" id="5">
@@ -874,7 +918,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
 </H3>]]></text-property>
         </text>
         <table id="15">
-            <property name="width">11.055555555555555in</property>
+            <property name="width">11.097222222222221in</property>
             <property name="dataSet">MoneyDataSet</property>
             <list-property name="visibility">
                 <structure>
@@ -1011,6 +1055,12 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                     <expression name="filterExpr" type="javascript">!dataSetRow["red"]</expression>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">MEMO</property>
+                    <text-property name="displayName">MEMO</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MEMO"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="35">
                 <property name="width">0.3333333333333333in</property>
@@ -1025,7 +1075,10 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <property name="width">1.2276422764227641in</property>
             </column>
             <column id="589">
-                <property name="width">5.166666666666667in</property>
+                <property name="width">1.9444444444444444in</property>
+            </column>
+            <column id="1712">
+                <property name="width">3.2916666666666665in</property>
             </column>
             <header>
                 <row id="16">
@@ -1091,6 +1144,21 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <text-property name="text">银行</text-property>
                         </label>
                     </cell>
+                    <cell id="1707">
+                        <property name="fontFamily">"SimSun"</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="1713">
+                            <property name="fontFamily">"SimSun"</property>
+                            <text-property name="text">备注</text-property>
+                        </label>
+                    </cell>
                 </row>
             </header>
             <group id="716">
@@ -1103,7 +1171,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <header>
                     <row id="717">
                         <cell id="718">
-                            <property name="colSpan">5</property>
+                            <property name="colSpan">6</property>
                             <property name="rowSpan">1</property>
                             <property name="fontFamily">"SimSun"</property>
                             <property name="borderBottomStyle">solid</property>
@@ -1182,7 +1250,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             </grid>
                         </cell>
                         <cell id="726">
-                            <property name="colSpan">3</property>
+                            <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
                             <property name="fontFamily">"SimSun"</property>
                             <property name="borderBottomStyle">solid</property>
@@ -1343,6 +1411,20 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <property name="resultSetColumn">bank</property>
                         </data>
                     </cell>
+                    <cell id="1709">
+                        <property name="fontFamily">"SimSun"</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1714">
+                            <property name="resultSetColumn">MEMO</property>
+                        </data>
+                    </cell>
                 </row>
             </detail>
             <footer>
@@ -1399,7 +1481,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         </grid>
                     </cell>
                     <cell id="791">
-                        <property name="colSpan">3</property>
+                        <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
                         <property name="fontFamily">"SimSun"</property>
                         <property name="borderBottomStyle">solid</property>
@@ -2249,7 +2331,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
             </footer>
         </table>
         <table id="675">
-            <property name="width">11.041666666666666in</property>
+            <property name="width">11.11111111111111in</property>
             <property name="dataSet">MoneyDataSet</property>
             <list-property name="visibility">
                 <structure>
@@ -2339,6 +2421,12 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                     <expression name="filterExpr" type="javascript">!dataSetRow["red"]</expression>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">MEMO</property>
+                    <text-property name="displayName">MEMO</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MEMO"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="711">
                 <property name="width">1.5528455284552845in</property>
@@ -2353,7 +2441,10 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <property name="width">1.2276422764227641in</property>
             </column>
             <column id="715">
-                <property name="width">5.152777777777778in</property>
+                <property name="width">2.0416666666666665in</property>
+            </column>
+            <column id="1703">
+                <property name="width">3.2222222222222223in</property>
             </column>
             <header>
                 <row id="676">
@@ -2425,6 +2516,20 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         <label id="686">
                             <property name="fontFamily">"SimSun"</property>
                             <text-property name="text">银行</text-property>
+                        </label>
+                    </cell>
+                    <cell id="1700">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="1704">
+                            <property name="fontFamily">"SimSun"</property>
+                            <text-property name="text">备注</text-property>
                         </label>
                     </cell>
                 </row>
@@ -2518,6 +2623,19 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <property name="resultSetColumn">bank</property>
                         </data>
                     </cell>
+                    <cell id="1701">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="1706">
+                            <property name="resultSetColumn">MEMO</property>
+                        </data>
+                    </cell>
                 </row>
             </detail>
             <footer>
@@ -2568,7 +2686,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                         </grid>
                     </cell>
                     <cell id="1006">
-                        <property name="colSpan">3</property>
+                        <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -2951,6 +3069,18 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                     <expression name="expression" type="javascript">dataSetRow["AUX_NAME"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">GROUP_PAY_TYPE</property>
+                    <text-property name="displayName">GROUP_PAY_TYPE</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["GROUP_PAY_TYPE"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">GROUP_MEMO</property>
+                    <text-property name="displayName">GROUP_MEMO</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["GROUP_MEMO"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="1452">
                 <property name="width">0.15625in</property>
@@ -3116,7 +3246,7 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                 <footer>
                     <row id="1484">
                         <cell id="1485">
-                            <property name="colSpan">3</property>
+                            <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">solid</property>
                             <property name="borderBottomWidth">thin</property>
@@ -3124,36 +3254,22 @@ sIt = customerResConfirmTotal.getResultList().iterator();]]></method>
                             <property name="borderLeftWidth">thin</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <label id="1666">
-                                <property name="fontFamily">"SimSun"</property>
-                                <text-property name="text">订单优惠/减免/返点</text-property>
-                            </label>
+                            <data id="1694">
+                                <property name="resultSetColumn">GROUP_PAY_TYPE</property>
+                            </data>
                         </cell>
-                        <cell id="1570">
-                            <property name="colSpan">1</property>
+                        <cell id="1693">
+                            <property name="colSpan">8</property>
                             <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">solid</property>
                             <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                        </cell>
-                        <cell id="1660">
-                            <property name="colSpan">3</property>
-                            <property name="rowSpan">1</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                        </cell>
-                        <cell id="1663">
-                            <property name="colSpan">3</property>
-                            <property name="rowSpan">1</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <data id="1695">
+                                <property name="resultSetColumn">GROUP_MEMO</property>
+                            </data>
                         </cell>
                         <cell id="1493">
                             <property name="borderBottomStyle">solid</property>

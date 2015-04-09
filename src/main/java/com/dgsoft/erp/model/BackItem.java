@@ -24,7 +24,7 @@ import java.util.Set;
 public class BackItem extends StoreResPriceEntity implements java.io.Serializable {
 
     public enum BackItemStatus {
-        CREATE, DISPATCH, STORE_IN;
+        CREATE, DISPATCH, STORE_IN
     }
 
     private String id;
