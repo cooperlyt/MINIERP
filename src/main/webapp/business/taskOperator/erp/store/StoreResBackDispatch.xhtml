@@ -19,7 +19,7 @@
                               view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
 
-                    <s:button styleClass="toolBarBtn" value="#{messages.complete}"
+                    <s:button styleClass="toolBarBtn" value="#{messages.complete}" onclick="#{rich:component('wait')}.show()"
                               action="#{resBackDispatchTask.complete}"/>
                 </h:panelGroup>
             </rich:toolbarGroup>

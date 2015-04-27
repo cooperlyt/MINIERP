@@ -61,12 +61,12 @@
                           view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
                 <s:button styleClass="toolBarBtn" value="#{messages.CancelAllocation}"
-                          action="#{allocationStoreOutTask.complete}">
+                          action="#{allocationStoreOutTask.complete}" onclick="#{rich:component('wait')}.show()">
                     <f:param name="cancelAllocation" value="#{true}"/>
                 </s:button>
 
                 <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                                 action="#{allocationStoreOutTask.complete}">
+                                 action="#{allocationStoreOutTask.complete}" onclick="#{rich:component('wait')}.show()">
                     <f:param name="cancelAllocation" value="#{false}"/>
                 </h:commandButton>
 

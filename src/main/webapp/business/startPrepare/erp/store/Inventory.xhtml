@@ -37,7 +37,7 @@
                               view="#{empty from ? '/func/system/business/start.xhtml' : from}"/>
 
 
-                    <h:commandButton styleClass="toolBarBtn" value="#{messages.BeginInventory}" action="#{inventoryHome.beginInventory}"/>
+                    <h:commandButton onclick="#{rich:component('wait')}.show()" styleClass="toolBarBtn" value="#{messages.BeginInventory}" action="#{inventoryHome.beginInventory}"/>
 
                 </rich:toolbarGroup>
             </rich:toolbar>

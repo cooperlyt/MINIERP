@@ -85,7 +85,7 @@
                 <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                           view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
                 <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
-                                 action="#{orderStoreOut.complete}"/>
+                                 action="#{orderStoreOut.complete}" onclick="#{rich:component('wait')}.show()"/>
             </h:panelGroup>
         </rich:toolbarGroup>
     </rich:toolbar>

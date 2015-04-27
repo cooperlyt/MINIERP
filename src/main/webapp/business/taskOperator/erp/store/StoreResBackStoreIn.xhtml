@@ -19,7 +19,7 @@
             <s:button styleClass="toolBarBtn" value="#{messages.cancel}" propagation="end"
                       view="#{empty from ? '/func/system/business/task.xhtml' : from}"/>
 
-            <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}"
+            <h:commandButton styleClass="toolBarBtn" value="#{messages.complete}" onclick="#{r:component('wait')}.show()"
                              action="#{storeResBackStoreIn.complete}"/>
 
         </rich:toolbarGroup>

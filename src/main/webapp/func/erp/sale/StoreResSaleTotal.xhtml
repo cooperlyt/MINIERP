@@ -112,7 +112,11 @@
                     </rich:column>
 
                     <rich:column>
-                        #{messages.NeedSaleMoney}
+                        #{messages.NeedMoeny}
+                    </rich:column>
+
+                    <rich:column>
+                        #{messages.AVGSaleMoney}
                     </rich:column>
 
 
@@ -164,6 +168,8 @@
 
                 </a:outputPanel>
             </rich:column>
+
+            <rich:column style="background: #ecf4fe;text-align: right"/>
 
 
 
@@ -226,6 +232,12 @@
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                 </h:outputText>
             </rich:column>
+            <rich:column style="text-align: right;background:#f5f5f5;">
+                <h:outputText value="#{_fm.totalData.calcAvgMoney}">
+                    <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
             <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
                 <ui:param name="resCount" value="#{_fm.totalData.backCount}"/>
                 <ui:param name="style" value="background:#f5f5f5;"/>
@@ -286,6 +298,13 @@
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
                 </rich:column>
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_sb.calcSaleAvgMoney}" rendered="#{not empty _sb.calcSaleAvgMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+
+
                 <ui:include src="/layout/erp/res/ResCountColumn.xhtml">
                     <ui:param name="resCount" value="#{_sb.back.resCount}"/>
 

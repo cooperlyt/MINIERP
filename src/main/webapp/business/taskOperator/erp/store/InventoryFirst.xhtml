@@ -108,12 +108,12 @@
 
             <ui:remove>
                 <s:button styleClass="toolBarBtn" value="#{messages.abortInventory}"
-                          action="#{inventoryFirst.complete}">
+                          action="#{inventoryFirst.complete}" onclick="#{rich:component('wait')}.show()">
                     <f:param name="abort" value="#{true}"/>
                 </s:button>
             </ui:remove>
             <s:button styleClass="toolBarBtn" value="#{messages.complete}"
-                      action="#{inventoryFirst.complete}">
+                      action="#{inventoryFirst.complete}" onclick="#{rich:component('wait')}.show()">
                 <f:param name="abort" value="#{false}"/>
             </s:button>
 
