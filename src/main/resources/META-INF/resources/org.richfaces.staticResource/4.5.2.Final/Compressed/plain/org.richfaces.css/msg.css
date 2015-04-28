@@ -1,0 +1,8 @@
+*.rf-msg-err,*.rf-msgs-err,*.rf-msg-ftl,*.rf-msgs-ftl,*.rf-msg-inf,*.rf-msgs-inf,*.rf-msg-wrn,*.rf-msgs-wrn,*.rf-msg-ok,*.rf-msgs-ok{display:block;padding-right:2px;padding-left:20px;vertical-align:middle;background-repeat:no-repeat;background-position:left center;}
+*.rf-msg-err,*.rf-msgs-err{background-image:url(../../org.richfaces.images/error.png);}
+*.rf-msg-ftl,*.rf-msgs-ftl{background-image:url(../../org.richfaces.images/fatal.png);}
+*.rf-msg-inf,*.rf-msgs-inf{background-image:url(../../org.richfaces.images/info.png);}
+*.rf-msg-wrn,*.rf-msgs-wrn{background-image:url(../../org.richfaces.images/warning.png);}
+*.rf-msg-ok,*.rf-msgs-ok{background-image:url(../../org.richfaces.images/ok.png);}
+*.rf-msg-sum,*.rf-msgs-sum{display:inline;}
+*.rf-msg-det,*.rf-msgs-det{display:inline;}

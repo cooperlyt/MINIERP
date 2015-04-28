@@ -1,0 +1,128 @@
+*.rf-sel-inp, *.rf-sel-opt {
+	color: #000000;
+	font-size: 11px;
+	font-family: Arial, Verdana, sans-serif ;
+}
+*.rf-sel-cntr {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #C4C0B9;
+	display: inline-block;
+	font-size: 1px;
+	white-space: nowrap;
+	width: 100%;
+}
+input.rf-sel-inp {
+	background-color: #ffffff;
+	background-image: url(../org.richfaces.images/inputBackgroundImage.png);
+	background-position: 1px 1px;
+	background-repeat: no-repeat;
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	vertical-align: top;
+	width: 100%;
+}
+*.rf-sel {
+	display: inline-block;
+}
+*.rf-sel-fld-err input {
+	color: rgb(255, 0, 0);
+}
+*.rf-sel-btn {
+	background-image: url(../org.richfaces.images/autocompleteButtonGradient.png);
+	background-repeat: repeat-x;
+	background-position: top left;
+	background-color: #D4CFC7;
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #C4C0B9;
+	display: inline-block;
+	vertical-align: top;
+	margin-left: -16px;
+}
+*.rf-sel-btn-arrow {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-image: url(../org.richfaces.images/comboDownButton.png);
+	cursor: pointer;
+	width: 15px;
+	height: 16px;
+	display: inline-block;
+}
+*.rf-sel-btn-dis *.rf-sel-btn-arrow {
+	cursor: default;
+	background-image: url(../org.richfaces.images/comboDisabledDownButton.png);
+}
+*.rf-sel-lst-cord {
+	position: absolute;
+	z-index: 10000;
+	display: none;
+}
+*.rf-sel-lst-dcrtn {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #C4C0B9;
+	padding: 0px;
+	background-color: #FFFFFF;
+}
+*.rf-sel-lst-scrl {
+	overflow: auto;
+	overflow-x: hidden;
+}
+*.rf-sel-opt {
+	padding: 2px;
+	white-space: nowrap;
+	cursor: default;
+	list-style-type: none;
+}
+*.rf-sel-sel {
+	padding: 1px;
+	width: 100%;
+	background-color: #D4CFC7;
+	border-width: 1px;
+	border-style: dotted;
+	border-color: #000000;
+}
+*.rf-sel-shdw {
+	border: 0px solid red;
+	display: inline-block;
+	position: absolute;
+	float: left;
+	padding: 0px 6px 6px 6px;
+	left: -7px;
+}
+*.rf-sel-shdw-l {
+	background-image: url(../../org.richfaces.images/combo_list_shadow.png);
+	background-position: bottom left;
+	position: absolute;
+	width: 6px;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+*.rf-sel-shdw-r {
+	background-image: url(../../org.richfaces.images/combo_list_shadow.png);
+	background-position: bottom right;
+	position: absolute;
+	width: 6px;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+}
+*.rf-sel-shdw-b {
+	background-image: url(../../org.richfaces.images/combo_list_shadow.png);
+	background-position: right bottom;
+	position: absolute;
+	height: 6px;
+	bottom: 0px;
+	left: 6px;
+	right: 0px;
+}
+*.rf-sel-lst-ul {
+	margin: 0px;
+	padding: 0px;
+}
+input.rf-sel-dflt-lbl {
+	color: rgb(179, 179, 179);
+}

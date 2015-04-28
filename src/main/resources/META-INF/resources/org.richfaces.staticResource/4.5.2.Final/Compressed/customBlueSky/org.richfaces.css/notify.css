@@ -1,0 +1,27 @@
+*.rf-ntf{bottom:auto;right:10px;top:10px;left:auto;z-index:9999;}
+*.rf-ntf-inf{color:#000;}
+*.rf-ntf-wrn{color:#FF4719;}
+*.rf-ntf-err{color:#F00;}
+*.rf-ntf-ftl{color:#F00;}
+html>body *.rf-ntf{position:fixed;}
+*.rf-ntf *.rf-ntf-shdw{margin:0;padding:8px;opacity:.3;position:absolute;z-index:-1;top:.1em;left:.1em;bottom:-0.2em;right:-0.2em;background-color:#BED6F8;color:#000;}
+*.rf-ntf-cnt{padding:.8em;border-width:1px;border-style:solid;border-radius:4px;border-color:#BED6F8;background-color:#FFF;}
+*.rf-ntf-cnt-hov{background:red;}
+*.rf-ntf-cls{float:right;margin-left:.2em;}
+*.rf-ntf-cls-ico{display:block;width:11px;height:11px;background-image:url(../../org.richfaces.images/notify_close.png);}
+*.rf-ntf-sum{margin:0;font-weight:bold;}
+*.rf-ntf-det{display:block;}
+*.rf-ntf-clr{clear:both;}
+*.rf-ntf-ico{display:none;float:left;margin-right:.5em;width:16px;height:16px;}
+*.rf-ntf-hstr{background-color:#BED6F8;border-color:#BED6F8;font-size:11px;color:#000;font-family:Arial,Verdana,sans-serif;font-weight:normal;border-bottom-left-radius:4px;border-bottom-right-radius:4px;position:absolute;top:0;right:18px;width:70px;z-index:10000;color:#000;}
+*.rf-ntf-hstr-hdr{padding:2px;}
+*.rf-ntf-hstr button{cursor:pointer;display:block;width:100%;}
+*.rf-ntf-hstr-hndl{display:block;margin:0 auto;width:16px;height:16px;background-image:url(../org.richfaces.images/triangleDown.png);}
+*.rf-ntf-inf *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/info.png);}
+*.rf-ntf-wrn *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/warning.png);}
+*.rf-ntf-err *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/error.png);}
+*.rf-ntf-ftl *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/fatal.png);}
+*.rf-ntf-pos-tl{bottom:auto;left:10px;top:10px;right:auto;}
+*.rf-ntf-pos-tr{bottom:auto;right:10px;top:10px;left:auto;}
+*.rf-ntf-pos-bl{bottom:10px;left:10px;top:auto;right:auto;}
+*.rf-ntf-pos-br{bottom:10px;right:10px;top:auto;left:auto;}

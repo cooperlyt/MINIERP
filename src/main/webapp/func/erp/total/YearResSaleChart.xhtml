@@ -51,6 +51,7 @@
                 </a:repeat>
             </rich:chartSeries>
         </a:repeat>
+
         <rich:chartXAxis  label="#{messages.Month}"/>
         <rich:chartYAxis label="#{messages.ProcedureSaleMoneyChart}"/>
     </rich:chart>
@@ -58,7 +59,77 @@
     </h:form>
     <br/>
 
+
+
     <div style="width: 100%; overflow-x:scroll;">
+        <rich:dataTable value="#{yearSaleResChartData.monthDatas}" style="width: 1300px"
+                        var="_md">
+
+            <f:facet name="header">
+                <rich:columnGroup>
+                    <rich:column rowspan="2">
+                    </rich:column>
+
+                    <c:forEach items="#{yearSaleResChartData.resNames}" var="_res">
+                        <rich:column colspan="3">
+                            #{_res}
+                        </rich:column>
+                    </c:forEach>
+
+                    <rich:column rowspan="2">
+                        #{messages.Total}
+                    </rich:column>
+
+                    <c:forEach items="#{yearSaleResChartData.resIds}" var="_res">
+                        <rich:column colspan="2" breakRowBefore="#{yearSaleResChartData.isFirstId(_res)}">
+                            #{messages.count}
+                        </rich:column>
+
+                        <rich:column>
+                            #{messages.Money}
+                        </rich:column>
+                    </c:forEach>
+
+
+
+                </rich:columnGroup>
+            </f:facet>
+
+            <rich:column>
+                #{_md.month}#{messages.Month}
+            </rich:column>
+            <c:forEach items="#{yearSaleResChartData.resIds}" var="_res">
+
+                <rich:column>
+                    <h:outputText value="#{_md.getDataByResId(_res).totalCount.masterCount}">
+                        <f:convertNumber pattern="#{_md.getDataByResId(_res).totalCount.res.unitGroup.masterUnit.countFormate}"/>
+                    </h:outputText>
+                    <h:outputText style="float: right;" value="#{_md.getDataByResId(_res).totalCount.res.unitGroup.masterUnit.name}"/>
+                </rich:column>
+                <rich:column>
+                    <h:outputText value="#{_md.getDataByResId(_res).totalCount.auxCount}" rendered="#{_md.getDataByResId(_res).totalCount.res.unitGroup.type eq 'FLOAT_CONVERT'}">
+                        <f:convertNumber pattern="#{_md.getDataByResId(_res).totalCount.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
+                    </h:outputText>
+                    <h:outputText value="#{_md.getDataByResId(_res).totalCount.res.unitGroup.floatAuxiliaryUnit.name}" style="float: right;"  rendered="#{_md.getDataByResId(_res).totalCount.res.unitGroup.type eq 'FLOAT_CONVERT'}"/>
+                </rich:column>
+                <rich:column style="text-align: right;">
+                    <h:outputText value="#{_md.getDataByResId(_res).money}" >
+                        <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                </rich:column>
+            </c:forEach>
+
+            <rich:column>
+                <h:outputText value="#{_md.totalMoney}" >
+                    <f:convertNumber type="currency"  locale="#{calendarBean.locale}"/>
+                </h:outputText>
+            </rich:column>
+
+
+        </rich:dataTable>
+
+
+<ui:remove>
 
     <rich:dataTable value="#{yearSaleResChartData.resYearTotalData}" style="width: 3500px"
                     var="_entry">
@@ -459,6 +530,8 @@
 
 
     </rich:dataTable>
+
+</ui:remove>
     </div>
 
 </a:outputPanel>

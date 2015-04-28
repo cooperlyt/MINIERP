@@ -1,0 +1,18 @@
+*.rfs-ctn fieldset,*.rfs-fieldset{border-width:1px;border-style:solid;padding:10px;}
+*.rfs-ctn hr,*.rfs-hr{border-width:1px;border-style:solid;}
+*.rfs-ctn legend,*.rfs-legend{font-weight:bold;}
+*.rfs-ctn form,*.rfs-form{padding:0;margin:0;}
+*.rfs-field,*.rfs-field-edit,*.rfs-field-error{border-width:1px;border-style:inset;}
+*.rfs-field{background-image:none;background-repeat:no-repeat;background-position:1px 1px;}
+*.rfs-field-error{background-image:none;background-repeat:no-repeat;background-position:center left;padding-left:7px;}
+*.rfs-btn,*.rfs-btn-disabled,*.rfs-btn-over,*.rfs-btn-press{border-width:1px;border-style:solid;padding:2px 10px 2px 10px;text-align:center;cursor:pointer;background-repeat:repeat-x;background-position:top left;}
+*.rfs-btn{background-image:none;}
+*.rfs-btn-disabled{background-image:none;}
+*.rfs-btn-over{background-image:none;}
+*.rfs-btn-press{background-image:none;background-position:bottom left;}
+*.rfs-box-border-control-select,*.rfs-box-border-subborder,*.rfs-box-border-header,*.rfs-box-border-general,*.rfs-box-border-additional,*.rfs-box-border-panel,*.rfs-box-border-tip,*.rfs-box-border-table{border-style:solid;border-width:1px;}
+*.rfs-ctn input,*.rfs-input,*.rfs-ctn select,*.rfs-select,*.rfs-ctn textarea,*.rfs-textarea,*.rfs-ctn button,*.rfs-btn,*.rfs-ctn keygen,*.rfs-keygen,*.rfs-ctn isindex,*.rfs-isindex{border-width:1px;}
+*.rfs-ctn button,*.rfs-btn,*.rfs-btn-btn,*.rfs-btn-reset,*.rfs-btn-submit,*.rfs-ctn input[type="reset"],*.rfs-input-reset,*.rfs-ctn input[type="submit"],*.rfs-input-submit,*.rfs-ctn input[type="button"],*.rfs-input-btn{border-width:1px;background-repeat:repeat-x;background-position:top left;background-image:none;}
+*.rfs-ctn button:hover,*.rfs-btn:hover,*.rfs-btn-btn:hover,*.rfs-btn-reset:hover,*.rfs-btn-submit:hover,*.rfs-ctn input[type="reset"]:hover,*.rfs-input-reset:hover,*.rfs-ctn input[type="submit"]:hover,*.rfs-input-submit:hover,*.rfs-ctn input[type="button"]:hover,*.rfs-input-btn:hover{background-position:bottom left;background-repeat:repeat-x;background-image:none;}
+*.rfs-ctn button[disabled],*.rfs-btn-disabled,*.rfs-btn-btn[disabled],*.rfs-btn-btn-disabled,*.rfs-btn-reset[disabled],*.rfs-btn-reset-disabled,*.rfs-btn-submit[disabled],*.rfs-btn-submit-disabled,*.rfs-ctn input[type="reset"][disabled],*.rfs-input-reset[disabled],*.rfs-input-reset-disabled,*.rfs-ctn input[type="submit"][disabled],*.rfs-input-submit[disabled],*.rfs-input-submit-disabled,*.rfs-ctn input[type="button"][disabled],*.rfs-input-btn[disabled],*.rfs-input-btn-disabled{background-image:none;background-position:top left;}
+*.rfs-ctn textarea,*.rfs-textarea,*.rfs-textarea-textarea,*.rfs-ctn input[type="text"],*.rfs-input-txt,*.rfs-ctn input[type="password"],*.rfs-input-password,*.rfs-ctn select,*.rfs-select{border-width:1px;border-style:inset;background-repeat:no-repeat;background-position:1px 1px;background-image:none;}

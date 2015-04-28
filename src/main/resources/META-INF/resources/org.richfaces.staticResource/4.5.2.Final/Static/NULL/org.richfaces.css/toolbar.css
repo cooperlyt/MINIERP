@@ -1,0 +1,57 @@
+*.rf-tb {
+	border: 1px solid;
+	border-color: #C4C0B9;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 0px;
+	background-color: #D4CFC7;
+	background-position: left top;
+	background-repeat: repeat-x;
+	background-image: url(../org.richfaces.images/gradientA.png);
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+*.rf-tb-itm {
+	padding: 0 8px;
+	border: 0;
+	white-space: nowrap;
+}
+*.rf-tb-sep {
+	padding: 0 10px;
+	border: 0;
+	text-align: center;
+	height: 100%;
+}
+*.rf-tb-emp {
+	border: 0;
+}
+*.rf-tb-cntr {
+	vertical-align: middle;
+}
+*.rf-tb-sep-grid, *.rf-tb-sep-line, *.rf-tb-sep-disc, *.rf-tb-sep-square {
+	padding: 0px 0px 0px 0px;
+	background-position: center center;
+	height: 80%;
+}
+*.rf-tb-sep-grid {
+	background-image: url(../org.richfaces.images/gridSeparatorImage.gif);
+	width: 9px;
+	background-repeat: repeat-y;
+}
+*.rf-tb-sep-line {
+	width: 2px;
+	background-image: url(../org.richfaces.images/lineSeparatorImage.gif);
+	background-repeat: repeat-y;
+}
+*.rf-tb-sep-disc {
+	width: 9px;
+	background-image: url(../org.richfaces.images/dotSeparatorImage.gif);
+	background-repeat: no-repeat;
+}
+*.rf-tb-sep-square {
+	width: 9px;
+	background-image: url(../org.richfaces.images/squareSeparatorImage.gif);
+	background-repeat: no-repeat;
+}

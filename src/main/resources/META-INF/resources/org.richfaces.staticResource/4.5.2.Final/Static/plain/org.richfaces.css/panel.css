@@ -1,0 +1,16 @@
+*.rf-p {
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+}
+*.rf-p-hdr {
+	padding: 2px;
+	border-width: 1px;
+	border-style: solid;
+	background-position: top left;
+	background-repeat: repeat-x;
+	background-image: none;
+}
+*.rf-p-b {
+	padding: 10px;
+}

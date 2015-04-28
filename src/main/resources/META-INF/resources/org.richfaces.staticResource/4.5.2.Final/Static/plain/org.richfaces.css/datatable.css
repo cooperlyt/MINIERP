@@ -1,0 +1,105 @@
+*.rf-dt {
+	border-collapse: collapse;
+	border-width: 0px;
+	border-style: solid;
+	empty-cells: show;
+}
+*.rf-dt-c {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-right-width: 0px;
+	border-right-style: solid;
+	padding: 4px;
+}
+*.rf-dt-nd {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-right-width: 0px;
+	border-right-style: solid;
+	padding: 4px;
+}
+*.rf-dt-hdr-c {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-right-width: 0px;
+	border-right-style: solid;
+	background-image: none;
+	background-position: top left;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-shdr-c {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-right-width: 0px;
+	border-right-style: solid;
+	background-image: none;
+	background-position: top left;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-flt-c {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-right-width: 0px;
+	border-right-style: solid;
+	background-position: top left;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-sftr-c {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-right-width: 0px;
+	border-right-style: solid;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-th {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+}
+*.rf-dt-ftr-c {
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-right-width: 0px;
+	border-right-style: solid;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-stt-exp {
+	background-image: url(../../org.richfaces.images/up_icon.gif);
+}
+*.rf-stt-col {
+	background-image: url(../../org.richfaces.images/down_icon.gif);
+}
+*.rf-dt-c-srt {
+	cursor: pointer;
+}
+*.rf-dt-srt-btn {
+	height: 1em;
+	width: 25px;
+	display: inline-block;
+	vertical-align: middle;
+}
+*.rf-dt-srt-uns {
+	background: url(../../org.richfaces.images/sort_uns.gif) no-repeat center;
+}
+*.rf-dt-srt-asc {
+	background: url(../../org.richfaces.images/sort_asc.gif) no-repeat center;
+}
+*.rf-dt-srt-des {
+	background: url(../../org.richfaces.images/sort_des.gif) no-repeat center;
+}
+*.rf-dt-flt-cnt {
+	text-align: center;
+	height: 27px;
+}
+*.rf-dt-flt-i {
+	width: 80%;
+}

@@ -1,0 +1,44 @@
+*.rf-insp {
+	border-width: 1px;
+	border-style: solid;
+	display: inline-block;
+	font-size: 1px;
+	white-space: nowrap;
+}
+input.rf-insp-inp[type="text"] {
+	background-image: none;
+	background-position: 1px 1px;
+	background-repeat: no-repeat;
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	vertical-align: top;
+}
+*.rf-insp-btns {
+	background-image: none;
+	background-position: top left;
+	background-repeat: repeat-x;
+	border-left-width: 1px;
+	border-left-style: solid;
+	display: inline-block;
+	vertical-align: top;
+}
+*.rf-insp-dec, *.rf-insp-inc, *.rf-insp-dec-dis, *.rf-insp-inc-dis {
+	background-position: 50% 40%;
+	background-repeat: no-repeat;
+	display: block;
+	height: 8px;
+	width: 15px;
+}
+*.rf-insp-dec {
+	background-image: none;
+}
+*.rf-insp-inc {
+	background-image: none;
+}
+*.rf-insp-dec-dis {
+	background-image: none;
+}
+*.rf-insp-inc-dis {
+	background-image: none;
+}

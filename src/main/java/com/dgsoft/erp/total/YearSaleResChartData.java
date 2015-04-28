@@ -11,6 +11,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -112,8 +113,98 @@ public class YearSaleResChartData {
             }
         });
         return listResult;
+    }
+
+   // private List<String> resIds;
+
+    public boolean isFirstId(String id){
+        if (getResIds().isEmpty()){
+            return false;
+        }else{
+            return getResIds().get(0).equals(id);
+        }
+    }
+
+
+    public List<String> getResIds() {
+        //if (resIds == null) {
+            initTotalStoreResSaleData();
+        List<String> resIds = new ArrayList<String>();
+
+            for (Res res : totalStoreResSaleData.keySet()) {
+                resIds.add(res.getId());
+            }
+            Collections.sort(resIds);
+       // }
+        return resIds;
+
 
     }
+
+    public List<String> getResNames() {
+        initTotalStoreResSaleData();
+        List<String> result = new ArrayList<String>();
+        Set<Res> reses = totalStoreResSaleData.keySet();
+        for (String id : getResIds()) {
+            for (Res res : reses) {
+                if (res.getId().equals(id)) {
+                    result.add(res.getName());
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<MonthData> getMonthDatas() {
+        initTotalStoreResSaleData();
+        List<MonthData> result = new ArrayList<MonthData>(12);
+
+        for (int i = 1; i <= 12; i++) {
+
+            MonthData md = new MonthData(i);
+            result.add(md);
+
+            for (Map.Entry<Res, Map<Integer, ResSaleTotalData>> entry : totalStoreResSaleData.entrySet()) {
+                md.put(entry.getKey().getId(),entry.getValue().get(i));
+
+            }
+        }
+        Collections.sort(result, new Comparator<MonthData>() {
+            @Override
+            public int compare(MonthData o1, MonthData o2) {
+                return o1.getMonth().compareTo(o2.getMonth());
+            }
+        });
+        return result;
+    }
+
+
+    public static class MonthData extends MonthTotalData<ResSaleTotalData> {
+
+        private Map<String, ResSaleTotalData> datas = new HashMap<String, ResSaleTotalData>();
+
+        public MonthData(Integer month) {
+            super(month);
+        }
+
+        public ResSaleTotalData getDataByResId(String id) {
+            return datas.get(id);
+        }
+
+        public void put(String resId,ResSaleTotalData data){
+            datas.put(resId,data);
+        }
+
+        public BigDecimal getTotalMoney(){
+            BigDecimal result = BigDecimal.ZERO;
+            for(ResSaleTotalData data: datas.values()){
+                result = result.add(data.getMoney());
+            }
+            return result;
+        }
+    }
+
 
     public static class MonthTotalData<E> {
 

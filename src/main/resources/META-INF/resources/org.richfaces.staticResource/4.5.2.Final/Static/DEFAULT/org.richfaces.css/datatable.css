@@ -1,0 +1,155 @@
+*.rf-dt {
+	background-color: #FFFFFF;
+	border-collapse: collapse;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #C4C0C9;
+	empty-cells: show;
+}
+*.rf-dt-c {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0C9;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif ;
+	font-size: 11px;
+	padding: 4px;
+}
+*.rf-dt-nd {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0C9;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif ;
+	font-size: 11px;
+	padding: 4px;
+}
+*.rf-dt-hdr-c {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0C9;
+	background-color: #D4CFC7;
+	background-image: url(../org.richfaces.images/colHdrGrad.png);
+	background-position: top left;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif ;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-shdr-c {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0C9;
+	background-color: #D4CFC7;
+	background-image: url(../org.richfaces.images/colHdrGrad.png);
+	background-position: top left;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif ;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-flt-c {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0C9;
+	background-color: #D4CFC7;
+	background-position: top left;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif ;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-sftr-c {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0C9;
+	background-color: #f1f1f1;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif ;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-dt-th {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+}
+*.rf-dt-ftr-c {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #C4C0C9;
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0C9;
+	color: #000000;
+	background-color: #cccccc;
+	font-family: Arial, Verdana, sans-serif ;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+}
+*.rf-stt-exp {
+	background-image: url(../../org.richfaces.images/up_icon.gif);
+}
+*.rf-stt-col {
+	background-image: url(../../org.richfaces.images/down_icon.gif);
+}
+*.rf-dt-c-srt {
+	cursor: pointer;
+	color: #0078D0;
+}
+*.rf-dt-c-srt:hover {
+	color: #0090FF;
+}
+*.rf-dt-srt-btn {
+	height: 1em;
+	width: 25px;
+	display: inline-block;
+	vertical-align: middle;
+}
+*.rf-dt-srt-uns {
+	background: url(../../org.richfaces.images/sort_uns.gif) no-repeat center;
+}
+*.rf-dt-srt-asc {
+	background: url(../../org.richfaces.images/sort_asc.gif) no-repeat center;
+}
+*.rf-dt-srt-des {
+	background: url(../../org.richfaces.images/sort_des.gif) no-repeat center;
+}
+*.rf-dt-flt-cnt {
+	text-align: center;
+	height: 27px;
+}
+*.rf-dt-flt-i {
+	width: 80%;
+}
+*.rf-dt-flt-i-err {
+	background-color: #FFE6E6;
+}

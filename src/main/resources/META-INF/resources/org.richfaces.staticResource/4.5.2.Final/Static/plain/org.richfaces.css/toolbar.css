@@ -1,0 +1,51 @@
+*.rf-tb {
+	border: 1px solid;
+	padding: 0px;
+	background-position: left top;
+	background-repeat: repeat-x;
+	background-image: none;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+*.rf-tb-itm {
+	padding: 0 8px;
+	border: 0;
+	white-space: nowrap;
+}
+*.rf-tb-sep {
+	padding: 0 10px;
+	border: 0;
+	text-align: center;
+	height: 100%;
+}
+*.rf-tb-emp {
+	border: 0;
+}
+*.rf-tb-cntr {
+	vertical-align: middle;
+}
+*.rf-tb-sep-grid, *.rf-tb-sep-line, *.rf-tb-sep-disc, *.rf-tb-sep-square {
+	padding: 0px 0px 0px 0px;
+	background-position: center center;
+	height: 80%;
+}
+*.rf-tb-sep-grid {
+	background-image: none;
+	width: 9px;
+	background-repeat: repeat-y;
+}
+*.rf-tb-sep-line {
+	width: 2px;
+	background-image: none;
+	background-repeat: repeat-y;
+}
+*.rf-tb-sep-disc {
+	width: 9px;
+	background-image: none;
+	background-repeat: no-repeat;
+}
+*.rf-tb-sep-square {
+	width: 9px;
+	background-image: none;
+	background-repeat: no-repeat;
+}

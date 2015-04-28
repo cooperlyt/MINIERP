@@ -292,10 +292,14 @@ public class ProcedureSaleChart {
         }
 
         public BigDecimal getCountScale(BigDecimal count){
-            return  DataFormat.calcScale(getTotalData().getCount(),count);
+            if ((count.compareTo(BigDecimal.ZERO) == 0) || (getTotalData().getCount().compareTo(BigDecimal.ZERO) == 0) )
+                return BigDecimal.ZERO;
+                return  DataFormat.calcScale(getTotalData().getCount(),count);
         }
 
         public BigDecimal getMoneyScale(BigDecimal money){
+            if ((money.compareTo(BigDecimal.ZERO) == 0) || (getTotalData().getMoney().compareTo(BigDecimal.ZERO) == 0) )
+                return BigDecimal.ZERO;
            return DataFormat.calcScale(getTotalData().getMoney(), money);
         }
 

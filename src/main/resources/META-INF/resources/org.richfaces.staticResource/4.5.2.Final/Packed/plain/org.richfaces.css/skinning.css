@@ -1,0 +1,37 @@
+fieldset {
+	border-width: 1px;
+	border-style: solid;
+	padding: 10px;
+}
+hr {
+	border-width: 1px;
+	border-style: solid;
+}
+input, select, textarea, button, keygen, isindex {
+	border-width: 1px;
+}
+button, input[type="reset"], input[type="submit"], input[type="button"] {
+	border-width: 1px;
+	background-repeat: repeat-x;
+	background-position: top left;
+	background-image: none;
+}
+button:hover, input[type="reset"]:hover, input[type="submit"]:hover, input[type="button"]:hover {
+	background-position: bottom left;
+	background-repeat: repeat-x;
+	background-image: none;
+}
+button[disabled], input[type="reset"][disabled], input[type="submit"][disabled], input[type="button"][disabled] {
+	background-image: none;
+	background-position: top left;
+}
+textarea, input[type="text"], input[type="password"], select {
+	border-width: 1px;
+	border-style: solid;
+	background-repeat: no-repeat;
+	background-position: 1px 1px;
+	background-image: none;
+}
+textarea[disabled], input[type="text"][disabled], input[type="password"][disabled], select[disabled] {
+	cursor: default;
+}

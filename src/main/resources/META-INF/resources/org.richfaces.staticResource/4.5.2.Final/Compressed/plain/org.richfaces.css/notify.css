@@ -1,0 +1,23 @@
+*.rf-ntf{bottom:auto;right:10px;top:10px;left:auto;z-index:9999;}
+html>body *.rf-ntf{position:fixed;}
+*.rf-ntf *.rf-ntf-shdw{margin:0;padding:8px;opacity:.3;position:absolute;z-index:-1;top:.1em;left:.1em;bottom:-0.2em;right:-0.2em;}
+*.rf-ntf-cnt{padding:.8em;border-width:1px;border-style:solid;border-radius:4px;}
+*.rf-ntf-cnt-hov{background:red;}
+*.rf-ntf-cls{float:right;margin-left:.2em;}
+*.rf-ntf-cls-ico{display:block;width:11px;height:11px;background-image:url(../../org.richfaces.images/notify_close.png);}
+*.rf-ntf-sum{margin:0;font-weight:bold;}
+*.rf-ntf-det{display:block;}
+*.rf-ntf-clr{clear:both;}
+*.rf-ntf-ico{display:none;float:left;margin-right:.5em;width:16px;height:16px;}
+*.rf-ntf-hstr{font-weight:normal;border-bottom-left-radius:4px;border-bottom-right-radius:4px;position:absolute;top:0;right:18px;width:70px;z-index:10000;}
+*.rf-ntf-hstr-hdr{padding:2px;}
+*.rf-ntf-hstr button{cursor:pointer;display:block;width:100%;}
+*.rf-ntf-hstr-hndl{display:block;margin:0 auto;width:16px;height:16px;background-image:none;}
+*.rf-ntf-inf *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/info.png);}
+*.rf-ntf-wrn *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/warning.png);}
+*.rf-ntf-err *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/error.png);}
+*.rf-ntf-ftl *.rf-ntf-ico{display:block;background-image:url(../../org.richfaces.images/fatal.png);}
+*.rf-ntf-pos-tl{bottom:auto;left:10px;top:10px;right:auto;}
+*.rf-ntf-pos-tr{bottom:auto;right:10px;top:10px;left:auto;}
+*.rf-ntf-pos-bl{bottom:10px;left:10px;top:auto;right:auto;}
+*.rf-ntf-pos-br{bottom:10px;right:10px;top:auto;left:auto;}

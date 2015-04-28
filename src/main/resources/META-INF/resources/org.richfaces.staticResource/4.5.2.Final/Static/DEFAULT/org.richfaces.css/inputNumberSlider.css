@@ -1,0 +1,115 @@
+*.rf-insl, *.rf-insl-trc-cntr {
+	display: inline-block;
+}
+*.rf-insl {
+	white-space: nowrap;
+}
+*.rf-insl-trc-cntr {
+	width: 200px;
+	vertical-align: top;
+}
+*.rf-insl-mn, *.rf-insl-mx, input.rf-insl-inp, *.rf-insl-tt {
+	font-size: 11px;
+	font-family: Arial, Verdana, sans-serif ;
+	color: #000000;
+}
+*.rf-insl-mn, *.rf-insl-mx {
+	display: block;
+	margin-bottom: 3px;
+}
+*.rf-insl-mn {
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #C4C0B9;
+	padding-left: 3px;
+	float: left;
+}
+*.rf-insl-mx {
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #C4C0B9;
+	padding-right: 3px;
+	float: right;
+	text-align: right;
+}
+*.rf-insl-inp-cntr {
+	margin: 0px;
+	vertical-align: bottom;
+}
+input.rf-insl-inp {
+	margin: 0px 10px 0px 10px;
+	vertical-align: bottom;
+}
+*.rf-insl-tt {
+	position: absolute;
+	display: none;
+	padding: 2px;
+	border: 1px solid "#E5973E ";
+	background-color: #FAE6B0 ;
+}
+*.rf-insl-trc {
+	background: url(../org.richfaces.images/insldrTrackGrad.png) 1px 1px repeat-x;
+	background-color: #ffffff;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #C4C0B9;
+	border-radius: 0px;
+	display: block;
+	height: 6px;
+	clear: both;
+	vertical-align: top;
+	text-align: left;
+	font-size: 0px;
+	max-width: 100%;
+}
+*.rf-insl-hnd-cntr {
+	min-width: 0;
+}
+*.rf-insl-bar *.rf-insl-hnd-cntr {
+	text-align: right;
+	background-image: url(../org.richfaces.images/inputNumberSliderBarHandleBg.gif);
+}
+*.rf-insl-bar *.rf-insl-trc, *.rf-insl-bar *.rf-insl-hnd-cntr, *.rf-insl-bar *.rf-insl-hnd {
+	height: 13px;
+}
+*.rf-insl-bar *.rf-insl-hnd {
+	width: 0;
+}
+*.rf-insl-hnd, *.rf-insl-hnd-dis, *.rf-insl-dec, *.rf-insl-inc, *.rf-insl-dec-dis, *.rf-insl-inc-dis {
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+}
+*.rf-insl-hnd, *.rf-insl-hnd-dis {
+	vertical-align: top;
+}
+*.rf-insl-dec, *.rf-insl-inc, *.rf-insl-dec-dis, *.rf-insl-inc-dis {
+	vertical-align: bottom;
+}
+*.rf-insl-hnd {
+	background-image: url(../org.richfaces.images/sliderArrowBottom.png);
+}
+*.rf-insl-hnd-sel {
+	background-image: url(../org.richfaces.images/sliderSelectedArrowBottom.png);
+}
+*.rf-insl-hnd-dis {
+	background-image: url(../org.richfaces.images/sliderDisabledArrowBottom.png);
+}
+*.rf-insl-dec {
+	background-image: url(../org.richfaces.images/sliderArrowLeft.png);
+}
+*.rf-insl-dec-sel {
+	background-image: url(../org.richfaces.images/sliderSelectedArrowLeft.png);
+}
+*.rf-insl-dec-dis {
+	background-image: url(../org.richfaces.images/sliderDisabledArrowLeft.png);
+}
+*.rf-insl-inc {
+	background-image: url(../org.richfaces.images/sliderArrowRight.png);
+}
+*.rf-insl-inc-sel {
+	background-image: url(../org.richfaces.images/sliderSelectedArrowRight.png);
+}
+*.rf-insl-inc-dis {
+	background-image: url(../org.richfaces.images/sliderDisabledArrowRight.png);
+}

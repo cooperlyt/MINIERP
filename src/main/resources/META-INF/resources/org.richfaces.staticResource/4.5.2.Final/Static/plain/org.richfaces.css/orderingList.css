@@ -1,0 +1,61 @@
+*.rf-ord {
+	display: inline-block;
+}
+*.rf-ord-hdr {
+	vertical-align: middle;
+	text-align: left;
+	height: 22px;
+	white-space: nowrap;
+	background-image: none;
+	background-repeat: repeat-x;
+	background-position: top left;
+}
+*.rf-ord-hdr-c {
+	padding: 0 0.5em;
+}
+*.rf-ord-btn {
+	width: 100%;
+	white-space: nowrap;
+	background-image: none;
+	background-repeat: repeat-x;
+	background-position: top left;
+	border-left-width: 1px;
+	border-left-style: solid;
+	display: inline-block;
+	vertical-align: top;
+	cursor: pointer;
+	text-align: left;
+}
+*.rf-ord-btn-dis {
+	cursor: default;
+	color: rgb(221, 221, 221);
+}
+*.rf-ord-lst-dcrtn {
+	border-width: 1px;
+	border-style: solid;
+	padding: 0px;
+}
+*.rf-ord-lst-scrl {
+	overflow: auto;
+	overflow-x: hidden;
+}
+*.rf-ord-opt {
+	padding: 2px;
+	white-space: nowrap;
+	cursor: pointer;
+	list-style-type: none;
+}
+*.rf-ord-opt-dis {
+	cursor: default;
+}
+*.rf-ord-sel {
+	width: 100%;
+	border-width: 1px;
+	border-style: dotted;
+}
+input.rf-ord-dflt-lbl {
+	color: rgb(179, 179, 179);
+}
+*.rf-ord-tbl {
+	width: 100%;
+}

@@ -1,0 +1,10 @@
+*.rf-csttg{cursor:pointer;vertical-align:middle;margin:0;padding:0;}
+*.rf-csttg-exp{vertical-align:middle;margin:0;padding:0;}
+*.rf-csttg-colps{vertical-align:middle;margin:0;padding:0;}
+*.rf-csttg-lnk{vertical-align:top;}
+*.rf-cst,*.rf-cst-nd{border-bottom-width:0;border-bottom-style:solid;}
+*.rf-cst-c,*.rf-cst-nd-c{border-bottom-width:0;border-bottom-style:solid;border-right-width:0;border-right-style:solid;padding:4px;}
+*.rf-cst-hdr-c{border-bottom-width:0;border-bottom-style:solid;border-right-width:0;border-right-style:solid;font-weight:bold;padding:4px;text-align:left;}
+*.rf-cst-shdr-c{border-bottom-width:0;border-bottom-style:solid;border-right-width:0;border-right-style:solid;font-weight:bold;padding:4px;}
+*.rf-cst-ftr-c{border-bottom-width:3px;border-bottom-style:solid;border-right-width:0;border-right-style:solid;font-weight:bold;padding:4px;text-align:left;}
+*.rf-cst-sftr-c{border-bottom-width:0;border-bottom-style:solid;border-right-width:0;border-right-style:solid;padding:4px;}
