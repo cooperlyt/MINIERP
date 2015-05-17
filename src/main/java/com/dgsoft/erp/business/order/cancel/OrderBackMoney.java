@@ -1,12 +1,8 @@
 package com.dgsoft.erp.business.order.cancel;
 
 import com.dgsoft.common.DataFormat;
-import com.dgsoft.common.jbpm.BussinessProcessUtils;
-import com.dgsoft.common.system.RunParam;
-import com.dgsoft.erp.action.CustomerHome;
 import com.dgsoft.erp.model.AccountOper;
 import com.dgsoft.erp.model.MoneySave;
-import com.dgsoft.erp.model.api.PayType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.core.Events;
@@ -15,7 +11,6 @@ import org.jboss.seam.security.Credentials;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
-import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,6 +55,14 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
         return customerOper;
     }
 
+    public boolean isCanBackMoneyToProxyAccount(){
+        return orderBackHome.getInstance().getCustomer().getProxyAccountMoney().compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    public BigDecimal getMaxProxyMoney(){
+        return (orderBackHome.getInstance().getCustomer().getProxyAccountMoney().compareTo(orderBackHome.getInstance().getMoney()) > 0) ? orderBackHome.getInstance().getMoney() : orderBackHome.getInstance().getCustomer().getProxyAccountMoney();
+    }
+
     @Override
     protected String completeOrderTask() {
 
@@ -74,18 +77,39 @@ public class OrderBackMoney extends CancelOrderTaskHandle {
                     DateFormat.getDateInstance(DateFormat.MEDIUM).format(orderBackHome.getInstance().getCreateDate()));
             return null;
         }
-
-        customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
-        customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
+        customerOper.setAdvanceReceivable(BigDecimal.ZERO);
         if (backToPreMoney){
-            if (RunParam.instance().getBooleanParamValue("erp.finance.useAdvance")) {
-                customerOper.setAdvanceReceivable(orderBackHome.getInstance().getMoney());
-            }else {
-                customerOper.setAdvanceReceivable(BigDecimal.ZERO);
+
+            if (isCanBackMoneyToProxyAccount()){
+
+                if (customerOper.getAccountsReceivable().add(customerOper.getProxcAccountsReceiveable()).compareTo(orderBackHome.getInstance().getMoney()) != 0){
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "backMoneyAccountMoneyError");
+
+                    return null;
+                }
+
+                if (customerOper.getProxcAccountsReceiveable().compareTo(orderBackHome.getInstance().getCustomer().getProxyAccountMoney()) > 0){
+                    facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "backMoneyProxyAccountMoneyError");
+
+                    return null;
+                }
+
+
+
+
+            }else{
+                customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
+                customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
             }
+
+
+
+
             customerOper.setMoneySave(null);
         }else{
-            customerOper.setAdvanceReceivable(BigDecimal.ZERO);
+            customerOper.setAccountsReceivable(orderBackHome.getInstance().getMoney());
+
+            customerOper.setProxcAccountsReceiveable(BigDecimal.ZERO);
             moneySave.setMoney(orderBackHome.getInstance().getMoney());
             moneySave.getAccountOpers().clear();
             moneySave.getAccountOpers().add(customerOper);

@@ -391,7 +391,7 @@ public class AccountOper implements java.io.Serializable {
             case ORDER_PAY:
                 return getAdvanceReceivable().add(getAccountsReceivable()).add(getProxcAccountsReceiveable());
             case ORDER_BACK:
-                return getAccountsReceivable();
+                return getAccountsReceivable().add(getProxcAccountsReceiveable());
 
         }
 
@@ -508,7 +508,11 @@ public class AccountOper implements java.io.Serializable {
                     if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) == 0) {
                         getCustomer().setAccountMoney(getCustomer().getAccountMoney().subtract(getAccountsReceivable()));
                         operCustomerAccountMoney = getAccountsReceivable();
+                        getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().subtract(getProxcAccountsReceiveable()));
+                        operCustomerProxyAccountMoney = getProxcAccountsReceiveable();
+
                     } else {
+
                         getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().add(getAdvanceReceivable()));
                         operCustomerAdvanceMoney = getAdvanceReceivable().negate();
                     }
@@ -547,6 +551,7 @@ public class AccountOper implements java.io.Serializable {
 
                     if (getAdvanceReceivable().compareTo(BigDecimal.ZERO) == 0) {
                         getCustomer().setAccountMoney(getCustomer().getAccountMoney().add(getAccountsReceivable()));
+                        getCustomer().setProxyAccountMoney(getCustomer().getProxyAccountMoney().add(getProxcAccountsReceiveable()));
                     } else {
                         getCustomer().setAdvanceMoney(getCustomer().getAdvanceMoney().subtract(getAdvanceReceivable()));
                     }
@@ -666,14 +671,29 @@ public class AccountOper implements java.io.Serializable {
 
                 break;
             case ORDER_BACK:
-                if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
-                    result.add(new SaleCertificateItem(getSaleCertificate(),
-                            String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.ORDER_BACK"), getCustomer().getName()),
-                            RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable().multiply(new BigDecimal("-1")), BigDecimal.ZERO));
+
+                if ((getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) || (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0)){
                     result.add(new SaleCertificateItem(getSaleCertificate(),
                             String.format(RunParam.instance().getStringParamValue("erp.ADF.rm.ORDER_BACK"), getCustomer().getName()),
                             RunParam.instance().getStringParamValue("erp.finance.receive"), BigDecimal.ZERO, getAccountsReceivable().multiply(new BigDecimal("-1"))));
+
+                    if (getAccountsReceivable().compareTo(BigDecimal.ZERO) > 0) {
+                        result.add(new SaleCertificateItem(getSaleCertificate(),
+                                String.format(RunParam.instance().getStringParamValue("erp.ADF.ac.ORDER_BACK"), getCustomer().getName()),
+                                RunParam.instance().getStringParamValue("erp.finance.customerAccount") + getCustomer().getId(), getAccountsReceivable().multiply(new BigDecimal("-1")), BigDecimal.ZERO));
+
+                    }
+
+                    if (getProxcAccountsReceiveable().compareTo(BigDecimal.ZERO) > 0){
+                        result.add(new SaleCertificateItem(getSaleCertificate(),
+                                String.format(RunParam.instance().getStringParamValue("erp.ADF.pac.ORDER_BACK"), getCustomer().getName()),
+                                RunParam.instance().getStringParamValue("erp.finance.proxyAccount") + getCustomer().getId(), getProxcAccountsReceiveable().multiply(new BigDecimal("-1")), BigDecimal.ZERO));
+                    }
+
+
                 }
+
+
 
 
                 if ((getAdvanceReceivable().compareTo(BigDecimal.ZERO) > 0) || (getMoneySave() != null)) {

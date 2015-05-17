@@ -92,6 +92,38 @@
                             </h:inputText>
                         </s:decorate>
                     </a:outputPanel>
+
+
+                    <a:outputPanel rendered="#{orderBackMoney.backToPreMoney and orderBackMoney.canBackMoneyToProxyAccount}">
+                        <s:decorate id="accountMoneyField"
+                                    template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.accountOper_field_AccountMoney}</ui:define>
+                            <h:inputText value="#{orderBackMoney.customerOper.accountsReceivable}"
+                                         label="#{messages.accountOper_field_AccountMoney}"
+                                         required="true"
+                                         converter="javax.faces.BigDecimal">
+                                <f:validateDoubleRange minimum="0" maximum="#{orderBackHome.instance.money}"/>
+                                <a:ajax event="blur" execute="@this" render="remitFeeField"/>
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                                 currencySymbol=""/>
+                            </h:inputText>
+                        </s:decorate>
+
+                        <s:decorate id="proxyAccountMoneyField"
+                                    template="/layout/seam-edit.xhtml">
+                            <ui:define name="label">#{messages.ReceiveProxyAccountMoney}</ui:define>
+                            <h:inputText value="#{orderBackMoney.customerOper.proxcAccountsReceiveable}"
+                                         label="#{messages.ReceiveProxyAccountMoney}"
+                                         required="true"
+                                         converter="javax.faces.BigDecimal">
+                                <f:validateDoubleRange minimum="0" maximum="#{orderBackMoney.maxProxyMoney}"/>
+                                <a:ajax event="blur" execute="@this" render="remitFeeField"/>
+                                <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false"
+                                                 currencySymbol=""/>
+                            </h:inputText>
+                        </s:decorate>
+
+                    </a:outputPanel>
                 </a:outputPanel>
 
                 <div style="clear:both">
