@@ -59,6 +59,15 @@
 <rich:collapsiblePanel header="#{messages.search_conditions}" switchType="client">
 
     <h:form>
+
+
+        <div style="clear: both; padding: 3px;float: right;" >
+            <h:commandLink styleClass="norbtn" action="#{customerMoneyOperList.export}" >
+                <h:graphicImage style="vertical-align: text-top;" value="/img/download.png"/>
+                #{messages.Export}
+            </h:commandLink>
+        </div>
+
         <s:decorate template="/layout/seam-display.xhtml">
             <ui:define name="label">#{messages.order_field_createDate}</ui:define>
             <rich:calendar
