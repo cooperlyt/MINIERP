@@ -20,8 +20,10 @@ import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Logging;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -190,8 +192,26 @@ public class StoreResBackStoreIn extends CancelOrderTaskHandle {
         throw new ProcessDefineException("Order Store out store ID not exists");
     }
 
+
+    public boolean validDate(){
+        Date checkDate = orderBackHome.getEntityManager().createQuery("select max(inventory.checkDate) from Inventory inventory where inventory.store.id = :storeId",Date.class).
+                setParameter("storeId",dispatch.getStore().getId()).getSingleResult();
+        if ((checkDate != null) && (checkDate.compareTo(stockChangeHome.getInstance().getOperDate()) > 0)){
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsInventorError");
+            return false;
+        }
+        if (stockChangeHome.getInstance().getOperDate().compareTo(DataFormat.getTodayLastTime()) > 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(stockChangeHome.getInstance().getOperDate()) );
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected String completeOrderTask() {
+        if (!validDate()){
+            return null;
+        }
 
         stockChangeHome.getInstance().setId(orderBackHome.getInstance().getId() + numberBuilder.getDateNumber("ResBack"));
         stockChangeHome.getInstance().setBackDispatch(dispatch);

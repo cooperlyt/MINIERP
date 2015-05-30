@@ -1,5 +1,6 @@
 package com.dgsoft.erp.business.order;
 
+import com.dgsoft.common.DataFormat;
 import com.dgsoft.common.TotalDataGroup;
 import com.dgsoft.common.exception.ProcessDefineException;
 import com.dgsoft.common.helper.ActionExecuteState;
@@ -20,6 +21,7 @@ import org.jboss.seam.international.StatusMessage;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.*;
 
 /**
@@ -136,6 +138,10 @@ public class OrderStoreOut extends OrderTaskHandle {
                 setParameter("storeId",dispatchHome.getInstance().getStore().getId()).getSingleResult();
         if ((checkDate != null) && (checkDate.compareTo(storeOutDate) > 0)){
             facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR,"StoreChangeDateIsInventorError");
+            return false;
+        }
+        if (storeOutDate.compareTo(DataFormat.getTodayLastTime()) > 0) {
+            facesMessages.addFromResourceBundle(StatusMessage.Severity.ERROR, "DateIsFuture", DateFormat.getDateInstance(DateFormat.MEDIUM).format(storeOutDate) );
             return false;
         }
         return true;
