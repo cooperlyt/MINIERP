@@ -19,6 +19,14 @@
     <rich:collapsiblePanel switchType="client" header="#{messages.search_conditions}">
         <h:form>
 
+
+            <div style="clear: both; padding: 3px;float: right;" >
+                <h:commandLink styleClass="norbtn" action="#{stockChangeItemTotal.export}" >
+                    <h:graphicImage style="vertical-align: text-top;" value="/img/download.png"/>
+                    #{messages.Export}
+                </h:commandLink>
+            </div>
+
             <s:decorate template="/layout/seam-display.xhtml" rendered="#{not s:hasRole('erp.storage.manager')}">
                 <ui:define name="label">#{messages.Store}</ui:define>
                 <h:selectOneMenu value="#{stockChangeTypeCondition.storeId}">
@@ -159,6 +167,9 @@
                     </div>
                 </a:outputPanel>
             </h:panelGrid>
+
+
+
         </h:form>
     </rich:collapsiblePanel>
 </ui:define>

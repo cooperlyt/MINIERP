@@ -82,6 +82,9 @@ public class ExcelExportRender implements ExportRender {
 
                     }
                     //result.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                }else if (type.equals(Type.HEADER)){
+                    result.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
+
                 }
                 result.setFont(font);
             }
