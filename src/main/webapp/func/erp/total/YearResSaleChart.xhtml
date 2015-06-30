@@ -59,11 +59,16 @@
     </h:form>
     <br/>
 
-
+<h:outputStylesheet>
+    th, td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+</h:outputStylesheet>
 
     <div style="width: 100%; overflow-x:scroll;">
-        <rich:dataTable value="#{yearSaleResChartData.monthDatas}" style="width: 1300px"
-                        var="_md">
+        <rich:dataTable value="#{yearSaleResChartData.monthDatas}"
+                        var="_md" style="overflow: hidden">
 
             <f:facet name="header">
                 <rich:columnGroup>
