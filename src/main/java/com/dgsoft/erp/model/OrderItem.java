@@ -174,10 +174,19 @@ public class OrderItem extends StoreResPriceEntity
     }
 
     @Override
+    public void setUseUnit(ResUnit useUnit) {
+        setResUnit(useUnit);
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) && useUnit.isMasterUnit()){
+            setNeedConvertRate(getRes().getUnitGroup().getFloatAuxiliaryUnit().getConversionRate());
+        }
+        calcTotalMoney();
+    }
+
+    @Override
     protected void calcTotalMoney() {
         calcNeedMoney();
-        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
-            if ((getMoney() != null) && (getCount() != null) && (!getUseUnit().isMasterUnit()) && (getNeedConvertRate() != null)) {
+        if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) && (!getUseUnit().isMasterUnit())) {
+            if ((getMoney() != null) && (getCount() != null)  && (getNeedConvertRate() != null)) {
                 setTotalMoney(getNeedCount().multiply(getRebateUnitPrice()));
             }
         } else {
@@ -199,8 +208,10 @@ public class OrderItem extends StoreResPriceEntity
 
     @Transient
     private void calcNeedMoney() {
+        Logging.getLog(getClass()).debug("calcNeed Money ------------ money:" + getMoney() + "|c:" + getCount());
+
         if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT) &&
-                (getMoney() != null) && (getCount() != null) && (!getUseUnit().isMasterUnit())) {
+                (getMoney() != null) && (getCount() != null)) {
             if (getNeedConvertRate() == null) {
                 setNeedCount(BigDecimal.ZERO);
                 return;
@@ -208,14 +219,20 @@ public class OrderItem extends StoreResPriceEntity
 //            setNeedMoney(calcAuxCount(getCount(), getNeedConvertRate(),
 //                    getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()).multiply(getRebateUnitPrice()));
 
+
+
             setNeedCount(calcAuxCount(getCount(), getNeedConvertRate(),
-                    getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()));
+                        getRes().getUnitGroup().getFloatAuxiliaryUnit().getCountFormate()));
+
+            Logging.getLog(getClass()).debug("set folat ------------");
 
         } else {
             //   setNeedMoney(getTotalMoney());
             setNeedCount(getUseUnitCount());
+            Logging.getLog(getClass()).debug("set no folat ------------");
         }
 
+        Logging.getLog(getClass()).debug("calcNeed complete ------------need Count:" + getNeedCount());
     }
 
     @Transient

@@ -17,7 +17,7 @@
         </s:span>
 
         <a:outputPanel ajaxRendered="true">
-            <s:decorate rendered="#{(inputValue.res.unitGroup.type eq 'FLOAT_CONVERT') and (not inputValue.free)}"
+            <s:decorate rendered="#{(inputValue.res.unitGroup.type eq 'FLOAT_CONVERT') and (not inputValue.useUnit.masterUnit) and (not inputValue.free)}"
                         template="#{formatTemplate}" >
                 <ui:define name="label">#{messages.needConvertRate}</ui:define>
                 <h:inputText id="needConvertRateInput" value="#{inputValue.inputNeedConvertRate}"
