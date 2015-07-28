@@ -38,8 +38,11 @@ public class StoreResSaleTotalData {
     }
 
     public BigDecimal getNeedMoney() {
+        if (!UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(storeRes.getRes().getUnitGroup().getType()))
+            return money;
         if (needMoney == null)
             return BigDecimal.ZERO;
+
         return needMoney;
     }
 
@@ -63,6 +66,9 @@ public class StoreResSaleTotalData {
         if ((needCount == null) && storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
             return getResCount().getAuxCount();
         }
+        if (!UnitGroup.UnitGroupType.FLOAT_CONVERT.equals(storeRes.getRes().getUnitGroup().getType())){
+            return count;
+        }
         return needCount;
     }
 
@@ -74,6 +80,6 @@ public class StoreResSaleTotalData {
         if(storeRes.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
             return getNeedCount().subtract(getResCount().getAuxCount());
         }
-        return null;
+        return BigDecimal.ZERO;
     }
 }

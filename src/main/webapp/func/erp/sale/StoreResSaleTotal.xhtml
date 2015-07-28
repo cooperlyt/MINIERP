@@ -146,7 +146,7 @@
                 <ui:param name="style" value="background: #ecf4fe;"/>
             </ui:include>
             <rich:column style="background: #ecf4fe;">
-                <a:outputPanel rendered="#{ (_item.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <a:outputPanel >
                     <h:outputText value="#{_item.needCount}">
                         <f:convertNumber pattern="#{_item.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
                     </h:outputText>
@@ -161,7 +161,7 @@
             </rich:column>
 
             <rich:column style="background: #ecf4fe;text-align: right">
-                <a:outputPanel rendered="#{ (_item.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <a:outputPanel >
                     <h:outputText value="#{_item.needMoney}">
                         <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
                     </h:outputText>
@@ -213,7 +213,7 @@
             </ui:include>
 
             <rich:column style="background:#f5f5f5;">
-                <a:outputPanel rendered="#{ (_fm.key.res.unitGroup.type eq 'FLOAT_CONVERT')}">
+                <a:outputPanel >
                     <h:outputText value="#{_fm.totalData.needCount}">
                         <f:convertNumber pattern="#{_fm.key.res.unitGroup.floatAuxiliaryUnit.countFormate}"/>
                     </h:outputText>
