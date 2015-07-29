@@ -49,7 +49,7 @@ public class PriceChangeOrderCreate {
         orderHome.getInstance().setMoney(money);
         orderHome.getInstance().setResMoney(BigDecimal.ZERO);
         orderHome.getInstance().getOrderReduces().add(
-                new OrderReduce(orderHome.getInstance().getMemo(), money.multiply(new BigDecimal("-1")), orderHome.getInstance(), OrderReduce.ReduceType.PRICE_CHANGE)
+                new OrderReduce(orderHome.getInstance().getMemo(), new BigDecimal("-1").multiply(money) , orderHome.getInstance(), OrderReduce.ReduceType.PRICE_CHANGE)
         );
 
     }

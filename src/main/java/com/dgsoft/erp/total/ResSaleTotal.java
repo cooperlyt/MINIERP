@@ -13,6 +13,7 @@ import org.jboss.seam.log.Logging;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.persistence.TypedQuery;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -55,6 +56,11 @@ public class ResSaleTotal {
 
     private static final String BACK_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResBackTotalData(bi.storeRes,bi.count,bi.totalMoney) " +
             " from BackItem bi where bi.orderBack.confirmed = true and bi.orderBack.completeDate >= :beginDate and bi.orderBack.completeDate <= :endDate group by bi.storeRes";
+
+
+    public static final String ORDER_REDUCE_SQL ="select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate";
+
+    public static final String ORDER_REDUCE_SQL_NO_PRICE="select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.payType <> 'PRICE_CHANGE' and orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate";
 
     private void total() {
         resultData = new HashMap<Res, ResSaleTotalResult>();
@@ -189,9 +195,9 @@ public class ResSaleTotal {
         render.cell(0, 3, 0, 6, messages.get("SaleCount"));
         render.cell(0, 7, messages.get("NeedCount"));
 
-        render.cell(0, 8, messages.get("SaleMoney"));
+        render.cell(0, 8, messages.get("RealSaleMoney"));
 
-        render.cell(0, 9, messages.get("NeedMoeny"));
+        render.cell(0, 9, messages.get("NeedSaleMoney"));
 
         render.cell(0,10,messages.get("AVGSaleMoney"));
 
@@ -307,11 +313,46 @@ public class ResSaleTotal {
         }
 
 
-        render.cell(row, 0, row, 2, searchDateArea.getDisplay());
+        render.cell(row , 0, row , 2, messages.get("StoteResSaleTotal"));
+        render.cell(row , 8, totalSaleMoney.doubleValue());
+        render.cell(row , 9, totalNeedMoney.doubleValue());
+        render.cell(row , 16, totalBackMoney.doubleValue());
+        render.cell(row , 17, totalRebateMoney.doubleValue());
+
+        TypedQuery<BigDecimal> query;
+
+        if (!conationPriceOrder){
+            query = erpEntityLoader.getEntityManager().createQuery(ORDER_REDUCE_SQL, BigDecimal.class);
+
+        }else{
+            query = erpEntityLoader.getEntityManager().createQuery(ORDER_REDUCE_SQL_NO_PRICE, BigDecimal.class);
+        }
+
+        BigDecimal orderReduce = query.setParameter("beginDate", searchDateArea.getDateFrom())
+                .setParameter("endDate", searchDateArea.getSearchDateTo()).getSingleResult();
+
+
+
+        row++;
+
+        render.cell(row,0,row ,2, messages.get("OrderChangePriceMoney"));
+
+        render.cell(row, 8, orderReduce.negate().doubleValue());
+        render.cell(row, 9, orderReduce.negate().doubleValue());
+
+
+
+        totalSaleMoney = totalSaleMoney.subtract(orderReduce).subtract(totalBackMoney).subtract(totalRebateMoney);
+        totalNeedMoney = totalNeedMoney.subtract(orderReduce).subtract(totalBackMoney).subtract(totalRebateMoney);
+
+
+        row ++;
+        render.cell(row , 0, row , 2, searchDateArea.getDisplay());
+
+
         render.cell(row, 8, totalSaleMoney.doubleValue());
         render.cell(row, 9, totalNeedMoney.doubleValue());
-        render.cell(row, 16, totalBackMoney.doubleValue());
-        render.cell(row, 17, totalRebateMoney.doubleValue());
+
 
         ExternalContext externalContext = facesContext.getExternalContext();
         externalContext.responseReset();
