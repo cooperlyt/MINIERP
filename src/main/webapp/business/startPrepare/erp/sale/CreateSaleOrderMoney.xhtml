@@ -325,11 +325,15 @@
             <f:facet name="header">
                 #{messages.description}
             </f:facet>
-            <s:decorate template="/layout/grid-inside-edit.xhtml">
+            <s:decorate template="/layout/grid-inside-edit.xhtml" rendered="#{not (_reduce.type eq 'SYSTEM_TRUNC')}">
                 <rich:inplaceInput value="#{_reduce.description}" label="#{messages.description}" style="width: 95%">
                     <a:ajax event="blur" execute="@this"/>
                 </rich:inplaceInput>
             </s:decorate>
+
+            <h:outputText value="#{messages.SYSTEM_TRUNC}" rendered="#{ (_reduce.type eq 'SYSTEM_TRUNC')}">
+
+            </h:outputText>
             <f:facet name="footer">
                 #{messages.recordTotal} #{orderCreate.orderReduces.size} #{messages.item}
             </f:facet>
@@ -339,7 +343,10 @@
             <f:facet name="header">
                 #{messages.Money}
             </f:facet>
-            <s:decorate template="/layout/grid-inside-edit.xhtml">
+            <h:outputText value="#{_reduce.money}" rendered="#{ (_reduce.type eq 'SYSTEM_TRUNC')}">
+                <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false" currencySymbol=""/>
+            </h:outputText>
+            <s:decorate template="/layout/grid-inside-edit.xhtml" rendered="#{not (_reduce.type eq 'SYSTEM_TRUNC')}">
                 <rich:inplaceInput value="#{_reduce.money}" label="{messages.Money}" required="true" style="width: 95%">
                     <f:convertNumber type="currency" locale="#{calendarBean.locale}" groupingUsed="false" currencySymbol=""/>
                     <f:validateDoubleRange minimum="0"/>

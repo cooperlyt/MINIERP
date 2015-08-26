@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -316,7 +317,7 @@ public class ResSaleTotal {
         render.cell(row , 0, row , 2, messages.get("StoteResSaleTotal"));
         render.cell(row , 8, totalSaleMoney.doubleValue());
         render.cell(row , 9, totalNeedMoney.doubleValue());
-        render.cell(row , 16, totalBackMoney.doubleValue());
+        render.cell(row , 15, totalBackMoney.doubleValue());
         render.cell(row , 17, totalRebateMoney.doubleValue());
 
         TypedQuery<BigDecimal> query;
@@ -331,28 +332,32 @@ public class ResSaleTotal {
         BigDecimal orderReduce = query.setParameter("beginDate", searchDateArea.getDateFrom())
                 .setParameter("endDate", searchDateArea.getSearchDateTo()).getSingleResult();
 
-
+        if (orderReduce == null) {orderReduce = BigDecimal.ZERO;}
 
         row++;
 
         render.cell(row,0,row ,2, messages.get("OrderChangePriceMoney"));
 
-        render.cell(row, 8, orderReduce.negate().doubleValue());
-        render.cell(row, 9, orderReduce.negate().doubleValue());
+        render.cell(row, 8, orderReduce.doubleValue());
+        //render.cell(row, 9, orderReduce.doubleValue());
 
 
-
-        totalSaleMoney = totalSaleMoney.subtract(orderReduce).subtract(totalBackMoney).subtract(totalRebateMoney);
-        totalNeedMoney = totalNeedMoney.subtract(orderReduce).subtract(totalBackMoney).subtract(totalRebateMoney);
 
 
         row ++;
-        render.cell(row , 0, row , 2, searchDateArea.getDisplay());
+        render.cell(row, 0, row, 2, searchDateArea.getDisplay());
 
+        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.CHINA);
+        currency.setGroupingUsed(true);
+        currency.setMinimumFractionDigits(2);
+        currency.setMaximumFractionDigits(2);
 
-        render.cell(row, 8, totalSaleMoney.doubleValue());
-        render.cell(row, 9, totalNeedMoney.doubleValue());
-
+        render.cell(row, 3, row, 17, currency.format(totalSaleMoney) + "(货品总价) - " +
+                currency.format(totalRebateMoney) + "(返点金额) - " +
+                currency.format(orderReduce) + "(调价减免) = " +
+                currency.format(totalSaleMoney.subtract(totalRebateMoney).subtract(orderReduce)) + "(订单金额) - " +
+                        currency.format(totalBackMoney) + "(退货金额) = " +
+                        currency.format(totalSaleMoney.subtract(totalRebateMoney).subtract(orderReduce).subtract(totalBackMoney)));
 
         ExternalContext externalContext = facesContext.getExternalContext();
         externalContext.responseReset();

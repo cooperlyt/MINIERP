@@ -465,9 +465,36 @@ public class OrderHome extends ErpEntityHome<CustomerOrder> {
 //            }
 //        }
 //
-//        getOrderReduces().add(new OrderReduce(getInstance(), OrderReduce.ReduceType.SYSTEM_TRUNC));
+ //       getOrderReduces().add(new OrderReduce(getInstance(), OrderReduce.ReduceType.SYSTEM_TRUNC));
 
         getInstance().setMoney(allMoney.setScale(0, BigDecimal.ROUND_DOWN));
+
+        Logging.getLog(getClass()).info("scale money :" + allMoney.subtract(getInstance().getMoney()).toString());
+
+        if (allMoney.subtract(getInstance().getMoney()).compareTo(BigDecimal.ZERO) > 0) {
+
+            OrderReduce orderReduce = null;
+            for (OrderReduce ore : getOrderReduces()) {
+                if (ore.getType().equals(OrderReduce.ReduceType.SYSTEM_TRUNC)) {
+                    orderReduce = ore;
+                    break;
+                }
+            }
+            if (orderReduce == null) {
+                orderReduce = new OrderReduce(getInstance(), allMoney.subtract(getInstance().getMoney()), OrderReduce.ReduceType.SYSTEM_TRUNC);
+                getOrderReduces().add(orderReduce);
+            } else {
+                orderReduce.setMoney(allMoney.subtract(getInstance().getMoney()));
+            }
+        }else{
+            for (OrderReduce ore : getOrderReduces()) {
+                if (ore.getType().equals(OrderReduce.ReduceType.SYSTEM_TRUNC)) {
+                    getOrderReduces().remove(ore);
+                    break;
+                }
+            }
+        }
+
         //calcReceiveMoney();
     }
 
