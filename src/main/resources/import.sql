@@ -30,7 +30,10 @@ INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO) VALUES ('erp.finance.
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO) VALUES ('erp.finance.receive', 'STRING', '6001', '主营业务收入');
 
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
-VALUES ('erp.finance.beginningDay', 'INTEGER', '12', '结算起始日');
+VALUES ('erp.finance.beginningDay', 'INTEGER', '12', '结算起始日 例： 结算日为 27 则2月的 2015-1-27 至 2015-2-26 日');
+
+INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO)
+VALUES ('erp.finance.beginUpMonth', 'BOOLEAN', 'true', '结算起始日是否为上月日期 例：true: 结算日为 27 则2月的 2015-1-27 至 2015-2-26 日');
 
 INSERT INTO DG_SYSTEM.SYSTEM_PARAM (ID, TYPE, VALUE, MEMO) VALUES ('erp.finance.c.wrod', 'STRING', '销', '销售凭证字号');
 
