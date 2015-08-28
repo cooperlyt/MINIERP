@@ -93,13 +93,10 @@ public class ProcedureSaleChart {
             List<ProcedureSaleData> subList;
 
             String condition = " and orderItem.status <> 'REMOVED' ";
-            if (onlyShip) {
-                condition += " and orderItem.needRes.customerOrder.allStoreOut = true " + searchDateArea.genConditionSQL("orderItem.needRes.customerOrder.allShipDate", true);
 
-            } else {
                 condition += searchDateArea.genConditionSQL("orderItem.needRes.customerOrder.createDate", true);
 
-            }
+
 
 
             if (isUseSaleArea()) {

@@ -72,17 +72,19 @@
 
 <a:outputPanel id="totalResult">
 
+
+
 <p:barchart
         title="#{messages.ProcedureSaleMoneyChart}"
         legend="true" borderVisible="false"
         borderBackgroundPaint="white"
-        width="1000"
+        width="1000" orientation="vertical"
         plotOutlinePaint="white" plotBackgroundAlpha="0.1"
         baseSectionPaint="white"
         circular="true" is3D="true" plotForegroundAlpha="0.9">
 
     <ui:repeat value="#{procedureSaleChart.groupTotalData}" var="_entry">
-        <p:series key="#{_entry.resName}(#{_entry.unitName})">
+        <p:series key="#{_entry.resName}(#{_entry.unitName})" >
             <ui:repeat value="#{_entry.datas}" var="_item">
                 <p:data key="#{procedureSaleChart.useSaleArea ? _item.areaName : dictionary.getCityName(_item.areaName)}"
                         value="#{_item.money}"/>
