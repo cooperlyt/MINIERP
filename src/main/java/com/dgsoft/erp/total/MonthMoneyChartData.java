@@ -27,6 +27,16 @@ public class MonthMoneyChartData {
 
     private Integer totalYear;
 
+    private Integer endYear;
+
+    public Integer getEndYear() {
+        return endYear;
+    }
+
+    public void setEndYear(Integer endYear) {
+        this.endYear = endYear;
+    }
+
     public Integer getTotalYear() {
         return totalYear;
     }
@@ -45,7 +55,53 @@ public class MonthMoneyChartData {
         return resultTotal;
     }
 
-    public void totalData(){
+    public void totalYearData(){
+        resultList = new ArrayList<TotalData>();
+        resultTotal = new TotalData(0);
+
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
+
+        if (RunParam.instance().getBooleanParamValue("erp.finance.beginUpMonth")){
+            calendar.set(Calendar.YEAR,totalYear - 1);
+            calendar.set(Calendar.MONTH, 11);
+        }else{
+            calendar.set(Calendar.YEAR,totalYear);
+            calendar.set(Calendar.MONTH, 0);
+        }
+        calendar.set(Calendar.DATE,
+                Math.min(calendar.getActualMaximum(Calendar.DATE), RunParam.instance().getIntParamValue("erp.finance.beginningDay")));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+
+        for (int i = totalYear ; i <= endYear; i++){
+
+            Date beginDate = calendar.getTime();
+
+            calendar.add(Calendar.YEAR, 1);
+
+            Date endDate =  new Date(calendar.getTime().getTime() - 1);
+
+            TotalData totalDate = totalData(i+1,beginDate,endDate);
+
+            resultList.add(totalDate);
+
+
+            resultTotal.setResMoney(resultTotal.getResMoney().add(totalDate.getResMoney()));
+
+            resultTotal.setOrderReduce(resultTotal.getOrderReduce().add(totalDate.getOrderReduce()));
+
+            resultTotal.setOrderBack(resultTotal.getOrderBack().add(totalDate.getOrderBack()));
+
+            resultTotal.setOrderRebate(resultTotal.getOrderRebate().add(totalDate.getOrderRebate()));
+
+
+        }
+    }
+
+    public void totalMonthData(){
 
         resultList = new ArrayList<TotalData>();
         resultTotal = new TotalData(0);
@@ -74,24 +130,8 @@ public class MonthMoneyChartData {
             calendar.add(Calendar.MONTH, 1);
 
             Date endDate =  new Date(calendar.getTime().getTime() - 1);
-            TotalData totalDate =  new TotalData(i + 1);
 
-            totalDate.setResMoney(
-                    erpEntityLoader.getEntityManager().createQuery("select sum(oi.totalMoney)  from OrderItem oi where oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate", BigDecimal.class)
-                            .setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult());
-
-            totalDate.setOrderReduce(
-
-                    erpEntityLoader.getEntityManager().createQuery("select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate", BigDecimal.class).setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult()
-            );
-
-            totalDate.setOrderBack(erpEntityLoader.getEntityManager().createQuery("select sum(bi.totalMoney)" +
-                    " from BackItem bi where bi.orderBack.confirmed = true and bi.orderBack.completeDate >= :beginDate and bi.orderBack.completeDate <= :endDate", BigDecimal.class)
-                    .setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult());
-
-            totalDate.setOrderRebate(erpEntityLoader.getEntityManager().createQuery("select sum(rsr.rebateMoney) from ResSaleRebate rsr where rsr.customerOrder.canceled <> true and rsr.customerOrder.createDate >= :beginDate and rsr.customerOrder.createDate <= :endDate", BigDecimal.class)
-                    .setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult());
-
+            TotalData totalDate = totalData(i+1,beginDate,endDate);
 
             resultList.add(totalDate);
 
@@ -107,10 +147,28 @@ public class MonthMoneyChartData {
 
         }
 
+    }
 
+    private TotalData totalData(int title,Date beginDate , Date endDate){
+        TotalData totalDate =  new TotalData(title);
 
+        totalDate.setResMoney(
+                erpEntityLoader.getEntityManager().createQuery("select sum(oi.totalMoney)  from OrderItem oi where oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate", BigDecimal.class)
+                        .setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult());
 
+        totalDate.setOrderReduce(
 
+                erpEntityLoader.getEntityManager().createQuery("select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate", BigDecimal.class).setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult()
+        );
+
+        totalDate.setOrderBack(erpEntityLoader.getEntityManager().createQuery("select sum(bi.totalMoney)" +
+                " from BackItem bi where bi.orderBack.confirmed = true and bi.orderBack.completeDate >= :beginDate and bi.orderBack.completeDate <= :endDate", BigDecimal.class)
+                .setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult());
+
+        totalDate.setOrderRebate(erpEntityLoader.getEntityManager().createQuery("select sum(rsr.rebateMoney) from ResSaleRebate rsr where rsr.customerOrder.canceled <> true and rsr.customerOrder.createDate >= :beginDate and rsr.customerOrder.createDate <= :endDate", BigDecimal.class)
+                .setParameter("beginDate", beginDate).setParameter("endDate", endDate).getSingleResult());
+
+        return totalDate;
     }
 
     public static class TotalData{

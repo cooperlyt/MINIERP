@@ -55,7 +55,7 @@ public class ResSaleTotal {
     private static final String REBATE_DATA_SQL = "select new com.dgsoft.erp.total.data.ResRebateTotalData(rsr.res,sum(rsr.rebateCount),sum(rsr.rebateMoney)) " +
             " from ResSaleRebate rsr where rsr.customerOrder.canceled <> true and rsr.customerOrder.createDate >= :beginDate and rsr.customerOrder.createDate <= :endDate  group by rsr.res";
 
-    private static final String BACK_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResBackTotalData(bi.storeRes,bi.count,bi.totalMoney) " +
+    private static final String BACK_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResBackTotalData(bi.storeRes,sum(bi.count),sum(bi.totalMoney)) " +
             " from BackItem bi where bi.orderBack.confirmed = true and bi.orderBack.completeDate >= :beginDate and bi.orderBack.completeDate <= :endDate group by bi.storeRes";
 
 
@@ -96,9 +96,9 @@ public class ResSaleTotal {
             if (total == null) {
                 total = new ResSaleTotalResult(sale.getStoreRes().getRes());
                 resultData.put(total.getRes(), total);
-            } else {
-                total.put(sale);
             }
+            total.put(sale);
+
         }
 
         for (StoreResBackTotalData back : backTotal) {
@@ -106,9 +106,9 @@ public class ResSaleTotal {
             if (total == null) {
                 total = new ResSaleTotalResult(back.getStoreRes().getRes());
                 resultData.put(total.getRes(), total);
-            } else {
-                total.put(back);
             }
+            total.put(back);
+
         }
     }
 

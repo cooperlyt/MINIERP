@@ -36,6 +36,11 @@ public class SearchDateArea {
         return new Date(dateTo.getTime() + 24 * 60 * 60 * 1000 - 1);
     }
 
+    public void setSearchDateTo(Date searchDateTo){
+
+    }
+
+
     public Long getDateToTime() {
         if (dateTo == null) {
             return null;

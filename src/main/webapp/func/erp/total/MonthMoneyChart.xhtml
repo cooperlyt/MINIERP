@@ -16,10 +16,10 @@
         <rich:toolbar>
             <rich:toolbarGroup>
                 <h:form>
-                    <h:selectOneMenu value="#{yearSaleResChartData.totalYear}">
+                    <h:selectOneMenu value="#{monthMoneyChartData.totalYear}">
                         <s:selectItems value="#{saleSearchYears}" var="_year" itemValue="#{_year}"
                                        label="#{_year}" noSelectionLabel="#{messages.noSelectLabelShort}"/>
-                        <a:ajax event="valueChange" render="dataResults" execute="@form">
+                        <a:ajax event="valueChange" listener="#{monthMoneyChartData.totalMonthData}" render="dataResults" execute="@form">
                             <a:attachQueue requestDelay="0"/>
                         </a:ajax>
                     </h:selectOneMenu>
@@ -35,6 +35,114 @@
         </rich:toolbar>
 
 
+            <br/>
+        <a:outputPanel id="dataResults">
+
+
+            <rich:chart id="bar" >
+                <rich:chartLegend sorting="ascending"/>
+                <a:repeat value="#{monthMoneyChartData.resultList}" var="_data">
+                    <rich:chartSeries label="#{_data.month}" type="bar">
+
+                        <rich:chartPoint x="#{_data.month}" y="#{_data.totalMoney}"/>
+
+                    </rich:chartSeries>
+            </a:repeat>
+            </rich:chart>
+
+            <h:outputStylesheet>
+                .titleCol{
+                    font-weight: bold;
+                    text-align: center;
+                }
+                .valueCol{
+                    text-align: right;
+                }
+            </h:outputStylesheet>
+
+            <rich:dataTable value="#{monthMoneyChartData.resultList}" var="_data" style="width: 100%; "
+                    columnClasses="titleCol,valueCol,valueCol,valueCol,valueCol,valueCol">
+                <h:column>
+                    <f:facet name="header">
+                        月份
+                    </f:facet>
+                    #{_data.month}
+                    <f:facet name="footer">
+                        合计
+                    </f:facet>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        货品销售额
+                    </f:facet>
+                    <h:outputText value="#{_data.resMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="#{monthMoneyChartData.resultTotal.resMoney}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        订单调价和优惠
+                    </f:facet>
+                    <h:outputText value="#{_data.orderReduce}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="#{monthMoneyChartData.resultTotal.orderReduce}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        返点
+                    </f:facet>
+                    <h:outputText value="#{_data.orderRebate}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="#{monthMoneyChartData.resultTotal.orderRebate}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        退货
+                    </f:facet>
+                    <h:outputText value="#{_data.orderBack}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="#{monthMoneyChartData.resultTotal.orderBack}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        实销金额
+                    </f:facet>
+                    <h:outputText value="#{_data.totalMoney}">
+                        <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                    </h:outputText>
+                    <f:facet name="footer">
+                        <h:outputText value="#{monthMoneyChartData.resultTotal.totalMoney}">
+                            <f:convertNumber type="currency" locale="#{calendarBean.locale}"/>
+                        </h:outputText>
+                    </f:facet>
+                </h:column>
+
+            </rich:dataTable>
+        </a:outputPanel>
 
     </ui:define>
 
