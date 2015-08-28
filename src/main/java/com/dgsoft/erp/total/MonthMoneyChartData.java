@@ -84,7 +84,7 @@ public class MonthMoneyChartData {
 
             Date endDate =  new Date(calendar.getTime().getTime() - 1);
 
-            TotalData totalDate = totalData(i+1,beginDate,endDate);
+            TotalData totalDate = totalData(i,beginDate,endDate);
 
             resultList.add(totalDate);
 
