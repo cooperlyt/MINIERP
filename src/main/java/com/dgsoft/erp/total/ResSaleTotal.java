@@ -45,10 +45,10 @@ public class ResSaleTotal {
 
     private Map<Res, ResSaleTotalResult> resultData;
 
-    private static final String SALE_DATA_SQL_NO_PRICE  = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(CASE co.payType WHEN 'PRICE_CHANGE' THEN oi.totalMoney ELSE  (oi.money * oi.saleCount) END)) " +
+    private static final String SALE_DATA_SQL_NO_PRICE = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(CASE co.payType WHEN 'PRICE_CHANGE' THEN oi.totalMoney ELSE  (oi.money * oi.saleCount) END)) " +
             " from OrderItem oi left join oi.needRes nr left join nr.customerOrder co where oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate group by oi.storeRes";
 
-    private static final String SALE_DATA_SQL= "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(oi.money * oi.saleCount)) " +
+    private static final String SALE_DATA_SQL = "select new com.dgsoft.erp.total.data.StoreResSaleTotalData(oi.storeRes,sum(oi.count),avg(oi.money),sum(oi.totalMoney),sum(oi.needCount),sum(oi.money * oi.saleCount)) " +
             " from OrderItem oi where oi.needRes.customerOrder.payType <> 'PRICE_CHANGE' and oi.needRes.customerOrder.canceled <> true and oi.needRes.customerOrder.createDate >= :beginDate and oi.needRes.customerOrder.createDate <= :endDate group by oi.storeRes";
 
 
@@ -59,9 +59,9 @@ public class ResSaleTotal {
             " from BackItem bi where bi.orderBack.confirmed = true and bi.orderBack.completeDate >= :beginDate and bi.orderBack.completeDate <= :endDate group by bi.storeRes";
 
 
-    public static final String ORDER_REDUCE_SQL ="select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate";
+    public static final String ORDER_REDUCE_SQL = "select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate";
 
-    public static final String ORDER_REDUCE_SQL_NO_PRICE="select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.payType <> 'PRICE_CHANGE' and orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate";
+    public static final String ORDER_REDUCE_SQL_NO_PRICE = "select sum(orderReduce.money) from OrderReduce orderReduce where orderReduce.customerOrder.payType <> 'PRICE_CHANGE' and orderReduce.customerOrder.canceled <> true and orderReduce.customerOrder.createDate >= :beginDate and orderReduce.customerOrder.createDate <= :endDate";
 
     private void total() {
         resultData = new HashMap<Res, ResSaleTotalResult>();
@@ -155,8 +155,8 @@ public class ResSaleTotal {
                 render.cell(row, col, sb.getSale().getNeedMoney().doubleValue());
             }
             col++;
-            if (sb.getCalcSaleAvgMoney() != null){
-                render.cell(row,col,sb.getCalcSaleAvgMoney().doubleValue());
+            if (sb.getCalcSaleAvgMoney() != null) {
+                render.cell(row, col, sb.getCalcSaleAvgMoney().doubleValue());
             }
             col++;
         } else {
@@ -200,7 +200,7 @@ public class ResSaleTotal {
 
         render.cell(0, 9, messages.get("NeedSaleMoney"));
 
-        render.cell(0,10,messages.get("AVGSaleMoney"));
+        render.cell(0, 10, messages.get("AVGSaleMoney"));
 
         render.cell(0, 11, 0, 14, messages.get("SaleBackCount"));
         render.cell(0, 15, messages.get("SaleBackMoney"));
@@ -235,17 +235,17 @@ public class ResSaleTotal {
                         render.cell(row, 5, total.getTotalData().getSaleCount().getAuxCount().doubleValue());
                         render.cell(row, 6, total.getKey().getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
                     }
-                        render.cell(row, 7, total.getTotalData().getNeedCount().doubleValue());
+                    render.cell(row, 7, total.getTotalData().getNeedCount().doubleValue());
 
 
                     render.cell(row, 8, total.getTotalData().getSaleMoney().doubleValue());
 
 
-                        render.cell(row, 9, total.getTotalData().getNeedMoney().doubleValue());
+                    render.cell(row, 9, total.getTotalData().getNeedMoney().doubleValue());
 
 
-                    if (total.getTotalData().getCalcAvgMoney() != null){
-                        render.cell(row,10,total.getTotalData().getCalcAvgMoney().doubleValue());
+                    if (total.getTotalData().getCalcAvgMoney() != null) {
+                        render.cell(row, 10, total.getTotalData().getCalcAvgMoney().doubleValue());
                     }
 
 
@@ -277,7 +277,7 @@ public class ResSaleTotal {
                 render.cell(row, 5, result.getSaleCount().getAuxCount().doubleValue());
                 render.cell(row, 6, result.getRes().getUnitGroup().getFloatAuxiliaryUnit().getName());
             }
-                render.cell(row, 7, result.getNeedCount().doubleValue());
+            render.cell(row, 7, result.getNeedCount().doubleValue());
 
 
             render.cell(row, 8, result.getSaleMoney().doubleValue());
@@ -286,7 +286,6 @@ public class ResSaleTotal {
             totalNeedMoney = totalNeedMoney.add(result.getNeedMoney());
 
             render.cell(row, 9, result.getNeedMoney().doubleValue());
-
 
 
             render.cell(row, 11, result.getBackCount().getMasterCount().doubleValue());
@@ -314,37 +313,37 @@ public class ResSaleTotal {
         }
 
 
-        render.cell(row , 0, row , 2, messages.get("StoteResSaleTotal"));
-        render.cell(row , 8, totalSaleMoney.doubleValue());
-        render.cell(row , 9, totalNeedMoney.doubleValue());
-        render.cell(row , 15, totalBackMoney.doubleValue());
-        render.cell(row , 17, totalRebateMoney.doubleValue());
+        render.cell(row, 0, row, 2, messages.get("StoteResSaleTotal"));
+        render.cell(row, 8, totalSaleMoney.doubleValue());
+        render.cell(row, 9, totalNeedMoney.doubleValue());
+        render.cell(row, 15, totalBackMoney.doubleValue());
+        render.cell(row, 17, totalRebateMoney.doubleValue());
 
         TypedQuery<BigDecimal> query;
 
-        if (!conationPriceOrder){
+        if (!conationPriceOrder) {
             query = erpEntityLoader.getEntityManager().createQuery(ORDER_REDUCE_SQL, BigDecimal.class);
 
-        }else{
+        } else {
             query = erpEntityLoader.getEntityManager().createQuery(ORDER_REDUCE_SQL_NO_PRICE, BigDecimal.class);
         }
 
         BigDecimal orderReduce = query.setParameter("beginDate", searchDateArea.getDateFrom())
                 .setParameter("endDate", searchDateArea.getSearchDateTo()).getSingleResult();
 
-        if (orderReduce == null) {orderReduce = BigDecimal.ZERO;}
+        if (orderReduce == null) {
+            orderReduce = BigDecimal.ZERO;
+        }
 
         row++;
 
-        render.cell(row,0,row ,2, messages.get("OrderChangePriceMoney"));
+        render.cell(row, 0, row, 2, messages.get("OrderChangePriceMoney"));
 
         render.cell(row, 8, orderReduce.doubleValue());
         //render.cell(row, 9, orderReduce.doubleValue());
 
 
-
-
-        row ++;
+        row++;
         render.cell(row, 0, row, 2, searchDateArea.getDisplay());
 
         NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.CHINA);
@@ -356,8 +355,8 @@ public class ResSaleTotal {
                 currency.format(totalRebateMoney) + "(返点金额) - " +
                 currency.format(orderReduce) + "(调价减免) = " +
                 currency.format(totalSaleMoney.subtract(totalRebateMoney).subtract(orderReduce)) + "(订单金额) - " +
-                        currency.format(totalBackMoney) + "(退货金额) = " +
-                        currency.format(totalSaleMoney.subtract(totalRebateMoney).subtract(orderReduce).subtract(totalBackMoney)));
+                currency.format(totalBackMoney) + "(退货金额) = " +
+                currency.format(totalSaleMoney.subtract(totalRebateMoney).subtract(orderReduce).subtract(totalBackMoney)));
 
         ExternalContext externalContext = facesContext.getExternalContext();
         externalContext.responseReset();
@@ -484,9 +483,9 @@ public class ResSaleTotal {
                     saleCount = saleCount.add(saleAndBack.getSale().getResCount());
                     saleMoney = saleMoney.add(saleAndBack.getSale().getMoney());
 
-                        needCount = needCount.add(saleAndBack.getSale().getNeedCount());
-                        addCount = addCount.add(saleAndBack.getSale().getAddCount());
-                        needMoney = needMoney.add(saleAndBack.getSale().getNeedMoney());
+                    needCount = needCount.add(saleAndBack.getSale().getNeedCount());
+                    addCount = addCount.add(saleAndBack.getSale().getAddCount());
+                    needMoney = needMoney.add(saleAndBack.getSale().getNeedMoney());
 
                 }
             }
@@ -578,14 +577,14 @@ public class ResSaleTotal {
             this.sale = sale;
         }
 
-        public BigDecimal getCalcSaleAvgMoney(){
-            if (sale != null){
-            if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-                return getSale().getNeedMoney().divide(getSale().getResCount().getAuxCount(),2,BigDecimal.ROUND_HALF_UP);
-            }else{
-                return getSale().getMoney().divide(getSale().getResCount().getMasterCount(),2,BigDecimal.ROUND_HALF_UP);
-            }}
-            else return null;
+        public BigDecimal getCalcSaleAvgMoney() {
+            if (sale != null) {
+                if (getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                    return getSale().getNeedMoney().divide(getSale().getResCount().getAuxCount(), 2, BigDecimal.ROUND_HALF_UP);
+                } else {
+                    return getSale().getMoney().divide(getSale().getResCount().getMasterCount(), 2, BigDecimal.ROUND_HALF_UP);
+                }
+            } else return null;
         }
     }
 
@@ -617,16 +616,17 @@ public class ResSaleTotal {
         }
 
 
-        public BigDecimal getCalcAvgMoney(){
-            if (saleCount != null){
-            if (saleCount.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-                return saleMoney.divide(saleCount.getAuxCount(), 2, BigDecimal.ROUND_HALF_UP);
-            }else{
-                return saleMoney.divide(saleCount.getMasterCount(), 2, BigDecimal.ROUND_HALF_UP);
-            }}
+        public BigDecimal getCalcAvgMoney() {
+            if (saleCount != null && saleCount.getRes() != null) {
+
+                if (saleCount.getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)) {
+                    return saleMoney.divide(saleCount.getAuxCount(), 2, BigDecimal.ROUND_HALF_UP);
+                } else {
+                    return saleMoney.divide(saleCount.getMasterCount(), 2, BigDecimal.ROUND_HALF_UP);
+                }
+            }
             return null;
         }
-
 
 
         public void put(SaleAndBack saleAndBack) {
@@ -639,9 +639,9 @@ public class ResSaleTotal {
                 saleCount = saleCount.add(saleAndBack.getSale().getResCount());
                 saleMoney = saleMoney.add(saleAndBack.getSale().getMoney());
 
-                    needCount = needCount.add(saleAndBack.getSale().getNeedCount());
-                    addCount = addCount.add(saleAndBack.getSale().getAddCount());
-                    needMoney = needMoney.add(saleAndBack.getSale().getNeedMoney());
+                needCount = needCount.add(saleAndBack.getSale().getNeedCount());
+                addCount = addCount.add(saleAndBack.getSale().getAddCount());
+                needMoney = needMoney.add(saleAndBack.getSale().getNeedMoney());
 
 
             }

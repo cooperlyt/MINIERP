@@ -28,7 +28,7 @@ public class SaleBackItemComparator implements Comparator<StoreResPriceEntity> {
         if (o2 instanceof OrderItem) {
             o2Date = ((OrderItem) o2).getNeedRes().getCustomerOrder().getCreateDate();
         } else {
-            o2Date = ((BackItem) o2).getDispatch().getStockChange().getOperDate();
+            o2Date = ((BackItem) o2).getOrderBack().getCreateDate();
         }
         int result = o1Date.compareTo(o2Date);
         if (result == 0) {
