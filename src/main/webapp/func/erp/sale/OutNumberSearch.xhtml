@@ -1,0 +1,137 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:s="http://jboss.org/schema/seam/taglib"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich" xmlns:a="http://richfaces.org/a4j"
+                template="/layout/full-template.xhtml">
+
+    <ui:define name="toolbar">
+        <h:outputStylesheet name="font-icon-octicons.css"/>
+
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form>
+        <h:panelGrid columns="4">
+
+            <h:inputText value="#{outNumberOrderList.before}"/>
+            <h:inputText value="#{outNumberOrderList.number}"/>
+            <h:inputText value="#{outNumberOrderList.after}"/>
+            <a:commandButton value="查询" execute="@form" render="dataListResult" action="#{outNumberOrderList.search}">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandButton>
+        </h:panelGrid>
+        </h:form>
+
+        <br/>
+
+        <rich:dataTable id="dataListResult" style="width: 100%" value="#{outNumberOrderList.resultList}" var="_order"
+                        noDataLabel="#{messages.emptyResult}" frozenColumns="5">
+
+
+
+
+            <rich:column>
+                <f:facet name="header">
+
+                    #{messages.order_field_id}
+
+
+                </f:facet>
+
+                <s:link view="/func/erp/sale/OrderDetails.xhtml" value="#{_order.id}" target="_blank"
+                        style="#{_order.canceled ? 'text-decoration:line-through; color: red;' : ''}">
+                    <f:param name="orderId" value="#{_order.id}"/>
+                </s:link>
+
+                <div class="order-status" style="float: right;">
+                    <div class="myebay-sprite #{_order.accountChange ? 'ph-fund' : 'ph-not-fund' }"/>
+
+                    <div class="myebay-sprite #{_order.allStoreOut ? 'ph-ship' : 'ph-not-ship' }"></div>
+                </div>
+
+            </rich:column>
+
+            <rich:column width="110px">
+                <f:facet name="header">
+                  #{messages.order_field_createDate}
+                </f:facet>
+                <h:outputText value="#{_order.createDate}">
+                    <s:convertDateTime pattern="#{messages.displayDatePattern}"/>
+                </h:outputText>
+            </rich:column>
+
+
+            <rich:column>
+                <f:facet name="header">
+                   #{messages.orderCustomer}
+
+                </f:facet>
+                #{_order.customer.name}
+            </rich:column>
+            <rich:column width="70px">
+                <f:facet name="header">
+                    #{messages.order_field_payType}
+                </f:facet>
+                #{messages[_order.payType.name()]}
+
+            </rich:column>
+
+
+            <rich:column style="text-align: right" footerClass="moneyTableFooter">
+
+                <f:facet name="header">
+                    #{messages.OrderTotalRebateMoney}
+                </f:facet>
+
+                <h:outputText value="#{_order.totalRebateMoney}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+
+                </h:outputText>
+
+
+
+
+            </rich:column>
+
+
+            <rich:column style="text-align: right" footerClass="moneyTableFooter">
+
+                <f:facet name="header">
+                    #{messages.orderMoney}
+                </f:facet>
+
+                <h:outputText value="#{_order.money}">
+                    <f:convertNumber locale="#{calendarBean.locale}"
+                                     type="currency" groupingUsed="true"/>
+                </h:outputText>
+
+
+            </rich:column>
+
+
+
+
+            <rich:column width="60px">
+                <f:facet name="header">
+                    #{messages.CustomerArea}
+                </f:facet>
+                #{_order.customer.customerArea.name}
+
+            </rich:column>
+            <rich:column>
+                <f:facet name="header">
+                    #{messages.order_field_emp}
+                </f:facet>
+                #{dictionary.getEmpNameById(_order.orderEmp)}
+            </rich:column>
+
+        </rich:dataTable>
+    </ui:define>
+
+
+</ui:composition>

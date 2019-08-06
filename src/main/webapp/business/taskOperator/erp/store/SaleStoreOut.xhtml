@@ -131,6 +131,50 @@
 </h:form>
 <br/>
 
+    <h:form id="orderStoreOutNumberInput">
+        <h:panelGrid columns="6">
+        <h:inputText value="#{orderStoreNumber.newNumber.prefx}"/>
+        <h:inputText value="#{orderStoreNumber.newNumber.begin}">
+
+        </h:inputText>
+        -
+        <h:inputText value="#{orderStoreNumber.newNumber.end}">
+
+
+        </h:inputText>
+        <h:inputText value="#{orderStoreNumber.newNumber.after}"/>
+
+
+        <a:commandButton value="添加" execute="@form" render="orderStoreOutNumberTable,orderStoreOutNumberInput" action="#{orderStoreNumber.addNumber}">
+            <a:attachQueue requestDelay="0"/>
+        </a:commandButton>
+        </h:panelGrid>
+    </h:form>
+
+    <h:form>
+    <rich:dataTable id="orderStoreOutNumberTable" value="#{orderStoreOutNumberItems}" var="_item">
+
+        <rich:column>
+            #{_item.prefx}
+        </rich:column>
+        <rich:column>
+            #{_item.begin}
+        </rich:column>
+        <rich:column>
+            #{_item.end}
+        </rich:column>
+        <rich:column>
+            #{_item.after}
+        </rich:column>
+
+        <rich:column>
+            <a:commandLink value="删除" action="#{orderStoreNumber.removeNumber}" execute="@form" render="orderStoreOutNumberTable">
+                <a:attachQueue requestDelay="0"/>
+            </a:commandLink>
+        </rich:column>
+    </rich:dataTable>
+    </h:form>
+    <br/>
 
 <h:form>
     <h:panelGrid rendered="#{dispatchHome.canAddRes}" id="resSearchForm" columns="4">

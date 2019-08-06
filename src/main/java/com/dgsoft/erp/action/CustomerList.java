@@ -18,22 +18,6 @@ public class CustomerList extends ErpEntityQuery<Customer> {
 
     private static final String EJBQL = "select customer from Customer customer";
 
-//    private static final String EJBQL = "select new com.dgsoft.erp.model.api.CustomerData(" +
-//            "customer.id,customer.name,customer.type,customer.customerArea.name,customer.customerLevel.name,customer.customerLevel.priority,customer.provinceCode," +
-//            "customer.createDate,customer.balance,customer.enable," +
-//            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false) as orderCount," +
-//            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = true) as completeOrderCount," +
-//            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and (o.resReceived = false or o.moneyComplete = false or o.allStoreOut = false)) as runningOrderCount," +
-//            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.moneyComplete = false and (o.allStoreOut = true or o.payType = 'PAY_FIRST')) as waitPayOrderCount," +
-//            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.resReceived = false) as waitReceiveOrderCount," +
-//            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = false and (o.payType <> 'PAY_FIRST' or o.moneyComplete = true)) as waitShipOrderCount," +
-//            "(select count(o.id) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false) as arrearsOrderCount," +
-//            "COALESCE((select sum(o.money - o.receiveMoney) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false),0) as orderArrears," +
-//            "COALESCE((select sum(o.money) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false),0) as orderTotalMoney," +
-//            "COALESCE((select sum(o.money) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = true),0) as completeOrderMoney," +
-//            "COALESCE((customer.balance - COALESCE((select sum(o.money - o.receiveMoney) from CustomerOrder o where o.customer.id = customer.id and o.canceled = false and o.allStoreOut = true and o.moneyComplete = false),0)),0) as lastMoney ) " +
-//            "from Customer customer";
-
 
     private static final String[] RESTRICTIONS = {
             "customer.customerArea.id in (#{customerSearchCondition.resultAcceptAreaIds})",

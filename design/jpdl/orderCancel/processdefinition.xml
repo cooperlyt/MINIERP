@@ -32,6 +32,7 @@
 		<transition to="入库判断(2库)" name="入库(2库)"></transition>
 		<transition to="入库判断(天津)" name="入库(天津)"></transition>
 		<transition to="入库判断(公司)" name="入库(公司)"></transition>
+		<transition to="入库判断（二厂分水器）" name="入库（二厂分水器）"></transition>
 	</fork>
 
 	<join name="join2">
@@ -158,6 +159,29 @@
 		</task>
 		<transition to="结束"></transition>
 	</task-node>
+
+	<decision name="入库判断（二厂分水器）">
+		<transition to="退货入库(二厂分水器)" name="入库">
+			<condition expression="#{orderBackHome.needStoreIn('5')}"></condition>
+		</transition>
+		<transition to="入库完成(二厂分水器)" name="完成">
+			<condition expression="#{not orderBackHome.needStoreIn('5')}"></condition>
+		</transition>
+	</decision>
+
+	<task-node name="退货入库(二厂分水器)">
+		<task name="退货入库(二厂分水器)">
+			<description>
+				{&quot;businessName&quot;:&quot;退货&quot;,&quot;businessKey&quot;:&quot;#{orderBackHome.instance.id}&quot;,&quot;tags&quot;:[&quot;#{orderBackHome.instance.customer.name}&quot;],&quot;description&quot;:&quot;#{orderBackHome.instance.customer.name}&quot;,&quot;storeId&quot;:&quot;5&quot;,&quot;operPage&quot;:&quot;/business/taskOperator/erp/store/StoreResBackStoreIn.xhtml&quot;}
+			</description>
+			<assignment pooled-actors="#{storeHome.getStoreRole('5')}"></assignment>
+		</task>
+		<transition to="入库完成(二厂分水器)"></transition>
+	</task-node>
+
+	<node name="入库完成(二厂分水器)">
+		<transition to="join2"></transition>
+	</node>
 
 
 	<end-state name="结束"></end-state>

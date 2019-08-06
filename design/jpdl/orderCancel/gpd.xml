@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root-container name="orderCancel" width="775" height="737">
+<root-container name="orderCancel" width="1063" height="607">
   <node name="退货" x="41" y="9" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
@@ -31,6 +31,9 @@
     </edge>
     <edge>
       <label x="-35" y="-11"/>
+    </edge>
+    <edge>
+      <label x="-47" y="-14"/>
     </edge>
   </node>
   <node name="join2" x="649" y="371" width="114" height="24">
@@ -123,10 +126,28 @@
       <label x="5" y="-10"/>
     </edge>
   </node>
-  <node name="退款" x="538" y="90" width="132" height="36">
+  <node name="退款" x="769" y="95" width="132" height="36">
     <edge>
       <label x="5" y="-10"/>
     </edge>
   </node>
   <node name="结束" x="641" y="12" width="132" height="36"/>
+  <node name="入库判断（二厂分水器）" x="347" y="84" width="132" height="36">
+    <edge>
+      <label x="-16" y="-16"/>
+    </edge>
+    <edge>
+      <label x="-7" y="-9"/>
+    </edge>
+  </node>
+  <node name="退货入库(二厂分水器)" x="520" y="82" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
+  <node name="入库完成(二厂分水器)" x="501" y="147" width="132" height="36">
+    <edge>
+      <label x="5" y="-10"/>
+    </edge>
+  </node>
 </root-container>

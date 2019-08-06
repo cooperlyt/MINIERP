@@ -50,6 +50,9 @@ public class OrderStoreOut extends OrderTaskHandle {
     @In
     private org.jboss.seam.security.Credentials credentials;
 
+    @In
+    private OrderStoreNumber orderStoreNumber;
+
     @DataModel("orderStoreOutItems")
     private List<OrderStoreOutItem> orderStoreOutItems;
 
@@ -159,6 +162,18 @@ public class OrderStoreOut extends OrderTaskHandle {
                 new StockChange(orderHome.getInstance().getId() + "-" + numberBuilder.getNumber("storeInCode"), dispatchHome.getInstance().getStore(), storeOutDate,
                         credentials.getUsername(), StockChange.StoreChangeType.SELL_OUT, memo, true)
         );
+
+        dispatchHome.getInstance().getStockChange().getOutNumbers().clear();
+        dispatchHome.getInstance().getStockChange().getOutNumbers().addAll(orderStoreNumber.getOutNumbers());
+        for(OutNumber on : dispatchHome.getInstance().getStockChange().getOutNumbers()){
+            on.setStockChange(dispatchHome.getInstance().getStockChange());
+            if (on.getPrefx() == null){
+                on.setPrefx("");
+            }
+            if (on.getAfter() == null){
+                on.setAfter("");
+            }
+        }
 
         for (OrderStoreOutItem item : orderStoreOutItems) {
             //TODO noConvertRate Unit

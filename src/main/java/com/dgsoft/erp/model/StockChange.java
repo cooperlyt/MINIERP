@@ -87,6 +87,7 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
 
     private Set<StockChangeItem> stockChangeItems = new HashSet<StockChangeItem>(0);
     private Set<PrepareStockChange> prepareStockChanges = new HashSet<PrepareStockChange>(0);
+    private Set<OutNumber> outNumbers = new HashSet<OutNumber>(0);
 
     public StockChange() {
     }
@@ -401,6 +402,15 @@ public class StockChange implements Comparable<StockChange>, java.io.Serializabl
 
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL,mappedBy = "stockChange")
+    public Set<OutNumber> getOutNumbers() {
+        return outNumbers;
+    }
+
+    public void setOutNumbers(Set<OutNumber> outNumbers) {
+        this.outNumbers = outNumbers;
     }
 
     @Transient

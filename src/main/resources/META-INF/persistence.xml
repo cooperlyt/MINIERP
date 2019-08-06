@@ -116,6 +116,7 @@
         <class>com.dgsoft.erp.model.OrderReduce</class>
         <class>com.dgsoft.erp.model.SalerStoreResPrice</class>
         <class>com.dgsoft.erp.model.SalerPrice</class>
+        <class>com.dgsoft.erp.model.OutNumber</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.dialect" value="com.dgsoft.common.persistence.Mysql5BitBooleanDialect"/>
