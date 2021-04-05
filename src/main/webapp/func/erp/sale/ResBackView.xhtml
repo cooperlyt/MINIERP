@@ -13,6 +13,12 @@
 
 
     <ui:define name="func-body">
+        <s:link target="_blank" view="/report/backPaper.xhtml">
+            <s:graphicImage value="/img/print.png" title="#{messages.print_sale_paper}"/>
+            <f:param name="first" value="false"/>
+            <f:param name="orderId" value="#{orderBackHome.instance.id}"/>
+        </s:link>
+
         <h:panelGrid columns="3">
             <h:panelGroup>
                 <h:graphicImage value="/img/true.png" rendered="#{orderBackHome.instance.dispatched}"/>

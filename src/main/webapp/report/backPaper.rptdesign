@@ -4,50 +4,42 @@
     <property name="units">in</property>
     <method name="initialize"><![CDATA[
 importPackage(Packages.java.lang);
-importPackage(Packages.org.jboss.seam);  
-importPackage(Packages.com.dgsoft.erp.model); 
+importPackage(Packages.org.jboss.seam);
+importPackage(Packages.com.dgsoft.erp.model);
 importPackage(Packages.com.dgsoft.common);
-importPackage(Packages.java.math); 
+importPackage(Packages.java.math);
 dictionary = Component.getInstance("dictionary", false);
 messages = Component.getInstance("org.jboss.seam.international.messages", false);
-	orderHome = Component.getInstance("orderHome",false);
+	orderHome = Component.getInstance("orderBackHome",false);
 	if (orderHome == null){
-		orderHome = Component.getInstance("orderHome",true);
+		orderHome = Component.getInstance("orderBackHome",true);
 		orderHome.setId(params["orderId"].value);
 	}
-	orderItems = Component.getInstance("orderHome",false).getInstance().getAllOrderItemList();
-	salerName = dictionary.getEmpNameById(orderHome.getInstance().getOrderEmp());
+	orderItems = Component.getInstance("orderBackHome",false).getInstance().getBackItemList();
+	salerName = dictionary.getEmpNameById(orderHome.getInstance().getApplyEmp());
 	saleDate = orderHome.getInstance().getCreateDate();
 	orderNumber = orderHome.getInstance().getId();
 	saleAreaName = orderHome.getInstance().getCustomer().getCustomerArea().getName();
 	customerName = orderHome.getInstance().getCustomer().getName();
-	orderRebate = orderHome.getInstance().getTotalRebate();
+	orderRebate = 0.0;
 	orderMoney= orderHome.getInstance().getMoney();
-	orderRebateMoney = orderHome.getInstance().getResMoney().subtract(orderHome.getInstance().getTotalRebateMoney())
-	
-	
+	orderRebateMoney = 0.0;
+
+
 	if (orderHome.getInstance().isMoneyComplete()){
-		orderState = messages.get("order_field_moneyComplete_true"); 
+		orderState = messages.get("OrderBack_search_money_true");
 	}else{
-		orderState = messages.get("order_field_moneyComplete_false");
-	}
-	orderState += " / ";
-	if (orderHome.getInstance().isAllStoreOut()){
-		orderState +=  messages.get("order_field_allStoreOut_true");
-	}else{
-		orderState +=  messages.get("order_field_allStoreOut_false");
+		orderState = messages.get("OrderBack_search_money_false");
 	}
 
 	orderState += " / ";
-	if (orderHome.getInstance().isResReceived()){
-	 	orderState += messages.get("order_field_resReceived_true"); 
-	}else{ 
-		orderState += messages.get("order_field_resReceived_false");
+	if (orderHome.getInstance().isResComplete()){
+	 	orderState += messages.get("OrderBack_search_res_true");
+	}else{
+		orderState += messages.get("OrderBack_search_res_false");
 	}
-	
-	
-	orderPayType = messages.get(orderHome.getInstance().getPayType().name());
-	
+    orderPayType = "";
+
 ]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -194,11 +186,11 @@ it=orderItems.iterator();
 	item = it.next();
 
 	itemTitle = item.getStoreRes().getRes().getName() + " ";
-	
-	
+
+
 
 		storeRes = item.getStoreRes();
-		formats = storeRes.getFormatList(); 
+		formats = storeRes.getFormatList();
 		for(i=0;i++;i<formats.size() -1){
 			format = formats.get(i);
 			itemTitle += format.getFormatDefine().getName() + ":";
@@ -206,29 +198,29 @@ it=orderItems.iterator();
 				itemTitle += dictionary.getWordValue(format.getFormatValue());
 			}else{
 				itemTitle += format.getFormatValue();
-			}						
+			}
 		}
 		if (item.getStoreRes().getRes().getUnitGroup().getType().equals(UnitGroup.UnitGroupType.FLOAT_CONVERT)){
-			
+
 			itemTitle +=  DataFormat.format(storeRes.getFloatConversionRate(),storeRes.getRes().getUnitGroup().getFloatConvertRateFormat());
 			itemTitle += item.getStoreRes().getRes().getUnitGroup().getName();
 		}
-		
-	
-	
+
+
+
 	row['NAME'] = itemTitle;
-    
+
 
 
    	row['UNIT'] = item.getResUnit().getName();
-    row['COUNT'] = DataFormat.format(item.getUseUnitCount(),item.getResUnit().getCountFormate());
+    row['COUNT'] = DataFormat.format(item.getSaleCount(),item.getResUnit().getCountFormate());
     row['TOTAL_PRICE'] = item.getTotalMoney();
     row['PRICE'] = item.getMoney();
     row['REBATE'] = item.getRebate();
-  
-    
-    
-    
+
+
+
+
     row['ITEM_INFO'] = itemTitle + "  " + row['COUNT']  + "  " + row['UNIT'];
 
 	return true;
@@ -334,14 +326,14 @@ it=orderItems.iterator();
             <method name="open"><![CDATA[pit = payItems.iterator();]]></method>
             <method name="fetch"><![CDATA[if (pit.hasNext()){
 	item = pit.next();
-	
+
 	row['date'] = item.getOperDate();
 	row['payType'] = messages.get(item.getPayType().name());
 	row['fee'] = item.getRemitFee();
 	row['money'] = item.getOperMoney();
 	row['emp'] = dictionary.getEmpNameById(item.getOperEmp());
-	
-	row['ITEM_INFO'] = row['emp'] + "  " + row['payType'] ; 
+
+	row['ITEM_INFO'] = row['emp'] + "  " + row['payType'] ;
 	return true;
 }else{
 	return false;
@@ -383,7 +375,7 @@ it=orderItems.iterator();
         </style>
     </styles>
     <page-setup>
-        <simple-master-page name="销售单" id="2">
+        <simple-master-page name="退货单" id="2">
             <property name="type">custom</property>
             <property name="orientation">portrait</property>
             <property name="topMargin">0.25in</property>
@@ -414,7 +406,7 @@ it=orderItems.iterator();
                     <text id="8">
                         <property name="fontFamily">"SimHei"</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<CENTER><H2>销售单</H2>(财务联)</CENTER>
+                        <text-property name="content"><![CDATA[<CENTER><H2>退货单</H2>(财务联)</CENTER>
 ]]></text-property>
                     </text>
                 </cell>
@@ -424,7 +416,7 @@ it=orderItems.iterator();
                     <label id="172">
                         <property name="fontFamily">"SimHei"</property>
                         <property name="fontWeight">bold</property>
-                        <text-property name="text">销售时间</text-property>
+                        <text-property name="text">退货时间</text-property>
                     </label>
                 </cell>
                 <cell id="164">
@@ -734,74 +726,7 @@ it=orderItems.iterator();
                         </data>
                     </cell>
                 </row>
-                <row id="268">
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                    <cell id="269"/>
-                    <cell id="270">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <label id="275">
-                            <property name="fontFamily">"SimHei"</property>
-                            <text-property name="text">折扣</text-property>
-                        </label>
-                    </cell>
-                    <cell id="272">
-                        <data id="334">
-                            <property name="fontFamily">"SimHei"</property>
-                            <property name="resultSetColumn">Column Binding</property>
-                        </data>
-                    </cell>
-                    <cell id="273">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <data id="337">
-                            <property name="fontFamily">"SimHei"</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
-                                <property name="locale">zh_Hans_CN</property>
-                            </structure>
-                            <property name="textAlign">right</property>
-                            <property name="resultSetColumn">Column Binding_2</property>
-                        </data>
-                    </cell>
-                </row>
-                <row id="276">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                    <cell id="277"/>
-                    <cell id="278"/>
-                    <cell id="279">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <label id="283">
-                            <property name="fontFamily">"SimHei"</property>
-                            <property name="fontSize">9pt</property>
-                            <text-property name="text">应收</text-property>
-                        </label>
-                    </cell>
-                    <cell id="281">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <data id="336">
-                            <property name="fontFamily">"SimHei"</property>
-                            <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
-                                <property name="locale">zh_Hans_CN</property>
-                            </structure>
-                            <property name="textAlign">right</property>
-                            <property name="resultSetColumn">Column Binding_1</property>
-                        </data>
-                    </cell>
-                </row>
+
             </footer>
         </table>
         <grid id="40">
@@ -869,7 +794,7 @@ it=orderItems.iterator();
                     <text id="605">
                         <property name="fontFamily">"SimHei"</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<CENTER><H2>销售单</H2>(销售联)</CENTER>
+                        <text-property name="content"><![CDATA[<CENTER><H2>退货单</H2>(销售联)</CENTER>
 ]]></text-property>
                     </text>
                 </cell>
@@ -879,7 +804,7 @@ it=orderItems.iterator();
                     <label id="613">
                         <property name="fontFamily">"SimHei"</property>
                         <property name="fontWeight">bold</property>
-                        <text-property name="text">销售时间</text-property>
+                        <text-property name="text">退货时间</text-property>
                     </label>
                 </cell>
                 <cell id="614">
@@ -1186,74 +1111,6 @@ it=orderItems.iterator();
                             </structure>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">Aggregation</property>
-                        </data>
-                    </cell>
-                </row>
-                <row id="669">
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                    <cell id="670"/>
-                    <cell id="671">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <label id="672">
-                            <property name="fontFamily">"SimHei"</property>
-                            <text-property name="text">折扣</text-property>
-                        </label>
-                    </cell>
-                    <cell id="673">
-                        <data id="674">
-                            <property name="fontFamily">"SimHei"</property>
-                            <property name="resultSetColumn">Column Binding</property>
-                        </data>
-                    </cell>
-                    <cell id="675">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <data id="676">
-                            <property name="fontFamily">"SimHei"</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
-                                <property name="locale">zh_Hans_CN</property>
-                            </structure>
-                            <property name="textAlign">right</property>
-                            <property name="resultSetColumn">Column Binding_2</property>
-                        </data>
-                    </cell>
-                </row>
-                <row id="677">
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                    <cell id="678"/>
-                    <cell id="679"/>
-                    <cell id="680">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <label id="681">
-                            <property name="fontFamily">"SimHei"</property>
-                            <property name="fontSize">9pt</property>
-                            <text-property name="text">应收</text-property>
-                        </label>
-                    </cell>
-                    <cell id="682">
-                        <property name="colSpan">2</property>
-                        <property name="rowSpan">1</property>
-                        <data id="683">
-                            <property name="fontFamily">"SimHei"</property>
-                            <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Currency</property>
-                                <property name="pattern">¥#,##0.00{RoundingMode=HALF_UP}</property>
-                                <property name="locale">zh_Hans_CN</property>
-                            </structure>
-                            <property name="textAlign">right</property>
-                            <property name="resultSetColumn">Column Binding_1</property>
                         </data>
                     </cell>
                 </row>
